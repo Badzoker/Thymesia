@@ -1,19 +1,18 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "ContainerObject.h"
 
 
 BEGIN(Engine)
 class CModel;
 class CCollider;
-class CShader;
 class CNavigation;
 END
 
 BEGIN(Client)
 
-class CBoss_Varg : public CGameObject
+class CBoss_Varg final : public CContainerObject
 {
 private:
 	CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -29,7 +28,7 @@ public:
 
 public:
 	HRESULT Ready_Components();
-	HRESULT Bind_ShaderResources();
+	HRESULT Ready_PartObjects();
 
 private:
 	_uint								m_iState = {};
@@ -37,7 +36,6 @@ private:
 
 	CNavigation* m_pNavigationCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
-	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther);

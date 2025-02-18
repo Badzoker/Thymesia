@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Body_Player.h" />
+    <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
     <ClInclude Include="..\Public\Boss_Varg.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\Public\UI_Component.h" />
+    <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -192,6 +194,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
+    <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
     <ClCompile Include="..\Private\Boss_Varg.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
@@ -206,6 +209,7 @@
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_Component.cpp" />
+    <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
