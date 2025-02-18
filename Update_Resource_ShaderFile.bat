@@ -1,7 +1,7 @@
 
 
-xcopy			/y/s			.\Resource&ShaderFile\Resource\*.*								.\Client\Bin\Resources\
+xcopy			/y/s			.\Resource_ShaderFile\Resource\*.*								.\Client\Bin\Resources\
 
-xcopy			/y/s			.\Resource&ShaderFile\ShaderFile\*.*							.\Client\Bin\ShaderFiles\
+xcopy			/y/s			.\Resource_ShaderFile\ShaderFile\*.*							.\Client\Bin\ShaderFiles\
 
-xcopy			/y/s			.\Resource&ShaderFile\Engine_ShaderFile\*.*						.\Engine\Bin\ShaderFiles\
+xcopy			/y/s			.\Resource_ShaderFile\Engine_ShaderFile\*.*						.\Engine\Bin\ShaderFiles\
