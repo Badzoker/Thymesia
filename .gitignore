@@ -399,4 +399,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 #include hlsl
-!.hlsl
+!Client/Bin/ShaderFiles/**
+!Engine/Bin/ShaderFiles/**
