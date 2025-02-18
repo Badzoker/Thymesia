@@ -76,6 +76,15 @@
     <Filter Include="02.GameObject\UI\Chair\NewFilter1">
       <UniqueIdentifier>{4f94ef7d-f015-4f25-9f1f-592e51c3b836}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Boss\Boss_Varg">
+      <UniqueIdentifier>{679ae7ba-e520-4f34-8aaf-d67c4e2c4368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Boss\Boss_Varg\Body">
+      <UniqueIdentifier>{7e7712b3-d4c4-416b-ae1b-55d59b91f521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Boss\Boss_Varg\Weapon">
+      <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -138,11 +147,17 @@
     <ClInclude Include="..\Public\Boss_Magician.h">
       <Filter>02.GameObject\Boss</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Boss_Varg.h">
-      <Filter>02.GameObject\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Component.h">
       <Filter>02.GameObject\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Varg.h">
+      <Filter>02.GameObject\Boss\Boss_Varg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Varg.h">
+      <Filter>02.GameObject\Boss\Boss_Varg\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VargKnife.h">
+      <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,11 +212,17 @@
     <ClCompile Include="..\Private\Boss_Magician.cpp">
       <Filter>02.GameObject\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Boss_Varg.cpp">
-      <Filter>02.GameObject\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_Component.cpp">
       <Filter>02.GameObject\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Varg.cpp">
+      <Filter>02.GameObject\Boss\Boss_Varg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Varg.cpp">
+      <Filter>02.GameObject\Boss\Boss_Varg\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VargKnife.cpp">
+      <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
