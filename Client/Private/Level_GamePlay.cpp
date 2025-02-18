@@ -8,8 +8,7 @@
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
 {
-	//김선환 
-	int a = 4; 
+	
 }
 
 HRESULT CLevel_GamePlay::Initialize()
@@ -137,7 +136,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 		//int a = 4;
 
 		_tchar Translate_wchar[MAX_PATH] = {};
-		MultiByteToWideChar(CP_ACP, 0, Prototype_Name, strlen(Prototype_Name), Translate_wchar, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, Prototype_Name, static_cast<_int>(strlen(Prototype_Name)), Translate_wchar, MAX_PATH);
 
 		/* 이제 TRANSFORM만 건들면 될듯함.*/
 		//int b = 4;
