@@ -121,27 +121,27 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 
 #pragma region 바이너리화 Save용도
 
-	/*
-	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
-	if (nullptr == m_pAIScene)		
-		return E_FAIL;	
-	 
-	if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))			
-		return E_FAIL;
+	//
+	//m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
+	//if (nullptr == m_pAIScene)		
+	//	return E_FAIL;	
+	// 
+	//if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))			
+	//	return E_FAIL;
+	//
+	//if (FAILED(Ready_Meshes(PreTransformMatrix)))	
+	//	return E_FAIL;
+	//
+	//if (FAILED(Ready_Materials(pModelFilePath)))	
+	//	return E_FAIL;
+	//
+	//
+	//if (FAILED(Ready_Animations()))	
+	//	return E_FAIL;
+	//
+	//if (FAILED(Save_Model(pModelFilePath)))
+	//	return E_FAIL;
 	
-	if (FAILED(Ready_Meshes(PreTransformMatrix)))	
-		return E_FAIL;
-	
-	if (FAILED(Ready_Materials(pModelFilePath)))	
-		return E_FAIL;
-	
-	
-	if (FAILED(Ready_Animations()))	
-		return E_FAIL;
-	
-	if (FAILED(Save_Model(pModelFilePath)))
-		return E_FAIL;
-	*/
 #pragma endregion
 
 	return S_OK;
