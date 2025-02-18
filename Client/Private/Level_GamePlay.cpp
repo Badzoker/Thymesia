@@ -25,6 +25,14 @@ HRESULT CLevel_GamePlay::Initialize()
 	//if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))
 	//	return E_FAIL;	
 
+
+	// 테스트용 사다리 레이어 준비 함수 호출
+	if (FAILED(Ready_Layer_Ladder(TEXT("Layer_Ladder"))))
+		return E_FAIL;
+
+
+
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -222,6 +230,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
 
 	return S_OK;
 
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Ladder(const _tchar* pLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
