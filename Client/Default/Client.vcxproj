@@ -168,6 +168,8 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Body_Player.h" />
+    <ClInclude Include="..\Public\Boss_Magician.h" />
+    <ClInclude Include="..\Public\Boss_Varg.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Ladder.h" />
@@ -189,6 +191,8 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
+    <ClCompile Include="..\Private\Boss_Magician.cpp" />
+    <ClCompile Include="..\Private\Boss_Varg.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Ladder.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

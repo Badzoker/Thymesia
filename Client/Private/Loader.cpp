@@ -8,6 +8,10 @@
 #include "Player.h"
 #include "LobTrap.h"
 
+#pragma region 보스 
+#include "Boss_Magician.h"
+#include "Boss_Varg.h"
+#pragma endregion 
 
 #pragma region 환경요소 
 #include "Sky.h"
@@ -341,10 +345,27 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma endregion 
+#pragma region 티메시아 보스
 
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Magician"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician"),
+		CBoss_Magician::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Varg"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Varg/Boss_Varg.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"),
+		CBoss_Varg::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion 
 	/* 로딩이 완료되었습ㄴ미다 */
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));	
 	m_isFinished = true;
