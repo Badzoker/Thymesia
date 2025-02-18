@@ -15,6 +15,12 @@
 
 
 
+#pragma region 테스트용 사다리
+#include "Ladder.h"
+#pragma endregion
+
+
+
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -307,6 +313,25 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;	
 
 #pragma endregion 
+
+
+#pragma region 테스트용 사다리
+	lstrcpyW(m_szLoadingText, TEXT("사다리 모델을 생성한다."));
+	/* For.Prototype_Component_Model_Ladder*/
+	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ladder"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"),
+		CLadder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+#pragma endregion 
+
 
 
 
