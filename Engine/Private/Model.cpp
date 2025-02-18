@@ -121,6 +121,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 
 #pragma region 바이너리화 Save용도
 
+	/*
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
 	if (nullptr == m_pAIScene)		
 		return E_FAIL;	
@@ -140,7 +141,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 	
 	if (FAILED(Save_Model(pModelFilePath)))
 		return E_FAIL;
-	
+	*/
 #pragma endregion
 
 	return S_OK;
