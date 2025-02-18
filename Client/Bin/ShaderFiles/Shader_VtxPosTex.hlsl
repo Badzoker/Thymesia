@@ -119,11 +119,11 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
 	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord); 
 
     
-    if (0.5f >= Out.vColor.a)
-        discard;
+    //if (0.1f >= Out.vColor.a)
+    //    discard;
 
 
     return Out;
@@ -421,6 +421,19 @@ PS_OUT PS_MAIN_CLAW_EFFECT(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_Thymesia_Ui(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
+	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    
+
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -570,4 +583,16 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_CLAW_EFFECT();
     }
+  // 12번
+    pass Thymesia_Ui
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_Ui();
+    }
+
 }

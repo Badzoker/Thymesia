@@ -4,6 +4,7 @@
 #include "Camera_Free.h"
 #include "Layer.h"	
 
+#include "UI_Component.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -232,7 +233,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
 {
-
+	CUI_Component::UI_COMPONENT_DESC Desc{};
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"), LEVEL_GAMEPLAY, pLayerTag, &Desc)))
+		return E_FAIL;
 	return S_OK;
 
 }
