@@ -70,6 +70,12 @@
     <Filter Include="02.GameObject\Boss">
       <UniqueIdentifier>{46740bbd-aaa2-41ea-90b6-48784443a5b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\Chair">
+      <UniqueIdentifier>{4d7099c8-9735-4dde-8c2b-68e3a1a6b905}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Chair\NewFilter1">
+      <UniqueIdentifier>{4f94ef7d-f015-4f25-9f1f-592e51c3b836}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,6 +141,9 @@
     <ClInclude Include="..\Public\Boss_Varg.h">
       <Filter>02.GameObject\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Component.h">
+      <Filter>02.GameObject\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -190,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Boss_Varg.cpp">
       <Filter>02.GameObject\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Component.cpp">
+      <Filter>02.GameObject\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

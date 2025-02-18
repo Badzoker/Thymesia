@@ -18,12 +18,13 @@
 #include "Terrain.h"
 #pragma endregion 
 
-
-
 #pragma region 테스트용 사다리
 #include "Ladder.h"
 #pragma endregion
 
+#pragma region 테스트용 사다리
+#include "UI_Component.h"
+#pragma endregion
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -149,7 +150,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile%d.dds"), 2))))
 		return E_FAIL;
-	
+
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain")
 		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 100, 100, 1, nullptr))))
@@ -297,6 +298,22 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 #pragma endregion
 
+
+#pragma region 의자 UI 텍스쳐
+	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
+	/* For.Prototype_Component_Texture_ChairUI*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ChairUI"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/UI_%d.dds"), 8))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Component */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"),
+		CUI_Component::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"),
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 
 #pragma region 티메시아 캐릭터 
