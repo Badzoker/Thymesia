@@ -119,7 +119,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 	/* Ready_Bones를 항상 Mesh나 Material보다 위에서 해야함  그래야 뼈에 저장된 행렬정보 기준으로
 	메쉬의 있는 점들을 미리 다 옮겨주니깐.*/	
 
-#pragma region 바이너리화 Save용
+#pragma region 바이너리화 Save용도
 
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
 	if (nullptr == m_pAIScene)		
