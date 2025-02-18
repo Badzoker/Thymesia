@@ -61,6 +61,14 @@
     <Filter Include="02.GameObject\Terrain">
       <UniqueIdentifier>{78b0b318-a23b-4569-8f88-c7484fe6212f}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
+    <Filter Include="02.GameObject\0.Ladder">
+      <UniqueIdentifier>{8d0f4be0-587b-4a21-8752-52f739d79161}</UniqueIdentifier>
+=======
+    <Filter Include="02.GameObject\LobTrap">
+      <UniqueIdentifier>{a04912fe-774e-47db-acec-0001369a83bb}</UniqueIdentifier>
+>>>>>>> origin/main
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -114,6 +122,14 @@
     <ClInclude Include="..\public\Terrain.h">
       <Filter>02.GameObject\Terrain</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="..\Public\Ladder.h">
+      <Filter>02.GameObject\0.Ladder</Filter>
+=======
+    <ClInclude Include="..\Public\LobTrap.h">
+      <Filter>02.GameObject\LobTrap</Filter>
+>>>>>>> origin/main
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -157,6 +173,14 @@
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>02.GameObject\Terrain</Filter>
+    </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="..\Private\Ladder.cpp">
+      <Filter>02.GameObject\0.Ladder</Filter>
+=======
+    <ClCompile Include="..\Private\LobTrap.cpp">
+      <Filter>02.GameObject\LobTrap</Filter>
+>>>>>>> origin/main
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

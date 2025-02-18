@@ -6,12 +6,19 @@
 #include "BackGround.h"
 #include "Weapon.h"
 #include "Player.h"
+#include "LobTrap.h"
 
 
 #pragma region 환경요소 
 #include "Sky.h"
 #include "Terrain.h"
 #pragma endregion 
+
+
+
+#pragma region 테스트용 사다리
+#include "Ladder.h"
+#pragma endregion
 
 
 
@@ -88,7 +95,7 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	lstrcpyW(m_szLoadingText, TEXT("텍스쳐 원형을 생성한다."));
 	/* For.Prototype_Component_Texture_BackGround */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 8))))
 		return E_FAIL;
 
 	lstrcpyW(m_szLoadingText, TEXT("셰이더 원형을 생성한다."));
@@ -306,7 +313,35 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CPlayer::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LobTrap"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Thymesia/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
+		CLobTrap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion 
+
+
+#pragma region 테스트용 사다리
+	lstrcpyW(m_szLoadingText, TEXT("사다리 모델을 생성한다."));
+	/* For.Prototype_Component_Model_Ladder*/
+	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ladder"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"),
+		CLadder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+#pragma endregion 
+
 
 
 
