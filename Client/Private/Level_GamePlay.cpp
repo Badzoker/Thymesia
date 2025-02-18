@@ -8,7 +8,8 @@
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
 {
-
+	//�輱ȯ 
+	int a = 4; 
 }
 
 HRESULT CLevel_GamePlay::Initialize()
