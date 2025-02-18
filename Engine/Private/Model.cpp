@@ -119,26 +119,30 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 	/* Ready_Bones를 항상 Mesh나 Material보다 위에서 해야함  그래야 뼈에 저장된 행렬정보 기준으로
 	메쉬의 있는 점들을 미리 다 옮겨주니깐.*/	
 
-	//m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
-	//if (nullptr == m_pAIScene)		
-	//	return E_FAIL;	
-	// 
-	//if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))			
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Meshes(PreTransformMatrix)))	
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Materials(pModelFilePath)))	
-	//	return E_FAIL;
-	//
-	//
-	//if (FAILED(Ready_Animations()))	
-	//	return E_FAIL;
-	//
-	//if (FAILED(Save_Model(pModelFilePath)))
-	//	return E_FAIL;
+#pragma region 바이너리화 Save용
+
+	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
+	if (nullptr == m_pAIScene)		
+		return E_FAIL;	
+	 
+	if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))			
+		return E_FAIL;
 	
+	if (FAILED(Ready_Meshes(PreTransformMatrix)))	
+		return E_FAIL;
+	
+	if (FAILED(Ready_Materials(pModelFilePath)))	
+		return E_FAIL;
+	
+	
+	if (FAILED(Ready_Animations()))	
+		return E_FAIL;
+	
+	if (FAILED(Save_Model(pModelFilePath)))
+		return E_FAIL;
+	
+#pragma endregion
+
 	return S_OK;
 }
 
@@ -281,7 +285,7 @@ HRESULT CModel::Save_Model(const _char* pModelFilePath)
 		file.write(reinterpret_cast<char*>(&m_PreTransformMatrix), sizeof(_float4x4));	
 
 		/* 뼈 저장 */
-		_uint bonesize = m_Bones.size();	
+		_uint bonesize = static_cast<_uint>(m_Bones.size());	
 		file.write((char*)&bonesize, sizeof(_uint));	
 		for (auto& bone : m_Bones)
 			bone->Save_Bone(file);
@@ -308,7 +312,7 @@ HRESULT CModel::Save_Model(const _char* pModelFilePath)
 		/* 애니메이션 및 채널 저장*/
 		file.write((char*)&m_iNumAnimations, sizeof(_uint));	
 
-		_uint AnimSize = m_Animations.size();	
+		_uint AnimSize = static_cast<_uint>(m_Animations.size());	
 		file.write((char*)&AnimSize, sizeof(_uint));	
 		for (auto& Anim : m_Animations)
 			Anim->Save_Anim(file);	
@@ -469,7 +473,7 @@ HRESULT CModel::Ready_Bones(const aiNode* pAINode, _int iParentBoneIndex)
 
 	m_Bones.push_back(pBone);
 
-	_int  iParent = m_Bones.size() - 1; 
+	_int  iParent = static_cast<_int>(m_Bones.size()) - 1; 
 
 	for (size_t i=0; i < pAINode->mNumChildren; i++)
 	{
