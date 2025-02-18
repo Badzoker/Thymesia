@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "Weapon.h"
 #include "Player.h"
+#include "LobTrap.h"
 
 
 #pragma region 환경요소 
@@ -305,6 +306,15 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"),	
 		CPlayer::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LobTrap"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Thymesia/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
+		CLobTrap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion 
 
