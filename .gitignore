@@ -27,7 +27,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/**
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
@@ -99,6 +98,13 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+
+*.exp
+*.pdb
+*.exe
+*.ilk
+*.lib
+*.dll
 
 # Chutzpah Test files
 _Chutzpah*
@@ -232,6 +238,7 @@ _pkginfo.txt
 !?*.[Cc]ache/
 
 # Others
+ClientBin/
 ~$*
 *~
 *.dbmdl
