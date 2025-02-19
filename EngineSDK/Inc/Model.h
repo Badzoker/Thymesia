@@ -38,8 +38,6 @@ public:
 	vector<class CAnimation*>& Get_VecAnimation() { return  m_Animations; }	
 	_uint   Get_Current_Animation_Index() { return m_iCurrentAnimIndex; }
 
-
-
 private:
 	/* 가져온 정보를 저장한다. */
 	//const aiScene*					m_pAIScene = { nullptr };

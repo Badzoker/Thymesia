@@ -166,6 +166,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
@@ -181,17 +182,23 @@
     <ClInclude Include="..\Public\LobTrap.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\PlayerIdle.h" />
+    <ClInclude Include="..\public\PlayerRun.h" />
+    <ClInclude Include="..\public\RightWeapon.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\State.h" />
+    <ClInclude Include="..\public\StateMgr.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\Public\UI_Component.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
-    <ClInclude Include="..\public\Weapon.h" />
+    <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
@@ -206,11 +213,16 @@
     <ClCompile Include="..\Private\LobTrap.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\PlayerIdle.cpp" />
+    <ClCompile Include="..\private\PlayerRun.cpp" />
+    <ClCompile Include="..\private\RightWeapon.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\State.cpp" />
+    <ClCompile Include="..\private\StateMgr.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_Component.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
-    <ClCompile Include="..\private\Weapon.cpp" />
+    <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

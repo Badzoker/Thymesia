@@ -216,7 +216,6 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\public\Shadow.h" />
     <ClInclude Include="..\public\SoundMgr.h" />
-    <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\SwordTrail_Buffer.h" />
     <ClInclude Include="..\public\Target_Manager.h" />
     <ClInclude Include="..\public\Texture.h" />
@@ -280,7 +279,6 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\Shader.cpp" />
     <ClCompile Include="..\private\Shadow.cpp" />
     <ClCompile Include="..\private\SoundMgr.cpp" />
-    <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\SwordTrail_Buffer.cpp" />
     <ClCompile Include="..\private\Target_Manager.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />

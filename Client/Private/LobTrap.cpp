@@ -65,11 +65,10 @@ HRESULT CLobTrap::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))  
             return E_FAIL;
 
-        if (i != 8)  // 이거 나중에 이유 찾아보기 
-        {
-            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
-                return E_FAIL;
-        }
+   
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+            return E_FAIL;
+        
 
         m_pShaderCom->Begin(0); 
         m_pModelCom->Render(i);

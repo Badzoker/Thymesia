@@ -4,8 +4,6 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "BackGround.h"
-#include "Weapon.h"
-#include "Player.h"
 #include "LobTrap.h"
 
 #pragma region 보스 
@@ -13,6 +11,13 @@
 #include "Boss_Varg.h"
 #include "Body_Varg.h"
 #include "VargKnife.h"
+#pragma endregion 
+
+
+#pragma region 플레이어 관련 
+#include "Player.h"
+#include "LeftWeapon.h"
+#include "RightWeapon.h"
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -24,7 +29,7 @@
 #include "Ladder.h"
 #pragma endregion
 
-#pragma region 테스트용 사다리
+#pragma region 테스트용 UI
 #include "UI_Component.h"
 #pragma endregion
 
@@ -244,41 +249,6 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 #pragma endregion 
 
-
-#pragma region 카쿠 모델
-	//lstrcpyW(m_szLoadingText, TEXT("카쿠 모델을 생성한다."));
-	///* For.Prototype_Component_Model_Kaku*/
-	//PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Kaku"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Kaku/2_03_kaku_2.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
-	//	return E_FAIL;
-	//
-	/////* For.Prototype_GameObject_Player */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"),
-	//	CPlayer::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	/////* For.Prototype_GameObject_Body_Player */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Body_Player"),
-	//	CBody_Player::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-#pragma endregion 
-
-#pragma region 카쿠 무기 모델 
-	//lstrcpyW(m_szLoadingText, TEXT("카쿠 무기 모델을 생성한다."));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Kaku_Weapon"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/KakuWeapon/weapon.fbx", CModel::MODEL_NONANIM))))
-	//	return E_FAIL;
-	//
-	//
-	/////* For.Prototype_GameObject_Weapon */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon"),
-	//	CWeapon::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;	
-
-#pragma endregion 
-
 #pragma region Navigation 
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
 	/* For.Prototype_Component_Navigation */	
@@ -319,33 +289,66 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma region 티메시아 캐릭터 
-	lstrcpyW(m_szLoadingText, TEXT("티메시아 모델을 생성한다."));	
+	lstrcpyW(m_szLoadingText, TEXT("티메시아 모델을 생성한다."));
 	/* For.Prototype_Component_Model_Kaku*/
-	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));		
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corner"),	
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Thymesia/realtest.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))	
-		return E_FAIL;		
+	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corner"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus/Corvus.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
 
 	///* For.Prototype_GameObject_Body_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Body_Player"),	
-		CBody_Player::Create(m_pDevice, m_pContext))))	
-		return E_FAIL;	
-	
-	///* For.Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"),	
-		CPlayer::Create(m_pDevice, m_pContext))))	
-		return E_FAIL;	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Body_Player"),
+		CBody_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	///* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion 
+
+
+
+#pragma region 티메시아 캐릭터 오른손 무기 모델 
+	lstrcpyW(m_szLoadingText, TEXT("주인공 오른손 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corvus_Right_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Right_Weapon/Corvus_Right_Weapon.fbx", CModel::MODEL_NONANIM))))
+		return E_FAIL;
+
+
+	///* For.Prototype_GameObject_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Weapon"),
+		CRightWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+
+#pragma region 티메시아 캐릭터 왼손 무기 모델 
+	lstrcpyW(m_szLoadingText, TEXT("주인공 왼손 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corvus_Left_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Left_Weapon/Corvus_Left_Weapon.fbx", CModel::MODEL_NONANIM))))
+		return E_FAIL;
+
+
+	///* For.Prototype_GameObject_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Left_Weapon"),
+		CLeftWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+
+#pragma region LobTrap
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LobTrap"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Thymesia/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/LobTrap/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Player */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
 		CLobTrap::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
+		return E_FAIL;	
 #pragma endregion 
+
 
 
 #pragma region 테스트용 사다리

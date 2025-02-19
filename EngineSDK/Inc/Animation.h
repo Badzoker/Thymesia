@@ -30,7 +30,7 @@ private:
 	_float					   m_fDuration = {};
 	_float					   m_fTickPerSecond = {};
 	_float					   m_fCurrentTrackPosition = {};
-	_float					   m_iNumChannels = {};
+	_uint					   m_iNumChannels = {};	
 
 	/*Channel == Bone*/
 	vector<class CChannel*>    m_Channels;
