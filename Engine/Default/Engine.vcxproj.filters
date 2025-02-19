@@ -160,9 +160,6 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\Particle_Instancing\Rect">
       <UniqueIdentifier>{c4406f44-ae9b-4401-a236-e93107b6397e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\State">
-      <UniqueIdentifier>{458992a9-09b1-4c16-85e5-c1f79b8296cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\09.RenderTargets">
       <UniqueIdentifier>{d63a1112-55b4-44c4-acf1-5f3117236242}</UniqueIdentifier>
     </Filter>
@@ -366,9 +363,6 @@
     <ClInclude Include="..\public\VIBuffer_Point_Instancing.h">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Point</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\State.h">
-      <Filter>01.Utility\04.Components\State</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\RenderTarget.h">
       <Filter>01.Utility\09.RenderTargets</Filter>
     </ClInclude>
@@ -556,9 +550,6 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Point_Instancing.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Point</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\State.cpp">
-      <Filter>01.Utility\04.Components\State</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RenderTarget.cpp">
       <Filter>01.Utility\09.RenderTargets</Filter>

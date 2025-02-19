@@ -85,6 +85,30 @@
     <Filter Include="02.GameObject\Boss\Boss_Varg\Weapon">
       <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State">
+      <UniqueIdentifier>{8356e62b-b30a-448f-a67b-7aeb368b9d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\StateMgr">
+      <UniqueIdentifier>{db862e11-2e15-4756-9a26-e3f75ac218b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack">
+      <UniqueIdentifier>{c5f055e6-4079-4f5b-a7e1-e1dc7c7dd275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Idle">
+      <UniqueIdentifier>{abf15009-fe4f-469c-a48b-cb092dcef602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run">
+      <UniqueIdentifier>{62b5d6fd-e976-42b5-b761-da0af14d9ac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_1">
+      <UniqueIdentifier>{bfc039f5-8546-4151-bcdb-cea338c0fced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\LeftWeapon">
+      <UniqueIdentifier>{75bd813b-5da3-424c-8250-d74a8fcf3613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\RightWeapon">
+      <UniqueIdentifier>{bf20e524-f7a3-493d-b701-d956f382ff1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -129,9 +153,6 @@
     <ClInclude Include="..\public\Body_Player.h">
       <Filter>02.GameObject\Player\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Weapon.h">
-      <Filter>02.GameObject\Player\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\Sky</Filter>
     </ClInclude>
@@ -158,6 +179,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\VargKnife.h">
       <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State.h">
+      <Filter>02.GameObject\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StateMgr.h">
+      <Filter>02.GameObject\Player\State\StateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_LButton_1.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerIdle.h">
+      <Filter>02.GameObject\Player\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerRun.h">
+      <Filter>02.GameObject\Player\State\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LeftWeapon.h">
+      <Filter>02.GameObject\Player\Weapon\LeftWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RightWeapon.h">
+      <Filter>02.GameObject\Player\Weapon\RightWeapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +236,6 @@
     <ClCompile Include="..\private\Body_Player.cpp">
       <Filter>02.GameObject\Player\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02.GameObject\Player\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\Sky</Filter>
     </ClCompile>
@@ -223,6 +262,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\VargKnife.cpp">
       <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State.cpp">
+      <Filter>02.GameObject\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StateMgr.cpp">
+      <Filter>02.GameObject\Player\State\StateMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LButton_1.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerIdle.cpp">
+      <Filter>02.GameObject\Player\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerRun.cpp">
+      <Filter>02.GameObject\Player\State\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LeftWeapon.cpp">
+      <Filter>02.GameObject\Player\Weapon\LeftWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RightWeapon.cpp">
+      <Filter>02.GameObject\Player\Weapon\RightWeapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
