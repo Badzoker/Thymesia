@@ -98,7 +98,6 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-
 *.exp
 *.pdb
 *.exe

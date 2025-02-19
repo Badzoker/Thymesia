@@ -78,7 +78,7 @@ HRESULT CBody_Player::Render()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
 
 
@@ -110,7 +110,7 @@ HRESULT CBody_Player::Render_Shadow()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;

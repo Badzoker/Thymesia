@@ -44,7 +44,7 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
         if (dwByte == 0)
             break;
 
-        CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_Cells.size());
+        CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
 
         if (nullptr == pCell)
             return E_FAIL;

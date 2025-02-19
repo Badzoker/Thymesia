@@ -41,13 +41,14 @@ void CLobTrap::Priority_Update(_float fTimeDelta)
 
 void CLobTrap::Update(_float fTimeDelta)
 {
-  
-  
+    m_fTimer += fTimeDelta; //Distortion Test¿ëµµ
 }
 
 void CLobTrap::Late_Update(_float fTimeDelta)
 {
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this); 
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this); 
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this); 
 }
 
 HRESULT CLobTrap::Render()
@@ -57,7 +58,7 @@ HRESULT CLobTrap::Render()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
 
 
@@ -86,7 +87,7 @@ HRESULT CLobTrap::Render_Shadow()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
@@ -96,6 +97,62 @@ HRESULT CLobTrap::Render_Shadow()
     }
 
     return S_OK;    
+}
+
+HRESULT CLobTrap::Render_Distortion()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fTimer, sizeof(_float))))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(3);
+        m_pModelCom->Render(i);
+    }
+
+    return S_OK;
+}
+
+HRESULT CLobTrap::Render_Glow()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    const _float4 vCamPos = m_pGameInstance->Get_CamPosition();
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &vCamPos, sizeof(_float4))))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(4);
+        m_pModelCom->Render(i);
+    }
+
+    return S_OK;
 }
 
 HRESULT CLobTrap::Ready_Components()

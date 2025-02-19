@@ -8,6 +8,8 @@ Texture2D       g_NoiseTexture;
 float           g_Time;
 float           g_DissolveAmount;   
 
+vector          g_vCamPosition;
+
 struct VS_IN
 {
 	float3			vPosition : POSITION;	
@@ -103,6 +105,16 @@ struct PS_IN_SHADOW
 struct PS_OUT_SHADOW
 {
     float4 vShadow : SV_TARGET0;
+};
+
+struct PS_OUT_DISTORTION
+{
+    float4 vDistortion : SV_TARGET0;
+};
+
+struct PS_OUT_GLOW
+{
+    float4 vGlow : SV_TARGET0;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -234,10 +246,64 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
     return Out; 
 }
 
+PS_OUT_DISTORTION PS_MAIN_DISTORTION(PS_IN In)
+{
+    PS_OUT_DISTORTION Out = (PS_OUT_DISTORTION) 0;
+
+    //아마 이런 작업이 필요할것임
+    
+    //vector vNoise = g_DistortionTexture.Sample(LinearSampler, In.vTexCoord * g_fTimer);
+    //
+    //float fWeight = vNoise.r * 0.9f;
+    //
+    //Out.vColor = g_NoiseTexture.Sample(LinearSampler, In.vTexCoord) * vNoise;
+    
+    //구색만 맞춰본것이므로 이 아래는 쭉 지워야할지도
+    vector vNoise = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord * g_Time);
+    
+    float fWeight = vNoise.r * 0.9f;
+    
+    float2 vTexcoord = float2(In.vTexcoord.x * fWeight, In.vTexcoord.y);
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vTexcoord) * vNoise;
+    
+    //여기까지 지워야할지도
+    
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    Out.vDistortion = vMtrlDiffuse;
+	
+    return Out;
+}
+
+PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    Out.vGlow = vMtrlDiffuse;
+    
+    vector vLook = normalize(In.vWorldPos - g_vCamPosition);
+    
+    
+    
+    float fDegree_Look_Normal = dot(vLook, In.vNormal);
+        
+    if (-0.4f < fDegree_Look_Normal && 0.4f > fDegree_Look_Normal)
+        Out.vGlow.rgba = 1.f;
+	
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
-	pass DefaultPass
+	pass DefaultPass //0
 	{
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -249,7 +315,7 @@ technique11 DefaultTechnique
 	}
 
     
-    pass DissolvePass
+    pass DissolvePass //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);       
@@ -260,7 +326,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DISSOLVE();    
     }
 
-    pass Shadow
+    pass Shadow //2 
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -271,4 +337,25 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
     }
 
+    pass Distortion //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
+    }
+
+    pass Glow //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GLOW();
+    }
 }

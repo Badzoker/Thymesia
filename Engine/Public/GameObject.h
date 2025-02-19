@@ -28,7 +28,8 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }	
 	virtual HRESULT Render_Blur() { return S_OK; }	
-	virtual HRESULT Render_Distortion() { return S_OK; }	
+	virtual HRESULT Render_Distortion() { return S_OK; }
+	virtual HRESULT Render_Glow() { return S_OK; }
 
 	/* 11월 11일 추가*/	
 	map<const wstring, class CComponent*>* Get_Components() { return &m_Components; }	

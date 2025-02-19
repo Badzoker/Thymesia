@@ -25,10 +25,14 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
+	virtual HRESULT Render_Distortion() override;
+	virtual HRESULT Render_Glow() override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
+	_float m_fTimer = {};//이건 Distortion Test용 지워야할것임
 
 public:
 	HRESULT Ready_Components();
