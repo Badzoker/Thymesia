@@ -77,7 +77,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	);
 
 	//const float distance = 50.0f; // 플레이어와 카메라 거리	
-	const float distance = 100.0f; // 플레이어와 카메라 거리	
+	const float distance = 50.0f; // 플레이어와 카메라 거리	
 
 	// 보간 계수
 	_float t = fTimeDelta;	
