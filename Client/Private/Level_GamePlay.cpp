@@ -246,6 +246,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Ladder(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

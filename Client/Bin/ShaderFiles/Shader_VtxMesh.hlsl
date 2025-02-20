@@ -1,6 +1,6 @@
 #include "../../../EngineSDK/hlsl/Engine_Shader_Defines.hlsli"
 
-float4x4		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+float4x4        g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_OldViewMatrix, g_OldWorldMatrix;
 Texture2D       g_DiffuseTexture;
 Texture2D		g_NormalTexture;
 Texture2D       g_NoiseTexture; 
@@ -31,6 +31,26 @@ struct VS_OUT
     float4			vBinormal : BINORMAL;
 };
 
+struct VS_OUT_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD0;
+};
+
+struct VS_OUT_MotionBlur
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+	   
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
+    
+    float4 vDir : TEXCOORD3;
+};
+
 VS_OUT VS_MAIN(VS_IN In)
 {	
 	VS_OUT			Out = (VS_OUT)0;
@@ -52,12 +72,6 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-struct VS_OUT_SHADOW    
-{
-    float4 vPosition : SV_POSITION; 
-    float4 vProjPos : TEXCOORD0;    
-};
-
 VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 {
     VS_OUT_SHADOW Out = (VS_OUT_SHADOW) 0;
@@ -73,7 +87,47 @@ VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
     return Out;
 }
 
+VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
+{
+    VS_OUT_MotionBlur Out = (VS_OUT_MotionBlur) 0;
 
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
+    
+    //motion blur를 위한 추가작업시작
+    float4 vNewPos = Out.vPosition;
+    float4 vOldPos = mul(vector(In.vPosition, 1.f), g_OldWorldMatrix);
+    vOldPos = mul(vOldPos, g_OldViewMatrix);
+    vOldPos = mul(vOldPos, g_ProjMatrix);
+	
+    float3 vDir = vNewPos.xyz - vOldPos.xyz;
+    
+    float a = dot(normalize(vDir), normalize(Out.vNormal.xyz));
+    if (a < 0.f)
+        Out.vPosition = vOldPos;
+    else
+        Out.vPosition = vNewPos;
+    
+    float2 vVelocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
+    Out.vDir.x = vVelocity.x * 0.5f;
+    Out.vDir.y = vVelocity.y * (-0.5f);
+    Out.vDir.z = Out.vPosition.z;
+    Out.vDir.w = Out.vPosition.w;
+    //motion blur를 위한 추가작업끝
+    
+    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f);
+	
+    return Out;
+}
 
 struct PS_IN
 {
@@ -88,18 +142,31 @@ struct PS_IN
     float4          vBinormal : BINORMAL;
 };
 
+struct PS_IN_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD0;
+};
+
+struct PS_IN_MOTIONBLUR
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+	   
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
+    
+    float4 vDir : TEXCOORD3;
+};
+
 struct PS_OUT
 {
     float4 vDiffuse : SV_TARGET0;
     float4 vNormal  : SV_TARGET1;
     float4 vDepth   : SV_TARGET2;
-};
-
-
-struct PS_IN_SHADOW
-{
-    float4 vPosition : SV_POSITION;
-    float4 vProjPos : TEXCOORD0;
 };
 
 struct PS_OUT_SHADOW
@@ -115,6 +182,11 @@ struct PS_OUT_DISTORTION
 struct PS_OUT_GLOW
 {
     float4 vGlow : SV_TARGET0;
+};
+
+struct PS_OUT_MOTIONBLUR
+{
+    float4 vMotionBlur : SV_TARGET0;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -301,6 +373,17 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     return Out;
 }
 
+PS_OUT_MOTIONBLUR PS_MAIN_MOTIONBLUR(PS_IN_MOTIONBLUR In)
+{
+    PS_OUT_MOTIONBLUR Out = (PS_OUT_MOTIONBLUR) 0;
+    
+    Out.vMotionBlur.xy = In.vDir.xy * 10.f; //속도가 매Frame 계산되서 너무 작아서 좀 늘려서 Deferred 에 던지기
+    Out.vMotionBlur.z = In.vDir.w;
+    Out.vMotionBlur.w = In.vDir.z / In.vDir.w;
+	
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass //0
@@ -357,5 +440,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GLOW();
+    }
+
+    pass MotionBlur //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_MOTIONBLUR();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MOTIONBLUR();
     }
 }
