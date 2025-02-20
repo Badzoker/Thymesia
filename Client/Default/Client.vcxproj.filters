@@ -109,6 +109,12 @@
     <Filter Include="02.GameObject\Player\Weapon\RightWeapon">
       <UniqueIdentifier>{bf20e524-f7a3-493d-b701-d956f382ff1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Object">
+      <UniqueIdentifier>{f9eeeb8c-1d44-4039-8c9a-95094ff543c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Object\StaticObject">
+      <UniqueIdentifier>{50f8610f-56b9-4747-9177-020ac098ecc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -201,6 +207,12 @@
     <ClInclude Include="..\public\RightWeapon.h">
       <Filter>02.GameObject\Player\Weapon\RightWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Object.h">
+      <Filter>02.GameObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticObject.h">
+      <Filter>02.GameObject\Object\StaticObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -283,6 +295,12 @@
     </ClCompile>
     <ClCompile Include="..\private\RightWeapon.cpp">
       <Filter>02.GameObject\Player\Weapon\RightWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Object.cpp">
+      <Filter>02.GameObject\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticObject.cpp">
+      <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
