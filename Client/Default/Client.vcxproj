@@ -181,6 +181,8 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\Public\LobTrap.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\Object.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerIdle.h" />
     <ClInclude Include="..\public\PlayerRun.h" />
@@ -212,6 +214,8 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\Private\LobTrap.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\Object.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerIdle.cpp" />
     <ClCompile Include="..\private\PlayerRun.cpp" />

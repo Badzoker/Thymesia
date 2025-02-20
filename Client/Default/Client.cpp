@@ -213,14 +213,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
-    //case WM_KEYDOWN:
-    //    switch (wParam)
-    //    {
-    //    case VK_ESCAPE:
-    //        DestroyWindow(g_hWnd);
-    //        break;
-    //    }
-    //    break;
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_ESCAPE:
+            DestroyWindow(g_hWnd);
+            break;
+        }
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

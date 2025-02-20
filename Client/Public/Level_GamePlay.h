@@ -30,6 +30,9 @@ private:
 	// 테스트용 사다리 레이어 추가
 	HRESULT	Ready_Layer_Ladder(const _tchar* pLayerTag);
 
+private:
+	HRESULT Load_Objects(_int iObject_Level);
+
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
