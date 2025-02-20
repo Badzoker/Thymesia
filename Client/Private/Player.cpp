@@ -52,12 +52,18 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 232.f,62.f,60.f,1.f });
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 232.f,62.f,60.f,1.f });
+
+	_vector vPlayerPos = XMVectorSet(4.0f, 0.0f, 4.0f, 1.0f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
+
 
 	m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
-	m_pTransformCom->Scaling(_float3{ 0.045f, 0.045f, 0.045f });
+	//m_pTransformCom->Scaling(_float3{ 0.045f, 0.045f, 0.045f });
+	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
+	m_pNavigationCom->Set_CurrentNaviIndex(vPlayerPos);
 
 
 	m_pStateMgr = CStateMgr::Create();
