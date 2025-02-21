@@ -215,7 +215,7 @@ HRESULT CMesh::Ready_VertexBuffer_ForAnim(CModel* pModel, const aiMesh* pAIMesh,
 
 	m_iNumBones = pAIMesh->mNumBones;
 
-	for (size_t i=0; i< m_iNumBones; i++)
+	for (_uint i=0; i< m_iNumBones; i++)
 	{
 		aiBone* pAIBone = pAIMesh->mBones[i]; /* 매쉬의 첫번째 뼈를 가져옴*/
 
@@ -232,7 +232,7 @@ HRESULT CMesh::Ready_VertexBuffer_ForAnim(CModel* pModel, const aiMesh* pAIMesh,
 		m_BoneIndices.push_back(pModel->Get_BoneIndex(pAIBone->mName.data)); /* 여기다가 "SWORD"을 주고*/
 		
 		/*pAIBone->mNumWeights : 이 뼈는 몇개의 정점에게 영향을 주는지에 대해 알려줌*/
-		for (size_t j = 0; j < pAIBone->mNumWeights; j++)
+		for (_uint j = 0; j < pAIBone->mNumWeights; j++)
 		{
 			/* pAIBone->mWeights[j] : 이 뼈가 영향을 주는 j번째 정점의 정보 */
 			aiVertexWeight AIWeight = pAIBone->mWeights[j];
