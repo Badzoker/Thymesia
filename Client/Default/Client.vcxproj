@@ -193,7 +193,11 @@
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMgr.h" />
     <ClInclude Include="..\public\Terrain.h" />
-    <ClInclude Include="..\Public\UI_Component.h" />
+    <ClInclude Include="..\Public\UI_AttributeButton.h" />
+    <ClInclude Include="..\Public\UI_LeftBackground.h" />
+    <ClInclude Include="..\Public\UI_PlayerAttribute.h" />
+    <ClInclude Include="..\public\UI_PlayerLevelUP.h" />
+    <ClInclude Include="..\Public\UI_PlayerMenu.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="Client.h" />
@@ -228,7 +232,11 @@
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMgr.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
-    <ClCompile Include="..\Private\UI_Component.cpp" />
+    <ClCompile Include="..\Private\UI_AttributeButton.cpp" />
+    <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
+    <ClCompile Include="..\Private\UI_PlayerAttribute.cpp" />
+    <ClCompile Include="..\Private\UI_PlayerLevelUP.cpp" />
+    <ClCompile Include="..\Private\UI_PlayerMenu.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="Client.cpp" />

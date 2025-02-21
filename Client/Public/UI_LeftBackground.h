@@ -1,17 +1,15 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "UIObject.h"
-
+#include "UI_Image.h"
 BEGIN(Engine)
 class CShader;
 class CTexture;
-class CTransform;
 class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
-class CUI_Component final : public CUIObject
+class CUI_LeftBackground final : public CUI_Image
 {
 public:
 	struct UI_COMPONENT_DESC : CUIObject::UIOBJECT_DESC
@@ -19,9 +17,9 @@ public:
 
 	};
 private:
-	CUI_Component(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_Component(const CUI_Component& Prototype);
-	virtual ~CUI_Component() = default;
+	CUI_LeftBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_LeftBackground(const CUI_LeftBackground& Prototype);
+	virtual ~CUI_LeftBackground() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -42,7 +40,7 @@ public:
 	HRESULT Ready_Components();
 
 public:
-	static CUI_Component* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_LeftBackground* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

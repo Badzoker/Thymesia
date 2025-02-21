@@ -17,6 +17,7 @@
 #include "Frustum.h"
 #include "ItemMgr.h"
 #include "Shadow.h"
+#include "UI_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -103,6 +104,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pShadow)	
 		return E_FAIL;	
 
+	m_pUI_Manager = CUI_Manager::Create(EngineDesc.iNumUIScenes);
+	if (nullptr == m_pUI_Manager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -118,6 +123,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pEffect_Manager->Priority_Update(fTimeDelta);
+	m_pUI_Manager->Priority_Update(fTimeDelta);
 
 	m_pPipeLine->Update();
 
@@ -125,9 +131,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
+	m_pUI_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pEffect_Manager->Late_Update(fTimeDelta);	
+	m_pUI_Manager->Late_Update(fTimeDelta);
 
 	m_pCollider_Manager->Update(); //  충돌 매니저 
 
@@ -519,6 +527,35 @@ HRESULT CGameInstance::Bind_Shadow_Matrices(CShader* pShader, const _char* pView
 }
 #pragma endregion
 
+#pragma region UI_Manager
+
+HRESULT CGameInstance::Add_UIObject_To_UIScene(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iSceneIndex, const _wstring& strSceneTag, _uint iUIType, void* pArg)
+{
+	return m_pUI_Manager->Add_UIObject_To_UIScene(iPrototypeLevelIndex, strPrototypeTag, iSceneIndex, strSceneTag, iUIType, pArg);
+}
+
+CUI_Scene* CGameInstance::Find_UIScene(_uint iSceneIndex, const _wstring& strSceneTag)
+{
+	return m_pUI_Manager->Find_UIScene(iSceneIndex, strSceneTag);
+}
+
+map<const _wstring, class CUI_Scene*>* CGameInstance::Find_UIScene_ALL()
+{
+	return m_pUI_Manager->Find_UIScene_ALL();
+}
+
+HRESULT CGameInstance::UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen)
+{
+	return m_pUI_Manager->UIScene_UIObject_Render_OnOff(pScene, bOpen);
+}
+
+void CGameInstance::Clear_ALL()
+{
+	return m_pUI_Manager->Clear_ALL();
+}
+
+#pragma endregion UI_Manager
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pGraphic_Device);	
@@ -538,6 +575,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pItemMgr);	
 	Safe_Release(m_pShadow);	
+	Safe_Release(m_pUI_Manager);
 	m_pSound_Manager->Release();
 	m_pSound_Manager->Free();
 

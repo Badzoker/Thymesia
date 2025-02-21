@@ -176,6 +176,13 @@ public:
 	HRESULT Bind_Shadow_Matrices(class CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName);
 #pragma endregion
 
+#pragma region UI_Manager
+	HRESULT Add_UIObject_To_UIScene(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iSceneIndex, const _wstring& strSceneTag, _uint iUIType, void* pArg = nullptr);
+	class CUI_Scene* Find_UIScene(_uint iSceneIndex, const _wstring& strSceneTag);
+	map<const _wstring, class CUI_Scene*>* Find_UIScene_ALL();
+	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen);
+	void Clear_ALL(); // UI 모든 씬 지우기
+#pragma endregion UI_Manager
 
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
@@ -199,6 +206,7 @@ private:
 	class CFrustum*						m_pFrustum            = { nullptr };
 	class CItemMgr*						m_pItemMgr            = { nullptr };
 	class CShadow*						m_pShadow             = { nullptr };
+	class CUI_Manager*					m_pUI_Manager		  = { nullptr };
 
 public:
 	void Release_Engine();

@@ -8,6 +8,7 @@ namespace Engine
 		HINSTANCE		hInstance;
 		HWND			hWnd;
 		unsigned int	iNumLevels;
+		unsigned int	iNumUIScenes;
 		bool			isWindowed;
 		unsigned int	iViewportWidth;
 		unsigned int	iViewportHeight;
