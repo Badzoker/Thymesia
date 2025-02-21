@@ -246,6 +246,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Ladder(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -259,7 +262,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 	_tchar		szLastPath[MAX_PATH] = {};
 
-	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), strlen(strDataPath.c_str()), szLastPath, MAX_PATH);
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
 
 	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -291,6 +294,8 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 			return E_FAIL;
 	}
 	CloseHandle(hFile);
+
+	return S_OK;
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

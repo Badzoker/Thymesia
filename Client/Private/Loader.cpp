@@ -255,9 +255,18 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma region Navigation 
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
 	/* For.Prototype_Component_Navigation */	
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),	
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/test49.bin")))))	
-		return E_FAIL;	
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),	
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/test49.bin")))))	
+	//	return E_FAIL;	
+
+
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), 
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/TestNavigation.txt")))))
+		return E_FAIL;
+
+
 
 #pragma endregion 
 
@@ -342,8 +351,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma region Objects
+	//LobTrap
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LobTrap"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/LobTrap/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_LobTrap*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
+		CLobTrap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//SM_Wall_Shelf
@@ -406,7 +421,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
-	///* For.Prototype_GameObject_Player */
+	///* For.Prototype_GameObject_Ladder */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"),
 		CLadder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

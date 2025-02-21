@@ -27,12 +27,15 @@ public:
 	virtual HRESULT Render_Shadow() override;
 	virtual HRESULT Render_Distortion() override;
 	virtual HRESULT Render_Glow() override;
+	virtual HRESULT Render_Motion_Blur() override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
-	_float m_fTimer = {};//이건 Distortion Test용 지워야할것임
+	_float m_fTimer = {}; //이건 Distortion Test용 지워야할것임
+
+	_float4x4 m_OldWorldMatrix{}, m_OldViewMatrix{}; //Motion Blur 를 위한 방금 Frame 의 World와 View Matrix를 통해 움직이는 속도를 구하기 위함
 
 public:
 	HRESULT Ready_Components();

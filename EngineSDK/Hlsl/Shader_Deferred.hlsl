@@ -20,10 +20,13 @@ Texture2D		g_DepthTexture;
 Texture2D		g_ShadowTexture;
 
 Texture2D		g_FinalTexture;
-Texture2D		g_BlurXTexture;
-Texture2D		g_BlurYTexture;
+
+Texture2D		g_HighLightTexture;
+Texture2D		g_HighLightXTexture;
+Texture2D       g_HighLightYTexture;
 
 Texture2D       g_DistortionTexture;
+Texture2D       g_MotionBlurTexture;
 Texture2D       g_GlowBeginTexture;
 Texture2D       g_GlowXTexture;
 Texture2D       g_GlowYTexture;
@@ -182,23 +185,121 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 PS_OUT PS_MAIN_FINAL(PS_IN In)
 {
-	PS_OUT			Out = (PS_OUT)0;
+    PS_OUT Out = (PS_OUT) 0;
     
     vector vDistortion = g_DistortionTexture.Sample(LinearSampler, In.vTexcoord);
     
     float fWeight = vDistortion.r * 1.2f;
 
-	vector			vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord + fWeight);
-	if (0.f == vDiffuse.a)
-		discard;
+    vector vFinal = g_FinalTexture.Sample(LinearSampler, In.vTexcoord + fWeight);
+    
+    vector vHighLight = g_HighLightYTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vGlow = g_GlowYTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vMotionBlurBegin = g_MotionBlurTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    Out.vColor = vFinal + vHighLight + vGlow + vMotionBlurBegin;
+    
+    return Out;
+}
 
-	vector			vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    vector			vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+float g_fWeights_HighLight[13] =
+{
+    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1.f, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
+};
 
-    Out.vColor = vDiffuse * vShade; // + vSpecular;
+//float g_fWeights_HighLight[13] =
+//{
+//    0.00903f, 0.02178f, 0.04475f, 0.07842f, 0.11698f, 0.14866f, 0.16105f,
+//    0.14866f, 0.11698f, 0.07842f, 0.04475f, 0.02178f, 0.00903f
+//};
+
+PS_OUT PS_MAIN_HIGHLIGHT_X(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float2 vTexcoord = 0.f;
+
+    for (int i = -6; i < 7; i++)
+    {
+        
+        //vTexcoord = float2(In.vTexcoord.x + (1.f / 1600.f) * i, In.vTexcoord.y);	
+        vTexcoord = float2(In.vTexcoord.x + (1.f / g_fViewPortWidth) * i, In.vTexcoord.y);
+
+        Out.vColor += g_fWeights_HighLight[i + 6] * g_HighLightTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    }
+
+    Out.vColor /= 6.f;
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_HIGHLIGHT_Y(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float2 vTexcoord = 0.f;
+
+    for (int i = -6; i < 7; i++)
+    {
+        //vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + (1.f / 900.f) * i);
+        vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + (1.f / g_fViewPortHeight) * i);
+
+        Out.vColor += g_fWeights_HighLight[i + 6] * g_HighLightXTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    }
+
+    Out.vColor /= 6.f;
+    
+    vector vHighLight = g_HighLightTexture.Sample(LinearSampler, In.vTexcoord); //원래 선환이가 기본 텍스쳐 + 비빈거 합치는거 여기에 다 넣어버리기->g_HighLight Y Texture 에 다들어감
+
+    Out.vColor += vHighLight;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_MOTIONBLUR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vMotionBlur = g_MotionBlurTexture.Sample(LinearSampler, In.vTexcoord); //속도 샘플링?
+    
+    float2 vTexcoord = 0.f;
+    
+    float Amount_X = (vMotionBlur.r / g_fViewPortWidth);
+    float Amount_Y = (vMotionBlur.g / g_fViewPortHeight);
+    
+    vector vFinal_Color_MotionBlur;
+    
+    if (vMotionBlur.r > 0.5f || vMotionBlur.g > 0.5f)
+    {
+        for (int i = -6; i < 7; i++)
+        {
+            vTexcoord = float2(In.vTexcoord.x + (Amount_X * 8.f) * i, In.vTexcoord.y + (Amount_Y * 8.f) * i);
+            Out.vColor += g_fWeights_HighLight[i + 6] * g_FinalTexture.Sample(LinearSampler, vTexcoord);
+        }
+    }
+    
+    Out.vColor /= 13.f;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_DEFERRED(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (0.f == vDiffuse.a)
+        discard;
+
+    vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor = vDiffuse * vShade + vSpecular;
 	
-    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);	
-    float fViewZ = vDepthDesc.y;	
+    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    float fViewZ = vDepthDesc.y;
 	
     vector vWorldPos;
 	
@@ -222,100 +323,16 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     vWorldPos = mul(vWorldPos, g_LightViewMatrix);
     vWorldPos = mul(vWorldPos, g_LightProjMatrix);
 	
-    float2 vTexcoord;	
+    float2 vTexcoord;
 
-    vTexcoord.x = (vWorldPos.x / vWorldPos.w) * 0.5f + 0.5f;	
-    vTexcoord.y = (vWorldPos.y / vWorldPos.w) * -0.5f + 0.5f;	
+    vTexcoord.x = (vWorldPos.x / vWorldPos.w) * 0.5f + 0.5f;
+    vTexcoord.y = (vWorldPos.y / vWorldPos.w) * -0.5f + 0.5f;
 
-    vector vShadowDepthDesc = g_ShadowTexture.Sample(LinearSampler, vTexcoord);	
+    vector vShadowDepthDesc = g_ShadowTexture.Sample(LinearSampler, vTexcoord);
     
     if (vShadowDepthDesc.y + 0.15f <= vWorldPos.w)
         Out.vColor = Out.vColor * 0.7f;
-		
     
-    
-    float4 blurredColor = g_FinalTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vGlow = g_GlowYTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    //if (all(blurredColor.rgb > 0.01f))
-    //    Out.vColor = blurredColor;
-    
-    Out.vColor = Out.vColor + blurredColor + vGlow; 
-    
-    //float blendFactor = smoothstep(0.01, 0.02, blurredColor.r); // 임계값 주변에서 부드럽게 변화 
-    //Out.vColor = lerp(Out.vColor, blurredColor, blendFactor);   
-	
-	
-    // 예시: 블러 텍스처의 값이 일정 임계값 이상일 때만 블렌딩
-    //if (blurredColor.a != 0.f)
-    //    Out.vColor = blurredColor; // 또는 Out.vColor = lerp(deferredColor, blurredColor, blendFactor);
-    //else
-    //    Out.vColor = Out.vColor;//+blurredColor;
-    
-    
-	return Out;
-}
-
-float g_fWeights[13] =
-{
-    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1.f, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
-};
-
-//float g_fWeights[13] =
-//{
-//    0.00903f, 0.02178f, 0.04475f, 0.07842f, 0.11698f, 0.14866f, 0.16105f,
-//    0.14866f, 0.11698f, 0.07842f, 0.04475f, 0.02178f, 0.00903f
-//};
-
-PS_OUT PS_MAIN_BLUR_X(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    float2 vTexcoord = 0.f;
-
-    for (int i = -6; i < 7; i++)
-    {
-        
-        //vTexcoord = float2(In.vTexcoord.x + (1.f / 1600.f) * i, In.vTexcoord.y);	
-        vTexcoord = float2(In.vTexcoord.x + (1.f / g_fViewPortWidth) * i, In.vTexcoord.y);
-
-        Out.vColor += g_fWeights[i + 6] * g_FinalTexture.Sample(LinearSampler_Clamp, vTexcoord);	
-    }
-
-    Out.vColor /= 6.f;
-
-    return Out;
-}
-
-PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    float2 vTexcoord = 0.f;
-
-    for (int i = -6; i < 7; i++)
-    {
-        //vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + (1.f / 900.f) * i);
-        vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + (1.f / g_fViewPortHeight) * i);
-
-        Out.vColor += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearSampler_Clamp, vTexcoord);
-    }
-
-    Out.vColor /= 6.f;
-
-    return Out;
-}
-
-PS_OUT PS_MAIN_DEFERRED(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    vector vBlur = g_BlurYTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vFinal = g_FinalTexture.Sample(LinearSampler, In.vTexcoord); 
-	
-    Out.vColor = vBlur + vFinal;    
-
     return Out;
 }
 
@@ -404,27 +421,27 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_FINAL();
 	}
 
-    pass BlurX //4
+    pass HighLightX //4 원래 Blur X
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_SKip_Z, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_BLUR_X();
+        PixelShader = compile ps_5_0 PS_MAIN_HIGHLIGHT_X();
     }
 
-    pass BlurY //5
+    pass HighLightY //5 원래 Blur Y 여기에 그냥 예전 Blur_Final을 해버림
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_SKip_Z, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y();
+        PixelShader = compile ps_5_0 PS_MAIN_HIGHLIGHT_Y();
     }
 
-    pass Deferred //6 원래 Final(약간 Blur_Final느낌)
+    pass Deferred //6 원래 Final
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_SKip_Z, 0);
@@ -452,5 +469,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GLOW_Y();
+    }
+
+    pass MotionBlur //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MOTIONBLUR();
     }
 }

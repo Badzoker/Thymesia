@@ -12,7 +12,8 @@ BEGIN(Engine)
 class CRenderer final : public CBase
 {
 public:
-	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_NONLIGHT, RG_BLEND, RG_UI, RG_BLUR, RG_GLOW, RG_DISTORTION, RG_END };
+	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_NONLIGHT, RG_BLEND, RG_UI,
+					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_END };
 	
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -47,12 +48,14 @@ private:
 	HRESULT Render_GlowBegin();
 	HRESULT Render_GlowX();
 	HRESULT Render_GlowY();
+	HRESULT Render_MotionBlur_By_Velocity();
+	HRESULT Render_MotionBlurBegin();
 	HRESULT Render_NonLight();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Deferred();
-	HRESULT Render_BlurBegin();
-	HRESULT Render_BlurX();
-	HRESULT Render_BlurY();
+	HRESULT Render_HighLightBegin();
+	HRESULT Render_HighLightX();
+	HRESULT Render_HighLightY();
 	HRESULT Render_Final();
 	HRESULT Render_Blend();
 	HRESULT Render_UI();

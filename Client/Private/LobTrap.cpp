@@ -47,8 +47,9 @@ void CLobTrap::Update(_float fTimeDelta)
 void CLobTrap::Late_Update(_float fTimeDelta)
 {
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this); 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this); 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this); 
+    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this); 
+    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this); 
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this); 
 }
 
 HRESULT CLobTrap::Render()
@@ -150,6 +151,38 @@ HRESULT CLobTrap::Render_Glow()
         m_pShaderCom->Begin(4);
         m_pModelCom->Render(i);
     }
+
+    return S_OK;
+}
+
+HRESULT CLobTrap::Render_Motion_Blur()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_OldViewMatrix", &m_OldViewMatrix)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_OldWorldMatrix", &m_OldWorldMatrix)))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(5);
+        m_pModelCom->Render(i);
+    }
+
+    //이 행위는 모션블러 특정상 궤적뒤에 그려져야하기떄문에
+
+    m_OldWorldMatrix = *m_pTransformCom->Get_WorldMatrix_Ptr();
+    m_OldViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW); //new
 
     return S_OK;
 }
