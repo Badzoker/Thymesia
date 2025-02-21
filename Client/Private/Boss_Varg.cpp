@@ -28,7 +28,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     CGameObject::GAMEOBJECT_DESC        Desc{};
 
-    Desc.fSpeedPerSec = 45.f;
+    Desc.fSpeedPerSec = 1.f;
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
     if (FAILED(__super::Initialize(&Desc)))
@@ -41,12 +41,13 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
         return E_FAIL;
 
     m_pPlayer = m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-    
-    _vector vFirst_Pos = { 4.f,0.f,6.f,1.f };
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
-    //m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
+    m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER, this);
 
-    //m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
+    _vector vFirst_Pos = { 112.6f, 1.85f, 28.8f, 1.0f };
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
+    m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
+
+    m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
     m_pState_Manager = CBoss_State_Manager<CBoss_Varg>::Create();
     if (m_pState_Manager == nullptr)
@@ -71,6 +72,7 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
     {
         //임시용으로 I버튼으로 페이즈 전환
         //나중에 플레이어와 처형연동?으로 변환 예정.
+        m_fDelayTime = 0.f;
         m_bPatternProgress = true;
         m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), this);
     }
@@ -79,11 +81,11 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
         //임시용으로 k버튼 누르면 피격모션 진행
         m_pState_Manager->ChangeState(new CBoss_Varg::Hit_State(), this);
     }
-   
+
     m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
-    if (m_fDistance <= 5.f)
+    if (m_fDistance <= 2.f)
         m_bCrush = true;
     else
         m_bCrush = false;
@@ -99,31 +101,46 @@ void CBoss_Varg::Update(_float fTimeDelta)
 
     m_pState_Manager->State_Update(fTimeDelta, this);
 
-    _vector		vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
+    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector test = { 0.f,0.f,0.f,1.f };
+    /* 루트 모션 애니메션 코드 */
     m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-    _vector vPos = { 0.f,0.f,0.f,1.f };
-    if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], vPos) && m_pModelCom->Get_LerpFinished())
+
+    if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bBossActive/*&& m_iState != STATE_IDLE*/)
     {
-        //나중에 보스 네비 태울때? 유효할코드
-        /*  if (m_pNavigationCom->isMove(vCurPosition))*/
-        if (m_pNavigationCom->isMove(vCurPosition) || !m_bCrush)
+        if (m_pNavigationCom->isMove(vCurPosition) && !m_bCrush)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
+
+        /* 2월 19일 추가 코드 */
+        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+        {
+            _float4x4 test = {};
+            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+            const _float4x4* test2 = const_cast<_float4x4*>(&test);
+            m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
     }
+    m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
     __super::Update(fTimeDelta);
+
 }
 
 void CBoss_Varg::Late_Update(_float fTimeDelta)
 {
+#ifdef _DEBUG
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+#endif
     __super::Late_Update(fTimeDelta);
 }
 
 HRESULT CBoss_Varg::Render()
 {
+#ifdef _DEBUG
+    m_pColliderCom->Render();
+#endif 
     return S_OK;
 }
 
@@ -132,13 +149,26 @@ HRESULT CBoss_Varg::Ready_Components()
     /* Com_Navigation */
     CNavigation::NAVIGATION_DESC   Desc{};
 
-    /* 초기 디버깅 플레이어가 서있는 셀의 인덱스 */
     Desc.iCurrentCellIndex = 0;
 
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
+    /* Com_Collider */
+    CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
+
+
+    SphereDesc.fRadius = 300.f;
+    SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 100.f, 0.f);
+
+
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
+        return E_FAIL;
+
+
+    m_pColliderCom->Set_Collider_Name("Boss_Varg");
 
     return S_OK;
 }
@@ -180,7 +210,7 @@ void CBoss_Varg::PatternCreate()
     }
     if (m_fDelayTime >= 2.f)
     {
-        if (m_fDistance >= 15.f)
+        if (m_fDistance >= 10.f)
             Far_Pattern_Create();
         else
             Near_Pattern_Create();
@@ -198,6 +228,7 @@ void CBoss_Varg::Special_PatternCreate()
     {
         m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(false), this);
         m_fSpecial_Skill_CoolTime = 0.f;
+        m_fDelayTime = 0.f;
         m_bPatternProgress = true;
     }
 
@@ -340,7 +371,7 @@ void CBoss_Varg::Not_Active_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Intro_State
 void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->SetUp_Animation(26, false);
+    pObject->m_pModelCom->SetUp_Animation(17, false);
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -451,12 +482,12 @@ void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
 {
     //나중에 플레이어 위치받아올듯
     pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
-    if (pObject->m_fDistance > 20.f)
+    if (pObject->m_fDistance > 2.f)
     {
         m_iWalkIndex = 47;
         pObject->m_pModelCom->SetUp_Animation(m_iWalkIndex, true);
     }
-    else if (pObject->m_fDistance < 19.f)
+    else if (pObject->m_fDistance < 2.f)
     {
         m_iWalkIndex = 46;
         pObject->m_pModelCom->SetUp_Animation(m_iWalkIndex, true);
@@ -472,16 +503,16 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 {
     if (m_iWalkIndex == 47)
     {
-        //pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta);
     }
     else if (m_iWalkIndex == 46)
     {
-       // pObject->m_pTransformCom->Go_Backward(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Backward(pObject->m_fTimeDelta);
     }
     else if (m_iWalkIndex == 48)
     {
-       // pObject->m_pTransformCom->LookAt({ 0.f,0.f,0.f,1.f });
-        //pObject->m_pTransformCom->Go_Right(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
+        pObject->m_pTransformCom->Go_Right(pObject->m_fTimeDelta);
     }
 }
 
@@ -503,6 +534,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iComboIndex += 1;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
     if (m_iComboIndex > 9)
@@ -527,6 +559,7 @@ void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iComboIndex == 10 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iComboIndex = 11;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
 
@@ -553,6 +586,7 @@ void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iComboIndex == 10 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iComboIndex = 12;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
 
@@ -577,14 +611,14 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
 {
     if (m_iComboIndex == 7 && pObject->m_pModelCom->GetAniFinish())
     {
-        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         m_iComboIndex = 10;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
     if (m_iComboIndex == 10 && pObject->m_pModelCom->GetAniFinish())
     {
-        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         m_iComboIndex = 12;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
 
@@ -612,6 +646,7 @@ void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iComboIndex == 10 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iComboIndex = 9;
+        pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
         pObject->m_pModelCom->SetUp_Animation(m_iComboIndex, false);
     }
     if (m_iComboIndex == 9 && pObject->m_pModelCom->GetAniFinish())
@@ -632,6 +667,7 @@ void CBoss_Varg::Run_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Run_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
     if (m_iRunIndex == 25 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iRunIndex = 24;
@@ -670,14 +706,18 @@ void CBoss_Varg::Jump_Attack::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     if (pObject->m_iPhase == 1)
-        pObject->m_pModelCom->SetUp_Animation(50, false);
+    {
+        m_iExeCutionIndex = 50;
+        pObject->m_pModelCom->SetUp_Animation(m_iExeCutionIndex, false);
+    }
+
 }
 
 void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     //나중에 페이즈 구분 해줘야할듯
     //1페이즈이고 애님 끝났으면 변환시키기
-    if (pObject->m_iPhase == 1 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iExeCutionIndex == 50 && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
     }
@@ -722,9 +762,10 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
 void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     //달려가는중에 플레이어 부딪힌경우
+    pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
+
     if (pObject->m_bCrush)
         pObject->m_pModelCom->SetUp_Animation(28, false);
-
     //안부딪혀서 끝까지 진행된 경우
     if (pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State, pObject);
