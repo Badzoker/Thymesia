@@ -208,6 +208,30 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\Particle_Instancing\Point\Sprite_Particle">
       <UniqueIdentifier>{f63cf44a-10c2-4932-afa1-60f296df041f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\Manager">
+      <UniqueIdentifier>{98690c11-6f33-403b-b941-9d14c4f5afac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI">
+      <UniqueIdentifier>{84a388bb-0c1e-4dee-9616-ec6c62ff6a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\Manager\Scene">
+      <UniqueIdentifier>{f985bcbe-ebaf-45c2-af03-32d1dc7626dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Button">
+      <UniqueIdentifier>{4d69bb82-5fdf-4611-aa65-41272535b9be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Button_PlayerInfo">
+      <UniqueIdentifier>{be80605c-8628-46e0-8a6c-bfa804abe937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Image">
+      <UniqueIdentifier>{c2627154-b95a-4f91-8cec-5d59f909145b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Text">
+      <UniqueIdentifier>{acb5095f-41e7-49f8-91fe-dd0d79a4a165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Text_PlayerInfo">
+      <UniqueIdentifier>{cb36c055-b7e9-4e02-ba6c-c46984c5deb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -411,6 +435,24 @@
     <ClInclude Include="..\public\Shadow.h">
       <Filter>01.Utility\16.Shadow</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Text_PlayerInfo.h">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Button.h">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Button_Player.h">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Button_PlayerInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Image.h">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Manager.h">
+      <Filter>01.Utility\03.GameObject\UIObject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Scene.h">
+      <Filter>01.Utility\03.GameObject\UIObject\Manager\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -598,6 +640,24 @@
     </ClCompile>
     <ClCompile Include="..\private\Shadow.cpp">
       <Filter>01.Utility\16.Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Text_PlayerInfo.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Button.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Button_Player.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Button_PlayerInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Image.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Manager.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Scene.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\Manager\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

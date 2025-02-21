@@ -22,6 +22,7 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.hInstance = g_hInst;
 	EngineDesc.hWnd = g_hWnd;
 	EngineDesc.iNumLevels = LEVEL_END;
+	EngineDesc.iNumUIScenes = UISCENE_END;
 	EngineDesc.isWindowed = true;
 	EngineDesc.iViewportWidth = g_iWinSizeX;
 	EngineDesc.iViewportHeight = g_iWinSizeY;

@@ -24,7 +24,7 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UI_Scene(const _tchar* pLayerTag);
 
 
 	// 테스트용 사다리 레이어 추가
@@ -32,7 +32,9 @@ private:
 
 private:
 	HRESULT Load_Objects(_int iObject_Level);
-
+private:
+	_uint m_iOpenSceneCount = { 0 };
+	_bool m_bSceneOpen = { false };
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

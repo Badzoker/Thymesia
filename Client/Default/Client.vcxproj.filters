@@ -52,9 +52,6 @@
     <Filter Include="02.GameObject\Effect">
       <UniqueIdentifier>{9e7fcad4-496e-4017-b63d-f8f5214ea00b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\UI">
-      <UniqueIdentifier>{420a30ad-8a10-42b2-bcc7-ddad3d6fef83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Sky">
       <UniqueIdentifier>{445514f7-ecbc-4eee-90ce-e9e9f96fb668}</UniqueIdentifier>
     </Filter>
@@ -69,12 +66,6 @@
     </Filter>
     <Filter Include="02.GameObject\Boss">
       <UniqueIdentifier>{46740bbd-aaa2-41ea-90b6-48784443a5b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\UI\Chair">
-      <UniqueIdentifier>{4d7099c8-9735-4dde-8c2b-68e3a1a6b905}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\UI\Chair\NewFilter1">
-      <UniqueIdentifier>{4f94ef7d-f015-4f25-9f1f-592e51c3b836}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\Boss\Boss_Varg">
       <UniqueIdentifier>{679ae7ba-e520-4f34-8aaf-d67c4e2c4368}</UniqueIdentifier>
@@ -120,6 +111,27 @@
     </Filter>
     <Filter Include="02.GameObject\Boss\Boss_State\Manager">
       <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Scene">
+      <UniqueIdentifier>{02e749bc-62e0-434e-8e0c-3182d79925b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Object">
+      <UniqueIdentifier>{420a30ad-8a10-42b2-bcc7-ddad3d6fef83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Scene\1.PlayerMenu">
+      <UniqueIdentifier>{e6584cb6-17d9-4a02-a60c-e1945c22baa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Scene\2.PlayerLevelUP">
+      <UniqueIdentifier>{e9ce4b6c-45aa-49a9-b27f-30ee59d452ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Scene\3.PlayerAttribute">
+      <UniqueIdentifier>{e35de4db-75f7-494a-9e59-2eaa9ee43d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Object\Menu_LeftBackground">
+      <UniqueIdentifier>{76687551-9b86-4263-afa8-b248d337fa66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI_Object\Attribute_button_Player">
+      <UniqueIdentifier>{4d7099c8-9735-4dde-8c2b-68e3a1a6b905}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -180,9 +192,6 @@
     <ClInclude Include="..\Public\Boss_Magician.h">
       <Filter>02.GameObject\Boss</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Component.h">
-      <Filter>02.GameObject\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Boss_Varg.h">
       <Filter>02.GameObject\Boss\Boss_Varg</Filter>
     </ClInclude>
@@ -224,6 +233,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Boss_State_Manager.h">
       <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_PlayerAttribute.h">
+      <Filter>02.GameObject\UI_Scene\3.PlayerAttribute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_PlayerLevelUP.h">
+      <Filter>02.GameObject\UI_Scene\2.PlayerLevelUP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_PlayerMenu.h">
+      <Filter>02.GameObject\UI_Scene\1.PlayerMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LeftBackground.h">
+      <Filter>02.GameObject\UI_Object\Menu_LeftBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_AttributeButton.h">
+      <Filter>02.GameObject\UI_Object\Attribute_button_Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,9 +299,6 @@
     <ClCompile Include="..\Private\Boss_Magician.cpp">
       <Filter>02.GameObject\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Component.cpp">
-      <Filter>02.GameObject\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Boss_Varg.cpp">
       <Filter>02.GameObject\Boss\Boss_Varg</Filter>
     </ClCompile>
@@ -319,6 +340,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Boss_State_Manager.cpp">
       <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PlayerAttribute.cpp">
+      <Filter>02.GameObject\UI_Scene\3.PlayerAttribute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PlayerLevelUP.cpp">
+      <Filter>02.GameObject\UI_Scene\2.PlayerLevelUP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PlayerMenu.cpp">
+      <Filter>02.GameObject\UI_Scene\1.PlayerMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LeftBackground.cpp">
+      <Filter>02.GameObject\UI_Object\Menu_LeftBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_AttributeButton.cpp">
+      <Filter>02.GameObject\UI_Object\Attribute_button_Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
