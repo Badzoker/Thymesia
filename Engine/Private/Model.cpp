@@ -99,8 +99,8 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 		aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType;
 	
 
-	if (FAILED(Load_Model(PreTransformMatrix)))	
-		return E_FAIL;	
+	/*if (FAILED(Load_Model(PreTransformMatrix)))	
+		return E_FAIL;	*/
 	
 
 	/* 이것만으로 모든 로드작업은 끝난거다. */
@@ -122,7 +122,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 #pragma region 바이너리화 Save용도
 
 	
-	/*m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
+	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);			
 	if (nullptr == m_pAIScene)		
 		return E_FAIL;	
 	 
@@ -140,7 +140,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 		return E_FAIL;
 	
 	if (FAILED(Save_Model(pModelFilePath)))
-		return E_FAIL;*/
+		return E_FAIL;
 	
 #pragma endregion
 
