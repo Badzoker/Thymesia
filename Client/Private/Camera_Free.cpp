@@ -71,13 +71,13 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	// 플레이어의 충돌체를 기준으로할까.
 	_vector vPlayerHeadPos = XMVectorSet(
 		XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) +20.f, // 머리 높이 보정
+		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) +1.f, // 머리 높이 보정
 		XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 		1.0f
 	);
 
 	//const float distance = 50.0f; // 플레이어와 카메라 거리	
-	const float distance = 50.0f; // 플레이어와 카메라 거리	
+	const float distance = 2.0f; // 플레이어와 카메라 거리	
 
 	// 보간 계수
 	_float t = fTimeDelta;	

@@ -86,7 +86,7 @@ private:
 	_uint       m_iNextAnimationIndex = {};
 	_bool       m_bFinished = { false };
 	_uint       m_iCurrentAnimationIndex = {};
-	_bool       m_bLerpFinished = { false };
+	_bool       m_bLerpFinished = { true };
 
 public:
 	_bool       Get_LerpFinished()	    { return m_bLerpFinished; }
