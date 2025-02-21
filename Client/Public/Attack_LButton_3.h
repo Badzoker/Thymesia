@@ -2,12 +2,11 @@
 
 #include "State.h"
 
-
-class CPlayerRun final : public CState
+class CAttack_LButton_3 final : public CState
 {
 private:
-	CPlayerRun();
-	virtual ~CPlayerRun() = default;
+	CAttack_LButton_3();
+	virtual ~CAttack_LButton_3() = default;
 
 
 public:
@@ -16,13 +15,11 @@ public:
 public:
 	virtual void Priority_Update(class CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta) override;
 	virtual void Update(class CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta) override;
-	virtual void Late_Update(class CGameObject* pGameObject, class CNavigation* pNavigation,_float fTimeDelta) override;
+	virtual void Late_Update(class CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta) override;
 
-	_float m_fTurnSpeed = { 20.f };
-	_float m_fWalkSpeed = { 0.1f };
 
 public:
-	static  CPlayerRun* Create();
+	static CAttack_LButton_3* Create();
 	virtual void Free() override;
 
 };

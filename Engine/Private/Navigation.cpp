@@ -152,7 +152,6 @@ _bool CNavigation::isMove(_fvector vWorldPos)
         m_iNeighborIndex = iNeighborIndex;
         return true;
     }
-
 }
 
 _float CNavigation::Compute_Height(_fvector vWorldPos)

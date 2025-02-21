@@ -50,11 +50,11 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
 
 			if (abs(Radian) <= 0.5f)
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
 			else
 			{
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * 0.1f, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
 			}
 		}
 		else
@@ -65,7 +65,7 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			if (GetKeyState('A') & 0x8000)
 			{
 				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 			}
 			if (m_pGameInstance->isKeyEnter(DIK_D))
 				pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
@@ -73,7 +73,7 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			if (GetKeyState('D') & 0x8000)
 			{
 				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 			}
 		}
 
@@ -107,11 +107,11 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
 
 			if (abs(Radian) <= 0.5f)
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
 			else
 			{
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * 0.1f, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
 			}
 		}
 
@@ -123,7 +123,7 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			if (GetKeyState('A') & 0x8000)
 			{
 				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 			}
 
 			if (m_pGameInstance->isKeyEnter(DIK_D))
@@ -132,7 +132,7 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 			if (GetKeyState('D') & 0x8000)
 			{
 				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 			}
 		}
 
@@ -162,11 +162,11 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 
 
 		if (abs(Radian) <= 0.5f)
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
 		else
 		{
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * 0.1f, pNavigation);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
 		}
 
 
@@ -243,11 +243,11 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 
 
 		if (abs(Radian) <= 0.5f)
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
 		else
 		{
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * 0.1f, pNavigation);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);	
 		}
 
 
