@@ -9,7 +9,7 @@ CUI_PlayerAttribute::CUI_PlayerAttribute(ID3D11Device* pDevice, ID3D11DeviceCont
 }
 
 CUI_PlayerAttribute::CUI_PlayerAttribute(const CUI_PlayerAttribute& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 
@@ -61,7 +61,7 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MessageBox(g_hWnd, L"Load File", _T("Fail"), MB_OK);
+		MessageBox(g_hWnd, L"Load UI_PlayerAttribute File", _T("Fail"), MB_OK);
 		return S_OK;
 	}
 
@@ -107,7 +107,7 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 
 	CloseHandle(hFile);
 
-	MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

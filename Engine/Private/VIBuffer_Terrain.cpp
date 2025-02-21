@@ -37,11 +37,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 	{
 
 		/* 버텍스 정보 넣어주기 */
-		for (size_t i = 0; i < dwCntZ; i++)
+		for (_uint i = 0; i < dwCntZ; i++)
 		{
-			for (size_t j = 0; j < dwCntX; j++)
+			for (_uint j = 0; j < dwCntX; j++)
 			{
-				pVertices[dwCntZ * i + j].vPosition = _float3(j * dwVertexItv, 0.f, i);
+				pVertices[dwCntZ * i + j].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, 0.f, static_cast<_float>(i));
 				pVertices[dwCntZ * i + j].vNormal = _float3(0.f, 1.f, 0.f);
 				pVertices[dwCntZ * i + j].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
 			}
@@ -75,9 +75,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 
 		/* 인덱스를 그럼 어떻게 설정할지를 결정하기*/
 
-		for (size_t i = 0; i < dwCntZ - 1; i++)
+		for (_uint i = 0; i < dwCntZ - 1; i++)
 		{
-			for (size_t j = 0; j < dwCntX - 1; j++)
+			for (_uint j = 0; j < dwCntX - 1; j++)
 			{
 				/* 1개의 사각형을 완성시켜야함.*/
 				/*인덱스 6개 배치*/
@@ -146,13 +146,13 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 //
 //
 		/* 버텍스 정보 넣어주기 */
-		for (size_t i = 0; i < dwCntZ; i++)
+		for (_uint i = 0; i < dwCntZ; i++)
 		{
-			for (size_t j = 0; j < dwCntX; j++)
+			for (_uint j = 0; j < dwCntX; j++)
 			{
 				_uint			iIndex = i * dwCntX + j;
 
-				pVertices[iIndex].vPosition = _float3(j * dwVertexItv, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
+				pVertices[iIndex].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, (pPixel[iIndex] & 0x000000ff) / 10.f, static_cast<_float>(i));
 				pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 				pVertices[iIndex].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
 			}
@@ -171,9 +171,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 
 		/* 인덱스를 그럼 어떻게 설정할지를 결정하기*/
 
-		for (size_t i = 0; i < dwCntZ - 1; i++)
+		for (_uint i = 0; i < dwCntZ - 1; i++)
 		{
-			for (size_t j = 0; j < dwCntX - 1; j++)
+			for (_uint j = 0; j < dwCntX - 1; j++)
 			{
 				/* 1개의 사각형을 완성시켜야함.*/
 				/*인덱스 6개 배치*/

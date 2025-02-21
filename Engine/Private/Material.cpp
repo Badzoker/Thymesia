@@ -12,7 +12,7 @@ CMaterial::CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CMaterial::Initialize(const aiMaterial* pAIMaterial, const _char* pModelFilePath)
 {
-	for (size_t i = 0; i<AI_TEXTURE_TYPE_MAX; i++)	
+	for (_uint i = 0; i<AI_TEXTURE_TYPE_MAX; i++)	
 	{
 		/* 특정 속성을 표현하는 텍스쳐가 몇장인가? (ex) Diffuse 텍스처가 몇장인지?)*/
 		_uint iNumTextures = pAIMaterial->GetTextureCount(aiTextureType(i));
@@ -21,7 +21,7 @@ HRESULT CMaterial::Initialize(const aiMaterial* pAIMaterial, const _char* pModel
 
 		/* 각각의 Diffuse 텍스처를 로드한다.*/
 		/* 해당 물질이 없으면 그냥 Skip 하는 형태 */
-		for(size_t j=0; j < iNumTextures; j++)
+		for(_uint j = 0; j < iNumTextures; j++)
 		{
 			aiString   strTextureFilePath;
 			ID3D11ShaderResourceView* pSRV = { nullptr };
@@ -49,7 +49,7 @@ HRESULT CMaterial::Initialize(const aiMaterial* pAIMaterial, const _char* pModel
 
 			/* _char 형이 multiByte인 아스키코드를 유니바이트로 바꾸는 함수 _char->_tchar로*/
 			/*  szFullPath가 szLastPath에 유니바이트로 바뀜*/
-			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szLastPath, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szFullPath, static_cast<_int>(strlen(szFullPath)), szLastPath, MAX_PATH);
 
 			 
 			HRESULT hr = {};
@@ -91,7 +91,7 @@ HRESULT CMaterial::Bind_Material(CShader* pShader, aiTextureType eType, const _c
 
 HRESULT CMaterial::Save_Material(ostream& os, const aiMaterial* pAIMaterial, const _char* pModelFilePath)
 {
-	for (size_t i = 1; i < AI_TEXTURE_TYPE_MAX; i++)
+	for (_uint i = 1; i < AI_TEXTURE_TYPE_MAX; i++)
 	{
 		m_iNumTextures = pAIMaterial->GetTextureCount(aiTextureType(i));
 
@@ -100,7 +100,7 @@ HRESULT CMaterial::Save_Material(ostream& os, const aiMaterial* pAIMaterial, con
 
 		m_ForSaveMtrlTextures[i].reserve(m_iNumTextures);
 
-		for (size_t j = 0; j < m_iNumTextures; j++)
+		for (_uint j = 0; j < m_iNumTextures; j++)
 		{
 			/* ShaderResoureView 자료형으로 만들어주기*/
 			aiString                    strTextureFilePath;
@@ -128,7 +128,7 @@ HRESULT CMaterial::Save_Material(ostream& os, const aiMaterial* pAIMaterial, con
 
 			_tchar szLastPath[MAX_PATH] = {};
 
-			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szLastPath, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szFullPath, static_cast<_int>(strlen(szFullPath)), szLastPath, MAX_PATH);
 
 			HRESULT hr = {};
 
@@ -180,7 +180,7 @@ HRESULT CMaterial::Load_Material(istream& os)
 			_char  szFullPath[MAX_PATH] = "";
 
 
-			WideCharToMultiByte(CP_ACP, 0, m_szLastPath, wcslen(m_szLastPath), szFullPath, MAX_PATH, nullptr, nullptr);
+			WideCharToMultiByte(CP_ACP, 0, m_szLastPath, static_cast<_int>(wcslen(m_szLastPath)), szFullPath, MAX_PATH, nullptr, nullptr);
 
 			_splitpath_s(szFullPath, nullptr, 0, nullptr, 0, nullptr, 0, szEXT, MAX_PATH);
 

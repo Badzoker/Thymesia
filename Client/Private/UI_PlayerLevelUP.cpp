@@ -8,7 +8,7 @@ CUI_PlayerLevelUP::CUI_PlayerLevelUP(ID3D11Device* pDevice, ID3D11DeviceContext*
 }
 
 CUI_PlayerLevelUP::CUI_PlayerLevelUP(const CUI_PlayerLevelUP& Prototype)
-    : CUIObject{ Prototype }
+    : CUIObject(Prototype)
 {
 }
 
@@ -60,7 +60,7 @@ HRESULT CUI_PlayerLevelUP::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* sz
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MessageBox(g_hWnd, L"Load File", _T("Fail"), MB_OK);
+		MessageBox(g_hWnd, L"Load UI_PlayerLevelUP File", _T("Fail"), MB_OK);
 		return S_OK;
 	}
 
@@ -107,7 +107,7 @@ HRESULT CUI_PlayerLevelUP::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* sz
 
 	CloseHandle(hFile);
 
-	MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 
