@@ -181,7 +181,7 @@ void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)
 
 	m_iCurrentAnimIndex = iAnimIndex;
 	m_Animations[m_iCurrentAnimIndex]->Reset(m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], &m_fCurrentTrackPosition);
-	m_bFinished = true;
+	m_bFinished = false;
 
 	m_isAnimLoop = isLoop;
 

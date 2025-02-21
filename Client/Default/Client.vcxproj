@@ -171,6 +171,8 @@
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
+    <ClInclude Include="..\Public\Boss_State.h" />
+    <ClInclude Include="..\Public\Boss_State_Manager.h" />
     <ClInclude Include="..\Public\Boss_Varg.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -205,6 +207,8 @@
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
+    <ClCompile Include="..\Private\Boss_State.cpp" />
+    <ClCompile Include="..\Private\Boss_State_Manager.cpp" />
     <ClCompile Include="..\Private\Boss_Varg.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Ladder.cpp" />

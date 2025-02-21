@@ -115,6 +115,12 @@
     <Filter Include="02.GameObject\Object\StaticObject">
       <UniqueIdentifier>{50f8610f-56b9-4747-9177-020ac098ecc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Boss\Boss_State">
+      <UniqueIdentifier>{4dba1b24-96a1-43eb-bafa-d7802a782405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Boss\Boss_State\Manager">
+      <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -213,6 +219,12 @@
     <ClInclude Include="..\Public\StaticObject.h">
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Boss_State.h">
+      <Filter>02.GameObject\Boss\Boss_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_State_Manager.h">
+      <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -301,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\StaticObject.cpp">
       <Filter>02.GameObject\Object\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_State.cpp">
+      <Filter>02.GameObject\Boss\Boss_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_State_Manager.cpp">
+      <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

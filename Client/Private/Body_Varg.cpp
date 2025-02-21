@@ -35,13 +35,11 @@ HRESULT CBody_Varg::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-
     return S_OK;
 }
 
 void CBody_Varg::Priority_Update(_float fTimeDelta)
 {
-    m_pModelCom->SetUp_Animation(3, true);
 }
 
 void CBody_Varg::Update(_float fTimeDelta)
