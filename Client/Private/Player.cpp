@@ -54,7 +54,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 232.f,62.f,60.f,1.f });
 
-	_vector vPlayerPos = XMVectorSet(4.0f, 0.0f, 4.0f, 1.0f);
+	//_vector vPlayerPos = XMVectorSet(4.0f, 0.0f, 4.0f, 1.0f);
+	_vector vPlayerPos = XMVectorSet(112.6f, 1.85f, 107.1f, 1.0f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
 
 
