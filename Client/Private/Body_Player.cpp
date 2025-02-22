@@ -76,19 +76,19 @@ void CBody_Player::Update(_float fTimeDelta)
     else if (*m_pParentState == CPlayer::STATE_ATTACK_L1)
     {
         m_pModelCom->SetUp_Animation(1, false);
-        m_fAnimSpeed = 2.3f;
+        m_fAnimSpeed = 1.0f;
     }
 
     else if (*m_pParentState == CPlayer::STATE_ATTACK_L2)
     {
         m_pModelCom->SetUp_Animation(2, false);
-        m_fAnimSpeed = 2.3f;
+        m_fAnimSpeed = 1.0f;
     }
 
     else if (*m_pParentState == CPlayer::STATE_ATTACK_L3)
     {
         m_pModelCom->SetUp_Animation(3, false);
-        m_fAnimSpeed = 3.f;
+        m_fAnimSpeed = 1.f;
     }
 
     if (*m_pParentState == STATE_ATTACK_L1)

@@ -78,7 +78,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	if (m_pGameInstance->isMouseEnter(DIM_LB))
 	{
 		if (m_iState == STATE_ATTACK_L1
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 25.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(3)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -86,7 +86,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		}
 
 		else if (m_iState == STATE_ATTACK_L2
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 30.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 20.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
