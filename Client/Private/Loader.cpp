@@ -375,6 +375,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma region Objects
+	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));
 	//LobTrap
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LobTrap"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/LobTrap/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))

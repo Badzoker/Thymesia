@@ -41,6 +41,8 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     /* 여기서 보간속도 설정하기 */
 
+    m_pModelCom->Get_VecAnimation().at(0)->Set_LerpTime(0.01f);
+
     ///* 칼 1번째 휘두를때 애니메이션 보간 시간 조정*/
     //m_pModelCom->Get_VecAnimation().at(1)->Set_LerpTime(0.1f);
     ///* 칼 2번째 휘두를때 애니메이션 보간 시간 조정*/
@@ -54,6 +56,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
+ 
 }
 
 void CBody_Player::Update(_float fTimeDelta)

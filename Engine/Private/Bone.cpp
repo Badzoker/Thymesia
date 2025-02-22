@@ -42,17 +42,18 @@ void CBone::Update_CombinedTransformationMatrix(const vector<class CBone*>& Bone
 	/* 루트 모션 애니메이션 이동 행렬 저장하기*/
 	if (m_iParentBoneIndex == 1) 
 	{
-		//XMStoreFloat4x4(m_pPreRootMatrix, XMMatrixIdentity());	
-
-		/*XMMATRIX matrix = 
-			XMLoadFloat4x4(&m_CombinedTransformationMatrix) - XMLoadFloat4x4(m_pPreRootMatrix);*/
-
+		
 		XMMATRIX matrix = XMMatrixIdentity();	
 
-		if (m_CombinedTransformationMatrix._41 == 0.f &&		
-			m_CombinedTransformationMatrix._42 == 0.f &&	
-			m_CombinedTransformationMatrix._43 == 0.f &&		
-			m_CombinedTransformationMatrix._44 == 1.f)		
+		/* 이전 코드 */
+	/*	if (m_CombinedTransformationMatrix._41 == 0.f &&
+			m_CombinedTransformationMatrix._42 == 0.f &&
+			m_CombinedTransformationMatrix._43 == 0.f &&
+			m_CombinedTransformationMatrix._44 == 1.f)*/
+
+		if (fabs(m_CombinedTransformationMatrix._41) < 1e-5f &&
+			fabs(m_CombinedTransformationMatrix._42) < 1e-5f &&	
+			fabs(m_CombinedTransformationMatrix._43) < 1e-5f)	
 		{
 			// 단위 행렬로 초기화		
 			XMStoreFloat4x4(&m_pPreRootMatrix, XMMatrixIdentity());	
@@ -61,39 +62,19 @@ void CBone::Update_CombinedTransformationMatrix(const vector<class CBone*>& Bone
 		}
 		
 
-		// 단위 행렬의 회전/스케일 부분 (_11 ~ _33)을 유지
-		//matrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f); // 첫 번째 행	
-		//matrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 두 번째 행	
-		//matrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f); // 세 번째 행
 		matrix.r[3] = XMVectorSubtract(XMLoadFloat4x4(&m_CombinedTransformationMatrix).r[3],XMLoadFloat4x4(&m_pPreRootMatrix).r[3]);
 		matrix.r[3] = XMVectorSetW(matrix.r[3], 1.f); // W 값을 1로 고정	
 		
-		// 나머지 이동 값은 그대로 유지
-		// 네 번째 행 (_41, _42, _43, _44)은 변경하지 않음
-
-		
+	
 		// 결과를 저장
 		XMStoreFloat4x4(&m_RootMotionMatrix, matrix);	
 		XMStoreFloat4x4(&m_pPreRootMatrix, XMLoadFloat4x4(&m_CombinedTransformationMatrix));
 		
 
-		/* 여기서 이제 만약에 루트모션이 아니라면 pre CombinedBorn행렬 초기화하기*/
-		//if (m_CombinedTransformationMatrix._41 == 0.f &&	
-		//	m_CombinedTransformationMatrix._42 == 0.f &&	 // 이 값을 조건문 위로 올려버리기 
-		//	m_CombinedTransformationMatrix._43 == 0.f &&	
-		//	m_CombinedTransformationMatrix._44 == 1.f)	
-		//{
-		//	// 단위 행렬로 초기화	
-		//	XMStoreFloat4x4(&m_pPreRootMatrix, XMMatrixIdentity());	
-		//}
-
 		m_CombinedTransformationMatrix._41 = 0.f;
 		m_CombinedTransformationMatrix._42 = 0.f;
 		m_CombinedTransformationMatrix._43 = 0.f;
 		m_CombinedTransformationMatrix._44 = 1.f;
-
-		
-		
 
 	}
 

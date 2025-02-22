@@ -39,7 +39,7 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
 
 _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
 {
-    *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta;    
+    *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed;   
    
     if (true == isLoop && *pCurrentTrackPoisiton >= m_fDuration)
     {
@@ -129,6 +129,10 @@ _bool CAnimation::Lerp_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimati
 HRESULT CAnimation::Save_Anim(ostream& os)
 {
     os.write((char*)&m_szName, sizeof(_char) * MAX_PATH);   
+
+    os.write((char*)&m_LerpTime, sizeof(_float));   
+    os.write((char*)&m_fAnimationSpeed, sizeof(_float));
+        
     os.write((char*)&m_fDuration, sizeof(_float));  
     os.write((char*)&m_fTickPerSecond, sizeof(_float)); 
     os.write((char*)&m_fCurrentTrackPosition, sizeof(_float));  
@@ -144,6 +148,10 @@ HRESULT CAnimation::Save_Anim(ostream& os)
 HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices)
 {
     is.read((char*)&m_szName, sizeof(_char) * MAX_PATH);    
+
+    is.read((char*)&m_LerpTime, sizeof(_float));
+    is.read((char*)&m_fAnimationSpeed, sizeof(_float));
+
     is.read((char*)&m_fDuration, sizeof(_float));
     is.read((char*)&m_fTickPerSecond, sizeof(_float));
     is.read((char*)&m_fCurrentTrackPosition, sizeof(_float));

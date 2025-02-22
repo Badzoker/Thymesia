@@ -34,6 +34,7 @@ private:
 	_float					   m_fDuration = {};
 	_float					   m_fTickPerSecond = {};
 	_float					   m_fCurrentTrackPosition = {};
+	_float					   m_fAnimationSpeed = { 1.f };	
 	_uint					   m_iNumChannels = {};	
 
 	/*Channel == Bone*/
@@ -47,7 +48,7 @@ private:
 
 	bool                       m_bReset = { false };
 
-	_float					   m_LerpTime    = 1.2f;
+	_float					   m_LerpTime    = 0.2f;
 	_float					   m_LerpTimeAcc = 0.f;
 
 	_bool					   m_isFinished = { false };
