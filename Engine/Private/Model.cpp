@@ -200,7 +200,7 @@ _bool CModel::Play_Animation(_float fTimeDelta)
 		m_bLerpFinished = false;
 		m_bFinished = false;
 		/* 여기서 이제 먼저 수행해주고!*/
-		if (m_pCurrentAnimation->Lerp_NextAnimation(0.1f, m_pNextAnimation, m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimationIndex]))
+		if (m_pCurrentAnimation->Lerp_NextAnimation(fTimeDelta, m_pNextAnimation, m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimationIndex]))
 		{
 			m_pNextAnimation = nullptr;
 			

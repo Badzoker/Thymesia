@@ -154,8 +154,10 @@ void CPlayer::Update(_float fTimeDelta)
 
 	if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModel->Get_LerpFinished())
 	{
+		/*if (m_iState == STATE_IDLE && GetKeyState('L') & 0x8000)
+			int a = 4; */
 		if (m_pNavigationCom->isMove(vCurPosition))
-			m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix); // 처음에 0을 가져오네 왜>? 시발 
+			m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix); // 그럼 전환될때만 안하기로하자.
 
 		/* 2월 19일 추가 코드 */
 		if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
