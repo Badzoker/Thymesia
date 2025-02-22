@@ -36,11 +36,18 @@ HRESULT CBody_Player::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-    // m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.f, 0.f, 0.f, 1.f));
-    //m_pTransformCom->Scaling(_float3(0.1f, 0.1f, 0.1f));
+
     m_pModelCom->SetUp_Animation(0, true);
 
-    //m_MotionWorldMatrix = m_pModelCom->Get_RootMotionMatrix("kaku");            
+    /* 여기서 보간속도 설정하기 */
+
+    ///* 칼 1번째 휘두를때 애니메이션 보간 시간 조정*/
+    //m_pModelCom->Get_VecAnimation().at(1)->Set_LerpTime(0.1f);
+    ///* 칼 2번째 휘두를때 애니메이션 보간 시간 조정*/
+    //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.1f);
+    ///* 칼 3번째 휘두를때 애니메이션 보간 시간 조정*/
+    //m_pModelCom->Get_VecAnimation().at(3)->Set_LerpTime(0.1f);
+
 
     return S_OK;
 }
@@ -51,8 +58,6 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
 void CBody_Player::Update(_float fTimeDelta)
 {
-
-
     if (*m_pParentState == CPlayer::STATE_IDLE)
     {
         m_pModelCom->SetUp_Animation(0, true);
@@ -68,15 +73,68 @@ void CBody_Player::Update(_float fTimeDelta)
     else if (*m_pParentState == CPlayer::STATE_ATTACK_L1)
     {
         m_pModelCom->SetUp_Animation(1, false);
-        m_fAnimSpeed = 1.5f;
+        m_fAnimSpeed = 2.3f;
     }
 
-
-    if (m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish() && *m_pParentPhsaeState & CPlayer::PHASE_FIGHT)
+    else if (*m_pParentState == CPlayer::STATE_ATTACK_L2)
     {
-        *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        m_pModelCom->SetUp_Animation(2, false);
+        m_fAnimSpeed = 2.3f;
     }
+
+    else if (*m_pParentState == CPlayer::STATE_ATTACK_L3)
+    {
+        m_pModelCom->SetUp_Animation(3, false);
+        m_fAnimSpeed = 3.f;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_L1)
+    {
+        if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
+        {
+            //*m_pParentState = STATE_IDLE;   
+            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+
+        if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
+        {
+            *m_pParentState = STATE_IDLE;
+            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+    }
+
+
+    if (*m_pParentState == STATE_ATTACK_L2)
+    {
+        if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
+        {
+            //*m_pParentState = STATE_IDLE;   
+            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+
+        if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(2)->isAniMationFinish())
+        {
+            *m_pParentState = STATE_IDLE;
+            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+    }
+
+
+    if (*m_pParentState == STATE_ATTACK_L3)
+    {
+        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 120.f)
+        {
+            //*m_pParentState = STATE_IDLE;     
+            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+
+        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
+        {
+            *m_pParentState = STATE_IDLE;
+            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
+        }
+    }
+
 
 
     m_pModelCom->Play_Animation(fTimeDelta * m_fAnimSpeed);
@@ -100,7 +158,7 @@ HRESULT CBody_Player::Render()
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 
-    for (_uint i = 0; i < iNumMeshes; i++)
+    for (size_t i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
@@ -127,7 +185,7 @@ HRESULT CBody_Player::Render_Shadow()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (_uint i = 0; i < iNumMeshes; i++)
+    for (size_t i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
