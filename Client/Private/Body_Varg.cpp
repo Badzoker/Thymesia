@@ -27,13 +27,15 @@ HRESULT CBody_Varg::Initialize(void* pArg)
 
     CBody_Varg::BODY_VARG_DESC* pDesc = static_cast<CBody_Varg::BODY_VARG_DESC*>(pArg);
 
-    m_pParentState = pDesc->pParentState;
+    m_fAnimSpeed = pDesc->fPlaySpeed;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
         return E_FAIL;
+
+    m_pModelCom->SetUp_Animation(20, false);
 
     return S_OK;
 }
@@ -44,7 +46,7 @@ void CBody_Varg::Priority_Update(_float fTimeDelta)
 
 void CBody_Varg::Update(_float fTimeDelta)
 {
-    m_pModelCom->Play_Animation(fTimeDelta * 2.f);
+    m_pModelCom->Play_Animation(fTimeDelta * (*m_fAnimSpeed));
 
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
