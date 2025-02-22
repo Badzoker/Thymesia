@@ -45,16 +45,18 @@ public:
 	HRESULT Ready_PartObjects();
 public:
 	void PatternCreate();
-	void Special_PatternCreate();
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
+	void Rotation_To_Player();
+
 private:
 	_vector                          m_vPlayerPos = {};
 	_bool                            m_bBossActive = {};
 	_bool                            m_bPatternProgress = {};
+	_bool                            m_bExcution_Progress = {};
 	_bool                            m_bCrush = {};
+	_bool                            m_bCan_Move_Anim = {};
 
-	_uint                            m_iCurState = {};
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
@@ -63,6 +65,7 @@ private:
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDistance = {};
+	_float                           m_fPlaySpeed = {};
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -82,11 +85,11 @@ public:
 
 
 	//상태 클래스 추가부분
-	class Not_Active_State : public CBoss_State<CBoss_Varg>
+	class Stun_State : public CBoss_State<CBoss_Varg>
 	{
 	public:
-		Not_Active_State() = default;
-		virtual ~Not_Active_State() = default;
+		Stun_State() = default;
+		virtual ~Stun_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
 		void State_Enter(CBoss_Varg* pObject) override;
@@ -116,8 +119,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iPatternIndex = -1;
 	};
 
 	class Attack_Combo_A : public CBoss_State<CBoss_Varg>
@@ -129,8 +130,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iComboIndex = { 7 };
 	};
 
 	class Attack_Combo_B : public CBoss_State<CBoss_Varg>
@@ -142,8 +141,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iComboIndex = { 10 };
 	};
 
 	class Attack_Combo_C : public CBoss_State<CBoss_Varg>
@@ -155,8 +152,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iComboIndex = { 10 };
 	};
 
 	class Attack_Combo_D : public CBoss_State<CBoss_Varg>
@@ -168,8 +163,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iComboIndex = { 7 };
 	};
 
 	class Attack_Combo_E : public CBoss_State<CBoss_Varg>
@@ -181,8 +174,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iComboIndex = { 10 };
 	};
 
 	class Avoid_State : public CBoss_State<CBoss_Varg>
@@ -195,7 +186,6 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
 	private:
-		_uint m_iAvoidIndex = {};
 		_bool m_bBonusAttack = false;
 	};
 
@@ -220,8 +210,7 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
 	private:
-		_float m_fDistance = {};
-		_uint  m_iWalkIndex = {};
+		_uint iRandomMove = {};
 	};
 
 	class Run_State : public CBoss_State<CBoss_Varg>
@@ -233,9 +222,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_float m_fDistance = {};
-		_uint m_iRunIndex = { 25 };
 	};
 
 	class Jump_Attack : public CBoss_State<CBoss_Varg>
@@ -258,8 +244,6 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_uint m_iExeCutionIndex = {};
 	};
 
 	class Roar_State : public CBoss_State<CBoss_Varg>
@@ -273,7 +257,6 @@ public:
 		void State_Exit(CBoss_Varg* pObject) override;
 	private:
 		_bool   m_bFirst = {};
-		_uint   m_AnimIndex = {};
 	};
 
 	class Catch_State : public CBoss_State<CBoss_Varg>
@@ -281,6 +264,17 @@ public:
 	public:
 		Catch_State() = default;
 		virtual ~Catch_State() = default;
+	public:
+		void State_Enter(CBoss_Varg* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
+		void State_Exit(CBoss_Varg* pObject) override;
+	};
+
+	class Dead_State : public CBoss_State<CBoss_Varg>
+	{
+	public:
+		Dead_State() = default;
+		virtual ~Dead_State() = default;
 	public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;

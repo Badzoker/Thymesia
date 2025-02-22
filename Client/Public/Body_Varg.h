@@ -13,14 +13,10 @@ BEGIN(Client)
 
 class CBody_Varg final : public CPartObject
 {
-	enum STATE
-	{
-	};
-
 public:
 	struct BODY_VARG_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		_uint* pParentState = { nullptr };
+		_float* fPlaySpeed = { nullptr };
 	};
 
 private:
@@ -40,11 +36,10 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	_float							m_fAnimSpeed = 1.f;
 
 
 private:
-	_uint* m_pParentState = { nullptr };
+	_float* m_fAnimSpeed = { nullptr };
 
 public:
 	HRESULT Ready_Components();

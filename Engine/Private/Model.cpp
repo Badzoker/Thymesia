@@ -141,7 +141,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 	//
 	//if (FAILED(Save_Model(pModelFilePath)))
 	//	return E_FAIL;
-	//
+	
 #pragma endregion
 
 	return S_OK;
@@ -162,13 +162,14 @@ HRESULT CModel::Render(_uint iMeshIndex)
 
 void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)	
 {
-	/*if(m_bFirst)
+	// Initialize에서 초기 애니메이션 설정을 위해 범승추가
+	if(m_bFirst)
 	{
 		m_iCurrentAnimIndex = iAnimIndex;
 		m_bFirst = false;
-	}*/
+	}
 
-	if (m_iCurrentAnimIndex == iAnimIndex || m_bLerpFinished == false)
+	if ((m_iCurrentAnimIndex == iAnimIndex || m_bLerpFinished == false) && !m_bFirst)
 	{
 		m_isAnimLoop = isLoop;
 		return;

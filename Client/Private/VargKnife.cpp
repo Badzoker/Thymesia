@@ -36,6 +36,7 @@ HRESULT CVargKnife::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pTransformCom->Scaling(_float3{ 0.5f, 0.5f, 0.5f });
 
 
     return S_OK;
