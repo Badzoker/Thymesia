@@ -5,6 +5,7 @@
 #include "RightWeapon.h"
 #include "LeftWeapon.h"
 #include "StateMgr.h"
+#include "Animation.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -52,18 +53,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 232.f,62.f,60.f,1.f });
-
-	_vector vPlayerPos = XMVectorSet(4.0f, 0.0f, 4.0f, 1.0f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{112.6f,1.85f,107.1f,1.f });
 
 	m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
-	//m_pTransformCom->Scaling(_float3{ 0.045f, 0.045f, 0.045f });
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
-	m_pNavigationCom->Set_CurrentNaviIndex(vPlayerPos);
 
 
 	m_pStateMgr = CStateMgr::Create();
@@ -82,8 +77,31 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 #pragma region Mouse_Input
 	if (m_pGameInstance->isMouseEnter(DIM_LB))
 	{
-		m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-		m_iState = STATE_ATTACK_L1;
+		if (m_iState == STATE_ATTACK_L1
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 25.f
+				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+		{
+			m_pStateMgr->Get_VecState().at(3)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_L2;
+		}
+
+		else if (m_iState == STATE_ATTACK_L2
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 30.f
+				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+		{
+			m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_L3;
+		}
+
+		else
+		{
+			if (m_iState != STATE_ATTACK_L1 && m_iState != STATE_ATTACK_L2 && m_iState != STATE_ATTACK_L3)
+			{
+				m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_L1;
+			}
+
+		}
 
 		m_iPhaseState = PHASE_FIGHT;
 	}
@@ -110,7 +128,6 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
-
 			}
 		}
 
@@ -135,10 +152,19 @@ void CPlayer::Update(_float fTimeDelta)
 	/* 루트 모션 애니메션 코드 */
 	m_pRootMatrix = m_pModel->Get_RootMotionMatrix("root");
 
-	if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModel->Get_LerpFinished() && m_iState != STATE_IDLE)
+	if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModel->Get_LerpFinished())
 	{
 		if (m_pNavigationCom->isMove(vCurPosition))
-			m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
+			m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix); // 처음에 0을 가져오네 왜>? 시발 
+
+		/* 2월 19일 추가 코드 */
+		if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		{
+			_float4x4 test = {};
+			XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+			const _float4x4* test2 = const_cast<_float4x4*>(&test);
+			m_pTransformCom->Set_MulWorldMatrix(test2);
+		}
 	}
 
 	_vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -148,9 +174,6 @@ void CPlayer::Update(_float fTimeDelta)
 	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
 	__super::Update(fTimeDelta);
-
-
-
 
 }
 
@@ -176,7 +199,7 @@ HRESULT CPlayer::Render()
 {
 #ifdef _DEBUG
 	//m_pNavigationCom->Render();	
-	m_pColliderCom->Render();
+	//m_pColliderCom->Render();	
 #endif 
 
 	return S_OK;

@@ -38,6 +38,10 @@ public:
 	vector<class CAnimation*>& Get_VecAnimation() { return  m_Animations; }	
 	_uint   Get_Current_Animation_Index() { return m_iCurrentAnimIndex; }
 
+
+	/* 2월 19일 추가 */
+	_float Get_CurrentAnmationTrackPosition() { return m_fCurrentTrackPosition; }	
+
 private:
 	/* 가져온 정보를 저장한다. */
 	//const aiScene*					m_pAIScene = { nullptr };
@@ -86,7 +90,7 @@ private:
 	_uint       m_iNextAnimationIndex = {};
 	_bool       m_bFinished = { false };
 	_uint       m_iCurrentAnimationIndex = {};
-	_bool       m_bLerpFinished = { true };
+	_bool       m_bLerpFinished = { false };
 
 public:
 	_bool       Get_LerpFinished()	    { return m_bLerpFinished; }

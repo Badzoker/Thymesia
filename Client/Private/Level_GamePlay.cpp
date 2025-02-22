@@ -6,7 +6,7 @@
 
 #include "Object.h"
 
-#include "UI_Component.h"
+#include "UI_LeftBackground.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -45,7 +45,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+	if (FAILED(Ready_Layer_UI_Scene(TEXT("Layer_UIScene"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))	
@@ -60,7 +60,27 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Update(_float fTimeDelta)
 {
-	
+	if (m_pGameInstance->isKeyEnter(DIK_E))
+	{
+		m_iOpenSceneCount++;
+		if (1 == m_iOpenSceneCount) // 레벨업
+		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
+			//pUIScene->UIScene_UIObject_Render_OnOff(true);
+		}
+		if (2 == m_iOpenSceneCount) // 특성
+		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_ATTRIBUTE, L"UIScene_PlayerAttribute")), true);
+		}
+		if (3 == m_iOpenSceneCount) // 초기화
+		{
+			m_iOpenSceneCount = 0;
+
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_ATTRIBUTE, L"UIScene_PlayerAttribute")), false);
+		}
+	}
 }
 
 HRESULT CLevel_GamePlay::Render() 
@@ -232,13 +252,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_UI_Scene(const _tchar* pLayerTag)
 {
-	CUI_Component::UI_COMPONENT_DESC Desc{};
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"), LEVEL_GAMEPLAY, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_LevelUP"), LEVEL_GAMEPLAY, pLayerTag)))
 		return E_FAIL;
-	return S_OK;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Attribute"), LEVEL_GAMEPLAY, pLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Ladder(const _tchar* pLayerTag)

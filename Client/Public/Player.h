@@ -72,6 +72,7 @@ private:
 	const _float4x4* m_CombinedMatrix = { nullptr };
 
 
+
 	_bool								m_bIsRootMotionApplied = { false };
 	_float4x4 					        m_CurrentTransformWorldMatrix = {};
 	_float4x4 							m_FinalTransformWorldMatrix = {};

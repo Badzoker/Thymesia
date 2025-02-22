@@ -1,33 +1,29 @@
 #include "pch.h" 
-#include "UI_Component.h"
+#include "UI_LeftBackground.h"
 #include "GameInstance.h"
 
-CUI_Component::CUI_Component(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUIObject{ pDevice, pContext }
+CUI_LeftBackground::CUI_LeftBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
-CUI_Component::CUI_Component(const CUI_Component& Prototype)
-    : CUIObject(Prototype)
+CUI_LeftBackground::CUI_LeftBackground(const CUI_LeftBackground& Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
-HRESULT CUI_Component::Initialize_Prototype()
+HRESULT CUI_LeftBackground::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CUI_Component::Initialize(void* pArg)
+HRESULT CUI_LeftBackground::Initialize(void* pArg)
 {
 	UI_COMPONENT_DESC* pDesc = static_cast<UI_COMPONENT_DESC*>(pArg);
 
-	pDesc->fSizeX = 400.f;
-	pDesc->fSizeY = 500.f;
-	pDesc->fX = 300.f;
-	pDesc->fY = 450.f;
 	pDesc->fNear = 0.f;
 	pDesc->fFar = 1.f;
 
@@ -43,20 +39,23 @@ HRESULT CUI_Component::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_Component::Priority_Update(_float fTimeDelta)
+void CUI_LeftBackground::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUI_Component::Update(_float fTimeDelta)
+void CUI_LeftBackground::Update(_float fTimeDelta)
 {
 }
 
-void CUI_Component::Late_Update(_float fTimeDelta)
+void CUI_LeftBackground::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_PRIORITY, this);
+	if (m_bRenderOpen)
+	{
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	}
 }
 
-HRESULT CUI_Component::Render()
+HRESULT CUI_LeftBackground::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -69,7 +68,7 @@ HRESULT CUI_Component::Render()
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(12);
+	m_pShaderCom->Begin(m_iShaderPassNum);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -78,7 +77,7 @@ HRESULT CUI_Component::Render()
 	return S_OK;
 }
 
-HRESULT CUI_Component::Ready_Components()
+HRESULT CUI_LeftBackground::Ready_Components()
 {
 	/* Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ChairUI"),
@@ -99,33 +98,33 @@ HRESULT CUI_Component::Ready_Components()
 	return S_OK;
 }
 
-CUI_Component* CUI_Component::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_LeftBackground* CUI_LeftBackground::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_Component* pInstance = new CUI_Component(pDevice, pContext);
+	CUI_LeftBackground* pInstance = new CUI_LeftBackground(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_Component");
+		MSG_BOX("Failed To Created : CUI_LeftBackground");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_Component::Clone(void* pArg)
+CGameObject* CUI_LeftBackground::Clone(void* pArg)
 {
-	CUI_Component* pInstance = new CUI_Component(*this);
+	CUI_LeftBackground* pInstance = new CUI_LeftBackground(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_Component");
+		MSG_BOX("Failed To Cloned : CUI_LeftBackground");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_Component::Free()
+void CUI_LeftBackground::Free()
 {
 	__super::Free();
 

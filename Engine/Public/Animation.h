@@ -26,6 +26,10 @@ public:
 	/*1월 15일 추가한 코드*/
 	_bool isAniMationFinish() { return m_isFinished; }
 
+
+	/* 2월 19일 수정 사항 */
+	void Set_LerpTime(_float _fLerpTime) { m_LerpTime = _fLerpTime; }
+
 private:
 	_float					   m_fDuration = {};
 	_float					   m_fTickPerSecond = {};
@@ -43,7 +47,7 @@ private:
 
 	bool                       m_bReset = { false };
 
-	_float					   m_LerpTime = 1.2f;
+	_float					   m_LerpTime    = 1.2f;
 	_float					   m_LerpTimeAcc = 0.f;
 
 	_bool					   m_isFinished = { false };

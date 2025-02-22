@@ -44,7 +44,7 @@ HRESULT CShader::Initialize_Prototype(const _tchar * pShaderFilePath, const D3D1
 
 	m_iNumPasses = TechniqueDesc.Passes;
 
-	for (size_t i = 0; i < m_iNumPasses; i++)
+	for (_uint i = 0; i < m_iNumPasses; i++)
 	{
 		ID3DX11EffectPass*		pPass = pTechnique->GetPassByIndex(i);
 		ID3D11InputLayout*		pInputLayout = { nullptr };

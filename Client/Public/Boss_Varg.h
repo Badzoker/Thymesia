@@ -258,6 +258,8 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
+	private:
+		_uint m_iExeCutionIndex = {};
 	};
 
 	class Roar_State : public CBoss_State<CBoss_Varg>

@@ -9,10 +9,11 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 public:
 	struct UIOBJECT_DESC : public CGameObject::GAMEOBJECT_DESC	
 	{
-		_float			fX, fY;
+		_float			fX, fY,fZ;
 		_float			fSizeX, fSizeY;
 		_float			fNear, fFar;
-		_char*			szName;	
+		_wstring		szProtoName;
+		_uint			iShaderPassNum;
 	};
 
 protected:
@@ -28,8 +29,21 @@ public:
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
 
+
+public:
+	virtual _bool Mouse_Select(HWND hWnd, _float fX, _float fY);
+	virtual void Set_Render_OnOff(_bool bOpen) { m_bRenderOpen = bOpen; }
+protected:
+	HRESULT Add_UI_Object(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CGameObject** ppOut, void* pArg);
+
 protected:
 	_float4x4			m_ViewMatrix{}, m_ProjMatrix{};
+	_bool				m_bRenderOpen = { false };
+
+	_float3				m_fPos = {};
+	_float2				m_fSize = {};
+	_uint				m_iShaderPassNum = { 0 };
+	_wstring			m_szProtoName = {};
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

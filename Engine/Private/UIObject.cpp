@@ -30,7 +30,14 @@ HRESULT CUIObject::Initialize(void * pArg)
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-		
+
+	m_fPos.x = pDesc->fX;
+	m_fPos.y = pDesc->fY;
+	m_fPos.z = pDesc->fZ;
+	m_fSize.x = pDesc->fSizeX;
+	m_fSize.y = pDesc->fSizeY;
+	m_szProtoName = pDesc->szProtoName;
+	m_iShaderPassNum = pDesc->iShaderPassNum;
 	_uint2			vViewportSize = m_pGameInstance->Get_ViewportSize();
 
 	m_pTransformCom->Scaling(_float3(pDesc->fSizeX, pDesc->fSizeY, 1.f));
@@ -55,6 +62,23 @@ void CUIObject::Late_Update(_float fTimeDelta)
 
 HRESULT CUIObject::Render()
 {
+	return S_OK;
+}
+
+_bool CUIObject::Mouse_Select(HWND hWnd, _float fX, _float fY)
+{
+	return _bool();
+}
+
+HRESULT CUIObject::Add_UI_Object(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CGameObject** ppOut, void* pArg)
+{
+	CGameObject* pUIObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pUIObject)
+		return E_FAIL;
+
+	*ppOut = pUIObject;
+
+
 	return S_OK;
 }
 

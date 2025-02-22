@@ -29,8 +29,11 @@
 #include "Ladder.h"
 #pragma endregion
 
-#pragma region 테스트용 UI
-#include "UI_Component.h"
+#pragma region  UIs
+#include "UI_LeftBackground.h"
+#include "UI_AttributeButton.h"
+#include "UI_PlayerLevelUP.h"
+#include "UI_PlayerAttribute.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -283,20 +286,41 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion
 
 
-#pragma region 의자 UI 텍스쳐
+#pragma region UI 텍스쳐
 	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
 	/* For.Prototype_Component_Texture_ChairUI*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ChairUI"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/UI_%d.dds"), 8))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_UI_Component */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"),
-		CUI_Component::Create(m_pDevice, m_pContext))))
+
+	/* For.Prototype_Component_Texture_ChairUI*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Slot_Attribute"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Slot_Attribute_%d.dds"), 3))))
 		return E_FAIL;
+
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"),
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UI_LevelUP */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_LevelUP"),
+		CUI_PlayerLevelUP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_LevelUP */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Attribute"),
+		CUI_PlayerAttribute::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Component */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"),
+		CUI_LeftBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Component */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Slot_Attribute"),
+		CUI_AttributeButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 #pragma endregion
 
 
@@ -603,7 +627,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CBoss_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.002f, 0.002f, 0.002f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Varg_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Varg/Boss_Varg.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -611,7 +635,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Body"),
 		CBody_Varg::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	PreTransformMatrix = XMMatrixScaling(0.002f, 0.002f, 0.002f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Varg_Knife"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Varg/Knife/VargKnife.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
