@@ -125,7 +125,7 @@ void CBody_Player::Update(_float fTimeDelta)
 
     if (*m_pParentState == STATE_ATTACK_L3)
     {
-        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 120.f)
+        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 125.f)
         {
             //*m_pParentState = STATE_IDLE;     
             *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
