@@ -51,6 +51,12 @@ void CAttack_LButton_1::Priority_Update(CGameObject* pGameObject, CNavigation* p
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
 			float Radian = acosf(dotResult);
 
+			_vector crossResult = XMVector3Cross(PlayerLook, vLeftLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
 
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
 			pGameObject->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vCurPosition);
@@ -68,6 +74,11 @@ void CAttack_LButton_1::Priority_Update(CGameObject* pGameObject, CNavigation* p
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
 			float Radian = acosf(dotResult);
 
+			_vector crossResult = XMVector3Cross(PlayerLook, vRightLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
 
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
 			pGameObject->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vCurPosition);
@@ -84,6 +95,12 @@ void CAttack_LButton_1::Priority_Update(CGameObject* pGameObject, CNavigation* p
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
 			float Radian = acosf(dotResult);
 
+			_vector crossResult = XMVector3Cross(PlayerLook, vLeftLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
 			pGameObject->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vCurPosition);
 		}
@@ -97,6 +114,12 @@ void CAttack_LButton_1::Priority_Update(CGameObject* pGameObject, CNavigation* p
 			float dotResult = XMVectorGetX(XMVector3Dot(vRightLook45Degree, PlayerLook));
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
 			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vRightLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
 
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
 			pGameObject->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vCurPosition);
