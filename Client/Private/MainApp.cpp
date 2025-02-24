@@ -91,7 +91,7 @@ HRESULT CMainApp::Start_Level(LEVELID eStartLevelID)
 }
 
 CMainApp * CMainApp::Create()
-{
+{ 
 	CMainApp*	pInstance = new CMainApp();
 
 	if (FAILED(pInstance->Initialize()))
