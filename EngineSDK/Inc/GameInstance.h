@@ -172,8 +172,9 @@ public:
 #pragma endregion 
 
 #pragma region SHADOW
-	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, class CGameObject* _pPlayer);
+	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo);
 	HRESULT Bind_Shadow_Matrices(class CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName);
+	_float4	Get_LightPos();
 #pragma endregion
 
 #pragma region UI_Manager

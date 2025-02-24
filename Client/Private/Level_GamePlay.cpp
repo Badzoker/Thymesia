@@ -94,15 +94,15 @@ HRESULT CLevel_GamePlay::Render()
 
 HRESULT CLevel_GamePlay::Ready_Lights()
 {
-	//m_pPlayer = m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));	
+	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
+	_vector vCamInfo = { XMConvertToRadians(60.f), 16.f / 9.f , 0.1f, 1000.f };
 
-	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(232.f, 200.f, 150.f, 1.f), XMVectorSet(232.f, 62.f, 60.f, 1.f),	
-		XMConvertToRadians(60.f), g_iWinSizeX / static_cast<_float>(g_iWinSizeY), 0.1f, 800.f	
-		, m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player")))))	
+	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(111.827f, 0.0f, 108.493f, 1.0f), XMVectorSet(0.f, -1.f, 0.f, 1.f),
+		XMConvertToRadians(60.f), g_iWinSizeX / static_cast<_float>(g_iWinSizeY), 0.1f, 1000.f
+		, matView, vCamInfo)))
 		return E_FAIL;
 
-	LIGHT_DESC				LightDesc{};
-
+	LIGHT_DESC LightDesc{};
 	/* 2¿ù 8ÀÏ ºû */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, 1.f, 1.f, 0.f);

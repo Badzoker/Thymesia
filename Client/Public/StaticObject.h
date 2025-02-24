@@ -25,6 +25,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual HRESULT Render_Occulusion() override;
+
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
