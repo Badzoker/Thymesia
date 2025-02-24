@@ -1,5 +1,6 @@
 #include "..\Public\Prototype_Manager.h"
 #include "GameObject.h"
+#include "UIObject.h"
 #include "Component.h"
 
 

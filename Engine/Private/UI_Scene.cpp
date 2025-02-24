@@ -66,16 +66,16 @@ HRESULT CUI_Scene::Add_UIObject_Type(_int iUIType, CGameObject* pUIObj)
 
 	switch (iUIType)
 	{
-	case Engine::CUI_Scene::UI_BUTTON:
+	case UI_BUTTON:
 		m_Button.push_back(dynamic_cast<CUI_Button*>(pUIObj));
 		break;
-	case Engine::CUI_Scene::UI_BUTTONPLAYER:
+	case UI_BUTTONPLAYER:
 		m_ButtonPlayer.push_back(dynamic_cast<CUI_Button_Player*>(pUIObj));
 		break;
-	case Engine::CUI_Scene::UI_IMAGE:
+	case UI_IMAGE:
 		m_Image.push_back(dynamic_cast<CUI_Image*>(pUIObj));
 		break;
-	case Engine::CUI_Scene::UI_TEXTPLAYER:
+	case UI_TEXTPLAYER:
 		m_TextPlayerInfo.push_back(dynamic_cast<CUI_Text_PlayerInfo*>(pUIObj));
 		break;
 	}
@@ -98,6 +98,64 @@ HRESULT CUI_Scene::UIScene_UIObject_Render_OnOff(_bool bOpen)
 		TextPlayerInfo->Set_Render_OnOff(bOpen);
 
 	return S_OK;
+}
+
+void CUI_Scene::Clear_Last(_uint iUIType)
+{
+	switch (iUIType)
+	{
+	case UI_BUTTON:
+		if (!m_Button.empty())
+		{
+			Safe_Release(m_Button.back());
+			m_Button.pop_back();
+		}
+		break;
+	case UI_BUTTONPLAYER:
+		if (!m_ButtonPlayer.empty())
+		{
+			Safe_Release(m_ButtonPlayer.back());
+			m_ButtonPlayer.pop_back();
+		}
+		break;
+	case UI_IMAGE:
+		if (!m_Image.empty())
+		{
+			Safe_Release(m_Image.back());
+			m_Image.pop_back();
+		}
+		break;
+	case UI_TEXTPLAYER:
+		if (!m_TextPlayerInfo.empty())
+		{
+			Safe_Release(m_TextPlayerInfo.back());
+			m_TextPlayerInfo.pop_back();
+		}
+		break;
+	}
+}
+
+void CUI_Scene::Clear_Choice(_uint iUIType, CUIObject* pUIObj)
+{
+	switch (iUIType)
+	{
+	case UI_BUTTON:
+		if (!m_Button.empty())
+			m_Button.erase(remove(m_Button.begin(), m_Button.end(), pUIObj), m_Button.end());
+		break;
+	case UI_BUTTONPLAYER:
+		if (!m_ButtonPlayer.empty())
+			m_ButtonPlayer.erase(remove(m_ButtonPlayer.begin(), m_ButtonPlayer.end(), pUIObj), m_ButtonPlayer.end());
+		break;
+	case UI_IMAGE:
+		if (!m_Image.empty())
+			m_Image.erase(remove(m_Image.begin(), m_Image.end(), pUIObj), m_Image.end());
+		break;
+	case UI_TEXTPLAYER:
+		if (!m_TextPlayerInfo.empty())
+			m_TextPlayerInfo.erase(remove(m_TextPlayerInfo.begin(), m_TextPlayerInfo.end(), pUIObj), m_TextPlayerInfo.end());
+		break;
+	}
 }
 
 CUI_Scene* CUI_Scene::Create()

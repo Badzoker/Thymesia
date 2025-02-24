@@ -29,6 +29,8 @@ HRESULT CUI_AttributeButton::Initialize(void* pArg)
 
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
+	
+	m_pUIObjName = L"";
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

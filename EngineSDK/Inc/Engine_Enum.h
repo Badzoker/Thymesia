@@ -39,6 +39,14 @@ namespace Engine
 		SOUND_STONE,
 		MAXCHANNEL = 32,
 	};
+	enum UIOBJTYPE
+	{
+		UI_BUTTON,
+		UI_BUTTONPLAYER,
+		UI_IMAGE,
+		UI_TEXTPLAYER,
+		UI_END
+	};
 	
 }
 #endif // Engine_Enum_h__

@@ -554,12 +554,23 @@ HRESULT CGameInstance::UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bO
 	return m_pUI_Manager->UIScene_UIObject_Render_OnOff(pScene, bOpen);
 }
 
+void CGameInstance::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)
+{
+	return m_pUI_Manager->Clear_Choice(iUIType, iScenelIndex, strSceneTag, pUIObj);
+}
+
+void CGameInstance::Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag)
+{
+	return m_pUI_Manager->Clear_Last(iUIType, iScenelIndex, strSceneTag);
+}
+
 void CGameInstance::Clear_ALL()
 {
 	return m_pUI_Manager->Clear_ALL();
 }
 
 #pragma endregion UI_Manager
+
 
 void CGameInstance::Release_Engine()
 {

@@ -65,10 +65,12 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 		return S_OK;
 	}
 
+
 	DWORD	dwByte(0);
 	CUIObject::UIOBJECT_DESC Desc{};
-	_float3  m_fPos = {};
-	_float2  m_fSize = {};
+	_float3  fPos = {};
+	_float2  fSize = {};
+	_float3  fRotation = {};
 	_uint  iLen = {};
 	_wstring szSaveName = {};
 	_uint iUIType = {};
@@ -76,8 +78,9 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 
 	while (true)
 	{
-		ReadFile(hFile, &m_fPos, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &m_fSize, sizeof(_float2), &dwByte, nullptr);
+		ReadFile(hFile, &fPos, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &fSize, sizeof(_float2), &dwByte, nullptr);
+		ReadFile(hFile, &fRotation, sizeof(_float3), &dwByte, nullptr);
 
 		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
 		szSaveName.resize(iLen);
@@ -91,17 +94,16 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 			break;
 		}
 
-		Desc.fX = m_fPos.x;
-		Desc.fY = m_fPos.y;
-		Desc.fZ = m_fPos.z;
-		Desc.fSizeX = m_fSize.x;
-		Desc.fSizeY = m_fSize.y;
+		Desc.fX = fPos.x;
+		Desc.fY = fPos.y;
+		Desc.fZ = fPos.z;
+		Desc.fSizeX = fSize.x;
+		Desc.fSizeY = fSize.y;
 		Desc.szProtoName = szSaveName;
 		Desc.iShaderPassNum = iShaderNum;
-
+		Desc.fRotation = fRotation;
 		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
 			return E_FAIL;
-
 
 	}
 

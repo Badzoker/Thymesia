@@ -3,6 +3,7 @@
 
 
 BEGIN(Engine)
+class CUIObject;
 
 class  CUI_Manager final : public CBase
 {
@@ -17,7 +18,9 @@ public:
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
 
-	void Clear(_uint iScenelIndex); // UI 씬 지우기
+	void Clear(_uint iScenelIndex); // 특정 UI 씬 지우기
+	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj); // UI 씬의 특정 오브젝트 삭제
+	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // UI 씬의 마지막 오브젝트 삭제
 	void Clear_ALL(); // UI 모든 씬 지우기
 	
 public:

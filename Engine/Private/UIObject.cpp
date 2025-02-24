@@ -41,6 +41,7 @@ HRESULT CUIObject::Initialize(void * pArg)
 	_uint2			vViewportSize = m_pGameInstance->Get_ViewportSize();
 
 	m_pTransformCom->Scaling(_float3(pDesc->fSizeX, pDesc->fSizeY, 1.f));
+	//m_pTransformCom->Set_UIObj_Rotation(vRot, pDesc->fRotation.z);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pDesc->fX - (vViewportSize.x * 0.5f), -pDesc->fY + (vViewportSize.y * 0.5f), pDesc->fZ, 1.f));
 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(static_cast<_float>(vViewportSize.x), static_cast<_float>(vViewportSize.y), pDesc->fNear, pDesc->fFar));

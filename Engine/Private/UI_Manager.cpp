@@ -52,6 +52,24 @@ void CUI_Manager::Clear(_uint iScenelIndex)
 	m_pScenes[iScenelIndex].clear();
 }
 
+void CUI_Manager::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)
+{
+	CUI_Scene* pUIScene = Find_UIScene(iScenelIndex, strSceneTag);
+	if (nullptr != pUIScene)
+	{
+		pUIScene->Clear_Choice(iUIType, pUIObj);
+	}
+}
+
+void CUI_Manager::Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag)
+{
+	CUI_Scene* pUIScene = Find_UIScene(iScenelIndex, strSceneTag);
+	if (nullptr != pUIScene)
+	{
+		pUIScene->Clear_Last(iUIType);
+	}
+}
+
 void CUI_Manager::Clear_ALL()
 {
 	for (size_t i = 0; i < m_iNumScenes; i++)

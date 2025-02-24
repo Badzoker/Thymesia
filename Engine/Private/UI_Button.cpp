@@ -20,6 +20,7 @@ HRESULT CUI_Button::Initialize_Prototype()
 
 HRESULT CUI_Button::Initialize(void* pArg)
 {
+	m_iUIType = UI_BUTTON;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 

@@ -34,6 +34,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+	_tchar* m_pUIObjName = {};
 
 public:
 	HRESULT Ready_Components();
