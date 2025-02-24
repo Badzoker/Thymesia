@@ -182,6 +182,8 @@ public:
 	class CUI_Scene* Find_UIScene(_uint iSceneIndex, const _wstring& strSceneTag);
 	map<const _wstring, class CUI_Scene*>* Find_UIScene_ALL();
 	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen);
+	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
+	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기
 	void Clear_ALL(); // UI 모든 씬 지우기
 #pragma endregion UI_Manager
 

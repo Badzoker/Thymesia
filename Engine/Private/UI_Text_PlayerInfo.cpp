@@ -20,6 +20,7 @@ HRESULT CUI_Text_PlayerInfo::Initialize_Prototype()
 
 HRESULT CUI_Text_PlayerInfo::Initialize(void* pArg)
 {
+	m_iUIType = UI_TEXTPLAYER;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	return S_OK;

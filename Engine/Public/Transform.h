@@ -54,8 +54,27 @@ public:
 		XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);*/
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[eState]), vState);		
 	}
+	_float3 Get_State_UIObj(STATE eState) {
 
+		_float3 fPos = {};
+		_uint2			vViewportSize = { 1600,900 };
 
+		XMStoreFloat3(&fPos, XMLoadFloat4x4(&m_WorldMatrix).r[eState]);
+
+		return { fPos.x + (vViewportSize.x * 0.5f), -fPos.y + (vViewportSize.y * 0.5f), fPos.z };
+	}
+
+	_float2 Get_Scale_UIObj() {
+
+		_float2 fSizeSave = {};
+
+		fSizeSave = {
+			XMVectorGetX(Get_State(STATE_RIGHT)),
+			XMVectorGetY(Get_State(STATE_UP)) };
+		//,XMVectorGetZ(Get_State(STATE_LOOK))
+		return fSizeSave;
+	}
+	
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
