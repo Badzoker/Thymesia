@@ -154,6 +154,36 @@
     <Filter Include="02.GameObject\Monster\Elite\Joker\Weapon">
       <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LongClaw_1">
+      <UniqueIdentifier>{364e1570-b486-476c-ad20-b46433dc06bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LongClaw_2">
+      <UniqueIdentifier>{bda42e64-3c82-4259-a76f-219fddab13ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn">
+      <UniqueIdentifier>{1a8aadce-55cc-4ff9-ba83-429ce85b0133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_B">
+      <UniqueIdentifier>{0a3ec577-35fa-4449-8eb7-c1a81816465c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BL">
+      <UniqueIdentifier>{d7c50b58-dbcb-4079-837d-054bd9a1c865}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BR">
+      <UniqueIdentifier>{51b00f3a-aee3-4d33-9058-c088bec31702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FL">
+      <UniqueIdentifier>{492eceac-1eb8-4a91-8e64-2bc8dbef88b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FR">
+      <UniqueIdentifier>{1c42033f-ac4f-4f47-8903-f180ad497598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_L">
+      <UniqueIdentifier>{953578a2-4359-451a-baa0-3ea4a7f202ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R">
+      <UniqueIdentifier>{8243d744-c9eb-4546-ae8b-09a9eba8a0cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -285,6 +315,33 @@
     <ClInclude Include="..\Public\Joker_Weapon.h">
       <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Attack_LongClaw_1.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_LongClaw_2.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_B.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_B</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_BL.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_BR.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_FL.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_FR.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_L.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_R.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -406,6 +463,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\Joker_Weapon.cpp">
       <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LongClaw_1.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LongClaw_2.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_B.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_B</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_BL.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_BR.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_BR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_FL.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_FR.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_FR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_L.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_R.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

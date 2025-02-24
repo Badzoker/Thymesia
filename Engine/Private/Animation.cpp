@@ -31,16 +31,19 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
             return E_FAIL;
 
         m_Channels.push_back(pChannel);
-
     }
+
+    m_vecKeyFrameAnimationSpeed.resize((int)m_fDuration + 1);           
+    std::fill(m_vecKeyFrameAnimationSpeed.begin(), m_vecKeyFrameAnimationSpeed.end(), 1.f);      
 
     return S_OK;
 }
 
 _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
 {
-    *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed;   
-   
+    if (*pCurrentTrackPoisiton <= m_fDuration)  
+        *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);  
+
     if (true == isLoop && *pCurrentTrackPoisiton >= m_fDuration)
     {
         m_isFinished = true;
@@ -134,6 +137,15 @@ HRESULT CAnimation::Save_Anim(ostream& os)
     os.write((char*)&m_fAnimationSpeed, sizeof(_float));
         
     os.write((char*)&m_fDuration, sizeof(_float));  
+
+    /* 애니메이션 툴 관련 추가 작업 */
+    for (int i = 0; i <= (int)m_fDuration; i++) 
+    {
+        os.write((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float));    
+    }   
+
+    /* ================================*/
+
     os.write((char*)&m_fTickPerSecond, sizeof(_float)); 
     os.write((char*)&m_fCurrentTrackPosition, sizeof(_float));  
     os.write((char*)&m_isFinished, sizeof(_bool));  
@@ -153,6 +165,14 @@ HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices
     is.read((char*)&m_fAnimationSpeed, sizeof(_float));
 
     is.read((char*)&m_fDuration, sizeof(_float));
+    /* 애니메이션 툴 관련 추가 작업 */
+    m_vecKeyFrameAnimationSpeed.resize(((int)m_fDuration) + 1); 
+
+    for (int i = 0; i <= (int)m_fDuration; i++) 
+    {
+        is.read((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float)); 
+    }
+    /* ============================= */ 
     is.read((char*)&m_fTickPerSecond, sizeof(_float));
     is.read((char*)&m_fCurrentTrackPosition, sizeof(_float));
     is.read((char*)&m_isFinished, sizeof(_bool));
@@ -200,6 +220,8 @@ void CAnimation::Free()
 
     for (auto& pChannels : m_Channels)
         Safe_Release(pChannels);
+
+    m_vecKeyFrameAnimationSpeed.clear();        
 
     m_Channels.clear();
 }

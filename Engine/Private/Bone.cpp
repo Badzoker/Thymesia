@@ -45,12 +45,6 @@ void CBone::Update_CombinedTransformationMatrix(const vector<class CBone*>& Bone
 		
 		XMMATRIX matrix = XMMatrixIdentity();	
 
-		/* 이전 코드 */
-	/*	if (m_CombinedTransformationMatrix._41 == 0.f &&
-			m_CombinedTransformationMatrix._42 == 0.f &&
-			m_CombinedTransformationMatrix._43 == 0.f &&
-			m_CombinedTransformationMatrix._44 == 1.f)*/
-
 		if (fabs(m_CombinedTransformationMatrix._41) < 1e-5f &&
 			fabs(m_CombinedTransformationMatrix._42) < 1e-5f &&	
 			fabs(m_CombinedTransformationMatrix._43) < 1e-5f)	

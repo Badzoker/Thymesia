@@ -42,6 +42,7 @@ private:
 	
 	_char					   m_szName[MAX_PATH];	
 
+	vector<_float>			   m_vecKeyFrameAnimationSpeed;	
 
 	/*11월 27일 추가 코드*/
     /* 그러면 저기서 애니메이션을 초기화 시켜줘야하는데.*/

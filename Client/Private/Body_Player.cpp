@@ -41,8 +41,6 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     /* 여기서 보간속도 설정하기 */
 
-    m_pModelCom->Get_VecAnimation().at(0)->Set_LerpTime(0.01f);
-
     ///* 칼 1번째 휘두를때 애니메이션 보간 시간 조정*/
     //m_pModelCom->Get_VecAnimation().at(1)->Set_LerpTime(0.1f);
     ///* 칼 2번째 휘두를때 애니메이션 보간 시간 조정*/
@@ -56,91 +54,70 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
- 
+
 }
 
 void CBody_Player::Update(_float fTimeDelta)
 {
-    if (*m_pParentState == CPlayer::STATE_IDLE)
+
+#pragma region  각 상황에 따른 함수 
+
+    switch (*m_pParentState)
     {
-        m_pModelCom->SetUp_Animation(0, true);
-        m_fAnimSpeed = 1.0f;
+    case STATE_IDLE:
+        STATE_IDLE_Method();
+        break;
+    case STATE_RUN:
+        STATE_RUN_Method();
+        break;
+    case STATE_ROCK_ON_RUN_B:
+        STATE_ROCK_ON_RUN_B_Method();
+        break;
+    case STATE_ROCK_ON_RUN_BL:
+        STATE_ROCK_ON_RUN_BL_Method();
+        break;
+    case STATE_ROCK_ON_RUN_BR:
+        STATE_ROCK_ON_RUN_BR_Method();
+        break;
+    case STATE_ROCK_ON_RUN_FL:
+        STATE_ROCK_ON_RUN_FL_Method();
+        break;
+    case STATE_ROCK_ON_RUN_FR:
+        STATE_ROCK_ON_RUN_FR_Method();
+        break;
+    case STATE_ROCK_ON_RUN_L:
+        STATE_ROCK_ON_RUN_L_Method();
+        break;
+    case STATE_ROCK_ON_RUN_R:
+        STATE_ROCK_ON_RUN_R_Method();
+        break;
+    case STATE_WALK:
+        STATE_WALK_Method();
+        break;
+    case STATE_ATTACK:
+        STATE_ATTACK_Method();
+        break;
+    case STATE_ATTACK_L1:
+        STATE_ATTACK_L1_Method();
+        break;
+    case STATE_ATTACK_L2:
+        STATE_ATTACK_L2_Method();
+        break;
+    case STATE_ATTACK_L3:
+        STATE_ATTACK_L3_Method();
+        break;
+    case STATE_ATTACK_LONG_CLAW_01:
+        STATE_ATTACK_LONG_CLAW_01_Method();
+        break;
+    case STATE_ATTACK_LONG_CLAW_02:
+        STATE_ATTACK_LONG_CLAW_02_Method();
+        break;
+    default:
+        break;
     }
+#pragma endregion 
 
-    else if (*m_pParentState == CPlayer::STATE_RUN)
-    {
-        m_pModelCom->SetUp_Animation(4, true);
-        m_fAnimSpeed = 1.0f;
-    }
-
-    else if (*m_pParentState == CPlayer::STATE_ATTACK_L1)
-    {
-        m_pModelCom->SetUp_Animation(1, false);
-        m_fAnimSpeed = 1.0f;
-    }
-
-    else if (*m_pParentState == CPlayer::STATE_ATTACK_L2)
-    {
-        m_pModelCom->SetUp_Animation(2, false);
-        m_fAnimSpeed = 1.0f;
-    }
-
-    else if (*m_pParentState == CPlayer::STATE_ATTACK_L3)
-    {
-        m_pModelCom->SetUp_Animation(3, false);
-        m_fAnimSpeed = 1.f;
-    }
-
-    if (*m_pParentState == STATE_ATTACK_L1)
-    {
-        if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
-        {
-            //*m_pParentState = STATE_IDLE;   
-            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-
-        if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
-        {
-            *m_pParentState = STATE_IDLE;
-            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-    }
-
-
-    if (*m_pParentState == STATE_ATTACK_L2)
-    {
-        if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
-        {
-            //*m_pParentState = STATE_IDLE;   
-            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-
-        if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(2)->isAniMationFinish())
-        {
-            *m_pParentState = STATE_IDLE;
-            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-    }
-
-
-    if (*m_pParentState == STATE_ATTACK_L3)
-    {
-        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 125.f)
-        {
-            //*m_pParentState = STATE_IDLE;     
-            *m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-
-        if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
-        {
-            *m_pParentState = STATE_IDLE;
-            //*m_pParentPhsaeState = CPlayer::PHASE_IDLE;
-        }
-    }
-
-
-
-    m_pModelCom->Play_Animation(fTimeDelta * m_fAnimSpeed);
+    m_pModelCom->Play_Animation(fTimeDelta);
 
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
@@ -158,22 +135,17 @@ HRESULT CBody_Player::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-
-    for (_uint i = 0; i < iNumMeshes; i++)
+    switch (m_iRenderState)
     {
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
-
-
-        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
-
-        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네
-            return E_FAIL;
-
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render(i);
+    case STATE_NORMAL:
+        STATE_NORMAL_Render();
+        break;
+    case STATE_CLAW:
+        STATE_ATTACK_LONG_CLAW_Render();
+        break;
+    default:
+        break;
     }
 
     return S_OK;
@@ -188,7 +160,7 @@ HRESULT CBody_Player::Render_Shadow()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (_uint i = 0; i < iNumMeshes; i++)
+    for (size_t i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
@@ -199,6 +171,236 @@ HRESULT CBody_Player::Render_Shadow()
 
     return S_OK;
 }
+
+
+
+HRESULT CBody_Player::STATE_NORMAL_Render()
+{
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (size_t i = 0; i < iNumMeshes; i++)
+    {
+        /* 평상시 모드
+        (i == 11  깃털 ),
+        (i == 12(왼) , i == 5(오), 발톱, ),
+        (i == 10(왼) , i == 9(오),  팔목 장식)
+        (i == 4(왼) ,   i == 8(오),  어깨 장식)*/
+        if (i == 11
+            || i == 12
+            || i == 5
+            || i == 10
+            || i == 9
+            || i == 4
+            || i == 8)
+            continue;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+
+        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네
+            return E_FAIL;
+
+        m_pShaderCom->Begin(0);
+        m_pModelCom->Render(i);
+    }
+
+}
+
+HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
+{
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (size_t i = 0; i < iNumMeshes; i++)
+    {
+
+        /* 평상시 모드
+        (i == 11  깃털 ),
+        (i == 12(왼) , i == 5(오), 발톱, ),
+        (i == 10(왼) , i == 9(오),  팔목 장식)
+        (i == 4(왼) ,   i == 8(오),  어깨 장식)*/
+        if (i == 11
+            || i == 12
+            || i == 10
+            || i == 4)
+            continue;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+
+        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네 
+            return E_FAIL;
+
+        m_pShaderCom->Begin(0);
+        m_pModelCom->Render(i);
+    }
+}
+
+
+void CBody_Player::STATE_IDLE_Method()
+{
+    m_pModelCom->SetUp_Animation(2, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_RUN_Method()
+{
+    m_pModelCom->SetUp_Animation(9, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_WALK_Method()
+{
+}
+
+void CBody_Player::STATE_ATTACK_Method()
+{
+}
+
+void CBody_Player::STATE_ATTACK_L1_Method()
+{
+    m_pModelCom->SetUp_Animation(3, false);
+
+    if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
+    {
+        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+    }
+
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ATTACK_L2_Method()
+{
+    m_pModelCom->SetUp_Animation(4, false);
+
+    if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
+    {
+        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(4)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+    }
+
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ATTACK_L3_Method()
+{
+    m_pModelCom->SetUp_Animation(5, false);
+
+    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 125.f)
+    {
+        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(5)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+    }
+
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
+{
+    m_pModelCom->SetUp_Animation(0, false);
+
+    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
+    {
+
+        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_VecAnimation().at(0)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+    }
+
+    m_iRenderState = STATE_CLAW;
+}
+
+void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
+{
+    m_pModelCom->SetUp_Animation(1, false);
+
+    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
+    {
+        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+    }
+
+    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+    }
+
+    m_iRenderState = STATE_CLAW;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_B_Method()
+{
+    m_pModelCom->SetUp_Animation(6, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_BL_Method()
+{
+    m_pModelCom->SetUp_Animation(7, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_BR_Method()
+{
+    m_pModelCom->SetUp_Animation(8, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_FL_Method()
+{
+    m_pModelCom->SetUp_Animation(10, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_FR_Method()
+{
+    m_pModelCom->SetUp_Animation(11, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_L_Method()
+{
+    m_pModelCom->SetUp_Animation(12, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+void CBody_Player::STATE_ROCK_ON_RUN_R_Method()
+{
+    m_pModelCom->SetUp_Animation(13, true);
+    m_iRenderState = STATE_NORMAL;
+}
+
+
 
 HRESULT CBody_Player::Ready_Components()
 {

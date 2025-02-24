@@ -20,18 +20,28 @@ public:
 	{
 		STATE_IDLE,
 		STATE_RUN,
+		STATE_ROCK_ON_RUN_B,
+		STATE_ROCK_ON_RUN_BL,
+		STATE_ROCK_ON_RUN_BR,
+		STATE_ROCK_ON_RUN_FL,
+		STATE_ROCK_ON_RUN_FR,
+		STATE_ROCK_ON_RUN_L,
+		STATE_ROCK_ON_RUN_R,
 		STATE_WALK,
 		STATE_ATTACK,
 		STATE_ATTACK_L1,
 		STATE_ATTACK_L2,
 		STATE_ATTACK_L3,
+		STATE_ATTACK_LONG_CLAW_01,
+		STATE_ATTACK_LONG_CLAW_02,
 	};
 
 
 	enum PLAYER_PHASE
 	{
-		PHASE_IDLE,
-		PHASE_FIGHT,
+		PHASE_IDLE = 1,
+		PHASE_FIGHT = 1 << 1,
+		PHASE_ROCKON = 1 << 2,
 	};
 
 private:
@@ -51,6 +61,9 @@ public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
 
+public:
+	void Mouse_section(_float fTimeDelta);
+	void Keyboard_section(_float fTimeDelta);
 
 public:
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }

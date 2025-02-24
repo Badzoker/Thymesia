@@ -169,6 +169,8 @@
     <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
+    <ClInclude Include="..\public\Attack_LongClaw_1.h" />
+    <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
@@ -188,6 +190,13 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\Public\LobTrap.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Rock_On_Run_B.h" />
+    <ClInclude Include="..\public\Rock_On_Run_BL.h" />
+    <ClInclude Include="..\public\Rock_On_Run_BR.h" />
+    <ClInclude Include="..\public\Rock_On_Run_FL.h" />
+    <ClInclude Include="..\public\Rock_On_Run_FR.h" />
+    <ClInclude Include="..\public\Rock_On_Run_L.h" />
+    <ClInclude Include="..\public\Rock_On_Run_R.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\Object.h" />
     <ClInclude Include="..\public\Player.h" />
@@ -214,6 +223,8 @@
     <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
+    <ClCompile Include="..\private\Attack_LongClaw_1.cpp" />
+    <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
@@ -232,6 +243,13 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\Private\LobTrap.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_B.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_BL.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_BR.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_FL.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_FR.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_L.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_R.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Object.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
