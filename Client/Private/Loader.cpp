@@ -13,6 +13,11 @@
 #include "VargKnife.h"
 #pragma endregion 
 
+#pragma region 엘리트 몬스터
+#include "Elite_Joker.h"
+#include "Body_Joker.h"
+#include "Joker_Weapon.h"
+#pragma endregion 
 
 #pragma region 플레이어 관련 
 #include "Player.h"
@@ -618,7 +623,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 #pragma endregion 
 #pragma region 티메시아 보스
-
+	lstrcpyW(m_szLoadingText, TEXT("보스 모델을 생성한다."));
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Magician"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -650,6 +655,35 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 #pragma endregion 
+
+#pragma region 엘리트 몬스터
+
+	lstrcpyW(m_szLoadingText, TEXT("엘리트 몬스터 모델을 생성한다."));
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elite_Joker_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Joker/Elite_Joker.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elite_Joker_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Joker/Weapon/Joker_Weapon.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker_Body"),
+		CBody_Joker::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker_Weapon"),
+		CJoker_Weapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker"),
+		CElite_Joker::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion 
+
+
 	/* 로딩이 완료되었습ㄴ미다 */
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));	
 	m_isFinished = true;

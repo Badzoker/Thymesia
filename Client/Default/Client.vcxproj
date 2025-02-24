@@ -170,6 +170,7 @@
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
@@ -178,6 +179,8 @@
     <ClInclude Include="..\Public\Boss_Varg.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Elite_Joker.h" />
+    <ClInclude Include="..\Public\Joker_Weapon.h" />
     <ClInclude Include="..\Public\Ladder.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -212,6 +215,7 @@
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
@@ -219,6 +223,8 @@
     <ClCompile Include="..\Private\Boss_State_Manager.cpp" />
     <ClCompile Include="..\Private\Boss_Varg.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\Private\Elite_Joker.cpp" />
+    <ClCompile Include="..\Private\Joker_Weapon.cpp" />
     <ClCompile Include="..\Private\Ladder.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

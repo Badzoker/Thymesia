@@ -47,6 +47,7 @@ public:
 	void PatternCreate();
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
+	void RotateDegree_To_Player();
 	void Rotation_To_Player();
 
 private:
@@ -56,6 +57,7 @@ private:
 	_bool                            m_bExcution_Progress = {};
 	_bool                            m_bCrush = {};
 	_bool                            m_bCan_Move_Anim = {};
+	_bool                            m_bNeed_Rotation = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
@@ -65,7 +67,8 @@ private:
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDistance = {};
-	_float                           m_fPlaySpeed = {};
+	_float                           m_fAngle = {};
+	_float                           m_fRotateDegree = {};
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -222,6 +225,8 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
+	private:
+		_float m_fTimer = {};
 	};
 
 	class Jump_Attack : public CBoss_State<CBoss_Varg>

@@ -139,6 +139,21 @@
     <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_3">
       <UniqueIdentifier>{cf4f3d9e-1c37-4bd0-a882-28844f14b3e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster">
+      <UniqueIdentifier>{93f0dabd-730d-49e8-80c6-c18a2780a798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite">
+      <UniqueIdentifier>{fe134013-31cf-4aad-b09a-51cb79385ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Joker">
+      <UniqueIdentifier>{f6c59891-ee28-42ba-84e3-0978a68aa655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Joker\Body">
+      <UniqueIdentifier>{03222064-bbb1-4940-9c87-c533d8e007ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Joker\Weapon">
+      <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -261,6 +276,15 @@
     <ClInclude Include="..\public\Attack_LButton_3.h">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_3</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Elite_Joker.h">
+      <Filter>02.GameObject\Monster\Elite\Joker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Joker.h">
+      <Filter>02.GameObject\Monster\Elite\Joker\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Joker_Weapon.h">
+      <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -373,6 +397,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Attack_LButton_3.cpp">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elite_Joker.cpp">
+      <Filter>02.GameObject\Monster\Elite\Joker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Joker.cpp">
+      <Filter>02.GameObject\Monster\Elite\Joker\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Joker_Weapon.cpp">
+      <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

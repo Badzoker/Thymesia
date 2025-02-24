@@ -16,7 +16,6 @@ class CBody_Varg final : public CPartObject
 public:
 	struct BODY_VARG_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		_float* fPlaySpeed = { nullptr };
 	};
 
 private:
@@ -37,9 +36,6 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
-
-private:
-	_float* m_fAnimSpeed = { nullptr };
 
 public:
 	HRESULT Ready_Components();
