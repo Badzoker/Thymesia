@@ -512,9 +512,10 @@ HRESULT CGameInstance::Sub_Item(_wstring _ItemName)
 #pragma endregion
 
 #pragma region SHADOW
-HRESULT CGameInstance::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, class CGameObject* _pPlayer)
+HRESULT CGameInstance::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo)
 {
-	return m_pShadow->SetUp_ShadowLight(vEye, vAt, fLightAngle, fAspect, fNear, fFar, _pPlayer);	
+	return m_pShadow->SetUp_ShadowLight(vEye, vAt, fLightAngle, fAspect, fNear, fFar, matInvCam, vCamInfo);
+
 }
 HRESULT CGameInstance::Bind_Shadow_Matrices(CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName)
 {
@@ -524,6 +525,10 @@ HRESULT CGameInstance::Bind_Shadow_Matrices(CShader* pShader, const _char* pView
 		return E_FAIL;
 
 	return S_OK;
+}
+_float4 CGameInstance::Get_LightPos()
+{
+	return m_pShadow->Get_LightPos();
 }
 #pragma endregion
 

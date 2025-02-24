@@ -33,6 +33,7 @@ public:
 	virtual HRESULT Render_Glow() { return S_OK; }
 	virtual HRESULT Render_Motion_Blur() { return S_OK; }
 	virtual HRESULT Render_Gaussian_Blur() { return S_OK; }
+	virtual HRESULT Render_Occulusion() { return S_OK; }
 
 	/* 11월 11일 추가*/	
 	map<const wstring, class CComponent*>* Get_Components() { return &m_Components; }	

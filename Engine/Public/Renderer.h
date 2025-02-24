@@ -12,7 +12,7 @@ BEGIN(Engine)
 class CRenderer final : public CBase
 {
 public:
-	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_NONLIGHT, RG_BLEND, RG_UI,
+	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI,
 					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_END };
 	
 private:
@@ -44,10 +44,13 @@ private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();	
 	HRESULT Render_NonBlend();
+	HRESULT Render_Occulusion();
 	HRESULT Render_Distortion();
 	HRESULT Render_GlowBegin();
 	HRESULT Render_GlowX();
 	HRESULT Render_GlowY();
+	HRESULT Render_LightShaftX();
+	HRESULT Render_LightShaftY();
 	HRESULT Render_MotionBlur_By_Velocity();
 	HRESULT Render_MotionBlurBegin();
 	HRESULT Render_NonLight();

@@ -14,9 +14,9 @@ namespace Engine
 		unsigned int	iViewportHeight;
 	};
 
-	struct LIGHT_DESC	
+	struct LIGHT_DESC
 	{
-		enum TYPE {TYPE_DIRECTIONAL, TYPE_POINT, TYPE_SPOT, TYPE_END };
+		enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_SPOT, TYPE_END };
 
 		TYPE	eType;
 
@@ -24,7 +24,11 @@ namespace Engine
 
 		XMFLOAT4		vDiffuse;
 		XMFLOAT4		vAmbient;
-		XMFLOAT4		vSpecular;		
+		XMFLOAT4		vSpecular;
+		XMFLOAT4		vPosition;
+
+		FLOAT			fRange;
+		FLOAT			fSpot;
 	};
 
 
