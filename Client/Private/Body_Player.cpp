@@ -160,7 +160,7 @@ HRESULT CBody_Player::Render_Shadow()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
@@ -178,7 +178,7 @@ HRESULT CBody_Player::STATE_NORMAL_Render()
 {
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
         /* 평상시 모드
         (i == 11  깃털 ),
@@ -206,14 +206,14 @@ HRESULT CBody_Player::STATE_NORMAL_Render()
         m_pShaderCom->Begin(0);
         m_pModelCom->Render(i);
     }
-
+    return S_OK;
 }
 
 HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
 {
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
+    for (_uint i = 0; i < iNumMeshes; i++)
     {
 
         /* 평상시 모드
@@ -239,6 +239,7 @@ HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
         m_pShaderCom->Begin(0);
         m_pModelCom->Render(i);
     }
+    return S_OK;
 }
 
 
