@@ -16,11 +16,29 @@ class CBody_Player final : public CPartObject
 	{
 		STATE_IDLE,
 		STATE_RUN,
+		/* 락온 상태일때의 모션 */
+		STATE_ROCK_ON_RUN_B,
+		STATE_ROCK_ON_RUN_BL,
+		STATE_ROCK_ON_RUN_BR,
+		STATE_ROCK_ON_RUN_FL,
+		STATE_ROCK_ON_RUN_FR,
+		STATE_ROCK_ON_RUN_L,
+		STATE_ROCK_ON_RUN_R,
+		/* ==================== */
 		STATE_WALK,
 		STATE_ATTACK,
 		STATE_ATTACK_L1,
 		STATE_ATTACK_L2,
 		STATE_ATTACK_L3,
+		STATE_ATTACK_LONG_CLAW_01,
+		STATE_ATTACK_LONG_CLAW_02,
+
+	};
+
+	enum RENDER_STATE
+	{
+		STATE_NORMAL,  /* 평상시 공격 상태 */
+		STATE_CLAW,   /*  발톱 공격시의 상태 */
 	};
 
 public:
@@ -44,6 +62,37 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
 
+
+public:
+	/* 각 모션에 따른 렌더링 관련 */
+	HRESULT    STATE_NORMAL_Render();
+	HRESULT    STATE_ATTACK_LONG_CLAW_Render();
+	/* ============================ */
+
+public:
+	/* 각 모션에 따른 애니메이션 관련 */
+	void	STATE_IDLE_Method();
+	void	STATE_RUN_Method();
+	void	STATE_WALK_Method();
+	void	STATE_ATTACK_Method();
+	void	STATE_ATTACK_L1_Method();
+	void	STATE_ATTACK_L2_Method();
+	void	STATE_ATTACK_L3_Method();
+	void	STATE_ATTACK_LONG_CLAW_01_Method();
+	void	STATE_ATTACK_LONG_CLAW_02_Method();
+	/*락온 관련 기능 */
+	void    STATE_ROCK_ON_RUN_B_Method();
+	void    STATE_ROCK_ON_RUN_BL_Method();
+	void    STATE_ROCK_ON_RUN_BR_Method();
+	void    STATE_ROCK_ON_RUN_FL_Method();
+	void    STATE_ROCK_ON_RUN_FR_Method();
+	void    STATE_ROCK_ON_RUN_L_Method();
+	void    STATE_ROCK_ON_RUN_R_Method();
+	/* =========================================== */
+
+
+
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -53,6 +102,7 @@ private:
 private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
+	_uint  m_iRenderState = {};
 
 public:
 	HRESULT Ready_Components();

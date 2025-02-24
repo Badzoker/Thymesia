@@ -73,12 +73,30 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-
 #pragma region Mouse_Input
+	/* 마우스 입력키는 (LB, RB ) 동시 입력을 불가능 하도록 설정 */
+	Mouse_section(fTimeDelta);	
+#pragma endregion 
+		
+#pragma region KeyBoard Input
+	Keyboard_section(fTimeDelta);		
+#pragma endregion 
+
+	__super::Priority_Update(fTimeDelta);
+}
+
+void CPlayer::Mouse_section(_float fTimeDelta)
+{
+	if (m_pGameInstance->isMouseEnter(DIM_MB))
+	{
+		m_iPhaseState ^= PHASE_ROCKON;
+
+	}
+
 	if (m_pGameInstance->isMouseEnter(DIM_LB))
 	{
 		if (m_iState == STATE_ATTACK_L1
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(3)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -86,7 +104,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		}
 
 		else if (m_iState == STATE_ATTACK_L2
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 20.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 25.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -106,15 +124,33 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_iPhaseState = PHASE_FIGHT;
 	}
 
-	// 그럼 각 행동이 부모의 phase state에 대한 포인터를 가지고 있어야 겠다. 
+	else if (m_pGameInstance->isMouseEnter(DIM_RB))
+	{
+		if (m_iState == STATE_ATTACK_LONG_CLAW_01
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 30.f
+				&& m_pModel->Get_CurrentAnmationTrackPosition() < 100.f))
+		{
+			m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_LONG_CLAW_02;
+		}
 
-#pragma endregion 
+		else if (m_iState != STATE_ATTACK_LONG_CLAW_01
+			&& m_iState != STATE_ATTACK_LONG_CLAW_02)
+		{
+			m_pStateMgr->Get_VecState().at(5)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_LONG_CLAW_01;
+		}
 
-#pragma region KeyBoard Input
+		m_iPhaseState = PHASE_FIGHT;
+	}
 
+}
+
+void CPlayer::Keyboard_section(_float fTimeDelta)
+{
 
 #pragma region 8방향 Run 
-	if (m_iPhaseState != PHASE_FIGHT)
+	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_ROCKON)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
 		if ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000) || (GetKeyState('A') & 0x8000) || (GetKeyState('D') & 0x8000))
 		{
@@ -131,15 +167,100 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			}
 		}
 
-		m_iPhaseState = PHASE_IDLE;
+		m_iPhaseState |= PHASE_IDLE;
+	}
+#pragma endregion 
+#pragma region 락온모드 8방향 이동 
+	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_ROCKON))
+	{
+		/* 두 키입력이 동시에 들어왔을 때 */
+		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
+			|| (GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000)
+			|| (GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000)
+			|| (GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000)
+			|| (GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000)
+			|| (GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000))
+		{
+			if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(10)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_FL;
+			}
+			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(9)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_FR;
+			}
+
+			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_BL;
+			}
+
+
+			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(11)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_BR;
+			}
+
+
+			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_IDLE;
+			}
+
+			else if ((GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000))
+			{
+				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_IDLE;
+			}
+
+		}
+
+		else
+		{
+			if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+			{
+				m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_RUN;
+			}
+
+			else if (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
+			{
+				m_pStateMgr->Get_VecState().at(8)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_L;
+			}
+
+			else if (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
+			{
+				m_pStateMgr->Get_VecState().at(7)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_R;
+			}
+
+			else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+			{
+				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ROCK_ON_RUN_B;
+			}
+
+
+
+
+
+			else
+			{
+				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_IDLE;
+			}
+
+		}
 	}
 #pragma endregion 
 
 
-#pragma endregion 
-
-
-	__super::Priority_Update(fTimeDelta);
 }
 
 void CPlayer::Update(_float fTimeDelta)
