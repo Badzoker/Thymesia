@@ -30,6 +30,7 @@ HRESULT CBackGround::Initialize(void * pArg)
 	pDesc->fSizeY = g_iWinSizeY;
 	pDesc->fX = g_iWinSizeX * 0.5f;
 	pDesc->fY = g_iWinSizeY * 0.5f;
+	pDesc->fZ = 0.1f;
 	pDesc->fNear = 0.f;
 	pDesc->fFar = 1.f;
 
@@ -58,7 +59,7 @@ void CBackGround::Update(_float fTimeDelta)
 void CBackGround::Late_Update(_float fTimeDelta)
 {
 	
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_PRIORITY, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CBackGround::Render()
