@@ -24,278 +24,201 @@ void CPlayerRun::Priority_Update(CGameObject* pGameObject, class CNavigation* pN
 	_vector CamRight = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]);
 	_vector CamLeft = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]) * -1.f;
 
-	_vector vLook = XMVector3Normalize(XMVector3Cross(CamRight, vUp)); // 외적을 하면 각이 2개 생기긴 하는데 흠.. 이건 나중에 고민하기. 
+	_vector vLookFront = XMVector3Normalize(XMVector3Cross(CamRight, vUp));
+	_vector vLookBack = vLookFront * -1.f;
 	_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 
-	if ((GetKeyState('W') & 0x8000))
+
+	/* 키가 두개가 동시에 눌려져 있을 때 */
+	if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A)
+		|| m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D)
+		|| m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A)
+		|| m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D)
+		|| m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyEnter(DIK_D)
+		|| m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyEnter(DIK_A)
+		|| m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyEnter(DIK_D)
+		|| m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyEnter(DIK_A))
 	{
-		// vLook과 캐릭터의 look 의 내적구하기 
-		//_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));	
 
-		float dotResult = XMVectorGetX(XMVector3Dot(vLook, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
+		if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
+		{
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-45.f));
+			_vector vLeftLook45Degree = XMVector3Transform(vLookFront, rotationMartix);
 
-		_vector crossResult = XMVector3Cross(PlayerLook, vLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vLeftLook45Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vLeftLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 		}
 
-		//내적의 각도 구하기
 
-
-		if (!(GetKeyState('A') & 0x8000) && !(GetKeyState('D') & 0x8000))
+		else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
 		{
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(45.f));
+			_vector vRightLook45Degree = XMVector3Transform(vLookFront, rotationMartix);
+
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vRightLook45Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vRightLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
+		}
+
+
+		else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
+		{
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(45.f));
+			_vector vLeftLook45Degree = XMVector3Transform(vLookBack, rotationMartix);
+
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vLeftLook45Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vLeftLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
+		}
+
+
+		else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
+		{
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-45.f));
+			_vector vRightLook45Degree = XMVector3Transform(vLookBack, rotationMartix);
+
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vRightLook45Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vRightLook45Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
+			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
+		}
+
+
+	}
+
+	else
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+		{
+			float dotResult = XMVectorGetX(XMVector3Dot(vLookFront, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vLookFront);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
 
-			if (abs(Radian) <= 0.5f)
+
+			if (abs(Radian) <= 0.8f)
 				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
-			else
-			{
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
-			}
 		}
-		else
+
+
+		else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
 		{
-			if (m_pGameInstance->isKeyEnter(DIK_A))
-				pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-45.f)); // 이러면 안되고 카메라기준이네
+			float dotResult = XMVectorGetX(XMVector3Dot(vLookBack, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
 
-			if (GetKeyState('A') & 0x8000)
-			{
-				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
+			_vector crossResult = XMVector3Cross(PlayerLook, vLookBack);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
 			}
-			if (m_pGameInstance->isKeyEnter(DIK_D))
-				pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
 
-			if (GetKeyState('D') & 0x8000)
-			{
-				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
-			}
-		}
-
-		//pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta, pNavigation);
-
-		/* 사운드 관련 */
-
-	}
-
-	if ((GetKeyState('S') & 0x8000))
-	{
-		_vector vLook = XMVector3Normalize(XMVector3Cross(vUp, CamRight)); // 외적을 하면 각이 2개 생기긴 하는데 흠.. 이건 나중에 고민하기. 
-
-		// vLook과 캐릭터의 look 의 내적구하기 
-		//_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-
-		float dotResult = XMVectorGetX(XMVector3Dot(vLook, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-		_vector crossResult = XMVector3Cross(PlayerLook, vLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		//내적의 각도 구하기
-
-		if (!(GetKeyState('A') & 0x8000) && !(GetKeyState('D') & 0x8000))
-		{
 			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
 
-			if (abs(Radian) <= 0.5f)
+			if (abs(Radian) <= 0.8f)
 				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
 
-			else
-			{
-				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
-			}
+
 		}
 
-		else
-		{
-			if (m_pGameInstance->isKeyEnter(DIK_A))
-				pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f)); // 이러면 안되고 카메라기준이네
 
-			if (GetKeyState('A') & 0x8000)
-			{
-				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
+		else if (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
+		{
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));
+			_vector vLeftLook90Degree = XMVector3Transform(vLookFront, rotationMartix);
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vLeftLook90Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vLeftLook90Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
+			}
+
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
+
+			if (abs(Radian) <= 0.8f)
 				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
+
+
+		}
+
+
+		else if (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
+		{
+
+			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(90.f));
+			_vector vRightLook90Degree = XMVector3Transform(vLookFront, rotationMartix);
+
+			float dotResult = XMVectorGetX(XMVector3Dot(vRightLook90Degree, PlayerLook));
+			dotResult = max(-1.0f, min(dotResult, 1.0f));
+			float Radian = acosf(dotResult);
+
+			_vector crossResult = XMVector3Cross(PlayerLook, vRightLook90Degree);
+			float crossY = XMVectorGetY(crossResult);
+			if (crossY < 0.0f) {
+				Radian = -Radian;
 			}
 
-			if (m_pGameInstance->isKeyEnter(DIK_D))
-				pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-45.f));
+			pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
 
-			if (GetKeyState('D') & 0x8000)
-			{
-				pGameObject->Get_Transfrom()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMoveX * 0.05f);
+			if (abs(Radian) <= 0.8f)
 				pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
-			}
 		}
-
 	}
 
 
 
-	if (!(GetKeyState('W') & 0x8000)
-		&& !(GetKeyState('S') & 0x8000)
-		&& (GetKeyState('A') & 0x8000))
-	{
-		//_vector vLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));		
-
-		// 지금 문제가 캐릭터가 이동할때 방향이 바뀌니깐 앞 뒤 상태는 줘야할거같은데 
-		float dotResult = XMVectorGetX(XMVector3Dot(CamLeft, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-
-		_vector crossResult = XMVector3Cross(CamLeft, PlayerLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), -Radian * m_fTurnSpeed * fTimeDelta);
-
-
-		if (abs(Radian) <= 0.5f)
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
-
-		else
-		{
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);
-		}
-
-
-	}
-
-	if (m_pGameInstance->isKeyPressed(DIK_A)
-		&& m_pGameInstance->isKeyEnter(DIK_W))
-	{
-		//_vector vLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));	
-
-		// 지금 문제가 캐릭터가 이동할때 방향이 바뀌니깐 앞 뒤 상태는 줘야할거같은데 
-		float dotResult = XMVectorGetX(XMVector3Dot(CamLeft, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-
-		_vector crossResult = XMVector3Cross(CamLeft, PlayerLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f)); // 이러면 안되고 카메라기준이네	
-
-	}
-
-	if (m_pGameInstance->isKeyPressed(DIK_A)
-		&& m_pGameInstance->isKeyEnter(DIK_S)
-		&& (!(GetKeyState('D') & 0x8000)))
-	{
-		//_vector vLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-
-
-		// 지금 문제가 캐릭터가 이동할때 방향이 바뀌니깐 앞 뒤 상태는 줘야할거같은데 
-		float dotResult = XMVectorGetX(XMVector3Dot(CamLeft, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-
-		_vector crossResult = XMVector3Cross(CamLeft, PlayerLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-45.f)); // 이러면 안되고 카메라기준이네	
-
-
-	}
-
-
-
-	if (!(GetKeyState('W') & 0x8000) &&
-		!(GetKeyState('S') & 0x8000) &&
-		(GetKeyState('D') & 0x8000))
-	{
-		//_vector vLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-
-
-		/* 음과 양수를 판별*/
-
-
-		float dotResult = XMVectorGetX(XMVector3Dot(CamRight, PlayerLook));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-		_vector crossResult = XMVector3Cross(PlayerLook, CamRight);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * m_fTurnSpeed * fTimeDelta);
-
-
-		if (abs(Radian) <= 0.5f)
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed, pNavigation);
-
-		else
-		{
-			pGameObject->Get_Transfrom()->Go_Straight(fTimeDelta * m_fWalkSpeed * 0.1f, pNavigation);	
-		}
-
-
-	}
-
-	if (m_pGameInstance->isKeyPressed(DIK_D)
-		&& m_pGameInstance->isKeyEnter(DIK_W))
-	{
-		//_vector vLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));	
-
-
-
-		// 지금 문제가 캐릭터가 이동할때 방향이 바뀌니깐 앞 뒤 상태는 줘야할거같은데 
-		float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, CamRight));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-
-		_vector crossResult = XMVector3Cross(CamRight, PlayerLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-45.f)); // 이러면 안되고 카메라기준이네	
-
-	}
-
-
-	if (m_pGameInstance->isKeyPressed(DIK_D)
-		&& m_pGameInstance->isKeyEnter(DIK_S))
-	{
-
-		// 지금 문제가 캐릭터가 이동할때 방향이 바뀌니깐 앞 뒤 상태는 줘야할거같은데 
-		float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, CamRight));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		float Radian = acosf(dotResult);
-
-
-		_vector crossResult = XMVector3Cross(CamRight, PlayerLook);
-		float crossY = XMVectorGetY(crossResult);
-		if (crossY < 0.0f) {
-			Radian = -Radian;
-		}
-
-		pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f)); // 이러면 안되고 카메라기준이네	
-
-	}
 }
 
 void CPlayerRun::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)

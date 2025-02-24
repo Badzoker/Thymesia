@@ -17,6 +17,7 @@ HRESULT CAttack_LButton_2::Initialize()
 
 void CAttack_LButton_2::Priority_Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
 {
+
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
