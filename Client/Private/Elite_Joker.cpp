@@ -53,20 +53,19 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
-    m_fPlaySpeed = 1.f;
 
     return S_OK;
 }
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
+    m_fTimeDelta = fTimeDelta;
     m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
 
     if (m_fDistance <= 20.f && !m_bActive)
     {
-        m_bActive = true;
         m_pState_Manager->ChangeState(new CElite_Joker::Intro_State(), this);
     }
     if (m_pGameInstance->isKeyEnter(DIK_U))
@@ -75,7 +74,9 @@ void CElite_Joker::Priority_Update(_float fTimeDelta)
         m_fDelayTime = 0.f;
         m_pState_Manager->ChangeState(new CElite_Joker::Stun_State(), this);
     }
-    m_fTimeDelta = fTimeDelta;
+    if (!m_bPatternProgress)
+        RotateDegree_To_Player();
+
     __super::Priority_Update(fTimeDelta);
 }
 
@@ -88,9 +89,9 @@ void CElite_Joker::Update(_float fTimeDelta)
 
     m_pState_Manager->State_Update(fTimeDelta, this);
 
+    /* 루트 모션 애니메션 코드 */
     _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     _vector test = { 0.f,0.f,0.f,1.f };
-    /* 루트 모션 애니메션 코드 */
     m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
     _uint iTest = m_pModelCom->Get_Current_Animation_Index();
     if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished()))
@@ -191,7 +192,7 @@ void CElite_Joker::PatternCreate()
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 5.f)
+        if (m_fDelayTime >= 2.f)
         {
             if (m_fDistance >= 5.f)
                 Far_Pattern_Create();
@@ -270,7 +271,7 @@ void CElite_Joker::RotateDegree_To_Player()
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
     m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 0.f)
+    if (m_fRotateDegree > 5.f)
     {
         m_bNeed_Rotation = true;
     }
@@ -361,7 +362,7 @@ void CElite_Joker::Idle_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Idle_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Walk_State(), pObject);
 }
 
@@ -375,19 +376,21 @@ void CElite_Joker::Idle_State::State_Exit(CElite_Joker* pObject)
 
 void CElite_Joker::Intro_State::State_Enter(CElite_Joker* pObject)
 {
+    pObject->m_bPatternProgress = true;
+    pObject->m_bActive = true;
     m_iIndex = 15;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CElite_Joker::Intro_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    int a = 10;
     if (pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
 void CElite_Joker::Intro_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_bPatternProgress = false;
 }
 
 #pragma endregion
@@ -396,7 +399,6 @@ void CElite_Joker::Intro_State::State_Exit(CElite_Joker* pObject)
 
 void CElite_Joker::Walk_State::State_Enter(CElite_Joker* pObject)
 {
-    pObject->RotateDegree_To_Player();
     if (pObject->m_fDistance > 1.5f)
     {
         m_iIndex = 30;
@@ -423,6 +425,8 @@ void CElite_Joker::Walk_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Walk_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+
+
     if (m_iIndex == 30)
         pObject->m_pTransformCom->Go_Straight(fTimeDelta);
     else if (m_iIndex == 29)
@@ -445,7 +449,6 @@ void CElite_Joker::Walk_State::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Attack_Combo_A::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 0;
-    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     //rand() % 2
     _uint iRandom = 0;
@@ -461,6 +464,7 @@ void CElite_Joker::Attack_Combo_A::State_Update(_float fTimeDelta, CElite_Joker*
     if (m_iIndex == 0 && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
     {
         m_iIndex++;
+        pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     if (pObject->m_pModelCom->GetAniFinish())
@@ -478,7 +482,6 @@ void CElite_Joker::Attack_Combo_A::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Attack_Combo_B::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 2;
-    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
     _uint iRandom = 0;
@@ -493,6 +496,7 @@ void CElite_Joker::Attack_Combo_B::State_Update(_float fTimeDelta, CElite_Joker*
     if (m_iIndex == 2 && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
     {
         m_iIndex++;
+        pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -522,7 +526,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
     if (m_iIndex == 12)
     {
         m_fTimer += 1.f * fTimeDelta;
-        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), nullptr, fTimeDelta * 2.f);
+        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), nullptr, fTimeDelta * 3.f);
     }
     if (m_iIndex == 13 && pObject->m_pModelCom->GetAniFinish())
     {
@@ -559,10 +563,12 @@ void CElite_Joker::Attack_Wheel::State_Enter(CElite_Joker* pObject)
 void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
     if (m_iIndex == 35)
-    {
         m_fTimer += 1.f * fTimeDelta;
+
+    if (m_iIndex == 35 && pObject->m_fDistance > 1.f)
+    {
         pObject->RotateDegree_To_Player();
-        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), nullptr, fTimeDelta);
+        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), pObject->m_pNavigationCom, fTimeDelta * 2.f);
     }
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
@@ -654,12 +660,15 @@ void CElite_Joker::Execution_State::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Attack_Shock::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 14;
-    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CElite_Joker::Attack_Shock::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+    //특정 키프레임까지만 쳐다보게하기
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 70.f)
+        pObject->RotateDegree_To_Player();
+
     if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
@@ -673,7 +682,6 @@ void CElite_Joker::Attack_Shock::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Attack_Strong::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 16;
-    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
