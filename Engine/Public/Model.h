@@ -28,6 +28,7 @@ public:
 	virtual HRESULT Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render(_uint iMeshIndex);	
+	virtual HRESULT Render_Instance(_uint _iNumInstanceNumber);
 
 public:
 	void SetUp_Animation(_uint iAnimIndex, _bool isLoop);
@@ -41,6 +42,11 @@ public:
 
 	/* 2월 19일 추가 */
 	_float Get_CurrentAnmationTrackPosition() { return m_fCurrentTrackPosition; }	
+
+
+	/* 2월 25일 추가 */
+	HRESULT	Create_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData);
+
 
 private:
 	/* 가져온 정보를 저장한다. */
@@ -107,7 +113,10 @@ private:
 	HRESULT		Save_Model(const _char* pModelFilePath);
 	HRESULT     Load_Model(_fmatrix PreTransformMatrix);
 
-//
+private:
+	ID3D11Buffer*				m_pInstanceBuffer = { nullptr };
+	ID3D11ShaderResourceView*	m_pInstanceBufferSRV = { nullptr };
+	_uint						m_iNumInstances = {};
 
 private:
 	HRESULT Ready_Meshes(_fmatrix PreTransformMatrix);	

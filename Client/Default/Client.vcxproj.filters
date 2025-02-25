@@ -184,6 +184,12 @@
     <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R">
       <UniqueIdentifier>{8243d744-c9eb-4546-ae8b-09a9eba8a0cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\InstancingObject">
+      <UniqueIdentifier>{dd7b069b-8769-42ec-aa3e-92ea387e9171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InstancingObject\GroundObject">
+      <UniqueIdentifier>{2c5d2e7c-bc30-4bd1-95de-828ebca2ce0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -342,6 +348,12 @@
     <ClInclude Include="..\public\Rock_On_Run_R.h">
       <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EnvironmentObject.h">
+      <Filter>02.GameObject\InstancingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GroundObject.h">
+      <Filter>02.GameObject\InstancingObject\GroundObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -491,6 +503,12 @@
     <ClCompile Include="..\private\Rock_On_Run_R.cpp">
       <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_R</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\EnvironmentObject.cpp">
+      <Filter>02.GameObject\InstancingObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GroundObject.cpp">
+      <Filter>02.GameObject\InstancingObject\GroundObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -542,6 +560,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTexAge.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

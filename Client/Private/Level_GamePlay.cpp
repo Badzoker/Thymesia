@@ -5,6 +5,7 @@
 #include "Layer.h"	
 
 #include "Object.h"
+#include "EnvironmentObject.h"
 
 #include "UI_LeftBackground.h"
 
@@ -145,7 +146,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
 
-	Load_Objects(16);
+	Load_Objects(17);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -281,6 +282,82 @@ HRESULT CLevel_GamePlay::Ready_Layer_Ladder(const _tchar* pLayerTag)
 HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 {
 	_ulong dwByte = {};
+	_ulong dwByte2 = {};
+
+	string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	_uint iSize2 = 0;
+
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);
+
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CObject::OBJECT_DESC Desc{};
+
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+		Desc.ObjectName = szLoadName;
+
+		if(FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
+			return E_FAIL;
+	}
+
+	CEnvironmentObject::ENVIRONMENT_OBJECT_DESC Desc = {};
+	_uint iGroundPosVectorSize = 0;
+	ReadFile(hFile, &iGroundPosVectorSize, sizeof(_uint), &dwByte2, nullptr);
+
+	for (size_t i = 0; i < iGroundPosVectorSize; i++)
+	{
+		_float3 fGroundObjectPos;
+		ReadFile(hFile, &fGroundObjectPos, sizeof(_float3), &dwByte2, nullptr);
+		Desc.vecPosition.push_back(fGroundObjectPos);
+	}
+
+	for (size_t i = 0; i < iSize2; i++)
+	{
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte2, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte2, nullptr);
+		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte2, nullptr);
+
+		Desc.ObjectName = szLoadName;
+
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc)))
+			return E_FAIL;
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_InstancingObjects(_int iObject_Level)
+{
+	_ulong dwByte = {};
 
 	string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
 
@@ -301,25 +378,6 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 	_uint iSize = 0;
 
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
-
-	for (size_t i = 0; i < iSize; i++)
-	{
-		CObject::OBJECT_DESC Desc{};
-
-		_char szLoadName[MAX_PATH] = {};
-
-		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
-
-		Desc.ObjectName = szLoadName;
-
-		if(FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
-			return E_FAIL;
-	}
-	CloseHandle(hFile);
 
 	return S_OK;
 }

@@ -122,25 +122,25 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 #pragma region 바이너리화 Save용도
 
 	
-	//m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);				
-	//if (nullptr == m_pAIScene)		
-	//	return E_FAIL;	
-	// 
-	//if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))				
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Meshes(PreTransformMatrix)))		
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Materials(pModelFilePath)))			
-	//	return E_FAIL;	
-	//
-	//
-	//if (FAILED(Ready_Animations()))			
-	//	return E_FAIL;	
-	//
-	//if (FAILED(Save_Model(pModelFilePath)))	
-	//	return E_FAIL;	
+	/*m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);				
+	if (nullptr == m_pAIScene)		
+		return E_FAIL;	
+	 
+	if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))				
+		return E_FAIL;
+	
+	if (FAILED(Ready_Meshes(PreTransformMatrix)))		
+		return E_FAIL;
+	
+	if (FAILED(Ready_Materials(pModelFilePath)))			
+		return E_FAIL;	
+	
+	
+	if (FAILED(Ready_Animations()))			
+		return E_FAIL;	
+	
+	if (FAILED(Save_Model(pModelFilePath)))	
+		return E_FAIL;	*/
 	
 #pragma endregion
 
@@ -156,6 +156,19 @@ HRESULT CModel::Render(_uint iMeshIndex)
 {
 	m_Meshes[iMeshIndex]->Bind_InputAssembler();
 	m_Meshes[iMeshIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_Instance(_uint _iNumInstanceNumber)
+{
+	if (!m_pInstanceBuffer)
+		return E_FAIL;
+
+	for (UINT i = 0; i < m_iNumMeshes; i++)
+	{
+		m_Meshes[i]->Render_Instance(m_pInstanceBuffer, _iNumInstanceNumber);
+	}
 
 	return S_OK;
 }
@@ -254,13 +267,39 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, _uint iMeshIndex, const _cha
 	return m_Meshes[iMeshIndex]->Bind_BoneMatrices(pShader, pConstantName, m_Bones);	
 }
 
+HRESULT CModel::Create_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData)
+{
+	if (m_pInstanceBuffer)
+	{
+		m_pInstanceBuffer->Release();
+		m_pInstanceBuffer = nullptr;
+	}
 
+	m_iNumInstances = _iNumInstances;
+
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.ByteWidth = sizeof(VTX_MODEL_INSTANCE) * _iNumInstances;
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = sizeof(VTX_MODEL_INSTANCE);
+
+
+	D3D11_SUBRESOURCE_DATA initData = {};
+	initData.pSysMem = _TagInstanceData;
+
+	HRESULT hr = m_pDevice->CreateBuffer(&bufferDesc, &initData, &m_pInstanceBuffer);
+	if (FAILED(hr))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 HRESULT CModel::Save_Model(const _char* pModelFilePath)
 {
 	string binaryFile = "../Bin/BinaryFile/";
 	// 파일 이름이 포함된 문자열
-
 
 	// 파일 이름에서 디렉토리 경로를 제외한 부분 추출 
 	string filenamePart(m_fullpath);
@@ -554,4 +593,6 @@ void CModel::Free()
 	m_Materials.clear();	
 	m_Meshes.clear();	
 
+
+	Safe_Release(m_pInstanceBuffer);
 }

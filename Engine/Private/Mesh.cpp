@@ -78,6 +78,29 @@ HRESULT CMesh::Initialize(void * pArg)
 	return S_OK;
 }
 
+HRESULT CMesh::Render_Instance(ID3D11Buffer* pInstanceBuffer, _uint _iNumInstance)
+{
+	ID3D11Buffer* pVertexBuffer[2] =
+	{
+		m_pVB,
+		pInstanceBuffer
+	};
+
+	_uint iVertexStrides[2] =
+	{
+		sizeof(VTXMESH),
+		sizeof(VTX_MODEL_INSTANCE)
+	};
+	_uint iOffsets[2] = { 0, 0 };
+
+	m_pContext->IASetVertexBuffers(0, 2, pVertexBuffer, iVertexStrides, iOffsets);
+	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+
+	m_pContext->DrawIndexedInstanced(m_iNumIndices, _iNumInstance, 0, 0, 0);
+
+	return S_OK;
+}
+
 HRESULT CMesh::Bind_BoneMatrices(CShader* pShader, const _char* pContstantName, const vector<class CBone*>& Bones)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped_StrBuffer_Resource;
