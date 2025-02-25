@@ -146,7 +146,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
 
-	Load_Objects(17);
+	Load_Objects(16);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -304,7 +304,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 	_uint iSize2 = 0;
 
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
-	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);
+	
 
 	for (size_t i = 0; i < iSize; i++)
 	{
@@ -324,6 +324,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 			return E_FAIL;
 	}
 
+	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);
 	CEnvironmentObject::ENVIRONMENT_OBJECT_DESC Desc = {};
 	_uint iGroundPosVectorSize = 0;
 	ReadFile(hFile, &iGroundPosVectorSize, sizeof(_uint), &dwByte2, nullptr);
