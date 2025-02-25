@@ -28,8 +28,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     CGameObject::GAMEOBJECT_DESC        Desc{};
 
-    Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.fSpeedPerSec = 1.f;
+    Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
     if (FAILED(__super::Initialize(&Desc)))
         return E_FAIL;
@@ -54,26 +54,28 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
         return E_FAIL;
 
 
+
     return S_OK;
 }
 
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
-
+    m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
 
     if (m_fDistance <= 20.f && !m_bBossActive)
     {
-        //임시용으로 p버튼 누르면 보스 Active
-        //나중에 플레이어 좌표에 따라 Active 할듯.
         m_iPhase = 1;
-        m_bPatternProgress = false;
         m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
     }
     if (m_pGameInstance->isKeyEnter(DIK_I))
     {
         //임시용으로 I버튼으로 스턴 상태부여
         //HP에 따라 부여될 예정
+        m_bPatternProgress = true;
+        m_fDelayTime = 0.f;
         m_pState_Manager->ChangeState(new CBoss_Varg::Stun_State(), this);
     }
     if (m_pGameInstance->isKeyEnter(DIK_K))
@@ -81,25 +83,24 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
         //임시용으로 k버튼 누르면 피격모션 진행
         m_pState_Manager->ChangeState(new CBoss_Varg::Hit_State(), this);
     }
+    m_fLookTime += fTimeDelta;
 
-    m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
-    if (m_fDistance <= 1.5f)
-        m_bCrush = true;
-    else
-        m_bCrush = false;
-
+    if (!m_bPatternProgress)
+    {
+        m_fLookTime = 0.f;
+        RotateDegree_To_Player();
+    }
     __super::Priority_Update(fTimeDelta);
 }
 
 void CBoss_Varg::Update(_float fTimeDelta)
 {
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
 
-    if (!m_bExcution_Progress)
-        PatternCreate();
+    if (m_bNeed_Rotation)
+    {
+        Rotation_To_Player();
+    }
+    PatternCreate();
 
     m_pState_Manager->State_Update(fTimeDelta, this);
 
@@ -110,7 +111,7 @@ void CBoss_Varg::Update(_float fTimeDelta)
 
     if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bBossActive/*&& m_iState != STATE_IDLE*/)
     {
-        if ((m_pNavigationCom->isMove(vCurPosition) && !m_bCrush) || m_bCan_Move_Anim)
+        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) || m_bCan_Move_Anim)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
 
         /* 2월 19일 추가 코드 */
@@ -198,6 +199,8 @@ HRESULT CBoss_Varg::Ready_PartObjects()
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
         return E_FAIL;
+
+
 
     return S_OK;
 
@@ -311,7 +314,7 @@ void CBoss_Varg::RotateDegree_To_Player()
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
     m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 0.f)
+    if (m_fRotateDegree > 5.f)
     {
         m_bNeed_Rotation = true;
     }
@@ -324,15 +327,15 @@ void CBoss_Varg::RotateDegree_To_Player()
 
 void CBoss_Varg::Rotation_To_Player()
 {
-    _float fRadians = 3.f;
+    _float fRadians = 1.f;
     if (m_fRotateDegree < 0.f)
     {
         fRadians *= -1;
-        m_fAngle -= 3.f;
+        m_fAngle -= 1.f;
     }
     else
     {
-        m_fAngle += 3.f;
+        m_fAngle += 1.f;
     }
 
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
@@ -398,7 +401,6 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 36;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -410,7 +412,7 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
-    if (m_iIndex == 35 && pObject->m_bCrush && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    if (m_iIndex == 35 && pObject->m_fDistance <= 1.5f && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), pObject);
 }
 
@@ -424,6 +426,8 @@ void CBoss_Varg::Stun_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Intro_State
 void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 {
+    pObject->m_bBossActive = true;
+    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->SetUp_Animation(17, false);
 }
 
@@ -437,7 +441,7 @@ void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 
 void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_bBossActive = true;
+    pObject->m_bPatternProgress = false;
 }
 
 #pragma endregion
@@ -609,7 +613,7 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     //2단
-    if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 50.f)
+    if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
         m_iIndex += 1;
         pObject->RotateDegree_To_Player();
@@ -644,7 +648,7 @@ void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 11;
         pObject->RotateDegree_To_Player();
@@ -671,7 +675,7 @@ void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
@@ -703,7 +707,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
@@ -731,13 +735,13 @@ void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
-        m_iIndex = 9;
+        m_iIndex = 14;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 9 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State, pObject);
 }
 
@@ -764,7 +768,7 @@ void CBoss_Varg::Run_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
-    if (pObject->m_bCrush || m_fTimer >= 3.f)
+    if (pObject->m_fDistance <= 1.5f || m_fTimer >= 3.f)
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Attack_Combo_B(), pObject);
 
 }
@@ -801,8 +805,6 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
     else
         m_iIndex = 41;
 
-    pObject->m_bPatternProgress = true;
-    pObject->m_bExcution_Progress = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -822,8 +824,7 @@ void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
     if (pObject->m_iPhase == 1)
         pObject->m_iPhase = 2;
 
-    pObject->m_fDelayTime = 0.f;
-    pObject->m_bExcution_Progress = false;
+
     pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
@@ -869,7 +870,7 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     //pObject->RotateDegree_To_Player();
     pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
 
-    if (pObject->m_bCrush)
+    if (pObject->m_fDistance <= 1.5f)
         pObject->m_pModelCom->SetUp_Animation(28, false);
     //안부딪혀서 끝까지 진행된 경우
     if (pObject->m_pModelCom->GetAniFinish())

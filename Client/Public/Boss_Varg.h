@@ -16,18 +16,6 @@ BEGIN(Client)
 
 class CBoss_Varg final : public CContainerObject
 {
-public:
-	enum STATE_VARG
-	{
-		STATE_NOT_ACTIVE,
-		STATE_INTRO,
-		STATE_IDLE,
-		STATE_WALK,
-		STATE_RUN,
-		STATE_PATTERN,
-		STATE_END
-	};
-
 private:
 	CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoss_Varg(const CBoss_Varg& Prototype);
@@ -54,8 +42,6 @@ private:
 	_vector                          m_vPlayerPos = {};
 	_bool                            m_bBossActive = {};
 	_bool                            m_bPatternProgress = {};
-	_bool                            m_bExcution_Progress = {};
-	_bool                            m_bCrush = {};
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_bNeed_Rotation = {};
 
@@ -68,6 +54,7 @@ private:
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDistance = {};
 	_float                           m_fAngle = {};
+	_float                           m_fLookTime = {};
 	_float                           m_fRotateDegree = {};
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
