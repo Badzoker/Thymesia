@@ -31,18 +31,21 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_float*				m_fPlayerPosition = {nullptr};
+	_float* m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
+	_float				m_fLerpTime = { 3.f };
+
 	_bool				m_bStop = false;
 
-	CTransform*			m_pPlayerTransformCom = { false };
-	CCollider*			m_pPlayerColliderTransformCom = { false };
+	CTransform* m_pPlayerTransformCom = { false };
+	CCollider* m_pPlayerColliderTransformCom = { false };
 
-	_long			    m_MouseMoveAmount = {};
+	_vector				m_vPlayerHeadPos = {};
+	_vector			    m_vLerpPlayerHeadPos = {};
 
-	_vector				m_vCurCamPos = {};
-	_vector				m_vCurCamDir = {};
-	_float				m_fLerpTime  = {3.f};		
+
+
+
 
 public:
 	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

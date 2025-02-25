@@ -30,32 +30,30 @@ public:
 	/* 2월 19일 수정 사항 */
 	void Set_LerpTime(_float _fLerpTime) { m_LerpTime = _fLerpTime; }
 
+	void Set_StartOffSetTrackPosition(_float _fOffsetTrackValue) { m_fSetStartOffSetTrackPosition = _fOffsetTrackValue; }	
+
 private:
+	_bool                      m_bReset = { false };	
+	_bool					   m_isFinished = { false };
+	_bool					   m_bFirst = { true };	
+
+	_uint					   m_iNumChannels = {};
+
 	_float					   m_fDuration = {};
 	_float					   m_fTickPerSecond = {};
 	_float					   m_fCurrentTrackPosition = {};
 	_float					   m_fAnimationSpeed = { 1.f };	
-	_uint					   m_iNumChannels = {};	
+	_float					   m_fSetStartOffSetTrackPosition = {};	
+	_float					   m_LerpTime = 0.2f;	
+	_float					   m_LerpTimeAcc = 0.f;	
 
 	/*Channel == Bone*/
 	vector<class CChannel*>    m_Channels;
 	
 	_char					   m_szName[MAX_PATH];	
 
-	vector<_float>			   m_vecKeyFrameAnimationSpeed;	
-
-	/*11월 27일 추가 코드*/
-    /* 그러면 저기서 애니메이션을 초기화 시켜줘야하는데.*/
-
-	bool                       m_bReset = { false };
-
-	_float					   m_LerpTime    = 0.2f;
-	_float					   m_LerpTimeAcc = 0.f;
-
-	_bool					   m_isFinished = { false };
-
 	vector<_uint>*			   m_CurrentKeyFameIndices;	
-
+	vector<_float>			   m_vecKeyFrameAnimationSpeed;
 
 public:
 
