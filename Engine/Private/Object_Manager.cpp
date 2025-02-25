@@ -130,6 +130,17 @@ CGameObject* CObject_Manager::Get_Player_GameObject_To_Layer(_uint iLevelIndex, 
 	return *listGameObject.begin();		
 }
 
+HRESULT CObject_Manager::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (pLayer == nullptr)
+		return E_FAIL;;
+
+
+	return pLayer->UIScene_Render_OnOff(bCheck);;
+}
+
 CComponent* CObject_Manager::Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName)
 {
 	/*컴포넌트 들어간 레이어 찾고*/

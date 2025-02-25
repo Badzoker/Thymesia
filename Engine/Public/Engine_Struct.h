@@ -41,6 +41,15 @@ namespace Engine
 		XMFLOAT4		vEmissive;
 	};
 
+	struct UI_TextInfo // 텍스트 정보 저장용
+	{
+		_uint		iTextID;			// 텍스트 고유 키값
+		_wstring	strFontName;		// 사용하는 폰트 이름
+		_wstring	srtTextContent;		// 텍스트 내용
+		_float2		fTextStartPos;		// 그려지는 시작점(중점X)
+		_float2		fTextSize;			// TextContent 길이에 따라 자동으로 구해지는 가로 세로 길이
+	};
+
 	struct ENGINE_DLL VTXPOS	
 	{
 		XMFLOAT3  vPosition; 

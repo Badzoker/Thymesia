@@ -39,6 +39,7 @@
 #include "UI_AttributeButton.h"
 #include "UI_PlayerLevelUP.h"
 #include "UI_PlayerAttribute.h"
+#include "UI_MouseCursor.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -314,6 +315,10 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_MouseCursor*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MouseCursor"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/TexUI_GameCursor.dds"), 1))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UI_LevelUP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_LevelUP"),
@@ -331,7 +336,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Slot_Attribute"),
 		CUI_AttributeButton::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
+
+	/* For.Prototype_GameObject_UI_MouseCursor */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_MouseCursor"),
+		CUI_MouseCursor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 

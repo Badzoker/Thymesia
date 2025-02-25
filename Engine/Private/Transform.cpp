@@ -235,6 +235,27 @@ void CTransform::Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter)
 	Set_State(STATE_POSITION, vNewCamPos);
 }
 
+void CTransform::Set_UIObj_Rotation(_float fRadians)
+{
+	m_fRotation = { 0.f ,0.f , fRadians };
+
+	_float3			vScaled = Compute_Scaled();
+
+	_vector			vRight = XMVector3Normalize(Get_State(CTransform::STATE_RIGHT));
+	_vector			vUp = XMVector3Normalize(Get_State(CTransform::STATE_UP));
+	_float3         vPosition = Get_State_UIObj(CTransform::STATE_POSITION); // 디버그용
+
+	_matrix		RotationMatrixZ = XMMatrixRotationZ(fRadians);
+
+	vRight = XMVector3TransformNormal(vRight, RotationMatrixZ) * vScaled.x;
+	vUp = XMVector3TransformNormal(vUp, RotationMatrixZ) * vScaled.y;
+
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+
+	_matrix test = XMLoadFloat4x4(&m_WorldMatrix); // 디버그용
+}
+
 
 void CTransform::Rotation(_fvector vAxis, _float fRadians)
 {

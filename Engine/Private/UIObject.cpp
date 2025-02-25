@@ -26,6 +26,7 @@ HRESULT CUIObject::Initialize_Prototype()
 HRESULT CUIObject::Initialize(void * pArg)
 {
 	/* 현재 뷰포트의 정보를 얻어온다. */
+	_uint2				vViewportSize = m_pGameInstance->Get_ViewportSize();
 	UIOBJECT_DESC*		pDesc = static_cast<UIOBJECT_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -38,10 +39,9 @@ HRESULT CUIObject::Initialize(void * pArg)
 	m_fSize.y = pDesc->fSizeY;
 	m_szProtoName = pDesc->szProtoName;
 	m_iShaderPassNum = pDesc->iShaderPassNum;
-	_uint2			vViewportSize = m_pGameInstance->Get_ViewportSize();
 
 	m_pTransformCom->Scaling(_float3(pDesc->fSizeX, pDesc->fSizeY, 1.f));
-	//m_pTransformCom->Set_UIObj_Rotation(vRot, pDesc->fRotation.z);
+	m_pTransformCom->Set_UIObj_Rotation(pDesc->fRotation.z);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pDesc->fX - (vViewportSize.x * 0.5f), -pDesc->fY + (vViewportSize.y * 0.5f), pDesc->fZ, 1.f));
 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(static_cast<_float>(vViewportSize.x), static_cast<_float>(vViewportSize.y), pDesc->fNear, pDesc->fFar));

@@ -54,6 +54,12 @@ public:
 		XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);*/
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[eState]), vState);		
 	}
+
+	void Set_State_UIObj(STATE eState, _float2 _fPos) {
+		_uint2			vViewportSize = { 1600,900 };
+
+		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[eState]), XMVectorSet(_fPos.x - (vViewportSize.x * 0.5f), -_fPos.y + (vViewportSize.y * 0.5f), 0.f, 1.f));
+	}
 	_float3 Get_State_UIObj(STATE eState) {
 
 		_float3 fPos = {};
@@ -101,6 +107,7 @@ public:
 	void Turn_Move(_fvector vAxis, _float fTimeDelta);	
 	void Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter);	
 	
+	void Set_UIObj_Rotation(_float fRadians);
 
 
 public:
@@ -121,6 +128,7 @@ private:
 	_float					m_fRotationPerSec = { 0.f };
 	_float4					m_fPosition = {};
 	_float3					m_fScaling = {};
+	_float3					m_fRotation = {};
 
 
 
