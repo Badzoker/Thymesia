@@ -41,8 +41,19 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
 
 _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
 {
-    if (*pCurrentTrackPoisiton <= m_fDuration)  
-        *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);  
+    if (m_bFirst)
+    {
+        *pCurrentTrackPoisiton += m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);
+        m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
+        m_bFirst = false;
+    }
+
+
+    else if (*pCurrentTrackPoisiton <= m_fDuration)
+    {
+        *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);
+        m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
+    }
 
     if (true == isLoop && *pCurrentTrackPoisiton >= m_fDuration)
     {
@@ -78,8 +89,10 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
 
 void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& CurrentKeyFrameIndices, _float* pCurrentTrackPoisiton)
 {
-    *pCurrentTrackPoisiton = 0.0f;     
-    m_isFinished =  false;
+    *pCurrentTrackPoisiton = 0.0f;      
+    m_isFinished =  false;  
+    m_fCurrentTrackPosition = 0.f;  
+    m_bFirst = true;    
     
     _uint  iChannelIndex = { 0 };
     for(auto& pChannel : m_Channels)
