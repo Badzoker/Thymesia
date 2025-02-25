@@ -42,16 +42,27 @@ void CUI_PlayerAttribute::Update(_float fTimeDelta)
 void CUI_PlayerAttribute::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUI_PlayerAttribute::Render()
 {
+	if (m_bRenderOpen)
+	{
+		vector<UI_TextInfo>::iterator it;
+		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
+		{
+			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
+
+		}
+	}
 	return S_OK;
 }
 
 HRESULT CUI_PlayerAttribute::Ready_UIObject()
 {
 	LoadData_UI_Scene(UISCENE_ATTRIBUTE, L"UIScene_PlayerAttribute");
+	LoadData_Text_Scene();
 	return S_OK;
 }
 
@@ -110,6 +121,53 @@ HRESULT CUI_PlayerAttribute::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* 
 	CloseHandle(hFile);
 
 	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
+	return S_OK;
+}
+
+HRESULT CUI_PlayerAttribute::LoadData_Text_Scene()
+{
+	HANDLE		hFile = CreateFile(L"../Bin/DataFiles/UISave/PlayerAttributeText.dat", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"Load File - Text", _T("Fail"), MB_OK);
+		return S_OK;
+	}
+
+	DWORD	dwByte(0);
+	UI_TextInfo TextInfo = {};
+	_uint iLen = {};
+
+	while (true)
+	{
+
+		ReadFile(hFile, &TextInfo.iTextID, sizeof(_uint), &dwByte, nullptr);
+
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		TextInfo.strFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(TextInfo.strFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		TextInfo.srtTextContent.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(TextInfo.srtTextContent.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		ReadFile(hFile, &TextInfo.fTextStartPos, sizeof(_float2), &dwByte, nullptr);
+		ReadFile(hFile, &TextInfo.fTextSize, sizeof(_float2), &dwByte, nullptr);
+
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+
+
+		m_TextInfo.push_back(TextInfo);
+
+	}
+
+	CloseHandle(hFile);
+
+	//MessageBox(g_hWnd, L"Text Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

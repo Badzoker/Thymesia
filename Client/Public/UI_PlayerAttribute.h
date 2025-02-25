@@ -22,8 +22,10 @@ public:
 public:
 	HRESULT Ready_UIObject();
 	HRESULT LoadData_UI_Scene(_uint iSceneIndex, const _tchar* szSceneName); // 현재 UI 불러오기
+	HRESULT LoadData_Text_Scene(); // 현재 텍스트 불러오기
 
 private:
+	vector<UI_TextInfo> m_TextInfo = {};
 
 public:
 	static CUI_PlayerAttribute* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -3,55 +3,70 @@
 #include "UI_Scene.h"
 #include "GameInstance.h"
 CUI_PlayerLevelUP::CUI_PlayerLevelUP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUIObject{ pDevice, pContext }
+	: CUIObject{ pDevice, pContext }
 {
 }
 
 CUI_PlayerLevelUP::CUI_PlayerLevelUP(const CUI_PlayerLevelUP& Prototype)
-    : CUIObject(Prototype)
+	: CUIObject(Prototype)
 {
 }
 
 HRESULT CUI_PlayerLevelUP::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_PlayerLevelUP::Initialize(void* pArg)
 {
-    if (FAILED(Ready_UIObject()))
-        return E_FAIL;
+	if (FAILED(Ready_UIObject()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 void CUI_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 {
-    __super::Priority_Update(fTimeDelta);
+	__super::Priority_Update(fTimeDelta);
 }
 
 void CUI_PlayerLevelUP::Update(_float fTimeDelta)
 {
-    __super::Update(fTimeDelta);
+	__super::Update(fTimeDelta);
 }
 
 void CUI_PlayerLevelUP::Late_Update(_float fTimeDelta)
 {
-    __super::Late_Update(fTimeDelta);
+	__super::Late_Update(fTimeDelta);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUI_PlayerLevelUP::Render()
 {
-    return S_OK;
+	if (m_bRenderOpen)
+	{
+		vector<UI_TextInfo>::iterator it;
+		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
+		{
+			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
+
+		}
+	}
+	return S_OK;
 }
 
 HRESULT CUI_PlayerLevelUP::Ready_UIObject()
 {
-    LoadData_UI_Scene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
-    return S_OK;
+	CUIObject::UIOBJECT_DESC Desc{};
+	if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, L"Prototype_GameObject_UI_MouseCursor", UISCENE_LEVELUP, L"UIScene_PlayerLevelUP", UI_IMAGE, &Desc)))
+		return S_OK;
+
+	LoadData_UI_Scene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
+	LoadData_Text_Scene();
+	return S_OK;
 }
 
 HRESULT CUI_PlayerLevelUP::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* szSceneName)
@@ -110,6 +125,53 @@ HRESULT CUI_PlayerLevelUP::LoadData_UI_Scene(_uint iSceneIndex, const _tchar* sz
 	CloseHandle(hFile);
 
 	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
+	return S_OK;
+}
+
+HRESULT CUI_PlayerLevelUP::LoadData_Text_Scene()
+{
+	HANDLE		hFile = CreateFile(L"../Bin/DataFiles/UISave/PlayerLevelUPText.dat", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"Load File - Text", _T("Fail"), MB_OK);
+		return S_OK;
+	}
+
+	DWORD	dwByte(0);
+	UI_TextInfo TextInfo = {};
+	_uint iLen = {};
+
+	while (true)
+	{
+
+		ReadFile(hFile, &TextInfo.iTextID, sizeof(_uint), &dwByte, nullptr);
+
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		TextInfo.strFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(TextInfo.strFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		TextInfo.srtTextContent.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(TextInfo.srtTextContent.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		ReadFile(hFile, &TextInfo.fTextStartPos, sizeof(_float2), &dwByte, nullptr);
+		ReadFile(hFile, &TextInfo.fTextSize, sizeof(_float2), &dwByte, nullptr);
+
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+
+
+		m_TextInfo.push_back(TextInfo);
+
+	}
+
+	CloseHandle(hFile);
+
+	//MessageBox(g_hWnd, L"Text Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

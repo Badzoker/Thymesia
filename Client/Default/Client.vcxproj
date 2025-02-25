@@ -211,6 +211,7 @@
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\Public\UI_AttributeButton.h" />
     <ClInclude Include="..\Public\UI_LeftBackground.h" />
+    <ClInclude Include="..\Public\UI_MouseCursor.h" />
     <ClInclude Include="..\Public\UI_PlayerAttribute.h" />
     <ClInclude Include="..\public\UI_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UI_PlayerMenu.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_AttributeButton.cpp" />
     <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
+    <ClCompile Include="..\Private\UI_MouseCursor.cpp" />
     <ClCompile Include="..\Private\UI_PlayerAttribute.cpp" />
     <ClCompile Include="..\Private\UI_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UI_PlayerMenu.cpp" />

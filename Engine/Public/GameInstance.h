@@ -66,6 +66,7 @@ public:
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
 	map<const _wstring, class CLayer*>* Get_Layers();	
 	_uint	Get_NumLevel();
+	HRESULT UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
 #pragma endregion
 
 #pragma region RENDERER

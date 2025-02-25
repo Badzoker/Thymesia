@@ -24,7 +24,8 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_UI_Scene(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UI_LevelUp_Scene(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UI_Attribute_Scene(const _tchar* pLayerTag);
 
 
 	// 테스트용 사다리 레이어 추가

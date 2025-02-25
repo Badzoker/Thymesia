@@ -27,6 +27,7 @@ public:
 
 	/* 11월 11일 새로만듬*/
 	CComponent* Find_GameObject(const wstring& strComponentName);	
+	HRESULT UIScene_Render_OnOff(_bool bCheck);
 
 
 public:
