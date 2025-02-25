@@ -138,7 +138,7 @@ CGameObject* CStaticObject::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Created : CStaticObject");
+		MSG_BOX("Failed To Cloned : CStaticObject");
 		Safe_Release(pInstance);
 	}
 

@@ -42,7 +42,8 @@
 #pragma endregion
 
 #pragma region 오브젝트
-#include "StaticObject.h"
+#include "StaticObject.h"		// (아닐 비)인스턴싱용 게임오브젝트
+#include "GroundObject.h"		// 인스턴싱용 게임오브젝트
 #pragma endregion
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -225,6 +226,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	/* For.Prototype_Component_Shader_VtxMesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstanceMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstanceMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstanceMesh.hlsl"), VTX_MODEL_INSTANCE::Elements, VTX_MODEL_INSTANCE::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Shader_VtxMeshNoDefferd */
@@ -604,6 +610,23 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 #pragma endregion 
 
+#pragma region  인스턴싱용 환경 오브젝트
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Grass0"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/Grass0/Grass0.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tree0"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/Tree0/Tree0.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"),
+		CGroundObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
+
+
 
 
 #pragma region 테스트용 사다리
@@ -684,7 +707,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion 
 
 
-	/* 로딩이 완료되었습ㄴ미다 */
+	/* 로딩이 완료되었습니다 */
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));	
 	m_isFinished = true;
 	return S_OK;

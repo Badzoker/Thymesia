@@ -320,10 +320,10 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector FogColor = lerp(vector(0.5, 0.5, 0.5, 1.f), vector(1.0, 0.9, 0.7, 1.f), length(vFogGodRay));
     
-    if (vWorldPos.z <= 0.f)
-        Out.vColor = float4(0.5f, 0.5f, 0.5f, 1.f);
-    else
-        Out.vColor = FogFactor * Out.vColor + (1.f - FogFactor) * FogColor;
+    //if (vWorldPos.z <= 0.f)
+    //    Out.vColor = float4(0.5f, 0.5f, 0.5f, 1.f);
+    //else
+    //    Out.vColor = FogFactor * Out.vColor + (1.f - FogFactor) * FogColor;
     
     return Out;
 }
