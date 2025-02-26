@@ -55,11 +55,6 @@ public:
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[eState]), vState);		
 	}
 
-	void Set_State_UIObj(STATE eState, _float2 _fPos) {
-		_uint2			vViewportSize = { 1600,900 };
-
-		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[eState]), XMVectorSet(_fPos.x - (vViewportSize.x * 0.5f), -_fPos.y + (vViewportSize.y * 0.5f), 0.f, 1.f));
-	}
 	_float3 Get_State_UIObj(STATE eState) {
 
 		_float3 fPos = {};
@@ -69,18 +64,6 @@ public:
 
 		return { fPos.x + (vViewportSize.x * 0.5f), -fPos.y + (vViewportSize.y * 0.5f), fPos.z };
 	}
-
-	_float2 Get_Scale_UIObj() {
-
-		_float2 fSizeSave = {};
-
-		fSizeSave = {
-			XMVectorGetX(Get_State(STATE_RIGHT)),
-			XMVectorGetY(Get_State(STATE_UP)) };
-		//,XMVectorGetZ(Get_State(STATE_LOOK))
-		return fSizeSave;
-	}
-	
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -107,8 +90,7 @@ public:
 	void Turn_Move(_fvector vAxis, _float fTimeDelta);	
 	void Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter);	
 	
-	void Set_UIObj_Rotation(_float fRadians);
-
+	void Set_State_UIObj(STATE eState, _float2 _fPos);
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
