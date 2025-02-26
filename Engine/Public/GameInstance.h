@@ -63,6 +63,7 @@ public:
 	HRESULT Add_GameObject_To_Layer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr, _char* pName = nullptr);	
 	HRESULT Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag, CGameObject* _pGameObject);
 	CGameObject* Get_Player_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag);	
+	list<class CGameObject*>* Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag);	
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
 	map<const _wstring, class CLayer*>* Get_Layers();	
 	_uint	Get_NumLevel();

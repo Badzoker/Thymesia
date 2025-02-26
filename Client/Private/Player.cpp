@@ -53,7 +53,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{112.6f,1.85f,107.1f,1.f });
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 112.6f,1.85f,107.1f,1.f });
 
 	m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
@@ -75,11 +75,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 #pragma region Mouse_Input
 	/* 마우스 입력키는 (LB, RB ) 동시 입력을 불가능 하도록 설정 */
-	Mouse_section(fTimeDelta);	
+	Mouse_section(fTimeDelta);
 #pragma endregion 
-		
+
 #pragma region KeyBoard Input
-	Keyboard_section(fTimeDelta);		
+	Keyboard_section(fTimeDelta);
 #pragma endregion 
 
 	__super::Priority_Update(fTimeDelta);
@@ -87,10 +87,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Mouse_section(_float fTimeDelta)
 {
-	if (m_pGameInstance->isMouseEnter(DIM_MB))
+	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
 	{
 		m_iPhaseState ^= PHASE_ROCKON;
-
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_LB))
@@ -121,7 +120,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 		}
 
-		m_iPhaseState = PHASE_FIGHT;
+		m_iPhaseState |= PHASE_FIGHT;
 	}
 
 	else if (m_pGameInstance->isMouseEnter(DIM_RB))
@@ -141,7 +140,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			m_iState = STATE_ATTACK_LONG_CLAW_01;
 		}
 
-		m_iPhaseState = PHASE_FIGHT;
+		m_iPhaseState |= PHASE_FIGHT;
 	}
 
 }
@@ -224,7 +223,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		{
 			if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
 			{
-				m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_pStateMgr->Get_VecState().at(14)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_RUN;
 			}
 
@@ -242,7 +241,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 
 			else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
 			{
-				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_pStateMgr->Get_VecState().at(13)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_ROCK_ON_RUN_B;
 			}
 
@@ -322,7 +321,7 @@ HRESULT CPlayer::Render()
 {
 #ifdef _DEBUG
 	//m_pNavigationCom->Render();	
-	//m_pColliderCom->Render();	
+	m_pColliderCom->Render();
 #endif 
 
 	return S_OK;

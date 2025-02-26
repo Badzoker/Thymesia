@@ -237,6 +237,11 @@ CGameObject* CGameInstance::Get_Player_GameObject_To_Layer(_uint iLevelIndex, co
 	return m_pObject_Manager->Get_Player_GameObject_To_Layer(iLevelIndex, strLayerTag);
 }
 
+list<class CGameObject*>* CGameInstance::Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Get_LayerGameObject(iLevelIndex, strLayerTag);
+}
+
 CComponent* CGameInstance::Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName)
 {
 	return m_pObject_Manager->Find_Component(iLevelIndex, strLayerTag, strComponentName);
