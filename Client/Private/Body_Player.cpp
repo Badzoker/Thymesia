@@ -54,7 +54,10 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
+    /* if (m_pModelCom->Get_VecAnimation().at(0)->Get_CurrentTrackPosition() ==  30.f)
+     {
 
+     }*/
 }
 
 void CBody_Player::Update(_float fTimeDelta)
@@ -120,7 +123,6 @@ void CBody_Player::Update(_float fTimeDelta)
     m_pModelCom->Play_Animation(fTimeDelta);
 
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
-
 
 }
 
@@ -271,6 +273,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
     {
         *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+
     }
 
     if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
@@ -305,7 +308,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 {
     m_pModelCom->SetUp_Animation(5, false);
 
-    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 125.f)
+    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
         *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;

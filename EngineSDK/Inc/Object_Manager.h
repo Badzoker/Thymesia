@@ -35,6 +35,7 @@ public:
 	HRESULT UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
 
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
+	list<class CGameObject*>* Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag);	
 
 	map<const _wstring, class CLayer*>* Get_Layers()   { return m_pLayers; }	
 	_uint								Get_NumLevel() { return m_iNumLevels; }	

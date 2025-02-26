@@ -9,6 +9,8 @@ END
 
 BEGIN(Client)
 
+class CPlayer;
+
 class CCamera_Free final : public CCamera
 {
 public:
@@ -30,18 +32,33 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	CGameObject* Find_LockOnTarget();
+	void				LockOnCameraTurn(_float fTimeDelta);
+
 private:
 	_float* m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
 	_float				m_fLerpTime = { 3.f };
 
-	_bool				m_bStop = false;
 
+	CPlayer* m_pPlayer = { nullptr };
 	CTransform* m_pPlayerTransformCom = { false };
 	CCollider* m_pPlayerColliderTransformCom = { false };
+	CGameObject* m_pTargetMonster = { nullptr };
+
 
 	_vector				m_vPlayerHeadPos = {};
 	_vector			    m_vLerpPlayerHeadPos = {};
+
+
+	_bool				m_bStop = false;
+	_bool				m_bLockOnOff = { false };
+	_bool			    m_bFirst = { true };
+	_bool				m_bLockOnCameraFirst = { false };
+
+	list<class CGameObject*>* m_plistMonster;
+	map<_float, CGameObject*>							m_maptMonsterDistance;
 
 
 

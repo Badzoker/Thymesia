@@ -195,6 +195,7 @@
     <ClInclude Include="..\public\Rock_On_Run_B.h" />
     <ClInclude Include="..\public\Rock_On_Run_BL.h" />
     <ClInclude Include="..\public\Rock_On_Run_BR.h" />
+    <ClInclude Include="..\public\Rock_On_Run_F.h" />
     <ClInclude Include="..\public\Rock_On_Run_FL.h" />
     <ClInclude Include="..\public\Rock_On_Run_FR.h" />
     <ClInclude Include="..\public\Rock_On_Run_L.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="..\private\Rock_On_Run_B.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_BL.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_BR.cpp" />
+    <ClCompile Include="..\private\Rock_On_Run_F.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_FL.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_FR.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_L.cpp" />

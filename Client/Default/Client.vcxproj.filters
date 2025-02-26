@@ -196,6 +196,9 @@
     <Filter Include="03.UIObject\UI_Object\MouseCursor">
       <UniqueIdentifier>{6cf7f293-1672-40cc-916d-5ca1e9e3ac88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F">
+      <UniqueIdentifier>{d125fb7d-b677-4a68-92a8-978b9bf00ddd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -363,6 +366,9 @@
     <ClInclude Include="..\Public\UI_MouseCursor.h">
       <Filter>03.UIObject\UI_Object\MouseCursor</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Rock_On_Run_F.h">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -520,6 +526,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_MouseCursor.cpp">
       <Filter>03.UIObject\UI_Object\MouseCursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rock_On_Run_F.cpp">
+      <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

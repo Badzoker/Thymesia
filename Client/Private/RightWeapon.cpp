@@ -79,7 +79,11 @@ void CRightWeapon::Update(_float fTimeDelta)
 void CRightWeapon::Late_Update(_float fTimeDelta)
 {
 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
+        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
+    {
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    }
 
 }
 

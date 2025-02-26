@@ -93,6 +93,19 @@ void CTransform::Go_Left(_float fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
+void CTransform::Go_Left_Navi(_float fTimeDelta, CNavigation* pNavigation)
+{
+	_vector		vPosition = Get_State(STATE_POSITION);
+	_vector		vRight = Get_State(STATE_RIGHT);
+
+	vPosition -= XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
+
+	if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+	{
+		Set_State(STATE_POSITION, vPosition);
+	}
+}
+
 void CTransform::Go_Right(_float fTimeDelta)
 {
 	_vector		vPosition = Get_State(STATE_POSITION);
@@ -101,6 +114,19 @@ void CTransform::Go_Right(_float fTimeDelta)
 	vPosition += XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
 
 	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Go_Right_Navi(_float fTimeDelta, CNavigation* pNavigation)
+{
+	_vector		vPosition = Get_State(STATE_POSITION);	
+	_vector		vRight = Get_State(STATE_RIGHT);	
+
+	vPosition += XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;	
+
+	if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))	
+	{
+		Set_State(STATE_POSITION, vPosition);	
+	}
 }
 
 void CTransform::Go_Dir(_fvector vDir, class CNavigation* pNavigation, _float fTimeDelta)	
@@ -233,6 +259,18 @@ void CTransform::Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter)
 	_vector         vNewCamPos =   XMVectorSetW(vCenter + XMVector3TransformCoord(vRelativePos, RotationMatrix),1.f);
 
 	Set_State(STATE_POSITION, vNewCamPos);
+}
+
+void CTransform::Orbit_Move_Once(_fvector vAxis, _float Radian, _fvector vCenter)
+{
+	_vector			vPosition = Get_State(CTransform::STATE_POSITION);	
+	_vector         vRelativePos = vPosition - vCenter;	
+	_matrix			RotationMatrix = XMMatrixRotationAxis(vAxis, Radian);	
+
+
+	_vector         vNewCamPos = XMVectorSetW(vCenter + XMVector3TransformCoord(vRelativePos, RotationMatrix), 1.f);	
+
+	Set_State(STATE_POSITION, vNewCamPos);	
 }
 
 void CTransform::Set_State_UIObj(STATE eState, _float2 _fPos)

@@ -75,7 +75,9 @@ public:
 	void Go_Backward(_float fTimeDelta);
 	void Go_Backward_With_Navi(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	void Go_Left(_float fTimeDelta);
+	void Go_Left_Navi(_float fTimeDelta, class CNavigation* pNavigation);
 	void Go_Right(_float fTimeDelta);
+	void Go_Right_Navi(_float fTimeDelta, class CNavigation* pNavigation);
 	void Go_Dir(_fvector vDir, class CNavigation* pNavigation, _float fTimeDelta);
 	void LookAt(_fvector vAt);
 	
@@ -89,6 +91,7 @@ public:
 	void Rotation(_float fX, _float fY, _float fZ);
 	void Turn_Move(_fvector vAxis, _float fTimeDelta);	
 	void Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter);	
+	void Orbit_Move_Once(_fvector vAxis, _float Radian, _fvector vCenter);	
 	
 	void Set_State_UIObj(STATE eState, _float2 _fPos);
 

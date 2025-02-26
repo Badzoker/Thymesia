@@ -67,6 +67,7 @@ public:
 
 public:
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
+	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 
 private:
 	_uint								m_iState = { STATE_IDLE };
@@ -75,7 +76,7 @@ private:
 	_uint								m_iPhaseState = { PHASE_IDLE };
 	_uint								m_iPrePhaseState = { PHASE_IDLE };
 
-
+	_bool								m_bLockOn = { false };
 
 
 	CNavigation* m_pNavigationCom = { nullptr };
@@ -84,17 +85,6 @@ private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	const _float4x4* m_CombinedMatrix = { nullptr };
 
-
-
-	_bool								m_bIsRootMotionApplied = { false };
-	_float4x4 					        m_CurrentTransformWorldMatrix = {};
-	_float4x4 							m_FinalTransformWorldMatrix = {};
-
-	_bool								m_bRootMotion = { false };
-
-
-	_bool								m_bFalling = { false };
-	_bool								m_bGround = { true };
 
 
 private:

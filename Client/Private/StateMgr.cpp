@@ -23,6 +23,7 @@
 #include "Rock_On_Run_BR.h"
 #include "Rock_On_Run_BL.h"
 #include "Rock_On_Run_B.h"
+#include "Rock_On_Run_F.h"
 #pragma endregion 
 
 
@@ -96,6 +97,10 @@ HRESULT CStateMgr::Initialize()
 	/* 13번 락온모드일때 'S' 키를 누를 시 아래 대각선 오른쪽 이동 모션 */
 	CRock_On_Run_B* pRock_On_Run_B = CRock_On_Run_B::Create();
 	m_vecState.push_back(pRock_On_Run_B);
+
+	/* 14번 락온모드일때 'W' 키를 누를 시 앞 이동 모션 */
+	CRock_On_Run_F* pRock_On_Run_F = CRock_On_Run_F::Create();
+	m_vecState.push_back(pRock_On_Run_F);
 
 #pragma endregion 
 

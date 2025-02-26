@@ -15,7 +15,8 @@ HRESULT CRock_On_Run_B::Initialize()
 
 void CRock_On_Run_B::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
 {
-
+	//_vector vBackDir = pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK) * -1.f; 
+	pGameObject->Get_Transfrom()->Go_Backward_With_Navi(fTimeDelta * m_fWalkSpeed, pNavigation);
 }
 
 void CRock_On_Run_B::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)

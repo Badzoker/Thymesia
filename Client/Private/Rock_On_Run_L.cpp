@@ -15,7 +15,9 @@ HRESULT CRock_On_Run_L::Initialize()
 
 void CRock_On_Run_L::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
 {
+	_vector CamLeft = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]) * -1.f;
 
+	pGameObject->Get_Transfrom()->Go_Dir(CamLeft, pNavigation, fTimeDelta * m_fWalkSpeed);
 }
 
 void CRock_On_Run_L::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
