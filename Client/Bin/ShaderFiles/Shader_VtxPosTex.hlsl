@@ -6,6 +6,9 @@ Texture2D		g_Texture;
 float			g_HpState; 
 float			g_MpState;
 
+float           g_CurHP;
+float           g_PreHP;
+float           g_TimeDelta;
 
 /* 이펙트 관련 상수 버퍼들 */ 
 Texture2D g_HitEffect0;
@@ -433,6 +436,55 @@ PS_OUT PS_Thymesia_Ui(PS_IN In)
 
     return Out;
 }
+PS_OUT PS_Boss_HP_Gage_Effect(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    // g_Texture에서 색을 샘플링
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (In.vTexcoord.x < g_CurHP || In.vTexcoord.x > g_PreHP)
+    {
+        Out.vColor.a = 0.f;
+        discard;
+        return Out;
+    }
+    
+    // g_HpState보다 큰 영역에서 alpha 값이 점차적으로 감소하도록 처리
+    if (In.vTexcoord.x > g_CurHP && In.vTexcoord.x < g_PreHP)
+    {
+        // smoothstep을 사용하여 부드럽게 alpha 값 감소
+        // g_TimeDelta는 프레임 간 시간 차이
+     
+        float fAlpha = smoothstep(0.f, 1.f, g_TimeDelta);
+        Out.vColor.a = 1.0f - fAlpha; // alpha 값을 1에서 점차적으로 0으로 감소
+    }
+
+    
+    // alpha가 0.1 이하일 때 픽셀을 제거 (discard)
+    if (Out.vColor.a <= 0.1f)
+    {
+        discard; // 해당 픽셀을 제거
+    }
+
+    return Out;
+}
+
+PS_OUT PS_Boss_HP_Gage(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    if (In.vTexcoord.x > g_CurHP)		
+        Out.vColor.a = 0.f;
+    
+    if (0.1f >= Out.vColor.a)
+        discard;
+
+    return Out;
+}
+
 
 
 technique11 DefaultTechnique
@@ -593,6 +645,29 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_Ui();
+    }
+//13번
+    pass Boss_HP_Gage
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Boss_HP_Gage();
+    }
+
+//14번
+    pass Boss_HP_Gage_Effect
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Boss_HP_Gage_Effect();
     }
 
 }

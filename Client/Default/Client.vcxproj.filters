@@ -199,6 +199,15 @@
     <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F">
       <UniqueIdentifier>{d125fb7d-b677-4a68-92a8-978b9bf00ddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\UI_Object\Boss_HP_Bar">
+      <UniqueIdentifier>{f7271e02-3c62-41f7-a3a5-641d6ffcb13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage">
+      <UniqueIdentifier>{717339ab-feed-48d3-9674-7eb18a0d12ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage_Effect">
+      <UniqueIdentifier>{657f79e5-8951-4b0f-a80c-6931e0457483}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -369,6 +378,15 @@
     <ClInclude Include="..\public\Rock_On_Run_F.h">
       <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar.h">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage_Effect.h">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -529,6 +547,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Rock_On_Run_F.cpp">
       <Filter>02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar.cpp">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage_Effect.cpp">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp">
+      <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

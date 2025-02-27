@@ -49,19 +49,26 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
 
+	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fSpecial_Skill_CoolTime = {};
-	_float                           m_fTimeDelta = {};
 	_float                           m_fDistance = {};
 	_float                           m_fAngle = {};
 	_float                           m_fLookTime = {};
 	_float                           m_fRotateDegree = {};
+
+	_float                           m_fBossMaxHP = {};
+	_float                           m_fShieldHP = {};
+	_float                           m_fBossCurHP = {};
+	_float                           m_fRecoveryTime = {};
+	_bool                            m_bCanRecovery = {};
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CBoss_State_Manager<CBoss_Varg>* m_pState_Manager = { nullptr };
+private:
 	class CGameObject* m_pPlayer = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther);

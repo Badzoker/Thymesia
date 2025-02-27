@@ -2,6 +2,7 @@
 #include "Boss_Varg.h"
 #include "Body_Varg.h"
 #include "VargKnife.h"
+#include "UI_Boss_HP_Bar.h"
 #include "GameInstance.h"
 
 CBoss_Varg::CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -25,6 +26,9 @@ HRESULT CBoss_Varg::Initialize_Prototype()
 HRESULT CBoss_Varg::Initialize(void* pArg)
 {
     strcpy_s(m_szName, "BOSS_VARG");
+    m_fBossMaxHP = 100.f;
+    m_fBossCurHP = m_fBossMaxHP;
+    m_fShieldHP = m_fBossMaxHP;
 
     CGameObject::GAMEOBJECT_DESC        Desc{};
 
@@ -70,10 +74,8 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
         m_iPhase = 1;
         m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
     }
-    if (m_pGameInstance->isKeyEnter(DIK_I))
+    if (m_fBossCurHP <= 0.f)
     {
-        //임시용으로 I버튼으로 스턴 상태부여
-        //HP에 따라 부여될 예정
         m_bPatternProgress = true;
         m_fDelayTime = 0.f;
         m_pState_Manager->ChangeState(new CBoss_Varg::Stun_State(), this);
@@ -81,6 +83,9 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
     if (m_pGameInstance->isKeyEnter(DIK_K))
     {
         //임시용으로 k버튼 누르면 피격모션 진행
+        m_fRecoveryTime = 0.f;
+        m_fBossCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= 10.f;
         m_pState_Manager->ChangeState(new CBoss_Varg::Hit_State(), this);
     }
     m_fLookTime += fTimeDelta;
@@ -97,9 +102,8 @@ void CBoss_Varg::Update(_float fTimeDelta)
 {
 
     if (m_bNeed_Rotation)
-    {
         Rotation_To_Player();
-    }
+
     PatternCreate();
 
     m_pState_Manager->State_Update(fTimeDelta, this);
@@ -133,6 +137,21 @@ void CBoss_Varg::Update(_float fTimeDelta)
 
 void CBoss_Varg::Late_Update(_float fTimeDelta)
 {
+    m_fRecoveryTime += fTimeDelta;
+    if (m_fRecoveryTime >= 5.f)
+        m_bCanRecovery = true;
+
+    if (m_bCanRecovery)
+    {
+        m_fShieldHP += 0.1f;
+        if (m_fShieldHP >= m_fBossCurHP)
+        {
+            m_fShieldHP = m_fBossCurHP;
+            m_bCanRecovery = false;
+            m_fRecoveryTime = 0.f;
+        }
+    }
+
 #ifdef _DEBUG
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 #endif
@@ -200,6 +219,18 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
         return E_FAIL;
 
+    CUI_Boss_HP_Bar::UI_BOSS_HP_BAR_DESC pBoss_HP_Bar = {};
+    pBoss_HP_Bar.fMaxHP = &m_fBossMaxHP;
+    pBoss_HP_Bar.fCurHP = &m_fBossCurHP;
+    pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
+    pBoss_HP_Bar.bBossActive = &m_bBossActive;
+
+
+    //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
+    //    return E_FAIL;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"),&pBoss_HP_Bar)))
+         return E_FAIL;
 
 
     return S_OK;
@@ -577,21 +608,21 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 {
     if (m_iIndex == 47)
     {
-        pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta,pObject->m_pNavigationCom);
     }
     else if (m_iIndex == 46)
     {
-        pObject->m_pTransformCom->Go_Backward(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Backward_With_Navi(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
     }
     else if (m_iIndex == 48)
     {
         pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
-        pObject->m_pTransformCom->Go_Right(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Right_Navi(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
     }
     else
     {
         pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
-        pObject->m_pTransformCom->Go_Left(pObject->m_fTimeDelta);
+        pObject->m_pTransformCom->Go_Left_Navi(pObject->m_fTimeDelta,pObject->m_pNavigationCom);
     }
 }
 

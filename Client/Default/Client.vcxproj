@@ -175,6 +175,8 @@
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h" />
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage_Effect.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
     <ClInclude Include="..\Public\Boss_State.h" />
     <ClInclude Include="..\Public\Boss_State_Manager.h" />
@@ -211,6 +213,7 @@
     <ClInclude Include="..\public\StateMgr.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\Public\UI_AttributeButton.h" />
+    <ClInclude Include="..\Public\UI_Boss_HP_Bar.h" />
     <ClInclude Include="..\Public\UI_LeftBackground.h" />
     <ClInclude Include="..\Public\UI_MouseCursor.h" />
     <ClInclude Include="..\Public\UI_PlayerAttribute.h" />
@@ -233,6 +236,8 @@
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp" />
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage_Effect.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
     <ClCompile Include="..\Private\Boss_State.cpp" />
     <ClCompile Include="..\Private\Boss_State_Manager.cpp" />
@@ -268,6 +273,7 @@
     <ClCompile Include="..\private\StateMgr.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI_AttributeButton.cpp" />
+    <ClCompile Include="..\Private\UI_Boss_HP_Bar.cpp" />
     <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
     <ClCompile Include="..\Private\UI_MouseCursor.cpp" />
     <ClCompile Include="..\Private\UI_PlayerAttribute.cpp" />
