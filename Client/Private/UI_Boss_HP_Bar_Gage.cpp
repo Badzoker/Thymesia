@@ -30,7 +30,7 @@ HRESULT CUI_Boss_HP_Bar_Gage::Initialize(void* pArg)
     pDesc->fSizeY = m_fSizeY;
     pDesc->fX = 801;
     pDesc->fY = 50;
-    pDesc->fZ = 0.09;
+    pDesc->fZ = 0.09f;
     pDesc->fSpeedPerSec = 5.f;
     pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
@@ -64,7 +64,7 @@ void CUI_Boss_HP_Bar_Gage::Late_Update(_float fTimeDelta)
 
 HRESULT CUI_Boss_HP_Bar_Gage::Render()
 {
-    for (size_t i = 1; i <= 2; i++)
+    for (_uint i = 1; i <= 2; i++)
     {
         _float pCurHP = {};
         if (i == 1)

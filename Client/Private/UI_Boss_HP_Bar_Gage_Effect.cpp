@@ -31,7 +31,7 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
     pDesc->fSizeY = m_fSizeY;
     pDesc->fX = 801;
     pDesc->fY = 50;
-    pDesc->fZ = 0.09;
+    pDesc->fZ = 0.09f;
     pDesc->fSpeedPerSec = 5.f;
     pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
@@ -94,7 +94,7 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Render()
     if (!m_bActive)
         return S_OK;
 
-    for (size_t i = 1; i <= 2; i++)
+    for (_uint i = 1; i <= 2; i++)
     {
         _float pCurHP = {};
         _float pPreHP = {};
