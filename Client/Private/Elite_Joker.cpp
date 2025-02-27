@@ -428,13 +428,13 @@ void CElite_Joker::Walk_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
 
 
     if (m_iIndex == 30)
-        pObject->m_pTransformCom->Go_Straight(fTimeDelta);
+        pObject->m_pTransformCom->Go_Straight(fTimeDelta,pObject->m_pNavigationCom);
     else if (m_iIndex == 29)
-        pObject->m_pTransformCom->Go_Backward(fTimeDelta);
+        pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
     else if (m_iIndex == 31)
-        pObject->m_pTransformCom->Go_Left(fTimeDelta);
+        pObject->m_pTransformCom->Go_Left_Navi(fTimeDelta,pObject->m_pNavigationCom);
     else
-        pObject->m_pTransformCom->Go_Right(fTimeDelta);
+        pObject->m_pTransformCom->Go_Right_Navi(fTimeDelta,pObject->m_pNavigationCom);
 }
 
 void CElite_Joker::Walk_State::State_Exit(CElite_Joker* pObject)
@@ -526,7 +526,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
     if (m_iIndex == 12)
     {
         m_fTimer += 1.f * fTimeDelta;
-        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), nullptr, fTimeDelta * 3.f);
+        pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), pObject->m_pNavigationCom, fTimeDelta * 3.f);
     }
     if (m_iIndex == 13 && pObject->m_pModelCom->GetAniFinish())
     {

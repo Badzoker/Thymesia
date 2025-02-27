@@ -11,6 +11,11 @@
 #include "Boss_Varg.h"
 #include "Body_Varg.h"
 #include "VargKnife.h"
+
+#include "UI_Boss_HP_Bar.h"
+#include "UI_Boss_HP_Bar_Gage.h"
+#include "UI_Boss_HP_Bar_Gage_Effect.h"
+
 #pragma endregion 
 
 #pragma region 엘리트 몬스터
@@ -693,6 +698,25 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"),
 		CBoss_Varg::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//보스 HP바
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Boss_HP"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Boss_HP/BossHP%d.png"), 4))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"),
+		CUI_Boss_HP_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"),
+		CUI_Boss_HP_Bar_Gage::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"),
+		CUI_Boss_HP_Bar_Gage_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 #pragma endregion 
 
