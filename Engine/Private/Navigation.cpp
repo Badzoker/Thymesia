@@ -32,28 +32,39 @@ CNavigation::CNavigation(const CNavigation& Prototype)
 
 HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 {
-    _ulong  dwByte = {};
-    HANDLE  hFile = CreateFile(pNavigationDataFile, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    _ulong      dwByte = {};
+    HANDLE hFile = CreateFile(pNavigationDataFile, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+    _uint iTotalFloorNum = {};
+    ReadFile(hFile, &iTotalFloorNum, sizeof(_uint), &dwByte, nullptr);
+
 
     _uint iCellCountNum = {};
     ReadFile(hFile, &iCellCountNum, sizeof(_uint), &dwByte, nullptr);
 
     //while (true)
-    for (_uint i = 0; i < iCellCountNum; ++i)
+    //map<_uint>
+    for (_uint t = 0; t < iTotalFloorNum; ++t)
     {
-        _float3  vPoints[CCell::POINT_END] = {};
+        for (_uint i = 0; i < iCellCountNum; ++i)
+        {
+            //_float3         vPoints[CCell::POINT_END] = {};
+            _float3         vPoints[CCell::POINT_END] = {};
 
-        ReadFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+            ReadFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
 
-        if (dwByte == 0)
-            break;
+            // 루프 탈출문 조건
+            if (0 == dwByte)
+                break;
 
-        CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
+            // size 로 줘서 처음에 하나 들어가면 용량 1개, 하나 또 들어가면 2개.~~ 
+            CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, (_uint)(m_Cells.size()));
+            //CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, iCellCountNum);
+            if (nullptr == pCell)
+                return E_FAIL;
 
-        if (nullptr == pCell)
-            return E_FAIL;
-
-        m_Cells.push_back(pCell);
+            m_Cells.push_back(pCell);
+        }
     }
 
     CloseHandle(hFile);
@@ -61,15 +72,16 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
     XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
     XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixIdentity());
 
-
 #ifdef _DEBUG
     m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Cell.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements);
     if (nullptr == m_pShader)
         return E_FAIL;
-#endif // _DEBUG
+#endif
 
+    // 이제 이걸 호출해줘야 최종적으로 현재 셀 4개 를 뛰놀수 있게 되었음. 
     if (FAILED(SetUp_Neighbors()))
         return E_FAIL;
+
 
     return S_OK;
 }
@@ -117,6 +129,41 @@ void CNavigation::Set_CurrentNaviIndex(_vector _vWorldPos)
     }
 }
 
+_uint CNavigation::Find_Closest_Cell(/*_uint _iFloorNum, */_vector _vWorldPos)
+{
+    _float fMinsDistance = FLT_MAX;
+    _uint iClosestCellIndex = 0;
+    _float fPosX = XMVectorGetX(_vWorldPos);
+    _float fPosY = XMVectorGetY(_vWorldPos);
+    _float fPosZ = XMVectorGetZ(_vWorldPos);
+
+
+    for (_uint i = 0; i < m_Cells.size(); ++i)
+    {
+        XMFLOAT3 vCellCenter = m_Cells[i]->Get_Center();
+        _float fDistance = sqrt(
+            powf(fPosX - vCellCenter.x, 2) +
+            powf(fPosY - vCellCenter.y, 2) +
+            powf(fPosZ - vCellCenter.z, 2)
+        );
+
+        if (fDistance < fMinsDistance)
+        {
+            fMinsDistance = fDistance;
+            iClosestCellIndex = i;
+        }
+    }
+
+    return iClosestCellIndex;
+}
+
+void CNavigation::Set_NaviFloor(_uint _iFloorNumber)
+{
+    m_iFloorNumber = _iFloorNumber;
+
+    m_iCurrentCellIndex = 0;
+}
+
 _bool CNavigation::isMove(_fvector vWorldPos)
 {
     _vector     vPosition = XMVector3TransformCoord(vWorldPos, XMLoadFloat4x4(&m_WorldMatrixInverse));
@@ -152,6 +199,7 @@ _bool CNavigation::isMove(_fvector vWorldPos)
         m_iNeighborIndex = iNeighborIndex;
         return true;
     }
+
 }
 
 _float CNavigation::Compute_Height(_fvector vWorldPos)

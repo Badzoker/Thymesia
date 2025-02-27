@@ -278,7 +278,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), 
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/TestNavigation.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/TestNavigation7.txt")))))
 		return E_FAIL;
 
 
@@ -402,9 +402,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_LobTrap*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
-		CLobTrap::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LobTrap"),
+	//	CLobTrap::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 
 	//SM_Wall_Shelf
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SM_Wall_Shelf"),
@@ -614,6 +614,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Brick_Floor/brickFloor.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_P_Archive_Chair01"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Archive_Chair01/P_Archive_Chair01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ladder"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"),
 		CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -639,17 +647,17 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma region 테스트용 사다리
-	lstrcpyW(m_szLoadingText, TEXT("사다리 모델을 생성한다."));
+	//lstrcpyW(m_szLoadingText, TEXT("사다리 모델을 생성한다."));
 	/* For.Prototype_Component_Model_Ladder*/
-	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ladder"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
+	//PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ladder"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+	//	return E_FAIL;
 
-	///* For.Prototype_GameObject_Ladder */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"),
-		CLadder::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	/////* For.Prototype_GameObject_Ladder */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ladder"),
+	//	CLadder::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 
 
 

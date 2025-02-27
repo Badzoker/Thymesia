@@ -32,6 +32,11 @@ public:
 	}
 
 	void Set_CurrentNaviIndex(_vector _vWorldPos);
+	_uint Find_Closest_Cell(/*_uint _iFloorNum, */_vector _vWorldPos);
+
+public:
+	void Set_NaviFloor(_uint _iFloorNumber);
+	_uint Get_NaviFloorNumber() { return m_iFloorNumber; }
 
 public:
 	_bool  isMove(_fvector vWorldPos);
@@ -63,6 +68,8 @@ private:
 private:
 	class CShader* m_pShader = { nullptr };
 	_bool                   m_bFirstPick = { true };
+private:
+	_uint					m_iFloorNumber = {};
 
 #endif
 

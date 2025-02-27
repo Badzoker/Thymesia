@@ -29,7 +29,7 @@ private:
 
 
 	// 테스트용 사다리 레이어 추가
-	HRESULT	Ready_Layer_Ladder(const _tchar* pLayerTag);
+	//HRESULT	Ready_Layer_Ladder(const _tchar* pLayerTag);
 
 private:
 	HRESULT Load_Objects(_int iObject_Level);
