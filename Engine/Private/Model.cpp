@@ -160,15 +160,13 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Render_Instance(_uint _iNumInstanceNumber)
+HRESULT CModel::Render_Instance(_uint _iMeshIndex, _uint _iNumInstanceNumber)
 {
 	if (!m_pInstanceBuffer)
 		return E_FAIL;
 
-	for (UINT i = 0; i < m_iNumMeshes; i++)
-	{
-		m_Meshes[i]->Render_Instance(m_pInstanceBuffer, _iNumInstanceNumber);
-	}
+	m_Meshes[_iMeshIndex]->Bind_InputAssembler_Instance(m_pInstanceBuffer);
+	m_Meshes[_iMeshIndex]->Render_Instance(m_pInstanceBuffer, _iNumInstanceNumber);
 
 	return S_OK;
 }
@@ -292,6 +290,24 @@ HRESULT CModel::Create_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INST
 	HRESULT hr = m_pDevice->CreateBuffer(&bufferDesc, &initData, &m_pInstanceBuffer);
 	if (FAILED(hr))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CModel::Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData)
+{
+	if (nullptr == m_pInstanceBuffer)
+		return E_FAIL;
+
+	D3D11_MAPPED_SUBRESOURCE tagSubResource = {};
+	HRESULT hr = m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &tagSubResource);
+
+	if (FAILED(hr))
+		return E_FAIL;
+
+	memcpy(tagSubResource.pData, _TagInstanceData, sizeof(VTX_MODEL_INSTANCE) * m_iNumInstances);
+
+	m_pContext->Unmap(m_pInstanceBuffer, 0);
 
 	return S_OK;
 }

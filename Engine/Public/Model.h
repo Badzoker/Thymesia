@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render(_uint iMeshIndex);	
-	virtual HRESULT Render_Instance(_uint _iNumInstanceNumber);
+	virtual HRESULT Render_Instance(_uint _iMeshIndex, _uint _iNumInstanceNumber);
 
 public:
 	void SetUp_Animation(_uint iAnimIndex, _bool isLoop);
@@ -46,7 +46,8 @@ public:
 
 	/* 2월 25일 추가 */
 	HRESULT	Create_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData);
-
+	/* 2월 28일 추가 */
+	HRESULT Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData);
 
 private:
 	/* 가져온 정보를 저장한다. */

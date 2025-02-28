@@ -29,6 +29,8 @@ public:
 	virtual void Late_Update(_float _fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Update_InstanceBuffer(_uint _iInstanceIndex, const XMFLOAT3& _vPosition, const XMFLOAT3& _vScale, const XMFLOAT3& _vRotation);
+
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;

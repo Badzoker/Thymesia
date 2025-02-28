@@ -152,7 +152,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-
 	Load_Objects(16);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
@@ -338,7 +337,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);
 	CEnvironmentObject::ENVIRONMENT_OBJECT_DESC Desc = {};
-	_uint iGroundPosVectorSize = 0;
+	/*_uint iGroundPosVectorSize = 0;
 	ReadFile(hFile, &iGroundPosVectorSize, sizeof(_uint), &dwByte2, nullptr);
 
 	for (size_t i = 0; i < iGroundPosVectorSize; i++)
@@ -357,6 +356,64 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte2, nullptr);
 		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte2, nullptr);
 
+		Desc.ObjectName = szLoadName;
+
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc)))
+			return E_FAIL;
+	}*/
+
+
+	for (_uint i = 0; i < iSize2; ++i)
+	{
+		_uint iVecInstanceDataSize = 0;
+		ReadFile(hFile, &iVecInstanceDataSize, sizeof(_uint), &dwByte2, nullptr);
+
+		vector<VTX_MODEL_INSTANCE> vecInstanceData = {};
+		vecInstanceData.resize(iVecInstanceDataSize);
+
+		for (_uint i = 0; i < iVecInstanceDataSize; ++i)
+		{
+			ReadFile(hFile, &vecInstanceData[i].InstanceMatrix, sizeof(XMFLOAT4X4), &dwByte2, nullptr);
+		}
+	}
+
+	_uint iInstancedGroundObjectNumSize = 0;
+	ReadFile(hFile, &iInstancedGroundObjectNumSize, sizeof(_uint), &dwByte2, nullptr);
+	//m_iInstancingModelSize = iInstancedGroundObjectNumSize;
+	m_vecInstancedGroundObjectPos.resize(iInstancedGroundObjectNumSize);
+	m_vecInstancedGroundObjectScale.resize(iInstancedGroundObjectNumSize);
+	m_vecInstancedGroundObjectRotation.resize(iInstancedGroundObjectNumSize);
+
+
+	for (size_t i = 0; i < m_vecInstancedGroundObjectPos.size(); i++)
+	{
+		_float3 fGroundObjectPos;
+		ReadFile(hFile, &fGroundObjectPos, sizeof(_float3), &dwByte2, nullptr);
+		m_vecInstancedGroundObjectPos[i] = (fGroundObjectPos);
+		Desc.vecInstancePosition.push_back(fGroundObjectPos);
+	}
+
+	for (size_t i = 0; i < m_vecInstancedGroundObjectScale.size(); i++)
+	{
+		_float3 fGroundObjectScale;
+		ReadFile(hFile, &fGroundObjectScale, sizeof(_float3), &dwByte2, nullptr);
+		m_vecInstancedGroundObjectScale[i] = (fGroundObjectScale);
+		Desc.vecInstanceScale.push_back(fGroundObjectScale);
+	}
+
+	for (size_t i = 0; i < m_vecInstancedGroundObjectRotation.size(); i++)
+	{
+		_float3 fGroundObjectRotation;
+		ReadFile(hFile, &fGroundObjectRotation, sizeof(_float3), &dwByte2, nullptr);
+		m_vecInstancedGroundObjectRotation[i] = (fGroundObjectRotation);
+		Desc.vecInstanceRotation.push_back(fGroundObjectRotation);
+	}
+
+	for (size_t i = 0; i < iSize2; i++)
+	{
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
 		Desc.ObjectName = szLoadName;
 
 		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc)))

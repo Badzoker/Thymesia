@@ -28,9 +28,10 @@ public:
         _float fRange = {};
         _float fSpace = {};
         //_float fPosition= {};
-        vector<_float3> vecPosition = {};
 
-
+        vector<_float3> vecInstancePosition = {};
+        vector<_float3> vecInstanceRotation = {};
+        vector<_float3> vecInstanceScale = {};
     };
 
 public:
@@ -77,10 +78,19 @@ protected:
     _char		   m_EnvironmentMeshName[MAX_PATH] = {};
     _bool		   m_bFrustumSphere = { true };
 
+protected:
+    vector<_float3>     m_vecInstancePosition = {};
+    vector<_float3>     m_vecInstanceRotation = {};
+    vector<_float3>     m_vecInstanceScale = {};
+
 
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;
     _uint m_iNumInstance = {};
+
+public:
+    vector<VTX_MODEL_INSTANCE> Get_ModelInstanceVector() { return m_vecInstanceData; }
+
     INSTANCE_INFO g_Instances[2] =
     {
         {XMMatrixTranspose(XMMatrixIdentity())},

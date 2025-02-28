@@ -78,23 +78,36 @@ HRESULT CMesh::Initialize(void * pArg)
 	return S_OK;
 }
 
-HRESULT CMesh::Render_Instance(ID3D11Buffer* pInstanceBuffer, _uint _iNumInstance)
+HRESULT CMesh::Bind_InputAssembler_Instance(ID3D11Buffer* pInstanceBuffer)
 {
-	ID3D11Buffer* pVertexBuffer[2] =
+	ID3D11Buffer* pVertexBuffer[] =
 	{
 		m_pVB,
 		pInstanceBuffer
 	};
 
-	_uint iVertexStrides[2] =
+	_uint iVertexStrides[] =
 	{
-		sizeof(VTXMESH),
+		m_iVertexStride,
 		sizeof(VTX_MODEL_INSTANCE)
 	};
-	_uint iOffsets[2] = { 0, 0 };
+	_uint iOffsets[] =
+	{
+		0,
+		0
+	};
 
 	m_pContext->IASetVertexBuffers(0, 2, pVertexBuffer, iVertexStrides, iOffsets);
 	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
+
+	return S_OK;
+}
+
+HRESULT CMesh::Render_Instance(ID3D11Buffer* pInstanceBuffer, _uint _iNumInstance)
+{
+	if (nullptr == m_pContext)
+		return E_FAIL;
 
 	m_pContext->DrawIndexedInstanced(m_iNumIndices, _iNumInstance, 0, 0, 0);
 
