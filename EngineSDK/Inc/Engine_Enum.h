@@ -47,6 +47,11 @@ namespace Engine
 		UI_TEXTPLAYER,
 		UI_END
 	};
-	
+
+	enum class BINARY {
+		BINARY_SAVE,
+		BINARY_LOAD,
+		BINARY_END,
+	};
 }
 #endif // Engine_Enum_h__

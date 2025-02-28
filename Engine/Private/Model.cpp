@@ -81,7 +81,7 @@ const _float4x4* CModel::Get_RootMotionMatrix(const _char* pBoneName) const
 	return (*iter)->Get_CombinedRootMotionTransformationPtr();	
 }
 
-HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
+HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, BINARY _eBinaryMode)
 {
 	_uint			iFlag = {};
 
@@ -98,13 +98,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 		iFlag |= aiProcess_GenNormals | aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType;
 	
-
-	if (FAILED(Load_Model(PreTransformMatrix)))		
-		return E_FAIL;	
-	
-
 	/* 이것만으로 모든 로드작업은 끝난거다. */
-	
 
 	m_eModelType = eModelType;
 
@@ -121,26 +115,37 @@ HRESULT CModel::Initialize_Prototype(MODEL eModelType, const _char* pModelFilePa
 
 #pragma region 바이너리화 Save용도
 
+	if (BINARY::BINARY_SAVE == _eBinaryMode || false == Load_Model(PreTransformMatrix))
+	{
+
+		//if (FAILED(Load_Model(PreTransformMatrix)))
+		//	return E_FAIL; 과거의 유산
+
+		// 만약 Binary_Save 를 하고싶다면 Loader 에서
+		// ../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx 
+		// 검색하여 매개변수 참고하시오.
+
+		m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
+		if (nullptr == m_pAIScene)
+			return E_FAIL;
+
+		if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))
+			return E_FAIL;
+
+		if (FAILED(Ready_Meshes(PreTransformMatrix)))
+			return E_FAIL;
+
+		if (FAILED(Ready_Materials(pModelFilePath)))
+			return E_FAIL;
+
+
+		if (FAILED(Ready_Animations()))
+			return E_FAIL;
+
+		if (FAILED(Save_Model(pModelFilePath)))
+			return E_FAIL;
+	}
 	
-	//m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);				
-	//if (nullptr == m_pAIScene)		
-	//	return E_FAIL;	
-	// 
-	//if (FAILED(Ready_Bones(m_pAIScene->mRootNode)))				
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Meshes(PreTransformMatrix)))		
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Materials(pModelFilePath)))			
-	//	return E_FAIL;	
-	//
-	//
-	//if (FAILED(Ready_Animations()))			
-	//	return E_FAIL;	
-	//
-	//if (FAILED(Save_Model(pModelFilePath)))	
-	//	return E_FAIL;	
 	
 #pragma endregion
 
@@ -389,7 +394,7 @@ HRESULT CModel::Save_Model(const _char* pModelFilePath)
 
 }
 
-HRESULT CModel::Load_Model(_fmatrix PreTransformMatrix)
+_bool CModel::Load_Model(_fmatrix PreTransformMatrix)
 {
 	string binaryFile = "../Bin/BinaryFile/";
 	// 파일 이름이 포함된 문자열
@@ -417,7 +422,7 @@ HRESULT CModel::Load_Model(_fmatrix PreTransformMatrix)
 	if (!inFile.good()) // 경로 안에 파일이 없으면
 	{
 		isFile = false;  // isFile 을 false하고 리턴
-		return S_OK;
+		return isFile;
 	}
 	else
 		isFile = true;   // isFile을 true하고 계속 진행
@@ -427,7 +432,7 @@ HRESULT CModel::Load_Model(_fmatrix PreTransformMatrix)
 	{
 		// 이진 파일 열기 실패
 		MSG_BOX("Failed to Open File");
-		return E_FAIL;
+		return false;
 	}
 
 	else
@@ -477,7 +482,7 @@ HRESULT CModel::Load_Model(_fmatrix PreTransformMatrix)
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
 
 
-	return S_OK;
+	return isFile;
 }
 
 HRESULT CModel::Ready_Meshes(_fmatrix PreTransformMatrix)
@@ -560,11 +565,11 @@ HRESULT CModel::Ready_Animations()
 	return S_OK;
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _char * pModelFilePath, MODEL eModelType, _fmatrix PreTransformMatrix)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _char * pModelFilePath, MODEL eModelType, _fmatrix PreTransformMatrix, BINARY _eBinaryMode)
 {
 	CModel*	pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eModelType,pModelFilePath,PreTransformMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType,pModelFilePath,PreTransformMatrix, _eBinaryMode)))
 	{
 		MSG_BOX("Failed To Created : CModel");
 		Safe_Release(pInstance);

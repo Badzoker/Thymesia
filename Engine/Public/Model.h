@@ -25,7 +25,7 @@ public:
 	const _float4x4* Get_RootMotionMatrix(const _char* pBoneName) const;
 
 public:
-	virtual HRESULT Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
+	virtual HRESULT Initialize_Prototype(MODEL eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, BINARY _eBinaryMode);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render(_uint iMeshIndex);	
 	virtual HRESULT Render_Instance(_uint _iMeshIndex, _uint _iNumInstanceNumber);
@@ -83,7 +83,7 @@ private:
 	/* 쌤꺼 추가 */
 	_float							m_fCurrentTrackPosition = {};
 	vector<vector<_uint>>			m_CurrentKeyFrameIndices; /* 애니메이션을 관리 하는 인덱스 */
-	_float4x4						m_PreTransformMatrix; 
+	_float4x4						m_PreTransformMatrix = {};
 
 
 	/* 애니메이션 관련*/
@@ -108,11 +108,11 @@ public:
 /* 바이너리화 관련 */
 private:
 	string			m_fullpath; 
-	_bool			isFile = false; 
+	_bool			isFile = { false };
 
 private:
 	HRESULT		Save_Model(const _char* pModelFilePath);
-	HRESULT     Load_Model(_fmatrix PreTransformMatrix);
+	_bool		Load_Model(_fmatrix PreTransformMatrix);
 
 private:
 	ID3D11Buffer*				m_pInstanceBuffer = { nullptr };
@@ -126,7 +126,7 @@ private:
 	HRESULT Ready_Animations();
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, MODEL eModelType, _fmatrix  PreTransformMatrix = XMMatrixIdentity());
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, MODEL eModelType, _fmatrix  PreTransformMatrix = XMMatrixIdentity(), BINARY _eBinaryMode = BINARY::BINARY_LOAD);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 
