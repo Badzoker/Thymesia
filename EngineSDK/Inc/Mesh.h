@@ -22,8 +22,10 @@ public:
 	virtual HRESULT Initialize_Prototype(CModel::MODEL eModelType, CModel* pModel, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);
 	virtual HRESULT Initialize(void* pArg) override;
 
-	/* 2월 25일 추가 */
 public:
+	/* 2월 28일 추가 */
+	HRESULT			Bind_InputAssembler_Instance(ID3D11Buffer* pInstanceBuffer);
+	/* 2월 25일 추가 */
 	HRESULT			Render_Instance(ID3D11Buffer* pInstanceBuffer, _uint _iNumInstance);
 
 
