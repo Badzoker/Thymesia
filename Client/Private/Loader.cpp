@@ -304,7 +304,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	//아마 이렇게 Desc 들을 Save & Load 로 받아와야함
 	CVIBuffer_Point_Compute::PARTICLE_COMPUTE_DESC particle_Drop_Desc = {};
 
-	particle_Drop_Desc.iNumInstance = 32768;
+	particle_Drop_Desc.iNumInstance = 32768 * 2;
 	particle_Drop_Desc.vCenter = _float3(0.f, 0.f, 0.f);
 	particle_Drop_Desc.vRange = _float3(25.f, 25.f, 25.f);
 	particle_Drop_Desc.vSpeed = _float2(0.5f, 1.f);

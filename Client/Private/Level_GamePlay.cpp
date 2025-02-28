@@ -379,33 +379,37 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 	_uint iInstancedGroundObjectNumSize = 0;
 	ReadFile(hFile, &iInstancedGroundObjectNumSize, sizeof(_uint), &dwByte2, nullptr);
-	//m_iInstancingModelSize = iInstancedGroundObjectNumSize;
-	m_vecInstancedGroundObjectPos.resize(iInstancedGroundObjectNumSize);
-	m_vecInstancedGroundObjectScale.resize(iInstancedGroundObjectNumSize);
-	m_vecInstancedGroundObjectRotation.resize(iInstancedGroundObjectNumSize);
 
+	
+	vector<_float3>                         vecInstancedGroundObjectPos;
+	vector<_float3>                         vecInstancedGroundObjectScale;
+	vector<_float3>                         vecInstancedGroundObjectRotation;
+	
+	vecInstancedGroundObjectPos.resize(iInstancedGroundObjectNumSize);
+	vecInstancedGroundObjectScale.resize(iInstancedGroundObjectNumSize);
+	vecInstancedGroundObjectRotation.resize(iInstancedGroundObjectNumSize);
 
-	for (size_t i = 0; i < m_vecInstancedGroundObjectPos.size(); i++)
+	for (size_t i = 0; i < vecInstancedGroundObjectPos.size(); i++)
 	{
 		_float3 fGroundObjectPos;
 		ReadFile(hFile, &fGroundObjectPos, sizeof(_float3), &dwByte2, nullptr);
-		m_vecInstancedGroundObjectPos[i] = (fGroundObjectPos);
+		vecInstancedGroundObjectPos[i] = (fGroundObjectPos);
 		Desc.vecInstancePosition.push_back(fGroundObjectPos);
 	}
 
-	for (size_t i = 0; i < m_vecInstancedGroundObjectScale.size(); i++)
+	for (size_t i = 0; i < vecInstancedGroundObjectScale.size(); i++)
 	{
 		_float3 fGroundObjectScale;
 		ReadFile(hFile, &fGroundObjectScale, sizeof(_float3), &dwByte2, nullptr);
-		m_vecInstancedGroundObjectScale[i] = (fGroundObjectScale);
+		vecInstancedGroundObjectScale[i] = (fGroundObjectScale);
 		Desc.vecInstanceScale.push_back(fGroundObjectScale);
 	}
 
-	for (size_t i = 0; i < m_vecInstancedGroundObjectRotation.size(); i++)
+	for (size_t i = 0; i < vecInstancedGroundObjectRotation.size(); i++)
 	{
 		_float3 fGroundObjectRotation;
 		ReadFile(hFile, &fGroundObjectRotation, sizeof(_float3), &dwByte2, nullptr);
-		m_vecInstancedGroundObjectRotation[i] = (fGroundObjectRotation);
+		vecInstancedGroundObjectRotation[i] = (fGroundObjectRotation);
 		Desc.vecInstanceRotation.push_back(fGroundObjectRotation);
 	}
 
