@@ -38,11 +38,6 @@ private:
 	_uint m_iOpenSceneCount = { 0 };
 	_bool m_bSceneOpen = { false };
 
-private:
-	vector<_float3>                         m_vecInstancedGroundObjectPos;
-	vector<_float3>                         m_vecInstancedGroundObjectScale;
-	vector<_float3>                         m_vecInstancedGroundObjectRotation;
-
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
