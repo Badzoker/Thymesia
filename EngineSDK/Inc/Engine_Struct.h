@@ -161,6 +161,16 @@ namespace Engine
 		float          fDurationTime; 
 	};
 
+	struct ENGINE_DLL COMPUTE_PARTICLE_INSTANCE
+	{
+		XMFLOAT4	   vRight;
+		XMFLOAT4       vUp;
+		XMFLOAT4	   vLook;
+		XMFLOAT4       vTranslation;
+		XMFLOAT2       vLifeTime;
+		float		   fSpeed;
+	};
+
 	/* 그리기용 정점과 인스턴싱용 정점을 합한 정보 */
 	struct ENGINE_DLL VTX_RECT_INSTANCE	
 	{
@@ -183,6 +193,13 @@ namespace Engine
 		const static unsigned int					iNumElements = 8;
 		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	};
+
+	struct ENGINE_DLL COMPUTE_POINT_INSTANCE
+	{
+		const static unsigned int					iNumElements = 8;
+		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	};
+
 }
 
 

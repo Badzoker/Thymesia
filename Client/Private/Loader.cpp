@@ -35,6 +35,12 @@
 #include "Terrain.h"
 #pragma endregion 
 
+#pragma region Effect
+
+#include "Particle_Compute_Example.h"
+
+#pragma endregion
+
 #pragma region 테스트용 사다리
 #include "Ladder.h"
 #pragma endregion
@@ -191,6 +197,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 #pragma region Sky
+
+	lstrcpyW(m_szLoadingText, TEXT("Sky 생성중"));
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -200,11 +209,8 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Thymesia_SkyBox.dds"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxCube */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
-		return E_FAIL;
-
+	
+	/* For.Prototype_Component_VIBuffer_Cube */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -216,6 +222,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 #pragma region 카메라 
 	/* For.Prototype_GameObject_Camera_Free */
+
+	lstrcpyW(m_szLoadingText, TEXT("카메라 생성중"));
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -224,6 +233,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma region 셰이더
 
 	lstrcpyW(m_szLoadingText, TEXT("셰이더 원형을 생성한다."));
+
+
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
+
+
 	/* For.Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
@@ -270,7 +287,48 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance.hlsl"), VTX_POINT_INSTANCE::Elements, VTX_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Drop */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop"),
+		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Drop", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
+		return E_FAIL;
+
 #pragma endregion 
+
+#pragma region Effect_Mesh
+
+#pragma endregion
+
+#pragma region Effect_Particle
+
+
+	//아마 이렇게 Desc 들을 Save & Load 로 받아와야함
+	CVIBuffer_Point_Compute::PARTICLE_COMPUTE_DESC particle_Drop_Desc = {};
+
+	particle_Drop_Desc.iNumInstance = 32768;
+	particle_Drop_Desc.vCenter = _float3(0.f, 0.f, 0.f);
+	particle_Drop_Desc.vRange = _float3(25.f, 25.f, 25.f);
+	particle_Drop_Desc.vSpeed = _float2(0.5f, 1.f);
+	particle_Drop_Desc.vLifeTime = _float2(1.f, 1.5f);
+	particle_Drop_Desc.vSize = _float2(1.f, 1.f);
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Compute"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, &particle_Drop_Desc))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Particle_Example*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Particle_Example"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Example/T_Y_Ring_02.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Particle_Compute_Example */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"),
+		CParticle_Compute_Example::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+#pragma endregion
+
 
 #pragma region Navigation 
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
@@ -291,6 +349,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion 
 
 #pragma region Collider
+	lstrcpyW(m_szLoadingText, TEXT("Collider 생성중"));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
 		CCollider::Create(m_pDevice, m_pContext,CCollider::TYPE_AABB))))	
@@ -633,6 +692,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion 
 
 #pragma region  인스턴싱용 환경 오브젝트
+
+	lstrcpyW(m_szLoadingText, TEXT("인스턴싱용 환경 오브젝트"));
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Grass0"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/Grass0/Grass0.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;

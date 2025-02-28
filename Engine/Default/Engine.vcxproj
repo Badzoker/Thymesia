@@ -214,6 +214,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\Shader.h" />
+    <ClInclude Include="..\Public\Shader_Compute.h" />
     <ClInclude Include="..\public\Shadow.h" />
     <ClInclude Include="..\public\SoundMgr.h" />
     <ClInclude Include="..\public\SwordTrail_Buffer.h" />
@@ -235,6 +236,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\VIBuffer_Effect_Rect_Instancing.h" />
     <ClInclude Include="..\public\VIBuffer_Mesh_Instancing.h" />
     <ClInclude Include="..\public\VIBuffer_Particle_Instancing.h" />
+    <ClInclude Include="..\Public\VIBuffer_Point_Compute.h" />
     <ClInclude Include="..\public\VIBuffer_Point_Instancing.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_Rect_Instancing.h" />
@@ -283,6 +285,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
+    <ClCompile Include="..\Private\Shader_Compute.cpp" />
     <ClCompile Include="..\private\Shadow.cpp" />
     <ClCompile Include="..\private\SoundMgr.cpp" />
     <ClCompile Include="..\private\SwordTrail_Buffer.cpp" />
@@ -304,6 +307,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Effect_Rect_Instancing.cpp" />
     <ClCompile Include="..\private\VIBuffer_Mesh_Instancing.cpp" />
     <ClCompile Include="..\private\VIBuffer_Particle_Instancing.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Point_Compute.cpp" />
     <ClCompile Include="..\private\VIBuffer_Point_Instancing.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect_Instancing.cpp" />
@@ -315,6 +319,7 @@ call UpdateLib.bat</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
   </ItemGroup>
   <ItemGroup>

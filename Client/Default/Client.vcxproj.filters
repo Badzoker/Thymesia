@@ -208,6 +208,9 @@
     <Filter Include="03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage_Effect">
       <UniqueIdentifier>{657f79e5-8951-4b0f-a80c-6931e0457483}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Example">
+      <UniqueIdentifier>{10a763fb-584a-42e8-92b5-65795e4d0fe4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -387,6 +390,9 @@
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h">
       <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_Compute_Example.h">
+      <Filter>02.GameObject\Effect\Example</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -557,6 +563,9 @@
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp">
       <Filter>03.UIObject\UI_Object\Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Particle_Compute_Example.cpp">
+      <Filter>02.GameObject\Effect\Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -611,6 +620,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance_Compute.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

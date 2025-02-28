@@ -13,6 +13,9 @@
 #include "VIBuffer_Point_Instancing.h"
 #include "SwordTrail_Buffer.h"	
 
+#include "Shader_Compute.h"
+#include "VIBuffer_Point_Compute.h"
+
 #include "Navigation.h"
 
 #include "Collider.h"

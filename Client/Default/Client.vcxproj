@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
+    <ClInclude Include="..\Public\Particle_Compute_Example.h" />
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h" />
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage_Effect.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
+    <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp" />
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage_Effect.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
@@ -305,6 +307,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance_Compute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTexAge.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTexInstance.hlsl" />

@@ -1,13 +1,13 @@
 
 
-sampler LinearSampler = sampler_state
+SamplerState LinearSampler
 {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = wrap;
     AddressV = wrap;
 }; 
 
-sampler LinearSampler_Clamp = sampler_state
+SamplerState LinearSampler_Clamp
 {
     Filter = MIN_MAG_MIP_LINEAR;
     AddressU = clamp;

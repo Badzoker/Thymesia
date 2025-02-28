@@ -4,9 +4,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CShader final : public CComponent
+class ENGINE_DLL CShader : public CComponent
 {
-private:
+protected:
 	CShader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CShader(const CShader& Prototype);
 	virtual ~CShader() = default;
@@ -21,7 +21,7 @@ public:
 	HRESULT Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrix, _uint iNumMatrices);
 	HRESULT Bind_SRV(const _char* pConstantName, ID3D11ShaderResourceView* pSRV);
 
-private:
+protected:
 	ID3DX11Effect*					m_pEffect = { nullptr };
 	vector<ID3D11InputLayout*>		m_InputLayout;
 	_uint							m_iNumPasses = {};

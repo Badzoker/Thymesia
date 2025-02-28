@@ -260,6 +260,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

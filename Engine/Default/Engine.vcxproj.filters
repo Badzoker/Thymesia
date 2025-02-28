@@ -232,6 +232,12 @@
     <Filter Include="01.Utility\03.GameObject\UIObject\ThymesiaUI\Text_PlayerInfo">
       <UniqueIdentifier>{cb36c055-b7e9-4e02-ba6c-c46984c5deb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Compute_Particle">
+      <UniqueIdentifier>{9f347dca-b9e8-46c9-bc5a-5b9d3b0d4bda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Shader\Shader_Compute">
+      <UniqueIdentifier>{f47fc5af-441c-4c3e-8d33-521cddb0f31d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -453,6 +459,12 @@
     <ClInclude Include="..\Public\UI_Scene.h">
       <Filter>01.Utility\03.GameObject\UIObject\Manager\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Point_Compute.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Compute_Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shader_Compute.h">
+      <Filter>01.Utility\04.Components\Shader\Shader_Compute</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -659,12 +671,21 @@
     <ClCompile Include="..\Private\UI_Scene.cpp">
       <Filter>01.Utility\03.GameObject\UIObject\Manager\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Point_Compute.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Compute_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader_Compute.cpp">
+      <Filter>01.Utility\04.Components\Shader\Shader_Compute</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
       <Filter>98.ShaderFile</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>98.ShaderFile</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl">
       <Filter>98.ShaderFile</Filter>
     </FxCompile>
   </ItemGroup>
