@@ -152,7 +152,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-	Load_Objects(18);
+	//현재 몬스터와 기본맵이 있는 Prototype용 맵 -> Load_Objects(16);
+	//Map Tool 기능 및 Test용 맵				 -> Load_Objects(18);
+	Load_Objects(16);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -259,8 +261,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

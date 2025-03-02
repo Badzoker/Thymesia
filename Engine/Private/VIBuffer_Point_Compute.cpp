@@ -339,14 +339,10 @@ HRESULT CVIBuffer_Point_Compute::CreateAndCopyBuffer()
     m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &msr);
     COMPUTE_PARTICLE_INSTANCE* pDest = {};
     pDest = (COMPUTE_PARTICLE_INSTANCE*)msr.pData;
-    int a = 0;
-    for (_uint i = 0; i < m_iNumInstance; i++)
-    {
-        a++;
-        pDest[i] = pData[i];
-    }
+    //for (_uint i = 0; i < m_iNumInstance; i++) //과거의 잔재 남겨두긴 해놈
+    //    pDest[i] = pData[i];
 
-    //memcpy(&pDest, &pData, sizeof(COMPUTE_PARTICLE_INSTANCE));
+    memcpy(pDest, pData, sizeof(COMPUTE_PARTICLE_INSTANCE) * m_iNumInstance);
 
 
     m_pContext->Unmap(m_pVBInstance, 0);
