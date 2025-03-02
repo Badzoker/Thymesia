@@ -15,6 +15,7 @@ public:
 	HRESULT Intialize();
 	HRESULT Bind_RT_ShaderResource(const _wstring& strRenderTargetTag, class CShader* pShader, const _char* pConstantName);
 	HRESULT Add_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+	HRESULT Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
 	HRESULT Add_MRT(const _wstring& strMRTTag, const _wstring& strRenderTargetTag);	
 	HRESULT Begin_MRT(const _wstring& strMRTTag, _bool isClear = true, ID3D11DepthStencilView* pDSV = nullptr);	
 	HRESULT End_MRT(ID3D11DepthStencilView* _pDSV = nullptr);		

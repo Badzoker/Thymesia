@@ -44,6 +44,58 @@ HRESULT CRenderTarget::Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixe
     return S_OK;    
 }
 
+
+HRESULT CRenderTarget::Initialize_ShadowMap(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize)
+{
+    D3D11_TEXTURE2D_DESC TextureDesc;
+    ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+    TextureDesc.Width = iWidth;
+    TextureDesc.Height = iHeight;
+    TextureDesc.MipLevels = 1;
+    TextureDesc.ArraySize = iArraySize;
+    TextureDesc.Format = ePixelFormat;
+
+    TextureDesc.SampleDesc.Quality = 0;
+    TextureDesc.SampleDesc.Count = 1;
+
+    TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+    TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    TextureDesc.CPUAccessFlags = 0;
+    TextureDesc.MiscFlags = 0;
+
+    if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTexture2D)))
+        return E_FAIL;
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC descSRV;
+    descSRV.Format = ePixelFormat;
+    descSRV.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+    descSRV.Texture2DArray.ArraySize = iArraySize;
+    descSRV.Texture2DArray.FirstArraySlice = 0;
+    descSRV.Texture2DArray.MipLevels = 1;
+    descSRV.Texture2DArray.MostDetailedMip = 0;
+
+    if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, &descSRV, &m_pSRV)))
+        return E_FAIL;
+
+
+    D3D11_RENDER_TARGET_VIEW_DESC descRT;
+    descRT.Format = ePixelFormat;
+    descRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+    descRT.Texture2DArray.ArraySize = iArraySize;
+    descRT.Texture2DArray.MipSlice = 0;
+
+    descRT.Texture2DArray.FirstArraySlice = 0;
+
+
+    if (FAILED(m_pDevice->CreateRenderTargetView(m_pTexture2D, &descRT, &m_pRTV)))
+        return E_FAIL;
+
+    m_vClearColor = vClearColor;
+
+    return S_OK;
+}
+
 void CRenderTarget::Clear()
 {
     m_pContext->ClearRenderTargetView(m_pRTV, reinterpret_cast<_float*>(&m_vClearColor));   
@@ -90,6 +142,19 @@ CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
     CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);     
 
     if (FAILED(pInstance->Initialize(iWidth, iHeight, ePixelFormat,vClearColor)))
+    {
+        MSG_BOX("Faield to Created : CRenderTarget");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+CRenderTarget* CRenderTarget::Create_ShadowMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize)
+{
+    CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);
+
+    if (FAILED(pInstance->Initialize_ShadowMap(iWidth, iHeight, ePixelFormat, vClearColor, iArraySize)))
     {
         MSG_BOX("Faield to Created : CRenderTarget");
         Safe_Release(pInstance);

@@ -110,6 +110,7 @@ public:
 	HRESULT Add_MRT(const _wstring& strMRTTag, const _wstring& strRenderTargetTag);	
 	HRESULT Begin_MRT(const _wstring& strMRTTag, _bool isClear = true, ID3D11DepthStencilView* pDSV = nullptr);
 	HRESULT End_MRT(ID3D11DepthStencilView* _pDSV = nullptr);
+	HRESULT Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
 #ifdef _DEBUG
 public:
 	HRESULT Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
@@ -174,8 +175,9 @@ public:
 #pragma endregion 
 
 #pragma region SHADOW
-	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo);
+	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform);
 	HRESULT Bind_Shadow_Matrices(class CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName);
+	HRESULT Bind_LightZ(CShader* pShader);
 	_float4	Get_LightPos();
 #pragma endregion
 
