@@ -37,6 +37,20 @@ HRESULT CTarget_Manager::Add_RenderTarget(const _wstring& strRenderTargetTag, _u
     return S_OK;    
 }
 
+HRESULT CTarget_Manager::Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize)
+{
+    if (nullptr != Find_RenderTarget(strRenderTargetTag))
+        return E_FAIL;
+
+    CRenderTarget* pRenderTarget = CRenderTarget::Create_ShadowMap(m_pDevice, m_pContext, iWidth, iHeight, ePixelFormat, vClearColor, iArraySize);
+    if (nullptr == pRenderTarget)
+        return E_FAIL;
+
+    m_RenderTargets.emplace(strRenderTargetTag, pRenderTarget);
+
+    return S_OK;
+}
+
 HRESULT CTarget_Manager::Add_MRT(const _wstring& strMRTTag, const _wstring& strRenderTargetTag)
 {
     CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);   

@@ -393,6 +393,11 @@ HRESULT CGameInstance::End_MRT(ID3D11DepthStencilView* _pDSV)
 	return m_pTarget_Manager->End_MRT(_pDSV);
 }
 
+HRESULT CGameInstance::Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize)
+{
+	return m_pTarget_Manager->Add_Shadow_RenderTarget(strRenderTargetTag, iWidth, iHeight, ePixelFormat , vClearColor, iArraySize);
+}
+
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	return m_pTarget_Manager->Ready_RT_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);
@@ -522,9 +527,9 @@ HRESULT CGameInstance::Sub_Item(_wstring _ItemName)
 #pragma endregion
 
 #pragma region SHADOW
-HRESULT CGameInstance::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo)
+HRESULT CGameInstance::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform)
 {
-	return m_pShadow->SetUp_ShadowLight(vEye, vAt, fLightAngle, fAspect, fNear, fFar, matInvCam, vCamInfo);
+	return m_pShadow->SetUp_ShadowLight(vEye, vAt, fLightAngle, fAspect, fNear, fFar, matInvCam, vCamInfo, pTransform);
 
 }
 HRESULT CGameInstance::Bind_Shadow_Matrices(CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName)
@@ -535,6 +540,10 @@ HRESULT CGameInstance::Bind_Shadow_Matrices(CShader* pShader, const _char* pView
 		return E_FAIL;
 
 	return S_OK;
+}
+HRESULT CGameInstance::Bind_LightZ(CShader* pShader)
+{
+	return m_pShadow->Bind_LightZ(pShader);
 }
 _float4 CGameInstance::Get_LightPos()
 {

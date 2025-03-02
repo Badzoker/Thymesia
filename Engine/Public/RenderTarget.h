@@ -13,6 +13,7 @@ private:
 
 public:
 	HRESULT Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4 & vClearColor);	
+	HRESULT Initialize_ShadowMap(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
 	void Clear();
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
 
@@ -44,6 +45,7 @@ private:
 
 public:
 	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+	static CRenderTarget* Create_ShadowMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
 	virtual void Free() override; 
 
 

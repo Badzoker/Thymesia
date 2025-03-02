@@ -44,6 +44,8 @@ void CStaticObject::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
+
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CStaticObject::Render()
@@ -87,6 +89,25 @@ HRESULT CStaticObject::Render_Occulusion()
 	return S_OK;
 }
 
+HRESULT CStaticObject::Render_Shadow()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_LightViewMatrix", "g_LightProjMatrix")))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+
+		m_pShaderCom->Begin(2);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
 HRESULT CStaticObject::Ready_Components()
 {
 	if (FAILED(__super::Ready_Components()))

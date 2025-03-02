@@ -86,3 +86,12 @@ BlendState BS_Blend
 
 	*/
 };
+
+SamplerComparisonState ShadowSampler
+{
+    Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+    AddressU = wrap;
+    AddressV = wrap;
+    AddressW = wrap;
+    ComparisonFunc = GREATER;
+};

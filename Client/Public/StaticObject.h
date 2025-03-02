@@ -27,6 +27,8 @@ public:
 
 	virtual HRESULT Render_Occulusion() override;
 
+	HRESULT Render_Shadow() override;
+
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;

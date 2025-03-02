@@ -31,12 +31,14 @@ private:
 	list<class CGameObject*>		m_RenderObjects[RG_END];
 
 	class CShader*		  m_pShader    = { nullptr };
+	class CShader*		  m_pShadowShader = { nullptr };
 	class CVIBuffer_Rect* m_pVIBuffer  = { nullptr };
 
 	_float4x4		      m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
 	_float4x4		      m_BlurWorldMatrix{}, m_BlurViewMatrix{}, m_BlurProjMatrix{};
 
 	ID3D11DepthStencilView* m_pShadowDSV = { nullptr };	
+	ID3D11ShaderResourceView* m_pShadowSRV = { nullptr };
 
 	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};		
 
@@ -56,6 +58,7 @@ private:
 	HRESULT Render_NonLight();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Deferred();
+	HRESULT Render_Shadow_Final();
 	HRESULT Render_HighLightBegin();
 	HRESULT Render_HighLightX();
 	HRESULT Render_HighLightY();
