@@ -38,7 +38,10 @@ HRESULT CUIObject::Initialize(void * pArg)
 	m_fSize.x = pDesc->fSizeX;
 	m_fSize.y = pDesc->fSizeY;
 	m_szProtoName = pDesc->szProtoName;
+
 	m_iShaderPassNum = pDesc->iShaderPassNum;
+	m_iTexNumber = pDesc->iTexNumber;
+	m_iGroupID = pDesc->iGroupID;
 
 	m_pTransformCom->Scaling(_float3(pDesc->fSizeX, pDesc->fSizeY, 1.f));
 	m_pTransformCom->Rotation(XMVectorSet(0.0f, 0.0f, 0.1f, 0.0f), pDesc->fRotation.z);

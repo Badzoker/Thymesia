@@ -44,6 +44,7 @@ namespace Engine
 		UI_BUTTON,
 		UI_BUTTONPLAYER,
 		UI_IMAGE,
+		UI_TEXT,
 		UI_TEXTPLAYER,
 		UI_END
 	};

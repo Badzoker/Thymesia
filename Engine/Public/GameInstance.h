@@ -160,6 +160,7 @@ public:
 	HRESULT Render_Font(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition,
 	_fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), _float fRotation = 0.f,
 	const _float2& vOrigin = _float2(0.f, 0.f), const _float fScale = 1.f);
+	_float2 Get_TextSize(const _wstring& strFontTag, const _tchar* pText);
 #pragma endregion
 
 
@@ -189,6 +190,10 @@ public:
 	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
 	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기
 	void Clear_ALL(); // UI 모든 씬 지우기
+
+	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut);
+
 #pragma endregion UI_Manager
 
 private:

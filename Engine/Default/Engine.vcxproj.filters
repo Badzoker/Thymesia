@@ -465,6 +465,9 @@
     <ClInclude Include="..\Public\Shader_Compute.h">
       <Filter>01.Utility\04.Components\Shader\Shader_Compute</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Text.h">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -676,6 +679,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Shader_Compute.cpp">
       <Filter>01.Utility\04.Components\Shader\Shader_Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Text.cpp">
+      <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

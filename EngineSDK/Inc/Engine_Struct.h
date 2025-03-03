@@ -48,6 +48,7 @@ namespace Engine
 		_wstring	srtTextContent;		// 텍스트 내용
 		_float2		fTextStartPos;		// 그려지는 시작점(중점X)
 		_float2		fTextSize;			// TextContent 길이에 따라 자동으로 구해지는 가로 세로 길이
+		_float4     fTextColor;         // 텍스트 색상 저장하자!
 	};
 
 	struct ENGINE_DLL VTXPOS	
@@ -65,6 +66,15 @@ namespace Engine
 
 		const static unsigned int					iNumElements = 2;
 		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];		
+	};
+
+	struct ENGINE_DLL VTXPOSTEX_UI	// 티메시아 UI용
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vTexcoord;
+
+		const static unsigned int					iNumElements = 2;
+		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	};
 
 	struct ENGINE_DLL VTXPOSTEXAGE
