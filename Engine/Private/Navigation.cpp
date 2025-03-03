@@ -470,7 +470,7 @@ _int CNavigation::Navigate_Portals(vector<_vector> pPortals, _float3 fStartPos, 
 
     iNumPoints++;
 
-    for (size_t i = 1; (i * 2) < pPortals.size(); i++)
+    for (_int i = 1; (i * 2) < pPortals.size(); i++)
     {
         _vector vLeft = pPortals[(i * 2) - 2]; // ¿ÞÂÊ Æ÷Å»
         _vector vRight = pPortals[(i * 2) - 1]; // ¿À¸¥ÂÊ Æ÷Å»

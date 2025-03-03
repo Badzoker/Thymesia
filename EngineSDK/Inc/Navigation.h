@@ -63,7 +63,7 @@ public:
 	vector<class CCell*>* Get_VecCells() { return &m_Cells; }
 	void                  Set_CurCellIndex(_uint _CellIndex) { m_iCurrentCellIndex = _CellIndex; }
 	_uint                 Get_CurCellIndex() { return m_iCurrentCellIndex; }
-	_uint                 Get_BestListSize() { return m_BestList.size(); }
+	_uint                 Get_BestListSize() {return static_cast<_uint>(m_BestList.size()); }
 	_vector               Setting_SlidingMove(_fvector _vWorldPos);
 	_bool                 bIsOn_Line(_fvector _vWorldPos);
 
@@ -94,9 +94,11 @@ private:
 	vector<class CCell*>	m_Cells;
 
 
-	static _float4x4       m_WorldMatrix;
-	static _float4x4       m_WorldMatrixInverse;
-	int                     m_iNeighborIndex = {};
+	static _float4x4        m_WorldMatrix;
+	static _float4x4        m_WorldMatrixInverse;
+	_int                    m_iNeighborIndex = {};
+
+	_uint					m_iBeslist_Count = {};
 
 #ifdef _DEBUG
 private:
