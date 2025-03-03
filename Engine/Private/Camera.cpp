@@ -4,19 +4,17 @@
 #include "GameInstance.h"
 
 CCamera::CCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject { pDevice, pContext }
+	: CGameObject ( pDevice, pContext )
 {
 }
 
 CCamera::CCamera(const CCamera & Prototype)
-	: CGameObject{ Prototype }
+	: CGameObject( Prototype )
 {
 }
 
 HRESULT CCamera::Initialize_Prototype()
 {
-	
-
 	return S_OK;
 }
 
@@ -43,7 +41,9 @@ HRESULT CCamera::Initialize(void * pArg)
 void CCamera::Priority_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
+	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW_FRUSTUM, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_fFovy, m_fAspect, m_fNear, m_fFar));
+	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ_FRUSTUM, XMMatrixPerspectiveFovLH(m_fFovy, m_fAspect, m_fNear, m_fFar / 20.f));
 }
 
 void CCamera::Update(_float fTimeDelta)

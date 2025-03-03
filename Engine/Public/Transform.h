@@ -80,6 +80,8 @@ public:
 	void Go_Right_Navi(_float fTimeDelta, class CNavigation* pNavigation);
 	void Go_Dir(_fvector vDir, class CNavigation* pNavigation, _float fTimeDelta);
 	void LookAt(_fvector vAt);
+	void LookAt_Astar(_fvector vAt);
+
 	
 	void Turn(_fvector vAxis, _float fTimeDelta);/* 실시간 회전 : 매 프레임마다 현재 상태를 기준으로 정해진 속도로 추가로 회전해나간다. */
 	void Turn_Navi(_fvector vAxis, _float fTimeDelta, CNavigation* pNavigation);

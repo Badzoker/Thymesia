@@ -19,6 +19,8 @@ CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CNavigation::CNavigation(const CNavigation& Prototype)
     :CComponent(Prototype)
     , m_Cells(Prototype.m_Cells)
+    , m_CellInfo{ Prototype.m_CellInfo }
+    , m_CellAdj{ Prototype.m_CellAdj }
 #ifdef _DEBUG
     , m_pShader(Prototype.m_pShader)
 #endif // _DEBUG
@@ -82,6 +84,11 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
     if (FAILED(SetUp_Neighbors()))
         return E_FAIL;
 
+    for (auto pCell : m_Cells)
+        pCell->Set_CellInfo(m_CellInfo);
+
+    for (auto pCell : m_Cells)
+        pCell->Set_CellAdj(m_CellInfo, m_CellAdj);
 
     return S_OK;
 }
@@ -267,6 +274,262 @@ _bool CNavigation::bIsOn_Line(_fvector _vWorldPos)
     return false;
 }
 
+_bool CNavigation::MakeRoute(_int iStartIndex, _int iGoalIndex)
+{
+    if (!m_OpenList.empty())
+        m_OpenList.pop_front();
+
+    m_CloseList.push_back(iStartIndex);
+
+    for (auto& pCell : m_CellAdj[iStartIndex])
+    {
+        if (iGoalIndex == pCell->iIndex)
+        {
+            pCell->iParentIndex = iStartIndex;
+            return true;
+        }
+        if (!CheckOpen(pCell->iIndex) && !CheckClose(pCell->iIndex))
+        {
+            pCell->iParentIndex = iStartIndex;
+            m_OpenList.push_back(pCell->iIndex);
+
+        }
+    }
+
+    if (m_OpenList.empty())
+        return false;
+
+    int iStartIdx = m_iStartIndex;
+
+    vector<CELL*>& vecCell = m_CellInfo;
+
+    m_OpenList.sort([&vecCell, &iGoalIndex, &iStartIdx](int Dst, int Src)->bool
+        {
+            _vector vPCost1 = XMLoadFloat3(&vecCell[iStartIdx]->vPos) - XMLoadFloat3(&vecCell[Dst]->vPos);
+            _vector vPCost2 = XMLoadFloat3(&vecCell[iStartIdx]->vPos) - XMLoadFloat3(&vecCell[Src]->vPos);
+
+            _vector vGCost1 = XMLoadFloat3(&vecCell[iGoalIndex]->vPos) - XMLoadFloat3(&vecCell[Dst]->vPos);
+            _vector vGCost2 = XMLoadFloat3(&vecCell[iGoalIndex]->vPos) - XMLoadFloat3(&vecCell[Src]->vPos);
+
+            _float	fCost1 = XMVectorGetX((XMVector3Length(vPCost1) + XMVector3Length(vGCost1)));
+            _float	fCost2 = XMVectorGetX((XMVector3Length(vPCost2) + XMVector3Length(vGCost2)));
+
+            return fCost1 < fCost2;
+        });
+
+
+    return MakeRoute(m_OpenList.front(), iGoalIndex);
+}
+
+void CNavigation::MakeBestList(_int iStartIndex, _int iGoalIndex)
+{
+    m_BestList.push_front(m_CellInfo[iGoalIndex]);
+
+    _int iRouteIndex = m_CellInfo[iGoalIndex]->iParentIndex;
+
+    while (true)
+    {
+        if (iStartIndex == iRouteIndex)
+            break;
+        m_BestList.push_front(m_CellInfo[iRouteIndex]);
+
+        iRouteIndex = m_CellInfo[iRouteIndex]->iParentIndex;
+    }
+}
+
+void CNavigation::Start_Astar(_uint iGoalIndex)
+{
+    Clear_Astar();
+
+    m_iStartIndex = m_iCurrentCellIndex;
+
+    //각종 예외처리
+    if (m_iStartIndex < 0 || iGoalIndex < 0 || m_Cells.size() <= m_iStartIndex || m_Cells.size() <= iGoalIndex)
+        return;
+
+    //시작지점과 도착지점이 같으면 return;
+    if (m_iStartIndex == iGoalIndex)
+        return;
+
+    if (MakeRoute(m_iStartIndex, iGoalIndex))
+        MakeBestList(m_iStartIndex, iGoalIndex);
+
+    m_Portal.clear();
+    for (auto iter = m_BestList.begin(); iter != m_BestList.end();)
+    {
+        CELL* pCell = *iter;
+
+
+        _int j = 0;
+
+        for (; j < N_LINE_END; j++)
+        {
+            if (pCell->eLineInfo[j] == pCell->iParentIndex)
+                break;
+        }
+
+        list<_vector> pPortals;
+
+        pPortals.push_front(XMLoadFloat3(&pCell->eLine[j][0]));
+        pPortals.push_front(XMLoadFloat3(&pCell->eLine[j][1]));
+
+        for (auto pPotal : pPortals)
+            m_Portal.push_back(pPotal);
+
+        iter++;
+    }
+}
+
+void CNavigation::Clear_Astar()
+{
+    m_OpenList.clear();
+    m_CloseList.clear();
+    m_BestList.clear();
+}
+
+_vector CNavigation::MoveAstar(_vector pCurPos, _bool& isEmpty)
+{
+    if (!m_BestList.empty() && m_BestList.size() > 1)
+    {
+        vector<_vector> vPoints;
+        _float3 fCurPos = {};
+
+        XMStoreFloat3(&fCurPos, pCurPos);
+
+        Navigate_Portals(m_Portal, fCurPos, m_BestList.back()->vPos, vPoints);
+
+        _vector vDir = vPoints.front() - pCurPos;
+
+        _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+        if (fDistance <= 1.5f)
+            m_BestList.pop_front();
+
+        _vector vCurPos = XMVectorSet(XMVectorGetX(vDir), 0.f, XMVectorGetZ(vDir), 0.f);
+        pCurPos = XMVector3Normalize(vCurPos);
+        isEmpty = true;
+    }
+    else
+        isEmpty = false;
+
+    return pCurPos;
+}
+
+_bool CNavigation::CheckOpen(_int iIndex)
+{
+    for (auto& iOpenIndex : m_OpenList)
+    {
+        if (iIndex == iOpenIndex)
+            return true;
+    }
+
+    return false;
+}
+
+_bool CNavigation::CheckClose(_int iIndex)
+{
+    for (auto& iCloseIndex : m_CloseList)
+    {
+        if (iIndex == iCloseIndex)
+            return true;
+    }
+
+    return false;
+}
+//주어진 두 점 a와 b가 실질적으로 동일한지 비교하는 함수
+_bool CNavigation::IsPointsClose(_vector fPointA, const _vector fPointB)
+{
+    static const _float Close_Enough = 0.001f * 0.001f;
+    return Calculate_Squared_Distance(fPointA, fPointB) < Close_Enough;
+}
+//주어진 세 점으로 이루어진 삼각형의 면적의 두 배를 반환하는 함수.
+_float CNavigation::TriangleArea2x(const _vector fPointA, const _vector fPointB, const _vector fPointC)
+{
+    const _float DxAB = XMVectorGetX(fPointB) - XMVectorGetX(fPointA);
+    const _float DyAB = XMVectorGetZ(fPointB) - XMVectorGetZ(fPointA);;
+    const _float DxAC = XMVectorGetX(fPointC) - XMVectorGetX(fPointA);
+    const _float DyAC = XMVectorGetZ(fPointC) - XMVectorGetZ(fPointA);
+
+    return DxAC * DyAB - DxAB * DyAC;
+}
+//두 벡터 간의 거리에 제곱을 계산 하는 함수
+_float CNavigation::Calculate_Squared_Distance(const _vector fPointA, const _vector fPointB)
+{
+    return XMVectorGetX(XMVector3Length(fPointB - fPointA));
+}
+
+_int CNavigation::Navigate_Portals(vector<_vector> pPortals, _float3 fStartPos, _float3 fEndPos, vector<_vector>& vPoints)
+{
+    _int iNumPoints = {};
+    _vector vCurrentPotal, vLeftPortal, vRightPortal;
+    _int iCurrentPotalIndex{}, iLeftPortalIndex{}, iRightPortalIndex{};
+
+    vCurrentPotal = XMLoadFloat3(&fStartPos);
+    vLeftPortal = pPortals[0];
+    vRightPortal = pPortals[1];
+
+    iNumPoints++;
+
+    for (size_t i = 1; (i * 2) < pPortals.size(); i++)
+    {
+        _vector vLeft = pPortals[(i * 2) - 2]; // 왼쪽 포탈
+        _vector vRight = pPortals[(i * 2) - 1]; // 오른쪽 포탈
+
+        if (TriangleArea2x(vCurrentPotal, vRightPortal, vRight) <= 0.f)
+        {
+            if (IsPointsClose(vCurrentPotal, vRightPortal) || TriangleArea2x(vCurrentPotal, vLeftPortal, vRight) > 0.f)
+            {
+                vRightPortal = vRight;
+                iRightPortalIndex = i;
+            }
+            else
+            {
+                vPoints.push_back(vLeftPortal);
+                iNumPoints++;
+                vCurrentPotal = vLeftPortal;
+                iCurrentPotalIndex = iLeftPortalIndex;
+
+                vLeftPortal = vCurrentPotal;
+                vRightPortal = vCurrentPotal;
+                iLeftPortalIndex = iCurrentPotalIndex;
+                iRightPortalIndex = iCurrentPotalIndex;
+
+                i = iCurrentPotalIndex;
+                continue;
+            }
+
+        }
+
+        if (TriangleArea2x(vCurrentPotal, vLeftPortal, vLeft) >= 0.f)
+        {
+            if (IsPointsClose(vCurrentPotal, vLeftPortal) || TriangleArea2x(vCurrentPotal, vRightPortal, vLeft) < 0.f)
+            {
+                vLeftPortal = vLeft;
+                iLeftPortalIndex = i;
+            }
+            else
+            {
+                vPoints.push_back(vRightPortal);
+                iNumPoints++;
+                vCurrentPotal = vRightPortal;
+                iCurrentPotalIndex = iRightPortalIndex;
+
+                vLeftPortal = vCurrentPotal;
+                vRightPortal = vCurrentPotal;
+                iLeftPortalIndex = iCurrentPotalIndex;
+                iRightPortalIndex = iCurrentPotalIndex;
+                i = iCurrentPotalIndex;
+                continue;
+            }
+        }
+    }
+
+    vPoints.push_back(XMLoadFloat3(&fEndPos));
+    iNumPoints++;
+
+    return iNumPoints;
+}
+
 
 
 #ifdef _DEBUG
@@ -412,6 +675,13 @@ void CNavigation::Free()
 
     for (auto& pCell : m_Cells)
         Safe_Release(pCell);
+
+    m_CellAdj.clear();
+
+    if (!m_isCloned)
+        for (auto& pCellInfo : m_CellInfo)
+            Safe_Delete(pCellInfo);
+    m_CellInfo.clear();
 
     m_Cells.clear();
 }

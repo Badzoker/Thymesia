@@ -26,6 +26,15 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
     if (nullptr == m_pVIBuffer)
         return E_FAIL;
 #endif 
+    _vector vPos = { };
+
+    for (size_t i = 0; i < 3; i++)
+        for (size_t j = 0; j < 3; j++)
+            vPos.m128_f32[i] += XMLoadFloat3(&pPoints[j]).m128_f32[i];
+
+    vPos /= 3.f;
+
+    m_vPos = vPos;
 
     return S_OK;
 }
@@ -86,6 +95,46 @@ _float CCell::Compute_Height(_fvector vPosition)
     // y = (-ax - cz -d ) / b 
 
     return (-m_vPlane.x * vPosition.m128_f32[0] - m_vPlane.z * vPosition.m128_f32[2] - m_vPlane.w) / m_vPlane.y;
+}
+
+void CCell::Set_CellInfo(vector<CNavigation::CELL*>& pCells)
+{
+    CNavigation::CELL* pCellInfo = new CNavigation::CELL;
+
+    pCellInfo->iIndex = m_iIndex;
+    pCellInfo->byOption = 0;
+    pCellInfo->iParentIndex = 0;
+    XMStoreFloat3(&pCellInfo->vPos, m_vPos);
+
+    pCellInfo->ePoint[CNavigation::N_POINT_A] = m_vPoints[POINT_A];
+    pCellInfo->ePoint[CNavigation::N_POINT_B] = m_vPoints[POINT_B];
+    pCellInfo->ePoint[CNavigation::N_POINT_C] = m_vPoints[POINT_C];
+
+    pCellInfo->eLine[CNavigation::N_LINE_AB][0] = m_vPoints[POINT_A];
+    pCellInfo->eLine[CNavigation::N_LINE_AB][1] = m_vPoints[POINT_B];
+
+    pCellInfo->eLine[CNavigation::N_LINE_BC][0] = m_vPoints[POINT_B];
+    pCellInfo->eLine[CNavigation::N_LINE_BC][1] = m_vPoints[POINT_C];
+
+    pCellInfo->eLine[CNavigation::N_LINE_CA][0] = m_vPoints[POINT_C];
+    pCellInfo->eLine[CNavigation::N_LINE_CA][1] = m_vPoints[POINT_A];
+
+    pCellInfo->eLineInfo[CNavigation::N_LINE_AB] = m_iNeighborIndices[LINE_AB];
+    pCellInfo->eLineInfo[CNavigation::N_LINE_BC] = m_iNeighborIndices[LINE_BC];
+    pCellInfo->eLineInfo[CNavigation::N_LINE_CA] = m_iNeighborIndices[LINE_CA];
+
+    pCells.push_back(pCellInfo);
+}
+
+void CCell::Set_CellAdj(vector<CNavigation::CELL*>& pCells, vector<list<CNavigation::CELL*>>& pCellAdj)
+{
+    pCellAdj.resize(pCells.size());
+
+    for (auto iter : m_iNeighborIndices)
+    {
+        if (iter != -1)
+            pCellAdj[m_iIndex].push_back(pCells[iter]);
+    }
 }
 
 _float3 CCell::Get_Center()

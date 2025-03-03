@@ -53,7 +53,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
 
-    m_pState_Manager = CBoss_State_Manager<CBoss_Varg>::Create();
+    m_pState_Manager = CState_Machine<CBoss_Varg>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
@@ -74,13 +74,14 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
         m_iPhase = 1;
         m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
     }
-    if (m_fBossCurHP <= 0.f)
+    if (m_fBossCurHP <= 0.f && !m_IsStun)
     {
+        m_IsStun = true;
         m_bPatternProgress = true;
         m_fDelayTime = 0.f;
         m_pState_Manager->ChangeState(new CBoss_Varg::Stun_State(), this);
     }
-    if (m_pGameInstance->isKeyEnter(DIK_K))
+    if (m_pGameInstance->isKeyEnter(DIK_K) && m_fBossCurHP > 0.f)
     {
         //임시용으로 k버튼 누르면 피격모션 진행
         m_fRecoveryTime = 0.f;
@@ -105,30 +106,11 @@ void CBoss_Varg::Update(_float fTimeDelta)
         Rotation_To_Player();
 
     PatternCreate();
+    RootAnimation();
+
 
     m_pState_Manager->State_Update(fTimeDelta, this);
-
-    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector test = { 0.f,0.f,0.f,1.f };
-    /* 루트 모션 애니메션 코드 */
-    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-
-    if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bBossActive/*&& m_iState != STATE_IDLE*/)
-    {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) || m_bCan_Move_Anim)
-            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
-
-        /* 2월 19일 추가 코드 */
-        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-        {
-            _float4x4 test = {};
-            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
-            const _float4x4* test2 = const_cast<_float4x4*>(&test);
-            m_pTransformCom->Set_MulWorldMatrix(test2);
-        }
-    }
     m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
-
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
     __super::Update(fTimeDelta);
@@ -151,11 +133,13 @@ void CBoss_Varg::Late_Update(_float fTimeDelta)
             m_fRecoveryTime = 0.f;
         }
     }
-
 #ifdef _DEBUG
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 #endif
-    __super::Late_Update(fTimeDelta);
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f))
+    {
+        __super::Late_Update(fTimeDelta);
+    }
 }
 
 HRESULT CBoss_Varg::Render()
@@ -190,7 +174,7 @@ HRESULT CBoss_Varg::Ready_Components()
         return E_FAIL;
 
 
-    m_pColliderCom->Set_Collider_Name("Boss_Varg");
+    m_pColliderCom->Set_Collider_Name("Monster");
 
     return S_OK;
 }
@@ -229,12 +213,35 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
     //    return E_FAIL;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"),&pBoss_HP_Bar)))
-         return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
+        return E_FAIL;
 
 
     return S_OK;
 
+}
+
+void CBoss_Varg::RootAnimation()
+{
+    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector test = { 0.f,0.f,0.f,1.f };
+    /* 루트 모션 애니메션 코드 */
+    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
+
+    if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bBossActive)
+    {
+        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) || m_bCan_Move_Anim)
+            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
+
+        /* 2월 19일 추가 코드 */
+        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+        {
+            _float4x4 test = {};
+            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+            const _float4x4* test2 = const_cast<_float4x4*>(&test);
+            m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
+    }
 }
 
 void CBoss_Varg::PatternCreate()
@@ -432,6 +439,7 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 36;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_iState = CBoss_Varg::Varg_Stun_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -459,6 +467,7 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 {
     pObject->m_bBossActive = true;
     pObject->m_bPatternProgress = true;
+    pObject->m_iState = CBoss_Varg::Varg_Intro_State;
     pObject->m_pModelCom->SetUp_Animation(17, false);
 }
 
@@ -483,6 +492,7 @@ void CBoss_Varg::Idle_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 19;
     //Idle로 돌아오면 패턴 진행할수 있게 진행중이라는 불값 해제 
     pObject->m_bPatternProgress = false;
+    pObject->m_iState = CBoss_Varg::Varg_Idle_State;
     //애니메이션 실행
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -520,6 +530,7 @@ void CBoss_Varg::Idle_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Avoid_State::State_Enter(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_iState = CBoss_Varg::Varg_Avoid_State;
     _uint iRandom_Avoid = (rand() % 3) + 4;
     _uint iBonus_Attack = rand() % 2;
     switch (iBonus_Attack)
@@ -541,6 +552,7 @@ void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
         if (m_bBonusAttack)
         {
             pObject->RotateDegree_To_Player();
+            pObject->m_iState = CBoss_Varg::Varg_Avoid_Attack_State;
             pObject->m_pModelCom->SetUp_Animation(3, false);
             m_bBonusAttack = false;
         }
@@ -561,7 +573,9 @@ void CBoss_Varg::Avoid_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Hit_State
 void CBoss_Varg::Hit_State::State_Enter(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->SetUp_Animation(18, false);
+    m_iIndex = 18;
+    pObject->m_iState = CBoss_Varg::Varg_Hit_State;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::Hit_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -601,6 +615,7 @@ void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
             break;
         }
     }
+    pObject->m_iState = CBoss_Varg::Varg_Walk_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -608,7 +623,7 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 {
     if (m_iIndex == 47)
     {
-        pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta,pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
     }
     else if (m_iIndex == 46)
     {
@@ -622,7 +637,7 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     else
     {
         pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
-        pObject->m_pTransformCom->Go_Left_Navi(pObject->m_fTimeDelta,pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Left_Navi(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
     }
 }
 
@@ -638,6 +653,7 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
 {
     //1단
     m_iIndex = 7;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_01_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -648,6 +664,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex += 1;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_02_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //3단
@@ -655,6 +672,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex += 1;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_03_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //끝
@@ -674,6 +692,7 @@ void CBoss_Varg::Attack_Combo_A::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -683,6 +702,7 @@ void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex = 11;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_02_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -701,6 +721,7 @@ void CBoss_Varg::Attack_Combo_B::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -710,6 +731,7 @@ void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_03_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -727,6 +749,7 @@ void CBoss_Varg::Attack_Combo_C::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_D::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 7;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_01_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -736,12 +759,14 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex = 10;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_03_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -761,6 +786,7 @@ void CBoss_Varg::Attack_Combo_D::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -770,6 +796,7 @@ void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex = 14;
         pObject->RotateDegree_To_Player();
+        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_C_01_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
@@ -785,6 +812,7 @@ void CBoss_Varg::Attack_Combo_E::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Run_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 25;
+    pObject->m_iState = CBoss_Varg::Varg_Run_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -813,7 +841,9 @@ void CBoss_Varg::Run_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Jump_Attack
 void CBoss_Varg::Jump_Attack::State_Enter(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->SetUp_Animation(22, false);
+    m_iIndex = 22;
+    pObject->m_iState = CBoss_Varg::Varg_JumpAttack_State;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::Jump_Attack::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -832,10 +862,15 @@ void CBoss_Varg::Jump_Attack::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     if (pObject->m_iPhase == 1)
+    {
         m_iIndex = 50;
+        pObject->m_iState = CBoss_Varg::Varg_Execution_First_State;
+    }
     else
+    {
         m_iIndex = 41;
-
+        pObject->m_iState = CBoss_Varg::Varg_Execution_Second_State;
+    }
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -869,10 +904,18 @@ CBoss_Varg::Roar_State::Roar_State(_bool m_bCheck)
 void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
 {
     if (m_bFirst)
+    {
         m_iIndex = 32;
+    }
     else
+    {
         m_iIndex = 31;
+    }
 
+    pObject->m_fBossCurHP = pObject->m_fBossMaxHP;
+    pObject->m_bCanRecovery = true;
+    pObject->m_IsStun = false;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Roar_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -891,8 +934,10 @@ void CBoss_Varg::Roar_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Catch_State
 void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->SetUp_Animation(30, false);
+    m_iIndex = 30;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_iState = CBoss_Varg::Varg_Attack_Catch_State;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -902,7 +947,10 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     pObject->m_pTransformCom->LookAt(pObject->m_vPlayerPos);
 
     if (pObject->m_fDistance <= 1.5f)
-        pObject->m_pModelCom->SetUp_Animation(28, false);
+    {
+        m_iIndex = 28;
+        pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    }
     //안부딪혀서 끝까지 진행된 경우
     if (pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State, pObject);
@@ -919,14 +967,19 @@ void CBoss_Varg::Catch_State::State_Exit(CBoss_Varg* pObject)
 
 void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->SetUp_Animation(37, false);
+    m_iIndex = 37;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_iState = CBoss_Varg::Varg_Dead_State;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     if (pObject->m_pModelCom->GetAniFinish())
+    {
+        m_iIndex = 39;
         pObject->m_pModelCom->SetUp_Animation(39, true);
+    }
 }
 
 void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)

@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"
 #include "ContainerObject.h"
-#include "Boss_State_Manager.h"
+#include "State_Machine.h"
 
 
 BEGIN(Engine)
@@ -32,6 +32,8 @@ public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
 public:
+	void RootAnimation();
+public:
 	void PatternCreate();
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
@@ -59,7 +61,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
-	CBoss_State_Manager<CElite_Joker>* m_pState_Manager = { nullptr };
+	CState_Machine<CElite_Joker>* m_pState_Manager = { nullptr };
 	class CGameObject* m_pPlayer = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther);
@@ -72,7 +74,7 @@ public:
 	virtual void Free() override;
 
 
-	class Idle_State : public CBoss_State<CElite_Joker>
+	class Idle_State : public CStates<CElite_Joker>
 	{
 	public:
 		Idle_State() = default;
@@ -84,7 +86,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Intro_State : public CBoss_State<CElite_Joker>
+	class Intro_State : public CStates<CElite_Joker>
 	{
 	public:
 		Intro_State() = default;
@@ -95,7 +97,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Walk_State : public CBoss_State<CElite_Joker>
+	class Walk_State : public CStates<CElite_Joker>
 	{
 	public:
 		Walk_State() = default;
@@ -106,7 +108,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Attack_Combo_A : public CBoss_State<CElite_Joker>
+	class Attack_Combo_A : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Combo_A() = default;
@@ -119,7 +121,7 @@ public:
 		_bool m_bBonusAttack = {};
 	};
 
-	class Attack_Combo_B : public CBoss_State<CElite_Joker>
+	class Attack_Combo_B : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Combo_B() = default;
@@ -132,7 +134,7 @@ public:
 		_bool m_bBonusAttack = {};
 	};
 
-	class Attack_Run : public CBoss_State<CElite_Joker>
+	class Attack_Run : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Run() = default;
@@ -145,7 +147,7 @@ public:
 		_float   m_fTimer;
 	};
 
-	class Attack_Wheel : public CBoss_State<CElite_Joker>
+	class Attack_Wheel : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Wheel() = default;
@@ -158,7 +160,7 @@ public:
 		_float   m_fTimer;
 	};
 
-	class Attack_Shock : public CBoss_State<CElite_Joker>
+	class Attack_Shock : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Shock() = default;
@@ -169,7 +171,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Attack_Strong : public CBoss_State<CElite_Joker>
+	class Attack_Strong : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Strong() = default;
@@ -180,7 +182,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Attack_Jump : public CBoss_State<CElite_Joker>
+	class Attack_Jump : public CStates<CElite_Joker>
 	{
 	public:
 		Attack_Jump() = default;
@@ -191,7 +193,7 @@ public:
 		void State_Exit(CElite_Joker* pObject) override;
 	};
 
-	class Stun_State : public CBoss_State<CElite_Joker>
+	class Stun_State : public CStates<CElite_Joker>
 	{
 	public:
 		Stun_State() = default;
@@ -204,7 +206,7 @@ public:
 		_float   m_fTimer;
 	};
 
-	class Execution_State : public CBoss_State<CElite_Joker>
+	class Execution_State : public CStates<CElite_Joker>
 	{
 	public:
 		Execution_State() = default;

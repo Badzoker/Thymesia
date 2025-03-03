@@ -49,7 +49,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
 
-    m_pState_Manager = CBoss_State_Manager<CElite_Joker>::Create();
+    m_pState_Manager = CState_Machine<CElite_Joker>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
@@ -86,29 +86,10 @@ void CElite_Joker::Update(_float fTimeDelta)
         Rotation_To_Player();
 
     PatternCreate();
+    RootAnimation();
 
     m_pState_Manager->State_Update(fTimeDelta, this);
-
-    /* 风飘 葛记 局聪皋记 内靛 */
-    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector test = { 0.f,0.f,0.f,1.f };
-    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-    _uint iTest = m_pModelCom->Get_Current_Animation_Index();
-    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished()))
-    {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) && !m_bNeedControl)
-            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
-
-        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-        {
-            _float4x4 test = {};
-            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
-            const _float4x4* test2 = const_cast<_float4x4*>(&test);
-            m_pTransformCom->Set_MulWorldMatrix(test2);
-        }
-    }
     m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
-
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
     __super::Update(fTimeDelta);
@@ -119,7 +100,10 @@ void CElite_Joker::Late_Update(_float fTimeDelta)
 #ifdef _DEBUG
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 #endif 
-    __super::Late_Update(fTimeDelta);
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f))
+    {
+        __super::Late_Update(fTimeDelta);
+    }
 }
 
 HRESULT CElite_Joker::Render()
@@ -154,7 +138,7 @@ HRESULT CElite_Joker::Ready_Components()
         return E_FAIL;
 
 
-    m_pColliderCom->Set_Collider_Name("Elite_Joker");
+    m_pColliderCom->Set_Collider_Name("Monster");
 
     return S_OK;
 }
@@ -185,6 +169,28 @@ HRESULT CElite_Joker::Ready_PartObjects()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CElite_Joker::RootAnimation()
+{
+    /* 风飘 葛记 局聪皋记 内靛 */
+    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector test = { 0.f,0.f,0.f,1.f };
+    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
+    _uint iTest = m_pModelCom->Get_Current_Animation_Index();
+    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished()))
+    {
+        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) && !m_bNeedControl)
+            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
+
+        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+        {
+            _float4x4 test = {};
+            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+            const _float4x4* test2 = const_cast<_float4x4*>(&test);
+            m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
+    }
 }
 
 void CElite_Joker::PatternCreate()
@@ -428,13 +434,13 @@ void CElite_Joker::Walk_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
 
 
     if (m_iIndex == 30)
-        pObject->m_pTransformCom->Go_Straight(fTimeDelta,pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
     else if (m_iIndex == 29)
         pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
     else if (m_iIndex == 31)
-        pObject->m_pTransformCom->Go_Left_Navi(fTimeDelta,pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Left_Navi(fTimeDelta, pObject->m_pNavigationCom);
     else
-        pObject->m_pTransformCom->Go_Right_Navi(fTimeDelta,pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Right_Navi(fTimeDelta, pObject->m_pNavigationCom);
 }
 
 void CElite_Joker::Walk_State::State_Exit(CElite_Joker* pObject)

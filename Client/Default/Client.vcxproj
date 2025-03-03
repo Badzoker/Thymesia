@@ -175,6 +175,14 @@
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
+    <ClInclude Include="..\Public\Body_VillageF0.h" />
+    <ClInclude Include="..\Public\Body_VillageF1.h" />
+    <ClInclude Include="..\Public\Body_VillageM0.h" />
+    <ClInclude Include="..\Public\Body_VillageM1.h" />
+    <ClInclude Include="..\Public\Normal_VillageF0.h" />
+    <ClInclude Include="..\Public\Normal_VillageF1.h" />
+    <ClInclude Include="..\Public\Normal_VillageM0.h" />
+    <ClInclude Include="..\Public\Normal_VillageM1.h" />
     <ClInclude Include="..\Public\Particle_Compute_Example.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
@@ -189,8 +197,8 @@
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h" />
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage_Effect.h" />
     <ClInclude Include="..\Public\Boss_Magician.h" />
-    <ClInclude Include="..\Public\Boss_State.h" />
-    <ClInclude Include="..\Public\Boss_State_Manager.h" />
+    <ClInclude Include="..\Public\States.h" />
+    <ClInclude Include="..\Public\State_Machine.h" />
     <ClInclude Include="..\Public\Boss_Varg.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -260,6 +268,8 @@
     <ClInclude Include="..\Public\UI_UnderLine.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
+    <ClInclude Include="..\Public\VillageF_Weapon.h" />
+    <ClInclude Include="..\Public\VillageM_Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="pch.h" />
@@ -275,6 +285,14 @@
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
+    <ClCompile Include="..\Private\Body_VillageF0.cpp" />
+    <ClCompile Include="..\Private\Body_VillageF1.cpp" />
+    <ClCompile Include="..\Private\Body_VillageM0.cpp" />
+    <ClCompile Include="..\Private\Body_VillageM1.cpp" />
+    <ClCompile Include="..\Private\Normal_VillageF0.cpp" />
+    <ClCompile Include="..\Private\Normal_VillageF1.cpp" />
+    <ClCompile Include="..\Private\Normal_VillageM0.cpp" />
+    <ClCompile Include="..\Private\Normal_VillageM1.cpp" />
     <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
@@ -289,8 +307,8 @@
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp" />
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage_Effect.cpp" />
     <ClCompile Include="..\Private\Boss_Magician.cpp" />
-    <ClCompile Include="..\Private\Boss_State.cpp" />
-    <ClCompile Include="..\Private\Boss_State_Manager.cpp" />
+    <ClCompile Include="..\Private\States.cpp" />
+    <ClCompile Include="..\Private\State_Machine.cpp" />
     <ClCompile Include="..\Private\Boss_Varg.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Elite_Joker.cpp" />
@@ -359,6 +377,8 @@
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
+    <ClCompile Include="..\Private\VillageF_Weapon.cpp" />
+    <ClCompile Include="..\Private\VillageM_Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
