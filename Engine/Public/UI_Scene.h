@@ -28,6 +28,7 @@ public:
 	vector<class CUI_Image*> Find_UI_Image() { return m_Image; }
 	vector<class CUI_Text_PlayerInfo*> Find_UI_Text_PlayerInfo() { return m_TextPlayerInfo; }
 
+	vector<class CUI_Text*> Find_UI_TextBox() { return m_TextBox; }
 
 
 private:
@@ -36,6 +37,7 @@ private:
 	vector<class CUI_Image*>			m_Image;
 	vector<class CUI_Text_PlayerInfo*>	m_TextPlayerInfo;
 
+	vector<class CUI_Text*>				m_TextBox;
 public:
 	static CUI_Scene* Create();
 	virtual void Free() override;

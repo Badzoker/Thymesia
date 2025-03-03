@@ -51,6 +51,14 @@ DepthStencilState DSS_SKip_Z
     DepthWriteMask = ZERO;
 };
 
+DepthStencilState DSS_Thymasia_UI
+{
+    DepthEnable = TRUE;
+    DepthWriteMask = ALL;
+    DepthFunc = LESS_EQUAL;
+    StencilEnable = FALSE;
+};
+
 BlendState BS_Default
 {
     BlendEnable[0] = FALSE; /* 여기서 0은 렌더타겟의 넘버 */

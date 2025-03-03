@@ -505,6 +505,10 @@ HRESULT CGameInstance::Render_Font(const wstring& strFontTag, const _tchar* pTex
 {
 	return m_pFont_Manager->Render(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale);
 }
+_float2 CGameInstance::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)
+{
+	return m_pFont_Manager->Get_TextSize(strFontTag, pText);
+}
 _bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPoint, _float fRange)
 {
 	return m_pFrustum->isIn_WorldSpace(vWorldPoint, fRange);
@@ -586,6 +590,16 @@ void CGameInstance::Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring
 void CGameInstance::Clear_ALL()
 {
 	return m_pUI_Manager->Clear_ALL();
+}
+
+HRESULT CGameInstance::LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
+{
+	return m_pUI_Manager->LoadDataFile_UIObj_Info(hWnd, iLevelIndex, iSceneIndex, szSceneName);
+}
+
+HRESULT CGameInstance::LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut)
+{
+	return m_pUI_Manager->LoadDataFile_UIText_Info(hWnd, szSceneName, pOut);
 }
 
 #pragma endregion UI_Manager

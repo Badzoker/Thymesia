@@ -27,7 +27,10 @@ public:
 
 	/* 11월 11일 새로만듬*/
 	CComponent* Find_GameObject(const wstring& strComponentName);	
+
+	//유빈 - UIGroup 제어용
 	HRESULT UIScene_Render_OnOff(_bool bCheck);
+	_bool UIScene_Render_State();
 
 
 public:

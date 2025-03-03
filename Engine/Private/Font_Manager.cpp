@@ -41,6 +41,16 @@ HRESULT CFont_Manager::Render(const wstring& strFontTag, const _tchar* pText, co
 	return pFont->Render(pText, vPosition, vColor, fRotation, vOrigin, fScale);
 }
 
+_float2 CFont_Manager::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+
+	if (nullptr == pFont)
+		return _float2();
+
+	return pFont->Get_TextSize(pText);
+}
+
 CCustomFont* CFont_Manager::Find_Font(const _wstring& strFontTag)
 {
 	auto iter = m_Fonts.find(strFontTag);

@@ -31,6 +31,12 @@ HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _fvec
 
     return S_OK;
 }
+_float2 CCustomFont::Get_TextSize(const _tchar* pText)
+{
+    _float2 fSize = { XMVectorGetX(m_pFont->MeasureString(pText)),XMVectorGetY(m_pFont->MeasureString(pText)) };
+
+    return fSize;
+}
 
 CCustomFont* CCustomFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontFilePath)
 {

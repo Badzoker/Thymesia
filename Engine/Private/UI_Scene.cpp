@@ -5,6 +5,7 @@
 #include "UI_Button.h"
 #include "UI_Button_Player.h"
 #include "UI_Image.h"
+#include "UI_Text.h"
 #include "UI_Text_PlayerInfo.h"
 
 
@@ -24,6 +25,9 @@ void CUI_Scene::Priority_Update(_float fTimeDelta)
 	for (auto& ButtonPlayer : m_ButtonPlayer)
 		ButtonPlayer->Priority_Update(fTimeDelta);
 
+	for (auto& Text : m_TextBox)
+		Text->Priority_Update(fTimeDelta);
+
 	for (auto& TextPlayerInfo : m_TextPlayerInfo)
 		TextPlayerInfo->Priority_Update(fTimeDelta);
 }
@@ -40,6 +44,9 @@ void CUI_Scene::Update(_float fTimeDelta)
 	for (auto& ButtonPlayer : m_ButtonPlayer)
 		ButtonPlayer->Update(fTimeDelta);
 
+	for (auto& Text : m_TextBox)
+		Text->Update(fTimeDelta);
+
 	for (auto& TextPlayerInfo : m_TextPlayerInfo)
 		TextPlayerInfo->Update(fTimeDelta);
 }
@@ -52,8 +59,8 @@ void CUI_Scene::Late_Update(_float fTimeDelta)
 	for (auto& Button : m_Button)
 		Button->Late_Update(fTimeDelta);
 
-	for (auto& ButtonPlayer : m_ButtonPlayer)
-		ButtonPlayer->Late_Update(fTimeDelta);
+	for (auto& Text : m_TextBox)
+		Text->Late_Update(fTimeDelta);
 
 	for (auto& TextPlayerInfo : m_TextPlayerInfo)
 		TextPlayerInfo->Late_Update(fTimeDelta);
@@ -75,6 +82,9 @@ HRESULT CUI_Scene::Add_UIObject_Type(_int iUIType, CGameObject* pUIObj)
 	case UI_IMAGE:
 		m_Image.push_back(dynamic_cast<CUI_Image*>(pUIObj));
 		break;
+	case UI_TEXT:
+		m_TextBox.push_back(dynamic_cast<CUI_Text*>(pUIObj));
+		break;
 	case UI_TEXTPLAYER:
 		m_TextPlayerInfo.push_back(dynamic_cast<CUI_Text_PlayerInfo*>(pUIObj));
 		break;
@@ -93,6 +103,9 @@ HRESULT CUI_Scene::UIScene_UIObject_Render_OnOff(_bool bOpen)
 
 	for (auto& ButtonPlayer : m_ButtonPlayer)
 		ButtonPlayer->Set_Render_OnOff(bOpen);
+
+	for (auto& Text : m_TextBox)
+		Text->Set_Render_OnOff(bOpen);
 
 	for (auto& TextPlayerInfo : m_TextPlayerInfo)
 		TextPlayerInfo->Set_Render_OnOff(bOpen);
@@ -125,6 +138,13 @@ void CUI_Scene::Clear_Last(_uint iUIType)
 			m_Image.pop_back();
 		}
 		break;
+	case UI_TEXT:
+		if (!m_TextBox.empty())
+		{
+			Safe_Release(m_TextBox.back());
+			m_TextBox.pop_back();
+		}
+		break;
 	case UI_TEXTPLAYER:
 		if (!m_TextPlayerInfo.empty())
 		{
@@ -151,6 +171,10 @@ void CUI_Scene::Clear_Choice(_uint iUIType, CUIObject* pUIObj)
 		if (!m_Image.empty())
 			m_Image.erase(remove(m_Image.begin(), m_Image.end(), pUIObj), m_Image.end());
 		break;
+	case UI_TEXT:
+		if (!m_TextBox.empty())
+			m_TextBox.erase(remove(m_TextBox.begin(), m_TextBox.end(), pUIObj), m_TextBox.end());
+		break;
 	case UI_TEXTPLAYER:
 		if (!m_TextPlayerInfo.empty())
 			m_TextPlayerInfo.erase(remove(m_TextPlayerInfo.begin(), m_TextPlayerInfo.end(), pUIObj), m_TextPlayerInfo.end());
@@ -173,11 +197,14 @@ void CUI_Scene::Free()
 		Safe_Release(pUIObj);
 	for (auto& pUIObj : m_Image)
 		Safe_Release(pUIObj);
+	for (auto& pUIObj : m_TextBox)
+		Safe_Release(pUIObj);
 	for (auto& pUIObj : m_TextPlayerInfo)
 		Safe_Release(pUIObj);
 
 	m_Button.clear();
 	m_ButtonPlayer.clear();
 	m_Image.clear();
+	m_TextBox.clear();
 	m_TextPlayerInfo.clear();
 }

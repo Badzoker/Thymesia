@@ -1,4 +1,5 @@
 #include "UI_Button.h"
+#include "GameInstance.h"
 
 CUI_Button::CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -44,23 +45,53 @@ HRESULT CUI_Button::Render()
 	return S_OK;
 }
 
-_bool CUI_Button::Mouse_Select(HWND hWnd, _float fX, _float fY)
+_bool CUI_Button::Mouse_Select(HWND hWnd)
+{
+	POINT	ptMouse{};
+	GetCursorPos(&ptMouse);
+	ScreenToClient(hWnd, &ptMouse);
+	if (ptMouse.x >= m_fPos.x - m_fSize.x / 3 &&
+		ptMouse.x <= m_fPos.x + m_fSize.x / 3 &&
+		ptMouse.y >= m_fPos.y - m_fSize.y / 3 &&
+		ptMouse.y <= m_fPos.y + m_fSize.y / 3)
+	{
+		if (m_pGameInstance->isMouseEnter(DIM_LB))
+		{
+			iTestCount++;
+		}
+	}
+	if (0 == iTestCount % 2)
+	{
+		return false;
+
+	}
+	else if (1 == iTestCount % 2)
+	{
+		return true;
+	}
+	return false;
+}
+
+_bool CUI_Button::On_Mouse_UI(HWND hWnd)
 {
 	POINT	ptMouse{};
 	GetCursorPos(&ptMouse);
 	ScreenToClient(hWnd, &ptMouse);
 
-	if (ptMouse.x >= m_fPos.x - m_fSize.x /2 &&
-		ptMouse.x <= m_fPos.x + m_fSize.x /2 &&
-		ptMouse.y >= m_fPos.y - m_fSize.y /2 &&
-		ptMouse.y <= m_fPos.y + m_fSize.y /2)
+	if (ptMouse.x >= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x - m_pTransformCom->Compute_Scaled().x / 3 &&
+		ptMouse.x <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x + m_pTransformCom->Compute_Scaled().x / 3 &&
+		ptMouse.y >= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y - m_pTransformCom->Compute_Scaled().y / 3 &&
+		ptMouse.y <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y + m_pTransformCom->Compute_Scaled().y / 3)
 	{
 		return true;
 	}
-	
+	else
+	{
+		return false;
+	}
+
 	return false;
 }
-
 void CUI_Button::Free()
 {
 	__super::Free();

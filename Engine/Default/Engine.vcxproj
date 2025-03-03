@@ -229,6 +229,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\Public\UI_Image.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\UI_Scene.h" />
+    <ClInclude Include="..\Public\UI_Text.h" />
     <ClInclude Include="..\Public\UI_Text_PlayerInfo.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Cell.h" />
@@ -300,6 +301,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\Private\UI_Image.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\UI_Scene.cpp" />
+    <ClCompile Include="..\Private\UI_Text.cpp" />
     <ClCompile Include="..\Private\UI_Text_PlayerInfo.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Cell.cpp" />

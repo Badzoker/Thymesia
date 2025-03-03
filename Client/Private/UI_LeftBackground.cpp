@@ -3,33 +3,26 @@
 #include "GameInstance.h"
 
 CUI_LeftBackground::CUI_LeftBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CUI_Image{ pDevice, pContext }
+    : CUI_Image{ pDevice, pContext }
 {
 }
 
 CUI_LeftBackground::CUI_LeftBackground(const CUI_LeftBackground& Prototype)
-	: CUI_Image(Prototype)
+    : CUI_Image(Prototype)
 {
 }
 
 HRESULT CUI_LeftBackground::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+    if (FAILED(__super::Initialize_Prototype()))
+        return E_FAIL;
 
-	return S_OK;
+    return S_OK;
 }
 
 HRESULT CUI_LeftBackground::Initialize(void* pArg)
 {
-	UI_COMPONENT_DESC* pDesc = static_cast<UI_COMPONENT_DESC*>(pArg);
-
-	pDesc->fNear = 0.f;
-	pDesc->fFar = 1.f;
-
-	pDesc->fSpeedPerSec = 5.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
-
+	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -64,7 +57,7 @@ HRESULT CUI_LeftBackground::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
@@ -80,12 +73,12 @@ HRESULT CUI_LeftBackground::Render()
 HRESULT CUI_LeftBackground::Ready_Components()
 {
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ChairUI"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_LeftBackground"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

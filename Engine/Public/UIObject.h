@@ -14,6 +14,8 @@ public:
 		_float			fNear, fFar;
 		_wstring		szProtoName;
 		_uint			iShaderPassNum;
+		_int			iTexNumber;
+		_uint			iGroupID;
 		_float3			fRotation;
 	};
 
@@ -36,6 +38,8 @@ public:
 
 public:
 	virtual void Set_Render_OnOff(_bool bOpen) { m_bRenderOpen = bOpen; } // UIObj 랜더 상태 제어 - 유빈
+	virtual _bool Get_Render_State() { return  m_bRenderOpen; }
+
 	virtual _uint Set_UI_ShaderPassNum(_uint iShadernum) { return m_iShaderPassNum = iShadernum; } // 쉐이더 패스 넘버 가져오기 -유빈
 
 protected:
@@ -46,12 +50,14 @@ protected:
 
 	_bool				m_bRenderOpen = { false };// 랜더 상태 제어
 
-	_float3				m_fPos = {};  // UI 저장용이었는데 필요 없어서 나중에 삭제 예정 - 유빈
-	_float2				m_fSize = {}; // UI 저장용이었는데 필요 없어서 나중에 삭제 예정 - 유빈
-	_uint				m_iShaderPassNum = { 0 };
+	_float3				m_fPos = {};   
+	_float2				m_fSize = {};
 	_uint				m_iUIType = { 0 };		// UI 생성 타입
 
 	_wstring			m_szProtoName = {};
+	_uint				m_iShaderPassNum = { 0 };
+	_uint				m_iGroupID = { 0 };		// 그룹아이디
+	_uint				m_iTexNumber = { 0 }; // 텍스처 넘버
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

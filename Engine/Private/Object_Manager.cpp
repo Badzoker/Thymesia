@@ -141,6 +141,13 @@ HRESULT CObject_Manager::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring&
 	return pLayer->UIScene_Render_OnOff(bCheck);;
 }
 
+_bool CObject_Manager::UIScene_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	return pLayer->UIScene_Render_State();
+}
+
 CComponent* CObject_Manager::Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName)
 {
 	/*컴포넌트 들어간 레이어 찾고*/

@@ -46,6 +46,11 @@ HRESULT CLayer::UIScene_Render_OnOff(_bool bCheck)
 	return S_OK;
 }
 
+_bool CLayer::UIScene_Render_State()
+{
+	return dynamic_cast<CUIObject*>(*m_GameObjects.begin())->Get_Render_State();
+}
+
 CLayer * CLayer::Create()
 {
 	return new CLayer();
