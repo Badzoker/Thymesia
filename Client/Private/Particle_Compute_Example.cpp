@@ -29,7 +29,9 @@ HRESULT CParticle_Compute_Example::Initialize(void* pArg)
         return E_FAIL;
 
     // 시작 지점의 플레이어 위치 1_23일 
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 112.6f,20.85f,107.1f,1.f });
+    _float fRandomY = m_pGameInstance->Compute_Random(-300.f, 300.f);
+
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 112.6f + fRandomY, fRandomY, 107.1f, 1.f });
 
     return S_OK;
 }
@@ -40,7 +42,7 @@ void CParticle_Compute_Example::Priority_Update(_float fTimeDelta)
 
 void CParticle_Compute_Example::Update(_float fTimeDelta)
 {
-    m_pBufferCom->Compute_Shader(m_pShaderCom, 512, 1, 1);
+    m_pBufferCom->Compute_Shader(m_pShaderCom, 2, 1, 1);
 }
 
 void CParticle_Compute_Example::Late_Update(_float fTimeDelta)

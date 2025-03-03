@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Navigation.h"
 
 BEGIN(Engine)
 
@@ -34,6 +35,9 @@ public:
 
 	_float  Compute_Height(_fvector vPosition);
 
+public:
+	void Set_CellInfo(vector<CNavigation::CELL*>& pCells);
+	void Set_CellAdj(vector<CNavigation::CELL*>& pCells, vector<list<CNavigation::CELL*>>& pCellAdj);
 
 #ifdef  _DEBUG
 public:
@@ -51,7 +55,7 @@ private:
 	_int						m_iIndex = {};
 
 	_float4						m_vPlane = {};
-
+	_vector						m_vPos = {};
 #ifdef _DEBUG
 private:
 	class CVIBuffer_Cell* m_pVIBuffer = { nullptr };

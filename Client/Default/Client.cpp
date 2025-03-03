@@ -66,7 +66,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_Default"))))
 		return FALSE;
-	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_60"))))
+	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_240"))))
 		return FALSE;
 
 	_float		fTimerAcc = {};
@@ -90,11 +90,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		fTimerAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
 		
-		if (fTimerAcc >= 1.f / 120.f /*1초에 60번을 트루로 리턴*/)
+		if (fTimerAcc >= 1.f / 240.f /*1초에 60번을 트루로 리턴*/)
 		{
-			pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
+			pGameInstance->Compute_TimeDelta(TEXT("Timer_240"));
 
-			pMainApp->Update(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+			pMainApp->Update(pGameInstance->Get_TimeDelta(TEXT("Timer_240")));
 			pMainApp->Render();			
 
 			fTimerAcc = 0.f;

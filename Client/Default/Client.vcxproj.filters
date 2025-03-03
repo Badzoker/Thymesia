@@ -325,6 +325,51 @@
     <Filter Include="03.UIObject\2.UIObjGroup\5.PlayerScreen">
       <UniqueIdentifier>{3a27189b-9b7f-4729-bce5-97923dad244b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\Normal">
+      <UniqueIdentifier>{7dd2360a-3948-4748-85ba-72cf9ea9e7d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female">
+      <UniqueIdentifier>{25b37e3d-96fa-4fb1-8ec5-130371cb3271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male">
+      <UniqueIdentifier>{4530c1bc-4968-435a-bbc7-0b822c307c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe">
+      <UniqueIdentifier>{63d47406-afd8-4b05-9775-b7ae7515c3e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM0">
+      <UniqueIdentifier>{b7597bf1-ec90-4088-aaec-0b197531acb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body">
+      <UniqueIdentifier>{939aab8b-324e-4363-83d3-b4c12840d82c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\Weapon">
+      <UniqueIdentifier>{53d039ff-3035-4114-b64e-1b97442e30f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM1">
+      <UniqueIdentifier>{5b080730-052e-438f-b7a6-6364aa05a932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body">
+      <UniqueIdentifier>{69806c70-f33d-4b9d-82c3-78aa263467e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife">
+      <UniqueIdentifier>{82f736ad-f7e5-48bd-9d8c-2357ea851276}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF0">
+      <UniqueIdentifier>{28c270ee-82c4-43ca-81f3-053f5a49e241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF1">
+      <UniqueIdentifier>{5002b426-9c9a-4053-95a0-7c7add3ee9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\Weapon">
+      <UniqueIdentifier>{39515359-527a-4d47-b3e9-7920a82e6285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body">
+      <UniqueIdentifier>{45193e73-be8f-4cbf-81ef-2a928baf5f0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body">
+      <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -420,10 +465,10 @@
     <ClInclude Include="..\Public\StaticObject.h">
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Boss_State.h">
+    <ClInclude Include="..\Public\States.h">
       <Filter>02.GameObject\Boss\Boss_State</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Boss_State_Manager.h">
+    <ClInclude Include="..\Public\State_Machine.h">
       <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Attack_LButton_2.h">
@@ -621,6 +666,36 @@
     <ClInclude Include="..\Public\UIGroup_PlayerScreen.h">
       <Filter>03.UIObject\2.UIObjGroup\5.PlayerScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Normal_VillageM0.h">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VillageM_Weapon.h">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Normal_VillageM1.h">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_VillageM0.h">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_VillageM1.h">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_VillageF0.h">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_VillageF1.h">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Normal_VillageF0.h">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Normal_VillageF1.h">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VillageF_Weapon.h">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -707,10 +782,10 @@
     <ClCompile Include="..\Private\StaticObject.cpp">
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Boss_State.cpp">
+    <ClCompile Include="..\Private\States.cpp">
       <Filter>02.GameObject\Boss\Boss_State</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Boss_State_Manager.cpp">
+    <ClCompile Include="..\Private\State_Machine.cpp">
       <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Attack_LButton_2.cpp">
@@ -907,6 +982,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_PlayerScreen.cpp">
       <Filter>03.UIObject\2.UIObjGroup\5.PlayerScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_VillageM0.cpp">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VillageM_Weapon.cpp">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_VillageM1.cpp">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_VillageM0.cpp">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_VillageM1.cpp">
+      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_VillageF0.cpp">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_VillageF1.cpp">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_VillageF0.cpp">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_VillageF1.cpp">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VillageF_Weapon.cpp">
+      <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
