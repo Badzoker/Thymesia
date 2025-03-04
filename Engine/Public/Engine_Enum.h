@@ -11,7 +11,8 @@ namespace Engine
 	enum class GROUP_TYPE {
 		PLAYER,	
 		PLAYER_WEAPON,	
-		MONSTER,		
+		MONSTER,
+		MONSTER_WEAPON,
 		ENEMY,		
 		OBJECT,		
 		GROUP_END,

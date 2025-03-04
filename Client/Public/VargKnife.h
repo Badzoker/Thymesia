@@ -13,8 +13,6 @@ END
 
 BEGIN(Client)
 
-
-
 class CVargKnife final : public CPartObject
 {
 public:
@@ -22,6 +20,7 @@ public:
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
+		_bool* bCollider_ON_OFF = { nullptr };
 	};
 private:
 	CVargKnife(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -39,12 +38,12 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
+	vector<CCollider*> m_pColliderCom;
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
-
+	_bool*             m_bCollider_ON_OFF = { nullptr };
 
 private:
 	const _uint* m_pParentState = { nullptr };
