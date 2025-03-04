@@ -29,12 +29,15 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
+    m_bCollider_ON_OFF = pDesc->bCollider_ON_OFF;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
         return E_FAIL;
+
+    m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER_WEAPON, this);
 
     m_pTransformCom->Scaling(_float3{ 0.5f, 0.5f, 0.5f });
 
@@ -44,7 +47,14 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
 void CVargKnife::Priority_Update(_float fTimeDelta)
 {
-
+    if (*m_bCollider_ON_OFF)
+    {
+        m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER_WEAPON, this);
+    }
+    else
+    {
+        m_pGameInstance->Sub_ObjCollider(GROUP_TYPE::MONSTER_WEAPON, this);
+    }
 }
 
 void CVargKnife::Update(_float fTimeDelta)
@@ -56,6 +66,8 @@ void CVargKnife::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
+    for (auto pCollider : m_pColliderCom)
+        pCollider->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
 }
 
 void CVargKnife::Late_Update(_float fTimeDelta)
@@ -65,6 +77,13 @@ void CVargKnife::Late_Update(_float fTimeDelta)
 
 HRESULT CVargKnife::Render()
 {
+#ifdef _DEBUG
+    if (*m_bCollider_ON_OFF)
+    {
+        for (auto pCollider : m_pColliderCom)
+            pCollider->Render();
+    }
+#endif 
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
@@ -93,6 +112,27 @@ HRESULT CVargKnife::Ready_Components()
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss_Varg_Knife"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
+
+    /* Com_Collider */
+    for (size_t i = 0; i < 6; i++)
+    {
+        CCollider* pCollider = { nullptr };
+
+        CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
+
+        SphereDesc.fRadius = 50.f;
+        SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius - 50.f, -100.f - (i * 100.f));
+
+        wstring strName = TEXT("Com_Collider") + to_wstring(i);
+
+        if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+            strName.c_str(), reinterpret_cast<CComponent**>(&pCollider), &SphereDesc)))
+            return E_FAIL;
+
+        pCollider->Set_Collider_Name("Monster_Weapon");
+
+        m_pColliderCom.push_back(pCollider);
+    }
 
     return S_OK;
 }
@@ -151,7 +191,11 @@ void CVargKnife::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pColliderCom);
+    for (auto pCollider : m_pColliderCom)
+        Safe_Release(pCollider);
+
+    m_pColliderCom.clear();
+
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }
