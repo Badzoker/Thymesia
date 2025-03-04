@@ -18,6 +18,7 @@
 #include "ItemMgr.h"
 #include "Shadow.h"
 #include "UI_Manager.h"
+#include "GameObject.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -260,6 +261,11 @@ _uint CGameInstance::Get_NumLevel()
 HRESULT CGameInstance::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
 {
 	return m_pObject_Manager->UIScene_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
+}
+
+_char* CGameInstance::Get_ColliderName(CGameObject* pGameObejct)
+{
+	return dynamic_cast<CCollider*>(pGameObejct->Get_Components()->find(TEXT("Com_Collider"))->second)->Get_CollierName();
 }
 
 #pragma endregion

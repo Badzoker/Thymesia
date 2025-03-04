@@ -28,6 +28,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_pParentState = pDesc->pParentState;
     m_pParentPhsaeState = pDesc->pParentPhaseState;
+    m_pParentNextStateCan = pDesc->pParentNextStateCan;
 
 
     if (FAILED(__super::Initialize(pArg)))
@@ -73,26 +74,26 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_RUN:
         STATE_RUN_Method();
         break;
-    case STATE_ROCK_ON_RUN_B:
-        STATE_ROCK_ON_RUN_B_Method();
+    case STATE_LOCK_ON_RUN_B:
+        STATE_LOCK_ON_RUN_B_Method();
         break;
-    case STATE_ROCK_ON_RUN_BL:
-        STATE_ROCK_ON_RUN_BL_Method();
+    case STATE_LOCK_ON_RUN_BL:
+        STATE_LOCK_ON_RUN_BL_Method();
         break;
-    case STATE_ROCK_ON_RUN_BR:
-        STATE_ROCK_ON_RUN_BR_Method();
+    case STATE_LOCK_ON_RUN_BR:
+        STATE_LOCK_ON_RUN_BR_Method();
         break;
-    case STATE_ROCK_ON_RUN_FL:
-        STATE_ROCK_ON_RUN_FL_Method();
+    case STATE_LOCK_ON_RUN_FL:
+        STATE_LOCK_ON_RUN_FL_Method();
         break;
-    case STATE_ROCK_ON_RUN_FR:
-        STATE_ROCK_ON_RUN_FR_Method();
+    case STATE_LOCK_ON_RUN_FR:
+        STATE_LOCK_ON_RUN_FR_Method();
         break;
-    case STATE_ROCK_ON_RUN_L:
-        STATE_ROCK_ON_RUN_L_Method();
+    case STATE_LOCK_ON_RUN_L:
+        STATE_LOCK_ON_RUN_L_Method();
         break;
-    case STATE_ROCK_ON_RUN_R:
-        STATE_ROCK_ON_RUN_R_Method();
+    case STATE_LOCK_ON_RUN_R:
+        STATE_LOCK_ON_RUN_R_Method();
         break;
     case STATE_WALK:
         STATE_WALK_Method();
@@ -114,6 +115,24 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case STATE_ATTACK_LONG_CLAW_02:
         STATE_ATTACK_LONG_CLAW_02_Method();
+        break;
+    case STATE_LOCK_ON_EVADE_B:
+        STATE_LOCK_ON_EVADE_B_Method();
+        break;
+    case STATE_LOCK_ON_EVADE_L:
+        STATE_LOCK_ON_EVADE_L_Method();
+        break;
+    case STATE_LOCK_ON_EVADE_R:
+        STATE_LOCK_ON_EVADE_R_Method();
+        break;
+    case STATE_LOCK_ON_EVADE_F:
+        STATE_LOCK_ON_EVADE_F_Method();
+        break;
+    case STATE_PARRY_L:
+        STATE_PARRY_L_Method();
+        break;
+    case STATE_PARRY_R:
+        STATE_PARRY_R_Method();
         break;
     default:
         break;
@@ -250,21 +269,17 @@ void CBody_Player::STATE_IDLE_Method()
     m_pModelCom->SetUp_Animation(2, true);
     m_iRenderState = STATE_NORMAL;
 }
-
 void CBody_Player::STATE_RUN_Method()
 {
     m_pModelCom->SetUp_Animation(9, true);
     m_iRenderState = STATE_NORMAL;
 }
-
 void CBody_Player::STATE_WALK_Method()
 {
 }
-
 void CBody_Player::STATE_ATTACK_Method()
 {
 }
-
 void CBody_Player::STATE_ATTACK_L1_Method()
 {
     m_pModelCom->SetUp_Animation(3, false);
@@ -283,6 +298,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
     }
 
     m_iRenderState = STATE_NORMAL;
+    *m_pParentNextStateCan = true;
 }
 
 void CBody_Player::STATE_ATTACK_L2_Method()
@@ -303,12 +319,11 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
     m_iRenderState = STATE_NORMAL;
 }
-
 void CBody_Player::STATE_ATTACK_L3_Method()
 {
     m_pModelCom->SetUp_Animation(5, false);
 
-    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
+    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
@@ -322,7 +337,6 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 
     m_iRenderState = STATE_NORMAL;
 }
-
 void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 {
     m_pModelCom->SetUp_Animation(0, false);
@@ -341,8 +355,8 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
     }
 
     m_iRenderState = STATE_CLAW;
+    *m_pParentNextStateCan = true;
 }
-
 void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 {
     m_pModelCom->SetUp_Animation(1, false);
@@ -362,48 +376,128 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
     m_iRenderState = STATE_CLAW;
 }
 
-void CBody_Player::STATE_ROCK_ON_RUN_B_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
 {
     m_pModelCom->SetUp_Animation(6, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_BL_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
 {
     m_pModelCom->SetUp_Animation(7, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_BR_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
 {
     m_pModelCom->SetUp_Animation(8, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_FL_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
 {
     m_pModelCom->SetUp_Animation(10, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_FR_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
 {
     m_pModelCom->SetUp_Animation(11, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_L_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
 {
     m_pModelCom->SetUp_Animation(12, true);
     m_iRenderState = STATE_NORMAL;
 }
-
-void CBody_Player::STATE_ROCK_ON_RUN_R_Method()
+void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
 {
     m_pModelCom->SetUp_Animation(13, true);
     m_iRenderState = STATE_NORMAL;
 }
+void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
+{
+    m_pModelCom->SetUp_Animation(18, false);
+    m_iRenderState = STATE_NORMAL;
 
+
+    if (m_pModelCom->Get_VecAnimation().at(18)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentNextStateCan = true;
+    }
+}
+void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
+{
+    m_pModelCom->SetUp_Animation(17, false);
+    m_iRenderState = STATE_NORMAL;
+
+
+    if (m_pModelCom->Get_VecAnimation().at(17)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentNextStateCan = true;
+    }
+
+}
+void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
+{
+    m_pModelCom->SetUp_Animation(19, false);
+    m_iRenderState = STATE_NORMAL;
+
+
+    if (m_pModelCom->Get_VecAnimation().at(19)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentNextStateCan = true;
+    }
+}
+void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
+{
+    m_pModelCom->SetUp_Animation(20, false);
+    m_iRenderState = STATE_NORMAL;
+
+
+    if (m_pModelCom->Get_VecAnimation().at(20)->isAniMationFinish())
+    {
+
+        *m_pParentState = STATE_IDLE;
+        *m_pParentNextStateCan = true;
+    }
+}
+void CBody_Player::STATE_PARRY_L_Method()
+{
+    m_pModelCom->SetUp_Animation(15, false);
+    m_iRenderState = STATE_NORMAL;
+
+
+
+    if (m_pModelCom->Get_VecAnimation().at(15)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+    }
+
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+
+    }
+
+}
+void CBody_Player::STATE_PARRY_R_Method()
+{
+    m_pModelCom->SetUp_Animation(16, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(16)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+    }
+
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+
+    }
+}
 
 
 HRESULT CBody_Player::Ready_Components()

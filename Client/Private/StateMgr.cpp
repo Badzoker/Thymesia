@@ -24,6 +24,16 @@
 #include "Rock_On_Run_BL.h"
 #include "Rock_On_Run_B.h"
 #include "Rock_On_Run_F.h"
+
+#include "LockOn_Evade_B.h"	
+#include "LockOn_Evade_L.h"
+#include "LockOn_Evade_R.h"
+#include "LockOn_Evade_F.h"
+#pragma endregion 
+
+#pragma region 패링
+#include "Parry_L.h"
+#include "Parry_R.h"
 #pragma endregion 
 
 
@@ -101,6 +111,32 @@ HRESULT CStateMgr::Initialize()
 	/* 14번 락온모드일때 'W' 키를 누를 시 앞 이동 모션 */
 	CRock_On_Run_F* pRock_On_Run_F = CRock_On_Run_F::Create();
 	m_vecState.push_back(pRock_On_Run_F);
+
+	/* 15번 락온모드일때 'SPACE' 키를 누를 시 뒤로 회피 모션 */
+	CLockOn_Evade_B* LockOn_Evade_B = CLockOn_Evade_B::Create();
+	m_vecState.push_back(LockOn_Evade_B);
+
+	/* 16번 락온모드일때 'A' 키를 누르면서 'SPACE' 키를 누를 시 옆으로 회피 모션*/
+	CLockOn_Evade_L* LockOn_Evade_L = CLockOn_Evade_L::Create();
+	m_vecState.push_back(LockOn_Evade_L);
+
+	/* 17번 락온모드일때 'D 키를 누르면서'SPACE' 키를 누를 시 옆으로 회피 모션*/
+	CLockOn_Evade_R* LockOn_Evade_R = CLockOn_Evade_R::Create();
+	m_vecState.push_back(LockOn_Evade_R);
+
+	/* 18번 락온모드일때 'W' 키를 누르면서 'SPACE' 키를 누를 시 옆으로 회피 모션*/
+	CLockOn_Evade_F* LockOn_Evade_F = CLockOn_Evade_F::Create();
+	m_vecState.push_back(LockOn_Evade_F);
+#pragma endregion 
+
+#pragma region 패링
+	/* 19번 패링 모션 'F' 키를 누를 시 왼쪽 손이 오른쪽 사선으로 올라가면서 하는 패링 모션*/
+	CParry_L* Parry_L = CParry_L::Create();
+	m_vecState.push_back(Parry_L);
+
+	/* 20번 패링 모션 'F' 키를 누를 시 오른쪽 손이 왼쪽 사선으로 내려가면서 하는 패링 모션*/
+	CParry_R* Parry_R = CParry_R::Create();
+	m_vecState.push_back(Parry_R);
 
 #pragma endregion 
 

@@ -20,13 +20,20 @@ public:
 	{
 		STATE_IDLE,
 		STATE_RUN,
-		STATE_ROCK_ON_RUN_B,
-		STATE_ROCK_ON_RUN_BL,
-		STATE_ROCK_ON_RUN_BR,
-		STATE_ROCK_ON_RUN_FL,
-		STATE_ROCK_ON_RUN_FR,
-		STATE_ROCK_ON_RUN_L,
-		STATE_ROCK_ON_RUN_R,
+		/* LOCK_ON 상태 */
+		STATE_LOCK_ON_RUN_B,
+		STATE_LOCK_ON_RUN_BL,
+		STATE_LOCK_ON_RUN_BR,
+		STATE_LOCK_ON_RUN_FL,
+		STATE_LOCK_ON_RUN_FR,
+		STATE_LOCK_ON_RUN_L,
+		STATE_LOCK_ON_RUN_R,
+
+		STATE_LOCK_ON_EVADE_F,
+		STATE_LOCK_ON_EVADE_B,
+		STATE_LOCK_ON_EVADE_L,
+		STATE_LOCK_ON_EVADE_R,
+		/*---------------- */
 		STATE_WALK,
 		STATE_ATTACK,
 		STATE_ATTACK_L1,
@@ -34,6 +41,13 @@ public:
 		STATE_ATTACK_L3,
 		STATE_ATTACK_LONG_CLAW_01,
 		STATE_ATTACK_LONG_CLAW_02,
+
+		/* 패링 관련 */
+		STATE_PARRY_L,
+		STATE_PARRY_R,
+
+
+		/*-----------------*/
 	};
 
 
@@ -41,7 +55,7 @@ public:
 	{
 		PHASE_IDLE = 1,
 		PHASE_FIGHT = 1 << 1,
-		PHASE_ROCKON = 1 << 2,
+		PHASE_LOCKON = 1 << 2,
 	};
 
 private:
@@ -68,6 +82,8 @@ public:
 public:
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
+	void Can_Move();
+	void Slide_Move(CGameObject* pGameObject);
 
 private:
 	_uint								m_iState = { STATE_IDLE };
@@ -77,6 +93,8 @@ private:
 	_uint								m_iPrePhaseState = { PHASE_IDLE };
 
 	_bool								m_bLockOn = { false };
+	_bool								m_bMove = { false };
+	_bool								m_bNextStateCanPlay = { true };
 
 
 	CNavigation* m_pNavigationCom = { nullptr };

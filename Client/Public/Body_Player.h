@@ -17,13 +17,18 @@ class CBody_Player final : public CPartObject
 		STATE_IDLE,
 		STATE_RUN,
 		/* 락온 상태일때의 모션 */
-		STATE_ROCK_ON_RUN_B,
-		STATE_ROCK_ON_RUN_BL,
-		STATE_ROCK_ON_RUN_BR,
-		STATE_ROCK_ON_RUN_FL,
-		STATE_ROCK_ON_RUN_FR,
-		STATE_ROCK_ON_RUN_L,
-		STATE_ROCK_ON_RUN_R,
+		STATE_LOCK_ON_RUN_B,
+		STATE_LOCK_ON_RUN_BL,
+		STATE_LOCK_ON_RUN_BR,
+		STATE_LOCK_ON_RUN_FL,
+		STATE_LOCK_ON_RUN_FR,
+		STATE_LOCK_ON_RUN_L,
+		STATE_LOCK_ON_RUN_R,
+
+		STATE_LOCK_ON_EVADE_F,
+		STATE_LOCK_ON_EVADE_B,
+		STATE_LOCK_ON_EVADE_L,
+		STATE_LOCK_ON_EVADE_R,
 		/* ==================== */
 		STATE_WALK,
 		STATE_ATTACK,
@@ -32,6 +37,11 @@ class CBody_Player final : public CPartObject
 		STATE_ATTACK_L3,
 		STATE_ATTACK_LONG_CLAW_01,
 		STATE_ATTACK_LONG_CLAW_02,
+
+		/* 패링 관련 */
+		STATE_PARRY_L,
+		STATE_PARRY_R,
+		/*-----------------*/
 
 	};
 
@@ -46,6 +56,7 @@ public:
 	{
 		_uint* pParentState = { nullptr };
 		_uint* pParentPhaseState = { nullptr };
+		_bool* pParentNextStateCan = { nullptr };
 	};
 
 private:
@@ -81,15 +92,21 @@ public:
 	void	STATE_ATTACK_LONG_CLAW_01_Method();
 	void	STATE_ATTACK_LONG_CLAW_02_Method();
 	/*락온 관련 기능 */
-	void    STATE_ROCK_ON_RUN_B_Method();
-	void    STATE_ROCK_ON_RUN_BL_Method();
-	void    STATE_ROCK_ON_RUN_BR_Method();
-	void    STATE_ROCK_ON_RUN_FL_Method();
-	void    STATE_ROCK_ON_RUN_FR_Method();
-	void    STATE_ROCK_ON_RUN_L_Method();
-	void    STATE_ROCK_ON_RUN_R_Method();
-	/* =========================================== */
+	void    STATE_LOCK_ON_RUN_B_Method();
+	void    STATE_LOCK_ON_RUN_BL_Method();
+	void    STATE_LOCK_ON_RUN_BR_Method();
+	void    STATE_LOCK_ON_RUN_FL_Method();
+	void    STATE_LOCK_ON_RUN_FR_Method();
+	void    STATE_LOCK_ON_RUN_L_Method();
+	void    STATE_LOCK_ON_RUN_R_Method();
 
+	void    STATE_LOCK_ON_EVADE_F_Method();
+	void    STATE_LOCK_ON_EVADE_B_Method();
+	void    STATE_LOCK_ON_EVADE_L_Method();
+	void    STATE_LOCK_ON_EVADE_R_Method();
+	/* =========================================== */
+	void    STATE_PARRY_L_Method();
+	void    STATE_PARRY_R_Method();
 
 
 
@@ -102,6 +119,7 @@ private:
 private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
+	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};
 
 public:

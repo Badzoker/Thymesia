@@ -370,6 +370,33 @@
     <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body">
       <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade">
+      <UniqueIdentifier>{fa098d4f-62ce-4010-84fc-d1e95fb3f5e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\LockOn">
+      <UniqueIdentifier>{de2d73c1-b07a-41c3-b31f-40eaa977add5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_B">
+      <UniqueIdentifier>{6cd7fe9d-f10f-4053-a900-bc6f2c37b55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_F">
+      <UniqueIdentifier>{f4105fa3-75b7-4a92-9eed-0d595572f6a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_L">
+      <UniqueIdentifier>{e32b6ed7-cf0c-4d82-9799-d62d3b344be4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_R">
+      <UniqueIdentifier>{014ba5e0-00f4-4e25-b296-66fafaaade43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry">
+      <UniqueIdentifier>{e67a7029-9626-435c-8b08-4a66017c94c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_R">
+      <UniqueIdentifier>{614f39d2-c4a0-4f70-9b47-fd19f624a0bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_L">
+      <UniqueIdentifier>{de2b90d0-3152-4400-8465-1bdc41330777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -696,6 +723,24 @@
     <ClInclude Include="..\Public\VillageF_Weapon.h">
       <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\LockOn_Evade_B.h">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_B</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LockOn_Evade_F.h">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_F</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LockOn_Evade_L.h">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LockOn_Evade_R.h">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Parry_L.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Parry_R.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1012,6 +1057,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\VillageF_Weapon.cpp">
       <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LockOn_Evade_B.cpp">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_B</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LockOn_Evade_F.cpp">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LockOn_Evade_L.cpp">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LockOn_Evade_R.cpp">
+      <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Parry_L.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Parry_R.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
