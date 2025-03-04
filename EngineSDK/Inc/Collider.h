@@ -53,8 +53,10 @@ private:
 public:
 
 public:
-	UINT Get_ID() { return m_iID; }
-	void Set_Collider_Color(_bool _bool) { m_isColl = _bool; }
+	UINT   Get_ID() { return m_iID; }	
+	_char* Get_CollierName() { return m_szName; }	
+	void   Set_Collider_Color(_bool _bool) { m_isColl = _bool; }	
+	_bool  Get_isCollision() { return m_isColl; }	
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eColliderType);

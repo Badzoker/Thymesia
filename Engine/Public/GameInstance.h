@@ -68,6 +68,7 @@ public:
 	map<const _wstring, class CLayer*>* Get_Layers();	
 	_uint	Get_NumLevel();
 	HRESULT UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
+	_char* Get_ColliderName(CGameObject* pGameObejct);
 #pragma endregion
 
 #pragma region RENDERER

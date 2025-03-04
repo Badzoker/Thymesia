@@ -89,7 +89,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 {
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
 	{
-		m_iPhaseState ^= PHASE_ROCKON;
+		m_iPhaseState ^= PHASE_LOCKON;
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_LB))
@@ -148,8 +148,26 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
+#pragma region 패링	
+	if (m_pGameInstance->isKeyEnter(DIK_F))
+	{
+		if (m_iState == STATE_PARRY_L) // 패링 모션		
+		{
+			m_pStateMgr->Get_VecState().at(20)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_PARRY_R;
+
+		}
+		else if (m_iState != STATE_PARRY_L)  // 패링 2번째 모션	
+		{
+			m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_PARRY_L;
+
+		}
+	}
+#pragma endregion	
+
 #pragma region 8방향 Run 
-	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_ROCKON)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
+	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
 		if ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000) || (GetKeyState('A') & 0x8000) || (GetKeyState('D') & 0x8000))
 		{
@@ -170,7 +188,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 	}
 #pragma endregion 
 #pragma region 락온모드 8방향 이동 
-	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_ROCKON))
+	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON))
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
@@ -180,38 +198,44 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			|| (GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000)
 			|| (GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000))
 		{
-			if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000))
+			if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(10)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_FL;
+				m_iState = STATE_LOCK_ON_RUN_FL;
 			}
-			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000))
+			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(9)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_FR;
+				m_iState = STATE_LOCK_ON_RUN_FR;
 			}
 
-			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000))
+			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_BL;
+				m_iState = STATE_LOCK_ON_RUN_BL;
 			}
 
 
-			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000))
+			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(11)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_BR;
+				m_iState = STATE_LOCK_ON_RUN_BR;
 			}
 
 
-			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000))
+			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
 			}
 
-			else if ((GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000))
+			else if ((GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000)
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
@@ -221,61 +245,131 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 
 		else
 		{
-			if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+			if ((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(14)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_RUN;
 			}
 
-			else if (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
+			else if ((m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(8)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_L;
+				m_iState = STATE_LOCK_ON_RUN_L;
 			}
 
-			else if (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
+			else if ((m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(7)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_R;
+				m_iState = STATE_LOCK_ON_RUN_R;
 			}
 
-			else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+			else if ((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(13)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ROCK_ON_RUN_B;
+				m_iState = STATE_LOCK_ON_RUN_B;
 			}
 
-
-
-
-
-			else
+			/*else
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
-			}
+			}*/
 
 		}
+
+		if (m_pGameInstance->isKeyPressed(DIK_W)
+			&& m_pGameInstance->isKeyEnter(DIK_SPACE))
+		{
+			m_pStateMgr->Get_VecState().at(18)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_LOCK_ON_EVADE_F;
+			m_bNextStateCanPlay = false;
+		}
+
+		else if (m_pGameInstance->isKeyPressed(DIK_A)
+			&& m_pGameInstance->isKeyEnter(DIK_SPACE))
+		{
+			m_pStateMgr->Get_VecState().at(16)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_LOCK_ON_EVADE_L;
+			m_bNextStateCanPlay = false;
+		}
+
+		else if (m_pGameInstance->isKeyPressed(DIK_D)
+			&& m_pGameInstance->isKeyEnter(DIK_SPACE))
+		{
+			m_pStateMgr->Get_VecState().at(17)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_LOCK_ON_EVADE_R;
+			m_bNextStateCanPlay = false;
+		}
+
+		else if (m_pGameInstance->isKeyEnter(DIK_SPACE))
+		{
+			m_pStateMgr->Get_VecState().at(15)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_LOCK_ON_EVADE_B;
+			m_bNextStateCanPlay = false;
+		}
+
+		/* 아무 키도 안눌려있다면 IDLE 상태로 */
+		if (!(GetKeyState('W') & 0x8000)
+			&& !(GetKeyState('S') & 0x8000)
+			&& !(GetKeyState('A') & 0x8000)
+			&& !(GetKeyState('D') & 0x8000)
+			&& m_bNextStateCanPlay
+			&& (m_iState != STATE_PARRY_L)
+			&& (m_iState != STATE_PARRY_R)
+			)
+		{
+			m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_IDLE;
+		}
+
 	}
 #pragma endregion 
 
 
 }
 
+void CPlayer::Can_Move()
+{
+	if (m_iState != m_iPreState)
+		m_bMove = true;
+
+	if (m_pColliderCom->Get_isCollision())
+		m_bMove = false;
+
+
+	// 예외조건 설정해두기 회피및 다른 도주기 등 
+	if (m_iState == STATE_LOCK_ON_EVADE_B
+		|| m_iState == STATE_LOCK_ON_EVADE_L
+		|| m_iState == STATE_LOCK_ON_EVADE_R)
+	{
+		m_bMove = true;
+	}
+}
+
+
+
+
 void CPlayer::Update(_float fTimeDelta)
 {
 
 	_vector		vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	// 각 state 변경되면 한번 bool값으로 조절하고 해당 스테이트에서 저게 발생했다 하면 움직이지 않도록 더이상 
+
+
+	Can_Move(); // 이게 몬스터와 겹치지 않게 하는 루트 애니메이션 조절 
 
 
 	_vector test = { 0.f,0.f,0.f,1.f };
 	/* 루트 모션 애니메션 코드 */
 	m_pRootMatrix = m_pModel->Get_RootMotionMatrix("root");
 
-	if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModel->Get_LerpFinished())
+	if (!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModel->Get_LerpFinished() && m_bMove)
 	{
-		/*if (m_iState == STATE_IDLE && GetKeyState('L') & 0x8000)
-			int a = 4; */
 		if (m_pNavigationCom->isMove(vCurPosition))
 			m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix); // 그럼 전환될때만 안하기로하자.
 
@@ -308,7 +402,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 #endif
 	m_fTimeDelta = fTimeDelta;
-
 
 	/* 이전 상태 저장하기 */
 	m_iPreState = m_iState;
@@ -344,8 +437,8 @@ HRESULT CPlayer::Ready_Components()
 	CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
 
 
-	SphereDesc.fRadius = 125.f;
-	SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 60.f, 0.f);
+	SphereDesc.fRadius = 115.f;
+	SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 80.f, 0.f);
 
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
@@ -365,6 +458,7 @@ HRESULT CPlayer::Ready_PartObjects()
 
 	BodyDesc.pParentState = &m_iState;
 	BodyDesc.pParentPhaseState = &m_iPhaseState;
+	BodyDesc.pParentNextStateCan = &m_bNextStateCanPlay;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	BodyDesc.fSpeedPerSec = 0.f;
 	//BodyDesc.fSpeedPerSec = 1.f;
@@ -417,7 +511,15 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther)
 
 void CPlayer::OnCollision(CGameObject* _pOther)
 {
-
+	if (!strcmp("Monster", m_pGameInstance->Get_ColliderName(_pOther)))		
+	{
+		if ((m_pGameInstance->isKeyPressed(DIK_W) || m_pGameInstance->isKeyPressed(DIK_S))
+			&& !(m_iPhaseState & PHASE_LOCKON)
+			&& (m_iPhaseState & PHASE_IDLE))
+		{
+			Slide_Move(_pOther);
+		}
+	}
 }
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther)
@@ -458,4 +560,29 @@ void CPlayer::Free()
 	Safe_Release(m_pStateMgr);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pNavigationCom);
+}
+
+
+void CPlayer::Slide_Move(CGameObject* pGameObject)
+{
+	//_vector vSlider = vPlayerLook - vMonsterLook;	
+	// 플레이어 이동 벡터 (입사 벡터)
+	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+	// 몬스터가 플레이어와 부딪히는 노말 벡터  
+	_vector vNoramlVec = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - (pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION)));
+
+	if (XMVectorGetX(XMVector3Dot(vPlayerLook, vNoramlVec)) < 0.f)
+	{
+		// 벡터 투영: 플레이어 이동 벡터를 몬스터 표면 벡터(Normal)에 투영
+		_vector vProj = vNoramlVec * XMVectorGetX(XMVector3Dot(vPlayerLook, vNoramlVec));
+
+		// 슬라이딩 벡터 = 기존 이동 벡터 - 투영된 벡터
+		_vector vSlider = vPlayerLook - vProj;
+
+		// 최종 이동 적용
+		m_pTransformCom->Go_Backward_With_Navi(m_fTimeDelta * 0.075f, m_pNavigationCom);
+
+		m_pTransformCom->Go_Dir(vSlider, m_pNavigationCom, m_fTimeDelta * 0.075f);
+	}
 }
