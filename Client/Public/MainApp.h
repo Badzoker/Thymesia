@@ -38,6 +38,8 @@ private:
 public:
 	HRESULT Start_Level(LEVELID eStartLevelID);
 
+	// 티메시아 폰트
+	HRESULT	LoadFont_Thymasia();
 public:
 	static CMainApp* Create();
 	virtual void Free() override;

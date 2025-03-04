@@ -159,6 +159,8 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 	_float2  fSize = {};
 	_float3  fRotation = {};
 	_uint  iLen = {};
+	_wstring szFontName = {};
+	_wstring szContentText = {};
 	_wstring szSaveName = {};
 	_uint iUIType = {};
 	_uint iShaderNum = {};
@@ -176,12 +178,21 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
+		if (iUIType == UI_TEXT)
+		{
+			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+			szFontName.resize(iLen);
+			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+			szContentText.resize(iLen);
+			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		}
 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iGroupID, sizeof(_uint), &dwByte, nullptr);
-
-
 
 		if (0 == dwByte)
 		{
@@ -196,7 +207,11 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 		Desc.fZ = fPos.z;
 		Desc.fSizeX = fSize.x;
 		Desc.fSizeY = fSize.y;
-		Desc.szProtoName = szSaveName;
+
+		Desc.strFontName = szFontName;
+		Desc.strContent = szContentText;
+
+		Desc.strProtoName = szSaveName;
 		Desc.iShaderPassNum = iShaderNum;
 		Desc.iTexNumber = iTextureNum;
 		Desc.iGroupID = iGroupID;
@@ -208,6 +223,7 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 
 	CloseHandle(hFile);
 
+	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
 	return S_OK;
 }
 

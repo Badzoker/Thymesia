@@ -2,6 +2,11 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
+BEGIN(Engine)
+class CUI_Scene;
+//class CUI_Text;
+END
+
 BEGIN(Client)
 
 class CUIGroup_GameIntro final : public CUIObject
@@ -24,6 +29,7 @@ public:
 
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
+	CUI_Scene* m_pMyScene = {};
 
 public:
 	static CUIGroup_GameIntro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

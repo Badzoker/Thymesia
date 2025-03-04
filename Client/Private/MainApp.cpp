@@ -33,9 +33,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Start_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-	/* 폰트테스트*/
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Gulim_Default"), TEXT("../Bin/Resources/Fonts/148ex.spritefont"))))	
-		return E_FAIL;	
+	if (FAILED(LoadFont_Thymasia()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -86,6 +85,37 @@ HRESULT CMainApp::Start_Level(LEVELID eStartLevelID)
 	
 	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelID))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::LoadFont_Thymasia()
+{
+	/* 폰트테스트*/
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Gulim_Default"), TEXT("../Bin/Resources/Fonts/148ex.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR12"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_12.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR12_Bold"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_12Bold.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR14"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_14.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR16"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_16.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR18"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_18.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR24"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_24.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NotoSansKR48"), TEXT("../Bin/Resources/Fonts/Thymesia_NotoSansKR_48.spritefont"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

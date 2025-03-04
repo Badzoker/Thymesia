@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "UIGroup_GameIntro.h"
-#include "UI_Scene.h"
 #include "GameInstance.h"
+
+#include "UI_Scene.h"
+#include "UI_Text.h"
+#include "UI_TextBox.h"
 
 CUIGroup_GameIntro::CUIGroup_GameIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -26,6 +29,13 @@ HRESULT CUIGroup_GameIntro::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro");
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		dynamic_cast<CUI_TextBox*>(TextBox)->Set_Change_TextColor({ 105.f,105.f,105.f,255.f });
+		dynamic_cast<CUI_TextBox*>(TextBox)->Set_TextRenderType(Engine::CUI_Text::FONT_OUTLINE);
+	}
 	return S_OK;
 }
 
@@ -37,9 +47,10 @@ void CUIGroup_GameIntro::Priority_Update(_float fTimeDelta)
 void CUIGroup_GameIntro::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, true);
 	}
 }
 
@@ -53,12 +64,6 @@ HRESULT CUIGroup_GameIntro::Render()
 {
 	if (m_bRenderOpen)
 	{
-		vector<UI_TextInfo>::iterator it;
-		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
-		{
-			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
-
-		}
 	}
 	return S_OK;
 }
