@@ -238,6 +238,10 @@ _pkginfo.txt
 
 # Others
 ClientBin/
+Engine/Bin/Engine.dll
+Engine/Bin/Engine.exp
+Engine/Bin/Engine.lib
+EngineSDK/Lib/Engine.lib
 ~$*
 *~
 *.dbmdl
