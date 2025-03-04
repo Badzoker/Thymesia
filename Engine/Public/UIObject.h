@@ -12,11 +12,14 @@ public:
 		_float			fX, fY, fZ;
 		_float			fSizeX, fSizeY;
 		_float			fNear, fFar;
-		_wstring		szProtoName;
+		_wstring		strProtoName;
 		_uint			iShaderPassNum;
 		_int			iTexNumber;
 		_uint			iGroupID;
 		_float3			fRotation;
+		//////////////////////////////////
+		_wstring		strFontName;
+		_wstring		strContent;
 	};
 
 protected:
@@ -54,7 +57,10 @@ protected:
 	_float2				m_fSize = {};
 	_uint				m_iUIType = { 0 };		// UI 생성 타입
 
-	_wstring			m_szProtoName = {};
+	_wstring			m_strFontName;		// TextBox용도
+	_wstring			m_strContentText;	// TextBox용도
+
+	_wstring			m_strProtoName = {};
 	_uint				m_iShaderPassNum = { 0 };
 	_uint				m_iGroupID = { 0 };		// 그룹아이디
 	_uint				m_iTexNumber = { 0 }; // 텍스처 넘버

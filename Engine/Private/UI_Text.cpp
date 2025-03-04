@@ -43,11 +43,6 @@ HRESULT CUI_Text::Render()
 	return S_OK;
 }
 
-_bool CUI_Text::Mouse_Select(HWND hWnd, _float fX, _float fY)
-{
-	return _bool();
-}
-
 void CUI_Text::Free()
 {
 	__super::Free();

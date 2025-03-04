@@ -507,9 +507,17 @@ HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
 }
-HRESULT CGameInstance::Render_Font(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, const _float fScale)
+HRESULT CGameInstance::Render_Font(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
 {
-	return m_pFont_Manager->Render(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+	return m_pFont_Manager->Render(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+HRESULT CGameInstance::Render_Shadow(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	return m_pFont_Manager->Render_Shadow(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+HRESULT CGameInstance::Render_Outline(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	return m_pFont_Manager->Render_Outline(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
 }
 _float2 CGameInstance::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)
 {

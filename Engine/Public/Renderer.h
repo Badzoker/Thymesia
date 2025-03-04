@@ -65,7 +65,8 @@ private:
 	HRESULT Render_Final();
 	HRESULT Render_Blend();
 	HRESULT Render_UI();
-	
+	HRESULT Render_Font();
+
 
 private:
 	HRESULT Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut);	

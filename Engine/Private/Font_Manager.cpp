@@ -31,14 +31,34 @@ HRESULT CFont_Manager::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 	return S_OK;
 }
 
-HRESULT CFont_Manager::Render(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, const _float fScale)
+HRESULT CFont_Manager::Render(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);
 
 	if (nullptr == pFont)
 		return E_FAIL;
 
-	return pFont->Render(pText, vPosition, vColor, fRotation, vOrigin, fScale);
+	return pFont->Render(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+
+HRESULT CFont_Manager::Render_Shadow(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+
+	if (nullptr == pFont)
+		return E_FAIL;
+
+	return pFont->Render_Shadow(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+
+HRESULT CFont_Manager::Render_Outline(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+
+	if (nullptr == pFont)
+		return E_FAIL;
+
+	return pFont->Render_Outline(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
 }
 
 _float2 CFont_Manager::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)

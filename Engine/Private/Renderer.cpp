@@ -312,6 +312,8 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
+	if (FAILED(Render_Font()))
+		return E_FAIL;
 
 #ifdef _DEBUG
 	if (FAILED(Render_Debug()))	
@@ -883,6 +885,21 @@ HRESULT CRenderer::Render_UI()
 	}
 
 	m_RenderObjects[RG_UI].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Font()
+{
+	for (auto& pRenderObject : m_RenderObjects[RG_FONT])
+	{
+		if (FAILED(pRenderObject->Render()))
+			return E_FAIL;
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[RG_FONT].clear();
 
 	return S_OK;
 }

@@ -17,8 +17,6 @@ public:
 	virtual HRESULT Render()override;
 
 public:
-	virtual _bool Mouse_Select(HWND hWnd, _float fX, _float fY)override;
-public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
 };

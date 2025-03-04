@@ -277,9 +277,6 @@
     <Filter Include="03.UIObject\1.UIObjClass\UI_SceneUnderBackground">
       <UniqueIdentifier>{429de6b8-e544-425e-af37-8ca65ab758bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\UI_TextBox">
-      <UniqueIdentifier>{47e6b493-8620-4827-995b-8ec7780f7838}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\UI_SceneBackground">
       <UniqueIdentifier>{9806784c-6146-45a1-afd1-c7e5a0c4d768}</UniqueIdentifier>
     </Filter>
@@ -396,6 +393,9 @@
     </Filter>
     <Filter Include="02.GameObject\Player\State\Parry\Parry_L">
       <UniqueIdentifier>{de2b90d0-3152-4400-8465-1bdc41330777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\3.UI_TextBox">
+      <UniqueIdentifier>{47e6b493-8620-4827-995b-8ec7780f7838}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -649,7 +649,7 @@
       <Filter>03.UIObject\1.UIObjClass\UI_SceneUnderBackground</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_TextBox.h">
-      <Filter>03.UIObject\1.UIObjClass\UI_TextBox</Filter>
+      <Filter>03.UIObject\1.UIObjClass\3.UI_TextBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_SceneBackground.h">
       <Filter>03.UIObject\1.UIObjClass\UI_SceneBackground</Filter>
@@ -984,7 +984,7 @@
       <Filter>03.UIObject\1.UIObjClass\UI_SceneUnderBackground</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_TextBox.cpp">
-      <Filter>03.UIObject\1.UIObjClass\UI_TextBox</Filter>
+      <Filter>03.UIObject\1.UIObjClass\3.UI_TextBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_SceneBackground.cpp">
       <Filter>03.UIObject\1.UIObjClass\UI_SceneBackground</Filter>

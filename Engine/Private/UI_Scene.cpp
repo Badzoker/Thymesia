@@ -15,55 +15,66 @@ CUI_Scene::CUI_Scene()
 
 void CUI_Scene::Priority_Update(_float fTimeDelta)
 {
+	if (m_SceneRender)
+	{
+		for (auto& Image : m_Image)
+			Image->Priority_Update(fTimeDelta);
 
-	for (auto& Image : m_Image)
-		Image->Priority_Update(fTimeDelta);
-	
-	for (auto& Button : m_Button)
-		Button->Priority_Update(fTimeDelta);
+		for (auto& Button : m_Button)
+			Button->Priority_Update(fTimeDelta);
 
-	for (auto& ButtonPlayer : m_ButtonPlayer)
-		ButtonPlayer->Priority_Update(fTimeDelta);
+		for (auto& ButtonPlayer : m_ButtonPlayer)
+			ButtonPlayer->Priority_Update(fTimeDelta);
 
-	for (auto& Text : m_TextBox)
-		Text->Priority_Update(fTimeDelta);
+		for (auto& Text : m_TextBox)
+			Text->Priority_Update(fTimeDelta);
 
-	for (auto& TextPlayerInfo : m_TextPlayerInfo)
-		TextPlayerInfo->Priority_Update(fTimeDelta);
+		for (auto& TextPlayerInfo : m_TextPlayerInfo)
+			TextPlayerInfo->Priority_Update(fTimeDelta);
+	}
 }
 
 void CUI_Scene::Update(_float fTimeDelta)
 {
 
-	for (auto& Image : m_Image)
-		Image->Update(fTimeDelta);
-	
-	for (auto& Button : m_Button)
-		Button->Update(fTimeDelta);
+	if (m_SceneRender)
+	{
+		for (auto& Image : m_Image)
+			Image->Update(fTimeDelta);
 
-	for (auto& ButtonPlayer : m_ButtonPlayer)
-		ButtonPlayer->Update(fTimeDelta);
+		for (auto& Button : m_Button)
+			Button->Update(fTimeDelta);
 
-	for (auto& Text : m_TextBox)
-		Text->Update(fTimeDelta);
+		for (auto& ButtonPlayer : m_ButtonPlayer)
+			ButtonPlayer->Update(fTimeDelta);
 
-	for (auto& TextPlayerInfo : m_TextPlayerInfo)
-		TextPlayerInfo->Update(fTimeDelta);
+		for (auto& Text : m_TextBox)
+			Text->Update(fTimeDelta);
+
+		for (auto& TextPlayerInfo : m_TextPlayerInfo)
+			TextPlayerInfo->Update(fTimeDelta);
+	}
 }
 
 void CUI_Scene::Late_Update(_float fTimeDelta)
 {
-	for (auto& Image : m_Image)
-		Image->Late_Update(fTimeDelta);
-	
-	for (auto& Button : m_Button)
-		Button->Late_Update(fTimeDelta);
+	if (m_SceneRender)
+	{
+		for (auto& Image : m_Image)
+			Image->Late_Update(fTimeDelta);
 
-	for (auto& Text : m_TextBox)
-		Text->Late_Update(fTimeDelta);
+		for (auto& Button : m_Button)
+			Button->Late_Update(fTimeDelta);
 
-	for (auto& TextPlayerInfo : m_TextPlayerInfo)
-		TextPlayerInfo->Late_Update(fTimeDelta);
+		for (auto& ButtonPlayer : m_ButtonPlayer)
+			ButtonPlayer->Late_Update(fTimeDelta);
+
+		for (auto& Text : m_TextBox)
+			Text->Late_Update(fTimeDelta);
+
+		for (auto& TextPlayerInfo : m_TextPlayerInfo)
+			TextPlayerInfo->Late_Update(fTimeDelta);
+	}
 }
 
 HRESULT CUI_Scene::Add_UIObject_Type(_int iUIType, CGameObject* pUIObj)
@@ -109,6 +120,11 @@ HRESULT CUI_Scene::UIScene_UIObject_Render_OnOff(_bool bOpen)
 
 	for (auto& TextPlayerInfo : m_TextPlayerInfo)
 		TextPlayerInfo->Set_Render_OnOff(bOpen);
+
+	if (bOpen) // 씬에 출력되는 모든 UI를 끄는 경우 업데이트를 종료 한다
+		m_SceneRender = true;
+	else
+		m_SceneRender = false;
 
 	return S_OK;
 }

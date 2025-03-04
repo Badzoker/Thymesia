@@ -43,11 +43,6 @@ HRESULT CUI_Image::Render()
 	return S_OK;
 }
 
-_bool CUI_Image::Mouse_Select(HWND hWnd, _float fX, _float fY)
-{
-	return _bool();
-}
-
 void CUI_Image::Free()
 {
 	__super::Free();

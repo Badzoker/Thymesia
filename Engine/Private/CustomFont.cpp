@@ -16,21 +16,60 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     return S_OK;
 }
 
-HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, const _float fScale)
+HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
 {
     if (nullptr == m_pFont ||
         nullptr == m_pBatch)
         return E_FAIL;
 
-    m_pBatch->Begin();
+    m_pBatch->Begin(SpriteSortMode_FrontToBack);
 
     /* 뷰포트 상의 직교투영의 형태로 그려낸다. */
-    m_pFont->DrawString(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.f,vPosition.y + 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 1.f,vPosition.y - 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, layerDepth);
 
     m_pBatch->End();
 
     return S_OK;
 }
+HRESULT CCustomFont::Render_Shadow(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+    if (nullptr == m_pFont ||
+        nullptr == m_pBatch)
+        return E_FAIL;
+
+    m_pBatch->Begin(SpriteSortMode_FrontToBack);
+
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.f,vPosition.y + 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 1.f,vPosition.y + 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, layerDepth);
+
+    m_pBatch->End();
+
+    return S_OK;
+}
+HRESULT CCustomFont::Render_Outline(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+    if (nullptr == m_pFont ||
+        nullptr == m_pBatch)
+        return E_FAIL;
+
+    m_pBatch->Begin(SpriteSortMode_FrontToBack);
+
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.5f,vPosition.y + 1.5f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 1.5f,vPosition.y + 1.5f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 1.5f,vPosition.y - 1.5f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.5f,vPosition.y - 1.5f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
+
+    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, layerDepth);
+    //m_pFont->DrawString(m_pBatch, pText, vPosition, Colors::Gray, fRotation, vOrigin, fScale, effects, layerDepth);
+
+    m_pBatch->End();
+
+    return S_OK;
+}
+
 _float2 CCustomFont::Get_TextSize(const _tchar* pText)
 {
     _float2 fSize = { XMVectorGetX(m_pFont->MeasureString(pText)),XMVectorGetY(m_pFont->MeasureString(pText)) };
