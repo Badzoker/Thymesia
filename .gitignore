@@ -102,7 +102,6 @@ StyleCopReport.xml
 *.pdb
 *.exe
 *.ilk
-*.lib
 *.dll
 
 # Chutzpah Test files
