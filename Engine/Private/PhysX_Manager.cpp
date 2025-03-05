@@ -107,7 +107,7 @@ HRESULT CPhysX_Manager::Create_Scene()
     sceneDesc.cpuDispatcher = m_pCpuDispatcher;
     sceneDesc.filterShader = CollisionFilterShader;
     sceneDesc.simulationEventCallback = m_pSimulationEventCallBack;
-    sceneDesc.cudaContextManager = m_pCudaContextManager;
+    //sceneDesc.cudaContextManager = m_pCudaContextManager;
     sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
     sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;   	//Enable GPU dynamics - without this enabled, simulation (contact gen and solver) will run on the CPU.
     sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;		    	//Enable PCM. PCM NP is supported on GPU. Legacy contact gen will fall back to CPU
@@ -135,26 +135,26 @@ HRESULT CPhysX_Manager::Create_Scene()
     }
 
     /*충돌체 시각화 정보 설정*/
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_EDGES, 2.0f);
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_STATIC, 2.0f);
-    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_NORMAL, 2.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_EDGES, 2.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_STATIC, 2.0f);
+    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_NORMAL, 2.0f);
 
 #pragma endregion 
 #ifdef _DEBUG
     // 충돌체 렌더링용 IA 생성
-    m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
-    m_pEffect = new BasicEffect(m_pDevice);
-    m_pEffect->SetVertexColorEnabled(true);
+    //m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+    //m_pEffect = new BasicEffect(m_pDevice);
+    //m_pEffect->SetVertexColorEnabled(true);
+    //
+    //const void* pShaderByteCode = { nullptr };
+    //size_t	iShaderCodeLength = { 0 };
+    //
+    //m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderCodeLength);
 
-    const void* pShaderByteCode = { nullptr };
-    size_t	iShaderCodeLength = { 0 };
-
-    m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderCodeLength);
-
-    if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderCodeLength, &m_pInputLayout)))
-        return E_FAIL;
+    //if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderCodeLength, &m_pInputLayout)))
+    //    return E_FAIL;
 #endif
 
     return S_OK;
@@ -405,7 +405,7 @@ HRESULT CPhysX_Manager::Update(_float fTimeDelta)
 {
     if (m_pScene)
     {
-        m_pScene->simulate(fTimeDelta);  // 물리 시뮬레이션 실행     
+        m_pScene->simulate(1.f / 60.f);//fTimeDelta);  // 물리 시뮬레이션 실행     
         m_pScene->fetchResults(true);    // 결과 가져오기     
     }
 
