@@ -67,6 +67,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 		MSG_BOX("Failed to Created : StateMgr");
 	}
 
+	/* PhsyX 관련 */
+	m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.1f,0.1f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
+	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);	
+	/* --------- */	
+
 
 	return S_OK;
 }
@@ -387,7 +394,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+	//m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
+	/* PhysX 관련 */
+	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });	
+	/* ======== */
 
 	__super::Update(fTimeDelta);
 
@@ -414,7 +425,7 @@ HRESULT CPlayer::Render()
 {
 #ifdef _DEBUG
 	//m_pNavigationCom->Render();	
-	m_pColliderCom->Render();
+	//m_pColliderCom->Render();
 #endif 
 
 	return S_OK;

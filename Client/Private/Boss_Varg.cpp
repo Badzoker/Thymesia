@@ -57,7 +57,12 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
-
+    /* PhysX 관련 */
+    m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);   
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,5.f,1.f });      
+    /* ================ */
 
     return S_OK;
 }
@@ -113,6 +118,10 @@ void CBoss_Varg::Update(_float fTimeDelta)
     m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+    
+    /* PhysX 관련 */
+    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+    /* ============= */
     __super::Update(fTimeDelta);
 
 }

@@ -104,6 +104,10 @@ private:
 	CCollider* m_pColliderCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CBoss_Varg>* m_pState_Manager = { nullptr };
+
+	/*PhysX ฐüทร */
+	PxRigidDynamic* m_pActor = { nullptr };
+	/* ---------- */
 private:
 	class CGameObject* m_pPlayer = { nullptr };
 public:

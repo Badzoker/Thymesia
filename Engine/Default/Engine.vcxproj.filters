@@ -238,6 +238,15 @@
     <Filter Include="01.Utility\04.Components\Shader\Shader_Compute">
       <UniqueIdentifier>{f47fc5af-441c-4c3e-8d33-521cddb0f31d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\98.PhysX">
+      <UniqueIdentifier>{170fe153-ff8b-451a-ab52-308d961ecd5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.PhysX\Manager">
+      <UniqueIdentifier>{f5e3571f-e18e-46aa-9d66-372aadcbef35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\98.PhysX\SimulationEvent">
+      <UniqueIdentifier>{628f9b75-f34f-4509-b964-4edde1fe3ba8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -468,6 +477,12 @@
     <ClInclude Include="..\Public\UI_Text.h">
       <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PhysX_Manager.h">
+      <Filter>01.Utility\98.PhysX\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysX_SimulationEventCallBack.h">
+      <Filter>01.Utility\98.PhysX\SimulationEvent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -682,6 +697,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Text.cpp">
       <Filter>01.Utility\03.GameObject\UIObject\ThymesiaUI\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX_Manager.cpp">
+      <Filter>01.Utility\98.PhysX\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysX_SimulationEventCallBack.cpp">
+      <Filter>01.Utility\98.PhysX\SimulationEvent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

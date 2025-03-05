@@ -205,6 +205,18 @@ public:
 
 #pragma endregion UI_Manager
 
+
+#pragma region PhysX_Manager
+	PxRigidDynamic* Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
+		_float _degree, CGameObject* _pGameObject);
+
+	HRESULT Sub_Actor(PxRigidDynamic* pActor);
+	HRESULT Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet);
+	HRESULT Set_GlobalPos(PxRigidDynamic* Actor, _vector _fPosition);
+	HRESULT Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _eMeType, PxU32 _ColliderGroup);
+	HRESULT Clear_Scene();
+#pragma endregion 
+
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
 
@@ -228,6 +240,7 @@ private:
 	class CItemMgr*						m_pItemMgr            = { nullptr };
 	class CShadow*						m_pShadow             = { nullptr };
 	class CUI_Manager*					m_pUI_Manager		  = { nullptr };
+	class CPhysX_Manager*				m_pPhysX_Manager	  = { nullptr };	
 
 public:
 	void Release_Engine();
