@@ -561,6 +561,7 @@ CGameObject* CPlayer::Clone(void* pArg)
 		Safe_Release(pInstance);
 	}
 
+	/*int a = 4;*/
 	return pInstance;
 }
 
