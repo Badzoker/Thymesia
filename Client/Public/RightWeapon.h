@@ -49,7 +49,7 @@ private:
 
 private:
 	const _uint* m_pParentState = { nullptr };
-
+	PxRigidDynamic* m_pActor = { nullptr };	
 
 public:
 	HRESULT Ready_Components();

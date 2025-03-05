@@ -56,6 +56,16 @@ using namespace std;
 #include "Engine_Struct.h"
 
 
+
+/* for PhysX */
+#include <PhysX/PxPhysics.h>		
+#include <PhysX/PxPhysicsAPI.h>		
+#include <PhysX/PxConfig.h>		
+
+//#define PX_RELEASE(x)	if(x != nullptr)	{ x->release(); x = nullptr;	}	
+//#define PVD_HOST "127.0.0.1"		
+using namespace physx;
+
 namespace Engine
 {
 	static _wstring			g_strTransformTag = TEXT("Com_Transform");

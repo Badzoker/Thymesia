@@ -110,6 +110,9 @@ private:
 	CStateMgr* m_pStateMgr = { nullptr };
 
 
+	/* PhysX Actor*/
+	PxRigidDynamic* m_pActor = { nullptr };	
+
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther);
 	virtual void OnCollision(CGameObject* _pOther);

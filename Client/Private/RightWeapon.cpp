@@ -38,15 +38,14 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-    //m_pTransformCom->Scaling(_float3(0.1f, 0.1f, 0.1f));
-    //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
+
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.8f, 0.f, 0.f, 1.f));
 
-    //m_pSwordEffect = CSwordEffect::Create(m_pDevice, m_pContext);
-    //if (m_pSwordEffect == nullptr)  
-    //    return E_FAIL;  
+    m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.01f,0.2f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);   
+
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });  
+  
 
     return S_OK;
 
@@ -72,7 +71,8 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+    //m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
 
 }
 

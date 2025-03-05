@@ -19,6 +19,7 @@
 #include "Shadow.h"
 #include "UI_Manager.h"
 #include "GameObject.h"
+#include "PhysX_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -109,6 +110,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pUI_Manager)
 		return E_FAIL;
 
+	m_pPhysX_Manager = CPhysX_Manager::Create(*ppDevice, *ppContext);	
+	if (nullptr == m_pPhysX_Manager)	
+		return E_FAIL;	
+
+
 	return S_OK;
 }
 
@@ -140,6 +146,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pCollider_Manager->Update(); //  충돌 매니저 
 
+	m_pPhysX_Manager->Update(fTimeDelta);	// PhysX 충돌 매니저 
 
 	m_pEvent_Manager->Update();   //  객체의 삭제와 생성에 대한 매니저. 
 	m_pShadow->Update();	      //  그림자를 비출 광원의 위치 업데이트를 위한 것.  ( 해당 기능은 거의 필요 없을거로 보임 ) 
@@ -156,6 +163,8 @@ HRESULT CGameInstance::Render_Begin(const _float4& vClearColor)
 HRESULT CGameInstance::Draw()
 {
  	m_pRenderer->Render();
+
+	m_pPhysX_Manager->Render_PhysXDebugger();	
 
 	m_pLevel_Manager->Render();
 
@@ -615,8 +624,40 @@ HRESULT CGameInstance::LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szScene
 {
 	return m_pUI_Manager->LoadDataFile_UIText_Info(hWnd, szSceneName, pOut);
 }
-
 #pragma endregion UI_Manager
+
+#pragma region PhysX_Manager
+PxRigidDynamic* CGameInstance::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis, _float _degree, CGameObject* _pGameObject)
+{
+	return m_pPhysX_Manager->Add_Actor(_eType, _Scale, _Axis, _degree, _pGameObject);
+}
+
+HRESULT CGameInstance::Sub_Actor(PxRigidDynamic* pActor)
+{
+	return m_pPhysX_Manager->Sub_Actor(pActor);
+}
+
+HRESULT CGameInstance::Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet)
+{
+	return m_pPhysX_Manager->Update_Collider(Actor, _WorldMatrix, _vOffSet);
+}
+
+HRESULT CGameInstance::Set_GlobalPos(PxRigidDynamic* Actor, _vector _fPosition)
+{
+	return m_pPhysX_Manager->Set_GlobalPos(Actor, _fPosition);
+}
+
+HRESULT CGameInstance::Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _eMeType, PxU32 _ColliderGroup)
+{
+	return m_pPhysX_Manager->Set_CollisionGroup(pActor, _eMeType, _ColliderGroup);
+}
+
+HRESULT CGameInstance::Clear_Scene()
+{
+	return m_pPhysX_Manager->Clear_Scene();
+}
+#pragma endregion PhysX_Manager
+
 
 
 void CGameInstance::Release_Engine()
@@ -639,6 +680,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pItemMgr);	
 	Safe_Release(m_pShadow);	
 	Safe_Release(m_pUI_Manager);
+	Safe_Release(m_pPhysX_Manager);	
 	m_pSound_Manager->Release();
 	m_pSound_Manager->Free();
 
