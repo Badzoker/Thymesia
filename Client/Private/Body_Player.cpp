@@ -40,15 +40,6 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_pModelCom->SetUp_Animation(0, true);
 
-    /* 여기서 보간속도 설정하기 */
-
-    ///* 칼 1번째 휘두를때 애니메이션 보간 시간 조정*/
-    //m_pModelCom->Get_VecAnimation().at(1)->Set_LerpTime(0.1f);
-    ///* 칼 2번째 휘두를때 애니메이션 보간 시간 조정*/
-    //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.1f);
-    ///* 칼 3번째 휘두를때 애니메이션 보간 시간 조정*/
-    //m_pModelCom->Get_VecAnimation().at(3)->Set_LerpTime(0.1f);
-
 
     return S_OK;
 }
@@ -134,10 +125,22 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_PARRY_R:
         STATE_PARRY_R_Method();
         break;
+    case STATE_HurtMFR_L:
+        STATE_HurtMFR_L_Method();
+        break;
+    case STATE_HurtMFR_R:
+        STATE_HurtMFR_R_Method();
+        break;
     default:
         break;
     }
 #pragma endregion 
+
+
+
+
+
+
 
     m_pModelCom->Play_Animation(fTimeDelta);
 
@@ -496,6 +499,36 @@ void CBody_Player::STATE_PARRY_R_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
 
+    }
+}
+
+void CBody_Player::STATE_HurtMFR_L_Method()
+{
+    m_pModelCom->SetUp_Animation(31, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(31)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
+        *m_pParentState = STATE_IDLE;
+    }
+}
+
+void CBody_Player::STATE_HurtMFR_R_Method()
+{
+    m_pModelCom->SetUp_Animation(32, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(32)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
+        *m_pParentState = STATE_IDLE;
     }
 }
 

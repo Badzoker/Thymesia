@@ -6,7 +6,6 @@
 
 BEGIN(Engine)
 class CModel;
-class CCollider;
 class CShader;
 class CNavigation;
 END
@@ -36,13 +35,12 @@ private:
 	_uint								m_iPreState = {};
 
 	CNavigation* m_pNavigationCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 public:
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static CBoss_Magician* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

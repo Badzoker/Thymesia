@@ -36,6 +36,11 @@
 #include "Parry_R.h"
 #pragma endregion 
 
+#pragma region 피격 당할 시
+#include "HurtMFL.h"	
+#include "HurtMFR.h"	
+#pragma endregion 
+
 
 CStateMgr::CStateMgr()
 {
@@ -140,6 +145,17 @@ HRESULT CStateMgr::Initialize()
 
 #pragma endregion 
 
+#pragma region 피격
+	/* 21번 피격 모션 (왼쪽으로 고개를 휘청이면서 뒤로가는 모션 ) */
+	CHurtMFL* pHurtMFL = CHurtMFL::Create();
+	m_vecState.push_back(pHurtMFL);
+
+	/* 22번 피격 모션 (오른쪽으로 고개를 휘청이면서 뒤로가는 모션 ) */
+	CHurtMFR* pHurtMFR = CHurtMFR::Create();
+	m_vecState.push_back(pHurtMFR);
+
+
+#pragma endregion 
 
 
 

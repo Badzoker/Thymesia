@@ -57,20 +57,23 @@ void CPhysX_SimulationEventCallBack::onContact(const PxContactPairHeader& pairHe
 
         if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
         {
-            colliderA->OnCollisionEnter(colliderB);
-            colliderB->OnCollisionEnter(colliderA);
+            colliderA->OnCollisionEnter(colliderB, cp);
+            colliderB->OnCollisionEnter(colliderA, cp);
+
+            //PxContactPairPoint contactPoints[10]; // 최대 10개까지 저장
+            //cp.extractContacts(contactPoints, 1);
         }
 
         else if (cp.events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
         {
-            colliderA->OnCollision(colliderB);
-            colliderB->OnCollision(colliderA);
+            colliderA->OnCollision(colliderB, cp);
+            colliderB->OnCollision(colliderA, cp);
         }
 
         else if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST)
         {
-            colliderA->OnCollisionExit(colliderB);
-            colliderB->OnCollisionExit(colliderA);
+            colliderA->OnCollisionExit(colliderB, cp);
+            colliderB->OnCollisionExit(colliderA, cp);
         }
     }
 }

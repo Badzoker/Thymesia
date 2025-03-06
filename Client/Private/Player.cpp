@@ -48,19 +48,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
-	///* 루트 모션 애니메션 코드 */
-	//m_pRootMatrix = m_pModel->Get_RootMotionMatrix("kaku");		
-
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 112.6f,1.85f,107.1f,1.f }); //이게 네비게이션 가능
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
+
+	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
+
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
-
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 70.9525f, 0.1f, -111.377373f, 1.0f }); //이게 네비게이션 불가능
-
-	m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
-
 
 
 
@@ -70,14 +64,15 @@ HRESULT CPlayer::Initialize(void* pArg)
 		MSG_BOX("Failed to Created : StateMgr");
 	}
 
-	/* PhsyX 관련 */
-	m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.1f,0.1f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
+
 	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
-	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);	
-	/* --------- */	
 
+	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 
+	m_pGameInstance->Add_Actor_Scene(m_pActor);
 	return S_OK;
 }
 
@@ -102,7 +97,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState ^= PHASE_LOCKON;
 	}
 
-	if (m_pGameInstance->isMouseEnter(DIM_LB))
+	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		if (m_iState == STATE_ATTACK_L1
 			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
@@ -133,7 +128,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState |= PHASE_FIGHT;
 	}
 
-	else if (m_pGameInstance->isMouseEnter(DIM_RB))
+	else if (m_pGameInstance->isMouseEnter(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		if (m_iState == STATE_ATTACK_LONG_CLAW_01
 			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 30.f
@@ -159,7 +154,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
 #pragma region 패링	
-	if (m_pGameInstance->isKeyEnter(DIK_F))
+	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		if (m_iState == STATE_PARRY_L) // 패링 모션		
 		{
@@ -177,7 +172,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 #pragma endregion	
 
 #pragma region 8방향 Run 
-	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
+	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
 		if ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000) || (GetKeyState('A') & 0x8000) || (GetKeyState('D') & 0x8000))
 		{
@@ -198,7 +193,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 	}
 #pragma endregion 
 #pragma region 락온모드 8방향 이동 
-	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON))
+	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
@@ -347,9 +342,6 @@ void CPlayer::Can_Move()
 	if (m_iState != m_iPreState)
 		m_bMove = true;
 
-	if (m_pColliderCom->Get_isCollision())
-		m_bMove = false;
-
 
 	// 예외조건 설정해두기 회피및 다른 도주기 등 
 	if (m_iState == STATE_LOCK_ON_EVADE_B
@@ -397,11 +389,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-	//m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
-	/* PhysX 관련 */
-	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });	
-	/* ======== */
+	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
 	__super::Update(fTimeDelta);
 
@@ -428,7 +417,6 @@ HRESULT CPlayer::Render()
 {
 #ifdef _DEBUG
 	//m_pNavigationCom->Render();	
-	//m_pColliderCom->Render();
 #endif 
 
 	return S_OK;
@@ -440,27 +428,12 @@ HRESULT CPlayer::Ready_Components()
 	CNavigation::NAVIGATION_DESC   Desc{};
 
 	/* 초기 디버깅 플레이어가 서있는 셀의 인덱스 */
-	Desc.iCurrentCellIndex = 0;
+	Desc.iCurrentCellIndex = 11;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
-
-	/* Com_Collider */
-	CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
-
-
-	SphereDesc.fRadius = 115.f;
-	SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 80.f, 0.f);
-
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
-		return E_FAIL;
-
-
-	m_pColliderCom->Set_Collider_Name("Player");
 
 
 	return S_OK;
@@ -491,6 +464,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	if (nullptr == pBodyModelCom)
 		return E_FAIL;
 
+	RightWeaponDesc.pParentModel = m_pModel;
 	RightWeaponDesc.pParentState = &m_iState;
 	RightWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
 	RightWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -517,26 +491,55 @@ HRESULT CPlayer::Ready_PartObjects()
 }
 
 
-void CPlayer::OnCollisionEnter(CGameObject* _pOther)
+void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+	/* 몬스터 무기와의 충돌 */
+	if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
+	{
+		m_iPhaseState |= CPlayer::PHASE_HITTED;
 
+		/* 충돌 지점 이 오른쪽 왼쪽 인지 판별 해야함 */
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장		
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 position = contactPoints[0].position;
+		_vector PlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+		if (position.x > PlayerPosition.m128_f32[0])
+			m_iState = CPlayer::STATE_HurtMFR_L;
+
+		else
+			m_iState = CPlayer::STATE_HurtMFR_R;
+
+
+		int a = 4;
+
+	}
 }
 
+// 한개 더 분류 
 
-void CPlayer::OnCollision(CGameObject* _pOther)
+void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-	if (!strcmp("Monster", m_pGameInstance->Get_ColliderName(_pOther)))		
+	if (!strcmp("MONSTER", _pOther->Get_Name()))
 	{
-		if ((m_pGameInstance->isKeyPressed(DIK_W) || m_pGameInstance->isKeyPressed(DIK_S))
+		if ((m_pGameInstance->isKeyPressed(DIK_W) || m_pGameInstance->isKeyPressed(DIK_S)
+			|| m_pGameInstance->isKeyPressed(DIK_A) || m_pGameInstance->isKeyPressed(DIK_D))
 			&& !(m_iPhaseState & PHASE_LOCKON)
 			&& (m_iPhaseState & PHASE_IDLE))
 		{
 			Slide_Move(_pOther);
 		}
+
+		m_bMove = false;
 	}
+
+
+
 }
 
-void CPlayer::OnCollisionExit(CGameObject* _pOther)
+void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
@@ -564,7 +567,6 @@ CGameObject* CPlayer::Clone(void* pArg)
 		Safe_Release(pInstance);
 	}
 
-	/*int a = 4;*/
 	return pInstance;
 }
 
@@ -572,8 +574,9 @@ void CPlayer::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
 	Safe_Release(m_pStateMgr);
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pNavigationCom);
 }
 

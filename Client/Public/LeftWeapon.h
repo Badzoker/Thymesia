@@ -55,9 +55,9 @@ public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static  CLeftWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

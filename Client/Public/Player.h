@@ -4,7 +4,6 @@
 
 BEGIN(Engine)
 class CModel; /* 루트 모션 때매 추가 */
-class CCollider;
 class CNavigation;
 END
 
@@ -45,8 +44,12 @@ public:
 		/* 패링 관련 */
 		STATE_PARRY_L,
 		STATE_PARRY_R,
+		/*-----------------*/
 
 
+		/* 피격 관련 */
+		STATE_HurtMFR_L,
+		STATE_HurtMFR_R,
 		/*-----------------*/
 	};
 
@@ -56,6 +59,8 @@ public:
 		PHASE_IDLE = 1,
 		PHASE_FIGHT = 1 << 1,
 		PHASE_LOCKON = 1 << 2,
+		PHASE_HITTED = 1 << 3,
+
 	};
 
 private:
@@ -98,25 +103,21 @@ private:
 
 
 	CNavigation* m_pNavigationCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
 	CModel* m_pModel = { nullptr };
 	const _float4x4* m_pRootMatrix = { nullptr };
 	const _float4x4* m_CombinedMatrix = { nullptr };
 
 
-
+	PxRigidDynamic* m_pActor = { nullptr };
 private:
 	_float								m_fTimeDelta = { 0.f };
 	CStateMgr* m_pStateMgr = { nullptr };
 
 
-	/* PhysX Actor*/
-	PxRigidDynamic* m_pActor = { nullptr };	
-
 public:
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -8,6 +8,16 @@ namespace Engine
 
 	enum class PROTOTYPE { TYPE_GAMEOBJECT, TYPE_COMPONENT };
 
+	enum EVENT_FRAME_TYPE	
+	{
+		EVENT_SOUND,	
+		EVENT_EFFECT,
+		EVENT_COLLIDER,	
+		EVENT_STATE,	
+		EVENT_END,	
+	};
+
+
 	enum GROUP_TYPE
 	{
 		PLAYER = 1,				  /* 0x0000001 */

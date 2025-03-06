@@ -2,6 +2,7 @@
 #include "RightWeapon.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Animation.h"
 
 CRightWeapon::CRightWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
@@ -31,6 +32,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
+    m_pParentModelCom = pDesc->pParentModel;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -38,14 +40,14 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.01f,0.2f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
-    m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.01f,0.2f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);   
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
-    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });  
-  
+
+
 
     return S_OK;
 
@@ -71,9 +73,44 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    //m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+
+
+    /* 콜라이더 위치 세부 조정 */
+
+    /*
+    _matrix CombinedMatrix = XMLoadFloat4x4(&m_CombinedWorldMatrix);
+    CombinedMatrix.r[3] = { m_CombinedWorldMatrix._41 + 0.5f,m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43,1.f };*/
+
     m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
 
+
+#pragma region 이벤트 관련 작업
+
+    /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
+    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+            {
+                // 그 구간에서는 계속 진행        
+                m_pGameInstance->Add_Actor_Scene(m_pActor);
+            }
+
+            else
+            {
+                m_pGameInstance->Sub_Actor_Scene(m_pActor);
+            }
+
+            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+            }
+
+
+        }
+    }
+#pragma endregion  
 }
 
 void CRightWeapon::Late_Update(_float fTimeDelta)
@@ -129,22 +166,6 @@ HRESULT CRightWeapon::Ready_Components()
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
-    CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
-
-
-    SphereDesc.fRadius = 25.f;
-    SphereDesc.vCenter = _float3(50.f, 0.f, 0.f);
-
-
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
-        return E_FAIL;
-
-
-    m_pColliderCom->Set_Collider_Name("PLAYER_RIGHT_WEAPON");
-    //m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER_WEAPON, this);      
-
-
     return S_OK;
 }
 
@@ -160,18 +181,18 @@ HRESULT CRightWeapon::Bind_ShaderResources()
     return S_OK;
 }
 
-void CRightWeapon::OnCollisionEnter(CGameObject* _pOther)
+void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 
 
 }
 
-void CRightWeapon::OnCollision(CGameObject* _pOther)
+void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CRightWeapon::OnCollisionExit(CGameObject* _pOther)
+void CRightWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
@@ -206,7 +227,6 @@ void CRightWeapon::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pColliderCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 

@@ -107,15 +107,15 @@ HRESULT CBoss_Magician::Bind_ShaderResources()
 }
 
 
-void CBoss_Magician::OnCollisionEnter(CGameObject* _pOther)
+void CBoss_Magician::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CBoss_Magician::OnCollision(CGameObject* _pOther)
+void CBoss_Magician::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CBoss_Magician::OnCollisionExit(CGameObject* _pOther)
+void CBoss_Magician::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
@@ -148,8 +148,6 @@ CGameObject* CBoss_Magician::Clone(void* pArg)
 void CBoss_Magician::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pNavigationCom);

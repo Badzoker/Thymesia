@@ -180,6 +180,8 @@
     <ClInclude Include="..\Public\Body_VillageF1.h" />
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
+    <ClInclude Include="..\public\HurtMFL.h" />
+    <ClInclude Include="..\public\HurtMFR.h" />
     <ClInclude Include="..\public\LockOn_Evade_B.h" />
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
@@ -296,6 +298,8 @@
     <ClCompile Include="..\Private\Body_VillageF1.cpp" />
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
+    <ClCompile Include="..\private\HurtMFL.cpp" />
+    <ClCompile Include="..\private\HurtMFR.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_B.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />
