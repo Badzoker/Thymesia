@@ -39,6 +39,7 @@ private:
 private:
 	HRESULT Load_Objects(_int iObject_Level);
 	HRESULT Load_InstancingObjects(_int iObject_Level);
+	HRESULT Load_Height(_int iObject_Level);
 private:
 	_uint m_iOpenSceneCount = { 0 };
 	_bool m_bSceneOpen = { false };

@@ -11,12 +11,12 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path);
+	virtual HRESULT Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path, const VTXNORTEX* _pLoadHeight = nullptr);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-		const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* pPath);
+		const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* pPath, const VTXNORTEX* _pLoadHeight = nullptr);
 	virtual CComponent* Clone(void* pArg);
 	virtual void Free() override;
 };
