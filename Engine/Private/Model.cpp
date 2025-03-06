@@ -321,7 +321,7 @@ HRESULT CModel::Create_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INST
 
 HRESULT CModel::Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData)
 {
-	if (nullptr == m_pInstanceBuffer)
+	/*if (nullptr == m_pInstanceBuffer)
 		return E_FAIL;
 
 	D3D11_MAPPED_SUBRESOURCE tagSubResource = {};
@@ -331,6 +331,24 @@ HRESULT CModel::Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INST
 		return E_FAIL;
 
 	memcpy(tagSubResource.pData, _TagInstanceData, sizeof(VTX_MODEL_INSTANCE) * m_iNumInstances);
+
+	m_pContext->Unmap(m_pInstanceBuffer, 0);
+
+	return S_OK;*/
+
+	if (nullptr == m_pInstanceBuffer || nullptr == _TagInstanceData)
+		return E_FAIL;
+
+	if (_iNumInstances == 0 || _iNumInstances > 500)
+		return E_FAIL;
+
+	D3D11_MAPPED_SUBRESOURCE tagSubResource = {};
+	HRESULT hr = m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &tagSubResource);
+
+	if (FAILED(hr) || nullptr == tagSubResource.pData)
+		return E_FAIL;
+
+	memcpy(tagSubResource.pData, _TagInstanceData, sizeof(VTX_MODEL_INSTANCE) * _iNumInstances);
 
 	m_pContext->Unmap(m_pInstanceBuffer, 0);
 

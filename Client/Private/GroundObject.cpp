@@ -184,6 +184,8 @@ HRESULT CGroundObject::Initialize(void* _pArg)
         return E_FAIL;
     }
 
+    m_vecVisible.resize(m_iNumInstance);
+
     return S_OK;
 }
 
@@ -193,23 +195,27 @@ void CGroundObject::Priority_Update(_float fTimeDelta)
 
 void CGroundObject::Update(_float fTimeDelta)
 {
-    // 컬링 업데이트 버퍼 함수 추가할 듯. 
+    Update_InstanceBuffer_ForCulling();
 }
 
 void CGroundObject::Late_Update(_float _fTimeDelta)
 {
     //if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
+    if (m_iNumInstance > 0)
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CGroundObject::Render()
 {
+    if (m_iNumInstance == 0)
+        return S_OK;
+
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (_uint i = 0; i < iNumMeshes; i++)
+    for (size_t i = 0; i < iNumMeshes; i++)
     {
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
@@ -217,11 +223,26 @@ HRESULT CGroundObject::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render_Instance(i, m_iNumInstance);
-    }
+        vector<VTX_MODEL_INSTANCE> vecVTXInstance;
+        for (_uint j = 0; j < m_iNumInstance; ++j)
+        {
+            if (m_vecVisible[j])
+                vecVTXInstance.push_back(m_vecInstanceData[j]);
+        }
 
-    int a = 10;
+        _uint iVisibleCount = static_cast<_uint>(vecVTXInstance.size());
+
+        if (iVisibleCount == 0)
+            continue;
+
+        m_pModelCom->Update_InstanceBuffer(iVisibleCount, vecVTXInstance.data());
+
+        if (m_iNumInstance > 0)
+        {
+            m_pShaderCom->Begin(0);
+            m_pModelCom->Render_Instance(i, iVisibleCount);
+        }
+    }
 
     return S_OK;
 }
@@ -256,6 +277,41 @@ void CGroundObject::Update_InstanceBuffer(_uint _iInstanceIndex, const XMFLOAT3&
     }
 
     m_pModelCom->Update_InstanceBuffer(m_iNumInstance, m_vecInstanceData.data());
+}
+
+void CGroundObject::Update_InstanceBuffer_ForCulling()
+{
+    if (m_iNumInstance == 0)
+        return;
+
+    for (_uint i = 0; i < m_vecInstanceData.size(); ++i)
+    {
+        XMFLOAT3 fMin =
+        {
+            (m_vecInstancePosition[i].x - ((m_vecInstanceScale[i].x * 0.5f))),
+            (m_vecInstancePosition[i].y - ((m_vecInstanceScale[i].y * 0.5f))),
+            (m_vecInstancePosition[i].z - ((m_vecInstanceScale[i].z * 0.5f)))
+        };
+
+        XMFLOAT3 fMax =
+        {
+            (m_vecInstancePosition[i].x + ((m_vecInstanceScale[i].x * 0.5f))),
+            (m_vecInstancePosition[i].y + ((m_vecInstanceScale[i].y * 0.5f))),
+            (m_vecInstancePosition[i].z + ((m_vecInstanceScale[i].z * 0.5f)))
+        };
+
+        if (m_pGameInstance->isAABB_InFrustum(fMin, fMax))
+        {
+            m_vecVisible[i] = true;
+        }
+        else
+        {
+            m_vecVisible[i] = false;
+        }
+    }
+
+    if (m_iNumInstance > 0)
+        m_pModelCom->Update_InstanceBuffer(m_iNumInstance, m_vecInstanceData.data());
 }
 
 HRESULT CGroundObject::Ready_Components()
