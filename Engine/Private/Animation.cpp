@@ -191,7 +191,7 @@ HRESULT CAnimation::Save_Anim(ostream& os)
     for (auto& channel : m_Channels)
         channel->Save_Channel(os);
 
-    m_iCountFrameEvent = m_vecAnimFrameEvent.size();    
+    m_iCountFrameEvent = static_cast<_int>(m_vecAnimFrameEvent.size());    
 
     os.write((char*)&m_iCountFrameEvent, sizeof(int));
 
@@ -242,7 +242,7 @@ HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices
 
     is.read((char*)&m_iCountFrameEvent, sizeof(int));
 
-    for (_uint i = 0; i < m_iCountFrameEvent; i++)
+    for (_int i = 0; i < m_iCountFrameEvent; i++)
     {
         ANIMEVENT Event;
         is.read((char*)&Event.eType, sizeof(EVENT_FRAME_TYPE));
