@@ -405,7 +405,7 @@ HRESULT CPhysX_Manager::Update(_float fTimeDelta)
 {
     if (m_pScene)
     {
-        m_pScene->simulate(1.f / 60.f);//fTimeDelta);  // 물리 시뮬레이션 실행     
+        m_pScene->simulate(fTimeDelta);  // 물리 시뮬레이션 실행     
         m_pScene->fetchResults(true);    // 결과 가져오기     
     }
 
