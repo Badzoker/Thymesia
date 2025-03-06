@@ -169,6 +169,7 @@ public:
 
 #pragma region FRUSTUM
 	_bool isIn_Frustum_WorldSpace(_fvector vWorldPoint, _float fRange = 0.f);
+	_bool isAABB_InFrustum(const XMFLOAT3& _fMin, const XMFLOAT3& _fMax);
 #pragma endregion
 
 
