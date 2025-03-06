@@ -397,6 +397,24 @@
     <Filter Include="03.UIObject\1.UIObjClass\3.UI_TextBox">
       <UniqueIdentifier>{47e6b493-8620-4827-995b-8ec7780f7838}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt">
+      <UniqueIdentifier>{7500683d-3fbf-4856-be74-af249368c0c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtMFL">
+      <UniqueIdentifier>{ac22f187-c970-4490-bd9c-8bd7d4550246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtMFR">
+      <UniqueIdentifier>{d37c0cdb-6bfe-4c91-beb9-22587ecf8c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockDown">
+      <UniqueIdentifier>{e18e951f-3680-4616-8848-6e90e03b4096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockBack">
+      <UniqueIdentifier>{b449d6e8-6010-4807-8fbe-054dbcc5b126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtKneeDown">
+      <UniqueIdentifier>{e1945114-2020-4c4e-be60-4e58da9118bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -741,6 +759,12 @@
     <ClInclude Include="..\public\Parry_R.h">
       <Filter>02.GameObject\Player\State\Parry\Parry_R</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HurtMFL.h">
+      <Filter>02.GameObject\Player\State\Hurt\HurtMFL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HurtMFR.h">
+      <Filter>02.GameObject\Player\State\Hurt\HurtMFR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1075,6 +1099,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Parry_R.cpp">
       <Filter>02.GameObject\Player\State\Parry\Parry_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HurtMFL.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HurtMFL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HurtMFR.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HurtMFR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

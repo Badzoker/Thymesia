@@ -181,6 +181,16 @@ namespace Engine
 		float		   fSpeed;
 	};
 
+	struct ENGINE_DLL ANIMEVENT	
+	{
+		_bool isEventActivate = false;
+		_bool isPlay = false;	
+		_float fStartTime;
+		_float fEndTime;	
+		EVENT_FRAME_TYPE eType;
+		char szName[MAX_PATH];	
+	};
+
 	/* 그리기용 정점과 인스턴싱용 정점을 합한 정보 */
 	struct ENGINE_DLL VTX_RECT_INSTANCE	
 	{

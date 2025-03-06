@@ -36,6 +36,8 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
     m_vecKeyFrameAnimationSpeed.resize((int)m_fDuration + 1);           
     std::fill(m_vecKeyFrameAnimationSpeed.begin(), m_vecKeyFrameAnimationSpeed.end(), 1.f);      
 
+    m_vecAnimFrameEvent.reserve(100);
+
     return S_OK;
 }
 
@@ -83,6 +85,21 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
          
     }
 
+    //애니메이션 이벤트
+
+    for (auto& pEvent : m_vecAnimFrameEvent)
+    {
+        if (pEvent.fStartTime <= *pCurrentTrackPoisiton && pEvent.fEndTime > *pCurrentTrackPoisiton)
+        {
+            /* 여기서 실행 시켜줘야 함*/
+            pEvent.isEventActivate = true;
+        }
+
+        else
+        {
+            pEvent.isEventActivate = false;
+        }
+    }
 
     return false;
 }
@@ -99,6 +116,13 @@ void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& Current
     {
         pChannel->Reset_TransformationMatrix(Bones, &CurrentKeyFrameIndices[iChannelIndex++]);
     }
+
+    for (auto& pEvent : m_vecAnimFrameEvent)
+    {
+        pEvent.isPlay = false;
+        pEvent.isEventActivate = false;
+    }
+
 
 }
 
@@ -167,6 +191,22 @@ HRESULT CAnimation::Save_Anim(ostream& os)
     for (auto& channel : m_Channels)
         channel->Save_Channel(os);
 
+    m_iCountFrameEvent = m_vecAnimFrameEvent.size();    
+
+    os.write((char*)&m_iCountFrameEvent, sizeof(int));
+
+    for (auto& iter : m_vecAnimFrameEvent)
+    {
+        os.write((char*)&iter.eType, sizeof(EVENT_FRAME_TYPE));
+        os.write((char*)&iter.fStartTime, sizeof(_float));
+        os.write((char*)&iter.fEndTime, sizeof(_float));
+        os.write((char*)&iter.isEventActivate, sizeof(_bool));
+        os.write((char*)&iter.isPlay, sizeof(_bool));
+        os.write((char*)&iter.szName, sizeof(_char) * MAX_PATH);
+    }
+
+
+
     return S_OK;
 }
 
@@ -198,6 +238,21 @@ HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices
     {
         CChannel* pChannel = CChannel::LoadCreate(is);
         m_Channels.push_back(pChannel);
+    }
+
+    is.read((char*)&m_iCountFrameEvent, sizeof(int));
+
+    for (_uint i = 0; i < m_iCountFrameEvent; i++)
+    {
+        ANIMEVENT Event;
+        is.read((char*)&Event.eType, sizeof(EVENT_FRAME_TYPE));
+        is.read((char*)&Event.fStartTime, sizeof(_float));
+        is.read((char*)&Event.fEndTime, sizeof(_float));
+        is.read((char*)&Event.isEventActivate, sizeof(_bool));
+        is.read((char*)&Event.isPlay, sizeof(_bool));
+        is.read((char*)&Event.szName, sizeof(_char) * MAX_PATH);
+
+        m_vecAnimFrameEvent.push_back(Event);
     }
 
     return S_OK;
@@ -234,7 +289,8 @@ void CAnimation::Free()
     for (auto& pChannels : m_Channels)
         Safe_Release(pChannels);
 
-    m_vecKeyFrameAnimationSpeed.clear();        
+    m_vecKeyFrameAnimationSpeed.clear();            
+    m_vecAnimFrameEvent.clear();    
 
     m_Channels.clear();
 }

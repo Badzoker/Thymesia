@@ -145,18 +145,18 @@ HRESULT CLeftWeapon::Bind_ShaderResources()
     return S_OK;
 }
 
-void CLeftWeapon::OnCollisionEnter(CGameObject* _pOther)
+void CLeftWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 
 
 }
 
-void CLeftWeapon::OnCollision(CGameObject* _pOther)
+void CLeftWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CLeftWeapon::OnCollisionExit(CGameObject* _pOther)
+void CLeftWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }

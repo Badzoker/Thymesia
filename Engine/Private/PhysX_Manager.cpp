@@ -135,26 +135,26 @@ HRESULT CPhysX_Manager::Create_Scene()
     }
 
     /*충돌체 시각화 정보 설정*/
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_EDGES, 2.0f);
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_STATIC, 2.0f);
-    //m_pScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_NORMAL, 2.0f);
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_EDGES, 2.0f);
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 2.0f);
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_STATIC, 2.0f);
+    m_pScene->setVisualizationParameter(PxVisualizationParameter::eCONTACT_NORMAL, 2.0f);
 
 #pragma endregion 
 #ifdef _DEBUG
     // 충돌체 렌더링용 IA 생성
-    //m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
-    //m_pEffect = new BasicEffect(m_pDevice);
-    //m_pEffect->SetVertexColorEnabled(true);
-    //
-    //const void* pShaderByteCode = { nullptr };
-    //size_t	iShaderCodeLength = { 0 };
-    //
-    //m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderCodeLength);
+    m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+    m_pEffect = new BasicEffect(m_pDevice);
+    m_pEffect->SetVertexColorEnabled(true);
+    
+    const void* pShaderByteCode = { nullptr };
+    size_t	iShaderCodeLength = { 0 };
+    
+    m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderCodeLength);
 
-    //if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderCodeLength, &m_pInputLayout)))
-    //    return E_FAIL;
+    if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderCodeLength, &m_pInputLayout)))
+        return E_FAIL;
 #endif
 
     return S_OK;
@@ -193,7 +193,7 @@ XMVECTOR CPhysX_Manager::Convert_Vector(const PxVec4& In_PxVec4)
     return XMVectorSet(_float(In_PxVec4.x), _float(In_PxVec4.y), _float(In_PxVec4.z), _float(In_PxVec4.w));
 }
 
-PxRigidDynamic* CPhysX_Manager::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
+PxRigidDynamic* CPhysX_Manager::Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
     _float _degree, CGameObject* _pGameObject)
 {
     PxMaterial* pMaterial = m_pPhysics->createMaterial(0.0f, 0.0f, 0.0f);
@@ -226,8 +226,6 @@ PxRigidDynamic* CPhysX_Manager::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, 
 
         pActor->userData = _pGameObject;
 
-        m_pScene->addActor(*pActor);
-
 
     }
     else if (_eType == COLLIDER_TYPE::COLLIDER_CAPSULE)
@@ -252,7 +250,6 @@ PxRigidDynamic* CPhysX_Manager::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, 
 
         pActor->userData = _pGameObject;
 
-        m_pScene->addActor(*pActor);
     }
 
     else if (_eType == COLLIDER_TYPE::COLLIDER_SPHERE)
@@ -278,7 +275,7 @@ PxRigidDynamic* CPhysX_Manager::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, 
 
         pActor->userData = _pGameObject;
 
-        m_pScene->addActor(*pActor);
+
     }
 
 
@@ -290,12 +287,26 @@ PxRigidDynamic* CPhysX_Manager::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, 
     return pActor;
 }
 
-HRESULT CPhysX_Manager::Sub_Actor(PxRigidDynamic* pActor)
+
+HRESULT CPhysX_Manager::Add_Actor_Scene(PxRigidDynamic* pActor)
 {
     if (pActor == nullptr)
         return E_FAIL;
 
-    m_pScene->removeActor(*pActor);
+    if (pActor->getScene() != m_pScene)
+        m_pScene->addActor(*pActor);
+
+    return S_OK;
+}
+
+
+HRESULT CPhysX_Manager::Sub_Actor_Scene(PxRigidDynamic* pActor)
+{
+    if (pActor == nullptr)
+        return E_FAIL;
+
+    if (pActor->getScene() == m_pScene)
+        m_pScene->removeActor(*pActor);
 
     return S_OK;
 }

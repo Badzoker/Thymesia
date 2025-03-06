@@ -72,10 +72,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	m_pRenderer = CRenderer::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pRenderer)
 		return E_FAIL;
-	
-	m_pCollider_Manager = CCollisionMgr::Create();
-	if (nullptr == m_pCollider_Manager)
-		return E_FAIL; 
+
 
 	m_pEvent_Manager = CEventMgr::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pEvent_Manager)
@@ -144,7 +141,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pEffect_Manager->Late_Update(fTimeDelta);	
 	m_pUI_Manager->Late_Update(fTimeDelta);
 
-	m_pCollider_Manager->Update(); //  충돌 매니저 
 
 	m_pPhysX_Manager->Update(fTimeDelta);	// PhysX 충돌 매니저 
 
@@ -164,7 +160,7 @@ HRESULT CGameInstance::Draw()
 {
  	m_pRenderer->Render();
 
-	//m_pPhysX_Manager->Render_PhysXDebugger();	
+	m_pPhysX_Manager->Render_PhysXDebugger();	
 
 	m_pLevel_Manager->Render();
 
@@ -428,21 +424,7 @@ HRESULT CGameInstance::Render_RT_Debug(const _wstring& strMRTTag, CShader* pShad
 	return m_pTarget_Manager->Render_RT_Debug(strMRTTag, pShader, pVIBuffer);	
 }
 
-#pragma region ColliderMgr 
-HRESULT CGameInstance::Add_ObjCollider(GROUP_TYPE _GroupType, CGameObject* _pGameObject)
-{
-	return m_pCollider_Manager->Add_ObjCollider(_GroupType , _pGameObject);		
-}
-HRESULT CGameInstance::Sub_ObjCollider(GROUP_TYPE _GroupType, CGameObject* _pGameObject)
-{
-	return m_pCollider_Manager->Sub_ObjCollider(_GroupType, _pGameObject);	
-}
-HRESULT CGameInstance::CheckGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
-{
-	return m_pCollider_Manager->CheckGroup(_eLeft, _eRight);
-}
 
-#pragma endregion 
 
 
 #pragma region EventMgr
@@ -632,15 +614,22 @@ HRESULT CGameInstance::LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szScene
 #pragma endregion UI_Manager
 
 #pragma region PhysX_Manager
-PxRigidDynamic* CGameInstance::Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis, _float _degree, CGameObject* _pGameObject)
+PxRigidDynamic* CGameInstance::Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis, _float _degree, CGameObject* _pGameObject)
 {
-	return m_pPhysX_Manager->Add_Actor(_eType, _Scale, _Axis, _degree, _pGameObject);
+	return m_pPhysX_Manager->Create_Actor(_eType, _Scale, _Axis, _degree, _pGameObject);
 }
 
-HRESULT CGameInstance::Sub_Actor(PxRigidDynamic* pActor)
+HRESULT CGameInstance::Add_Actor_Scene(PxRigidDynamic* pActor)
 {
-	return m_pPhysX_Manager->Sub_Actor(pActor);
+	return m_pPhysX_Manager->Add_Actor_Scene(pActor);	
 }
+
+HRESULT CGameInstance::Sub_Actor_Scene(PxRigidDynamic* pActor)
+{
+	return m_pPhysX_Manager->Sub_Actor_Scene(pActor);	
+}
+
+
 
 HRESULT CGameInstance::Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet)
 {
@@ -677,7 +666,6 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTarget_Manager);
-	Safe_Release(m_pCollider_Manager);
 	Safe_Release(m_pEvent_Manager);	
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pFont_Manager);

@@ -122,13 +122,6 @@ public:
 #pragma endregion
 
 
-#pragma region COLLIDER_MANAGER
-	HRESULT Add_ObjCollider(GROUP_TYPE _GroupType, CGameObject* _pGameObject);
-	HRESULT Sub_ObjCollider(GROUP_TYPE _GroupType, CGameObject* _pGameObject);	
-	HRESULT CheckGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight);
-#pragma endregion 
-
-
 #pragma region EVENT_MANAGER
 	HRESULT  Event_Activate(_wstring _EventName);	
 	HRESULT  Add_EventObject(_wstring _EventName, CGameObject* pGaemObject);		
@@ -208,10 +201,11 @@ public:
 
 
 #pragma region PhysX_Manager
-	PxRigidDynamic* Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
+	PxRigidDynamic* Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
 		_float _degree, CGameObject* _pGameObject);
 
-	HRESULT Sub_Actor(PxRigidDynamic* pActor);
+	HRESULT	Add_Actor_Scene(PxRigidDynamic* pActor);
+	HRESULT Sub_Actor_Scene(PxRigidDynamic* pActor);
 	HRESULT Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet);
 	HRESULT Set_GlobalPos(PxRigidDynamic* Actor, _vector _fPosition);
 	HRESULT Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _eMeType, PxU32 _ColliderGroup);
@@ -232,7 +226,6 @@ private:
 	class CPipeLine*					m_pPipeLine           = { nullptr };
 	class CLight_Manager*				m_pLight_Manager      = { nullptr };
 	class CTarget_Manager*				m_pTarget_Manager     = { nullptr };
-	class CCollisionMgr*			    m_pCollider_Manager   = { nullptr };
 	class CEventMgr*					m_pEvent_Manager      = { nullptr };
 	class CEffectMgr*					m_pEffect_Manager     = { nullptr };
 	class CSoundMgr*					m_pSound_Manager      = { nullptr };

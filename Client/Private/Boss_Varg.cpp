@@ -25,7 +25,7 @@ HRESULT CBoss_Varg::Initialize_Prototype()
 
 HRESULT CBoss_Varg::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "BOSS_VARG");
+    strcpy_s(m_szName, "MONSTER");
     m_fBossMaxHP = 100.f;
     m_fBossCurHP = m_fBossMaxHP;
     m_fShieldHP = m_fBossMaxHP;
@@ -44,7 +44,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER, this);
+
     m_pPlayer = m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
     _vector vFirst_Pos = { 112.6f, 1.85f, 28.8f, 1.0f };
@@ -57,12 +57,16 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
-    /* PhysX 관련 */
-    m_pActor = m_pGameInstance->Add_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);   
-    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,5.f,1.f });      
-    /* ================ */
+
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
+
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
+
+    m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     return S_OK;
 }
@@ -115,13 +119,12 @@ void CBoss_Varg::Update(_float fTimeDelta)
 
 
     m_pState_Manager->State_Update(fTimeDelta, this);
-    m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-    
-    /* PhysX 관련 */
+
     m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
-    /* ============= */
+
     __super::Update(fTimeDelta);
 
 }
@@ -154,7 +157,7 @@ void CBoss_Varg::Late_Update(_float fTimeDelta)
 HRESULT CBoss_Varg::Render()
 {
 #ifdef _DEBUG
-    m_pColliderCom->Render();
+
 #endif 
     return S_OK;
 }
@@ -169,21 +172,6 @@ HRESULT CBoss_Varg::Ready_Components()
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
-
-    /* Com_Collider */
-    CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
-
-
-    SphereDesc.fRadius = 300.f;
-    SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 100.f, 0.f);
-
-
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
-        return E_FAIL;
-
-
-    m_pColliderCom->Set_Collider_Name("Monster");
 
     return S_OK;
 }
@@ -206,7 +194,8 @@ HRESULT CBoss_Varg::Ready_PartObjects()
 
     Varg_Knife_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-    Varg_Knife_Desc.bCollider_ON_OFF = &m_bWeapon_Collider_On_Off;
+    Varg_Knife_Desc.pParentModel = m_pModelCom;
+    //Varg_Knife_Desc.bCollider_ON_OFF = &m_bWeapon_Collider_On_Off;
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
     Varg_Knife_Desc.fRotationPerSec = 0.f;
 
@@ -395,15 +384,15 @@ void CBoss_Varg::Rotation_To_Player()
     }
 }
 
-void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther)
+void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CBoss_Varg::OnCollision(CGameObject* _pOther)
+void CBoss_Varg::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CBoss_Varg::OnCollisionExit(CGameObject* _pOther)
+void CBoss_Varg::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
@@ -437,7 +426,7 @@ void CBoss_Varg::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pColliderCom);
+
     Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);
 }

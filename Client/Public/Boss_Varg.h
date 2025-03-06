@@ -7,7 +7,6 @@
 
 BEGIN(Engine)
 class CModel;
-class CCollider;
 class CNavigation;
 
 END
@@ -42,6 +41,17 @@ public:
 		Varg_Execution_First_State,
 		Varg_Execution_Second_State,
 		Varg_State_END
+	};
+
+	enum Player_Hitted_State
+	{
+		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운
+		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
+		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
+		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남  
 	};
 
 private:
@@ -101,19 +111,15 @@ private:
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CBoss_Varg>* m_pState_Manager = { nullptr };
-
-	/*PhysX 관련 */
 	PxRigidDynamic* m_pActor = { nullptr };
-	/* ---------- */
 private:
 	class CGameObject* m_pPlayer = { nullptr };
 public:
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static CBoss_Varg* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

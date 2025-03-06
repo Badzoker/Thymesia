@@ -7,7 +7,6 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -21,6 +20,7 @@ public:
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
+		CModel* pParentModel = { nullptr };
 	};
 private:
 	CRightWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -38,7 +38,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
+	CModel* m_pParentModelCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
@@ -49,15 +49,15 @@ private:
 
 private:
 	const _uint* m_pParentState = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };	
 
+	PxRigidDynamic* m_pActor = { nullptr };
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static  CRightWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

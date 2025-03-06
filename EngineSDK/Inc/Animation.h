@@ -32,6 +32,8 @@ public:
 
 	void Set_StartOffSetTrackPosition(_float _fOffsetTrackValue) { m_fSetStartOffSetTrackPosition = _fOffsetTrackValue; }	
 
+	vector<ANIMEVENT>* Get_vecEvent() { return &m_vecAnimFrameEvent; }
+
 private:
 	_bool                      m_bReset = { false };	
 	_bool					   m_isFinished = { false };
@@ -54,6 +56,10 @@ private:
 
 	vector<_uint>*			   m_CurrentKeyFameIndices;	
 	vector<_float>			   m_vecKeyFrameAnimationSpeed;
+
+
+	vector<ANIMEVENT>		   m_vecAnimFrameEvent;
+	_int					   m_iCountFrameEvent = {};
 
 public:
 

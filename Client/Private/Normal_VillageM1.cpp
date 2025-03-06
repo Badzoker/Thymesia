@@ -40,7 +40,7 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER, this);
+
     m_pPlayer = m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
     _vector vFirst_Pos = { 105.6f, 1.85f, 28.8f, 1.0f };
@@ -81,7 +81,7 @@ void CNormal_VillageM1::Update(_float fTimeDelta)
    PatternCreate();
    RootAnimation();
 
-   m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+   
    _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
    m_pState_Manager->State_Update(fTimeDelta, this);
@@ -104,7 +104,7 @@ void CNormal_VillageM1::Late_Update(_float fTimeDelta)
 HRESULT CNormal_VillageM1::Render()
 {
 #ifdef _DEBUG
-    m_pColliderCom->Render();
+
 #endif 
     return S_OK;
 }
@@ -120,20 +120,6 @@ HRESULT CNormal_VillageM1::Ready_Components()
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
-    /* Com_Collider */
-    CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
-
-
-    SphereDesc.fRadius = 300.f;
-    SphereDesc.vCenter = _float3(0.f, SphereDesc.fRadius + 100.f, 0.f);
-
-
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
-        return E_FAIL;
-
-
-    m_pColliderCom->Set_Collider_Name("Monster");
 
     return S_OK;
 }
@@ -262,15 +248,15 @@ void CNormal_VillageM1::Rotation_To_Player()
     }
 }
 
-void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther)
+void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CNormal_VillageM1::OnCollision(CGameObject* _pOther)
+void CNormal_VillageM1::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CNormal_VillageM1::OnCollisionExit(CGameObject* _pOther)
+void CNormal_VillageM1::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
@@ -304,7 +290,6 @@ void CNormal_VillageM1::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pColliderCom);
     Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);
 }

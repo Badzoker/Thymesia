@@ -7,7 +7,6 @@
 
 BEGIN(Engine)
 class CModel;
-class CCollider;
 class CNavigation;
 
 END
@@ -60,14 +59,14 @@ private:
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
+	
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CNormal_VillageM1>* m_pState_Manager = { nullptr };
 	class CGameObject* m_pPlayer = { nullptr };
 public:
-	virtual void OnCollisionEnter(CGameObject* _pOther);
-	virtual void OnCollision(CGameObject* _pOther);
-	virtual void OnCollisionExit(CGameObject* _pOther);
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static CNormal_VillageM1* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

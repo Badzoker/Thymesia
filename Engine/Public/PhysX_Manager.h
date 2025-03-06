@@ -23,8 +23,9 @@ public:
 	XMVECTOR Convert_Vector(const PxVec3& In_PxVec3);
 	XMVECTOR Convert_Vector(const PxVec4& In_PxVec4);
 
-	PxRigidDynamic* Add_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis = { 0.f,0.f,0.f }, _float _degree = 0.f, CGameObject* _pGameObject = nullptr);
-	HRESULT			Sub_Actor(PxRigidDynamic* pActor);  // 여기서부터 작업 다시하기 
+	PxRigidDynamic* Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis = { 0.f,0.f,0.f }, _float _degree = 0.f, CGameObject* _pGameObject = nullptr);
+	HRESULT			Add_Actor_Scene(PxRigidDynamic* pActor);  // 여기서부터 작업 다시하기	
+	HRESULT			Sub_Actor_Scene(PxRigidDynamic* pActor);  // 여기서부터 작업 다시하기	
 	HRESULT         Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _eMeType, PxU32 _ColliderGroup);
 
 

@@ -108,15 +108,15 @@ HRESULT CVillageF_Weapon::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CVillageF_Weapon::OnCollisionEnter(CGameObject* _pOther)
+void CVillageF_Weapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CVillageF_Weapon::OnCollision(CGameObject* _pOther)
+void CVillageF_Weapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CVillageF_Weapon::OnCollisionExit(CGameObject* _pOther)
+void CVillageF_Weapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
@@ -150,7 +150,7 @@ void CVillageF_Weapon::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
+
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 }

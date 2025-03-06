@@ -43,6 +43,11 @@ class CBody_Player final : public CPartObject
 		STATE_PARRY_R,
 		/*-----------------*/
 
+		/* 피격 관련 */
+		STATE_HurtMFR_L,
+		STATE_HurtMFR_R,
+		/*-----------------*/
+
 	};
 
 	enum RENDER_STATE
@@ -108,6 +113,12 @@ public:
 	void    STATE_PARRY_L_Method();
 	void    STATE_PARRY_R_Method();
 
+
+
+	/* 피격 관련 */
+	void   STATE_HurtMFR_L_Method();
+	void   STATE_HurtMFR_R_Method();
+	/*-----------------*/
 
 
 private:

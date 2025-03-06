@@ -108,15 +108,15 @@ HRESULT CJoker_Weapon::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CJoker_Weapon::OnCollisionEnter(CGameObject* _pOther)
+void CJoker_Weapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CJoker_Weapon::OnCollision(CGameObject* _pOther)
+void CJoker_Weapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 }
 
-void CJoker_Weapon::OnCollisionExit(CGameObject* _pOther)
+void CJoker_Weapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 }
 

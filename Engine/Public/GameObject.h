@@ -75,9 +75,9 @@ public:
 	class CTransform* Get_Transfrom() { return m_pTransformCom; }
 
 public:	
-	virtual void OnCollisionEnter(CGameObject* _pOther) {};
-	virtual void OnCollision(CGameObject* _pOther) {};	
-	virtual void OnCollisionExit(CGameObject* _pOther) {};
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information) {};
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information) {};
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information) {};
 
 
 public:
