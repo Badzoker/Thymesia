@@ -23,15 +23,22 @@ public:
     struct ENVIRONMENT_OBJECT_DESC : public CGameObject::GAMEOBJECT_DESC
     {
         _float fFrustumRadius = { 0.f };
-        _float3 fRotation = {};
+        _float4 fRotation = {};
         string ObjectName = {};
         _float fRange = {};
         _float fSpace = {};
         //_float fPosition= {};
 
+        _float fInstanceCount = {};
+        _bool   isBasicMode = { false };
+
         vector<_float3> vecInstancePosition = {};
-        vector<_float3> vecInstanceRotation = {};
+        vector<_float4> vecInstanceRotation = {};
         vector<_float3> vecInstanceScale = {};
+
+        vector<VTX_MODEL_INSTANCE>  vecStructModelInstance;
+        _int                        iBoxSize = {  };
+        vector<_int>                vecBoxSize = {};
     };
 
 public:
@@ -42,6 +49,7 @@ public:
         _float3 fScale;
         _float3 fRotation;
         _float fFrustumRadius;
+        _int iBoxSize;
     };
 
     struct EN_MESH_INFO
@@ -58,10 +66,7 @@ protected:
 protected:
     virtual HRESULT Initialize(void* _pArg) override;
 public:
-    //_bool           Picking_En_Objects(EN_MESH_INFO& _pInfo);
-    //EN_OBJECT_INFO  Get_EnvironmentObjectInfo();
-    //
-    //void            Set_FrustumRadius(_float _fFrustumRadius);
+
     void            Set_FrustumSphere(_bool _bSphere) {
         m_bFrustumSphere = _bSphere;
     }
@@ -77,12 +82,17 @@ protected:
     _float3		   m_fScale = { 0.f, 0.f, 0.f };
     _char		   m_EnvironmentMeshName[MAX_PATH] = {};
     _bool		   m_bFrustumSphere = { true };
+    _int           m_iBoxSize = { 1 };
+
 
 protected:
     vector<_float3>     m_vecInstancePosition = {};
-    vector<_float3>     m_vecInstanceRotation = {};
+    vector<_float4>     m_vecInstanceRotation = {};
     vector<_float3>     m_vecInstanceScale = {};
+    _bool               m_bModeSelected = { false };
+    vector<_int>        m_vecBoxSize = {};
 
+    vector<CCollider*>      m_vecColliderCom;
 
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;

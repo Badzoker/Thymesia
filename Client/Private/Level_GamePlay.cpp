@@ -186,6 +186,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//현재 몬스터와 기본맵이 있는 Prototype용 맵 -> Load_Objects(16);
 	//Map Tool 기능 및 Test용 맵				 -> Load_Objects(18);
 	Load_Objects(16);
+	//Load_Objects(87);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -365,7 +366,6 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 	_uint iSize2 = 0;
 
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
-	
 
 	for (size_t i = 0; i < iSize; i++)
 	{
@@ -387,33 +387,11 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);
 	CEnvironmentObject::ENVIRONMENT_OBJECT_DESC Desc = {};
-	/*_uint iGroundPosVectorSize = 0;
-	ReadFile(hFile, &iGroundPosVectorSize, sizeof(_uint), &dwByte2, nullptr);
 
-	for (size_t i = 0; i < iGroundPosVectorSize; i++)
-	{
-		_float3 fGroundObjectPos;
-		ReadFile(hFile, &fGroundObjectPos, sizeof(_float3), &dwByte2, nullptr);
-		Desc.vecPosition.push_back(fGroundObjectPos);
-	}
+	vector<_int> vecBoxSize;
+	_int vectorBoxSize = {};
 
-	for (size_t i = 0; i < iSize2; i++)
-	{
-		_char szLoadName[MAX_PATH] = {};
-
-		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
-		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte2, nullptr);
-		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte2, nullptr);
-		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte2, nullptr);
-
-		Desc.ObjectName = szLoadName;
-
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc)))
-			return E_FAIL;
-	}*/
-
-
-	for (_uint i = 0; i < iSize2; ++i)
+	/*for (_uint i = 0; i < iSize2; ++i)
 	{
 		_uint iVecInstanceDataSize = 0;
 		ReadFile(hFile, &iVecInstanceDataSize, sizeof(_uint), &dwByte2, nullptr);
@@ -472,6 +450,77 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc)))
 			return E_FAIL;
+	}*/
+
+	for (_uint i = 0; i < iSize2; ++i)
+	{
+		CEnvironmentObject::ENVIRONMENT_OBJECT_DESC Desc = {};
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
+		Desc.ObjectName = szLoadName;
+
+		_uint iInstanceCount = 0;
+		ReadFile(hFile, &iInstanceCount, sizeof(_uint), &dwByte2, nullptr);
+
+		vector<VTX_MODEL_INSTANCE> vecInstanceData(iInstanceCount);
+		vector<XMFLOAT3> vecInstancePosition(iInstanceCount);
+		vector<XMFLOAT3> vecInstanceScale(iInstanceCount);
+		vector<XMFLOAT4> vecInstanceRotation(iInstanceCount);
+
+		vectorBoxSize++;
+		for (_uint k = 0; k < iInstanceCount; ++k)
+		{
+			ReadFile(hFile, &vecInstanceData[k].InstanceMatrix, sizeof(XMFLOAT4X4), &dwByte2, nullptr);
+
+			XMFLOAT4X4 matrix;
+			memcpy(&matrix, vecInstanceData[k].InstanceMatrix, sizeof(XMFLOAT4X4));
+
+			XMMATRIX matWorld = XMLoadFloat4x4(&matrix);
+
+			XMVECTOR scale, rotation, translation;
+			XMMatrixDecompose(&scale, &rotation, &translation, matWorld);
+
+			XMStoreFloat3(&vecInstancePosition[k], translation);
+			XMStoreFloat3(&vecInstanceScale[k], scale);
+
+			XMFLOAT4 quaternion;
+			ReadFile(hFile, &quaternion, sizeof(XMFLOAT4), &dwByte2, nullptr);
+			rotation = XMLoadFloat4(&quaternion);
+
+			vecInstanceRotation[k] = quaternion;
+
+			vecBoxSize.resize(vectorBoxSize);
+			ReadFile(hFile, &vecBoxSize[i], sizeof(_int), &dwByte2, nullptr);
+		}
+
+		Desc.vecInstancePosition = vecInstancePosition;
+		Desc.vecInstanceScale = vecInstanceScale;
+		Desc.vecInstanceRotation = vecInstanceRotation;
+		Desc.vecBoxSize = vecBoxSize;
+
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"),LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc));
+
+		if (nullptr == pEnvironment)
+			return E_FAIL;
+
+		//if (pEnvironment != nullptr)
+		//{
+		//	pEnvironment->Set_ModelInstanceVector(vecInstanceData);
+		//	m_EnvironmentObjects.push_back(pEnvironment);
+
+		//	m_vecInstancedGroundObjectPos.insert(m_vecInstancedGroundObjectPos.end(), vecInstancePosition.begin(), vecInstancePosition.end());
+		//	m_vecInstancedGroundObjectScale.insert(m_vecInstancedGroundObjectScale.end(), vecInstanceScale.begin(), vecInstanceScale.end());
+		//	m_vecInstancedGroundObjectRotation.insert(m_vecInstancedGroundObjectRotation.end(), vecInstanceRotation.begin(), vecInstanceRotation.end());
+		//	//m_vecBoxSize.insert(m_vecBoxSize.end(), vecBoxSize.begin(), vecBoxSize.end());
+		//	m_vecBoxSize = vecBoxSize;
+
+
+		//	for (_uint t = 0; t < vecBoxSize.size(); ++t)
+		//	{
+		//		dynamic_cast<CGroundObject*>(pEnvironment)->Set_BoxSize(vecBoxSize[t]);
+		//	}
+		//}
 	}
 
 	CloseHandle(hFile);
@@ -502,6 +551,34 @@ HRESULT CLevel_GamePlay::Load_InstancingObjects(_int iObject_Level)
 	_uint iSize = 0;
 
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_Height(_int iObject_Level)
+{
+	_ulong dwByte = {};
+
+	string strDataPath = "../Bin/DataFiles/HeightData/TerrainHeight";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	_uint numVertices = {};
+	ReadFile(hFile, &numVertices, sizeof(_uint), &dwByte, nullptr);
+
+
 
 	return S_OK;
 }

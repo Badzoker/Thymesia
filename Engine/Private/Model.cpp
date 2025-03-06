@@ -176,6 +176,26 @@ HRESULT CModel::Render_Instance(_uint _iMeshIndex, _uint _iNumInstanceNumber)
 	return S_OK;
 }
 
+//void CModel::Compute_BoundingBox(_float3& _vMin, _float3& _vMax)
+//{
+//	_vMin = _float3(FLT_MAX, FLT_MAX, FLT_MAX);
+//	_vMax = _float3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+//
+//	for (_uint i = 0; i < m_Meshes.size(); i++)
+//	{
+//		_float3 meshMin, meshMax;
+//		m_Meshes[i]->Compute_BoundingBox(meshMin, meshMax);
+//
+//		_vMin.x = min(_vMin.x, meshMin.x);
+//		_vMin.y = min(_vMin.y, meshMin.y);
+//		_vMin.z = min(_vMin.z, meshMin.z);
+//
+//		_vMax.x = max(_vMax.x, meshMax.x);
+//		_vMax.y = max(_vMax.y, meshMax.y);
+//		_vMax.z = max(_vMax.z, meshMax.z);
+//	}
+//}
+
 void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)	
 {
 	// Initialize에서 초기 애니메이션 설정을 위해 범승추가
