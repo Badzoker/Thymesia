@@ -11,12 +11,22 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path, const VTXNORTEX* _pLoadHeight = nullptr);
+	virtual HRESULT Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path, const _tchar* _HeightPath = nullptr);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-		const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* pPath, const VTXNORTEX* _pLoadHeight = nullptr);
+	_float					Get_Height(const XMFLOAT3& _vPos);
+	_float3					Get_TerrainPos() { return m_fTerrainPos; }
+private:
+	_float4                 m_vPlane = {};
+	XMVECTOR*				m_VertexPos = { nullptr };
+	VTXNORTEX*				m_pVertices = { nullptr };
+	_uint                   m_iNumverticesX, m_iNumverticesZ;
+	_float3					m_fTerrainPos = {};
+
+
+public:
+	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* pPath, const _tchar* _HeightPath = nullptr);
 	virtual CComponent* Clone(void* pArg);
 	virtual void Free() override;
 };

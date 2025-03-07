@@ -8,12 +8,15 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& Prototype)
 	:CVIBuffer(Prototype)
+	, m_iNumverticesX{ Prototype.m_iNumverticesX }
+	, m_iNumverticesZ{ Prototype.m_iNumverticesZ }
+	, m_VertexPos{ Prototype.m_VertexPos }
 
 {
 
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path, const VTXNORTEX* _pLoadHeight)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint dwCntZ, _uint dwVertexItv, const _tchar* path, const _tchar* _HeightPath)
 {
 	/* 버텍스버퍼와 인덱스 버퍼의 정보*/
 	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -29,21 +32,40 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 
 	/* 그러면 내가 해야할 일이 VTXNORTEX에 있는 POSITION, NORAML , Texcoord 내용 채워주기*/
 
+	m_VertexPos = new XMVECTOR[m_iNumVertices];
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 
-	/*이제 여기서 버텍스 정보 넣어줘야하는데. 일단 path가 있는지부터 확인하자*/
+	const _tchar* strFilePath{};
+	strFilePath = _HeightPath;
+
+	_ulong  dwByteHegiht = {};
+
+	HANDLE  hFile = CreateFile(strFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Open Terrain File!!");
+		return E_FAIL;
+	}
+
+	_uint numVertices = {};
+	ReadFile(hFile, &numVertices, sizeof(_uint), &dwByteHegiht, nullptr);
+
+	m_pVertices = new VTXNORTEX[numVertices];
+	ReadFile(hFile, m_pVertices, sizeof(VTXNORTEX) * numVertices, &dwByteHegiht, nullptr);
+
+	CloseHandle(hFile);
 
 	if (nullptr == path)
 	{
-		if (nullptr != _pLoadHeight)
+		if (nullptr != _HeightPath)
 		{
 			for (_uint i = 0; i < dwCntZ; i++)
 			{
 				for (_uint j = 0; j < dwCntX; j++)
 				{
-					memcpy(pVertices, _pLoadHeight, sizeof(VTXNORTEX) * m_iNumVertices);
-
-					//m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+					memcpy(pVertices, m_pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
+					m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 				}
 			}
 		}
@@ -57,6 +79,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 					pVertices[dwCntZ * i + j].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, 0.f, static_cast<_float>(i));
 					pVertices[dwCntZ * i + j].vNormal = _float3(0.f, 1.f, 0.f);
 					pVertices[dwCntZ * i + j].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
+					m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 				}
 			}
 		}
@@ -131,6 +154,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 			return E_FAIL;
 
 		Safe_Delete_Array(pIndices);
+		Safe_Delete_Array(m_pVertices);
 	}
 
 	/* 파일 경로가 있을 때 */
@@ -171,6 +195,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 				pVertices[iIndex].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, (pPixel[iIndex] & 0x000000ff) / 10.f, static_cast<_float>(i));
 				pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 				pVertices[iIndex].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
+				m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 			}
 		}
 
@@ -286,13 +311,62 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	return S_OK;
 }
 
+_float CVIBuffer_Terrain::Get_Height(const XMFLOAT3& _vPos)
+{
+	if (!m_VertexPos || m_iNumverticesX <= 1 || m_iNumverticesZ <= 1)
+		return 0.0f;
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-	_uint iCountX, _uint iCountY, _uint iVertexItv, const _tchar* pPath, const VTXNORTEX* _pLoadHeight)
+	XMFLOAT3 vLocalPos =
+	{
+		_vPos.x - m_fTerrainPos.x,
+		_vPos.y - m_fTerrainPos.y,
+		_vPos.z - m_fTerrainPos.z
+	};
+
+	_long uCurrentX = static_cast<_long>(vLocalPos.x);
+	_long uCurrentZ = static_cast<_long>(vLocalPos.z);
+
+	if (uCurrentX < 0 || uCurrentZ < 0 || uCurrentX >= m_iNumverticesX - 1 || uCurrentZ >= m_iNumverticesZ - 1)
+		return 0.0f;
+
+	_long dwIndex = uCurrentZ * m_iNumverticesX + uCurrentX;
+
+	_float fRatioX = vLocalPos.x - XMVectorGetX(m_VertexPos[dwIndex]);
+	_float fRatioZ = XMVectorGetZ(m_VertexPos[dwIndex]) - vLocalPos.z;
+
+	XMVECTOR v0, v1, v2;
+
+	if (fRatioX > fRatioZ)
+	{
+		v0 = m_VertexPos[dwIndex];
+		v1 = m_VertexPos[dwIndex + 1];
+		v2 = m_VertexPos[dwIndex + m_iNumverticesX + 1];
+	}
+	else
+	{
+		v0 = m_VertexPos[dwIndex];
+		v1 = m_VertexPos[dwIndex + m_iNumverticesX];
+		v2 = m_VertexPos[dwIndex + m_iNumverticesX + 1];
+	}
+
+	XMVECTOR vDir0 = v1 - v0;
+	XMVECTOR vDir1 = v2 - v0;
+	XMVECTOR vNormal = XMVector3Normalize(XMVector3Cross(vDir0, vDir1));
+
+	m_vPlane.x = XMVectorGetX(vNormal);
+	m_vPlane.y = XMVectorGetY(vNormal);
+	m_vPlane.z = XMVectorGetZ(vNormal);
+	m_vPlane.w = -(m_vPlane.x * XMVectorGetX(v0) + m_vPlane.y * XMVectorGetY(v0) + m_vPlane.z * XMVectorGetZ(v0));
+
+	return (-m_vPlane.x * vLocalPos.x - m_vPlane.z * vLocalPos.z - m_vPlane.w) / m_vPlane.y;
+}
+
+
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iCountX, _uint iCountY, _uint iVertexItv, const _tchar* pPath, const _tchar* _HeightPath)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(iCountX, iCountY, iVertexItv, pPath, _pLoadHeight)))
+	if (FAILED(pInstance->Initialize_Prototype(iCountX, iCountY, iVertexItv, pPath, _HeightPath)))
 	{
 		MSG_BOX("Failed to Created : Terrain");
 		Safe_Release(pInstance);
@@ -317,4 +391,7 @@ CComponent* CVIBuffer_Terrain::Clone(void* pArg)
 void CVIBuffer_Terrain::Free()
 {
 	__super::Free();
+
+	if (false == m_isCloned)
+		Safe_Delete_Array(m_VertexPos);
 }
