@@ -246,7 +246,8 @@ _vector CNavigation::Setting_SlidingMove(_fvector _vWorldPos)
                 // 투영벡터 플레이어 위치에서 충돌할 선분으로 내려꽂아버릴, 방향벡터.
                 _vector vLineCollisionPoint = m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i) + XMVector3Dot(vDir, vLine) * vLine / XMVector3Dot(vLine, vLine);
                 _vector vSlideDir = XMVector3Normalize(vLineCollisionPoint - vPosition);
-                return vPosition + (vSlideDir * 0.1f);
+                vSlideDir = XMVectorSetW(vSlideDir, 0.f);
+                return vPosition + (vSlideDir * 0.01f);
             }
         }
     }
@@ -389,7 +390,7 @@ void CNavigation::Clear_Astar()
 
 _vector CNavigation::MoveAstar(_vector pCurPos, _bool& isEmpty)
 {
-    if (!m_BestList.empty() && m_BestList.size() > 1)
+    if (!m_BestList.empty())
     {
         vector<_vector> vPoints;
         _float3 fCurPos = {};
@@ -402,7 +403,7 @@ _vector CNavigation::MoveAstar(_vector pCurPos, _bool& isEmpty)
 
         _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
-        if (fDistance <= 1.5f)
+        if (fDistance <= 3.0f)
             m_BestList.pop_front();
 
         _vector vCurPos = XMVectorSet(XMVectorGetX(vDir), 0.f, XMVectorGetZ(vDir), 0.f);

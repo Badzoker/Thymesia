@@ -51,22 +51,11 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
-    m_pGameInstance->Add_Actor_Scene(m_pActor);
-
-
     return S_OK;
 }
 
 void CVargKnife::Priority_Update(_float fTimeDelta)
 {
-    //if (*m_bCollider_ON_OFF)
-    //{
-    //    //m_pGameInstance->Add_ObjCollider(GROUP_TYPE::MONSTER_WEAPON, this);
-    //}
-    //else
-    //{
-    //    //m_pGameInstance->Sub_ObjCollider(GROUP_TYPE::MONSTER_WEAPON, this);
-    //}
 }
 
 void CVargKnife::Update(_float fTimeDelta)
@@ -78,10 +67,8 @@ void CVargKnife::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-    //for (auto pCollider : m_pColliderCom)
-    //    pCollider->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
 
-    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f,-350.f,1.f });
+    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
@@ -105,6 +92,8 @@ void CVargKnife::Update(_float fTimeDelta)
             }
         }
     }
+#pragma endregion  
+
 
 }
 
@@ -115,13 +104,7 @@ void CVargKnife::Late_Update(_float fTimeDelta)
 
 HRESULT CVargKnife::Render()
 {
-#ifdef _DEBUG
-    /* if (*m_bCollider_ON_OFF)
-     {
-         for (auto pCollider : m_pColliderCom)
-             pCollider->Render();
-     }*/
-#endif 
+
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 

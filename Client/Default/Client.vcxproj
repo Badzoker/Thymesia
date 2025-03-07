@@ -186,6 +186,10 @@
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
     <ClInclude Include="..\public\LockOn_Evade_R.h" />
+    <ClInclude Include="..\Public\Monster_HP_Bar.h" />
+    <ClInclude Include="..\Public\Monster_HP_Bar_Effect.h" />
+    <ClInclude Include="..\Public\Monster_HP_Gage.h" />
+    <ClInclude Include="..\Public\Monster_HP_Gage_Effect.h" />
     <ClInclude Include="..\Public\Normal_VillageF0.h" />
     <ClInclude Include="..\Public\Normal_VillageF1.h" />
     <ClInclude Include="..\Public\Normal_VillageM0.h" />
@@ -304,6 +308,10 @@
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_R.cpp" />
+    <ClCompile Include="..\Private\Monster_HP_Bar.cpp" />
+    <ClCompile Include="..\Private\Monster_HP_Bar_Effect.cpp" />
+    <ClCompile Include="..\Private\Monster_HP_Gage.cpp" />
+    <ClCompile Include="..\Private\Monster_HP_Gage_Effect.cpp" />
     <ClCompile Include="..\Private\Normal_VillageF0.cpp" />
     <ClCompile Include="..\Private\Normal_VillageF1.cpp" />
     <ClCompile Include="..\Private\Normal_VillageM0.cpp" />

@@ -415,6 +415,18 @@
     <Filter Include="02.GameObject\Player\State\Hurt\HurtKneeDown">
       <UniqueIdentifier>{e1945114-2020-4c4e-be60-4e58da9118bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\Monster_HP_Bar">
+      <UniqueIdentifier>{45b57392-3dd5-4831-89d6-24accc305b8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Bar_Effect">
+      <UniqueIdentifier>{7eb14cdd-196f-477c-8166-5354ffcc7e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage">
+      <UniqueIdentifier>{ac2bbaea-bbc0-4a03-abb9-5967b3bb0a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect">
+      <UniqueIdentifier>{12e68ee5-fe52-4dc8-b5d8-4a0aa0084e55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -765,6 +777,18 @@
     <ClInclude Include="..\public\HurtMFR.h">
       <Filter>02.GameObject\Player\State\Hurt\HurtMFR</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_HP_Bar.h">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_HP_Bar_Effect.h">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Bar_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_HP_Gage.h">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_HP_Gage_Effect.h">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1105,6 +1129,18 @@
     </ClCompile>
     <ClCompile Include="..\private\HurtMFR.cpp">
       <Filter>02.GameObject\Player\State\Hurt\HurtMFR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_HP_Bar.cpp">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_HP_Bar_Effect.cpp">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Bar_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_HP_Gage.cpp">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_HP_Gage_Effect.cpp">
+      <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

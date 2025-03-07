@@ -60,6 +60,23 @@ void CTransform::Go_Straight(_float fTimeDelta, class CNavigation* pNavigation)
 	}
 }
 
+void CTransform::Go_Straight_Astar(_float fTimeDelta, CNavigation* pNavigation)
+{
+	_vector		vPosition = Get_State(STATE_POSITION);
+	_vector		vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
+
+	if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+	{
+		Set_State(STATE_POSITION, vPosition);
+	}
+	else
+	{
+		Set_State(STATE_POSITION, pNavigation->Setting_SlidingMove(vPosition));
+	}
+}
+
 void CTransform::Go_Backward(_float fTimeDelta)
 {
 	_vector		vPosition = Get_State(STATE_POSITION);
