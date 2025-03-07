@@ -243,9 +243,9 @@ HRESULT CGameInstance::Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstring
 	return m_pObject_Manager->Sub_GameObject_To_Layer(iLevelIndex, strLayerTag, _pGameObject);
 }
 
-CGameObject* CGameInstance::Get_Player_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
+CGameObject* CGameInstance::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
 {
-	return m_pObject_Manager->Get_Player_GameObject_To_Layer(iLevelIndex, strLayerTag);
+	return m_pObject_Manager->Get_GameObject_To_Layer(iLevelIndex, strLayerTag);
 }
 
 list<class CGameObject*>* CGameInstance::Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag)
@@ -621,6 +621,11 @@ HRESULT CGameInstance::LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szScene
 PxRigidDynamic* CGameInstance::Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis, _float _degree, CGameObject* _pGameObject)
 {
 	return m_pPhysX_Manager->Create_Actor(_eType, _Scale, _Axis, _degree, _pGameObject);
+}
+
+HRESULT CGameInstance::IsActorInScene(PxRigidDynamic* pActor)
+{
+	return m_pPhysX_Manager->IsActorInScene(pActor);
 }
 
 HRESULT CGameInstance::Add_Actor_Scene(PxRigidDynamic* pActor)

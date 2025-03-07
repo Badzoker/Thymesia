@@ -6,6 +6,7 @@
 #include "LeftWeapon.h"
 #include "StateMgr.h"
 #include "Animation.h"
+#include "ClawWeapon.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -50,14 +51,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vector{ 111.7f, 15.3f, 51.5f, 1.0f });				//애니메이션 테스트용 Player 위치(움직임)
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vector{ 70.9525f, 0.1f, -111.377373f, 1.0f });	//맵 확인용 Player 위치(못 움직임)
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
 	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
-	
+
 
 	m_pStateMgr = CStateMgr::Create();
 	if (m_pStateMgr == nullptr)
@@ -162,19 +162,28 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(20)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_R;
 
+
 		}
 		else if (m_iState != STATE_PARRY_L)  // 패링 2번째 모션	
 		{
 			m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_L;
-
 		}
+
 	}
 #pragma endregion	
 
 #pragma region 8방향 Run 
 	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
+#pragma region 대쉬 
+		/*	if ((m_pGameInstance->isKeyPressed(DIK_W) && (m_pGameInstance->isKeyEnter(DIK_SPACE))))
+			{
+				m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_RUN;
+			}*/
+#pragma endregion 
+
 		if ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000) || (GetKeyState('A') & 0x8000) || (GetKeyState('D') & 0x8000))
 		{
 			m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -293,6 +302,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(18)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_F;
 			m_bNextStateCanPlay = false;
+			m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨	
 		}
 
 		else if (m_pGameInstance->isKeyPressed(DIK_A)
@@ -301,6 +311,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(16)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_L;
 			m_bNextStateCanPlay = false;
+			m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨 
 		}
 
 		else if (m_pGameInstance->isKeyPressed(DIK_D)
@@ -309,6 +320,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(17)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_R;
 			m_bNextStateCanPlay = false;
+			m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨
 		}
 
 		else if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -316,6 +328,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(15)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_B;
 			m_bNextStateCanPlay = false;
+			m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨
 		}
 
 		/* 아무 키도 안눌려있다면 IDLE 상태로 */
@@ -326,6 +339,10 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			&& m_bNextStateCanPlay
 			&& (m_iState != STATE_PARRY_L)
 			&& (m_iState != STATE_PARRY_R)
+			&& (m_iState != STATE_PARRY_DEFLECT_L)
+			&& (m_iState != STATE_PARRY_DEFLECT_L_UP)
+			&& (m_iState != STATE_PARRY_DEFLECT_R)
+			&& (m_iState != STATE_PARRY_DEFLECT_R_UP)
 			)
 		{
 			m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -390,8 +407,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-
-	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
 	__super::Update(fTimeDelta);
 
@@ -476,7 +493,7 @@ HRESULT CPlayer::Ready_PartObjects()
 		return E_FAIL;
 
 
-	/* 오른손 무기를 만든다. */
+	/* 왼손 무기를 만든다. */
 	CLeftWeapon::WEAPON_DESC		LeftWeaponDesc{};
 
 	LeftWeaponDesc.pParentState = &m_iState;
@@ -488,6 +505,22 @@ HRESULT CPlayer::Ready_PartObjects()
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
 		return E_FAIL;
 
+
+
+	/* 오른쪽 손톱 무기를 만든다. */
+	CClawWeapon::WEAPON_DESC		RightClawWeaponDesc{};
+
+	RightClawWeaponDesc.pParentModel = m_pModel;
+	RightClawWeaponDesc.pParentState = &m_iState;
+	RightClawWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	RightClawWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	RightClawWeaponDesc.fSpeedPerSec = 0.f;
+	RightClawWeaponDesc.fRotationPerSec = 10.f;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -497,7 +530,6 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 	/* 몬스터 무기와의 충돌 */
 	if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
 	{
-		m_iPhaseState |= CPlayer::PHASE_HITTED;
 
 		/* 충돌 지점 이 오른쪽 왼쪽 인지 판별 해야함 */
 		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장		
@@ -506,16 +538,46 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		PxVec3 position = contactPoints[0].position;
 		_vector PlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-
-		if (position.x > PlayerPosition.m128_f32[0])
-			m_iState = CPlayer::STATE_HurtMFR_L;
-
-		else
-			m_iState = CPlayer::STATE_HurtMFR_R;
-
-
 		int a = 4;
 
+		/* 패링 상태 일시 */
+		if (m_iPhaseState & CPlayer::PHASE_PARRY)
+		{
+			int Parry = rand() % 2;
+
+			/* 여기서 플레이어의 특정 프레임 */
+			switch (m_iState)
+			{
+			case STATE::STATE_PARRY_L:
+				if (Parry == 0)
+					m_iState = STATE_PARRY_DEFLECT_L;
+				else
+					m_iState = STATE_PARRY_DEFLECT_L_UP;
+				break;
+			case STATE::STATE_PARRY_R:
+				if (Parry == 0)
+					m_iState = STATE_PARRY_DEFLECT_R;
+				else
+					m_iState = STATE_PARRY_DEFLECT_R_UP;
+				break;
+			}
+		}
+
+
+		else  // 여기다가 패링 실패의 상황도 넣어야 겠네. 
+		{
+			/* 패링 실패 시 ( 즉 맞을 때 ) */
+			m_iPhaseState |= CPlayer::PHASE_HITTED;
+
+			if (position.x > PlayerPosition.m128_f32[0])
+			{
+				m_iState = CPlayer::STATE_HurtMFR_R;
+			}
+			else
+			{
+				m_iState = CPlayer::STATE_HurtMFR_L;
+			}
+		}
 	}
 }
 
@@ -535,9 +597,6 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 		m_bMove = false;
 	}
-
-
-
 }
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)

@@ -46,6 +46,7 @@ using namespace DirectX;
 #include <fstream>
 #include <queue>
 #include <deque>	
+#include <cmath>
 
 using namespace std;
 

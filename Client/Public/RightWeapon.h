@@ -7,6 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -43,6 +44,7 @@ private:
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
 
+	PxRigidDynamic* m_pActor = { nullptr };
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
@@ -50,7 +52,7 @@ private:
 private:
 	const _uint* m_pParentState = { nullptr };
 
-	PxRigidDynamic* m_pActor = { nullptr };
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

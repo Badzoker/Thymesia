@@ -63,7 +63,7 @@ public:
 	HRESULT Add_GameObject_To_Layer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr, _char* pName = nullptr);	
 	CGameObject* Add_GameObject_To_Layer_Take(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr, _char* pName = nullptr);
 	HRESULT Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag, CGameObject* _pGameObject);
-	CGameObject* Get_Player_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag);	
+	CGameObject* Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag);
 	list<class CGameObject*>* Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag);	
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
 	map<const _wstring, class CLayer*>* Get_Layers();	
@@ -205,6 +205,7 @@ public:
 	PxRigidDynamic* Create_Actor(COLLIDER_TYPE _eType, _float3 _Scale, _float3 _Axis,
 		_float _degree, CGameObject* _pGameObject);
 
+	HRESULT IsActorInScene(PxRigidDynamic* pActor);	
 	HRESULT	Add_Actor_Scene(PxRigidDynamic* pActor);
 	HRESULT Sub_Actor_Scene(PxRigidDynamic* pActor);
 	HRESULT Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet);

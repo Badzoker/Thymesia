@@ -34,12 +34,31 @@
 #pragma region 패링
 #include "Parry_L.h"
 #include "Parry_R.h"
+#include "ParryDeflect_Large.h"
+#include "ParryDeflect_L.h"
+#include "ParryDeflect_LUp.h"
+#include "ParryDeflect_R.h"
+#include "ParryDeflect_RUp.h"
 #pragma endregion 
 
 #pragma region 피격 당할 시
 #include "HurtMFL.h"	
-#include "HurtMFR.h"	
+#include "HurtMFR.h"
 #pragma endregion 
+
+
+#pragma region 회피 관련
+#include "Normal_Evade_R.h"
+#include "Normal_Evade_L.h"
+#include "Normal_Evade_FR.h"
+#include "Normal_Evade_FL.h"
+#include "Normal_Evade_F.h"
+#include "Normal_Evade_BR.h"
+#include "Normal_Evade_BL.h"
+#include "Normal_Evade_B.h"
+#pragma endregion 
+
+
 
 
 CStateMgr::CStateMgr()
@@ -49,8 +68,7 @@ CStateMgr::CStateMgr()
 
 HRESULT CStateMgr::Initialize()
 {
-	m_vecState.reserve(30);
-
+	m_vecState.reserve(100);
 
 	/* 0번 Idle 상태 */
 	CPlayerIdle* pStateIdle = CPlayerIdle::Create();
@@ -134,7 +152,7 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(LockOn_Evade_F);
 #pragma endregion 
 
-#pragma region 패링
+#pragma region 패링 기본 모션 
 	/* 19번 패링 모션 'F' 키를 누를 시 왼쪽 손이 오른쪽 사선으로 올라가면서 하는 패링 모션*/
 	CParry_L* Parry_L = CParry_L::Create();
 	m_vecState.push_back(Parry_L);
@@ -153,11 +171,67 @@ HRESULT CStateMgr::Initialize()
 	/* 22번 피격 모션 (오른쪽으로 고개를 휘청이면서 뒤로가는 모션 ) */
 	CHurtMFR* pHurtMFR = CHurtMFR::Create();
 	m_vecState.push_back(pHurtMFR);
+#pragma endregion 
 
+
+#pragma region 패링 성공 모션 
+
+	/* 23번 패링 성공  모션 ( 뒤로밀려 가면서 휘청이는 모션 ) */
+	CParryDeflect_Large* pParryDeflect_Large = CParryDeflect_Large::Create();
+	m_vecState.push_back(pParryDeflect_Large);
+
+	/* 24번 패링 성공 모션  ( 오른쪽 위 사선에서 왼쪽으로 칼을 내리면서 막는 패링 모션 )*/
+	CParryDeflect_L* pParryDeflect_L = CParryDeflect_L::Create();
+	m_vecState.push_back(pParryDeflect_L);
+
+	/* 25번 패링 성공 모션  ( 오른쪽 아래에서 왼쪽 위 대각선으로 칼을 올리면서 막는 패링 모션)*/
+	CParryDeflect_LUp* pParryDeflect_LUp = CParryDeflect_LUp::Create();
+	m_vecState.push_back(pParryDeflect_LUp);
+
+	/* 26번 패링 성공 모션 ( 왼쪽 위 사선에서 오른쪽 으로 칼을 내리면서 막는 패링 모션) */
+	CParryDeflect_R* pParryDeflect_R = CParryDeflect_R::Create();
+	m_vecState.push_back(pParryDeflect_R);
+
+	/* 27번 패링 성공 모션 ( 왼쪽 아래 에서 오른쪽 위로 칼을 올리면서 막는 패링 모션 )*/
+	CParryDeflect_RUp* pParryDeflect_RUp = CParryDeflect_RUp::Create();
+	m_vecState.push_back(pParryDeflect_RUp);
 
 #pragma endregion 
 
 
+#pragma region 회피 모션 
+	/* 28번 오른쪽 회피 대쉬 ( 오른쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_R* pNormal_Evade_R = CNormal_Evade_R::Create();
+	m_vecState.push_back(pNormal_Evade_R);
+
+	/* 29번 오른쪽 회피 대쉬 ( 오른쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_L* pNormal_Evade_L = CNormal_Evade_L::Create();
+	m_vecState.push_back(pNormal_Evade_L);
+
+	/* 30번 앞 오른쪽  대쉬 ( 위키 +  오른쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_FR* pNormal_Evade_FR = CNormal_Evade_FR::Create();
+	m_vecState.push_back(pNormal_Evade_FR);
+
+	/* 31번 앞 왼쪽  대쉬 ( 위키 +  왼쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_FL* pNormal_Evade_FL = CNormal_Evade_FL::Create();
+	m_vecState.push_back(pNormal_Evade_FL);
+
+	/* 32번 앞 대쉬 ( 위키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_F* pNormal_Evade_F = CNormal_Evade_F::Create();
+	m_vecState.push_back(pNormal_Evade_F);
+
+	/* 33번 뒤 오른쪽  대쉬 ( 뒤 키 +  오른쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_BR* pNormal_Evade_BR = CNormal_Evade_BR::Create();
+	m_vecState.push_back(pNormal_Evade_BR);
+
+	/* 34번 뒤 오른쪽  대쉬 ( 뒤 키 +  왼쪽 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_BL* pNormal_Evade_BL = CNormal_Evade_BL::Create();
+	m_vecState.push_back(pNormal_Evade_BL);
+
+	/* 35번 뒤 대쉬 ( 뒤 키 + 스페이스 바 ) 모션 */
+	CNormal_Evade_B* pNormal_Evade_B = CNormal_Evade_B::Create();
+	m_vecState.push_back(pNormal_Evade_B);
+#pragma endregion 
 
 	return S_OK;
 }

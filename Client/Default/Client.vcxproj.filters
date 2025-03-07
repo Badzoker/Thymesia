@@ -427,6 +427,51 @@
     <Filter Include="02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect">
       <UniqueIdentifier>{12e68ee5-fe52-4dc8-b5d8-4a0aa0084e55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\ClawWeapon">
+      <UniqueIdentifier>{2c679f51-3c1e-4549-a1a7-2c11b713fada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_Large">
+      <UniqueIdentifier>{1a283dbf-d623-4b6f-9c90-b61670f25257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_LUp">
+      <UniqueIdentifier>{6943a911-a865-46f8-a87a-994c7144b132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_L">
+      <UniqueIdentifier>{cddae41f-a5f5-4de1-acf7-bbd2fc20b130}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_RUp">
+      <UniqueIdentifier>{5ca7f634-ef58-4f23-a4dc-0ac84437e0fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_R">
+      <UniqueIdentifier>{c112422f-7bf1-43a3-93f8-5f5da8cc957d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal">
+      <UniqueIdentifier>{eb6a55ca-c5ba-4cdf-8e83-11badca0fa3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_B">
+      <UniqueIdentifier>{3c26734f-25af-47e5-973a-9ad94da8d2c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_BL">
+      <UniqueIdentifier>{e8addcb2-30b0-4b6a-a182-d0f9f33b3d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_BR">
+      <UniqueIdentifier>{e826a046-4968-40e9-aecc-6ae08e374a43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_F">
+      <UniqueIdentifier>{0b35e525-2b8b-4897-bcac-695963cf25ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_FL">
+      <UniqueIdentifier>{e1b3f3a3-d5a8-4119-8ed5-ff67743714aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_FR">
+      <UniqueIdentifier>{ee0d952e-9ff9-41e6-a156-ca6296dd862a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_L">
+      <UniqueIdentifier>{763554f8-053c-40bb-9da0-58358913d8e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_R">
+      <UniqueIdentifier>{f066c37f-7f39-4ccb-9d17-f3a238e82fb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -789,6 +834,48 @@
     <ClInclude Include="..\Public\Monster_HP_Gage_Effect.h">
       <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ClawWeapon.h">
+      <Filter>02.GameObject\Player\Weapon\ClawWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParryDeflect_L.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParryDeflect_LUp.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_LUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParryDeflect_Large.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_Large</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParryDeflect_R.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParryDeflect_RUp.h">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_RUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_B.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_B</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_BL.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_BL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_BR.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_BR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_F.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_F</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_FL.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_FL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_FR.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_FR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_L.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_L</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Evade_R.h">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1141,6 +1228,48 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_HP_Gage_Effect.cpp">
       <Filter>02.GameObject\Monster\Monster_HP_Bar\Monster_HP_Gage_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ClawWeapon.cpp">
+      <Filter>02.GameObject\Player\Weapon\ClawWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParryDeflect_L.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParryDeflect_LUp.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_LUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParryDeflect_Large.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_L\ParryDeflect_Large</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParryDeflect_R.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParryDeflect_RUp.cpp">
+      <Filter>02.GameObject\Player\State\Parry\Parry_R\ParryDeflect_RUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_B.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_B</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_BL.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_BL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_BR.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_BR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_F.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_FL.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_FL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_FR.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_FR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_L.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_L</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Evade_R.cpp">
+      <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

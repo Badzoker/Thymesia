@@ -10,6 +10,8 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
+
 class CBody_Player final : public CPartObject
 {
 	enum STATE
@@ -41,12 +43,32 @@ class CBody_Player final : public CPartObject
 		/* 패링 관련 */
 		STATE_PARRY_L,
 		STATE_PARRY_R,
+
+		STATE_PARRY_DEFLECT_LARGE,
+		STATE_PARRY_DEFLECT_L_UP,
+		STATE_PARRY_DEFLECT_L,
+
+		STATE_PARRY_DEFLECT_R_UP,
+		STATE_PARRY_DEFLECT_R,
+
 		/*-----------------*/
 
 		/* 피격 관련 */
 		STATE_HurtMFR_L,
 		STATE_HurtMFR_R,
 		/*-----------------*/
+
+
+		/* 회피 관련 */
+		STATE_NORMAL_EVADE_R,
+		STATE_NORMAL_EVADE_L,
+		STATE_NORMAL_EVADE_FR,
+		STATE_NORMAL_EVADE_FL,
+		STATE_NORMAL_EVADE_F,
+		STATE_NORMAL_EVADE_BR,
+		STATE_NORMAL_EVADE_BL,
+		STATE_NORMAL_EVADE_B,
+		/* ------------------------- */
 
 	};
 
@@ -110,8 +132,19 @@ public:
 	void    STATE_LOCK_ON_EVADE_L_Method();
 	void    STATE_LOCK_ON_EVADE_R_Method();
 	/* =========================================== */
+
+	/* 패링 관련 기능 */
 	void    STATE_PARRY_L_Method();
 	void    STATE_PARRY_R_Method();
+
+
+	void    STATE_PARRY_DEFLECT_LARGE_Method();
+	void	STATE_PARRY_DEFLECT_L_UP_Method();
+	void	STATE_PARRY_DEFLECT_L_Method();
+
+	void 	STATE_PARRY_DEFLECT_R_UP_Method();
+	void 	STATE_PARRY_DEFLECT_R_Method();
+	/* ============================================ */
 
 
 
@@ -121,21 +154,37 @@ public:
 	/*-----------------*/
 
 
+	/* 회피 관련 */
+	void STATE_NORMAL_EVADE_R_Method();
+	void STATE_NORMAL_EVADE_L_Method();
+	void STATE_NORMAL_EVADE_FR_Method();
+	void STATE_NORMAL_EVADE_FL_Method();
+	void STATE_NORMAL_EVADE_F_Method();
+	void STATE_NORMAL_EVADE_BR_Method();
+	void STATE_NORMAL_EVADE_BL_Method();
+	void STATE_NORMAL_EVADE_B_Method();
+	/* ------------------------- */
+
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCamera_Free* m_pCamera = { nullptr };
+
 	_float							m_fAnimSpeed = 1.f;
 
-
 private:
+
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};
 
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+
 
 public:
 	static CBody_Player* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

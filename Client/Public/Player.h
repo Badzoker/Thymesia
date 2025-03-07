@@ -44,13 +44,30 @@ public:
 		/* 패링 관련 */
 		STATE_PARRY_L,
 		STATE_PARRY_R,
-		/*-----------------*/
 
+		STATE_PARRY_DEFLECT_LARGE,
+		STATE_PARRY_DEFLECT_L_UP,
+		STATE_PARRY_DEFLECT_L,
+
+		STATE_PARRY_DEFLECT_R_UP,
+		STATE_PARRY_DEFLECT_R,
+		/*-----------------*/
 
 		/* 피격 관련 */
 		STATE_HurtMFR_L,
 		STATE_HurtMFR_R,
 		/*-----------------*/
+
+		/* 회피 관련 */
+		STATE_NORMAL_EVADE_R,
+		STATE_NORMAL_EVADE_L,
+		STATE_NORMAL_EVADE_FR,
+		STATE_NORMAL_EVADE_FL,
+		STATE_NORMAL_EVADE_F,
+		STATE_NORMAL_EVADE_BR,
+		STATE_NORMAL_EVADE_BL,
+		STATE_NORMAL_EVADE_B,
+		/* ------------------------- */
 	};
 
 
@@ -60,6 +77,7 @@ public:
 		PHASE_FIGHT = 1 << 1,
 		PHASE_LOCKON = 1 << 2,
 		PHASE_HITTED = 1 << 3,
+		PHASE_PARRY = 1 << 4,
 
 	};
 
@@ -109,9 +127,63 @@ private:
 
 
 	PxRigidDynamic* m_pActor = { nullptr };
+
+
 private:
 	_float								m_fTimeDelta = { 0.f };
 	CStateMgr* m_pStateMgr = { nullptr };
+
+
+#pragma region UI 관련 함수 
+private:
+	/* UI 관련 맴버 변수들 선언 */
+	_uint								m_iLevel = { 1 };
+
+	_uint								m_iFullHp = { 300 };
+	_uint								m_iCurrentHp = { 300 };
+
+	_uint								m_iFullMp = { 150 };
+	_uint								m_iCurrentMp = { 150 };
+
+
+	_uint								m_iAttackPower = { 25 };
+	_uint								m_iClawAttackPower = { 200 };
+
+	_uint								m_iFeathers = { 3 };
+
+	_uint								m_iMemoryFragment = { 0 };
+
+public:
+	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
+
+	void	 Set_PlayerFullHp(_int _iSetHp) { m_iFullHp = _iSetHp; }
+	void	 Increase_PlayerHp(_int _iSetHp) { m_iCurrentHp += _iSetHp; }
+
+	void	 Set_PlayerFullMp(_int _iSetMp) { m_iFullMp = _iSetMp; }
+	void	 Increase_PlayerMp(_int _iSetMp) { m_iCurrentMp += _iSetMp; }
+
+	void	 Increase_AttackPower(_int _iAttackPower) { m_iAttackPower = _iAttackPower; }
+	void	 Increase_ClawAttackPower(_int _iClawAttackPower) { m_iClawAttackPower = _iClawAttackPower; }
+
+	void     Increase_FeatherNumber(_int _iPlusFeather) { m_iFeathers += _iPlusFeather; }
+	void     Increase_MemoryFragment(_int _iMemoryFragment) { m_iMemoryFragment += _iMemoryFragment; }
+
+
+
+	_uint    Get_Level() { return m_iLevel; }
+
+	_uint    Get_FullHp() { return m_iFullHp; }
+	_uint    Get_CurrentHp() { return m_iCurrentHp; }
+
+	_uint    Get_FullMp() { return m_iFullMp; }
+	_uint    Get_CurrentMp() { return m_iCurrentMp; }
+
+	_uint    Get_AttackPower() { return m_iAttackPower; }
+	_uint    Get_ClawAttacPower() { return m_iClawAttackPower; }
+
+	_uint    Get_MemoryFragment() { return m_iMemoryFragment; }
+	/* ============================== */
+#pragma endregion 
 
 
 public:

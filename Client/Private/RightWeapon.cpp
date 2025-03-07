@@ -46,9 +46,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
 
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
 
     return S_OK;
@@ -75,41 +73,38 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-
-
-    /* 콜라이더 위치 세부 조정 */
-
-    /*
-    _matrix CombinedMatrix = XMLoadFloat4x4(&m_CombinedWorldMatrix);
-    CombinedMatrix.r[3] = { m_CombinedWorldMatrix._41 + 0.5f,m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43,1.f };*/
-
-    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
 
 
 #pragma region 이벤트 관련 작업
-
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L1
+        || *m_pParentState == CPlayer::STATE_ATTACK_L2
+        || *m_pParentState == CPlayer::STATE_ATTACK_L3)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+            if (iter.isPlay == false)
             {
-                // 그 구간에서는 계속 진행        
-                m_pGameInstance->Add_Actor_Scene(m_pActor);
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                {
+                    // 그 구간에서는 계속 진행        
+                    m_pGameInstance->Add_Actor_Scene(m_pActor);
+                }
+
+                else
+                {
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                }
+
+                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                {
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+
+
             }
-
-            else
-            {
-                m_pGameInstance->Sub_Actor_Scene(m_pActor);
-            }
-
-            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-            {
-                iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-            }
-
-
         }
     }
 #pragma endregion  
@@ -144,14 +139,6 @@ HRESULT CRightWeapon::Render()
         m_pShaderCom->Begin(0);
         m_pModelCom->Render(i);
     }
-
-#ifdef _DEBUG
-    //if(*m_pParentState & (CPlayer::STATE_ATTACK | CPlayer::STATE_ATTACK2) && m_AccColliderLife < 0.4f)
-    //    m_pColliderCom->Render();
-    //if ((*m_pParentState & CPlayer::STATE_ATTACK) && m_AccColliderLifeAttack1 < 0.4f || (*m_pParentState & CPlayer::STATE_ATTACK2) && m_AccColliderLifeAttack2 < 0.2f)  
-    //    m_pColliderCom->Render();       
-#endif // DEBUG 
-
 
     return S_OK;
 }

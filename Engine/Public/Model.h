@@ -52,6 +52,12 @@ public:
 	/* 2월 28일 추가 */
 	HRESULT Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INSTANCE* _TagInstanceData);
 
+
+	/* 3월 7일 추가 */
+
+	/* 애니메이션 연속 동작을 위한 함수 */
+	void Set_Continuous_Ani(_bool _first) { m_bFirst = _first; }		
+
 private:
 	/* 가져온 정보를 저장한다. */
 	//const aiScene*					m_pAIScene = { nullptr };

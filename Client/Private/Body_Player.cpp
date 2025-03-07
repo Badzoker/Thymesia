@@ -3,6 +3,7 @@
 #include "Body_Player.h" 
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Camera_Free.h"
 
 CBody_Player::CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CPartObject{ pDevice, pContext }
@@ -41,15 +42,15 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pModelCom->SetUp_Animation(0, true);
 
 
+
+
     return S_OK;
 }
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
-    /* if (m_pModelCom->Get_VecAnimation().at(0)->Get_CurrentTrackPosition() ==  30.f)
-     {
-
-     }*/
+    if (m_pCamera == nullptr)
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Camera")));
 }
 
 void CBody_Player::Update(_float fTimeDelta)
@@ -131,6 +132,18 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_HurtMFR_R:
         STATE_HurtMFR_R_Method();
         break;
+    case STATE_PARRY_DEFLECT_L:
+        STATE_PARRY_DEFLECT_L_Method();
+        break;
+    case STATE_PARRY_DEFLECT_L_UP:
+        STATE_PARRY_DEFLECT_L_UP_Method();
+        break;
+    case STATE_PARRY_DEFLECT_R:
+        STATE_PARRY_DEFLECT_R_Method();
+        break;
+    case STATE_PARRY_DEFLECT_R_UP:
+        STATE_PARRY_DEFLECT_R_UP_Method();
+        break;
     default:
         break;
     }
@@ -138,13 +151,57 @@ void CBody_Player::Update(_float fTimeDelta)
 
 
 
-
-
-
-
     m_pModelCom->Play_Animation(fTimeDelta);
 
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
+
+
+
+
+#pragma region 이벤트 관련 작업
+    /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
+    if (*m_pParentState == CPlayer::STATE_PARRY_DEFLECT_L
+        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_L_UP
+        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_R
+        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_R_UP
+        || *m_pParentState == CPlayer::STATE_HurtMFR_L
+        || *m_pParentState == CPlayer::STATE_HurtMFR_R)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
+                    && iter.isEventActivate == true) // EVENT_COLLIDER 부분       
+                {
+                    // 그 구간에서는 계속 진행        
+                    //m_pGameInstance->Add_Actor_Scene(m_pActor); 
+                    if (!strcmp(iter.szName, "Camera_Shake"))
+                    {
+                        // 카메라 포인터 가져오고 싶다.
+                        m_pCamera->ShakeOn();
+                    }
+                }
+
+                else
+                {
+                    //m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                }
+
+                if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
+                    && iter.isEventActivate == true
+                    && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                {
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로   
+
+                }
+
+
+            }
+        }
+    }
+#pragma endregion  
+
 
 }
 
@@ -289,7 +346,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
     if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
-        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
 
     }
@@ -310,7 +367,7 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
     if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
-        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
@@ -328,7 +385,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 
     if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
-        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
@@ -347,7 +404,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
     if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
 
-        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
@@ -366,7 +423,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
     if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
-        *m_pParentPhsaeState ^= CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
@@ -425,6 +482,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
     }
+
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
 {
@@ -441,8 +499,14 @@ void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
 {
+
     m_pModelCom->SetUp_Animation(19, false);
     m_iRenderState = STATE_NORMAL;
+
+    /* if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
+     {
+         m_pModelCom->Set_Continuous_Ani(true);
+     }  */
 
 
     if (m_pModelCom->Get_VecAnimation().at(19)->isAniMationFinish())
@@ -450,6 +514,9 @@ void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
     }
+
+
+
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 {
@@ -476,12 +543,22 @@ void CBody_Player::STATE_PARRY_L_Method()
         *m_pParentState = STATE_IDLE;
     }
 
-
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
-
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
+
+    /* 패링 조건 */
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 10.f
+        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
+    {
+
+        *m_pParentPhsaeState |= CPlayer::PHASE_PARRY;
+    }
+
+    else
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
 
 }
 void CBody_Player::STATE_PARRY_R_Method()
@@ -498,10 +575,75 @@ void CBody_Player::STATE_PARRY_R_Method()
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
 
+    /* 패링 조건 */
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 10.f
+        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
+    {
+
+        *m_pParentPhsaeState |= CPlayer::PHASE_PARRY;
+    }
+
+    else
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+}
+void CBody_Player::STATE_PARRY_DEFLECT_LARGE_Method()
+{
+    m_pModelCom->SetUp_Animation(55, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(55)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
     }
 }
+void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
+{
+    m_pModelCom->SetUp_Animation(56, false);
+    m_iRenderState = STATE_NORMAL;
 
+    if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+
+}
+void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
+{
+    m_pModelCom->SetUp_Animation(54, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+}
+void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
+{
+    m_pModelCom->SetUp_Animation(59, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+}
+void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
+{
+    m_pModelCom->SetUp_Animation(58, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
+    {
+        *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+}
 void CBody_Player::STATE_HurtMFR_L_Method()
 {
     m_pModelCom->SetUp_Animation(31, false);
@@ -513,10 +655,11 @@ void CBody_Player::STATE_HurtMFR_L_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
+        //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);  
+
         *m_pParentState = STATE_IDLE;
     }
 }
-
 void CBody_Player::STATE_HurtMFR_R_Method()
 {
     m_pModelCom->SetUp_Animation(32, false);
@@ -528,8 +671,43 @@ void CBody_Player::STATE_HurtMFR_R_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
+        /* IDLE lerp time 없애주는거 */
+        //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);
+
         *m_pParentState = STATE_IDLE;
     }
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_R_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_L_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_FR_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_FL_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_F_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_BR_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_BL_Method()
+{
+}
+
+void CBody_Player::STATE_NORMAL_EVADE_B_Method()
+{
 }
 
 

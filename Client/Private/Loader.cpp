@@ -46,6 +46,7 @@
 #include "Player.h"
 #include "LeftWeapon.h"
 #include "RightWeapon.h"
+#include "ClawWeapon.h"
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -868,6 +869,13 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	///* For.Prototype_GameObject_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Left_Weapon"),
 		CLeftWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+#pragma region 티메시아 손톱 갈퀴 공격 
+	///* For.Prototype_GameObject_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Claw"),
+		CClawWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 

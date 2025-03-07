@@ -328,6 +328,17 @@ HRESULT CPhysX_Manager::Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _e
     return S_OK;
 }
 
+HRESULT CPhysX_Manager::IsActorInScene(PxRigidDynamic* pActor)
+{
+    if (pActor == nullptr)
+        return E_FAIL;
+
+    if (pActor->getScene() == m_pScene) 
+        return S_OK;    
+    else
+        return E_FAIL;
+}
+
 HRESULT CPhysX_Manager::Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet)
 {
     if (Actor == nullptr)

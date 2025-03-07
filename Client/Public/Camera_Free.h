@@ -35,6 +35,7 @@ public:
 public:
 	CGameObject* Find_LockOnTarget();
 	void				LockOnCameraTurn(_float fTimeDelta);
+	void				ShakeOn() { m_bShakeOnOff = true; }
 
 private:
 	_float* m_fPlayerPosition = { nullptr };
@@ -52,16 +53,17 @@ private:
 	_vector			    m_vLerpPlayerHeadPos = {};
 
 
-	_bool				m_bStop = false;
+	_bool				m_bStop = { false };
 	_bool				m_bLockOnOff = { false };
 	_bool			    m_bFirst = { true };
 	_bool				m_bLockOnCameraFirst = { false };
+	_bool				m_bShakeOnOff = { false };
+
+
+
 
 	list<class CGameObject*>* m_plistMonster;
 	map<_float, CGameObject*>							m_maptMonsterDistance;
-
-
-
 
 
 public:
