@@ -43,6 +43,10 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
 
 _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
 {
+
+    if (*pCurrentTrackPoisiton >= m_fDuration)  
+        m_fCurrentTrackPosition = m_fDuration;  
+
     if (m_bFirst)
     {
         *pCurrentTrackPoisiton += m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);

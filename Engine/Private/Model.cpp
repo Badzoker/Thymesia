@@ -205,7 +205,7 @@ void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)
 		m_bFirst = false;
 	}
 
-	if ((m_iCurrentAnimIndex == iAnimIndex || m_bLerpFinished == false) && !m_bFirst)
+	else if ((m_iCurrentAnimIndex == iAnimIndex || m_bLerpFinished == false) && !m_bFirst)
 	{
 		m_isAnimLoop = isLoop;
 		return;

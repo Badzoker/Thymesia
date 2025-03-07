@@ -1,9 +1,86 @@
 ﻿#include "pch.h" 
 #include "Camera_Free.h"
-
 #include "GameInstance.h"
 #include "Player.h"
 #include "Layer.h"
+
+
+// 보간(Fade) 함수: 부드러운 변화
+float Fade(float t) {
+	return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
+// 선형 보간(Lerp) 함수	
+float Lerp(float a, float b, float t) {
+	return a + t * (b - a);
+}
+
+// Gradient 계산 함수
+float Grad(int hash, float x, float y) {
+	int h = hash & 3;  // 0~3 값 사용
+	float u = h < 2 ? x : y;
+	float v = h < 2 ? y : x;
+	return ((h & 1) ? -u : u) + ((h & 2) ? -2.0f * v : 2.0f * v);
+}
+
+// 펄린 노이즈 계산 함수 (2D)
+float PerlinNoise(float x, float y) {
+	// 정수 좌표 찾기
+	int xi = (int)floor(x) & 255;
+	int yi = (int)floor(y) & 255;
+
+	// 소수점 부분 (격자 내 위치)
+	float xf = x - floor(x);
+	float yf = y - floor(y);
+
+	// 보간 함수 적용
+	float u = Fade(xf);
+	float v = Fade(yf);
+
+	// 해시 테이블 (임의 값)
+	static int p[512];
+	static bool init = false;
+	if (!init) {
+		for (int i = 0; i < 256; ++i) p[256 + i] = p[i] = i;
+		init = true;
+	}
+
+	// 네 개의 코너 포인트
+	int aa = p[p[xi] + yi];
+	int ab = p[p[xi] + yi + 1];
+	int ba = p[p[xi + 1] + yi];
+	int bb = p[p[xi + 1] + yi + 1];
+
+	// Gradient 값 적용
+	float gradAA = Grad(aa, xf, yf);
+	float gradBA = Grad(ba, xf - 1, yf);
+	float gradAB = Grad(ab, xf, yf - 1);
+	float gradBB = Grad(bb, xf - 1, yf - 1);
+
+	// 보간 (Interpolation)
+	float lerpX1 = Lerp(gradAA, gradBA, u);
+	float lerpX2 = Lerp(gradAB, gradBB, u);
+	return Lerp(lerpX1, lerpX2, v);
+}
+
+_vector CameraShake(float deltaTime, XMVECTOR& cameraPosition)
+{
+	static float shakeTime = 0.0f;
+	shakeTime += deltaTime;
+
+	// 펄린 노이즈 기반 흔들림 값 생성
+	float offsetX = PerlinNoise(shakeTime * 240.0f, 0.5f) * deltaTime * 4.f;
+	float offsetY = PerlinNoise(shakeTime * 240.0f, 1.0f) * deltaTime * 4.f;
+	float offsetZ = PerlinNoise(shakeTime * 240.0f, 1.5f) * deltaTime * 4.f;
+
+	XMVECTOR shakeOffset = XMVectorSet(offsetX, offsetY, offsetZ, 0.0f);
+	XMVECTOR newCameraPos = XMVectorAdd(cameraPosition, shakeOffset);
+
+	// 새로운 뷰 행렬 설정
+	//viewMatrix = XMMatrixLookAtLH(newCameraPos, cameraTarget, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));	
+
+	return newCameraPos;
+}
 
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -70,12 +147,12 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-	const float distance = 2.0f; // 플레이어와 카메라 거리		
+	const float distance = 3.0f; // 플레이어와 카메라 거리		
 
 	// 플레이어의 충돌체를 기준으로할까.	
 	m_vPlayerHeadPos = XMVectorSet(
 		XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
+		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.2f, // 머리 높이 보정	
 		XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 		1.0f
 	);
@@ -229,6 +306,16 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 
 
+	/* 여기에 이벤트가 들어와야함. */
+	if (m_bShakeOnOff)
+	{
+		_vector CamPos = CameraShake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));	
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);	
+	}
+
+
+	m_bShakeOnOff = false;
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -237,17 +324,16 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 void CCamera_Free::Update(_float fTimeDelta)
 {
 
-	//m_vPrePlayerHeadPos = m_vPlayerHeadPos;	
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
 {
 
-
 }
 
 HRESULT CCamera_Free::Render()
 {
+
 	return S_OK;
 }
 
@@ -322,22 +408,6 @@ void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)
 
 	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 3.f, m_vLerpPlayerHeadPos);
 
-	//if (abs(Radian) > 0.1f)
-	//{
-	//	if (Radian >= 0.f)
-	//		m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), 1.f * fTimeDelta, m_vLerpPlayerHeadPos);
-	//
-	//	else
-	//		m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), -1.f * fTimeDelta, m_vLerpPlayerHeadPos);
-	//}
-
-
-	/*if(GetKeyState('Y') & 0x8000)
-	//	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), -1.f * fTimeDelta, m_vLerpPlayerHeadPos);
-	//
-	//else if(GetKeyState('U') & 0x8000)
-		m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), 1.f * fTimeDelta, m_vLerpPlayerHeadPos);*/
-
 }
 
 CCamera_Free* CCamera_Free::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -372,3 +442,4 @@ void CCamera_Free::Free()
 
 	Safe_Release(m_pPlayerTransformCom);
 }
+

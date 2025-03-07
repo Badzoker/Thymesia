@@ -149,10 +149,10 @@ HRESULT CObject_Manager::Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstri
 	return E_FAIL;	
 }
 
-CGameObject* CObject_Manager::Get_Player_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)	
+CGameObject* CObject_Manager::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)	
 {
 	
-	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);	
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);		
 
 	if (pLayer == nullptr)	
 		return nullptr;			

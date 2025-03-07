@@ -46,7 +46,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pPlayer = m_pGameInstance->Get_Player_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
     _vector vFirst_Pos = { 112.6f, 1.85f, 28.8f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
@@ -125,7 +125,8 @@ void CBoss_Varg::Update(_float fTimeDelta)
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
     __super::Update(fTimeDelta);
 

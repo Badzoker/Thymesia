@@ -156,6 +156,8 @@ HRESULT CMonster_HP_Bar::Ready_PartObjects(void* pArg)
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Bar_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"), MonsterHP_Bar_Effect_Desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CMonster_HP_Bar::Bind_ShaderResources()

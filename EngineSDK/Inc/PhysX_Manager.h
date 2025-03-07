@@ -28,6 +28,7 @@ public:
 	HRESULT			Sub_Actor_Scene(PxRigidDynamic* pActor);  // 여기서부터 작업 다시하기	
 	HRESULT         Set_CollisionGroup(PxRigidDynamic* pActor, GROUP_TYPE _eMeType, PxU32 _ColliderGroup);
 
+	HRESULT         IsActorInScene(PxRigidDynamic* pActor);	
 
 public:
 	HRESULT Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet);
