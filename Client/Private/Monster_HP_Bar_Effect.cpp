@@ -89,6 +89,8 @@ HRESULT CMonster_HP_Bar_Effect::Render()
 	m_pVIBufferCom->Bind_InputAssembler();
 
 	m_pVIBufferCom->Render();
+
+	return S_OK;
 }
 
 HRESULT CMonster_HP_Bar_Effect::Ready_Components()
