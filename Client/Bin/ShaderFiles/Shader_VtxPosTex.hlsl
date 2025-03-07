@@ -460,13 +460,6 @@ PS_OUT PS_Boss_HP_Gage_Effect(PS_IN In)
         Out.vColor.a = 1.0f - fAlpha; // alpha 값을 1에서 점차적으로 0으로 감소
     }
 
-    
-    // alpha가 0.1 이하일 때 픽셀을 제거 (discard)
-    if (Out.vColor.a <= 0.1f)
-    {
-        discard; // 해당 픽셀을 제거
-    }
-
     return Out;
 }
 
@@ -485,7 +478,23 @@ PS_OUT PS_Boss_HP_Gage(PS_IN In)
     return Out;
 }
 
-
+PS_OUT PS_Boss_HP_Flash(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    float fAlpha = smoothstep(0.f, 1.f, g_TimeDelta);
+    Out.vColor.a = 1.0f - fAlpha; // alpha 값을 1에서 점차적으로 0으로 감소
+                 
+    if (length(Out.vColor.rgb) <= 0.2f) 
+        discard;
+    
+    //if (0.1f >= Out.vColor.a)
+    //    discard;
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -670,4 +679,15 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_Boss_HP_Gage_Effect();
     }
 
+//15번
+    pass Boss_HP_Gage_Flash
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Boss_HP_Flash();
+    }
 }

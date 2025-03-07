@@ -34,6 +34,7 @@ public:
 
 public:
 	void SetUp_Animation(_uint iAnimIndex, _bool isLoop);
+	void Set_LerpFinished(_bool bCheck) { m_bLerpFinished = bCheck; }
 	_bool Play_Animation(_float fTimeDelta);
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const _char* pConstantName, _uint iTextureIndex = 0);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, _uint iMeshIndex, const _char* pConstantName);	

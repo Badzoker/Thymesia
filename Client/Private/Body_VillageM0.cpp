@@ -22,7 +22,6 @@ HRESULT CBody_VillageM0::Initialize_Prototype()
 
 HRESULT CBody_VillageM0::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "VillageM0_BODY");
 
     CBody_VillageM0::BODY_VillageM0_DESC* pDesc = static_cast<CBody_VillageM0::BODY_VillageM0_DESC*>(pArg);
 

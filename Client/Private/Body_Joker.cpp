@@ -22,8 +22,6 @@ HRESULT CBody_Joker::Initialize_Prototype()
 
 HRESULT CBody_Joker::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "JOKER_BODY");
-
     CBody_Joker::BODY_JOKER_DESC* pDesc = static_cast<CBody_Joker::BODY_JOKER_DESC*>(pArg);
 
     m_fAnimSpeed = pDesc->fPlaySpeed;

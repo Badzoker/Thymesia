@@ -35,6 +35,11 @@
 #include "Body_VillageF1.h"
 #include "VillageM_Weapon.h"
 #include "VillageF_Weapon.h"
+
+#include "Monster_HP_Bar.h"
+#include "Monster_HP_Gage.h"
+#include "Monster_HP_Gage_Effect.h"
+#include "Monster_HP_Bar_Effect.h"
 #pragma endregion 
 
 #pragma region 플레이어 관련 
@@ -1896,12 +1901,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Normal_VillageF0_Body"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF0/VillageF0.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF0/Normal_VillageF0.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Normal_VillageF1_Body"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF1/VillageF1.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF1/Normal_VillageF1.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
@@ -1954,6 +1959,23 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CNormal_VillageF1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Monster_HP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_HP"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Monster_HP/MonsterHP%d.dds"), 6))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Monster_HP_Bar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar"),
+		CMonster_HP_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage"),
+		CMonster_HP_Gage::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage_Effect"),
+		CMonster_HP_Gage_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"),
+		CMonster_HP_Bar_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion 
 
 	/* 로딩이 완료되었습니다 */

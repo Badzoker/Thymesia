@@ -72,6 +72,7 @@ public:
 public:
 	void Go_Straight_NoNavi(_float fTimeDelta);	
 	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Straight_Astar(_float fTimeDelta, CNavigation* pNavigation);
 	void Go_Backward(_float fTimeDelta);
 	void Go_Backward_With_Navi(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	void Go_Left(_float fTimeDelta);

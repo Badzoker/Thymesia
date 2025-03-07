@@ -27,14 +27,15 @@ public:
 		Varg_Dead_State,
 		Varg_Avoid_State,
 		Varg_Avoid_Attack_State,        // KnockDown 시키기
-		Varg_JumpAttack_State,          // KnockDown 시키기
+		Varg_Raid_Attack_01_State,          // 날리기
+		Varg_Raid_Attack_02_State,          // KnockDown 시키기
 		Varg_Attack_Combo_A_01_State,   // 약공 찍기
 		Varg_Attack_Combo_A_02_State,   // 약공 찍기
 		Varg_Attack_Combo_A_03_State,   // 강공 찌르기
 		Varg_Attack_Combo_B_01_State,   // 약공 돌면서 베기
 		Varg_Attack_Combo_B_02_State,   // 강공 돌아서 찍기
-		Varg_Attack_Combo_B_03_State,   // 날리기 패턴
-		Varg_Attack_Combo_B_04_State,   // 날리기 패턴
+		Varg_Attack_Combo_B_03_State,   // knockbackF
+		Varg_Attack_Combo_B_04_State,   // knockbackF
 		Varg_Attack_Combo_C_01_State,   // 강공 돌면서 베기
 		Varg_Attack_Roar_State,         // 기절 걸기
 		Varg_Attack_Catch_State,        // 붙잡기 패턴
@@ -51,7 +52,9 @@ public:
 		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청 
 		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
 		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
-		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남  
+		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
+		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
+		PLAYER_HURT_END
 	};
 
 private:
@@ -66,8 +69,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 public:
-	_uint Get_Varg_State() const { return m_iState; };
-
+	_uint Get_Varg_State() const { return m_iState; }
+	_uint Get_Player_Hitted_State() const { return m_iPlayer_Hitted_State; }
 public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
@@ -79,6 +82,7 @@ public:
 	void Far_Pattern_Create();
 	void RotateDegree_To_Player();
 	void Rotation_To_Player();
+	void Recovery_HP();
 
 private:
 	_vector                          m_vPlayerPos = {};
@@ -93,6 +97,7 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
 	_uint                            m_iState = { CBoss_Varg::Varg_State_END };
+	_uint                            m_iPlayer_Hitted_State = { CBoss_Varg::PLAYER_HURT_END };
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
@@ -269,11 +274,22 @@ public:
 		_float m_fTimer = {};
 	};
 
-	class Jump_Attack : public CStates<CBoss_Varg>
+	class Raid_Attack_01 : public CStates<CBoss_Varg>
 	{
 	public:
-		Jump_Attack() = default;
-		virtual ~Jump_Attack() = default;
+		Raid_Attack_01() = default;
+		virtual ~Raid_Attack_01() = default;
+	public:
+		void State_Enter(CBoss_Varg* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
+		void State_Exit(CBoss_Varg* pObject) override;
+	};
+
+	class Raid_Attack_02 : public CStates<CBoss_Varg>
+	{
+	public:
+		Raid_Attack_02() = default;
+		virtual ~Raid_Attack_02() = default;
 	public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;

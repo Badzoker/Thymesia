@@ -20,6 +20,7 @@ public:
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
+		CModel* pParentModel = { nullptr };
 	};
 private:
 	CVillageF_Weapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -37,8 +38,9 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CModel* m_pParentModelCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
-
+	PxRigidDynamic* m_pActor = { nullptr };
 private:
 	_float			   m_fTimeDelta = { 0.f };
 
