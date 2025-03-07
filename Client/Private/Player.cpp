@@ -51,7 +51,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 시작 지점의 플레이어 위치 1_23일 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vector{ 111.7f, 15.3f, 51.5f, 1.0f }); //애니메이션 테스트용 Player 위치(움직임)
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vector{ 70.9525f, 0.1f, -111.377373f, 1.0f }); //맵 확인용 Player 위치(못 움직임)
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vector{ 70.9525f, 0.1f, -111.377373f, 1.0f }); //맵 확인용 Player 위치(못 움직임)
 
 	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
@@ -388,7 +388,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	_vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
 
 	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });

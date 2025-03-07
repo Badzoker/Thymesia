@@ -75,5 +75,13 @@ namespace Engine
 		COLLIDER_Field,
 	};
 
+	enum class FRUSTUM_TYPE
+	{
+		FRUSTUM_OBJECT,
+		FRUSTUM_MONSTER,
+		FRUSTUM_END,
+		
+	};
+
 }
 #endif // Engine_Enum_h__

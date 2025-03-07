@@ -148,7 +148,7 @@ void CBoss_Varg::Late_Update(_float fTimeDelta)
 #ifdef _DEBUG
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 #endif
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f))
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
     {
         __super::Late_Update(fTimeDelta);
     }

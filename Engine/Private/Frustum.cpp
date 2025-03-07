@@ -24,39 +24,62 @@ HRESULT CFrustum::Initialize()
 
 void CFrustum::Update()
 {
-	_matrix			ViewMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW_FRUSTUM);
-	_matrix			ProjMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_PROJ_FRUSTUM);
+	_matrix			ViewMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
+	_matrix			ProjMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_PROJ);
 
-	for (size_t i = 0; i < 8; i++)
+	for (_uint i = 0; i < 8; i++)
 	{
 		XMStoreFloat4(&m_vWorld_Points[i], XMVector3TransformCoord(XMLoadFloat4(&m_vOriginal_Points[i]), ProjMatrixInverse));
 		XMStoreFloat4(&m_vWorld_Points[i], XMVector3TransformCoord(XMLoadFloat4(&m_vWorld_Points[i]), ViewMatrixInverse));
 	}
 
 	Make_Planes(m_vWorld_Points, m_vWorld_Planes);
+
+
+
+	_matrix			ViewMatrixInverse_Monster = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW_FRUSTUM); // 몬스터용으로 바꿔야해
+	_matrix			ProjMatrixInverse_Monster = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_PROJ_FRUSTUM); // 몬스터용으로 바꿔야해
+
+	for (_uint i = 0; i < 8; i++)
+	{
+		XMStoreFloat4(&m_vWorld_Points_Monster[i], XMVector3TransformCoord(XMLoadFloat4(&m_vOriginal_Points[i]), ProjMatrixInverse_Monster));
+		XMStoreFloat4(&m_vWorld_Points_Monster[i], XMVector3TransformCoord(XMLoadFloat4(&m_vWorld_Points_Monster[i]), ViewMatrixInverse_Monster));
+	}
+
+	Make_Planes(m_vWorld_Points_Monster, m_vWorld_Planes_Monster);
 }
 
-_bool CFrustum::isIn_WorldSpace(_fvector vWorldPoint, _float fRange)
+_bool CFrustum::isIn_WorldSpace(_fvector vWorldPoint, _float fRange, FRUSTUM_TYPE _eType)
 {
 	/*a b c d
 	x y z 1
 
 		ax + by + cz + d = ? ;*/
 
-	for (size_t i = 0; i < 6; i++)
+	switch (_eType)
 	{
-		if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vWorld_Planes[i]), vWorldPoint)))
-			return false;
+	case Engine::FRUSTUM_TYPE::FRUSTUM_OBJECT:
+		break;
+		for (_uint i = 0; i < 6; i++)
+		{
+			if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vWorld_Planes[i]), vWorldPoint)))
+				return false;
+		}
+	case Engine::FRUSTUM_TYPE::FRUSTUM_MONSTER:
+		for (_uint i = 0; i < 6; i++)
+		{
+			if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vWorld_Planes_Monster[i]), vWorldPoint)))
+				return false;
+		}
+		break;
 	}
-
 	return true;
 }
 
 _bool CFrustum::isIn_AABB_Box(const XMFLOAT3& _fMin, const XMFLOAT3& _fMax)
 {
-	_float fOffset = 2.5f;
-	XMFLOAT3 fAdjustMin = XMFLOAT3(_fMin.x - fOffset, _fMin.y - fOffset, _fMin.z - fOffset);
-	XMFLOAT3 fAdjustMax = XMFLOAT3(_fMin.x + fOffset, _fMin.y + fOffset, _fMin.z + fOffset);
+	XMFLOAT3 fAdjustMin = XMFLOAT3(_fMin.x - m_fOffSet, _fMin.y - m_fOffSet, _fMin.z - m_fOffSet);
+	XMFLOAT3 fAdjustMax = XMFLOAT3(_fMin.x + m_fOffSet, _fMin.y + m_fOffSet, _fMin.z + m_fOffSet);
 
 	for (_uint i = 0; i < 6; ++i)
 	{

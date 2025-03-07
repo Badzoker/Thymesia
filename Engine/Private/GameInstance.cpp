@@ -519,9 +519,9 @@ _float2 CGameInstance::Get_TextSize(const _wstring& strFontTag, const _tchar* pT
 {
 	return m_pFont_Manager->Get_TextSize(strFontTag, pText);
 }
-_bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPoint, _float fRange)
+_bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPoint, _float fRange, FRUSTUM_TYPE _eType)
 {
-	return m_pFrustum->isIn_WorldSpace(vWorldPoint, fRange);
+	return m_pFrustum->isIn_WorldSpace(vWorldPoint, fRange, _eType);
 }
 _bool CGameInstance::isAABB_InFrustum(const XMFLOAT3& _fMin, const XMFLOAT3& _fMax)
 {
