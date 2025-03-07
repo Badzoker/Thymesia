@@ -177,10 +177,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-	//현재 몬스터와 기본맵이 있는 Prototype용 맵 -> Load_Objects(16);
-	//Map Tool 기능 및 Test용 맵				 -> Load_Objects(87);
-	Load_Objects(16);
+	//현재 몬스터와 기본맵이 있는 Prototype용 맵							-> Load_Objects(16);
+	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
+	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
+	// 
+	//Load_Objects(107);
 	//Load_Objects(98);
+	Load_Objects(16);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
