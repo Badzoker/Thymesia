@@ -39,6 +39,8 @@ HRESULT CTerrain::Initialize(void* pArg)
 void CTerrain::Priority_Update(_float fTimeDelta)
 {
 	//m_pNavigationCom->SetUp_WorldMatrix(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+	XMVECTOR vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	XMStoreFloat3(&m_pVIBufferCom->Get_TerrainPos(), vPos);
 }
 
 void CTerrain::Update(_float fTimeDelta)
