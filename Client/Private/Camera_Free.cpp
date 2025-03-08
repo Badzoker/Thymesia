@@ -69,15 +69,13 @@ _vector CameraShake(float deltaTime, XMVECTOR& cameraPosition)
 	shakeTime += deltaTime;
 
 	// 펄린 노이즈 기반 흔들림 값 생성
-	float offsetX = PerlinNoise(shakeTime * 240.0f, 0.5f) * deltaTime * 4.f;
-	float offsetY = PerlinNoise(shakeTime * 240.0f, 1.0f) * deltaTime * 4.f;
-	float offsetZ = PerlinNoise(shakeTime * 240.0f, 1.5f) * deltaTime * 4.f;
+	float offsetX = PerlinNoise(shakeTime * 1000.0f, 0.5f) * deltaTime * 10.f;
+	float offsetY = 0.f;//PerlinNoise(shakeTime * 240.0f, 1.0f) * deltaTime * 4.f;
+	float offsetZ = PerlinNoise(shakeTime * 1000.0f, 1.5f) * deltaTime * 10.f;
 
 	XMVECTOR shakeOffset = XMVectorSet(offsetX, offsetY, offsetZ, 0.0f);
 	XMVECTOR newCameraPos = XMVectorAdd(cameraPosition, shakeOffset);
 
-	// 새로운 뷰 행렬 설정
-	//viewMatrix = XMMatrixLookAtLH(newCameraPos, cameraTarget, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));	
 
 	return newCameraPos;
 }
@@ -309,9 +307,9 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	/* 여기에 이벤트가 들어와야함. */
 	if (m_bShakeOnOff)
 	{
-		_vector CamPos = CameraShake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));	
+		_vector CamPos = CameraShake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);	
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
 	}
 
 

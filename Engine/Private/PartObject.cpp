@@ -24,6 +24,7 @@ HRESULT CPartObject::Initialize(void* pArg)
     PARTOBJECT_DESC* pDesc = static_cast<PARTOBJECT_DESC*>(pArg);
     
     m_pParentWorldMatrix = pDesc->pParentWorldMatrix;   
+    m_pParent = pDesc->pParent; 
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL; 

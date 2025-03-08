@@ -51,6 +51,7 @@ public:
 
 public:
 	class CComponent* Find_Component(const _wstring& strComponetTag);	
+	_uint Get_Player_Hitted_State() const { return m_iPlayer_Hitted_State; }
 
 protected:
 	_char				        m_szName[MAX_PATH] = {};	
@@ -58,7 +59,7 @@ protected:
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 	class CGameInstance*		m_pGameInstance = { nullptr };
 	class CTransform*			m_pTransformCom = { nullptr };
-
+	_uint                       m_iPlayer_Hitted_State = { Player_Hitted_State::PLAYER_HURT_END };	
 protected:
 	map<const _wstring, class CComponent*>		m_Components;
 

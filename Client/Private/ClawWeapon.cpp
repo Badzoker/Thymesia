@@ -26,7 +26,7 @@ HRESULT CClawWeapon::Initialize_Prototype()
 HRESULT CClawWeapon::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_CLAW_WEAPON");
+    strcpy_s(m_szName, "PLAYER_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -40,11 +40,13 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.01f,0.1f,0.01f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.3f,0.3f,0.3f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 30.f,0.f,0.f,1.f });
 
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
 
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
     return S_OK;
 }
@@ -76,32 +78,41 @@ void CClawWeapon::Update(_float fTimeDelta)
 #pragma region 이벤트 관련 작업
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01
+        || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
     {
-
-        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
         {
-            if (iter.isPlay == false)
+
+            for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
             {
-                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                if (iter.isPlay == false)
                 {
-                    // 그 구간에서는 계속 진행        
-                    m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                    {
+                        // 그 구간에서는 계속 진행        
+                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    }
+
+                    else
+                    {
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    }
+
+                    if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                    {
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    }
+
+
                 }
-
-                else
-                {
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                }
-
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-                {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-                }
-
-
             }
         }
+    }
+
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 #pragma endregion  
 

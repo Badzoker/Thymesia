@@ -412,9 +412,6 @@
     <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockBack">
       <UniqueIdentifier>{b449d6e8-6010-4807-8fbe-054dbcc5b126}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Player\State\Hurt\HurtKneeDown">
-      <UniqueIdentifier>{e1945114-2020-4c4e-be60-4e58da9118bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Monster\Monster_HP_Bar">
       <UniqueIdentifier>{45b57392-3dd5-4831-89d6-24accc305b8c}</UniqueIdentifier>
     </Filter>
@@ -471,6 +468,24 @@
     </Filter>
     <Filter Include="02.GameObject\Player\State\Evade\Normal\Normal_Evade_R">
       <UniqueIdentifier>{f066c37f-7f39-4ccb-9d17-f3a238e82fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURT_FallDown">
+      <UniqueIdentifier>{5ce35459-d52e-4734-9dd3-a41663e34597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURTLF">
+      <UniqueIdentifier>{f667c9a5-33ed-4d06-863d-8a3c2b419b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURTSF">
+      <UniqueIdentifier>{21e8fcc9-bda4-4bb1-9d02-7971c44a4c91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURTSL">
+      <UniqueIdentifier>{52436e0a-484e-4b96-9023-f92982b54fdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURTXXLF">
+      <UniqueIdentifier>{1a3001d1-a857-4bb0-821a-3d8dd7d9481a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockDown\WeakGetUp_F">
+      <UniqueIdentifier>{f1e54435-ded0-4add-a093-3d83d43079c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -876,6 +891,27 @@
     <ClInclude Include="..\public\Normal_Evade_R.h">
       <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_R</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HurtKnockBack.h">
+      <Filter>02.GameObject\Player\State\Hurt\HurtKnockBack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HurtKnockDown.h">
+      <Filter>02.GameObject\Player\State\Hurt\HurtKnockDown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HURT_FallDown.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HURTLF.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURTLF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HURTSF.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURTSF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HURTSL.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURTSL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HURTXXLF.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURTXXLF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1270,6 +1306,27 @@
     </ClCompile>
     <ClCompile Include="..\private\Normal_Evade_R.cpp">
       <Filter>02.GameObject\Player\State\Evade\Normal\Normal_Evade_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HurtKnockBack.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HurtKnockBack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HurtKnockDown.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HurtKnockDown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURT_FallDown.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURTLF.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURTLF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURTSF.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURTSF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURTSL.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURTSL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURTXXLF.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURTXXLF</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

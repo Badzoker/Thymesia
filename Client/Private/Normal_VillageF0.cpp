@@ -167,6 +167,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
+    VillageF_Weapon_Desc.pParent = this;
     VillageF_Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
     VillageF_Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     VillageF_Weapon_Desc.pParentModel = m_pModelCom;
@@ -305,7 +306,7 @@ void CNormal_VillageF0::Recovery_HP()
 
 void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_RIGHT_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
         //m_fRecoveryTime = 0.f;
         m_bHP_Bar_Active = true;

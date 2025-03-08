@@ -26,7 +26,7 @@ HRESULT CRightWeapon::Initialize_Prototype()
 HRESULT CRightWeapon::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_RIGHT_WEAPON");
+    strcpy_s(m_szName, "PLAYER_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -46,6 +46,9 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
 
 
@@ -106,6 +109,11 @@ void CRightWeapon::Update(_float fTimeDelta)
 
             }
         }
+    }
+
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 #pragma endregion  
 }

@@ -44,6 +44,13 @@
 #pragma region 피격 당할 시
 #include "HurtMFL.h"	
 #include "HurtMFR.h"
+#include "HurtKnockBack.h"
+#include "HurtKnockDown.h"
+#include "HURTLF.h"
+#include "HURTSF.h"
+#include "HURTSL.h"
+#include "HURTXXLF.h"	
+#include "HURT_FallDown.h"	
 #pragma endregion 
 
 
@@ -99,7 +106,6 @@ HRESULT CStateMgr::Initialize()
 	CAttack_LongClaw_2* pAttack_LongClaw_2 = CAttack_LongClaw_2::Create();
 	m_vecState.push_back(pAttack_LongClaw_2);
 
-
 #pragma region 락온 모드 일때의 방향이동 
 
 	/* 7번 락온모드일때 'D' 키만 누를 시 오른쪽 이동 모션 */
@@ -151,7 +157,6 @@ HRESULT CStateMgr::Initialize()
 	CLockOn_Evade_F* LockOn_Evade_F = CLockOn_Evade_F::Create();
 	m_vecState.push_back(LockOn_Evade_F);
 #pragma endregion 
-
 #pragma region 패링 기본 모션 
 	/* 19번 패링 모션 'F' 키를 누를 시 왼쪽 손이 오른쪽 사선으로 올라가면서 하는 패링 모션*/
 	CParry_L* Parry_L = CParry_L::Create();
@@ -162,7 +167,6 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(Parry_R);
 
 #pragma endregion 
-
 #pragma region 피격
 	/* 21번 피격 모션 (왼쪽으로 고개를 휘청이면서 뒤로가는 모션 ) */
 	CHurtMFL* pHurtMFL = CHurtMFL::Create();
@@ -172,8 +176,6 @@ HRESULT CStateMgr::Initialize()
 	CHurtMFR* pHurtMFR = CHurtMFR::Create();
 	m_vecState.push_back(pHurtMFR);
 #pragma endregion 
-
-
 #pragma region 패링 성공 모션 
 
 	/* 23번 패링 성공  모션 ( 뒤로밀려 가면서 휘청이는 모션 ) */
@@ -197,8 +199,6 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(pParryDeflect_RUp);
 
 #pragma endregion 
-
-
 #pragma region 회피 모션 
 	/* 28번 오른쪽 회피 대쉬 ( 오른쪽 키 + 스페이스 바 ) 모션 */
 	CNormal_Evade_R* pNormal_Evade_R = CNormal_Evade_R::Create();
@@ -231,6 +231,36 @@ HRESULT CStateMgr::Initialize()
 	/* 35번 뒤 대쉬 ( 뒤 키 + 스페이스 바 ) 모션 */
 	CNormal_Evade_B* pNormal_Evade_B = CNormal_Evade_B::Create();
 	m_vecState.push_back(pNormal_Evade_B);
+#pragma endregion 
+
+#pragma region 추가 피격 모션 
+	/* 36번 피격 모션 넉백  모션 */
+	CHurtKnockBack* pHurtKnockBack = CHurtKnockBack::Create();
+	m_vecState.push_back(pHurtKnockBack);
+
+	/* 37번 피격 모션 넉다운  모션 */
+	CHurtKnockDown* pHurtKnockDown = CHurtKnockDown::Create();
+	m_vecState.push_back(pHurtKnockDown);
+
+	/* 38번 피격 모션 왼쪽 움찔  모션 */
+	CHURTLF* pHURTLF = CHURTLF::Create();
+	m_vecState.push_back(pHURTLF);
+
+	/* 39번 피격 모션 HURT_SF 움찔  모션 */
+	CHURTSF* pHURTSF = CHURTSF::Create();
+	m_vecState.push_back(pHURTSF);
+
+	/* 40번 피격 모션 HURT_XXLF */
+	CHURTXXLF* pHURTXXLF = CHURTXXLF::Create();
+	m_vecState.push_back(pHURTXXLF);
+
+	/* 41번 피격 모션 */
+	CHURTSL* pHURTSL = CHURTSL::Create();
+	m_vecState.push_back(pHURTSL);
+
+	/* 42번 피격 모션 */
+	CHURT_FallDown* pHURT_FallDown = CHURT_FallDown::Create();
+	m_vecState.push_back(pHURT_FallDown);
 #pragma endregion 
 
 	return S_OK;

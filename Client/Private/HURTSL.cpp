@@ -1,19 +1,19 @@
 #include "pch.h"
-#include "HurtMFR.h"
+#include "HURTSL.h"
 #include "GameInstance.h"
 #include "GameObject.h"
 #include "Navigation.h"
 
-CHurtMFR::CHurtMFR()
+CHURTSL::CHURTSL()
 {
 }
 
-HRESULT CHurtMFR::Initialize()
+HRESULT CHURTSL::Initialize()
 {
 	return S_OK;
 }
 
-void CHurtMFR::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
+void CHURTSL::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
 {
 	_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 	_vector MonsterDir = XMVector3Normalize(XMLoadFloat4(&m_vMonsterLookDir)) * -1.f;
@@ -35,28 +35,28 @@ void CHurtMFR::Priority_Update(CGameObject* pGameObject, class CNavigation* pNav
 
 }
 
-void CHurtMFR::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
+void  CHURTSL::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
 {
 }
 
-void CHurtMFR::Late_Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
+void  CHURTSL::Late_Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
 {
 }
 
-CHurtMFR* CHurtMFR::Create()
+CHURTSL* CHURTSL::Create()
 {
-	CHurtMFR* pInstance = new CHurtMFR();
+	CHURTSL* pInstance = new  CHURTSL();
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Failed to Created : CHurtMFR");
+		MSG_BOX("Failed to Created : HURTSL");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CHurtMFR::Free()
+void CHURTSL::Free()
 {
 	__super::Free();
 }

@@ -56,6 +56,14 @@ public:
 		/* 피격 관련 */
 		STATE_HurtMFR_L,
 		STATE_HurtMFR_R,
+		STATE_HURT_LF,
+		STATE_HURT_SF,
+		STATE_HURT_SL,
+		STATE_HURT_HURXXLF,
+		STATE_HURT_KNOCKBACK,
+		STATE_HURT_KNOCKDOWN,
+		STATE_HURT_FALLDOWN,
+		STATE_WEAK_GETUP_F,
 		/*-----------------*/
 
 		/* 회피 관련 */
@@ -78,7 +86,21 @@ public:
 		PHASE_LOCKON = 1 << 2,
 		PHASE_HITTED = 1 << 3,
 		PHASE_PARRY = 1 << 4,
+		PHASE_DASH = 1 << 5,
 
+	};
+
+	enum Player_Hitted_State
+	{
+		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운	
+		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청	
+		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청		
+		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청		
+		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음		
+		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김	
+		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
+		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
+		PLAYER_HURT_END
 	};
 
 private:

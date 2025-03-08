@@ -15,18 +15,23 @@ HRESULT CHurtMFL::Initialize()
 
 void CHurtMFL::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
 {
-	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
-	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
-
-	_vector vCurPosition = pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector CamRight = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]);
-	_vector CamLeft = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]) * -1.f;
-
-	_vector vLookFront = XMVector3Normalize(XMVector3Cross(CamRight, vUp));
-	_vector vLookBack = vLookFront * -1.f;
 	_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+	_vector MonsterDir = XMVector3Normalize(XMLoadFloat4(&m_vMonsterLookDir)) * -1.f;
+
+
+	float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, MonsterDir));
+	dotResult = max(-1.0f, min(dotResult, 1.0f));
+	float Radian = acosf(dotResult);
+
+	_vector crossResult = XMVector3Cross(PlayerLook, MonsterDir);
+	float crossY = XMVectorGetY(crossResult);
+	if (crossY < 0.0f) {
+		Radian = -Radian;
+	}
+
+	pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
+
+
 
 }
 

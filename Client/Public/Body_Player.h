@@ -6,9 +6,13 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CNavigation;
 END
 
+class CStateMgr;
+
 BEGIN(Client)
+
 
 class CCamera_Free;
 
@@ -56,6 +60,14 @@ class CBody_Player final : public CPartObject
 		/* 피격 관련 */
 		STATE_HurtMFR_L,
 		STATE_HurtMFR_R,
+		STATE_HURT_LF,
+		STATE_HURT_SF,
+		STATE_HURT_SL,
+		STATE_HURT_HURXXLF,
+		STATE_HURT_KNOCKBACK,
+		STATE_HURT_KNOCKDOWN,
+		STATE_HURT_FALLDOWN,
+		STATE_WEAK_GETUP_F,
 		/*-----------------*/
 
 
@@ -84,6 +96,9 @@ public:
 		_uint* pParentState = { nullptr };
 		_uint* pParentPhaseState = { nullptr };
 		_bool* pParentNextStateCan = { nullptr };
+		CStateMgr* pParentStateMgr = { nullptr };
+		CNavigation* pParentNavigationCom = { nullptr };
+		CGameObject* pParent = { nullptr };
 	};
 
 private:
@@ -151,6 +166,14 @@ public:
 	/* 피격 관련 */
 	void   STATE_HurtMFR_L_Method();
 	void   STATE_HurtMFR_R_Method();
+	void   STATE_HURT_LF_Method();
+	void   STATE_HURT_SF_Method();
+	void   STATE_HURT_SL_Method();
+	void   STATE_HURT_HURXXLF_Method();
+	void   STATE_HURT_KNOCKBACK_Method();
+	void   STATE_HURT_KNOCKDOWN_Method();
+	void   STATE_HURT_FALLDOWN_Method();
+	void   STATE_WEAK_GETUP_F_Method();
 	/*-----------------*/
 
 
@@ -170,15 +193,18 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCamera_Free* m_pCamera = { nullptr };
+	CGameObject* m_pParent = { nullptr };
 
 	_float							m_fAnimSpeed = 1.f;
-
+	_float						    m_fTimeDelta = {};
 private:
 
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};
+	CStateMgr* m_pParentStateMgr = { nullptr };
+	CNavigation* m_pParentNavigationCom = { nullptr };
 
 
 public:

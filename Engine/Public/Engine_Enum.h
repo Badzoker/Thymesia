@@ -83,5 +83,19 @@ namespace Engine
 		
 	};
 
+
+	enum Player_Hitted_State
+	{
+		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운
+		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
+		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
+		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
+		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
+		PLAYER_HURT_END
+	};
+
 }
 #endif // Engine_Enum_h__

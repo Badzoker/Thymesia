@@ -3,11 +3,11 @@
 #include "State.h"
 
 
-class CHurtMFL final : public CState
+class CHurtKnockDown final : public CState
 {
 private:
-	CHurtMFL();
-	virtual ~CHurtMFL() = default;
+	CHurtKnockDown();
+	virtual ~CHurtKnockDown() = default;
 
 
 public:
@@ -23,7 +23,7 @@ public:
 
 
 public:
-	static  CHurtMFL* Create();
+	static  CHurtKnockDown* Create();
 	virtual void Free() override;
 
 };
