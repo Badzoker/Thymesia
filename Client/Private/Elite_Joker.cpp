@@ -175,6 +175,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
+    Joker_Weapon_Desc.pParent = this;   
     Joker_Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r_Hammer");
     Joker_Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Joker_Weapon_Desc.pParentModel = m_pModelCom;
@@ -340,7 +341,7 @@ void CElite_Joker::Rotation_To_Player()
 
 void CElite_Joker::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_RIGHT_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
         //m_fRecoveryTime = 0.f;
         m_bHP_Bar_Active = true;

@@ -3,11 +3,11 @@
 #include "State.h"
 
 
-class CHurtMFL final : public CState
+class CHURT_FallDown final : public CState
 {
 private:
-	CHurtMFL();
-	virtual ~CHurtMFL() = default;
+	CHURT_FallDown();
+	virtual ~CHURT_FallDown() = default;
 
 
 public:
@@ -21,9 +21,8 @@ public:
 	_float m_fTurnSpeed = { 20.f };
 	_float m_fWalkSpeed = { 0.075f };
 
-
 public:
-	static  CHurtMFL* Create();
+	static  CHURT_FallDown* Create();
 	virtual void Free() override;
 
 };

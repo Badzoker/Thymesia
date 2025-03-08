@@ -16,19 +16,6 @@ BEGIN(Client)
 
 class CNormal_VillageM0 final : public CContainerObject
 {
-public:
-	enum Player_Hitted_State
-	{
-		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운
-		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
-		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
-		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
-		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
-		PLAYER_HURT_END
-	};
 private:
 	CNormal_VillageM0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CNormal_VillageM0(const CNormal_VillageM0& Prototype);
@@ -40,8 +27,6 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-public:
-	_uint Get_Player_Hitted_State() const { return m_iPlayer_Hitted_State; }
 public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
@@ -63,8 +48,6 @@ private:
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
 
-
-	_uint                            m_iPlayer_Hitted_State = { Player_Hitted_State::PLAYER_HURT_END };
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};

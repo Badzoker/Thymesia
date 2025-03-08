@@ -177,6 +177,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
+    Varg_Knife_Desc.pParent = this; 
     Varg_Knife_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Varg_Knife_Desc.pParentModel = m_pModelCom;
@@ -396,7 +397,7 @@ void CBoss_Varg::Recovery_HP()
 void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
     /* 몬스터 무기와의 충돌 */
-    if (!strcmp("PLAYER_RIGHT_WEAPON", _pOther->Get_Name()))
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
     {
         m_fRecoveryTime = 0.f;
         m_fBossCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기

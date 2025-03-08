@@ -10,6 +10,7 @@ public:
 	struct PARTOBJECT_DESC : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _float4x4* pParentWorldMatrix; 
+		CGameObject* pParent;
 	};
 
 protected:
@@ -24,9 +25,11 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render(); 
-
+	virtual const _float4x4* Get_ParentWorldMatrix() { return m_pParentWorldMatrix; }
+	virtual CGameObject* Get_Parent_Ptr() { return m_pParent; }
 
 protected:
+	CGameObject* m_pParent	= { nullptr };
 	const _float4x4*				m_pParentWorldMatrix = { nullptr };
 	_float4x4						m_CombinedWorldMatrix;
 	/* 루트 모션 때매 추가 */

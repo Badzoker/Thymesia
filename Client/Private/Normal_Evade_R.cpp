@@ -15,8 +15,30 @@ HRESULT CNormal_Evade_R::Initialize()
 
 void CNormal_Evade_R::Priority_Update(CGameObject* pGameObject, class CNavigation* pNavigation, _float fTimeDelta)
 {
-	//_vector vBackDir = pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK) * -1.f; 
-	//pGameObject->Get_Transfrom()->Go_Backward_With_Navi(fTimeDelta * m_fWalkSpeed, pNavigation);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector CamRight = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]);
+	_vector CamLeft = XMVector3Normalize(m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW).r[0]) * -1.f;
+
+	_vector vLookFront = XMVector3Normalize(XMVector3Cross(CamRight, vUp));
+
+	_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+
+
+	_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(90.f));
+	_vector vRightLook90Degree = XMVector3Transform(vLookFront, rotationMartix);
+
+
+	float dotResult = XMVectorGetX(XMVector3Dot(vRightLook90Degree, PlayerLook));
+	dotResult = max(-1.0f, min(dotResult, 1.0f));
+	float Radian = acosf(dotResult);
+
+	_vector crossResult = XMVector3Cross(PlayerLook, vRightLook90Degree);
+	float crossY = XMVectorGetY(crossResult);
+	if (crossY < 0.0f) {
+		Radian = -Radian;
+	}
+
+	pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
 }
 
 void CNormal_Evade_R::Update(CGameObject* pGameObject, CNavigation* pNavigation, _float fTimeDelta)
