@@ -12,6 +12,14 @@ private:
 	virtual ~CLevel_GamePlay() = default;
 
 public:
+	typedef struct MonsterSpawnInfo
+	{
+		_float4 vMonsterPos;
+		_int	iMonsterCellIndex;
+		_int	iMonsterIndex;
+	}MONSTERSPAWNINFO;
+
+public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
@@ -40,9 +48,12 @@ private:
 	HRESULT Load_Objects(_int iObject_Level);
 	HRESULT Load_InstancingObjects(_int iObject_Level);
 	HRESULT Load_Height(_int iObject_Level);
+	HRESULT Load_MonsterIndex(_int iMonsterIndex_Level);
 private:
 	_uint m_iOpenSceneCount = { 0 };
 	_bool m_bSceneOpen = { false };
+
+	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos;
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
