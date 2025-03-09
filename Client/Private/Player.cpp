@@ -474,6 +474,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
+#pragma region Terrain Height Å¸±â
+	//CVIBuffer_Terrain* pTerrainBufferCom = static_cast<CVIBuffer_Terrain*>(m_pGameInstance->Find_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, pTerrainBufferCom->Get_Height({ XMVectorGetX(vPosition), XMVectorGetY(vPosition), XMVectorGetZ(vPosition) })));
+#pragma endregion
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 

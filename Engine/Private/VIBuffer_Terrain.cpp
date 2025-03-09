@@ -27,6 +27,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 	m_iIndexStride = 4;
 	m_iNumIndices = (dwCntX - 1) * (dwCntZ - 1) * 2 * 3;
 
+
+	m_iNumverticesX = dwCntX;
+	m_iNumverticesZ = dwCntZ;
 	m_iCntX = dwCntX;
 	m_iCntY = dwCntZ;
 

@@ -941,9 +941,6 @@
     <ClCompile Include="..\private\Camera_Free.cpp">
       <Filter>02.GameObject\Camera\Camera_Free</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Player.cpp">
-      <Filter>02.GameObject\Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Body_Player.cpp">
       <Filter>02.GameObject\Player\Body</Filter>
     </ClCompile>
@@ -1327,6 +1324,9 @@
     </ClCompile>
     <ClCompile Include="..\private\HURTXXLF.cpp">
       <Filter>02.GameObject\Player\State\Hurt\HURTXXLF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
