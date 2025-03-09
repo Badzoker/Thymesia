@@ -9,7 +9,7 @@ CTarget_Manager::CTarget_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
     Safe_AddRef(m_pContext);
 }
 
-HRESULT CTarget_Manager::Intialize()        
+HRESULT CTarget_Manager::Initialize()        
 {
     return S_OK;    
 }
@@ -180,7 +180,7 @@ CTarget_Manager* CTarget_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 {
     CTarget_Manager* pInstance = new CTarget_Manager(pDevice, pContext);
     
-    if (FAILED(pInstance->Intialize()))
+    if (FAILED(pInstance->Initialize()))
     {
         MSG_BOX("Failed to Created : CTarget_Mangaer");
         Safe_Release(pInstance);
