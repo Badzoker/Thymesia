@@ -58,7 +58,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	// 시작 지점의 플레이어 위치 1_23일 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 70.7f, 1.3f, -110.5f, 1.0f });
 
 	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 

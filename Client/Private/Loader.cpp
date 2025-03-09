@@ -409,7 +409,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), 
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation7.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation6.txt")))))
 		return E_FAIL;
 
 
@@ -1786,7 +1786,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_House0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/House0/House0.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/House_0/House0.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_House3"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GroundObjects/House_3/House3.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"),
