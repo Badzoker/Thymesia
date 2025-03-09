@@ -183,7 +183,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	// 
 	//Load_Objects(107);
 	//Load_Objects(98);
-	Load_Objects(16);
+	Load_Objects(129);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -282,18 +282,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
-	//
-	//
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM1"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF0"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF1"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+	
+	
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM1"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF0"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF1"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;
 
 	return S_OK;
 }

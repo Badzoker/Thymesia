@@ -56,11 +56,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/* Target_Shadow */
-	if (FAILED(m_pGameInstance->Add_Shadow_RenderTarget(TEXT("Target_Shadow"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1000.f, 1.f, 0.f), 3)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Shadow_RenderTarget(TEXT("Target_Shadow"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1000.f, 1.f, 0.f), 3)))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Depth_Stencil_Buffer(m_iOriginalViewportWidth, m_iOriginalViewportHeight, &m_pShadowDSV)))
-		return E_FAIL;	
+	//if (FAILED(Ready_Depth_Stencil_Buffer(m_iOriginalViewportWidth, m_iOriginalViewportHeight, &m_pShadowDSV)))
+	//	return E_FAIL;	
 
 	/* Target_Final */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
@@ -130,11 +130,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))	
 		return E_FAIL;	
 	/* MRT_Shadow */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_Shadow"))))	
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_Shadow"))))	
+	//	return E_FAIL;
 	/* MRT_Shadow_FInal*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Shadow_Final"), TEXT("Target_Shadow_Final"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Shadow_Final"), TEXT("Target_Shadow_Final"))))
+	//	return E_FAIL;
 	/* MRT_Final */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Final"), TEXT("Target_Final"))))	
 		return E_FAIL;	
@@ -217,14 +217,14 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur"), 100.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;*/
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulusion"), ViewportDesc.Width - 300.f, 150.f, 300.f, 300.f)))
+	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulusion"), ViewportDesc.Width - 300.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftX"), ViewportDesc.Width - 300.f, 450.f, 300.f, 300.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftY"), ViewportDesc.Width - 300.f, 750.f, 300.f, 300.f)))
-		return E_FAIL;
+		return E_FAIL;*/
 #endif // _DEBUG
 
 
@@ -249,8 +249,8 @@ HRESULT CRenderer::Render()
  	if (FAILED(Render_Priority()))
 		return E_FAIL;
 
-	if (FAILED(Render_Shadow()))	
-		return E_FAIL;	
+	/*if (FAILED(Render_Shadow()))	
+		return E_FAIL;	*/
 
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
@@ -282,8 +282,8 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_Deferred()))	
 		return E_FAIL;	
 
-	if (FAILED(Render_Shadow_Final()))
-		return E_FAIL;
+	//if (FAILED(Render_Shadow_Final()))
+	//	return E_FAIL;
 
 	if (FAILED(Render_MotionBlurBegin()))
 		return E_FAIL;
@@ -830,7 +830,7 @@ HRESULT CRenderer::Render_HighLightY()
 
 HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 {
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow_Final"), m_pShader, "g_FinalTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_HighLightY"), m_pShader, "g_HighLightYTexture")))
@@ -995,13 +995,13 @@ HRESULT CRenderer::Render_Debug()
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 
 	return S_OK;
