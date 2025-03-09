@@ -277,7 +277,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 	//	return E_FAIL;
-
+	Load_MonsterIndex(1);
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
@@ -577,6 +577,59 @@ HRESULT CLevel_GamePlay::Load_Height(_int iObject_Level)
 
 
 
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_MonsterIndex(_int iMonsterIndex_Level)
+{
+	string strDataPath = "../Bin/DataFiles/SpawnPoint/SpawnPoint";
+
+	strDataPath = strDataPath + to_string(iMonsterIndex_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load SpawnPoint File!");
+		return E_FAIL;
+	}
+
+	DWORD dwByte = 0;
+
+	_uint iSize = 0;
+
+	// 일반 오브젝트
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	_float4 vMonsterPos = {};
+	_int	iMonsterCellIndex = { -1 };
+	_int	iMonsterIndex = { -1 };
+
+	for (size_t i = 0; i < iSize; i++)
+	{
+		MONSTERSPAWNINFO SpawnInfo = {};
+
+		ReadFile(hFile, &SpawnInfo.vMonsterPos, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &SpawnInfo.iMonsterCellIndex, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &SpawnInfo.iMonsterIndex, sizeof(_int), &dwByte, nullptr);
+
+		if (iMonsterCellIndex < -1 || iMonsterIndex < -1)
+		{
+			CloseHandle(hFile);
+
+			MSG_BOX("Failed To Load SpawnPoint File!");
+			return E_FAIL;
+		}
+
+		m_MonsterSpawnInfos.push_back(SpawnInfo);
+	}
+
+	CloseHandle(hFile);
+	
 	return S_OK;
 }
 
