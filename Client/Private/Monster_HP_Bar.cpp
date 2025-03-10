@@ -136,25 +136,37 @@ HRESULT CMonster_HP_Bar::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CMonster_HP_Bar::Ready_PartObjects(void* pArg)
+HRESULT CMonster_HP_Bar::Ready_PartObjects(Monster_HP_Bar_DESC* pDesc)
 {
 
-	CMonster_HP_Gage::Monster_HP_Gage_DESC* MonsterHP_Gage_Desc = static_cast<CMonster_HP_Gage::Monster_HP_Gage_DESC*>(pArg);
-	MonsterHP_Gage_Desc->pParentWorldMatrix = &m_ResultMatrix;
+	CMonster_HP_Gage::Monster_HP_Gage_DESC MonsterHP_Gage_Desc{};
+	MonsterHP_Gage_Desc.pParentWorldMatrix = &m_ResultMatrix;
+	MonsterHP_Gage_Desc.pParent = this;
+	MonsterHP_Gage_Desc.fCurHP = pDesc->fCurHP;
+	MonsterHP_Gage_Desc.fMaxHP = pDesc->fMaxHP;
+	MonsterHP_Gage_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage"), MonsterHP_Gage_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage"), &MonsterHP_Gage_Desc)))
 		return E_FAIL;
 
-	CMonster_HP_Gage_Effect::Monster_HP_Gage_Effect_DESC* MonsterHP_Gage_Effect_Desc = static_cast<CMonster_HP_Gage_Effect::Monster_HP_Gage_Effect_DESC*>(pArg);
-	MonsterHP_Gage_Effect_Desc->pParentWorldMatrix = &m_ResultMatrix;
+	CMonster_HP_Gage_Effect::Monster_HP_Gage_Effect_DESC MonsterHP_Gage_Effect_Desc{};
+	MonsterHP_Gage_Effect_Desc.pParentWorldMatrix = &m_ResultMatrix;
+	MonsterHP_Gage_Effect_Desc.pParent = this;
+	MonsterHP_Gage_Effect_Desc.fCurHP = pDesc->fCurHP;
+	MonsterHP_Gage_Effect_Desc.fMaxHP = pDesc->fMaxHP;
+	MonsterHP_Gage_Effect_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage_Effect"), MonsterHP_Gage_Effect_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage_Effect"), &MonsterHP_Gage_Effect_Desc)))
 		return E_FAIL;
 
-	CMonster_HP_Bar_Effect::Monster_HP_Bar_Effect_DESC* MonsterHP_Bar_Effect_Desc = static_cast<CMonster_HP_Bar_Effect::Monster_HP_Bar_Effect_DESC*>(pArg);
-	MonsterHP_Bar_Effect_Desc->pParentWorldMatrix = &m_ResultMatrix;
+	CMonster_HP_Bar_Effect::Monster_HP_Bar_Effect_DESC MonsterHP_Bar_Effect_Desc{};
+	MonsterHP_Bar_Effect_Desc.pParentWorldMatrix = &m_ResultMatrix;
+	MonsterHP_Bar_Effect_Desc.pParent = this;
+	MonsterHP_Bar_Effect_Desc.fCurHP = pDesc->fCurHP;
+	MonsterHP_Bar_Effect_Desc.fMaxHP = pDesc->fMaxHP;
+	MonsterHP_Bar_Effect_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Bar_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"), MonsterHP_Bar_Effect_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Bar_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"), &MonsterHP_Bar_Effect_Desc)))
 		return E_FAIL;
 
 	return S_OK;

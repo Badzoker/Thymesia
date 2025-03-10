@@ -10,6 +10,7 @@ float4x4		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 StructuredBuffer<float4x4> g_BoneMatrices;	
 Texture2D g_DiffuseTexture;	
 Texture2D g_NormalTexture;	
+Texture2D g_AOTexture;
 
 /*  Dissolve 관련 상수 버퍼들 */
 Texture2D g_NoiseTexture;
@@ -244,7 +245,54 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
     return Out;
 }
 
+PS_OUT PS_NOT_Discard_Alpha(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
 
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    /* 탄젠트 스페이스에 존재하는 노멀이다. 지금 (0~1 ) UnNormal로 저장 되어 있음 */  
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+   /* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    Out.vDiffuse = vector(vMtrlDiffuse.xyz, 0.1f);
+   // Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.1f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    return Out;
+}
+
+PS_OUT PS_EYE_Mesh(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    float fAO = g_AOTexture.Sample(LinearSampler, In.vTexcoord).r;
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    /* 탄젠트 스페이스에 존재하는 노멀이다. 지금 (0~1 ) UnNormal로 저장 되어 있음 */  
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+   /* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    Out.vDiffuse = vMtrlDiffuse * fAO;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -284,4 +332,27 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
     }
+
+    pass NOT_Discard_Alpha
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_NOT_Discard_Alpha();
+    }
+
+    pass Eye_Mesh
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_EYE_Mesh();
+    }
+
 }

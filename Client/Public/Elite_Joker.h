@@ -40,6 +40,7 @@ public:
 	void Rotation_To_Player();
 private:
 	_vector                          m_vPlayerPos = {};
+	_vector                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bNeed_Rotation = {};

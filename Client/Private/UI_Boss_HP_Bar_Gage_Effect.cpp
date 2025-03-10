@@ -54,6 +54,9 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Priority_Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
+
     if (m_fBoss_Pre_HP != *m_fBoss_Cur_HP && !m_bActive)
     {
         m_bActive = true;
@@ -69,6 +72,8 @@ void CUI_Boss_HP_Bar_Gage_Effect::Priority_Update(_float fTimeDelta)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
     if (!m_bActive)
         return;
 
@@ -84,6 +89,8 @@ void CUI_Boss_HP_Bar_Gage_Effect::Update(_float fTimeDelta)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Late_Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
     if (!m_bActive)
         return;
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
@@ -91,6 +98,8 @@ void CUI_Boss_HP_Bar_Gage_Effect::Late_Update(_float fTimeDelta)
 
 HRESULT CUI_Boss_HP_Bar_Gage_Effect::Render()
 {
+    if (!(*m_bBossActive))
+        return S_OK;
     if (!m_bActive)
         return S_OK;
 

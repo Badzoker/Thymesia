@@ -73,13 +73,16 @@ void CUI_Boss_HP_Bar::Update(_float fTimeDelta)
 
 void CUI_Boss_HP_Bar::Late_Update(_float fTimeDelta)
 {
-	//if (!(*m_bBossActive))
-	//	return;
+	if (!(*m_bBossActive))
+		return;
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUI_Boss_HP_Bar::Render()
 {
+
+	if (!(*m_bBossActive))
+		return S_OK;
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
