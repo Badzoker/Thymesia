@@ -67,8 +67,8 @@ void CVargKnife::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-
-    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
