@@ -277,7 +277,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 	//	return E_FAIL;
-	Load_MonsterIndex(1);
+	Load_MonsterIndex(3);
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
@@ -606,18 +606,16 @@ HRESULT CLevel_GamePlay::Load_MonsterIndex(_int iMonsterIndex_Level)
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
 
 	_float4 vMonsterPos = {};
-	_int	iMonsterCellIndex = { -1 };
 	_int	iMonsterIndex = { -1 };
 
 	for (size_t i = 0; i < iSize; i++)
 	{
 		MONSTERSPAWNINFO SpawnInfo = {};
 
-		ReadFile(hFile, &SpawnInfo.vMonsterPos, sizeof(_float4), &dwByte, nullptr);
-		ReadFile(hFile, &SpawnInfo.iMonsterCellIndex, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &SpawnInfo.vMonsterPos,sizeof(_float4), &dwByte, nullptr);
 		ReadFile(hFile, &SpawnInfo.iMonsterIndex, sizeof(_int), &dwByte, nullptr);
 
-		if (iMonsterCellIndex < -1 || iMonsterIndex < -1)
+		if (iMonsterIndex < -1)
 		{
 			CloseHandle(hFile);
 
