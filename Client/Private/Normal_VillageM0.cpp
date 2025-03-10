@@ -28,12 +28,17 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 {
     strcpy_s(m_szName, "MONSTER");
 
-    CGameObject::GAMEOBJECT_DESC        Desc{};
+    m_fMonsterMaxHP = 100.f;
+    m_fMonsterCurHP = m_fMonsterMaxHP;
+    m_fShieldHP = m_fMonsterMaxHP;
 
-    Desc.fSpeedPerSec = 1.f;
-    Desc.fRotationPerSec = XMConvertToRadians(90.f);
+    CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
+    Desc->fSpeedPerSec = 1.f;
+    Desc->fScaling = _float3{ 0.002f,0.002f,0.002f };
+    Desc->fRotationPerSec = XMConvertToRadians(90.f);
+    m_vSpawnPoint = XMLoadFloat4(&Desc->fPosition);
 
-    if (FAILED(__super::Initialize(&Desc)))
+    if (FAILED(__super::Initialize(Desc)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
@@ -44,11 +49,7 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
-
-    _vector vFirst_Pos = { 105.6f, 1.85f, 28.8f, 1.0f };
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
-    m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
-    m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
+    m_pNavigationCom->Set_CurrentNaviIndex(m_vSpawnPoint);
 
 
     m_pState_Manager = CState_Machine<CNormal_VillageM0>::Create();
@@ -66,9 +67,6 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
 
-    m_fMonsterMaxHP = 100.f;
-    m_fMonsterCurHP = m_fMonsterMaxHP;
-    m_fShieldHP = m_fMonsterMaxHP;
 
     /* 3월 9일 추가 */
     m_pGameObjectModel = m_pModelCom;

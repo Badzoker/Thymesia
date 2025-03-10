@@ -31,12 +31,14 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     m_fBossCurHP = m_fBossMaxHP;
     m_fShieldHP = m_fBossMaxHP;
 
-    CGameObject::GAMEOBJECT_DESC        Desc{};
+    CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.fSpeedPerSec = 1.f;
-    Desc.fRotationPerSec = XMConvertToRadians(90.f);
+    Desc->fSpeedPerSec = 1.f;
+    Desc->fScaling = _float3{ 0.002f,0.002f,0.002f };
+    Desc->fRotationPerSec = XMConvertToRadians(90.f);
+    m_vSpawnPoint = XMLoadFloat4(&Desc->fPosition);
 
-    if (FAILED(__super::Initialize(&Desc)))
+    if (FAILED(__super::Initialize(Desc)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
@@ -47,12 +49,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"),"PLAYER");
-
-    _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
-    m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
-    m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
-
+    m_pNavigationCom->Set_CurrentNaviIndex(m_vSpawnPoint);
+  
 
     m_pState_Manager = CState_Machine<CBoss_Varg>::Create();
     if (m_pState_Manager == nullptr)
@@ -140,7 +138,7 @@ void CBoss_Varg::Late_Update(_float fTimeDelta)
 {
     Recovery_HP();
 
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f))
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
     {
         __super::Late_Update(fTimeDelta);
     }
@@ -920,14 +918,13 @@ void CBoss_Varg::Raid_Attack_02::State_Exit(CBoss_Varg* pObject)
 #pragma region ExeCution_State
 void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
+    m_iIndex = 41;
     if (pObject->m_iPhase == 1)
     {
-        m_iIndex = 50;
         pObject->m_iState = CBoss_Varg::Varg_Execution_First_State;
     }
     else
     {
-        m_iIndex = 41;
         pObject->m_iState = CBoss_Varg::Varg_Execution_Second_State;
     }
     pObject->m_bCan_Move_Anim = true;
@@ -937,11 +934,21 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     //나중에 페이즈 구분 해줘야할듯
-    //1페이즈이고 애님 끝났으면 변환시키기
-    if (m_iIndex == 50 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
-    else if (m_iIndex == 41 && pObject->m_pModelCom->GetAniFinish())
+      //1페이즈이고 애님 끝났으면 변환시키기
+    if (m_iIndex == 41 && pObject->m_iPhase == 1 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 118.f)
+    {
+        m_iIndex = 40;
+        pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    }
+    if (m_iIndex == 41 && pObject->m_iPhase == 2 && pObject->m_pModelCom->GetAniFinish())
+    {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
+    }
+
+    if (m_iIndex == 40 && pObject->m_pModelCom->GetAniFinish())
+    {
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
+    }
 }
 
 void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)

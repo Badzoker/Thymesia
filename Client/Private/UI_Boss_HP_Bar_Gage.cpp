@@ -51,19 +51,27 @@ HRESULT CUI_Boss_HP_Bar_Gage::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar_Gage::Priority_Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
 }
 
 void CUI_Boss_HP_Bar_Gage::Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
 }
 
 void CUI_Boss_HP_Bar_Gage::Late_Update(_float fTimeDelta)
 {
+    if (!(*m_bBossActive))
+        return;
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUI_Boss_HP_Bar_Gage::Render()
 {
+    if (!(*m_bBossActive))
+        return S_OK;
     for (_uint i = 1; i <= 2; i++)
     {
         _float pCurHP = {};

@@ -18,6 +18,17 @@ public:
 		_int	iMonsterIndex = { 0 };
 	}MONSTERSPAWNINFO;
 
+	enum Monster_Catergory
+	{
+		NORMAL_VILLAGE_M0,
+		NORMAL_VILLAGE_F0,
+		ELITE_HARMORLV2,
+		NORMAL_VILLAGE_M1,
+		ELITE_JOKER,
+		BOSS_VARG,
+		NORMAL_VILLAGE_F1
+	};
+
 public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
@@ -30,6 +41,7 @@ private:
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);	
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_NPC(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
 
 

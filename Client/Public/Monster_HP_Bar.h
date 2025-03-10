@@ -55,7 +55,7 @@ private:
 
 public:
 	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects(void* pArg);
+	HRESULT Ready_PartObjects(Monster_HP_Bar_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 public:
 	static CMonster_HP_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

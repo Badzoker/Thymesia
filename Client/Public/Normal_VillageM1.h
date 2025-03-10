@@ -39,6 +39,7 @@ public:
 	void Recovery_HP();
 private:
 	_vector                          m_vPlayerPos = {};
+	_vector                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bCan_Move_Anim = {};
