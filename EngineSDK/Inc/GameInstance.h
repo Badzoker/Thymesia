@@ -214,6 +214,13 @@ public:
 	HRESULT Clear_Scene();
 #pragma endregion 
 
+#pragma region TRIGGER
+	HRESULT Set_BlackScreen(class CUIObject* _pBlackScreen);
+	HRESULT Add_Trigger(TRIGGER_TYPE _eTriggerType, class CGameObject* _pTarget = nullptr);
+	HRESULT Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration);
+#pragma endregion
+
+
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
 
@@ -237,7 +244,7 @@ private:
 	class CShadow*						m_pShadow             = { nullptr };
 	class CUI_Manager*					m_pUI_Manager		  = { nullptr };
 	class CPhysX_Manager*				m_pPhysX_Manager	  = { nullptr };	
-
+	class CTriggerManager*				m_pTrigger_Manager = { nullptr };
 public:
 	void Release_Engine();
 	virtual void Free() override;

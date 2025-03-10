@@ -502,6 +502,12 @@
     <Filter Include="02.GameObject\NPC\Body">
       <UniqueIdentifier>{eb067c61-87c1-4176-b70d-03a038c0d1c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\BackGround\BlackScreen">
+      <UniqueIdentifier>{ab2fc7e3-4a97-4275-bd1c-a52b55bdf5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\TriggerObject">
+      <UniqueIdentifier>{d166a712-dcfc-4af1-aa57-4e9c647bd87e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -942,6 +948,12 @@
     <ClInclude Include="..\Public\Body_Aisemy.h">
       <Filter>02.GameObject\NPC\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BlackScreen.h">
+      <Filter>02.GameObject\BackGround\BlackScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerObject.h">
+      <Filter>02.GameObject\TriggerObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1373,6 +1385,12 @@
     <ClCompile Include="..\Private\Body_Aisemy.cpp">
       <Filter>02.GameObject\NPC\Body</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BlackScreen.cpp">
+      <Filter>02.GameObject\BackGround\BlackScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerObject.cpp">
+      <Filter>02.GameObject\TriggerObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1433,6 +1451,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

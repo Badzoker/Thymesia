@@ -135,6 +135,8 @@
 #pragma region 오브젝트
 #include "StaticObject.h"		// (아닐 비)인스턴싱용 게임오브젝트
 #include "GroundObject.h"		// 인스턴싱용 게임오브젝트
+#include "TriggerObject.h"		// 트리거용 게임오브젝트
+#include "BlackScreen.h"
 #pragma endregion
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -238,9 +240,24 @@ HRESULT CLoader::Loading_For_Level_Logo()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;	
 
-	/* 로딩이 완료되었습ㄴ미다 */
+#pragma region BlackScreen
+	lstrcpy(m_szLoadingText, TEXT("Fade 용 Object 생성 중.."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Black"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/BlackScreen/Fade2.png"), 1))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), CBlackScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_FadeTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxFadeTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+#pragma endregion
+
+
+	/* 로딩이 완료되었습니다.*/
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));
 	m_isFinished = true;
+
 
 	return S_OK;
 #pragma endregion 
@@ -295,7 +312,6 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 #pragma endregion 
-
 
 
 
@@ -375,6 +391,8 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex_UI.hlsl"), VTXPOSTEX_UI::Elements, VTXPOSTEX_UI::iNumElements))))
 		return E_FAIL;
+
+
 #pragma endregion 
 
 #pragma region Effect_Mesh
@@ -1811,6 +1829,15 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"),
 		CGroundObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma endregion
+
+
+#pragma region
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"),
+		CTriggerObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 #pragma endregion
 

@@ -20,6 +20,8 @@
 #include "UI_Manager.h"
 #include "GameObject.h"
 #include "PhysX_Manager.h"
+#include "TriggerManager.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -103,6 +105,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pShadow)	
 		return E_FAIL;	
 
+	m_pTrigger_Manager = CTriggerManager::Create(*ppDevice, *ppContext);
+	if (nullptr == m_pTrigger_Manager)
+		return E_FAIL;
+
+
 	m_pUI_Manager = CUI_Manager::Create(EngineDesc.iNumUIScenes);
 	if (nullptr == m_pUI_Manager)
 		return E_FAIL;
@@ -132,6 +139,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pPipeLine->Update();
 
 	m_pFrustum->Update();
+	m_pTrigger_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
@@ -661,6 +669,20 @@ HRESULT CGameInstance::Clear_Scene()
 }
 #pragma endregion PhysX_Manager
 
+#pragma region Trigger
+HRESULT CGameInstance::Set_BlackScreen(CUIObject* _pBlackScreen)
+{
+	return m_pTrigger_Manager->Set_BlackScreen(_pBlackScreen);
+}
+HRESULT CGameInstance::Add_Trigger(TRIGGER_TYPE _eTriggerType, CGameObject* _pTarget)
+{
+	return m_pTrigger_Manager->Add_Trigger(_eTriggerType, _pTarget);
+}
+HRESULT CGameInstance::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration)
+{
+	return m_pTrigger_Manager->Activate_Fade(_eTriggerType, _Duration);
+}
+#pragma endregion
 
 
 void CGameInstance::Release_Engine()
@@ -681,6 +703,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pItemMgr);	
 	Safe_Release(m_pShadow);	
+	Safe_Release(m_pTrigger_Manager);
 	Safe_Release(m_pUI_Manager);
 	Safe_Release(m_pPhysX_Manager);	
 	m_pSound_Manager->Release();
