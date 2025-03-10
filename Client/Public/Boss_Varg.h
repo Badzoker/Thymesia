@@ -72,6 +72,7 @@ public:
 
 private:
 	_vector                          m_vPlayerPos = {};
+	_vector                          m_vSpawnPoint = {};
 	_bool                            m_bBossActive = {};
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bCan_Move_Anim = {};

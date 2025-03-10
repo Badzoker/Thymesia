@@ -167,12 +167,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Aisemy.h" />
     <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
     <ClInclude Include="..\public\Attack_LongClaw_1.h" />
     <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Aisemy.h" />
+    <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
@@ -181,6 +184,7 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
+    <ClInclude Include="..\Public\HArmorLV2.h" />
     <ClInclude Include="..\public\HurtKnockBack.h" />
     <ClInclude Include="..\public\HurtKnockDown.h" />
     <ClInclude Include="..\public\HURTLF.h" />
@@ -304,18 +308,22 @@
     <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="..\Public\VillageF_Weapon.h" />
     <ClInclude Include="..\Public\VillageM_Weapon.h" />
+    <ClInclude Include="..\Public\Weapon_GreatSword.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Aisemy.cpp" />
     <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_1.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Aisemy.cpp" />
+    <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
@@ -324,6 +332,7 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
+    <ClCompile Include="..\Private\HArmorLV2.cpp" />
     <ClCompile Include="..\private\HurtKnockBack.cpp" />
     <ClCompile Include="..\private\HurtKnockDown.cpp" />
     <ClCompile Include="..\private\HURTLF.cpp" />
@@ -446,6 +455,7 @@
     <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="..\Private\VillageF_Weapon.cpp" />
     <ClCompile Include="..\Private\VillageM_Weapon.cpp" />
+    <ClCompile Include="..\Private\Weapon_GreatSword.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

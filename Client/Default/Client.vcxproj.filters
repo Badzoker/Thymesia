@@ -487,6 +487,21 @@
     <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockDown\WeakGetUp_F">
       <UniqueIdentifier>{f1e54435-ded0-4add-a093-3d83d43079c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\HArmorLV2">
+      <UniqueIdentifier>{5110f6b4-32bf-4c04-86c8-353f08025121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\HArmorLV2\Body">
+      <UniqueIdentifier>{e2c212ce-896d-433a-bd38-d7584f603d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\HArmorLV2\Weapon">
+      <UniqueIdentifier>{cf69e356-915c-48aa-ba6d-9086209d5c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPC">
+      <UniqueIdentifier>{87bbd46f-85e5-424d-a601-817de0477e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPC\Body">
+      <UniqueIdentifier>{eb067c61-87c1-4176-b70d-03a038c0d1c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -912,6 +927,21 @@
     <ClInclude Include="..\public\HURTXXLF.h">
       <Filter>02.GameObject\Player\State\Hurt\HURTXXLF</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Body_HArmorLV2.h">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HArmorLV2.h">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_GreatSword.h">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Aisemy.h">
+      <Filter>02.GameObject\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Aisemy.h">
+      <Filter>02.GameObject\NPC\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1327,6 +1357,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_HArmorLV2.cpp">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HArmorLV2.cpp">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_GreatSword.cpp">
+      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Aisemy.cpp">
+      <Filter>02.GameObject\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Aisemy.cpp">
+      <Filter>02.GameObject\NPC\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
