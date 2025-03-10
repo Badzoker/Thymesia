@@ -2,7 +2,8 @@
 #include "ClawWeapon.h"     
 #include "GameInstance.h"   
 #include "Player.h"
-#include "Animation.h"
+#include "Animation.h"  
+#include "Camera_Free.h"    
 
 CClawWeapon::CClawWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
@@ -55,6 +56,8 @@ void CClawWeapon::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
 
+    if (m_pCamera == nullptr)
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
 void CClawWeapon::Update(_float fTimeDelta)
@@ -88,20 +91,38 @@ void CClawWeapon::Update(_float fTimeDelta)
             {
                 if (iter.isPlay == false)
                 {
-                    if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                    if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
+                        && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
                     {
-                        // 그 구간에서는 계속 진행        
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                        // 그 구간에서는 계속 진행  
+                        if (!strcmp(iter.szName, "Attack_Collider_1"))
+                        {
+                            m_pGameInstance->Add_Actor_Scene(m_pActor);
+                        }
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                        {
+                            // 카메라 포인터 가져오고 싶다.
+                            m_pCamera->ZoomOut();
+                        }
                     }
 
                     else
                     {
-                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                        if (!strcmp(iter.szName, "Attack_Collider_1"))
+                        {
+                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                        }
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                        {
+                            m_pCamera->ResetZoomOutCameraPos();
+                        }
                     }
 
-                    if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                    if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
+                        && iter.isEventActivate == true
+                        && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
                     {
-                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로     
                     }
 
 
@@ -113,13 +134,22 @@ void CClawWeapon::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+        //m_pCamera->ResetZoomOutCameraPos(); 
     }
 #pragma endregion  
+
+
+    if (m_iPreParentState != *m_pParentState)
+    {
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        //m_fHitStopTime = 0.f;   
+    }
 
 }
 
 void CClawWeapon::Late_Update(_float fTimeDelta)
 {
+    m_iPreParentState = *m_pParentState;
 }
 
 HRESULT CClawWeapon::Render()
@@ -142,17 +172,29 @@ HRESULT CClawWeapon::Bind_ShaderResources()
 
 void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-
+    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    m_fHitStopTime = 0.f;
 }
 
 void CClawWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-
+    if (!strcmp("MONSTER", _pOther->Get_Name()))
+    {
+        m_fHitStopTime += m_fTimeDelta;
+        if (m_fHitStopTime < 0.175f)
+        {
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
+            m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
+        }
+        else
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    }
 }
 
 void CClawWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-
+    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    m_fHitStopTime = 0.f;
 }
 
 CClawWeapon* CClawWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

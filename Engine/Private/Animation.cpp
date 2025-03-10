@@ -8,8 +8,8 @@ CAnimation::CAnimation()
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pModel, vector<_uint>& CurrentKeyFrameIndices)
 {
     /* 이 애니메이션의 이름*/
-    memcpy(m_szName, pAIAnimation->mName.data, sizeof(_char) * MAX_PATH);   
-    
+    memcpy(m_szName, pAIAnimation->mName.data, sizeof(_char) * MAX_PATH);
+
 
     /* 이 애니메이션의 전체 길이 (10) */
     m_fDuration = static_cast<_float>(pAIAnimation->mDuration);
@@ -22,9 +22,9 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
 
     CurrentKeyFrameIndices.resize(m_iNumChannels);
 
-    m_CurrentKeyFameIndices = &CurrentKeyFrameIndices;          
+    m_CurrentKeyFameIndices = &CurrentKeyFrameIndices;
 
-    for(size_t i =0 ; i<m_iNumChannels; i++)
+    for (size_t i = 0; i < m_iNumChannels; i++)
     {
         CChannel* pChannel = CChannel::Create(pAIAnimation->mChannels[i], pModel);
         if (nullptr == pChannel)
@@ -33,8 +33,8 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
         m_Channels.push_back(pChannel);
     }
 
-    m_vecKeyFrameAnimationSpeed.resize((int)m_fDuration + 1);           
-    std::fill(m_vecKeyFrameAnimationSpeed.begin(), m_vecKeyFrameAnimationSpeed.end(), 1.f);      
+    m_vecKeyFrameAnimationSpeed.resize((int)m_fDuration + 1);
+    std::fill(m_vecKeyFrameAnimationSpeed.begin(), m_vecKeyFrameAnimationSpeed.end(), 1.f);
 
     m_vecAnimFrameEvent.reserve(100);
 
@@ -44,12 +44,12 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const CModel* pM
 _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
 {
 
-    if (*pCurrentTrackPoisiton >= m_fDuration)  
-        m_fCurrentTrackPosition = m_fDuration;  
+    if (*pCurrentTrackPoisiton >= m_fDuration)
+        m_fCurrentTrackPosition = m_fDuration;
 
     if (m_bFirst)
     {
-        *pCurrentTrackPoisiton += m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);
+        *pCurrentTrackPoisiton += m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
         m_bFirst = false;
     }
@@ -57,7 +57,7 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
 
     else if (*pCurrentTrackPoisiton <= m_fDuration)
     {
-        *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton);
+        *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
     }
 
@@ -71,22 +71,22 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
     /* 다음 애니메이션으로 이동전에는 여기 걸려서 true가 반환될거임.*/
     else if (*pCurrentTrackPoisiton >= m_fDuration)
     {
-        m_isFinished = true;    
-        return true;    
+        m_isFinished = true;
+        return true;
     }
 
     else
-        m_isFinished = false;   
-        
-   
+        m_isFinished = false;
 
-    _uint			iNumChannels = {};  
 
-    for(auto& pChannel : m_Channels)
+
+    _uint			iNumChannels = {};
+
+    for (auto& pChannel : m_Channels)
     {
-        
+
         pChannel->Update_TransformationMatrix(*pCurrentTrackPoisiton, &CurrentKeyFrameIndices[iNumChannels++], Bones);
-         
+
     }
 
     //애니메이션 이벤트
@@ -110,13 +110,13 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
 
 void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& CurrentKeyFrameIndices, _float* pCurrentTrackPoisiton)
 {
-    *pCurrentTrackPoisiton = 0.0f;      
-    m_isFinished =  false;  
-    m_fCurrentTrackPosition = 0.f;  
-    m_bFirst = true;    
-    
+    *pCurrentTrackPoisiton = 0.0f;
+    m_isFinished = false;
+    m_fCurrentTrackPosition = 0.f;
+    m_bFirst = true;
+
     _uint  iChannelIndex = { 0 };
-    for(auto& pChannel : m_Channels)
+    for (auto& pChannel : m_Channels)
     {
         pChannel->Reset_TransformationMatrix(Bones, &CurrentKeyFrameIndices[iChannelIndex++]);
     }
@@ -141,7 +141,7 @@ _uint CAnimation::Get_ChannelIndex(const _char* pChannelName)
         ++iChannelIndex;
         return false;
         });
-   
+
     return iChannelIndex;
 }
 
@@ -150,21 +150,21 @@ _bool CAnimation::Lerp_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimati
     m_LerpTimeAcc += fTimeDelta;
 
 
-    if(pNextAnimation && m_LerpTimeAcc <= m_LerpTime)
+    if (pNextAnimation && m_LerpTimeAcc <= m_LerpTime)
     {
-        _uint iChannelIndex = 0; 
+        _uint iChannelIndex = 0;
         for (auto& pChannel : m_Channels)
         {
             pChannel->Lerp_TransformationMatrix(Bones, pNextAnimation->m_Channels[iChannelIndex], m_LerpTime, m_LerpTimeAcc, &CurrentKeyFrameIndices[iChannelIndex]);
             iChannelIndex++;
         }
-        return false; 
+        return false;
     }
-                                                     
+
     else
     {
         m_LerpTimeAcc = 0.0f;
-        return true; 
+        return true;
     }
 
     //return _bool();
@@ -172,30 +172,30 @@ _bool CAnimation::Lerp_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimati
 
 HRESULT CAnimation::Save_Anim(ostream& os)
 {
-    os.write((char*)&m_szName, sizeof(_char) * MAX_PATH);   
+    os.write((char*)&m_szName, sizeof(_char) * MAX_PATH);
 
-    os.write((char*)&m_LerpTime, sizeof(_float));   
+    os.write((char*)&m_LerpTime, sizeof(_float));
     os.write((char*)&m_fAnimationSpeed, sizeof(_float));
-        
-    os.write((char*)&m_fDuration, sizeof(_float));  
+
+    os.write((char*)&m_fDuration, sizeof(_float));
 
     /* 애니메이션 툴 관련 추가 작업 */
-    for (int i = 0; i <= (int)m_fDuration; i++) 
+    for (int i = 0; i <= (int)m_fDuration; i++)
     {
-        os.write((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float));    
-    }   
+        os.write((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float));
+    }
 
     /* ================================*/
 
-    os.write((char*)&m_fTickPerSecond, sizeof(_float)); 
-    os.write((char*)&m_fCurrentTrackPosition, sizeof(_float));  
-    os.write((char*)&m_isFinished, sizeof(_bool));  
-    os.write((char*)&m_iNumChannels, sizeof(_uint));    
+    os.write((char*)&m_fTickPerSecond, sizeof(_float));
+    os.write((char*)&m_fCurrentTrackPosition, sizeof(_float));
+    os.write((char*)&m_isFinished, sizeof(_bool));
+    os.write((char*)&m_iNumChannels, sizeof(_uint));
 
     for (auto& channel : m_Channels)
         channel->Save_Channel(os);
 
-    m_iCountFrameEvent = static_cast<_int>(m_vecAnimFrameEvent.size());    
+    m_iCountFrameEvent = static_cast<_int>(m_vecAnimFrameEvent.size());
 
     os.write((char*)&m_iCountFrameEvent, sizeof(int));
 
@@ -216,20 +216,20 @@ HRESULT CAnimation::Save_Anim(ostream& os)
 
 HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices)
 {
-    is.read((char*)&m_szName, sizeof(_char) * MAX_PATH);    
+    is.read((char*)&m_szName, sizeof(_char) * MAX_PATH);
 
     is.read((char*)&m_LerpTime, sizeof(_float));
     is.read((char*)&m_fAnimationSpeed, sizeof(_float));
 
     is.read((char*)&m_fDuration, sizeof(_float));
     /* 애니메이션 툴 관련 추가 작업 */
-    m_vecKeyFrameAnimationSpeed.resize(((int)m_fDuration) + 1); 
+    m_vecKeyFrameAnimationSpeed.resize(((int)m_fDuration) + 1);
 
-    for (int i = 0; i <= (int)m_fDuration; i++) 
+    for (int i = 0; i <= (int)m_fDuration; i++)
     {
-        is.read((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float)); 
+        is.read((char*)&m_vecKeyFrameAnimationSpeed.at(i), sizeof(_float));
     }
-    /* ============================= */ 
+    /* ============================= */
     is.read((char*)&m_fTickPerSecond, sizeof(_float));
     is.read((char*)&m_fCurrentTrackPosition, sizeof(_float));
     is.read((char*)&m_isFinished, sizeof(_bool));
@@ -265,7 +265,7 @@ HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices
 CAnimation* CAnimation::Create(const aiAnimation* pAIAnimation, const CModel* pModel, vector<_uint>& CurrentKeyFrameIndices)
 {
     CAnimation* pInstance = new CAnimation();
-    if(FAILED(pInstance->Initialize(pAIAnimation, pModel, CurrentKeyFrameIndices)))   
+    if (FAILED(pInstance->Initialize(pAIAnimation, pModel, CurrentKeyFrameIndices)))
     {
         MSG_BOX("Failed to Created : Animation");
         Safe_Release(pInstance);
@@ -293,8 +293,8 @@ void CAnimation::Free()
     for (auto& pChannels : m_Channels)
         Safe_Release(pChannels);
 
-    m_vecKeyFrameAnimationSpeed.clear();            
-    m_vecAnimFrameEvent.clear();    
+    m_vecKeyFrameAnimationSpeed.clear();
+    m_vecAnimFrameEvent.clear();
 
     m_Channels.clear();
 }

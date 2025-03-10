@@ -149,18 +149,25 @@ HRESULT CObject_Manager::Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstri
 	return E_FAIL;	
 }
 
-CGameObject* CObject_Manager::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)	
+CGameObject* CObject_Manager::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag, _char* ObjectName)	
 {
 	
-	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);		
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);	
 
-	if (pLayer == nullptr)	
-		return nullptr;			
+	if (pLayer == nullptr)
+		return nullptr;
 
 	list<class CGameObject*>& listGameObject = pLayer->Get_GameObject_List();
-	
 
-	return *listGameObject.begin();		
+	for (auto& iter : listGameObject)	
+	{
+		if (!strcmp(iter->Get_Name(), ObjectName))	
+			return iter;
+	}
+
+	MSG_BOX("해당 레이어의 오브젝트 찾기 실패");	
+
+	return nullptr;
 }
 
 HRESULT CObject_Manager::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)

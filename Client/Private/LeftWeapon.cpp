@@ -25,7 +25,7 @@ HRESULT CLeftWeapon::Initialize_Prototype()
 HRESULT CLeftWeapon::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_LEFT_WEAPON");
+    strcpy_s(m_szName, "PLAYER_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -61,6 +61,7 @@ void CLeftWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
+    m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
 
 }
 
@@ -112,6 +113,22 @@ HRESULT CLeftWeapon::Ready_Components()
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corvus_Left_Weapon"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
+
+    CBounding_Sphere::BOUNDING_SPHERE_DESC SphereDesc{};
+
+
+    SphereDesc.fRadius = 25.f;
+    SphereDesc.vCenter = _float3(50.f, 0.f, 0.f);
+
+
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &SphereDesc)))
+        return E_FAIL;
+
+
+    m_pColliderCom->Set_Collider_Name("PLAYER_LEFT_WEAPON");
+    //m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER_WEAPON, this);      
+
 
     return S_OK;
 }
@@ -174,6 +191,7 @@ void CLeftWeapon::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pColliderCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 

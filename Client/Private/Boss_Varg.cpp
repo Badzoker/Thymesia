@@ -46,9 +46,9 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"),"PLAYER");
 
-    _vector vFirst_Pos = { 112.6f, 1.85f, 28.8f, 1.0f };
+    _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
     m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
@@ -68,6 +68,10 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+
+    /* 3월 9일 추가 */
+    m_pGameObjectModel = m_pModelCom;
 
     return S_OK;
 }
@@ -152,7 +156,7 @@ HRESULT CBoss_Varg::Ready_Components()
     /* Com_Navigation */
     CNavigation::NAVIGATION_DESC   Desc{};
 
-    Desc.iCurrentCellIndex = 0;
+    Desc.iCurrentCellIndex = 11;
 
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))

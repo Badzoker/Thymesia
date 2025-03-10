@@ -43,7 +43,7 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
 
     _vector vFirst_Pos = { 105.6f, 1.85f, 28.8f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
@@ -69,6 +69,9 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
     m_fMonsterMaxHP = 100.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
+
+    /* 3월 9일 추가 */
+    m_pGameObjectModel = m_pModelCom;
 
     return S_OK;
 }

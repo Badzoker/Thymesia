@@ -99,6 +99,7 @@ public:
 		CStateMgr* pParentStateMgr = { nullptr };
 		CNavigation* pParentNavigationCom = { nullptr };
 		CGameObject* pParent = { nullptr };
+		PxRigidDynamic* pParentActor = { nullptr };
 	};
 
 private:
@@ -197,6 +198,8 @@ private:
 
 	_float							m_fAnimSpeed = 1.f;
 	_float						    m_fTimeDelta = {};
+
+	_float							m_fHitStopTime = {};
 private:
 
 	_uint* m_pParentState = { nullptr };
@@ -205,6 +208,7 @@ private:
 	_uint  m_iRenderState = {};
 	CStateMgr* m_pParentStateMgr = { nullptr };
 	CNavigation* m_pParentNavigationCom = { nullptr };
+	PxRigidDynamic* m_pParentActor = { nullptr };
 
 
 public:

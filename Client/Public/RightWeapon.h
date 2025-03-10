@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
 
 
 class CRightWeapon final : public CPartObject
@@ -40,6 +41,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
+	CCamera_Free* m_pCamera = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
@@ -48,10 +50,11 @@ private:
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
+	_float			   m_fHitStopTime = { 0.f };
 
 private:
 	const _uint* m_pParentState = { nullptr };
-
+	_uint		 m_iPreParentState = {};
 
 public:
 	HRESULT Ready_Components();

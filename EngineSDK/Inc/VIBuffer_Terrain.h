@@ -17,6 +17,8 @@ public:
 public:
 	_float					Get_Height(const XMFLOAT3& _vPos);
 	_float3					Get_TerrainPos() { return m_fTerrainPos; }
+	void 				    Set_TerrainPos(_float3 _fPos) { m_fTerrainPos = _fPos; }	
+
 private:
 	_float4                 m_vPlane = {};
 	XMVECTOR*				m_VertexPos = { nullptr };

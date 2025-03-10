@@ -63,23 +63,6 @@ float PerlinNoise(float x, float y) {
 	return Lerp(lerpX1, lerpX2, v);
 }
 
-_vector CameraShake(float deltaTime, XMVECTOR& cameraPosition)
-{
-	static float shakeTime = 0.0f;
-	shakeTime += deltaTime;
-
-	// 펄린 노이즈 기반 흔들림 값 생성
-	float offsetX = PerlinNoise(shakeTime * 1000.0f, 0.5f) * deltaTime * 10.f;
-	float offsetY = 0.f;//PerlinNoise(shakeTime * 240.0f, 1.0f) * deltaTime * 4.f;
-	float offsetZ = PerlinNoise(shakeTime * 1000.0f, 1.5f) * deltaTime * 10.f;
-
-	XMVECTOR shakeOffset = XMVectorSet(offsetX, offsetY, offsetZ, 0.0f);
-	XMVECTOR newCameraPos = XMVectorAdd(cameraPosition, shakeOffset);
-
-
-	return newCameraPos;
-}
-
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -99,6 +82,9 @@ HRESULT CCamera_Free::Initialize_Prototype()
 
 HRESULT CCamera_Free::Initialize(void* pArg)
 {
+
+	strcpy_s(m_szName, "Camera_Free");
+
 	FREE_CAMERA_DESC* pDesc = static_cast<FREE_CAMERA_DESC*>(pArg);
 
 	m_fMouseSensor = pDesc->fMouseSensor;
@@ -135,6 +121,8 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
+	m_fTimeDelta = fTimeDelta;
+
 	if (m_pGameInstance->isMouseEnter(DIM_MB))
 	{
 		m_bLockOnOff = !m_bLockOnOff;
@@ -145,12 +133,10 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-	const float distance = 3.0f; // 플레이어와 카메라 거리		
-
 	// 플레이어의 충돌체를 기준으로할까.	
 	m_vPlayerHeadPos = XMVectorSet(
 		XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.2f, // 머리 높이 보정	
+		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
 		XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 		1.0f
 	);
@@ -160,7 +146,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	// 카메라 이동 처리
 	_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * distance;
+	_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
 
 	_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, 0.075f);
 
@@ -279,7 +265,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 			/* 플레이어 방향 전환 */
 			//if (abs(Radian) > 0.1f)
-			m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 3.f);
+			m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
 			m_bLockOnCameraFirst = true;
 
 
@@ -307,13 +293,38 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	/* 여기에 이벤트가 들어와야함. */
 	if (m_bShakeOnOff)
 	{
-		_vector CamPos = CameraShake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
 	}
 
 
+	if (m_bZoomIn)
+	{
+		if (m_fCamCloseLimitDistance < m_fCurCamDistance)
+			m_fCurCamDistance -= fTimeDelta;
+
+		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+	}
+
+
+	if (m_bZoomOut)
+	{
+		if (m_fCamFarLimitDistance > m_fCurCamDistance)
+			m_fCurCamDistance += fTimeDelta * 20.f;
+
+		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+	}
+
+
+
 	m_bShakeOnOff = false;
+	m_bZoomIn = false;
+	m_bZoomOut = false;
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -407,6 +418,45 @@ void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)
 	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 3.f, m_vLerpPlayerHeadPos);
 
 }
+
+void CCamera_Free::ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _float _fXaxisMoveAmount, _float _fZaxisMoveAmount)
+{
+	m_bShakeOnOff = true;
+	m_fXaxisShakeSpeed = _fXaxisShakeSpeed;
+	m_fZaxisShakeSpeed = _fZaxisShakeSpeed;
+	m_fXaxisMoveAmount = _fXaxisMoveAmount;
+	m_fZaxisShakeSpeed = _fZaxisMoveAmount;
+}
+
+void CCamera_Free::ResetZoomInCameraPos()
+{
+	if (m_fCamDistance > m_fCurCamDistance)
+		m_fCurCamDistance += m_fTimeDelta;
+}
+
+void CCamera_Free::ResetZoomOutCameraPos()
+{
+	if (m_fCamDistance < m_fCurCamDistance)
+		m_fCurCamDistance -= m_fTimeDelta * 20.f;
+}
+
+_vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)
+{
+	static float shakeTime = 0.0f;
+	shakeTime += deltaTime;
+
+	// 펄린 노이즈 기반 흔들림 값 생성
+	float offsetX = PerlinNoise(shakeTime * m_fXaxisShakeSpeed, 0.5f) * deltaTime * m_fXaxisMoveAmount;
+	float offsetY = 0.f;//PerlinNoise(shakeTime * 240.0f, 1.0f) * deltaTime * 4.f;	
+	float offsetZ = PerlinNoise(shakeTime * m_fZaxisShakeSpeed, 1.5f) * deltaTime * m_fZaxisMoveAmount;
+
+	XMVECTOR shakeOffset = XMVectorSet(offsetX, offsetY, offsetZ, 0.0f);
+	XMVECTOR newCameraPos = XMVectorAdd(cameraPosition, shakeOffset);
+
+
+	return newCameraPos;
+}
+
 
 CCamera_Free* CCamera_Free::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

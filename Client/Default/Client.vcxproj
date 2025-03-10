@@ -361,6 +361,7 @@
     <ClCompile Include="..\private\Parry_L.cpp" />
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
@@ -399,7 +400,6 @@
     <ClCompile Include="..\private\Rock_On_Run_R.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Object.cpp" />
-    <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerIdle.cpp" />
     <ClCompile Include="..\private\PlayerRun.cpp" />
     <ClCompile Include="..\private\RightWeapon.cpp" />
