@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Animation.h"
+#include "Camera_Free.h"
 
 CRightWeapon::CRightWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
@@ -60,6 +61,8 @@ void CRightWeapon::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
 
+    if (m_pCamera == nullptr)
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
 void CRightWeapon::Update(_float fTimeDelta)
@@ -116,6 +119,12 @@ void CRightWeapon::Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 #pragma endregion  
+
+    if (m_iPreParentState != *m_pParentState)
+    {
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        //m_fHitStopTime = 0.f;   
+    }
 }
 
 void CRightWeapon::Late_Update(_float fTimeDelta)
@@ -127,6 +136,7 @@ void CRightWeapon::Late_Update(_float fTimeDelta)
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }
 
+    m_iPreParentState = *m_pParentState;
 }
 
 HRESULT CRightWeapon::Render()
@@ -180,18 +190,29 @@ HRESULT CRightWeapon::Bind_ShaderResources()
 
 void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-
-
+    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    m_fHitStopTime = 0.f;
 }
 
 void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-
+    if (!strcmp("MONSTER", _pOther->Get_Name()))
+    {
+        m_fHitStopTime += m_fTimeDelta;
+        if (m_fHitStopTime < 0.175f)
+        {
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
+            m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
+        }
+        else
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    }
 }
 
 void CRightWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-
+    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    m_fHitStopTime = 0.f;
 }
 
 CRightWeapon* CRightWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

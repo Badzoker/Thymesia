@@ -35,13 +35,28 @@ public:
 public:
 	CGameObject* Find_LockOnTarget();
 	void				LockOnCameraTurn(_float fTimeDelta);
-	void				ShakeOn() { m_bShakeOnOff = true; }
-
+	void				ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _float _fXaxisMoveAmount, _float _fZaxisMoveAmount);
+	void				ZoomIn() { m_bZoomIn = true; }
+	void				ZoomOut() { m_bZoomOut = true; }
+	void				ResetZoomInCameraPos();
+	void				ResetZoomOutCameraPos();
+	_vector			    Camera_Shake(float deltaTime, XMVECTOR& cameraPosition);
 private:
 	_float* m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
 	_float				m_fLerpTime = { 3.f };
+	_float				m_fCamCloseLimitDistance = { 2.f };
+	_float				m_fCamDistance = { 2.5f };
+	_float				m_fCamFarLimitDistance = { 3.0f };
+	_float				m_fCurCamDistance = { 2.5f };
+	_float				m_fTimeDelta = {};
 
+	/* 카메라 셰이킹 관련 변수 */
+	_float				m_fXaxisShakeSpeed = {};
+	_float				m_fZaxisShakeSpeed = {};
+	_float			    m_fXaxisMoveAmount = {};
+	_float			    m_fZaxisMoveAmount = {};
+	/* ===================== */
 
 	CPlayer* m_pPlayer = { nullptr };
 	CTransform* m_pPlayerTransformCom = { false };
@@ -57,7 +72,11 @@ private:
 	_bool				m_bLockOnOff = { false };
 	_bool			    m_bFirst = { true };
 	_bool				m_bLockOnCameraFirst = { false };
+	/* 카메라 이벤트 관련 */
 	_bool				m_bShakeOnOff = { false };
+	_bool				m_bZoomIn = { false };
+	_bool				m_bZoomOut = { false };
+	/*  ---------------  */
 
 
 
