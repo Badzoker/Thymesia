@@ -243,9 +243,9 @@ HRESULT CGameInstance::Sub_GameObject_To_Layer(_uint iLevelIndex, const _wstring
 	return m_pObject_Manager->Sub_GameObject_To_Layer(iLevelIndex, strLayerTag, _pGameObject);
 }
 
-CGameObject* CGameInstance::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
+CGameObject* CGameInstance::Get_GameObject_To_Layer(_uint iLevelIndex, const _wstring& strLayerTag, _char* ObjectName)
 {
-	return m_pObject_Manager->Get_GameObject_To_Layer(iLevelIndex, strLayerTag);
+	return m_pObject_Manager->Get_GameObject_To_Layer(iLevelIndex, strLayerTag, ObjectName);	
 }
 
 list<class CGameObject*>* CGameInstance::Get_LayerGameObject(_uint iLevelIndex, const _wstring& strLayerTag)

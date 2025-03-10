@@ -46,6 +46,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 		MSG_BOX("Failed to Created : StateMgr");
 	}
 
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
+	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
+	m_pGameInstance->Add_Actor_Scene(m_pActor);
+
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -59,23 +65,16 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 70.7f, 1.3f, -110.5f, 1.0f });
+
 
 	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
 
-
-	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
-
-	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
-
-	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
-
-	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
-
-	m_pGameInstance->Add_Actor_Scene(m_pActor);
 	return S_OK;
 }
 
@@ -111,7 +110,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		}
 
 		else if (m_iState == STATE_ATTACK_L2
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 25.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -347,13 +346,6 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_pStateMgr->Get_VecState().at(13)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_B;
 			}
-
-			/*else
-			{
-				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_IDLE;
-			}*/
-
 		}
 
 		if (m_pGameInstance->isKeyPressed(DIK_W)
@@ -420,7 +412,6 @@ void CPlayer::Can_Move()
 	if (m_iState != m_iPreState)
 		m_bMove = true;
 
-
 	// 예외조건 설정해두기 회피및 다른 도주기 등 
 	if (m_iState == STATE_LOCK_ON_EVADE_B
 		|| m_iState == STATE_LOCK_ON_EVADE_L
@@ -431,7 +422,18 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_NORMAL_EVADE_FL
 		|| m_iState == STATE_NORMAL_EVADE_FR
 		|| m_iState == STATE_NORMAL_EVADE_L
-		|| m_iState == STATE_NORMAL_EVADE_R)
+		|| m_iState == STATE_NORMAL_EVADE_R
+		|| m_iState == STATE_HurtMFR_L
+		|| m_iState == STATE_HurtMFR_R
+		|| m_iState == STATE_HURT_LF
+		|| m_iState == STATE_HURT_SF
+		|| m_iState == STATE_HURT_SL
+		|| m_iState == STATE_HURT_HURXXLF
+		|| m_iState == STATE_HURT_KNOCKBACK
+		|| m_iState == STATE_HURT_KNOCKDOWN
+		|| m_iState == STATE_HURT_FALLDOWN
+		|| m_iState == STATE_WEAK_GETUP_F
+		)
 	{
 		m_bMove = true;
 	}
@@ -474,11 +476,6 @@ void CPlayer::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-#pragma region Terrain Height 타기
-	//CVIBuffer_Terrain* pTerrainBufferCom = static_cast<CVIBuffer_Terrain*>(m_pGameInstance->Find_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-	//
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, pTerrainBufferCom->Get_Height({ XMVectorGetX(vPosition), XMVectorGetY(vPosition), XMVectorGetZ(vPosition) })));
-#pragma endregion
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
@@ -534,6 +531,7 @@ HRESULT CPlayer::Ready_PartObjects()
 {
 	CBody_Player::BODY_PLAYER_DESC BodyDesc{};
 
+	BodyDesc.pParentActor = m_pActor;
 	BodyDesc.pParent = this;
 	BodyDesc.pParentNavigationCom = m_pNavigationCom;
 	BodyDesc.pParentStateMgr = m_pStateMgr;
@@ -558,6 +556,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	if (nullptr == pBodyModelCom)
 		return E_FAIL;
 
+	RightWeaponDesc.pParent = this;
 	RightWeaponDesc.pParentModel = m_pModel;
 	RightWeaponDesc.pParentState = &m_iState;
 	RightWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
@@ -572,6 +571,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	/* 왼손 무기를 만든다. */
 	CLeftWeapon::WEAPON_DESC		LeftWeaponDesc{};
 
+	RightWeaponDesc.pParent = this;
 	LeftWeaponDesc.pParentState = &m_iState;
 	LeftWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
 	LeftWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -586,6 +586,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	/* 오른쪽 손톱 무기를 만든다. */
 	CClawWeapon::WEAPON_DESC		RightClawWeaponDesc{};
 
+	RightWeaponDesc.pParent = this;
 	RightClawWeaponDesc.pParentModel = m_pModel;
 	RightClawWeaponDesc.pParentState = &m_iState;
 	RightClawWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
@@ -606,7 +607,6 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 	/* 몬스터 무기와의 충돌 */
 	if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
 	{
-
 		/* 충돌 지점 이 오른쪽 왼쪽 인지 판별 해야함 */
 		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장		
 		_information.extractContacts(contactPoints, 1);
@@ -626,9 +626,15 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			{
 			case STATE::STATE_PARRY_L:
 				if (Parry == 0)
+				{
 					m_iState = STATE_PARRY_DEFLECT_L;
+					m_pStateMgr->Get_VecState().at(24)->Set_MonsterModel(dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_GameObject_Model());
+				}
 				else
+				{
 					m_iState = STATE_PARRY_DEFLECT_L_UP;
+					m_pStateMgr->Get_VecState().at(25)->Set_MonsterModel(dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_GameObject_Model());
+				}
 				break;
 			case STATE::STATE_PARRY_R:
 				if (Parry == 0)
@@ -719,14 +725,15 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 				break;
 			default:
+				m_iState = CPlayer::STATE_HurtMFR_R;  // 22		
+				/* 몬스터 공격 방향 */
+				m_pStateMgr->Get_VecState().at(22)->Set_MonsterLookDir(fMonsterLookDir);
+
+				m_pStateMgr->Get_VecState().at(22)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 				break;
 			}
 
-			//m_iState = CPlayer::STATE_HurtMFR_R;  // 22 
-			///* 몬스터 공격 방향 */
-			//m_pStateMgr->Get_VecState().at(22)->Set_MonsterLookDir(fMonsterLookDir);	
-			//
-			//m_pStateMgr->Get_VecState().at(22)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);	
+
 
 		}
 	}
@@ -752,7 +759,7 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-
+	m_bMove = true;
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

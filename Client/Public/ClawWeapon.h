@@ -10,6 +10,7 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
 
 
 class CClawWeapon final : public CPartObject
@@ -37,6 +38,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
+	CCamera_Free* m_pCamera = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
@@ -46,6 +48,9 @@ private:
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
+	_float			   m_fHitStopTime = { 0.f };
+
+	_uint		     m_iPreParentState = {};
 
 private:
 	const _uint* m_pParentState = { nullptr };

@@ -7,7 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
-
+class CCollider;
 END
 
 BEGIN(Client)
@@ -38,6 +38,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
