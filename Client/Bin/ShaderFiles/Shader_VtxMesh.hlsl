@@ -232,6 +232,11 @@ struct PS_OUT_MOTIONBLUR
     float4 vMotionBlur : SV_TARGET0;
 };
 
+struct PS_OUT_OCCULSION
+{
+    float4 vDiffuse : SV_TARGET0;
+};
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {
@@ -419,23 +424,21 @@ PS_OUT_MOTIONBLUR PS_MAIN_MOTIONBLUR(PS_IN_MOTIONBLUR In)
     return Out;
 }
 
-PS_OUT PS_MAIN_OCCULUSION(PS_IN In)
+
+
+PS_OUT_OCCULSION PS_MAIN_OCCULUSION(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_OCCULSION Out = (PS_OUT_OCCULSION) 0;
    
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     if (vMtrlDiffuse.a >= 0.9f)
     {
         Out.vDiffuse = float4(0.f, 0.f, 0.f, 1.f);
-        Out.vDepth = float4(0.f, 0.f, 0.f, 1.f);
-        Out.vNormal = float4(0.f, 0.f, 0.f, 1.f);
     }
     else
     {
         Out.vDiffuse = float4(0.1f, 0.1f, 0.1f, 1.f);
-        Out.vDepth = float4(1.f, 1.f, 1.f, 1.f);
-        Out.vNormal = float4(1.f, 1.f, 1.f, 1.f);
     }
     return Out;
 }

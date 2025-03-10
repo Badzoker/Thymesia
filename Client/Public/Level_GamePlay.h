@@ -15,8 +15,7 @@ public:
 	typedef struct MonsterSpawnInfo
 	{
 		_float4 vMonsterPos;
-		_int	iMonsterCellIndex;
-		_int	iMonsterIndex;
+		_int	iMonsterIndex = { 0 };
 	}MONSTERSPAWNINFO;
 
 public:
