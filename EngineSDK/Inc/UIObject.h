@@ -34,6 +34,7 @@ public:
 	virtual void Update(_float fTimeDelta)override;
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
+	void		Set_Alpha(_float _fAlpha) { m_fAlpha = _fAlpha; }
 
 
 public:
@@ -64,6 +65,7 @@ protected:
 	_uint				m_iShaderPassNum = { 0 };
 	_uint				m_iGroupID = { 0 };		// 그룹아이디
 	_uint				m_iTexNumber = { 0 }; // 텍스처 넘버
+	_float				m_fAlpha = { 0.0f };
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

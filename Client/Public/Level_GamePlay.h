@@ -43,6 +43,7 @@ private:
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_NPC(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Fade(const _tchar* pLayerTag);
 
 
 	HRESULT Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag);
@@ -57,6 +58,7 @@ private:
 
 private:
 	HRESULT Load_Objects(_int iObject_Level);
+	HRESULT Load_TriggerObjects(_int iObject_Level);
 	HRESULT Load_InstancingObjects(_int iObject_Level);
 	HRESULT Load_Height(_int iObject_Level);
 	HRESULT Load_MonsterIndex(_int iMonsterIndex_Level);
