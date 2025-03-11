@@ -13,7 +13,8 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
-					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_END };
+					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND,
+					   RG_END };
 	
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -64,6 +65,7 @@ private:
 	HRESULT Render_HighLightY();
 	HRESULT Render_Final();
 	HRESULT Render_Blend();
+	HRESULT Render_WeightBlend();
 	HRESULT Render_UI();
 	HRESULT Render_Font();
 

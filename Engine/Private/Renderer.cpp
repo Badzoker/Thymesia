@@ -106,6 +106,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shadow_Final"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* Target_WeightBlend */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_WeightBlend"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/* MRT_GameObjects */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))	
 		return E_FAIL;	
@@ -164,6 +168,9 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	/* MRT_HighLightY */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_HighLightY"), TEXT("Target_HighLightY"))))
+		return E_FAIL;
+	/* MRT_WeightBlend*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_WeightBlend"), TEXT("Target_WeightBlend"))))
 		return E_FAIL;
 
     m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
@@ -298,6 +305,9 @@ HRESULT CRenderer::Render()
 		return E_FAIL;
 
 	if (FAILED(Render_HighLightY()))
+		return E_FAIL;
+
+	if (FAILED(Render_WeightBlend()))
 		return E_FAIL;
 
 	if (FAILED(Render_Final()))	
@@ -845,6 +855,9 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_WeightBlend"), m_pShader, "g_WeightBlendTexture")))
+		return E_FAIL;
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -870,6 +883,28 @@ HRESULT CRenderer::Render_Blend()
 	}
 
 	m_RenderObjects[RG_BLEND].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_WeightBlend()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_WeightBlend"))))
+		return E_FAIL;
+
+
+	for (auto& pRenderObject : m_RenderObjects[RG_WEIGHTBLEND])
+	{
+		if (FAILED(pRenderObject->Render_WeightBlend()))
+			return E_FAIL;
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[RG_WEIGHTBLEND].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
 
 	return S_OK;
 }

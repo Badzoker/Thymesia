@@ -36,6 +36,10 @@ Texture2D g_GlowBeginTexture;
 Texture2D g_GlowXTexture;
 Texture2D g_GlowYTexture;
 
+Texture2D g_WeightBlendTexture;
+
+
+
 float4 g_vCamPosition;
 
 float g_fViewPortWidth, g_fViewPortHeight;
@@ -296,6 +300,8 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector vGodRay = g_LightShaftYTexture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vWeightBlend = g_WeightBlendTexture.Sample(LinearSampler, In.vTexcoord);
+    
     float fViewZ = vDepth.y;
 	
     vector vWorldPos;
@@ -314,7 +320,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector vMotionBlurBegin = g_MotionBlurTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vFinal + vHighLight + vGlow + vMotionBlurBegin + vGodRay;
+    Out.vColor = vFinal + vHighLight + vGlow + vMotionBlurBegin + vGodRay + vWeightBlend;
     
     float3 vFogGodRay = vGodRay.xyz;
     

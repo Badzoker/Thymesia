@@ -237,6 +237,11 @@ struct PS_OUT_OCCULSION
     float4 vDiffuse : SV_TARGET0;
 };
 
+struct PS_OUT_WEIGHTBLEND
+{
+    float4 vBlendDiffuse : SV_TARGET0;
+};
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {
@@ -444,6 +449,26 @@ PS_OUT_OCCULSION PS_MAIN_OCCULUSION(PS_IN In)
 }
 
 
+PS_OUT_WEIGHTBLEND PS_MAIN_WEIGHTBLEND(PS_IN In)
+{
+    PS_OUT_WEIGHTBLEND Out = (PS_OUT_WEIGHTBLEND) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float x = (In.vProjPos.z / In.vProjPos.w);
+    vector vResult = vDiffuse;
+    float fWeight = saturate(max(15e-2, In.vProjPos.w / 70.f));
+    
+    //vResult *= fWeight;
+    vResult.xyz *= fWeight;
+    
+    Out.vBlendDiffuse = vResult;
+	
+    return Out;
+}
+
+
+
 struct GS_IN_SHADOW
 {
     float4 vPosition : SV_POSITION;
@@ -577,5 +602,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_OCCULUSION();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_OCCULUSION();
+    }
+
+    pass WeightBlend //7 ¸Å½¬¿ë WeightBlend
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_WeightBlend, 0);
+        SetBlendState(BS_WeightBlend_Client, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
     }
 }
