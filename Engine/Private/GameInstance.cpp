@@ -168,7 +168,7 @@ HRESULT CGameInstance::Draw()
 {
  	m_pRenderer->Render();
 
-	//m_pPhysX_Manager->Render_PhysXDebugger();	
+	m_pPhysX_Manager->Render_PhysXDebugger();	
 
 	m_pLevel_Manager->Render();
 

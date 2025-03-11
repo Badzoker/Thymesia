@@ -45,13 +45,22 @@ public:
 public:
     HRESULT                                             Ready_Components();
 
-    _bool                                               Check_Collision_With_Player();
+    //_bool                                               Check_Collision_With_Player();
     TRIGGER_TYPE                                        m_eTriggerType = { TRIGGER_TYPE::TT_END };
 private:
-    CCollider* m_pColliderCom = { nullptr };
+    //CCollider* m_pColliderCom = { nullptr };
+    PxRigidDynamic* m_pActor = { nullptr };
+
+
 private:
     _bool                                               m_bFade = { false };
     TC_INFO                                             m_tagInfoTempCollider;
+
+public:
+    virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+    virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+    virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+
 public:
     static CTriggerObject*                              Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
     virtual CGameObject*                                Clone(void* _pArg) override;

@@ -19,6 +19,8 @@ HRESULT CTriggerManager::Set_BlackScreen(CUIObject* _pBlackScreen)
         return E_FAIL;
 
     m_pBlackScreen = _pBlackScreen;
+
+    return S_OK;
 }
 
 HRESULT CTriggerManager::Add_Trigger(TRIGGER_TYPE _eTriggerType, CGameObject* _pTarget)
