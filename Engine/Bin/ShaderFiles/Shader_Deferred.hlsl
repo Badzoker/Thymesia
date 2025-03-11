@@ -38,6 +38,8 @@ Texture2D g_GlowYTexture;
 
 Texture2D g_WeightBlendTexture;
 
+Texture2D g_VelocityTexture;
+
 
 
 float4 g_vCamPosition;
@@ -50,6 +52,12 @@ float4 g_LightShaftValue;
 
 float2 g_ScreenLightPos;
 
+float4x4 g_PreFrameViewInvMatrix; // 이전 프레임의 뷰 매트릭스 
+float4x4 g_CurFrameViewMatrix, g_CurFrameProjMatrix; // 현재 프레임의 뷰 매트릭스와 투영 매트릭스 
+
+Texture2D g_PreFrameDepthTexture;
+
+bool g_bMotionBlurOnOff;
 
 //g_LightShaftValue . x == Density
 //y == Decay
@@ -302,9 +310,38 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector vWeightBlend = g_WeightBlendTexture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vVelocity = g_VelocityTexture.Sample(LinearSampler, In.vTexcoord);   
+    
     float fViewZ = vDepth.y;
 	
     vector vWorldPos;
+    
+    /* 이 과정을 On Off 할 수 있도록 설정해야할 듯 함.  */
+    if (g_bMotionBlurOnOff)
+    {
+    
+	/* 모션 블러 과정 */ 
+        int NumBlurSample = 200;
+   
+        vVelocity.xy /= (float) NumBlurSample;
+    
+        int iCnt = 1;
+    
+        float4 BColor;
+    
+        for (int i = iCnt; i < NumBlurSample; ++i)
+        {
+            BColor = g_FinalTexture.Sample(LinearSampler, In.vTexcoord + vVelocity.xy * (float) i);
+        
+            if (vVelocity.a < BColor.a + 0.04f)
+            {
+                iCnt++;
+                vFinal.xyzw += BColor;
+            }
+        }
+    
+        vFinal.xyzw /= (float) iCnt;
+    }
 	
 	/* 투영공간상의 위치 */
 	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 * 1/w */
@@ -318,9 +355,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     float FogFactor = 1.f - saturate((1.f / 2.71828f) * pow((vWorldPos.z * g_FogRange), 2.f));
     
-    vector vMotionBlurBegin = g_MotionBlurTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    Out.vColor = vFinal + vHighLight + vGlow + vMotionBlurBegin + vGodRay + vWeightBlend;
+    Out.vColor = vFinal + vHighLight + vGlow  + vGodRay + vWeightBlend;
     
     float3 vFogGodRay = vGodRay.xyz;
     

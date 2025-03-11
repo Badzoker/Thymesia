@@ -30,15 +30,15 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))
-		return E_FAIL;	
+	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
+		return E_FAIL;		
 
 
 	// 테스트용 사다리 레이어 준비 함수 호출
 	//if (FAILED(Ready_Layer_Ladder(TEXT("Layer_Ladder"))))
 	//	return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))	
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
@@ -285,7 +285,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	Desc.fFovy = XMConvertToRadians(60.f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 800.f;
+	Desc.fFar = 30.f;
 	Desc.fMouseSensor = 0.05f;
 	Desc.fSpeedPerSec = 25.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);

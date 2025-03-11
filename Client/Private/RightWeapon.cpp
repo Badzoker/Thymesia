@@ -43,7 +43,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.01f,0.2f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.03f,0.5f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -102,6 +102,7 @@ void CRightWeapon::Update(_float fTimeDelta)
                 else
                 {
                     m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    m_fHitStopTime = 0.f;
                 }
 
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
@@ -123,7 +124,6 @@ void CRightWeapon::Update(_float fTimeDelta)
     if (m_iPreParentState != *m_pParentState)
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        //m_fHitStopTime = 0.f;   
     }
 }
 
@@ -190,7 +190,7 @@ HRESULT CRightWeapon::Bind_ShaderResources()
 
 void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    //m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
     m_fHitStopTime = 0.f;
 }
 
@@ -199,10 +199,10 @@ void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
     if (!strcmp("MONSTER", _pOther->Get_Name()))
     {
         m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.175f)
+        if (m_fHitStopTime < 0.15f)
         {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-            m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+            m_pCamera->ShakeOn(500.f, 500.f, 6.f, 6.f);
         }
         else
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);

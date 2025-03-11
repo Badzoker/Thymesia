@@ -76,6 +76,7 @@ public:
 
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
+	void    Set_MotionBlur(_bool _bOnOff);	
 #pragma endregion
 
 #pragma region PIPELINE
@@ -85,6 +86,12 @@ public:
 	_matrix Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const;
 	_float4 Get_CamPosition() const;
 	void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix);
+
+	/* 이전 프레임 뷰와 투영 가져오는 함수*/
+	_float4x4 Get_PreTransform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_matrix Get_PreTransform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_float4x4 Get_PreTransform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_matrix Get_PreTransform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState)const;
 #pragma endregion
 
 

@@ -538,6 +538,12 @@
     <Filter Include="03.UIObject\2.UIObjGroup\6.ESC_Inventory">
       <UniqueIdentifier>{9dea9966-a4c3-4318-ab3d-47743cd5acc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_4">
+      <UniqueIdentifier>{e1a176e7-71a3-4d8d-9d6c-b8fc88b9f729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_5">
+      <UniqueIdentifier>{d0825018-7f4d-4672-a144-d96d7e0b40fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1014,6 +1020,12 @@
     <ClInclude Include="..\Public\UIGroup_Iventory.h">
       <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Attack_LButton_4.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_LButton_5.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_5</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1480,6 +1492,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Iventory.cpp">
       <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LButton_4.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LButton_5.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_5</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

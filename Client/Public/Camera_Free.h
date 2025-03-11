@@ -39,7 +39,7 @@ public:
 	void				ZoomIn() { m_bZoomIn = true; }
 	void				ZoomOut() { m_bZoomOut = true; }
 	void				ResetZoomInCameraPos();
-	void				ResetZoomOutCameraPos();
+	bool				ResetZoomOutCameraPos();
 	_vector			    Camera_Shake(float deltaTime, XMVECTOR& cameraPosition);
 private:
 	_float* m_fPlayerPosition = { nullptr };
@@ -47,7 +47,7 @@ private:
 	_float				m_fLerpTime = { 3.f };
 	_float				m_fCamCloseLimitDistance = { 2.f };
 	_float				m_fCamDistance = { 2.5f };
-	_float				m_fCamFarLimitDistance = { 3.0f };
+	_float				m_fCamFarLimitDistance = { 3.5f };
 	_float				m_fCurCamDistance = { 2.5f };
 	_float				m_fTimeDelta = {};
 

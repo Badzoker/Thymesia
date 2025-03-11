@@ -171,6 +171,8 @@
     <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
+    <ClInclude Include="..\public\Attack_LButton_4.h" />
+    <ClInclude Include="..\public\Attack_LButton_5.h" />
     <ClInclude Include="..\public\Attack_LongClaw_1.h" />
     <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
@@ -331,6 +333,8 @@
     <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
+    <ClCompile Include="..\private\Attack_LButton_4.cpp" />
+    <ClCompile Include="..\private\Attack_LButton_5.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_1.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
