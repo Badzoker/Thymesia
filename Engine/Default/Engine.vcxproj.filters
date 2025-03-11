@@ -247,6 +247,12 @@
     <Filter Include="01.Utility\98.PhysX\SimulationEvent">
       <UniqueIdentifier>{628f9b75-f34f-4509-b964-4edde1fe3ba8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\17.TriggerMgr">
+      <UniqueIdentifier>{6dc9cd5f-7a91-4c7b-88a9-96b9af3ea003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\17.TriggerMgr\TriggerManager">
+      <UniqueIdentifier>{ab095f23-d85a-4ce5-9262-560fbcc70c66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -483,6 +489,12 @@
     <ClInclude Include="..\public\PhysX_SimulationEventCallBack.h">
       <Filter>01.Utility\98.PhysX\SimulationEvent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerManager.h">
+      <Filter>01.Utility\17.TriggerMgr\TriggerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trigger.h">
+      <Filter>01.Utility\17.TriggerMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -703,6 +715,12 @@
     </ClCompile>
     <ClCompile Include="..\private\PhysX_SimulationEventCallBack.cpp">
       <Filter>01.Utility\98.PhysX\SimulationEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerManager.cpp">
+      <Filter>01.Utility\17.TriggerMgr\TriggerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trigger.cpp">
+      <Filter>01.Utility\17.TriggerMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

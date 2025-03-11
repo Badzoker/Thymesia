@@ -20,7 +20,6 @@ public:
 private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 
-
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -6,8 +6,12 @@
 
 #include "Object.h"
 #include "EnvironmentObject.h"
+#include "TriggerObject.h"
+#include "BlackScreen.h"
 
 #include "UI_LeftBackground.h"
+
+
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -46,6 +50,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
 	
@@ -63,6 +70,9 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Lights()))	
 		return E_FAIL;	
+
+	m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
+	m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
 
 	return S_OK;
 }
@@ -186,6 +196,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(107);
 	//Load_Objects(98);
 	Load_Objects(129);
+	Load_TriggerObjects(0);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -346,6 +357,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 
 	return S_OK;
 }
+
+HRESULT CLevel_GamePlay::Ready_Layer_Fade(const _tchar* pLayerTag)
+{
+	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_GAMEPLAY, pLayerTag, &BlackScreenDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_GAMEPLAY, pLayerTag)))
@@ -557,6 +579,52 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		//		dynamic_cast<CGroundObject*>(pEnvironment)->Set_BoxSize(vecBoxSize[t]);
 		//	}
 		//}
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_TriggerObjects(_int iObject_Level)
+{
+	string strDataPath = "../Bin/DataFiles/TriggerData/TriggerObject";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+
+	DWORD dwByte = 0;
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	vector<CTriggerObject*>		vecTriggerObject;
+
+	vecTriggerObject.resize(iSize);
+
+	CTriggerObject::TC_INFO Info = {};
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CTriggerObject::TC_DESC Desc{};
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+
+		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_GAMEPLAY, TEXT("Layer_TriggerObject"), &Desc));
+
+		if (nullptr != pTriggerObject)
+			vecTriggerObject.push_back(pTriggerObject);
 	}
 
 	CloseHandle(hFile);

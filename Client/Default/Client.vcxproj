@@ -174,6 +174,7 @@
     <ClInclude Include="..\public\Attack_LongClaw_1.h" />
     <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BlackScreen.h" />
     <ClInclude Include="..\Public\Body_Aisemy.h" />
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\Public\Particle_Compute_Example.h" />
+    <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
@@ -322,6 +324,7 @@
     <ClCompile Include="..\private\Attack_LongClaw_1.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BlackScreen.cpp" />
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
@@ -371,6 +374,7 @@
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
@@ -474,6 +478,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMeshNoDefferd.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshNoDefferd.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
