@@ -33,27 +33,13 @@ HRESULT CUI_Attribute_Slot_Active::Initialize(void* pArg)
 
 void CUI_Attribute_Slot_Active::Priority_Update(_float fTimeDelta)
 {
-	m_bImageLoopOn = true;
 }
 
 void CUI_Attribute_Slot_Active::Update(_float fTimeDelta)
 {
-	//if (m_bRenderOpen)
-	//{
-	//	if (__super::On_Mouse_UI(g_hWnd))
-	//	{
-	//		//m_bRenderOpen = true;
-	//		m_iTexNumber = 1;
-	//	}
-	//	else
-	//	{
-	//		//m_bRenderOpen = false;
-	//		m_iTexNumber = 0;
-	//	}
-	//}
-if (m_bRenderOpen)
+	if (m_bRenderOpen)
 	{
-		if (__super::Mouse_Select(g_hWnd))
+		if (__super::Mouse_Select_Talent(g_hWnd, DIM_LB))
 		{
 			//m_bRenderOpen = true;
 			m_iTexNumber = 1;
@@ -64,24 +50,15 @@ if (m_bRenderOpen)
 			m_iTexNumber = 0;
 		}
 
+		m_bImageLoopOn = true;
+
+		m_fCurrentTime += fTimeDelta;
+
+		if (1 <= m_fCurrentTime)
+		{
+			m_fCurrentTime *= -1;
+		}
 	}
-	
-m_fCurrentTime += fTimeDelta;
-
-
-if (1 < m_fCurrentTime && 5 > m_fCurrentTime) // 시간 값이 1보다 크고 2보다 작을 때
-{
-	m_fCurrentTime = 5; // 2로 
-}
-else if (5 < m_fCurrentTime && 10 > m_fCurrentTime) // 시간이 2보다 크고 3보다 작을 때
-{
-	m_fCurrentTime = 0; // 다시 0으로 
-
-}
-
-
-
-
 }
 
 void CUI_Attribute_Slot_Active::Late_Update(_float fTimeDelta)
@@ -102,17 +79,13 @@ HRESULT CUI_Attribute_Slot_Active::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageLoopOn", &m_bImageLoopOn, sizeof(_bool))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CurrentTimeDelta", &m_fCurrentTime, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
-	//if (m_bImageLoopOn)
-	//	m_iShaderPassNum = 14;
-	//else
-	//	m_iShaderPassNum = 12;
-	m_iShaderPassNum = 3;
+	m_iShaderPassNum = 1;
 
 	m_pShaderCom->Begin(m_iShaderPassNum);
 

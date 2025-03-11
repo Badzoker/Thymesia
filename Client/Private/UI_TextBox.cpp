@@ -40,7 +40,8 @@ void CUI_TextBox::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+		if (m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
 	}
 }
 
@@ -49,14 +50,14 @@ HRESULT CUI_TextBox::Render()
 	if (m_bRenderOpen)
 	{
 		_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
-
 		m_fTextPosition.x = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x;
 		m_fTextPosition.y = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y;
+		_float fZ = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).z;
 
 		switch (m_eRenderType)
 		{
 		case Client::CUI_TextBox::FONT_DEFALUT:
-			m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
+			m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f, fZ);
 			break;
 		case Client::CUI_TextBox::FONT_SHADOW:
 			m_pGameInstance->Render_Shadow(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
