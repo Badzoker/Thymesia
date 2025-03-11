@@ -3,21 +3,21 @@
 #include "GameInstance.h"
 
 CUI_HightlightBar::CUI_HightlightBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI_Image{ pDevice, pContext }
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
 CUI_HightlightBar::CUI_HightlightBar(const CUI_HightlightBar& Prototype)
-    : CUI_Image(Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
 HRESULT CUI_HightlightBar::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_HightlightBar::Initialize(void* pArg)

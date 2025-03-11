@@ -45,7 +45,7 @@ HRESULT CUI_Button::Render()
 	return S_OK;
 }
 
-_bool CUI_Button::Mouse_Select(HWND hWnd)
+_bool CUI_Button::Mouse_Select_Talent(HWND hWnd, MOUSEKEYSTATE eMouseKey)
 {
 	POINT	ptMouse{};
 	GetCursorPos(&ptMouse);
@@ -55,7 +55,7 @@ _bool CUI_Button::Mouse_Select(HWND hWnd)
 		ptMouse.y >= m_fPos.y - m_fSize.y / 3 &&
 		ptMouse.y <= m_fPos.y + m_fSize.y / 3)
 	{
-		if (m_pGameInstance->isMouseEnter(DIM_LB))
+		if (m_pGameInstance->isMouseEnter(eMouseKey))
 		{
 			iTestCount++;
 		}
@@ -70,6 +70,25 @@ _bool CUI_Button::Mouse_Select(HWND hWnd)
 		return true;
 	}
 	return false;
+}
+
+_bool CUI_Button::Mouse_Select(HWND hWnd, MOUSEKEYSTATE eMouseKey, _float fSize)
+{
+	POINT	ptMouse{};
+	GetCursorPos(&ptMouse);
+	ScreenToClient(hWnd, &ptMouse);
+	if (ptMouse.x >= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x - m_pTransformCom->Compute_Scaled().x / fSize &&
+		ptMouse.x <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x + m_pTransformCom->Compute_Scaled().x / fSize &&
+		ptMouse.y >= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y - m_pTransformCom->Compute_Scaled().y / fSize &&
+		ptMouse.y <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y + m_pTransformCom->Compute_Scaled().y / fSize)
+	{
+		if (m_pGameInstance->isMouseEnter(eMouseKey))
+		{
+			return true;
+		}
+	}
+	return false;
+
 }
 
 _bool CUI_Button::On_Mouse_UI(HWND hWnd)
@@ -92,6 +111,7 @@ _bool CUI_Button::On_Mouse_UI(HWND hWnd)
 
 	return false;
 }
+
 void CUI_Button::Free()
 {
 	__super::Free();

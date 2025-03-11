@@ -3,21 +3,21 @@
 #include "GameInstance.h"
 
 CUI_ContentBackground::CUI_ContentBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI_Image{ pDevice, pContext }
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
 CUI_ContentBackground::CUI_ContentBackground(const CUI_ContentBackground& Prototype)
-    : CUI_Image(Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
 HRESULT CUI_ContentBackground::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_ContentBackground::Initialize(void* pArg)
@@ -43,7 +43,8 @@ void CUI_ContentBackground::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if (m_bOpen || m_iGroupID == 0)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 

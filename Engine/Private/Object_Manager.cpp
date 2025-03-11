@@ -170,7 +170,7 @@ CGameObject* CObject_Manager::Get_GameObject_To_Layer(_uint iLevelIndex, const _
 	return nullptr;
 }
 
-HRESULT CObject_Manager::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
+HRESULT CObject_Manager::UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
@@ -178,14 +178,16 @@ HRESULT CObject_Manager::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring&
 		return E_FAIL;;
 
 
-	return pLayer->UIScene_Render_OnOff(bCheck);;
+	return pLayer->UIGroup_Render_OnOff(bCheck);;
 }
-
-_bool CObject_Manager::UIScene_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
+_bool CObject_Manager::UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
-	return pLayer->UIScene_Render_State();
+	/*if (pLayer == nullptr)
+		return E_FAIL;;*/
+
+	return pLayer->UIGroup_Render_State();;
 }
 
 CComponent* CObject_Manager::Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName)

@@ -276,14 +276,19 @@ _uint CGameInstance::Get_NumLevel()
 	return m_pObject_Manager->Get_NumLevel();	
 }
 
-HRESULT CGameInstance::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
+HRESULT CGameInstance::UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
 {
-	return m_pObject_Manager->UIScene_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
+	return m_pObject_Manager->UIGroup_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
 }
 
 _char* CGameInstance::Get_ColliderName(CGameObject* pGameObejct)
 {
 	return dynamic_cast<CCollider*>(pGameObejct->Get_Components()->find(TEXT("Com_Collider"))->second)->Get_CollierName();
+}
+
+_bool CGameInstance::UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->UIGroup_Render_State(iLevelIndex, strLayerTag);
 }
 
 #pragma endregion
@@ -597,6 +602,16 @@ map<const _wstring, class CUI_Scene*>* CGameInstance::Find_UIScene_ALL()
 HRESULT CGameInstance::UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen)
 {
 	return m_pUI_Manager->UIScene_UIObject_Render_OnOff(pScene, bOpen);
+}
+
+_bool CGameInstance::Get_Scene_Render_State(CUI_Scene* pScene)
+{
+	return m_pUI_Manager->Get_Scene_Render_State(pScene);
+}
+
+HRESULT CGameInstance::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen)
+{
+	return m_pUI_Manager->Set_All_UIObject_Condition_Open(pScene, bOpen);
 }
 
 void CGameInstance::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)

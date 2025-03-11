@@ -129,6 +129,30 @@ HRESULT CUI_Scene::UIScene_UIObject_Render_OnOff(_bool bOpen)
 	return S_OK;
 }
 
+HRESULT CUI_Scene::Set_All_UIObject_Condition_Open(_bool bOpen)
+{
+	// 이 씬의 모든 오브젝트들 => A 선행 조건에 B가 켜지는 경우인 ui => Open 조건 추가
+// 최초에 모두 킨 상태로 설정해둔 상태여서 => 클라에서 조건에 따라 최초에는 꺼져 있도록 설정
+
+	for (auto& Image : m_Image)
+		Image->Set_OnOff(bOpen);
+
+	for (auto& Button : m_Button)
+		Button->Set_OnOff(bOpen);
+
+	for (auto& ButtonPlayer : m_ButtonPlayer)
+		ButtonPlayer->Set_OnOff(bOpen);
+
+	for (auto& Text : m_TextBox)
+		Text->Set_OnOff(bOpen);
+
+	for (auto& TextPlayerInfo : m_TextPlayerInfo)
+		TextPlayerInfo->Set_OnOff(bOpen);
+
+
+	return S_OK;
+}
+
 void CUI_Scene::Clear_Last(_uint iUIType)
 {
 	switch (iUIType)

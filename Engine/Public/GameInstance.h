@@ -68,8 +68,10 @@ public:
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
 	map<const _wstring, class CLayer*>* Get_Layers();	
 	_uint	Get_NumLevel();
-	HRESULT UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
 	_char* Get_ColliderName(CGameObject* pGameObejct);
+
+	HRESULT UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
+	_bool UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -190,7 +192,11 @@ public:
 	HRESULT Add_UIObject_To_UIScene(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iSceneIndex, const _wstring& strSceneTag, _uint iUIType, void* pArg = nullptr);
 	class CUI_Scene* Find_UIScene(_uint iSceneIndex, const _wstring& strSceneTag);
 	map<const _wstring, class CUI_Scene*>* Find_UIScene_ALL();
-	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen);
+	
+	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen); // UI 오브젝트 모드 랜더 하면서 => 해당 오브젝트들을 가지고 있는 씬의 랜더 또한 오픈함
+	_bool Get_Scene_Render_State(CUI_Scene* pScene); // 씬이 켜져 있는지 체크
+	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen);
+
 	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
 	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기
 	void Clear_ALL(); // UI 모든 씬 지우기

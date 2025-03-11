@@ -81,13 +81,19 @@
 
 #pragma region  UIs
 #include "UI_TextBox.h"
-#include "UI_MouseCursor.h"
+
+#include "UI_SkillIcon.h"
+#include "UI_Effect_Frame.h"
+#include "UI_Effect_SlotFrame.h"
 
 #include "UIGroup_GameIntro.h"
 #include "UIGroup_PlayerMenu.h"
 #include "UIGroup_PlayerLevelUP.h"
 #include "UIGroup_PlayerTalent.h"
 #include "UIGroup_PlayerScreen.h"
+#include "UIGroup_Iventory.h"
+
+#include "UI_MouseCursor.h"
 
 #include "UI_NewHint.h"
 #include "UI_LockedIcon.h"
@@ -118,6 +124,13 @@
 #include "UI_ButtonBackground.h"
 #include "UI_TitleBackgroundBar.h"
 
+
+#include "UI_EmptyItemBox.h"
+#include "UI_ItemBackground.h"
+#include "UI_SquareFrame.h"
+#include "UI_SquareFrame_Hover.h"
+#include "UI_Item_Icon.h"
+
 #include "UI_Feather_Icon.h"
 #include "UI_HPBar1_Border.h"
 #include "UI_HPBar2_BG.h"
@@ -128,6 +141,7 @@
 #include "UI_MPBar3_MainBar.h"
 #include "UI_PlunderSlotFrame.h"
 #include "UI_Potion_DefaultType.h"
+#include "UI_DialogBackground.h"
 
 #include "UI_GameLogoImage.h"
 #pragma endregion
@@ -475,6 +489,38 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_GameLogoImage"),
 		CUI_GameLogoImage::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//====================================================================================================================================== 이펙트
+	/* For.Prototype_Component_Texture_UI_Effect_Frame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_Effect_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Effect_Frame_%d.dds"), 3))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Effect_Frame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Effect_Frame"),
+		CUI_Effect_Frame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Effect_SlotFrame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_Effect_SlotFrame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Effect_SlotFrame_%d.dds"), 4))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Effect_SlotFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Effect_SlotFrame"),
+		CUI_Effect_SlotFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Effect_SlotFrame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_SkillIcon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_SkillIcon_%d.dds"), 21))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Effect_SlotFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_SkillIcon"),
+		CUI_SkillIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//====================================================================================================================================== 키보드 텍스처
 	/* For.Prototype_Component_Texture_UI_KeyBox_Long*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_KeyBox_Long"),
@@ -816,6 +862,80 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 
+	//====================================================================================================================================== 인벤토리
+
+	/* For.Prototype_Component_Texture_UI_EmptyItemBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_EmptyItemBox"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_EmptyItemBox.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_EmptyItemBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_EmptyItemBox"),
+		CUI_EmptyItemBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	///* For.Prototype_Component_Texture_UI_ForgottenFeatherIcon*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_ForgottenFeatherIcon"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_ForgottenFeatherIcon.dds"), 1))))
+	//	return E_FAIL;
+	///* For.Prototype_GameObject_UI_ForgottenFeatherIcon */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_ForgottenFeatherIcon"),
+	//	CUI_ForgottenFeatherIcon::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_ItemBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_ItemBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_ItemBackground.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_ItemBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_ItemBackground"),
+		CUI_ItemBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_SquareFrame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_SquareFrame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_SquareFrame.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_SquareFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_SquareFrame"),
+		CUI_SquareFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_SquareFrame_Hover*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_SquareFrame_Hover"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_SquareFrame_Hover.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_SquareFrame_Hover */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_SquareFrame_Hover"),
+		CUI_SquareFrame_Hover::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	///* For.Prototype_Component_Texture_UI_MemoryCollectionIcon*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_MemoryCollectionIcon"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_MemoryCollectionIcon.dds"), 1))))
+	//	return E_FAIL;
+	///* For.Prototype_GameObject_UI_MemoryCollectionIcon */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_MemoryCollectionIcon"),
+	//	CUI_MemoryCollectionIcon::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Item_Icon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_Item_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_Item_Icon_%d.dds"), 8))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Item_Icon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Item_Icon"),
+		CUI_Item_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_DialogBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_DialogBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_DialogBackground.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_DialogBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_DialogBackground"),
+		CUI_DialogBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MouseCursor"),
@@ -851,6 +971,10 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	/* For.Prototype_GameObject_UI_LevelUP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"),
 		CUIGroup_PlayerScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UIGroup_Iventory */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_Iventory"),
+		CUIGroup_Iventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion

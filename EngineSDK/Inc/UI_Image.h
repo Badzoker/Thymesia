@@ -16,6 +16,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
 
+	_bool On_Mouse_UI(HWND hWnd, _int iSize);
+	_bool On_Mouse_Side_Select(HWND hWnd, _int iSize, MOUSEKEYSTATE eMouseKey);
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

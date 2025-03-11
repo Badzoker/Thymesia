@@ -13,6 +13,12 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
     m_pBatch = new SpriteBatch(m_pContext);
 
+    m_Desc.DepthEnable = TRUE;
+    m_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    m_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    m_Desc.StencilEnable = FALSE;
+    m_pDevice->CreateDepthStencilState(&m_Desc, &m_pDepthStencil);
+
     return S_OK;
 }
 
@@ -22,7 +28,7 @@ HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _floa
         nullptr == m_pBatch)
         return E_FAIL;
 
-    m_pBatch->Begin(SpriteSortMode_FrontToBack);
+    m_pBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr, m_pDepthStencil);
 
     /* 뷰포트 상의 직교투영의 형태로 그려낸다. */
     //m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.f,vPosition.y + 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
@@ -100,6 +106,7 @@ void CCustomFont::Free()
 
     Safe_Release(m_pContext);
     Safe_Release(m_pDevice);
+    Safe_Release(m_pDepthStencil);
 
 
 }
