@@ -127,13 +127,13 @@ HRESULT CLevel_GamePlay::Render()
 
 HRESULT CLevel_GamePlay::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Com_Transform")));
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
-	_vector vCamInfo = { XMConvertToRadians(60.f), 16.f / 9.f , 0.1f, 1000.f };
+	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
 
-	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(111.827f, 0.0f, 108.493f, 1.0f), XMVectorSet(0.f, -1.f, 0.f, 1.f),
-		XMConvertToRadians(60.f), g_iWinSizeX / static_cast<_float>(g_iWinSizeY), 0.1f, 1000.f
+	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(100.7f, 100.3f, -1.f, 1.0f), XMVectorSet(0.f, -1.f, 0.f, 1.f),
+		XMConvertToRadians(60.f), g_iWinSizeX / static_cast<_float>(g_iWinSizeY), 0.1f, 800.f
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
 

@@ -123,25 +123,28 @@ PS_OUT PS_MAIN(PS_IN In)
     
     for (int i = 0; i < 3; ++i)
     {
-    //{
-    //    LightPos[i] = mul(vWorldPos, g_lightviewmatrix[i]);
         LightPos[i] = mul(vWorldPos, g_lightprojmatrix[i]);
     }
-   
-    float ShadowFactor;
+    
+    //float fShadowFactor[3];
+    float fShadow = 0.f;
     
     [unroll]
     for (int d = 0; d < 3; ++d)
     {
         if (vDepthDesc.x <= LightEndClipSpace[d])
         {
-            ShadowFactor = CalcCascadeShadowFactor(d, LightPos[d]);
+            fShadow = CalcCascadeShadowFactor(d, LightPos[d]);
             //debugColor = checkcolor[j];
             break;
         }
     }
     
-    Out.vColor = vColor - ShadowFactor;
+    fShadow /= 3.f;
+    
+    vector vShadow = (0.f, 0.f, 0.f, 0.f);
+    
+    Out.vColor = lerp(vColor, vShadow, fShadow);
     
     return Out;
 }
@@ -151,7 +154,7 @@ technique11 DefaultTechnique
 {
     pass DefaultPass
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Rs_Depth_Bias);
         SetDepthStencilState(DSS_SKip_Z, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

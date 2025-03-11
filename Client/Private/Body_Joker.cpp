@@ -52,6 +52,7 @@ void CBody_Joker::Update(_float fTimeDelta)
 void CBody_Joker::Late_Update(_float fTimeDelta)
 {
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CBody_Joker::Render()

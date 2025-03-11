@@ -50,6 +50,7 @@ void CBody_VillageM1::Late_Update(_float fTimeDelta)
 {
 
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 
 }
 
@@ -79,8 +80,29 @@ HRESULT CBody_VillageM1::Render()
 	return S_OK;
 }
 
+
 HRESULT CBody_VillageM1::Render_Shadow()
 {
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;/*
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_ViewMatrix", "g_ProjMatrix")))
+		return E_FAIL;*/
+
+
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_LightViewMatrix", "g_LightProjMatrix")))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(2);
+		m_pModelCom->Render(i);
+	}
+
 	return S_OK;
 }
 

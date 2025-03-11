@@ -19,7 +19,8 @@ float     g_EdgeWidth = 1.f;
 float4    g_EdgeColor = { 0.f, 0.f, 1.f, 1.f };
 float     g_Time;
 
-
+matrix g_LightViewMatrix[3];
+matrix g_LightProjMatrix[3];
 
 struct VS_IN
 {
@@ -85,8 +86,33 @@ VS_OUT VS_MAIN(VS_IN In)
 struct VS_OUT_SHADOW
 {
     float4 vPosition : SV_POSITION;
-    float4 vProjPos : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD0;
 };
+
+//VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
+//{
+//    VS_OUT_SHADOW Out = (VS_OUT_SHADOW) 0;
+
+//    matrix matWV, matWVP;
+
+//    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+//    matWVP = mul(matWV, g_ProjMatrix);
+
+//    float fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+
+//    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndex.x] * In.vBlendWeight.x +
+//		g_BoneMatrices[In.vBlendIndex.y] * In.vBlendWeight.y +
+//		g_BoneMatrices[In.vBlendIndex.z] * In.vBlendWeight.z +
+//		g_BoneMatrices[In.vBlendIndex.w] * fWeightW;
+
+//	/* 로컬스페이스 상에서 변환을 한다. */
+//    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+
+//    Out.vPosition = mul(vPosition, matWVP);
+//    Out.vProjPos = Out.vPosition;
+
+//    return Out;
+//}
 
 VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 {
@@ -107,8 +133,8 @@ VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 	/* 로컬스페이스 상에서 변환을 한다. */
     vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
 
-    Out.vPosition = mul(vPosition, matWVP);
-    Out.vProjPos = Out.vPosition;
+    Out.vPosition = mul(vPosition, g_WorldMatrix);
+    Out.vTexcoord = In.vTexcoord;
 
     return Out;
 }
@@ -135,8 +161,14 @@ struct PS_OUT
 struct PS_IN_SHADOW
 {
     float4 vPosition : SV_POSITION;
-    float4 vProjPos : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD0;
 };
+
+//struct PS_IN_SHADOW
+//{
+//    float4 vPosition : SV_POSITION;
+//    float4 vProjPos : TEXCOORD0;
+//};
 
 struct PS_OUT_SHADOW
 {
@@ -236,14 +268,14 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
     return Out;
 }
 
-PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)   
-{
-    PS_OUT_SHADOW Out = (PS_OUT_SHADOW) 0;
+//PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)   
+//{
+//    PS_OUT_SHADOW Out = (PS_OUT_SHADOW) 0;
 
-    Out.vShadow = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+//    Out.vShadow = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
 
-    return Out;
-}
+//    return Out;
+//}
 
 PS_OUT PS_NOT_Discard_Alpha(PS_IN In)
 {
@@ -294,6 +326,61 @@ PS_OUT PS_EYE_Mesh(PS_IN In)
     return Out;
 }
 
+
+struct GS_IN_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+struct GS_OUT_SHADOW
+{
+    float4 vPosition : SV_Position;
+    float2 vTexcoord : TEXCOORD0;
+    uint RTIndex : SV_RenderTargetArrayIndex;
+};
+
+[maxvertexcount(9)]
+void GS_MAIN(triangle GS_IN_SHADOW In[3], inout TriangleStream<GS_OUT_SHADOW> DataStream)
+{
+    for (int face = 0; face < 3; ++face)
+    {
+   
+        for (int i = 0; i < 3; ++i)
+        {
+            GS_OUT_SHADOW element;
+        
+            element.RTIndex = face;
+            
+            element.vPosition = mul(In[i].vPosition, g_LightProjMatrix[face]);
+            element.vTexcoord = In[i].vTexcoord;
+            DataStream.Append(element);
+        }
+        
+        DataStream.RestartStrip();
+    }
+}
+struct PSIn
+{
+    float4 vPosition : SV_Position;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+
+struct PSOut
+{
+    float vColor : SV_TARGET0;
+};
+
+PSOut PSMainShadow(PSIn In)
+{
+    PSOut Out = (PSOut) 0;
+    
+    Out.vColor = In.vPosition.z;
+    
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -329,8 +416,8 @@ technique11 DefaultTechnique
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
-        GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PSMainShadow();
     }
 
     pass NOT_Discard_Alpha

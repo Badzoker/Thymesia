@@ -304,6 +304,7 @@ void CBody_Player::Update(_float fTimeDelta)
 void CBody_Player::Late_Update(_float fTimeDelta)
 {
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
     //m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);   
 }
 
@@ -330,9 +331,13 @@ HRESULT CBody_Player::Render()
 
 HRESULT CBody_Player::Render_Shadow()
 {
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
-        return E_FAIL;
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;/*
     if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_ViewMatrix", "g_ProjMatrix")))
+        return E_FAIL;*/
+
+
+    if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_LightViewMatrix", "g_LightProjMatrix")))
         return E_FAIL;
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();

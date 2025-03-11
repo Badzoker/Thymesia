@@ -468,7 +468,6 @@ void GS_MAIN(triangle GS_IN_SHADOW In[3], inout TriangleStream<GS_OUT_SHADOW> Da
         
             element.RTIndex = face;
             
-//element.vPosition = mul(In[i].vPosition, mul(g_LightViewMatrix[face], g_LightProjMatrix[face]));
             element.vPosition = mul(In[i].vPosition, g_LightProjMatrix[face]);
             element.vTexcoord = In[i].vTexcoord;
             DataStream.Append(element);

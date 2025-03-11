@@ -71,8 +71,8 @@ namespace Engine
 {
 	static _wstring			g_strTransformTag = TEXT("Com_Transform");
 
-	const unsigned int g_iMaxWidth = 1600;
-	const unsigned int g_iMaxHeight = 900;
+	const unsigned int g_iMaxWidth = 3200;
+	const unsigned int g_iMaxHeight = 1800;
 	
 
 	const unsigned int g_iWinSize_X = 1600;

@@ -89,6 +89,7 @@ void CVillageM_Weapon::Update(_float fTimeDelta)
 void CVillageM_Weapon::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CVillageM_Weapon::Render()
@@ -109,6 +110,33 @@ HRESULT CVillageM_Weapon::Render()
 
 	return S_OK;
 }
+
+HRESULT CVillageM_Weapon::Render_Shadow()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;/*
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_ViewMatrix", "g_ProjMatrix")))
+		return E_FAIL;*/
+
+
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_LightViewMatrix", "g_LightProjMatrix")))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(2);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+
 
 HRESULT CVillageM_Weapon::Ready_Components()
 {

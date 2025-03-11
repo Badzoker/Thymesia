@@ -58,6 +58,9 @@ float4 psLightShaft(float2 texcoord)
     
     float2 DeltaTexCoord = (texcoord.xy - g_ScreenLightPos.xy);
     
+    if (!(DeltaTexCoord.x > 0.5f))
+        return vector(0.f, 0.f, 0.f, 0.f);
+    
     DeltaTexCoord *= 1.f / (float) NUM_SAMPLES * g_LightShaftValue.x;
     
     float4 vColor = g_OccusionTexture.Sample(LinearSampler, texcoord);

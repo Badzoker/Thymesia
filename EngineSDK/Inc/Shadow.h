@@ -48,8 +48,9 @@ private:
 
 	class CGameInstance* m_pGameInstance = { nullptr };
 
-	_matrix				 m_LightTransform[3] = {};
+	_matrix				 m_LightTransform = {};
 	_float				 m_CascadeEndCliSpaceZ[3] = {};
+	_vector				 m_LightDir = { };
 
 	CTransform* m_pPlayerTransform = { nullptr };
 
