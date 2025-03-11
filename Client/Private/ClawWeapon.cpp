@@ -102,6 +102,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
                             // 카메라 포인터 가져오고 싶다.
+                            m_pGameInstance->Set_MotionBlur(true);
                             m_pCamera->ZoomOut();
                         }
                     }
@@ -114,7 +115,11 @@ void CClawWeapon::Update(_float fTimeDelta)
                         }
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
+
+                            /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
                             m_pCamera->ResetZoomOutCameraPos();
+                            m_pGameInstance->Set_MotionBlur(false);
+
                         }
                     }
 
@@ -124,8 +129,6 @@ void CClawWeapon::Update(_float fTimeDelta)
                     {
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로     
                     }
-
-
                 }
             }
         }
@@ -134,6 +137,7 @@ void CClawWeapon::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+        m_pCamera->ResetZoomOutCameraPos();
         //m_pCamera->ResetZoomOutCameraPos(); 
     }
 #pragma endregion  
@@ -142,7 +146,7 @@ void CClawWeapon::Update(_float fTimeDelta)
     if (m_iPreParentState != *m_pParentState)
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        //m_fHitStopTime = 0.f;   
+        m_pGameInstance->Set_MotionBlur(false);
     }
 
 }
@@ -184,7 +188,7 @@ void CClawWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
         if (m_fHitStopTime < 0.175f)
         {
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-            m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
+            //m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
         }
         else
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);

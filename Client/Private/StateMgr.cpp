@@ -7,6 +7,8 @@
 #include "Attack_LButton_1.h"
 #include "Attack_LButton_2.h"
 #include "Attack_LButton_3.h"
+#include "Attack_LButton_4.h"
+#include "Attack_LButton_5.h"	
 #pragma endregion 
 
 #pragma region 우클릭 공격 
@@ -261,6 +263,18 @@ HRESULT CStateMgr::Initialize()
 	/* 42번 피격 모션 */
 	CHURT_FallDown* pHURT_FallDown = CHURT_FallDown::Create();
 	m_vecState.push_back(pHURT_FallDown);
+#pragma endregion 
+
+
+#pragma region 좌클릭 공격 모션 4타, 5타 
+	/* 43번 좌클릭 4타 공격 모션 */
+	CAttack_LButton_4* pAttack_LButton_4 = CAttack_LButton_4::Create();
+	m_vecState.push_back(pAttack_LButton_4);
+
+	/* 44번 좌클릭 5타 공격 모션 */
+	CAttack_LButton_5* pAttack_LButton_5 = CAttack_LButton_5::Create();
+	m_vecState.push_back(pAttack_LButton_5);
+
 #pragma endregion 
 
 	return S_OK;

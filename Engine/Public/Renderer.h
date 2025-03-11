@@ -24,6 +24,7 @@ public:
 	HRESULT Initialize();
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	HRESULT Render();
+	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
@@ -43,6 +44,8 @@ private:
 
 	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};		
 
+	_bool					m_bMotionBlurOnOff = { false };	
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();	
@@ -55,7 +58,7 @@ private:
 	HRESULT Render_LightShaftX();
 	HRESULT Render_LightShaftY();
 	HRESULT Render_MotionBlur_By_Velocity();
-	HRESULT Render_MotionBlurBegin();
+
 	HRESULT Render_NonLight();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Deferred();

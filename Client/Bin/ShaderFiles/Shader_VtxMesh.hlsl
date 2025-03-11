@@ -13,6 +13,9 @@ vector g_vCamPosition;
 matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
 
+
+float4x4 g_PreWorldMatrix, g_PreViewMatrix; 
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -44,14 +47,8 @@ struct VS_OUT_MotionBlur
 {
     float4 vPosition : SV_POSITION;
     float4 vNormal : NORMAL;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vWorldPos : TEXCOORD1;
-    float4 vProjPos : TEXCOORD2;
-	   
-    float4 vTangent : TANGENT;
-    float4 vBinormal : BINORMAL;
-    
-    float4 vDir : TEXCOORD3;
+    float4 vDir : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD1;
 };
 
 struct VS_OUT_OCCULUSION
@@ -114,15 +111,14 @@ VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), matWV));
     Out.vTexcoord = In.vTexcoord;
-    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vProjPos = Out.vPosition;
     
-    //motion blur를 위한 추가작업시작
+    
+    //motion blur를 위한 추가작업시작    
     float4 vNewPos = Out.vPosition;
-    float4 vOldPos = mul(vector(In.vPosition, 1.f), g_OldWorldMatrix);
-    vOldPos = mul(vOldPos, g_OldViewMatrix);
+    float4 vOldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+    vOldPos = mul(vOldPos, g_PreViewMatrix);
     vOldPos = mul(vOldPos, g_ProjMatrix);
 	
     float3 vDir = vNewPos.xyz - vOldPos.xyz;
@@ -132,16 +128,19 @@ VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
         Out.vPosition = vOldPos;
     else
         Out.vPosition = vNewPos;
+   
     
-    float2 vVelocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
-    Out.vDir.x = vVelocity.x * 0.5f;
-    Out.vDir.y = vVelocity.y * (-0.5f);
+    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
+   
+    Out.vDir.xy = velocity * 0.5f;
+    if (velocity.x <= 0.f || velocity.y <= 0.f)      
+        Out.vDir.xy = 0.001f;
+    
+  
+    Out.vDir.y *= -1.f;
+    
     Out.vDir.z = Out.vPosition.z;
     Out.vDir.w = Out.vPosition.w;
-    //motion blur를 위한 추가작업끝
-    
-    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
-    Out.vBinormal = vector(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f);
 	
     return Out;
 }
@@ -187,14 +186,8 @@ struct PS_IN_MOTIONBLUR
 {
     float4 vPosition : SV_POSITION;
     float4 vNormal : NORMAL;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vWorldPos : TEXCOORD1;
-    float4 vProjPos : TEXCOORD2;
-	   
-    float4 vTangent : TANGENT;
-    float4 vBinormal : BINORMAL;
-    
-    float4 vDir : TEXCOORD3;
+    float4 vDir : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD1;
 };
 
 struct PS_IN_OCCULUSION
@@ -229,7 +222,7 @@ struct PS_OUT_GLOW
 
 struct PS_OUT_MOTIONBLUR
 {
-    float4 vMotionBlur : SV_TARGET0;
+    float4 vColor : SV_TARGET0;
 };
 
 struct PS_OUT_OCCULSION
@@ -420,12 +413,15 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
 
 PS_OUT_MOTIONBLUR PS_MAIN_MOTIONBLUR(PS_IN_MOTIONBLUR In)
 {
-    PS_OUT_MOTIONBLUR Out = (PS_OUT_MOTIONBLUR) 0;
+    PS_OUT_MOTIONBLUR Out = (PS_OUT_MOTIONBLUR) 0;  
     
-    Out.vMotionBlur.xy = In.vDir.xy * 10.f; //속도가 매Frame 계산되서 너무 작아서 좀 늘려서 Deferred 에 던지기
-    Out.vMotionBlur.z = In.vDir.w;
-    Out.vMotionBlur.w = In.vDir.z / In.vDir.w;
-	
+    Out.vColor.xy = In.vDir.xy * 11.f;  
+    
+    //방향(속도)
+    Out.vColor.z = 1.0f;    
+    Out.vColor.w = In.vDir.z / In.vDir.w;   
+    
+
     return Out;
 }
 

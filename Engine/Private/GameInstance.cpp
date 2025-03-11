@@ -132,6 +132,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
+
+	m_pPipeLine->Priority_Update();	
+
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pEffect_Manager->Priority_Update(fTimeDelta);
 	m_pUI_Manager->Priority_Update(fTimeDelta);
@@ -168,7 +171,7 @@ HRESULT CGameInstance::Draw()
 {
  	m_pRenderer->Render();
 
-	m_pPhysX_Manager->Render_PhysXDebugger();	
+	//m_pPhysX_Manager->Render_PhysXDebugger();	
 
 	m_pLevel_Manager->Render();
 
@@ -300,6 +303,11 @@ HRESULT CGameInstance::Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, CG
 	return m_pRenderer->Add_RenderGroup(eRenderGroupID, pGameObject);
 }
 
+void CGameInstance::Set_MotionBlur(_bool _bOnOff)
+{
+	return m_pRenderer->Set_MotionBlur(_bOnOff);
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);
@@ -328,6 +336,26 @@ _float4 CGameInstance::Get_CamPosition() const
 void CGameInstance::Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix)
 {
 	return m_pPipeLine->Set_Transform(eState, TransformMatrix);
+}
+
+_float4x4 CGameInstance::Get_PreTransform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Float4x4(eState);
+}
+
+_matrix CGameInstance::Get_PreTransform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Matrix(eState);
+}
+
+_float4x4 CGameInstance::Get_PreTransform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Float4x4_Inverse(eState);
+}
+
+_matrix CGameInstance::Get_PreTransform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Matrix_Inverse(eState);
 }
 
 #pragma endregion

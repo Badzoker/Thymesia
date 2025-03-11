@@ -313,7 +313,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	if (m_bZoomOut)
 	{
 		if (m_fCamFarLimitDistance > m_fCurCamDistance)
-			m_fCurCamDistance += fTimeDelta * 20.f;
+			m_fCurCamDistance += fTimeDelta * 5.f;
 
 		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
 
@@ -434,10 +434,15 @@ void CCamera_Free::ResetZoomInCameraPos()
 		m_fCurCamDistance += m_fTimeDelta;
 }
 
-void CCamera_Free::ResetZoomOutCameraPos()
+bool CCamera_Free::ResetZoomOutCameraPos()
 {
 	if (m_fCamDistance < m_fCurCamDistance)
-		m_fCurCamDistance -= m_fTimeDelta * 20.f;
+		m_fCurCamDistance -= m_fTimeDelta * 5.f;
+
+	else
+		return true;
+
+	return false;
 }
 
 _vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)
