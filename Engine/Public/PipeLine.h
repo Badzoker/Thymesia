@@ -11,13 +11,13 @@ BEGIN(Engine)
 class CPipeLine final : public CBase
 {
 public:
-	enum D3DTRANSFORMSTATE 
+	enum D3DTRANSFORMSTATE
 	{
-		D3DTS_VIEW, 
+		D3DTS_VIEW,
 		D3DTS_PROJ,
 		D3DTS_VIEW_FRUSTUM,
 		D3DTS_PROJ_FRUSTUM,
-		D3DTS_END 
+		D3DTS_END
 	};
 private:
 	CPipeLine();
@@ -37,6 +37,21 @@ public:
 		return XMLoadFloat4x4(&m_TransformationInverseMatrices[eState]);
 	}
 
+	/* 모션 블러를 위한 이전 프레임의 뷰의 내용 저장 */
+	_float4x4 Get_PreTransform_Float4x4(D3DTRANSFORMSTATE eState) const {
+		return m_PreTransformationMatrices[eState];
+	}
+	_matrix Get_PreTransform_Matrix(D3DTRANSFORMSTATE eState) const {
+		return XMLoadFloat4x4(&m_PreTransformationMatrices[eState]);
+	}
+	_float4x4 Get_PreTransform_Float4x4_Inverse(D3DTRANSFORMSTATE eState) const {
+		return m_PreTransformationInverseMatrices[eState];
+	}
+	_matrix Get_PreTransform_Matrix_Inverse(D3DTRANSFORMSTATE eState)const {
+		return XMLoadFloat4x4(&m_PreTransformationInverseMatrices[eState]);
+	}
+
+
 	_float4 Get_CamPosition() const {
 		return m_vCamPosition;
 	}
@@ -48,6 +63,10 @@ public:
 
 public:
 	HRESULT Initialize();
+
+	/* 모션 블러를  이전 프레임의 뷰, 투영행렬의 역행렬을 구해서 저장한다. */
+	void Priority_Update();
+
 	/* 원근 투영을 위한 뷰, 투영행렬의 역행렬을 구해서 저장한다. */
 	/* 하는 김에 카메라 위치도 구해놓는다. */
 	void Update();
@@ -55,11 +74,16 @@ public:
 private:
 	_float4x4				m_TransformationMatrices[D3DTS_END] = {};
 	_float4x4				m_TransformationInverseMatrices[D3DTS_END] = {};
+
+	/* 모션 블러를 위한 이전 뷰 행렬을 저장하는 맴버 변수들 */
+	_float4x4				m_PreTransformationMatrices[D3DTS_END] = {};
+	_float4x4				m_PreTransformationInverseMatrices[D3DTS_END] = {};
+
 	_float4					m_vCamPosition = {};
 
 public:
 	static CPipeLine* Create();
-	virtual void Free() override;	
+	virtual void Free() override;
 };
 
 END

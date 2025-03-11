@@ -127,6 +127,16 @@ HRESULT CUI_Manager::UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpe
 	return pScene->UIScene_UIObject_Render_OnOff(bOpen);
 }
 
+_bool CUI_Manager::Get_Scene_Render_State(CUI_Scene* pScene)
+{
+	return pScene->Get_Scene_Render_State();
+}
+
+HRESULT CUI_Manager::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen)
+{
+	return pScene->Set_All_UIObject_Condition_Open(bOpen);
+}
+
 HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
@@ -178,7 +188,7 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
-		if (iUIType == UI_TEXT)
+		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
 		{
 			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
 			szFontName.resize(iLen);

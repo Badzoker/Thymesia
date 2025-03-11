@@ -28,10 +28,12 @@ public:
 	virtual HRESULT Render_Occulusion() override;
 
 	HRESULT Render_Shadow() override;
+	virtual HRESULT Render_Motion_Blur() override;	
 
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
+	virtual HRESULT Bind_Motion_Blur_ShaderResources();
 
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

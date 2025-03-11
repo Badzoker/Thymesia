@@ -69,6 +69,13 @@ DepthStencilState DSS_Thymasia_UI
     StencilEnable = FALSE;
 };
 
+DepthStencilState DSS_WeightBlend
+{
+    DepthEnable = TRUE;
+    DepthWriteMask = ZERO;
+    DepthFunc = LESS_EQUAL;
+};
+
 BlendState BS_Default
 {
     BlendEnable[0] = FALSE; /* 여기서 0은 렌더타겟의 넘버 */
@@ -112,4 +119,20 @@ SamplerComparisonState ShadowSampler
     AddressV = wrap;
     AddressW = wrap;
     ComparisonFunc = GREATER;
+};
+
+BlendState BS_WeightBlend_Client
+{
+    BlendEnable[0] = TRUE;
+    BlendOp[0] = Add;
+    SrcBlend[0] = ONE;
+    DestBlend[0] = ONE;
+};
+
+BlendState BS_WeightBlend_Engine 
+{
+    BlendEnable[0] = TRUE;
+    BlendOp[0] = Add;
+    SrcBlendAlpha[0] = INV_SRC_ALPHA;
+    DestBlendAlpha[0] = SRC_ALPHA;
 };

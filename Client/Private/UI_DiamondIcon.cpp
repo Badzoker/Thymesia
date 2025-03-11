@@ -3,21 +3,21 @@
 #include "GameInstance.h"
 
 CUI_DiamondIcon::CUI_DiamondIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI_Image{ pDevice, pContext }
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
 CUI_DiamondIcon::CUI_DiamondIcon(const CUI_DiamondIcon& Prototype)
-    : CUI_Image(Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
 HRESULT CUI_DiamondIcon::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_DiamondIcon::Initialize(void* pArg)
@@ -43,7 +43,8 @@ void CUI_DiamondIcon::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if (m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 

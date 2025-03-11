@@ -106,6 +106,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shadow_Final"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* Target_WeightBlend */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_WeightBlend"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/* MRT_GameObjects */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))	
 		return E_FAIL;	
@@ -165,6 +169,9 @@ HRESULT CRenderer::Initialize()
 	/* MRT_HighLightY */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_HighLightY"), TEXT("Target_HighLightY"))))
 		return E_FAIL;
+	/* MRT_WeightBlend*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_WeightBlend"), TEXT("Target_WeightBlend"))))
+		return E_FAIL;
 
     m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
 	if (nullptr == m_pShader)
@@ -213,9 +220,9 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightY"), 100.f, 500.f, 200.f, 200.f)))
 	//	return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur_By_Velocity"), 100.f, 500.f, 200.f, 200.f)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur_By_Velocity"), 100.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur"), 100.f, 300.f, 200.f, 200.f)))
+	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur"), 100.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;*/
 	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulusion"), ViewportDesc.Width - 300.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
@@ -285,9 +292,6 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_Shadow_Final()))
 		return E_FAIL;
 
-	if (FAILED(Render_MotionBlurBegin()))
-		return E_FAIL;
-
 	if (FAILED(Render_MotionBlur_By_Velocity()))
 		return E_FAIL;
 
@@ -298,6 +302,9 @@ HRESULT CRenderer::Render()
 		return E_FAIL;
 
 	if (FAILED(Render_HighLightY()))
+		return E_FAIL;
+
+	if (FAILED(Render_WeightBlend()))
 		return E_FAIL;
 
 	if (FAILED(Render_Final()))	
@@ -574,34 +581,7 @@ HRESULT CRenderer::Render_LightShaftY()
 
 HRESULT CRenderer::Render_MotionBlur_By_Velocity()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_MotionBlur_By_Velocity"))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_MotionBlur"), m_pShader, "g_MotionBlurTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
-		return E_FAIL;
-
-	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
-	m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
-	m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
-
-	m_pShader->Begin(9);
-
-	m_pVIBuffer->Bind_InputAssembler();
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CRenderer::Render_MotionBlurBegin()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_MotionBlur"))))
+	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_MotionBlur_By_Velocity"))))	
 		return E_FAIL;
 
 	for (auto& pRenderObject : m_RenderObjects[RG_MOTION_BLUR])
@@ -619,6 +599,7 @@ HRESULT CRenderer::Render_MotionBlurBegin()
 
 	return S_OK;
 }
+
 
 HRESULT CRenderer::Render_NonLight()
 {
@@ -724,6 +705,7 @@ HRESULT CRenderer::Render_Shadow_Final()
 
 	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShadowShader, "g_lightviewmatrix", "g_lightprojmatrix")))
 		return E_FAIL;
+
 
 	m_pShadowShader->Bind_Matrix("g_ViewMatrixInv", &m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	m_pShadowShader->Bind_Matrix("g_ProjMatrixInv", &m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_PROJ));
@@ -836,14 +818,21 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_HighLightY"), m_pShader, "g_HighLightYTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_MotionBlur_By_Velocity"), m_pShader, "g_MotionBlurTexture")))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_GlowY"), m_pShader, "g_GlowYTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture")))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_WeightBlend"), m_pShader, "g_WeightBlendTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_MotionBlur_By_Velocity"), m_pShader, "g_VelocityTexture")))	
+		return E_FAIL;	
+
+	if (FAILED(m_pShader->Bind_RawValue("g_bMotionBlurOnOff", &m_bMotionBlurOnOff, sizeof(bool))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -870,6 +859,28 @@ HRESULT CRenderer::Render_Blend()
 	}
 
 	m_RenderObjects[RG_BLEND].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_WeightBlend()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_WeightBlend"))))
+		return E_FAIL;
+
+
+	for (auto& pRenderObject : m_RenderObjects[RG_WEIGHTBLEND])
+	{
+		if (FAILED(pRenderObject->Render_WeightBlend()))
+			return E_FAIL;
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[RG_WEIGHTBLEND].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -990,8 +1001,8 @@ HRESULT CRenderer::Render_Debug()
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
 

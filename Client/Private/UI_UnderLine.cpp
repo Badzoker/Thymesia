@@ -3,21 +3,21 @@
 #include "GameInstance.h"
 
 CUI_UnderLine::CUI_UnderLine(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI_Image{ pDevice, pContext }
+	: CUI_Button{ pDevice, pContext }
 {
 }
 
 CUI_UnderLine::CUI_UnderLine(const CUI_UnderLine& Prototype)
-    : CUI_Image(Prototype)
+	: CUI_Button(Prototype)
 {
 }
 
 HRESULT CUI_UnderLine::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_UnderLine::Initialize(void* pArg)
@@ -37,6 +37,11 @@ void CUI_UnderLine::Priority_Update(_float fTimeDelta)
 
 void CUI_UnderLine::Update(_float fTimeDelta)
 {
+	if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+		m_bMouseSelectOn = true; // 1회 체크..?
+	else
+		m_bMouseSelectOn = false;
+
 }
 
 void CUI_UnderLine::Late_Update(_float fTimeDelta)
@@ -66,6 +71,23 @@ HRESULT CUI_UnderLine::Render()
 
 	m_pVIBufferCom->Render();
 
+	if (lstrcmp(m_strContentText.c_str(), TEXT("%d")))
+	{
+		_float3 fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
+		_float3 fMySize = m_pTransformCom->Compute_Scaled();
+
+		_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+		m_fTextPosition.x = fMyPos.x - (TextSize.x / 2);
+		m_fTextPosition.y = (fMyPos.y - (TextSize.y / 2)) - 25.f;
+
+
+		/*m_fTextPosition.x = (fMyPos.x + (fMySize.x / 2)) - TextSize.x;
+		m_fTextPosition.y = (fMyPos.y + (fMySize.y / 2)) - TextSize.y;*/
+
+
+		m_fTextPosition.z = fMyPos.z;
+		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
+	}
 	return S_OK;
 }
 

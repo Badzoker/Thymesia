@@ -20,6 +20,8 @@
 #include "UI_Manager.h"
 #include "GameObject.h"
 #include "PhysX_Manager.h"
+#include "TriggerManager.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -103,6 +105,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pShadow)	
 		return E_FAIL;	
 
+	m_pTrigger_Manager = CTriggerManager::Create(*ppDevice, *ppContext);
+	if (nullptr == m_pTrigger_Manager)
+		return E_FAIL;
+
+
 	m_pUI_Manager = CUI_Manager::Create(EngineDesc.iNumUIScenes);
 	if (nullptr == m_pUI_Manager)
 		return E_FAIL;
@@ -125,6 +132,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
+
+	m_pPipeLine->Priority_Update();	
+
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pEffect_Manager->Priority_Update(fTimeDelta);
 	m_pUI_Manager->Priority_Update(fTimeDelta);
@@ -132,6 +142,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pPipeLine->Update();
 
 	m_pFrustum->Update();
+	m_pTrigger_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
@@ -268,14 +279,19 @@ _uint CGameInstance::Get_NumLevel()
 	return m_pObject_Manager->Get_NumLevel();	
 }
 
-HRESULT CGameInstance::UIScene_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
+HRESULT CGameInstance::UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck)
 {
-	return m_pObject_Manager->UIScene_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
+	return m_pObject_Manager->UIGroup_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
 }
 
 _char* CGameInstance::Get_ColliderName(CGameObject* pGameObejct)
 {
 	return dynamic_cast<CCollider*>(pGameObejct->Get_Components()->find(TEXT("Com_Collider"))->second)->Get_CollierName();
+}
+
+_bool CGameInstance::UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->UIGroup_Render_State(iLevelIndex, strLayerTag);
 }
 
 #pragma endregion
@@ -285,6 +301,11 @@ _char* CGameInstance::Get_ColliderName(CGameObject* pGameObejct)
 HRESULT CGameInstance::Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, CGameObject * pGameObject)
 {
 	return m_pRenderer->Add_RenderGroup(eRenderGroupID, pGameObject);
+}
+
+void CGameInstance::Set_MotionBlur(_bool _bOnOff)
+{
+	return m_pRenderer->Set_MotionBlur(_bOnOff);
 }
 
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
@@ -315,6 +336,26 @@ _float4 CGameInstance::Get_CamPosition() const
 void CGameInstance::Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix)
 {
 	return m_pPipeLine->Set_Transform(eState, TransformMatrix);
+}
+
+_float4x4 CGameInstance::Get_PreTransform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Float4x4(eState);
+}
+
+_matrix CGameInstance::Get_PreTransform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Matrix(eState);
+}
+
+_float4x4 CGameInstance::Get_PreTransform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Float4x4_Inverse(eState);
+}
+
+_matrix CGameInstance::Get_PreTransform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_PreTransform_Matrix_Inverse(eState);
 }
 
 #pragma endregion
@@ -591,6 +632,16 @@ HRESULT CGameInstance::UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bO
 	return m_pUI_Manager->UIScene_UIObject_Render_OnOff(pScene, bOpen);
 }
 
+_bool CGameInstance::Get_Scene_Render_State(CUI_Scene* pScene)
+{
+	return m_pUI_Manager->Get_Scene_Render_State(pScene);
+}
+
+HRESULT CGameInstance::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen)
+{
+	return m_pUI_Manager->Set_All_UIObject_Condition_Open(pScene, bOpen);
+}
+
 void CGameInstance::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)
 {
 	return m_pUI_Manager->Clear_Choice(iUIType, iScenelIndex, strSceneTag, pUIObj);
@@ -661,6 +712,20 @@ HRESULT CGameInstance::Clear_Scene()
 }
 #pragma endregion PhysX_Manager
 
+#pragma region Trigger
+HRESULT CGameInstance::Set_BlackScreen(CUIObject* _pBlackScreen)
+{
+	return m_pTrigger_Manager->Set_BlackScreen(_pBlackScreen);
+}
+HRESULT CGameInstance::Add_Trigger(TRIGGER_TYPE _eTriggerType, CGameObject* _pTarget)
+{
+	return m_pTrigger_Manager->Add_Trigger(_eTriggerType, _pTarget);
+}
+HRESULT CGameInstance::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration)
+{
+	return m_pTrigger_Manager->Activate_Fade(_eTriggerType, _Duration);
+}
+#pragma endregion
 
 
 void CGameInstance::Release_Engine()
@@ -681,6 +746,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pItemMgr);	
 	Safe_Release(m_pShadow);	
+	Safe_Release(m_pTrigger_Manager);
 	Safe_Release(m_pUI_Manager);
 	Safe_Release(m_pPhysX_Manager);	
 	m_pSound_Manager->Release();

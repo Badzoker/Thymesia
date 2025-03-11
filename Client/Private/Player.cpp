@@ -66,10 +66,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 70.7f, 1.3f, -110.5f, 1.0f });
-
-
 	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
 
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
@@ -117,9 +114,25 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			m_iState = STATE_ATTACK_L3;
 		}
 
+		else if (m_iState == STATE_ATTACK_L3
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+		{
+			m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_L4;
+		}
+
+		else if (m_iState == STATE_ATTACK_L4
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+		{
+			m_pStateMgr->Get_VecState().at(44)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+			m_iState = STATE_ATTACK_L5;
+		}
+
 		else
 		{
-			if (m_iState != STATE_ATTACK_L1 && m_iState != STATE_ATTACK_L2 && m_iState != STATE_ATTACK_L3)
+			if (m_iState != STATE_ATTACK_L1 && m_iState != STATE_ATTACK_L2 && m_iState != STATE_ATTACK_L3 && m_iState != STATE_ATTACK_L4 && m_iState != STATE_ATTACK_L5)
 			{
 				m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_ATTACK_L1;

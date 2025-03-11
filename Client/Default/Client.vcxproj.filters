@@ -502,6 +502,48 @@
     <Filter Include="02.GameObject\NPC\Body">
       <UniqueIdentifier>{eb067c61-87c1-4176-b70d-03a038c0d1c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\BackGround\BlackScreen">
+      <UniqueIdentifier>{ab2fc7e3-4a97-4275-bd1c-a52b55bdf5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\TriggerObject">
+      <UniqueIdentifier>{d166a712-dcfc-4af1-aa57-4e9c647bd87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_DialogBackground">
+      <UniqueIdentifier>{0a406aac-3f6b-468b-ab56-3b745e622e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_EmptyItemBox">
+      <UniqueIdentifier>{71a9ff97-805f-450f-8f57-54e44fc3e0ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_Item_Icon">
+      <UniqueIdentifier>{d76b443d-8993-4d8b-92a0-eaa2d4dfe15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_SquareFrame">
+      <UniqueIdentifier>{c9e972f9-4829-4303-944f-ebf1fc1fc967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_SquareFrame_Hover">
+      <UniqueIdentifier>{eb821192-f38c-44cb-be15-b1909738766c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_SkillIcon">
+      <UniqueIdentifier>{12dcfc01-34bd-4807-b887-d994606f51d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_Effect_Frame">
+      <UniqueIdentifier>{2a5fe71b-64fe-45e5-ba3b-fcada5f06c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_Effect_SlotFrame">
+      <UniqueIdentifier>{a68dc9b7-5c86-428b-ad45-d9b3e556e715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_ItemBackground">
+      <UniqueIdentifier>{ee172a84-16b3-48ad-9856-866a0237a89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\6.ESC_Inventory">
+      <UniqueIdentifier>{9dea9966-a4c3-4318-ab3d-47743cd5acc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_4">
+      <UniqueIdentifier>{e1a176e7-71a3-4d8d-9d6c-b8fc88b9f729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_5">
+      <UniqueIdentifier>{d0825018-7f4d-4672-a144-d96d7e0b40fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -942,6 +984,48 @@
     <ClInclude Include="..\Public\Body_Aisemy.h">
       <Filter>02.GameObject\NPC\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BlackScreen.h">
+      <Filter>02.GameObject\BackGround\BlackScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerObject.h">
+      <Filter>02.GameObject\TriggerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_DialogBackground.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_DialogBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_EmptyItemBox.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_EmptyItemBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Item_Icon.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_Item_Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_SquareFrame.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_SquareFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_SquareFrame_Hover.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_SquareFrame_Hover</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Effect_Frame.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_Effect_Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Effect_SlotFrame.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_Effect_SlotFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_SkillIcon.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_SkillIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ItemBackground.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_ItemBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Iventory.h">
+      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_LButton_4.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_LButton_5.h">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_5</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1373,6 +1457,48 @@
     <ClCompile Include="..\Private\Body_Aisemy.cpp">
       <Filter>02.GameObject\NPC\Body</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BlackScreen.cpp">
+      <Filter>02.GameObject\BackGround\BlackScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerObject.cpp">
+      <Filter>02.GameObject\TriggerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_DialogBackground.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_DialogBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_EmptyItemBox.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_EmptyItemBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Item_Icon.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_Item_Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_SquareFrame.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_SquareFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_SquareFrame_Hover.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_SquareFrame_Hover</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Effect_Frame.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_Effect_Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Effect_SlotFrame.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_Effect_SlotFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_SkillIcon.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_SkillIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ItemBackground.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_ItemBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Iventory.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LButton_4.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_LButton_5.cpp">
+      <Filter>02.GameObject\Player\State\Attack\Attack_LButton_5</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1433,6 +1559,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -45,7 +45,8 @@ void CUI_Arrow::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if (m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 

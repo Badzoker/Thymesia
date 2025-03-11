@@ -6,8 +6,12 @@
 
 #include "Object.h"
 #include "EnvironmentObject.h"
+#include "TriggerObject.h"
+#include "BlackScreen.h"
 
 #include "UI_LeftBackground.h"
+
+
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -26,15 +30,15 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))
-		return E_FAIL;	
+	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
+		return E_FAIL;		
 
 
 	// 테스트용 사다리 레이어 준비 함수 호출
 	//if (FAILED(Ready_Layer_Ladder(TEXT("Layer_Ladder"))))
 	//	return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))	
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
@@ -46,23 +50,32 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_UIGroup_PlayerMenu(TEXT("Layer_PlayerMenu"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_UIGroup_PlayerLevelUP(TEXT("Layer_PlayerLevelUP"))))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Layer_UIGroup_PlayerTalent(TEXT("Layer_PlayerTalent"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_UIGroup_Iventory(TEXT("Layer_PlayerInventory"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Lights()))	
 		return E_FAIL;	
+
+	m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
+	m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
 
 	return S_OK;
 }
@@ -74,44 +87,52 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 		m_iOpenSceneCount++;
 		if (1 == m_iOpenSceneCount) // 게임 인트로
 		{
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_GameIntro"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_GameIntro"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
 		}
 		if (2 == m_iOpenSceneCount) // 플레이어 메뉴
 		{
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_GameIntro"), false);
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_GameIntro"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 		}
 		if (3 == m_iOpenSceneCount) // 플레이어 레벨 업
 		{
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), false);
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerLevelUP"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerLevelUP"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
 		}
 		if (4 == m_iOpenSceneCount) // 플레이어 특성
 		{
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerLevelUP"), false);
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerTalent"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerLevelUP"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerTalent"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), true);
 		}
 		if (5 == m_iOpenSceneCount) // 플레이어 화면
 		{
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerTalent"), false);
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerTalent"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 		}
 		if (6 == m_iOpenSceneCount) // 플레이어 화면
 		{
-			m_iOpenSceneCount = 0;
-			m_pGameInstance->UIScene_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
 		}
-		
+		if (7 == m_iOpenSceneCount) // 플레이어 화면
+		{
+			m_iOpenSceneCount = 0;
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
+		}
+
+
 
 	}
 }
@@ -186,6 +207,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(107);
 	//Load_Objects(98);
 	Load_Objects(129);
+	Load_TriggerObjects(0);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
@@ -263,7 +285,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	Desc.fFovy = XMConvertToRadians(60.f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 800.f;
+	Desc.fFar = 30.f;
 	Desc.fMouseSensor = 0.05f;
 	Desc.fSpeedPerSec = 25.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -346,6 +368,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 
 	return S_OK;
 }
+
+HRESULT CLevel_GamePlay::Ready_Layer_Fade(const _tchar* pLayerTag)
+{
+	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_GAMEPLAY, pLayerTag, &BlackScreenDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_GAMEPLAY, pLayerTag)))
@@ -373,6 +406,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTa
 HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_GAMEPLAY, pLayerTag)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_Iventory(const _tchar* pLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UIGroup_Iventory"), LEVEL_GAMEPLAY, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -557,6 +597,52 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		//		dynamic_cast<CGroundObject*>(pEnvironment)->Set_BoxSize(vecBoxSize[t]);
 		//	}
 		//}
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_TriggerObjects(_int iObject_Level)
+{
+	string strDataPath = "../Bin/DataFiles/TriggerData/TriggerObject";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+
+	DWORD dwByte = 0;
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	vector<CTriggerObject*>		vecTriggerObject;
+
+	vecTriggerObject.resize(iSize);
+
+	CTriggerObject::TC_INFO Info = {};
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CTriggerObject::TC_DESC Desc{};
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+
+		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_GAMEPLAY, TEXT("Layer_TriggerObject"), &Desc));
+
+		if (nullptr != pTriggerObject)
+			vecTriggerObject.push_back(pTriggerObject);
 	}
 
 	CloseHandle(hFile);

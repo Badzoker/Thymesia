@@ -41,6 +41,8 @@ class CBody_Player final : public CPartObject
 		STATE_ATTACK_L1,
 		STATE_ATTACK_L2,
 		STATE_ATTACK_L3,
+		STATE_ATTACK_L4,
+		STATE_ATTACK_L5,
 		STATE_ATTACK_LONG_CLAW_01,
 		STATE_ATTACK_LONG_CLAW_02,
 
@@ -132,6 +134,8 @@ public:
 	void	STATE_ATTACK_L1_Method();
 	void	STATE_ATTACK_L2_Method();
 	void	STATE_ATTACK_L3_Method();
+	void	STATE_ATTACK_L4_Method();
+	void	STATE_ATTACK_L5_Method();
 	void	STATE_ATTACK_LONG_CLAW_01_Method();
 	void	STATE_ATTACK_LONG_CLAW_02_Method();
 	/*락온 관련 기능 */
@@ -210,6 +214,8 @@ private:
 	CNavigation* m_pParentNavigationCom = { nullptr };
 	PxRigidDynamic* m_pParentActor = { nullptr };
 
+
+	_bool  m_bParryStopOnOff = { true };
 
 public:
 	HRESULT Ready_Components();

@@ -171,9 +171,12 @@
     <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
+    <ClInclude Include="..\public\Attack_LButton_4.h" />
+    <ClInclude Include="..\public\Attack_LButton_5.h" />
     <ClInclude Include="..\public\Attack_LongClaw_1.h" />
     <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BlackScreen.h" />
     <ClInclude Include="..\Public\Body_Aisemy.h" />
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
@@ -222,7 +225,9 @@
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\Public\Particle_Compute_Example.h" />
+    <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
+    <ClInclude Include="..\Public\UIGroup_Iventory.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerScreen.h" />
@@ -276,7 +281,11 @@
     <ClInclude Include="..\Public\UI_DecorationFrame.h" />
     <ClInclude Include="..\Public\UI_DecorationLine.h" />
     <ClInclude Include="..\Public\UI_DescBackground.h" />
+    <ClInclude Include="..\Public\UI_DialogBackground.h" />
     <ClInclude Include="..\Public\UI_DiamondIcon.h" />
+    <ClInclude Include="..\Public\UI_Effect_Frame.h" />
+    <ClInclude Include="..\Public\UI_Effect_SlotFrame.h" />
+    <ClInclude Include="..\Public\UI_EmptyItemBox.h" />
     <ClInclude Include="..\Public\UI_Feather_Icon.h" />
     <ClInclude Include="..\Public\UI_Frame.h" />
     <ClInclude Include="..\Public\UI_GameLogoImage.h" />
@@ -285,6 +294,8 @@
     <ClInclude Include="..\Public\UI_HPBar2_BG.h" />
     <ClInclude Include="..\Public\UI_HPBar3_MainBar.h" />
     <ClInclude Include="..\Public\UI_Indicator_Selected.h" />
+    <ClInclude Include="..\Public\UI_ItemBackground.h" />
+    <ClInclude Include="..\Public\UI_Item_Icon.h" />
     <ClInclude Include="..\Public\UI_KeyBox_Long.h" />
     <ClInclude Include="..\Public\UI_LeftBackground.h" />
     <ClInclude Include="..\Public\UI_LevelImage.h" />
@@ -301,6 +312,9 @@
     <ClInclude Include="..\Public\UI_SceneAboveBackground.h" />
     <ClInclude Include="..\Public\UI_SceneBackground.h" />
     <ClInclude Include="..\Public\UI_SceneUnderBackground.h" />
+    <ClInclude Include="..\Public\UI_SkillIcon.h" />
+    <ClInclude Include="..\Public\UI_SquareFrame.h" />
+    <ClInclude Include="..\Public\UI_SquareFrame_Hover.h" />
     <ClInclude Include="..\Public\UI_TextBox.h" />
     <ClInclude Include="..\Public\UI_TitleBackgroundBar.h" />
     <ClInclude Include="..\Public\UI_UnderLine.h" />
@@ -319,9 +333,12 @@
     <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
+    <ClCompile Include="..\private\Attack_LButton_4.cpp" />
+    <ClCompile Include="..\private\Attack_LButton_5.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_1.cpp" />
     <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BlackScreen.cpp" />
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
@@ -371,7 +388,9 @@
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Iventory.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerScreen.cpp" />
@@ -423,7 +442,11 @@
     <ClCompile Include="..\Private\UI_DecorationFrame.cpp" />
     <ClCompile Include="..\Private\UI_DecorationLine.cpp" />
     <ClCompile Include="..\Private\UI_DescBackground.cpp" />
+    <ClCompile Include="..\Private\UI_DialogBackground.cpp" />
     <ClCompile Include="..\Private\UI_DiamondIcon.cpp" />
+    <ClCompile Include="..\Private\UI_Effect_Frame.cpp" />
+    <ClCompile Include="..\Private\UI_Effect_SlotFrame.cpp" />
+    <ClCompile Include="..\Private\UI_EmptyItemBox.cpp" />
     <ClCompile Include="..\Private\UI_Feather_Icon.cpp" />
     <ClCompile Include="..\Private\UI_Frame.cpp" />
     <ClCompile Include="..\Private\UI_GameLogoImage.cpp" />
@@ -432,6 +455,8 @@
     <ClCompile Include="..\Private\UI_HPBar2_BG.cpp" />
     <ClCompile Include="..\Private\UI_HPBar3_MainBar.cpp" />
     <ClCompile Include="..\Private\UI_Indicator_Selected.cpp" />
+    <ClCompile Include="..\Private\UI_ItemBackground.cpp" />
+    <ClCompile Include="..\Private\UI_Item_Icon.cpp" />
     <ClCompile Include="..\Private\UI_KeyBox_Long.cpp" />
     <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
     <ClCompile Include="..\Private\UI_LevelImage.cpp" />
@@ -448,6 +473,9 @@
     <ClCompile Include="..\Private\UI_SceneAboveBackground.cpp" />
     <ClCompile Include="..\Private\UI_SceneBackground.cpp" />
     <ClCompile Include="..\Private\UI_SceneUnderBackground.cpp" />
+    <ClCompile Include="..\Private\UI_SkillIcon.cpp" />
+    <ClCompile Include="..\Private\UI_SquareFrame.cpp" />
+    <ClCompile Include="..\Private\UI_SquareFrame_Hover.cpp" />
     <ClCompile Include="..\Private\UI_TextBox.cpp" />
     <ClCompile Include="..\Private\UI_TitleBackgroundBar.cpp" />
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />
@@ -474,6 +502,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMeshNoDefferd.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshNoDefferd.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

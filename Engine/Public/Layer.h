@@ -29,8 +29,8 @@ public:
 	CComponent* Find_GameObject(const wstring& strComponentName);	
 
 	//À¯ºó - UIGroup Á¦¾î¿ë
-	HRESULT UIScene_Render_OnOff(_bool bCheck);
-	_bool UIScene_Render_State();
+	HRESULT UIGroup_Render_OnOff(_bool bCheck);
+	_bool UIGroup_Render_State();
 
 
 public:

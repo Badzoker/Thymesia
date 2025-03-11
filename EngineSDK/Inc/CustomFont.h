@@ -23,6 +23,8 @@ private:
 	SpriteBatch* m_pBatch = { nullptr };
 	SpriteFont* m_pFont = { nullptr };
 
+	ID3D11DepthStencilState* m_pDepthStencil = {};
+	D3D11_DEPTH_STENCIL_DESC m_Desc = {};
 
 public:
 	static CCustomFont* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontFilePath);

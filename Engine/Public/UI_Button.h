@@ -18,8 +18,14 @@ public:
 	virtual HRESULT Render()override;
 
 public:
-	virtual _bool Mouse_Select(HWND hWnd);
+	virtual _bool Mouse_Select_Talent(HWND hWnd, MOUSEKEYSTATE eMouseKey);
+	virtual _bool Mouse_Select(HWND hWnd, MOUSEKEYSTATE eMouseKey, _float fSize);
+	//HRESULT On_Mouse_UI(HWND hWnd, _int iBeforeTexNumber, _uint iAfterTexNumber);
 	_bool On_Mouse_UI(HWND hWnd);
+
+	void Set_Mouse_Select_OnOff(_bool bOn) { m_bMouseSelectOn = bOn; }
+	_bool Get_Mouse_Select_OnOff() { return m_bMouseSelectOn; }
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
@@ -27,6 +33,7 @@ public:
 protected:
 	//_bool m_bMouseClick = { false };
 	_int iTestCount = { 0 };
+	_bool m_bMouseSelectOn = { false };
 };
 
 END

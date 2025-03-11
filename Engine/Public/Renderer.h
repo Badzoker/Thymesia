@@ -13,7 +13,8 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
-					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_END };
+					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND,
+					   RG_END };
 	
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -23,6 +24,7 @@ public:
 	HRESULT Initialize();
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	HRESULT Render();
+	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
@@ -42,6 +44,8 @@ private:
 
 	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};		
 
+	_bool					m_bMotionBlurOnOff = { false };	
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();	
@@ -54,7 +58,7 @@ private:
 	HRESULT Render_LightShaftX();
 	HRESULT Render_LightShaftY();
 	HRESULT Render_MotionBlur_By_Velocity();
-	HRESULT Render_MotionBlurBegin();
+
 	HRESULT Render_NonLight();
 	HRESULT Render_LightAcc();
 	HRESULT Render_Deferred();
@@ -64,6 +68,7 @@ private:
 	HRESULT Render_HighLightY();
 	HRESULT Render_Final();
 	HRESULT Render_Blend();
+	HRESULT Render_WeightBlend();
 	HRESULT Render_UI();
 	HRESULT Render_Font();
 

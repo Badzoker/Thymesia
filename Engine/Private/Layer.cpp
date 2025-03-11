@@ -40,13 +40,13 @@ CComponent* CLayer::Find_GameObject(const wstring& strComponentName)
 
 }
 
-HRESULT CLayer::UIScene_Render_OnOff(_bool bCheck)
+HRESULT CLayer::UIGroup_Render_OnOff(_bool bCheck)
 {
 	dynamic_cast<CUIObject*>(*m_GameObjects.begin())->Set_Render_OnOff(bCheck);
 	return S_OK;
 }
 
-_bool CLayer::UIScene_Render_State()
+_bool CLayer::UIGroup_Render_State()
 {
 	return dynamic_cast<CUIObject*>(*m_GameObjects.begin())->Get_Render_State();
 }
