@@ -22,12 +22,12 @@ _float4 CShadow::Get_LightPos()
 
 	_matrix lightProjectionMatrix = XMLoadFloat4x4(&m_LightViewMatrix) * XMLoadFloat4x4(&m_LightProjMatrix);
 
-	_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), lightProjectionMatrix);
+	//_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), lightProjectionMatrix);
 
- 	_float4 fLightPos = { 1.9f, 1.9f, 1.f, 1.f};
+ 	_float4 fLightPos = { 0.4f, 0.45f, 1.f, 1.f};
 
 
-	XMStoreFloat4(&fLightPos, vLightPos);
+	//XMStoreFloat4(&fLightPos, vLightPos);
 
 	return fLightPos;
 }
