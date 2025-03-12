@@ -68,7 +68,10 @@ float4 psLightShaft(float2 texcoord)
 {
     int NUM_SAMPLES = 128;
     
-    float2 DeltaTexCoord = (texcoord.xy - g_ScreenLightPos.xy);
+    float2 DeltaTexCoord = (g_ScreenLightPos.xy - texcoord.xy);
+    
+    if (DeltaTexCoord.x > 0)
+        return float4(0.f, 0.f, 0.f, 0.f);
     
     DeltaTexCoord *= 1.f / (float) NUM_SAMPLES * g_LightShaftValue.x;
     
