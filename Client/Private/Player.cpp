@@ -66,10 +66,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 70.7f, 1.3f, -110.5f, 1.0f });
-	//m_pGameInstance->Add_ObjCollider(GROUP_TYPE::PLAYER, this);
-	_vector vTestPosition = { 111.648903, 15.8868837, -41.30, 1.f };
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition);
+	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //의자 옆 위치
+	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
+	//_vector vTestPosition = { 111.648903, 15.8868837, -41.30, 1.f }; //범승이 보스옆 위치
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
 
 	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
