@@ -185,6 +185,21 @@ void CTransform::LookAt_Astar(_fvector vAt)
 	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * vScale.z);
 }
 
+void CTransform::Sliding_Move(_float fTimeDelta, CNavigation* pNavigation, _vector vTargetPos)
+{
+	_vector vMyLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK));
+	_vector vNoramlVec = XMVector3Normalize(Get_State(CTransform::STATE_POSITION) - vTargetPos);
+
+	if (XMVectorGetX(XMVector3Dot(vMyLook, vNoramlVec)) < 0.f)
+	{
+		_vector vProj = vNoramlVec * XMVectorGetX(XMVector3Dot(vMyLook, vNoramlVec));
+		_vector vSlider = vMyLook - vProj;
+
+		Go_Backward_With_Navi(fTimeDelta * 0.075f, pNavigation);
+		Go_Dir(vSlider, pNavigation, fTimeDelta * 0.075f);
+	}
+}
+
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 {
 	_vector			vRight = Get_State(CTransform::STATE_RIGHT);

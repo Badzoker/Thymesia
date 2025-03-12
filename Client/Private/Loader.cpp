@@ -15,7 +15,7 @@
 #include "UI_Boss_HP_Bar.h"
 #include "UI_Boss_HP_Bar_Gage.h"
 #include "UI_Boss_HP_Bar_Gage_Effect.h"
-
+#include "UI_Boss_HP_Phase.h"
 #pragma endregion 
 
 #pragma region 엘리트 몬스터
@@ -2020,7 +2020,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	//보스 HP바
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Boss_HP"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Boss_HP/BossHP%d.png"), 4))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Boss_HP/BossHP%d.png"), 5))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"),
@@ -2035,6 +2035,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CUI_Boss_HP_Bar_Gage_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Phase"),
+		CUI_Boss_HP_Phase::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion 
 

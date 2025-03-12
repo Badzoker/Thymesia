@@ -23,7 +23,7 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize_Prototype()
 HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
 {
     m_fSizeX = 660.f;
-    m_fSizeY = 20.f;
+    m_fSizeY = 10.f;
     UI_Boss_HP_Bar_Gage_Effect_Desc* pDesc = static_cast<UI_Boss_HP_Bar_Gage_Effect_Desc*>(pArg);
     pDesc->fNear = 0.f;
     pDesc->fFar = 1.f;

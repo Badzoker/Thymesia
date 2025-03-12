@@ -41,7 +41,7 @@ HRESULT CAisemy::Initialize(void* pArg)
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
 
-    _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f};
+    _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
     m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
@@ -67,9 +67,9 @@ HRESULT CAisemy::Initialize(void* pArg)
 void CAisemy::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
-    m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
 
     if (m_fDistance <= 20.f && !m_bActive)
     {
@@ -86,6 +86,7 @@ void CAisemy::Update(_float fTimeDelta)
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
@@ -144,7 +145,7 @@ void CAisemy::RotateDegree_To_Player()
 {
     _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-    _vector vLook2 = m_vPlayerPos - vPos;
+    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
 
     vLook = XMVector3Normalize(vLook);
     vLook2 = XMVector3Normalize(vLook2);
@@ -278,10 +279,10 @@ void CAisemy::Intro_State::State_Enter(CAisemy* pObject)
 
 void CAisemy::Intro_State::State_Update(_float fTimeDelta, CAisemy* pObject)
 {
-   /* if (pObject->m_pModelCom->GetAniFinish())
-    {
+    /* if (pObject->m_pModelCom->GetAniFinish())
+     {
 
-    }*/
+     }*/
 
 }
 

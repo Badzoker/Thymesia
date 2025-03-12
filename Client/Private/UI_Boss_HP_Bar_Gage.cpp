@@ -22,7 +22,7 @@ HRESULT CUI_Boss_HP_Bar_Gage::Initialize_Prototype()
 HRESULT CUI_Boss_HP_Bar_Gage::Initialize(void* pArg)
 {
     m_fSizeX = 660.f;
-    m_fSizeY = 20.f;
+    m_fSizeY = 10.f;
     UI_Boss_HP_Bar_Gage_DESC* pDesc = static_cast<UI_Boss_HP_Bar_Gage_DESC*>(pArg);
     pDesc->fNear = 0.f;
     pDesc->fFar = 1.f;

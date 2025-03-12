@@ -20,6 +20,7 @@ public:
 		_float* fMaxHP = {};
 		_float* fCurHP = {};
 		_float* fShieldHP = {};
+		_uint* iPhase = {};
 		string sBossName = {};
 	};
 private:

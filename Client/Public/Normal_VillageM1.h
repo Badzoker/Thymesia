@@ -38,8 +38,8 @@ public:
 	void Rotation_To_Player();
 	void Recovery_HP();
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bCan_Move_Anim = {};
@@ -47,6 +47,7 @@ private:
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
+	_bool                            m_bMove = {};
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};
@@ -179,6 +180,8 @@ public:
 		void State_Enter(CNormal_VillageM1* pObject) override;
 		void State_Update(_float fTimeDelta, CNormal_VillageM1* pObject) override;
 		void State_Exit(CNormal_VillageM1* pObject) override;
+	private:
+		_uint m_iHitNum = -1;
 	};
 
 	class Execution_State : public CStates<CNormal_VillageM1>

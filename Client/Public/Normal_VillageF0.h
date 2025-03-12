@@ -39,8 +39,8 @@ public:
 	void Rotation_To_Player();
 	void Recovery_HP();
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bNeed_Rotation = {};
@@ -48,7 +48,9 @@ private:
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
+	_bool                            m_bMove = {};
 
+	_uint                            m_iHitNum = -1;
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};
@@ -105,11 +107,11 @@ public:
 		void State_Exit(CNormal_VillageF0* pObject) override;
 	};
 
-	class Walk_State : public CStates<CNormal_VillageF0>
+	class Move_State : public CStates<CNormal_VillageF0>
 	{
 	public:
-		Walk_State() = default;
-		virtual ~Walk_State() = default;
+		Move_State() = default;
+		virtual ~Move_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
 		void State_Enter(CNormal_VillageF0* pObject) override;
@@ -181,6 +183,8 @@ public:
 		void State_Enter(CNormal_VillageF0* pObject) override;
 		void State_Update(_float fTimeDelta, CNormal_VillageF0* pObject) override;
 		void State_Exit(CNormal_VillageF0* pObject) override;
+	private:
+		_uint m_iHitNum = -1;
 	};
 
 	class Stun_State : public CStates<CNormal_VillageF0>

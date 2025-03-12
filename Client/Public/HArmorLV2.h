@@ -40,8 +40,8 @@ public:
 	void Rotation_To_Player();
 	void Recovery_HP();
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bCan_Move_Anim = {};
@@ -49,6 +49,7 @@ private:
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
+	_bool							 m_bMove = {};
 
 	_uint                            m_iNearPatternIndex = {};
 
@@ -104,11 +105,11 @@ public:
 		void State_Exit(CHArmorLV2* pObject) override;
 	};
 
-	class Walk_State : public CStates<CHArmorLV2>
+	class Move_State : public CStates<CHArmorLV2>
 	{
 	public:
-		Walk_State() = default;
-		virtual ~Walk_State() = default;
+		Move_State() = default;
+		virtual ~Move_State() = default;
 	public:
 		void State_Enter(CHArmorLV2* pObject) override;
 		void State_Update(_float fTimeDelta, CHArmorLV2* pObject) override;

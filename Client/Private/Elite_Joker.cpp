@@ -37,7 +37,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     Desc->fSpeedPerSec = 1.f;
     Desc->fScaling = _float3{ 0.002f,0.002f,0.002f };
     Desc->fRotationPerSec = XMConvertToRadians(90.f);
-    m_vSpawnPoint = XMLoadFloat4(&Desc->fPosition);
+    XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
 
     if (FAILED(__super::Initialize(Desc)))
         return E_FAIL;
@@ -48,8 +48,8 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"),"PLAYER");
-    m_pNavigationCom->Set_CurrentNaviIndex(m_vSpawnPoint);
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
 
 
 
@@ -78,9 +78,9 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
-    m_vPlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(m_vPlayerPos - pPosition));
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
 
     if (m_fDistance <= 20.f && !m_bActive)
     {
@@ -125,7 +125,7 @@ void CElite_Joker::Update(_float fTimeDelta)
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-    
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
@@ -179,7 +179,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
-    Joker_Weapon_Desc.pParent = this;   
+    Joker_Weapon_Desc.pParent = this;
     Joker_Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r_Hammer");
     Joker_Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Joker_Weapon_Desc.pParentModel = m_pModelCom;
@@ -301,7 +301,7 @@ void CElite_Joker::RotateDegree_To_Player()
 {
     _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-    _vector vLook2 = m_vPlayerPos - vPos;
+    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
 
     vLook = XMVector3Normalize(vLook);
     vLook2 = XMVector3Normalize(vLook2);
@@ -707,6 +707,7 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 22;
     pObject->m_bHP_Bar_Active = false;
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 

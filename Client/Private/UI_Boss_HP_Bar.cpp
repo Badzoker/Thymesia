@@ -23,7 +23,7 @@ HRESULT CUI_Boss_HP_Bar::Initialize_Prototype()
 HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 {
 	m_fSizeX = 718.f;
-	m_fSizeY = 30.f;
+	m_fSizeY = 19.f;
 	UI_BOSS_HP_BAR_DESC* pDesc = static_cast<UI_BOSS_HP_BAR_DESC*>(pArg);
 
 	pDesc->fNear = 0.f;
@@ -56,6 +56,9 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), pArg)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Phase"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -75,14 +78,15 @@ void CUI_Boss_HP_Bar::Late_Update(_float fTimeDelta)
 {
 	if (!(*m_bBossActive))
 		return;
+
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUI_Boss_HP_Bar::Render()
 {
-
 	if (!(*m_bBossActive))
 		return S_OK;
+
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
