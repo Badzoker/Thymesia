@@ -39,8 +39,8 @@ public:
 	void RotateDegree_To_Player();
 	void Rotation_To_Player();
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bNeed_Rotation = {};

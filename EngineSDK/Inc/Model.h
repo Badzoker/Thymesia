@@ -39,6 +39,7 @@ public:
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const _char* pConstantName, _uint iTextureIndex = 0);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, _uint iMeshIndex, const _char* pConstantName);	
 	CAnimation* Get_CurAnimation() { return m_pCurrentAnimation; }	
+	CAnimation* Get_NextAnimation() { return m_pNextAnimation; }
 	vector<class CAnimation*>& Get_VecAnimation() { return  m_Animations; }	
 	_uint   Get_Current_Animation_Index() { return m_iCurrentAnimIndex; }
 

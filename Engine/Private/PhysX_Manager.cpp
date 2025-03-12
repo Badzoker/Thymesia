@@ -62,7 +62,7 @@ HRESULT CPhysX_Manager::initialize()
 
 
     // Cuda »ý¼º
-    PxCudaContextManagerDesc tCudaDesc;
+   /* PxCudaContextManagerDesc tCudaDesc;
     tCudaDesc.graphicsDevice = m_pDevice;
 
     m_pCudaContextManager = PxCreateCudaContextManager(*m_pFoundation, tCudaDesc, PxGetProfilerCallback());
@@ -79,7 +79,7 @@ HRESULT CPhysX_Manager::initialize()
     else
     {
         assert(false);
-    }
+    }*/
     /*--------------------------*/
 
 

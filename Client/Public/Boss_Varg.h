@@ -71,8 +71,9 @@ public:
 	void Recovery_HP();
 
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
+
 	_bool                            m_bBossActive = {};
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bCan_Move_Anim = {};
@@ -87,6 +88,7 @@ private:
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
+	_float                           m_fCoolTime = {};
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fDistance = {};
 	_float                           m_fAngle = {};
@@ -315,6 +317,10 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
+	private:
+		_float m_fTimer = {};
+		_bool  m_bFirst = true;
+		_bool  m_bCanCatch = {};
 	};
 
 	class Dead_State : public CStates<CBoss_Varg>

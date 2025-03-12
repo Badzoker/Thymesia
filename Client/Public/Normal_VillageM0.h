@@ -39,8 +39,8 @@ public:
 	void Rotation_To_Player();
 	void Recovery_HP();
 private:
-	_vector                          m_vPlayerPos = {};
-	_vector                          m_vSpawnPoint = {};
+	_float4                          m_vPlayerPos = {};
+	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
 	_bool                            m_bNeed_Rotation = {};
@@ -48,7 +48,7 @@ private:
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
-
+	_bool							 m_bMove = {};
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};
@@ -147,7 +147,7 @@ public:
 		void State_Update(_float fTimeDelta, CNormal_VillageM0* pObject) override;
 		void State_Exit(CNormal_VillageM0* pObject) override;
 	private:
-		_float m_fTime;
+		_float m_fTime = {};
 	};
 
 	class Attack_01_State : public CStates<CNormal_VillageM0>
@@ -184,6 +184,8 @@ public:
 		void State_Enter(CNormal_VillageM0* pObject) override;
 		void State_Update(_float fTimeDelta, CNormal_VillageM0* pObject) override;
 		void State_Exit(CNormal_VillageM0* pObject) override;
+	private:
+		_uint m_iHitNum = -1;
 	};
 
 	class Dead_State : public CStates<CNormal_VillageM0>

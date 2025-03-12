@@ -285,7 +285,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	Desc.fFovy = XMConvertToRadians(60.f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 30.f;
+	Desc.fFar = 800.f;
 	Desc.fMouseSensor = 0.05f;
 	Desc.fSpeedPerSec = 25.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
