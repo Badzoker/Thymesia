@@ -89,6 +89,7 @@ void CVillageF_Weapon::Update(_float fTimeDelta)
 void CVillageF_Weapon::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CVillageF_Weapon::Render()

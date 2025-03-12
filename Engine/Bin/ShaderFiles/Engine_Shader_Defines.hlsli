@@ -38,6 +38,16 @@ RasterizerState Rs_Cull_NONE
 };
 
 
+
+RasterizerState Rs_Depth_Bias
+{
+    CullMode = BACK;
+    
+    DepthBias = 100;
+    DepthBiasClamp = 0.f;
+    SlopeScaledDepthBias = 2.f;
+};
+
 DepthStencilState DSS_Default
 {
     DepthEnable = TRUE;

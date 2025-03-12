@@ -6,246 +6,280 @@
 #include "Transform.h"
 
 CShadow::CShadow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :m_pDevice{ pDevice }
-    , m_pContext{ pContext }
-    , m_pGameInstance{ CGameInstance::GetInstance() }
+	:m_pDevice{ pDevice }
+	, m_pContext{ pContext }
+	, m_pGameInstance{ CGameInstance::GetInstance() }
 {
-    Safe_AddRef(m_pDevice);
-    Safe_AddRef(m_pContext);
-    Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+	Safe_AddRef(m_pGameInstance);
 }
 
 _float4 CShadow::Get_LightPos()
 {
-    _vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightViewMatrix)));
-    vLightPos = XMVector3TransformCoord(vLightPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightProjMatrix)));
+	//_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightViewMatrix)));
+	//vLightPos = XMVector3TransformCoord(vLightPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightProjMatrix)));
 
-    _float4 fLightPos = {};
+	_matrix lightProjectionMatrix = XMLoadFloat4x4(&m_LightViewMatrix) * XMLoadFloat4x4(&m_LightProjMatrix);
+
+	_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), lightProjectionMatrix);
+
+ 	_float4 fLightPos = { 1.9f, 1.9f, 1.f, 1.f};
 
 
-    XMStoreFloat4(&fLightPos, vLightPos);
+	XMStoreFloat4(&fLightPos, vLightPos);
 
-    return fLightPos;
+	return fLightPos;
 }
 
 HRESULT CShadow::Initialize()
 {
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform)
 {
-    m_pPlayerTransform = pTransform;
+	m_pPlayerTransform = pTransform;
 
-    XMStoreFloat4(&m_LightPos, vEye);
+	XMStoreFloat4(&m_LightPos, vEye);
 
-    XMStoreFloat4x4(&m_LightViewMatrix, XMMatrixLookAtLH(vEye, vAt, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    XMStoreFloat4x4(&m_LightProjMatrix, XMMatrixPerspectiveFovLH(fLightAngle, fAspect, fNear, fFar));
+	// m_LightDir = XMVectorSet(-1.f, -1.f, 0.f, 0.f);
 
-    _matrix camInv = matInvCam;
+	m_LightDir = XMVector3Normalize(vAt - vEye);
 
-    float fov = XMVectorGetX(vCamInfo);
-    float ar = XMVectorGetY(vCamInfo);
-    float nearZ = XMVectorGetZ(vCamInfo);
-    float farZ = XMVectorGetW(vCamInfo);
+	XMStoreFloat4x4(&m_LightViewMatrix, XMMatrixLookAtLH(vAt, vEye, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&m_LightProjMatrix, XMMatrixPerspectiveFovLH(fLightAngle, fAspect, fNear, fFar));
 
-    // 카메라의 시야각을 이용한 수직 시야각
-    float tanHalfVFov = tanf(XMConvertToRadians(fov / 2.f));
+	m_LightTransform = XMMatrixIdentity();
 
-    float fHalfFov = XMConvertToDegrees(tanHalfVFov);
+	m_LightTransform.r[3] = vEye;
 
-    // 수직 시야각을 이용한 수평 시야각
-    float tanHalfHFov = tanHalfVFov * ar;
+	_vector vLook = vAt - vEye;
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector vUp = XMVector3Cross(vLook, vRight);
 
-    // 카메라의 뷰 클립 공간
-    m_cascadeEnd[0] = nearZ;
-    m_cascadeEnd[1] = 10.f;
-    m_cascadeEnd[2] = 100.f;
-    m_cascadeEnd[3] = farZ;
+	m_LightTransform.r[0] = XMVector3Normalize(vRight);
+	m_LightTransform.r[1] = XMVector3Normalize(vUp);
+	m_LightTransform.r[2] = XMVector3Normalize(vLook);
 
-    //
-    for (size_t i = 0; i < 3; ++i)
-    {
-        float xn = m_cascadeEnd[i] * tanHalfHFov;
-        float xf = m_cascadeEnd[i + 1] * tanHalfHFov;
-        float yn = m_cascadeEnd[i] * tanHalfVFov;
-        float yf = m_cascadeEnd[i + 1] * tanHalfVFov;
+	_matrix camInv = matInvCam;
 
-        _vector frustumCorners[8] =
-        {
-            //near Face
-            {xn,yn,m_cascadeEnd[i],1.0f},
-            {-xn,yn,m_cascadeEnd[i],1.0f},
-            {xn,-yn,m_cascadeEnd[i],1.0f},
-            {-xn,-yn,m_cascadeEnd[i],1.0f},
-            //far Face
-            {xf,yf,m_cascadeEnd[i + 1],1.0f},
-            {-xf,yf,m_cascadeEnd[i + 1],1.0f},
-            {xf,-yf,m_cascadeEnd[i + 1],1.0f},
-            {-xf,-yf,m_cascadeEnd[i + 1],1.0f}
-        };
+	float fov = XMVectorGetX(vCamInfo);
+	float ar = XMVectorGetY(vCamInfo);
+	float nearZ = XMVectorGetZ(vCamInfo);
+	float farZ = XMVectorGetW(vCamInfo);
 
-        for (size_t l = 0; l < 8; ++l)
-            m_cascadeFrustum[i][l] = frustumCorners[l];
+	// 카메라의 시야각을 이용한 수직 시야각
+	float tanHalfVFov = tanf(XMConvertToRadians(fov / 2.f));
 
-        _vector centerPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	float fHalfFov = XMConvertToDegrees(tanHalfVFov);
 
-        for (uint32_t j = 0; j < 8; ++j)
-        {
-            frustumCorners[j] = XMVector3TransformCoord(frustumCorners[j], camInv);
-            centerPos += frustumCorners[j];
-        }
+	// 수직 시야각을 이용한 수평 시야각
+	float tanHalfHFov = tanHalfVFov * ar;
 
-        centerPos /= 8.0f;
+	// 카메라의 뷰 클립 공간
+	/*m_cascadeEnd[0] = nearZ;
+	m_cascadeEnd[1] = 30.f;
+	m_cascadeEnd[2] = 90.f;
+	m_cascadeEnd[3] = farZ;*/
+	 for (int i = 0; i < 3; i++)
+	 {
+		 float logDepth = nearZ * powf(farZ / nearZ, (float)(i + 1) / 3);
+		 float uniformDepth = nearZ + (farZ - nearZ) * (float)(i + 1) / 3;
+		 m_cascadeEnd[i + 1] = 0.9f * logDepth + (1.0f - 0.9f) * uniformDepth;
+	 }
 
-        float radius = 0.0f;
-        for (uint32_t j = 0; j < 8; ++j)
-        {
-            float distance = XMVectorGetX(XMVector3Length(frustumCorners[j] - centerPos));
-            radius = max(radius, distance);
-        }
+	for (size_t i = 0; i < 3; ++i)
+	{
+		float xn = m_cascadeEnd[i] * tanHalfHFov;
+		float xf = m_cascadeEnd[i + 1] * tanHalfHFov;
+		float yn = m_cascadeEnd[i] * tanHalfVFov;
+		float yf = m_cascadeEnd[i + 1] * tanHalfVFov;
 
-        radius = std::ceil(radius * 16.0f) / 16.0f;
+		_vector frustumCorners[8] =
+		{
+			//near Face
+			{xn,yn,m_cascadeEnd[i],1.0f},
+			{-xn,yn,m_cascadeEnd[i],1.0f},
+			{xn,-yn,m_cascadeEnd[i],1.0f},
+			{-xn,-yn,m_cascadeEnd[i],1.0f},
+			//far Face
+			{xf,yf,m_cascadeEnd[i + 1],1.0f},
+			{-xf,yf,m_cascadeEnd[i + 1],1.0f},
+			{xf,-yf,m_cascadeEnd[i + 1],1.0f},
+			{-xf,-yf,m_cascadeEnd[i + 1],1.0f}
+		};
 
-        // using radius ,  we made aabb box
-        _vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
-        _vector minExtents = -maxExtents;
+		for (size_t l = 0; l < 8; ++l)
+			m_cascadeFrustum[i][l] = frustumCorners[l];
 
-        _vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_LightPos);
+		_vector centerPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 
-        _float3 shadowCamPos;
-        XMStoreFloat3(&shadowCamPos, centerPos + (XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents))));
+		for (uint32_t j = 0; j < 8; ++j)
+		{
+			frustumCorners[j] = XMVector3TransformCoord(frustumCorners[j], camInv);
+			centerPos += frustumCorners[j];
+		}
 
-        _vector vEyePos = XMVectorSetW(XMLoadFloat3(&shadowCamPos), 1.f);
+		centerPos /= 8.0f;
 
-        _matrix lightMatrix = XMMatrixLookAtLH(vEyePos, centerPos, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		float radius = 0.0f;
+		for (uint32_t k = 0; k < 8; ++k)
+		{
+			float distance = XMVectorGetX(XMVector3Length(frustumCorners[k] - centerPos));
+			radius = max(radius, distance);
+		}
 
-        //XMStoreFloat4x4(&m_shadowOrthoView[i], XMMatrixTranspose(lightMatrix));
-        XMStoreFloat4x4(&m_shadowOrthoView[i], lightMatrix);
+		radius = std::ceil(radius * 16.0f) / 16.0f;
 
-        _vector cascadeExtents = maxExtents - minExtents;
+		// using radius ,  we made aabb box
+		_vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
+		_vector minExtents = -maxExtents;
 
-        XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.0f, XMVectorGetZ(cascadeExtents)));
-        //XMStoreFloat4x4(&m_shadowOrthoProj[i], XMMatrixTranspose(lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.0f, XMVectorGetZ(cascadeExtents))));
-    }
+		//_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_LightPos);
+		_vector vDir = m_LightDir;
 
-    return S_OK;
+		_float3 shadowCamPos;
+		XMStoreFloat3(&shadowCamPos, centerPos + XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents)));
+
+		_vector vEyePos = XMVectorSetW(XMLoadFloat3(&shadowCamPos), 1.f);
+
+		_matrix lightMatrix = XMMatrixLookAtLH(vEyePos, centerPos, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+		XMStoreFloat4x4(&m_shadowOrthoView[i], lightMatrix);
+
+		_vector cascadeExtents = maxExtents - minExtents;
+
+		XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), -XMVectorGetZ(maxExtents), XMVectorGetZ(maxExtents) * 2.f));
+	}
+
+	return S_OK;
 }
 
 void CShadow::Update()
 {
 
-    for (int i = 0; i < 3; ++i)
-    {
-        _vector vclip = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, m_cascadeEnd[i + 1], 1.0f), m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
-        m_CascadeEndCliSpaceZ[i] = XMVectorGetZ(vclip);
-    }
+	for (int i = 0; i < 3; ++i)
+	{
+		_vector vclip = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, m_cascadeEnd[i + 1], 1.0f), m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
+		m_CascadeEndCliSpaceZ[i] = XMVectorGetZ(vclip);
+	}
 
-    _matrix matView = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
+	_matrix matView = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
 
-    if (m_pPlayerTransform != nullptr)
-    {
-        for (size_t i = 0; i < 3; ++i)
-        {
-            _vector centerPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	if (m_pPlayerTransform != nullptr)
+	{
+		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-            _vector frustumCorners[8] =
-            {
-            };
+		for (size_t i = 0; i < 3; ++i)
+		{
+			_vector centerPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 
-            for (size_t l = 0; l < 8; ++l)
-                frustumCorners[l] = m_cascadeFrustum[i][l];
+			_vector frustumCorners[8] =
+			{
+			};
 
-            for (uint32_t j = 0; j < 8; ++j)
-            {
-                frustumCorners[j] = XMVector3TransformCoord(frustumCorners[j], matView);
-                centerPos += frustumCorners[j];
-            }
+			for (size_t l = 0; l < 8; ++l)
+				frustumCorners[l] = m_cascadeFrustum[i][l];
 
-            centerPos /= 8.0f;
+			for (uint32_t j = 0; j < 8; ++j)
+			{
+				frustumCorners[j] = XMVector3TransformCoord(frustumCorners[j], matView);
+				centerPos += frustumCorners[j];
+			}
 
-            float radius = 0.0f;
-            for (uint32_t j = 0; j < 8; ++j)
-            {
-                float distance = XMVectorGetX(XMVector3Length(frustumCorners[j] - centerPos));
-                radius = max(radius, distance);
-            }
+			centerPos /= 8.0;
 
-            radius = std::ceil(radius * 16.0f) / 16.0f;
+			float radius = 0.0f;
+			for (uint32_t j = 0; j < 8; ++j)
+			{
+				float distance = XMVectorGetX(XMVector3Length(frustumCorners[j] - centerPos));
+				radius = max(radius, distance);
+			}
 
-            // using radius ,  we made aabb box
-            _vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
-            _vector minExtents = -maxExtents;
+			radius = std::ceil(radius * 16.0f) / 16.0f;
 
-            _vector vDir = XMVectorSet(-1.f, -1.f, 0.f, 0.f);
+			// using radius ,  we made aabb box
+			_vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
+			_vector minExtents = -maxExtents;
 
-            _float3 shadowCamPos;
-            XMStoreFloat3(&shadowCamPos, (centerPos + (XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents)))));
+			_vector vDir = m_LightDir;
 
-            _vector vEyePos = XMVectorSetW(XMLoadFloat3(&shadowCamPos), 1.f);
+			//vDir = XMVector3TransformNormal(m_LightDir, matView);
 
-            _matrix lightMatrix = XMMatrixLookAtLH(vEyePos, centerPos, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			//float worldUnitsPerTexel = (radius * 2.f) / g_iMaxWidth;
 
-            //XMStoreFloat4x4(&m_shadowOrthoView[i], XMMatrixTranspose(lightMatrix));
-            XMStoreFloat4x4(&m_shadowOrthoView[i], lightMatrix);
 
-            _vector cascadeExtents = maxExtents - minExtents;
 
-            XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.0f, XMVectorGetZ(cascadeExtents)));
-            //XMStoreFloat4x4(&m_shadowOrthoProj[i], XMMatrixTranspose(lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.0f, XMVectorGetZ(cascadeExtents))));
-        }
-    }
+			_float3 shadowCamPos;
+			XMStoreFloat3(&shadowCamPos, centerPos + XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents)));
+
+			// XMStoreFloat3(&shadowCamPos, XMVectorFloor(XMLoadFloat4(&m_LightPos) / worldUnitsPerTexel) * worldUnitsPerTexel);
+
+			_vector vEyePos = XMVectorSetW(XMLoadFloat3(&shadowCamPos), 1.f);
+
+			_matrix lightMatrix = XMMatrixLookAtLH(vEyePos, centerPos, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+			XMStoreFloat4x4(&m_shadowOrthoView[i], lightMatrix);
+
+			_vector cascadeExtents = maxExtents - minExtents;
+
+			XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.1f, XMVectorGetZ(maxExtents) * 1.5f));
+		
+		
+		}
+	}
 }
 
 HRESULT CShadow::Bind_ViewMatrix(CShader* pShader, const _char* pConstantName)
 {
-    if (FAILED(pShader->Bind_Matrices(pConstantName, &m_shadowOrthoView[0], 3)))
-        return E_FAIL;
+	if (FAILED(pShader->Bind_Matrices(pConstantName, &m_shadowOrthoView[0], 3)))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CShadow::Bind_ProjMatrix(CShader* pShader, const _char* pConstantName)
 {
 
-    if (FAILED(pShader->Bind_Matrices(pConstantName, &m_shadowOrthoProj[0], 3)))
-        return E_FAIL;
+	if (FAILED(pShader->Bind_Matrices(pConstantName, &m_shadowOrthoProj[0], 3)))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CShadow::Bind_LightZ(CShader* pShader)
 {
-    if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ1", &m_CascadeEndCliSpaceZ[0], sizeof(_float))))
-        return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ1", &m_CascadeEndCliSpaceZ[0], sizeof(_float))))
+		return E_FAIL;
 
-    if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ2", &m_CascadeEndCliSpaceZ[1], sizeof(_float))))
-        return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ2", &m_CascadeEndCliSpaceZ[1], sizeof(_float))))
+		return E_FAIL;
 
-    if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ3", &m_CascadeEndCliSpaceZ[2], sizeof(_float))))
-        return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ3", &m_CascadeEndCliSpaceZ[2], sizeof(_float))))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 CShadow* CShadow::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CShadow* pInstance = new CShadow(pDevice, pContext);
+	CShadow* pInstance = new CShadow(pDevice, pContext);
 
-    if (FAILED(pInstance->Initialize()))
-    {
-        MSG_BOX("Failed To Created : CShadow");
-        Safe_Release(pInstance);
-    }
+	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CShadow");
+		Safe_Release(pInstance);
+	}
 
-    return pInstance;
+	return pInstance;
 }
 
 void CShadow::Free()
 {
-    __super::Free();
+	__super::Free();
 
-    Safe_Release(m_pDevice);
-    Safe_Release(m_pContext);
-    Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
+	Safe_Release(m_pGameInstance);
 }

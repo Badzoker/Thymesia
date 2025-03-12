@@ -51,6 +51,7 @@ void CBody_VillageF1::Update(_float fTimeDelta)
 void CBody_VillageF1::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CBody_VillageF1::Render()

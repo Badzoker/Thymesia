@@ -51,6 +51,7 @@ void CBody_HArmorLV2::Update(_float fTimeDelta)
 void CBody_HArmorLV2::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 }
 
 HRESULT CBody_HArmorLV2::Render()

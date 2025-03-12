@@ -45,7 +45,7 @@ void CStaticObject::Late_Update(_float fTimeDelta)
 
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
 
-	//m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);	
 }
