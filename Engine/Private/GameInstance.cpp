@@ -80,7 +80,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pEvent_Manager)
 		return E_FAIL;
 
-	m_pEffect_Manager = CEffectMgr::Create(*ppDevice, *ppContext);		
+	m_pEffect_Manager = CEffectMgr::Create();		
 	if (nullptr == m_pEffect_Manager)	
 		return E_FAIL;	
 
@@ -496,14 +496,31 @@ HRESULT CGameInstance::Add_DeadEffect(CGameObject* pGameObject)
 
 #pragma region Effect Manager
 
-HRESULT CGameInstance::Add_Effect(CGameObject* pEffect)
+
+
+HRESULT CGameInstance::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg)
 {
-	return m_pEffect_Manager->Add_Effect(pEffect);	
+	return m_pEffect_Manager->Add_Effect(_iPrototypeLevelIndex, _strPrototypeTag, _eEffectName, _pArg);
 }
 
-HRESULT CGameInstance::Sub_Effect(CGameObject* pEffect)
+HRESULT CGameInstance::Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos)
 {
-	return m_pEffect_Manager->Sub_Effect(pEffect);	
+	return m_pEffect_Manager->Play_Effect(_eEffectName, _vPos);
+}
+
+HRESULT CGameInstance::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos)
+{
+	return m_pEffect_Manager->Play_Effect_With_Timer(_eEffectName, _fDuration, _vPos);
+}
+
+HRESULT CGameInstance::Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix(_eEffectName, _pMatrix);
+}
+
+HRESULT CGameInstance::Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_With_Timer_Matrix(_eEffectName, _fDuration, _pMatrix);
 }
 
 #pragma endregion 

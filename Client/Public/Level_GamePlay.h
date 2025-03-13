@@ -65,6 +65,7 @@ private:
 	HRESULT Load_InstancingObjects(_int iObject_Level);
 	HRESULT Load_Height(_int iObject_Level);
 	HRESULT Load_MonsterIndex(_int iMonsterIndex_Level);
+	HRESULT Load_Effect(const _tchar* _pEffectFilePath, _uint _iPrototypeLevelIndex, const _tchar* _pEffectPrototypeName, EFFECT_TYPE _eEffectType, EFFECT_NAME _eEffectName, _uint _iEffectCount = 1);
 private:
 	_uint m_iOpenSceneCount = { 0 };
 	_bool m_bSceneOpen = { false };

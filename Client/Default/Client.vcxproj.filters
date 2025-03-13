@@ -553,6 +553,12 @@
     <Filter Include="02.GameObject\GameItem">
       <UniqueIdentifier>{3c0b2ffd-b652-4a4d-928a-816e0e31a3ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Mesh">
+      <UniqueIdentifier>{cb3d6cbc-ba9e-4430-989f-099650047ea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\Particle">
+      <UniqueIdentifier>{91b481c9-7fb2-47d8-935f-a4dbc8ae8565}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1044,6 +1050,12 @@
     <ClInclude Include="..\Public\GameItem.h">
       <Filter>02.GameObject\GameItem</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Mesh.h">
+      <Filter>02.GameObject\Effect\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Particle.h">
+      <Filter>02.GameObject\Effect\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1526,6 +1538,12 @@
     <ClCompile Include="..\Private\GameItem.cpp">
       <Filter>02.GameObject\GameItem</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Mesh.cpp">
+      <Filter>02.GameObject\Effect\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Particle.cpp">
+      <Filter>02.GameObject\Effect\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1589,6 +1607,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -13,6 +13,8 @@
 #include "UI_InteractableIndicator.h"
 
 #include "GameItem.h"
+#include "Effect_Mesh.h"
+#include "Effect_Particle.h"
 
 
 
@@ -370,10 +372,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_NPC(const _tchar* pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
-
+	//Compute Shader Test용도 그냥 남겨두는중 지워도될듯?
 	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 	//	return E_FAIL;
-	
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW1)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw2.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffectData_Test.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -797,6 +810,135 @@ HRESULT CLevel_GamePlay::Load_MonsterIndex(_int iMonsterIndex_Level)
 
 	CloseHandle(hFile);
 	
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPrototypeLevelIndex, const _tchar* _pEffectPrototypeName, EFFECT_TYPE _eEffectType, EFFECT_NAME _eEffectName, _uint _iEffectCount)
+{
+	HANDLE hFile = CreateFile(_pEffectFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Effect Loading 실패!");
+		return E_FAIL;
+	}
+
+	if (EFFECT_TYPE::EFFECT_TYPE_MESH == _eEffectType)
+	{
+		DWORD dwByte = 0;
+
+		CEffect_Mesh::EFFECT_MESH_DESC pDesc = {};
+
+		_uint iNumber_Mesh_Effect{}, iMesh_Model_Count{}; //약간 Tool 용도라서 미리 빼두는 느낌(본 Project 에선 필요없을듯)
+		_float fRGB_R{}, fRGB_G{}, fRGB_B{};
+		ReadFile(hFile, &iNumber_Mesh_Effect, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &iMesh_Model_Count, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iShaderPass, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iNoise, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iMask, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fTimer_SpeedX, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fTimer_SpeedY, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fDissolve_Speed, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fWeightX, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fWeightY, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fStartTexcoordX, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fStartTexcoordY, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fMaskCountX, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fMaskCountY, sizeof(_float), &dwByte, nullptr);
+
+		ReadFile(hFile, &fRGB_R, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &fRGB_G, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &fRGB_B, sizeof(_float), &dwByte, nullptr);
+
+		pDesc.vRGB = _float3(fRGB_R, fRGB_G, fRGB_B);
+
+		ReadFile(hFile, &pDesc.fTexcoord_LerpX, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fTexcoord_LerpY, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.bTexcoordX, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.bTexcoordY, sizeof(_bool), &dwByte, nullptr);
+
+		ReadFile(hFile, &pDesc.bUsing_Noise, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.bLoop, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.bMinus, sizeof(_bool), &dwByte, nullptr);
+
+		ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
+
+#pragma region Switch For Mesh Model Name
+		switch (iNumber_Mesh_Effect) //이거 Tool에서의 순서 기반임
+		{
+		case 0:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Donut");
+			break;
+		case 1:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_ThinDonut");
+			break;
+		case 2:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Rainbow");
+			break;
+		case 3:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Claw");
+			break;
+		case 4:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Sword");
+			break;
+		case 5:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Twist");
+			break;
+		case 6:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Strange");
+			break;
+		case 7:
+			pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Tornado");
+			break;
+		}
+#pragma endregion
+
+		for (_uint i = 0; i < _iEffectCount; i++)
+		{
+			if (FAILED(m_pGameInstance->Add_Effect(_iPrototypeLevelIndex, _pEffectPrototypeName, _eEffectName, &pDesc)))
+				return E_FAIL;
+		}
+
+		
+	}
+	else
+	{
+		//Particle 용도
+		DWORD dwByte = 0;
+
+		CEffect_Particle::EFFECT_PARTICLE_DESC pDesc = {};
+
+		_uint iParticle_Function = {}; //약간 Tool 용도라서 미리 빼두는 느낌(본 Project 에선 필요없을듯)
+
+		ReadFile(hFile, &pDesc.iParticle_Count, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &iParticle_Function, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
+
+#pragma region Switch For Particle Buffer&Shader Name
+		switch (_eEffectName)
+		{
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
+			break;
+		}
+#pragma endregion
+
+		for (_uint i = 0; i < _iEffectCount; i++)
+		{
+			if (FAILED(m_pGameInstance->Add_Effect(_iPrototypeLevelIndex, _pEffectPrototypeName, _eEffectName, &pDesc)))
+				return E_FAIL;
+		}
+
+	}
+
+	CloseHandle(hFile);
+
 	return S_OK;
 }
 

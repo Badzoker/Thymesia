@@ -127,7 +127,12 @@ void CClawWeapon::Update(_float fTimeDelta)
                         && iter.isEventActivate == true
                         && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
                     {
-                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로     
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+
+                        if (!strcmp(iter.szName, "Claw1_Start"))
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
+                        else if (!strcmp(iter.szName, "Claw2_Start"))
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
                     }
                 }
             }

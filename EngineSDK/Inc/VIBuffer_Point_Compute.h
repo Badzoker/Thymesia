@@ -16,16 +16,17 @@ public:
 		_float2     vLifeTime = {};
 	};
 private:
-	CVIBuffer_Point_Compute(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& Prototype);
+	CVIBuffer_Point_Compute(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& _Prototype);
 	virtual ~CVIBuffer_Point_Compute() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const PARTICLE_COMPUTE_DESC* _pDesc);
+	virtual HRESULT Initialize_Prototype(const _tchar* _pParticleDataFile);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Bind_InputAssembler() override;
 	virtual HRESULT Render() override;
 	HRESULT Compute_Shader(class CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ);
+	HRESULT Compute_Shader_Reset(class CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ);
 
 private:
 
@@ -35,29 +36,29 @@ private:
 	_uint							m_iNumIndexPerInstance = {};
 	_uint							m_iNumInstance = {};
 
-	COMPUTE_PARTICLE_INSTANCE* m_pInstanceVertices = { nullptr };
-	ID3D11Buffer* m_pVBInstance = { nullptr };
+	COMPUTE_PARTICLE_INSTANCE*		m_pInstanceVertices = { nullptr };
+	ID3D11Buffer*					m_pVBInstance = { nullptr };
 
 
 	//_float* m_pSpeeds = { nullptr };
 	_bool							m_isLoop = { false };
 
-	ID3D11UnorderedAccessView* m_pUAV = { nullptr };
-	ID3D11ShaderResourceView* m_pSRV = { nullptr };
+	ID3D11UnorderedAccessView*		m_pUAV = { nullptr };
+	ID3D11ShaderResourceView*		m_pSRV = { nullptr };
 
-	ID3D11Buffer* m_pBuffer_UAV = { nullptr };
-	ID3D11Buffer* m_pBuffer_SRV= { nullptr };
-	ID3D11Buffer* m_pBuffer_Copy= { nullptr };
+	ID3D11Buffer*					m_pBuffer_UAV = { nullptr };
+	ID3D11Buffer*					m_pBuffer_SRV= { nullptr };
+	ID3D11Buffer*					m_pBuffer_Copy= { nullptr };
 
 	HRESULT CreateStructureBuffer();
 	HRESULT CreateBuffer_SRV_UAV();
 	HRESULT CreateAndCopyBuffer();
 
-	_float m_fTest = {};
+	//_float m_fTest = {};
 
 public:
-	static CVIBuffer_Point_Compute* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const PARTICLE_COMPUTE_DESC* pArg);
-	virtual CComponent* Clone(void* pArg) override;
+	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile);
+	virtual CComponent* Clone(void* _pArg) override;
 	virtual void Free() override;
 };
 

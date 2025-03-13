@@ -142,8 +142,11 @@ public:
 
 #pragma region EFFECT MANAGER
 
-	HRESULT Add_Effect(CGameObject* pEffect);
-	HRESULT Sub_Effect(CGameObject* pEffect);	
+	HRESULT Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg = nullptr);
+	HRESULT Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos);
+	HRESULT Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos);
+	HRESULT Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix);
+	HRESULT Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix);
 
 #pragma endregion
 

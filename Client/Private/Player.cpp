@@ -750,7 +750,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				break;
 			}
 
-
+			//Hit Effect
+			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
+			m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition);
 
 		}
 	}

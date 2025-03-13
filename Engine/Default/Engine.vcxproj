@@ -183,6 +183,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\ContainerObject.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
+    <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\public\EffectMgr.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
@@ -266,6 +267,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\ContainerObject.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\private\EffectMgr.cpp" />
     <ClCompile Include="..\private\Event.cpp" />
     <ClCompile Include="..\private\EventMgr.cpp" />

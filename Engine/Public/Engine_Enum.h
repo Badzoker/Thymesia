@@ -115,5 +115,28 @@ namespace Engine
 		ITEM_FORGIVEN,
 		ITEM_END
 	};
+
+	enum class EFFECT_TYPE
+	{
+		EFFECT_TYPE_PARTICLE,
+		EFFECT_TYPE_MESH,
+		EFFECT_TYPE_END
+	};
+
+	enum class EFFECT_NAME
+	{
+		//Mesh
+		EFFECT_PLAYER_SWORD1,
+		EFFECT_PLAYER_SWORD2,
+		EFFECT_PLAYER_SWORD3,
+		EFFECT_PLAYER_CLAW1,
+		EFFECT_PLAYER_CLAW2,
+
+		//Particle
+		EFFECT_PARTICLE_SPARK,
+
+
+		EFFECT_NAME_END
+	};
 }
 #endif // Engine_Enum_h__

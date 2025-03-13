@@ -187,6 +187,8 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
+    <ClInclude Include="..\Public\Effect_Mesh.h" />
+    <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\HArmorLV2.h" />
     <ClInclude Include="..\public\HurtKnockBack.h" />
@@ -352,6 +354,8 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
+    <ClCompile Include="..\Private\Effect_Mesh.cpp" />
+    <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\HArmorLV2.cpp" />
     <ClCompile Include="..\private\HurtKnockBack.cpp" />
@@ -506,6 +510,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMeshNoDefferd.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl" />

@@ -178,9 +178,6 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\SwordTrail_Buffer">
       <UniqueIdentifier>{5e958745-57af-411b-be17-ac4355239ef4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\11.EffectMgr">
-      <UniqueIdentifier>{3789783c-80d6-43e5-a633-bdbf20239c08}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Components\VIBuffer\Particle_Instancing\Mesh">
       <UniqueIdentifier>{75b6adc3-b08e-4c6d-a099-f03f0a65b77e}</UniqueIdentifier>
     </Filter>
@@ -255,6 +252,12 @@
     </Filter>
     <Filter Include="01.Utility\15.ItemMgr\ItemManager">
       <UniqueIdentifier>{d0112355-af11-4688-a1c0-7e1f2361956c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\11.Effect">
+      <UniqueIdentifier>{3789783c-80d6-43e5-a633-bdbf20239c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\11.Effect\Manager">
+      <UniqueIdentifier>{a7943271-11ec-45cb-903a-e70432608afb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +435,6 @@
     <ClInclude Include="..\public\SwordTrail_Buffer.h">
       <Filter>01.Utility\04.Components\VIBuffer\SwordTrail_Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\EffectMgr.h">
-      <Filter>01.Utility\11.EffectMgr</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Mesh_Instancing.h">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Mesh</Filter>
     </ClInclude>
@@ -500,6 +500,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Item.h">
       <Filter>01.Utility\15.ItemMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectMgr.h">
+      <Filter>01.Utility\11.Effect\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>01.Utility\11.Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -662,9 +668,6 @@
     <ClCompile Include="..\private\SwordTrail_Buffer.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\SwordTrail_Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\EffectMgr.cpp">
-      <Filter>01.Utility\11.EffectMgr</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Mesh_Instancing.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Mesh</Filter>
     </ClCompile>
@@ -730,6 +733,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Item.cpp">
       <Filter>01.Utility\15.ItemMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectMgr.cpp">
+      <Filter>01.Utility\11.Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>01.Utility\11.Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
