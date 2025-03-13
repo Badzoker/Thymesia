@@ -14,6 +14,17 @@ class CPlayer;
 class CCamera_Free final : public CCamera
 {
 public:
+	struct Camera_Event
+	{
+		_char Cam_Name[MAX_PATH];
+		_float4x4 Cam_WorldMatrix;
+		_float4 Cam_RelativePos;
+		_float  Cam_LerpTime;
+		_float  Cam_LerpSpeed;
+		_float4x4  Cam_ConvertedWorldMatrix;
+	};
+
+public:
 	struct FREE_CAMERA_DESC : public CCamera::CAMERA_DESC
 	{
 		_float			fMouseSensor = {};
@@ -41,14 +52,16 @@ public:
 	void				ResetZoomInCameraPos();
 	bool				ResetZoomOutCameraPos();
 	_vector			    Camera_Shake(float deltaTime, XMVECTOR& cameraPosition);
+
+	bool                Camera_Cut_Scene_Activate(_wstring _CutSceneName);
 private:
 	_float* m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
-	_float				m_fLerpTime = { 3.f };
-	_float				m_fCamCloseLimitDistance = { 2.f };
-	_float				m_fCamDistance = { 2.5f };
-	_float				m_fCamFarLimitDistance = { 3.5f };
-	_float				m_fCurCamDistance = { 2.5f };
+	_float				m_fLerpTime = { 0.06f };
+	_float				m_fCamCloseLimitDistance = { 3.5f };
+	_float				m_fCamDistance = { 3.5f };
+	_float				m_fCamFarLimitDistance = { 4.5f };
+	_float				m_fCurCamDistance = { 3.5f };
 	_float				m_fTimeDelta = {};
 
 	/* 카메라 셰이킹 관련 변수 */
@@ -78,11 +91,21 @@ private:
 	_bool				m_bZoomOut = { false };
 	/*  ---------------  */
 
+	/* 카메라 툴 이벤트 관련*/
+	_bool               m_bCamera_Cut_Scene_OnOff = { false };
+	_uint				m_iPlayCamera_Index = {};
+	_float				m_fCutScene_CurTime = {};
+	_bool				m_bCutSceneFirst = { true };
+	_float				m_fRadian = {};
+	/* ----------------  */
 
 
 
 	list<class CGameObject*>* m_plistMonster;
 	map<_float, CGameObject*>							m_maptMonsterDistance;
+
+	vector<Camera_Event>								m_vecCamera_Event;
+	map<wstring, vector<Camera_Event>>					m_mapCamera_Event;
 
 
 public:
