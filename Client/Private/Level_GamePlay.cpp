@@ -294,7 +294,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.vEye = _float3(0.f, 10.f, -7.f);
 	Desc.vAt = _float3(0.f, 0.f, 0.f);
 
-	Desc.fFovy = XMConvertToRadians(60.f);
+	Desc.fFovy = XMConvertToRadians(50.f);
 	Desc.fNear = 0.1f;
 	Desc.fFar = 800.f;
 	Desc.fMouseSensor = 0.05f;

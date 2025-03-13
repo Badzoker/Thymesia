@@ -95,6 +95,7 @@ public:
 	void Turn_Move(_fvector vAxis, _float fTimeDelta);	
 	void Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter);	
 	void Orbit_Move_Once(_fvector vAxis, _float Radian, _fvector vCenter);	
+	_float4x4 Orbit_Move_RelativePos(_fmatrix vWorldMatrix, _fvector vRelativePos, _fvector vAxis, _float Radian, _fvector vCenter);
 	
 	void Set_State_UIObj(STATE eState, _float2 _fPos);
 

@@ -105,7 +105,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	_fvector CameraPos =
 	{
 		 XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.0f, // 머리 높이 보정
+		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.2f, // 머리 높이 보정
 		 XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 		 1.0f
 	};
@@ -114,6 +114,41 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 	m_plistMonster = m_pGameInstance->Get_LayerGameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
+
+	/* 카메라 툴 내용 읽어오기  */
+	vector<Camera_Event> test;
+
+	_ulong dwByte = {};
+
+	//m_mapCamera_Event.emplace("Camera_Test", m_vec)
+	HANDLE hFile = CreateFile(TEXT("../Camera_Bin/Camera_2.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	while (true)
+	{
+		Camera_Event pEventDesc{};
+
+
+		ReadFile(hFile, pEventDesc.Cam_Name, MAX_PATH, &dwByte, nullptr);
+
+		if (dwByte == 0)
+			break;
+
+		/* 카메라 툴에 있는 캠의 월드 행렬 가져오기*/
+		ReadFile(hFile, &pEventDesc.Cam_WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		/* 카메라 툴에 있는 상대 위치 가져오기 */
+		ReadFile(hFile, &pEventDesc.Cam_RelativePos, sizeof(_float4), &dwByte, nullptr);
+
+		/* 카메라 툴에 있는 보간 시간 가져오기*/
+		ReadFile(hFile, &pEventDesc.Cam_LerpTime, sizeof(_float), &dwByte, nullptr);
+
+		/* 카메라 툴에 있는 보간 속도 가져오기*/
+		ReadFile(hFile, &pEventDesc.Cam_LerpSpeed, sizeof(_float), &dwByte, nullptr);
+
+		test.push_back(pEventDesc);
+	}
+	CloseHandle(hFile);
+
+	m_mapCamera_Event.emplace(TEXT("Test"), test);	
 
 	return S_OK;
 }
@@ -141,14 +176,14 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		1.0f
 	);
 
-	m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, 0.075f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
+	m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
 
 	// 카메라 이동 처리
 	_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
 
-	_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, 0.075f);
+	_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
 
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpCamPos);	 // 위치를 이렇게 세팅하니깐 다시 위에서는 vCamPosition 값이 증가하게되어 보간효과 o 
@@ -321,6 +356,17 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	}
 
 
+	if (m_pGameInstance->isKeyEnter(DIK_Y))
+	{
+		m_bCamera_Cut_Scene_OnOff = true;
+	}
+
+
+	if (m_bCamera_Cut_Scene_OnOff)
+	{
+		Camera_Cut_Scene_Activate(TEXT("Test"));
+	}
+
 
 	m_bShakeOnOff = false;
 	m_bZoomIn = false;
@@ -460,6 +506,103 @@ _vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)
 
 
 	return newCameraPos;
+}
+
+bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
+{
+
+	auto& iter = m_mapCamera_Event.find(_CutSceneName);
+
+	m_vecCamera_Event = iter->second;
+
+	if (m_bCutSceneFirst)
+	{
+		_vector playerXZright = { m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT).m128_f32[0], 0.f, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT).m128_f32[2],1.f };
+		playerXZright = XMVector3Normalize(playerXZright);
+		float dotResult = XMVectorGetX(XMVector3Dot(_fvector{ 1.f,0.f,0.f }, playerXZright));
+		dotResult = max(-1.0f, min(dotResult, 1.0f));
+		m_fRadian = acosf(dotResult);
+
+		_vector crossResult = XMVector3Cross(playerXZright, _fvector{ 1.f,0.f,0.f,0.f });
+		float crossY = XMVectorGetY(crossResult);
+		if (crossY < 0.0f) {
+			m_fRadian = -m_fRadian;
+		}
+		m_bCutSceneFirst = false;
+	}
+
+	/* 왜 한번 지나고 가면 초기화 되는지에 대해 검사 */
+	//if (m_bCutSceneFirst)
+	//{
+	for (auto& iter : m_vecCamera_Event)
+	{
+		_float4x4 ConvertedWorldMatrix
+			= m_pTransformCom->Orbit_Move_RelativePos(XMLoadFloat4x4(&iter.Cam_WorldMatrix),
+				XMLoadFloat4(&iter.Cam_RelativePos),
+				_fvector{ 0.f,1.f,0.f,0.f },
+				m_fRadian,	 // 이걸 dot 해줘야 함.		
+				m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+
+
+		XMStoreFloat4x4(&iter.Cam_WorldMatrix, XMLoadFloat4x4(&ConvertedWorldMatrix));
+	}
+	//	m_bCutSceneFirst = false;
+	//}
+
+
+	m_fCutScene_CurTime += m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_LerpSpeed * m_fTimeDelta;
+
+	_float  fRatio = m_fCutScene_CurTime / m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_LerpTime;
+
+	_uint CamCount = m_vecCamera_Event.size();
+
+
+	if (fRatio <= 1.f)
+	{
+
+		_vector   vScale, vRotation, vTranslation;
+		XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(&m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_WorldMatrix));
+
+		_vector    vNextScale, vNextRotation, vNextTranslation;
+		XMMatrixDecompose(&vNextScale, &vNextRotation, &vNextTranslation, XMLoadFloat4x4(&m_vecCamera_Event.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix));
+
+
+
+		vScale = XMVectorLerp(vScale, vNextScale, fRatio);
+
+		vRotation = XMQuaternionSlerp(vRotation, vNextRotation, fRatio);
+
+		vTranslation = XMVectorSetW(XMVectorLerp(vTranslation, vNextTranslation, fRatio), 1.f);
+
+		_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+		_float4x4 test = {};
+		XMStoreFloat4x4(&test, TransformationMatrix);
+
+		m_pTransformCom->Set_WorldMatrix(test);
+
+
+	}
+
+	else if (fRatio > 1.f)
+	{
+		if (m_iPlayCamera_Index < (CamCount - 2))
+		{
+			m_fCutScene_CurTime = 0.f;
+			m_iPlayCamera_Index++;
+		}
+
+		else
+		{
+			m_bCamera_Cut_Scene_OnOff = false;
+			m_fCutScene_CurTime = 0.f;
+			m_iPlayCamera_Index = 0;
+		}
+	}
+
+
+
+	return m_bCamera_Cut_Scene_OnOff;
 }
 
 
