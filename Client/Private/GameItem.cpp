@@ -75,10 +75,10 @@ void CGameItem::Update(_float _fTimeDelta)
     if (!m_bAcquired)
     {
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+           m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
     }
+    
 
-    m_fElapsedTime += _fTimeDelta * 0.5f;
 
     if (m_fElapsedTime >= 3.0f)
     {
@@ -87,10 +87,10 @@ void CGameItem::Update(_float _fTimeDelta)
 
     if (m_bDropping)
     {
+        m_fElapsedTime += _fTimeDelta * 0.5f;
         _vector vItemPos = XMLoadFloat4(&Bezier(m_vInitialPos, m_vCurvePos, m_vEndPos, m_fElapsedTime));
         _vector vDir = XMVector3Normalize(vItemPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
         m_pTransformCom->LookAt(vItemPos + vDir);
-
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, vItemPos);
 
         if (XMVectorGetY(vItemPos) <= m_vEndPos.y)

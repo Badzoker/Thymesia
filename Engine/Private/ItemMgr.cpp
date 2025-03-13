@@ -51,25 +51,22 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
     if (nullptr == pVecItems)
         return E_FAIL;
 
-    if (m_mapItems[_eItemType].first > 0)
+    for (auto& pItems : *pVecItems)
     {
-        for (auto& pItems : *pVecItems)
+        if (nullptr != pItems)
         {
-            if (nullptr != pItems)
-            {
-                //pItems->Set_DropItemCount(_iItemCount);
-                pItems->Set_BeAcquired(false);
-                pItems->Set_BeDropping(true);
+            //pItems->Set_DropItemCount(_iItemCount);
+            pItems->Set_BeAcquired(false);
+            pItems->Set_BeDropping(true);
 
-                _float4 vDropPosition;
-                XMStoreFloat4(&vDropPosition, _vDropPosition);
-                pItems->Set_BezierPosition(vDropPosition, _GameObject);
-                break;
-            }
+            _float4 vDropPosition;
+            XMStoreFloat4(&vDropPosition, _vDropPosition);
+            pItems->Set_BezierPosition(vDropPosition, _GameObject);
+            break;
         }
-        //m_mapItems[_eItemType].first -= _iItemCount;
-        m_mapItems[_eItemType].first--;
     }
+    //m_mapItems[_eItemType].first -= _iItemCount;
+    //m_mapItems[_eItemType].first--;
 
     return S_OK;
 }

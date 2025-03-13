@@ -14,12 +14,6 @@ BEGIN(Client)
 class CEnvironmentObject abstract : public CGameObject
 {
 public:
-    struct INSTANCE_INFO
-    {
-        XMMATRIX		mInstanceToWorld;
-    };
-
-public:
     struct ENVIRONMENT_OBJECT_DESC : public CGameObject::GAMEOBJECT_DESC
     {
         _float fFrustumRadius = { 0.f };
@@ -101,11 +95,11 @@ protected:
 public:
     vector<VTX_MODEL_INSTANCE> Get_ModelInstanceVector() { return m_vecInstanceData; }
 
-    INSTANCE_INFO g_Instances[2] =
-    {
-        {XMMatrixTranspose(XMMatrixIdentity())},
-        {XMMatrixTranspose(XMMatrixTranslation(2.0f, 0.0f, 0.0f))}
-    };
+    //INSTANCE_INFO g_Instances[2] =
+    //{
+    //    {XMMatrixTranspose(XMMatrixIdentity())},
+    //    {XMMatrixTranspose(XMMatrixTranslation(2.0f, 0.0f, 0.0f))}
+    //};
 
 protected:
     virtual HRESULT Ready_Components();

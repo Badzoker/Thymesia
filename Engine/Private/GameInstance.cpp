@@ -585,7 +585,7 @@ HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, 
 }
 HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
-	return m_pItemMgr->Acquire_Item(_eItemType);;
+	return m_pItemMgr->Acquire_Item(_eItemType);
 }
 #pragma endregion
 

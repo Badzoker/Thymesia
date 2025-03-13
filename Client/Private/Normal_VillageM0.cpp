@@ -96,7 +96,7 @@ void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
         m_pState_Manager->ChangeState(new CNormal_VillageM0::Stun_State(), this);
     }
 
-    /*if (m_pGameInstance->isKeyEnter(DIK_K))
+    if (m_pGameInstance->isKeyEnter(DIK_K))
     {
         m_fRecoveryTime = 0.f;
         m_bHP_Bar_Active = true;
@@ -110,7 +110,7 @@ void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
         }
 
         m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, pPosition, this);
-    }*/
+    }
 
 
 
