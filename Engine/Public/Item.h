@@ -1,0 +1,59 @@
+#pragma once
+#include "GameObject.h"
+
+BEGIN(Engine)
+class ENGINE_DLL CItem : public CGameObject
+{
+public:
+    struct ITEM_DESC : public CGameObject::GAMEOBJECT_DESC
+    {
+        ITEM_TYPE           eITemType = ITEM_TYPE::ITEM_END;
+        _vector             vItemPos;
+    };
+
+public:
+    CItem(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+    CItem(const CItem& _Prototype);
+    virtual ~CItem() = default;
+
+public:
+    virtual HRESULT             Initialize_Prototype() override;
+    virtual HRESULT             Initialize(void* _pArg) override;
+    virtual void                Priority_Update(_float _fTimeDelta) override;
+    virtual void                Update(_float _fTimeDelta) override;
+    virtual void                Late_Update(_float fTimeDelta) override;
+    virtual HRESULT             Render()override;
+    _bool                       Get_BeAcquired() const { return m_bAcquired; }
+    void                        Set_BeAcquired(_bool _bAcquired) { m_bAcquired = _bAcquired; }
+    _bool                       Get_BeDropping() const { return m_bDropping; }
+    void                        Set_BeDropping(_bool _bDropping) { m_bDropping = _bDropping; }
+public:
+    virtual void                Set_Position(_fvector _vWorldPos);
+    virtual void                Set_ItemCount(_uint _iItemCount) { m_iItemCount = _iItemCount; }
+    virtual void                Set_DropItemCount(_uint _iItemCount) { m_iDropItemCount = _iItemCount; }
+    virtual void                Set_BezierPosition(const _float4& _vStartPos, CGameObject* _pGameObject);
+
+    _float4                      Bezier(_float4 _vStartPos, _float4 _vCurvePos, _float4 _vEndPos, _float _fTimeDelta);
+
+protected:
+    _uint                       m_iItemCount = {};
+    _uint                       m_iDropItemCount = { };
+    _bool                       m_bAcquired = { false };
+    _bool                       m_bDropping = { false };
+protected:
+    _bool                       m_bBezierMove = { false };
+    _float4                     m_vInitialPos = {};
+    _float4                     m_vStartPos = {};
+    _float4                     m_vEndPos = {};
+    _float4                     m_vCurvePos = {};
+    _float4                     m_vLastPos = {};
+    _float                      m_fElapsedTime = {};
+
+
+
+public:
+    virtual CGameObject* Clone(void* _pArg) = 0;
+    virtual void Free() override;
+};
+
+END

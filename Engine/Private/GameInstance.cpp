@@ -575,17 +575,17 @@ _bool CGameInstance::isAABB_InFrustum(const XMFLOAT3& _fMin, const XMFLOAT3& _fM
 #pragma endregion
 
 #pragma region ITEM_MANAGER
-_uint CGameInstance::Count_Item(_wstring _ItemName)
+HRESULT CGameInstance::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject)
 {
-	return m_pItemMgr->Count_Item(_ItemName);	
+	return m_pItemMgr->Add_Item(_eItemType, _iItemCount, _pGameObject);
 }
-HRESULT CGameInstance::Add_Item(_wstring _ItemName)
+HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, CGameObject* _pGameObject)
 {
-	return m_pItemMgr->Add_Item(_ItemName);	
+	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject);
 }
-HRESULT CGameInstance::Sub_Item(_wstring _ItemName)
+HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
-	return m_pItemMgr->Sub_Item(_ItemName);	
+	return m_pItemMgr->Acquire_Item(_eItemType);;
 }
 #pragma endregion
 

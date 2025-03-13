@@ -13,6 +13,8 @@ vector g_vCamPosition;
 matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
 
+float4 g_fAlphaValue;
+
 
 float4x4 g_PreWorldMatrix, g_PreViewMatrix; 
 
@@ -234,6 +236,12 @@ struct PS_OUT_WEIGHTBLEND
 {
     float4 vBlendDiffuse : SV_TARGET0;
 };
+
+struct PS_OUT_ITEM_GLOW
+{
+    float4 vItemGlow : SV_TARGET0;
+};
+
 
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -463,6 +471,20 @@ PS_OUT_WEIGHTBLEND PS_MAIN_WEIGHTBLEND(PS_IN In)
     return Out;
 }
 
+PS_OUT_ITEM_GLOW PS_MAIN_ITEM_GLOW(PS_IN In)
+{
+    PS_OUT_ITEM_GLOW Out = (PS_OUT_ITEM_GLOW) 0;
+    
+    vector vLook = normalize(In.vWorldPos - g_vCamPosition);
+    
+    float fDegree_Look_Normal = dot(vLook, In.vNormal);
+        
+    Out.vItemGlow = g_fAlphaValue;
+	
+    return Out;
+}
+
+
 
 
 struct GS_IN_SHADOW
@@ -608,5 +630,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
+    }
+
+    pass ItemGlow //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ITEM_GLOW();
     }
 }

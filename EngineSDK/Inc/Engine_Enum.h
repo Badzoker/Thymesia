@@ -26,7 +26,8 @@ namespace Engine
 		MONSTER_WEAPON = 1 << 3,  /* 0x0001000 */
 		ENEMY = 1 << 4,		  /* 0x0010000 */
 		OBJECT = 1 << 5,		  /* 0x0100000 */
-		GROUP_END = 1 << 6,		  /* 0x1000000 */
+		ITEM = 1 << 6,			/* 0x1000000 */
+		GROUP_END = 1 << 7,		  
 	};
 
 	enum class EVENT_TYPE{
@@ -104,6 +105,15 @@ namespace Engine
 		TT_FADE_OUT,
 		TT_INTERACTION,
 		TT_END
+	};
+
+	enum class ITEM_TYPE
+	{
+		ITEM_KEY1,
+		ITEM_KEY2,
+		ITEM_MEMORY,
+		ITEM_FORGIVEN,
+		ITEM_END
 	};
 }
 #endif // Engine_Enum_h__

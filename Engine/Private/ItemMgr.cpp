@@ -2,79 +2,110 @@
 #include "GameInstance.h"
 
 CItemMgr::CItemMgr()
-    :m_pGameInstance(CGameInstance::GetInstance())  
 {
-    Safe_AddRef(m_pGameInstance);
+
 }
 
 HRESULT CItemMgr::Initialize()
 {
-    return S_OK;    
+    return S_OK;
 }
 
-HRESULT CItemMgr::Update()
+void CItemMgr::Update(_float _fTimeDelta)
+{
+
+}
+
+HRESULT CItemMgr::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject)
+{
+    if (nullptr == _pGameObject)
+        return E_FAIL;
+
+    m_eItemType = _eItemType;
+
+    m_eItemCount[(_uint)_eItemType] = _iItemCount;
+
+    m_mapItems[_eItemType].first = m_eItemCount[(_uint)_eItemType];
+    m_mapItems[_eItemType].second.push_back(_pGameObject);
+
+    for (auto& pItems : m_mapItems[_eItemType].second)
+        pItems->Set_ItemCount(_iItemCount);
+
+    return S_OK;
+}
+
+HRESULT CItemMgr::Sub_Item(ITEM_TYPE _eItemType, const _wstring& _ItemName)
 {
     return S_OK;
 }
 
-
-
-_uint CItemMgr::Count_Item(_wstring _ItemName)
+void CItemMgr::Set_ItemPos(_fvector _vItemWorldPos)
 {
-    auto& iter = m_mapItemBag.find(_ItemName);
-
-
-    if (iter != m_mapItemBag.end())
-    {
-        return iter->second;
-    }
-
-    else
-        return 0;
 
 }
 
-HRESULT CItemMgr::Add_Item(_wstring _ItemName)
+HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _GameObject)
 {
-    auto& iter = m_mapItemBag.find(_ItemName);  
+    vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
 
+    if (nullptr == pVecItems)
+        return E_FAIL;
 
-    if(iter != m_mapItemBag.end())
+    if (m_mapItems[_eItemType].first > 0)
     {
-        iter->second++; 
+        for (auto& pItems : *pVecItems)
+        {
+            if (nullptr != pItems)
+            {
+                //pItems->Set_DropItemCount(_iItemCount);
+                pItems->Set_BeAcquired(false);
+                pItems->Set_BeDropping(true);
+
+                _float4 vDropPosition;
+                XMStoreFloat4(&vDropPosition, _vDropPosition);
+                pItems->Set_BezierPosition(vDropPosition, _GameObject);
+                break;
+            }
+        }
+        //m_mapItems[_eItemType].first -= _iItemCount;
+        m_mapItems[_eItemType].first--;
     }
-
-    else
-       m_mapItemBag.emplace(_ItemName, 1); 
-    
-
-    return S_OK;    
-}
-
-HRESULT CItemMgr::Sub_Item(_wstring _ItemName)
-{
-
-    auto& iter = m_mapItemBag.find(_ItemName);
-
-    if (iter != m_mapItemBag.end())
-    {
-        if (iter->second != 0)
-            iter->second--;
-
-    }
-
-    else
-        return E_FAIL;  
-
 
     return S_OK;
+}
+
+HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
+{
+    vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
+
+    if (nullptr == pVecItems)
+        return E_FAIL;
+
+    for (auto& pItems : *pVecItems)
+    {
+        pItems->Set_BeAcquired(true);
+    }
+
+    //m_mapItems[_eItemType].first += _iItemCount;
+    m_mapItems[_eItemType].first++;
+
+    return S_OK;
+}
+
+vector<CItem*>* CItemMgr::Find_ItemVector(ITEM_TYPE _eItemType)
+{
+    auto iter = m_mapItems.find(_eItemType);
+    if (iter == m_mapItems.end())
+        return nullptr;
+
+    return &iter->second.second;
 }
 
 CItemMgr* CItemMgr::Create()
 {
     CItemMgr* pInstance = new CItemMgr();
 
-    if(FAILED(pInstance->Initialize()))
+    if (FAILED(pInstance->Initialize()))
     {
         MSG_BOX("Failed to Created : ItemMgr");
         Safe_Release(pInstance);
@@ -85,8 +116,5 @@ CItemMgr* CItemMgr::Create()
 
 void CItemMgr::Free()
 {
-    __super::Free();    
-
-    Safe_Release(m_pGameInstance);  
-    m_mapItemBag.clear();   
+    __super::Free();
 }

@@ -12,6 +12,8 @@
 #include "UI_LeftBackground.h"
 #include "UI_InteractableIndicator.h"
 
+#include "GameItem.h"
+
 
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -52,6 +54,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -388,6 +393,30 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
 	CUI_InteractableIndicator::InterAct_Desc TextDesc = {};
 	TextDesc.iTextNum = 2;
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"), LEVEL_GAMEPLAY, pLayerTag,&TextDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Item(const _tchar* pLayerTag)
+{
+	char* m_strObjectNames[256] =
+	{
+		"Sphere"
+	};
+
+	CGameItem::GAMEITEM_DESC ItemDesc = {};
+	ItemDesc.GameItemName = m_strObjectNames[0];
+	ItemDesc.iItemCount = 12;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
+	ItemDesc.GameItemName = m_strObjectNames[0];
+	ItemDesc.iItemCount = 10;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 	return S_OK;
 }

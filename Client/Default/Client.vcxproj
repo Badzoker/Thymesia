@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
+    <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\HArmorLV2.h" />
     <ClInclude Include="..\public\HurtKnockBack.h" />
     <ClInclude Include="..\public\HurtKnockDown.h" />
@@ -351,6 +352,7 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
+    <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\HArmorLV2.cpp" />
     <ClCompile Include="..\private\HurtKnockBack.cpp" />
     <ClCompile Include="..\private\HurtKnockDown.cpp" />
