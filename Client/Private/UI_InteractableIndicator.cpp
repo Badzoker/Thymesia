@@ -38,7 +38,7 @@ HRESULT CUI_InteractableIndicator::Initialize(void* pArg)
 		break;
 
 	case 2:
-		m_strSideText = TEXT("È¹µæ");
+		m_strSideText = TEXT("ÁÝ±â");
 		break;
 
 	case 3:
