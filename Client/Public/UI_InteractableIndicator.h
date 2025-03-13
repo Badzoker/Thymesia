@@ -14,7 +14,7 @@ class CUI_InteractableIndicator final : public CUI_Image
 public:
 	struct InterAct_Desc : public CUIObject::UIOBJECT_DESC
 	{
-
+		_uint iTextNum;
 	};
 
 
@@ -37,6 +37,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	_float3 m_fTextPosition = {};
 
+	_wstring			m_strSideText;	// 버튼 우측에 뜨는 텍스트 내용
 
 
 public:

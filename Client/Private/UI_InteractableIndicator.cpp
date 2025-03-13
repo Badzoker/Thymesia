@@ -30,6 +30,21 @@ HRESULT CUI_InteractableIndicator::Initialize(void* pArg)
 	pDesc->fZ = 0.0f;
 	pDesc->fNear = 0.0f;
 	pDesc->fFar = 1.0f;
+	
+	switch (pDesc->iTextNum)
+	{
+	case 1:
+		m_strSideText = TEXT("조사");
+		break;
+
+	case 2:
+		m_strSideText = TEXT("획득");
+		break;
+
+	case 3:
+		m_strSideText = TEXT("올라가기");
+		break;
+	}
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -82,9 +97,12 @@ HRESULT CUI_InteractableIndicator::Render()
 	// 객체 중점 기준 텍스트의 중점을 맞춰 출력되도록 설정
 	m_fTextPosition.x = (fMyPos.x - TextSize.x / 2) - 3.f; // 묘하게 중점이 맞지 않아 임의로 상수값 넣어 조정
 	m_fTextPosition.y = (fMyPos.y - TextSize.y / 2) - 1.f; // 묘하게 중점이 맞지 않아 임의로 상수값 넣어 조정
-	m_fTextPosition.z = fMyPos.z;
 	m_pGameInstance->Render_World(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f); 
 
+
+	m_fTextPosition.x = fMyPos.x + fMyPos.x / 3; 
+	m_fTextPosition.y = fMyPos.y - fMyPos.y /6; 
+	m_pGameInstance->Render_World(m_strFontName, m_strSideText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f);
 
 	return S_OK;
 }
