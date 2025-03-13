@@ -41,6 +41,16 @@ HRESULT CFont_Manager::Render(const wstring& strFontTag, const _tchar* pText, co
 	return pFont->Render(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
 }
 
+HRESULT CFont_Manager::Render_World(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+
+	if (nullptr == pFont)
+		return E_FAIL;
+
+	return pFont->Render_World(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+
 HRESULT CFont_Manager::Render_Shadow(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);

@@ -39,6 +39,20 @@ HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _floa
 
     return S_OK;
 }
+HRESULT CCustomFont::Render_World(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+    if (nullptr == m_pFont ||
+        nullptr == m_pBatch)
+        return E_FAIL;
+
+    m_pBatch->Begin(SpriteSortMode_Deferred);
+
+    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, layerDepth);
+
+    m_pBatch->End();
+
+    return S_OK;
+}
 HRESULT CCustomFont::Render_Shadow(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
 {
     if (nullptr == m_pFont ||

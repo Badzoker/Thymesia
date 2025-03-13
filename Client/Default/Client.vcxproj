@@ -295,6 +295,7 @@
     <ClInclude Include="..\Public\UI_HPBar2_BG.h" />
     <ClInclude Include="..\Public\UI_HPBar3_MainBar.h" />
     <ClInclude Include="..\Public\UI_Indicator_Selected.h" />
+    <ClInclude Include="..\Public\UI_InteractableIndicator.h" />
     <ClInclude Include="..\Public\UI_ItemBackground.h" />
     <ClInclude Include="..\Public\UI_Item_Icon.h" />
     <ClInclude Include="..\Public\UI_KeyBox_Long.h" />
@@ -457,6 +458,7 @@
     <ClCompile Include="..\Private\UI_HPBar2_BG.cpp" />
     <ClCompile Include="..\Private\UI_HPBar3_MainBar.cpp" />
     <ClCompile Include="..\Private\UI_Indicator_Selected.cpp" />
+    <ClCompile Include="..\Private\UI_InteractableIndicator.cpp" />
     <ClCompile Include="..\Private\UI_ItemBackground.cpp" />
     <ClCompile Include="..\Private\UI_Item_Icon.cpp" />
     <ClCompile Include="..\Private\UI_KeyBox_Long.cpp" />
