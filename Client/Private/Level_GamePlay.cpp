@@ -386,7 +386,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Fade(const _tchar* pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
 {
 	CUI_InteractableIndicator::InterAct_Desc TextDesc = {};
-
+	TextDesc.iTextNum = 3;
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"), LEVEL_GAMEPLAY, pLayerTag,&TextDesc)))
 		return E_FAIL;
 	return S_OK;
