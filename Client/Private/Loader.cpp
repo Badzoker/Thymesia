@@ -155,6 +155,8 @@
 #include "BlackScreen.h"
 #pragma endregion
 
+#include "GameItem.h"
+
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -1973,13 +1975,21 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion
 
 
-#pragma region
+#pragma region 트리거 오브젝트
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"),
 		CTriggerObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
 #pragma endregion
+
+#pragma region 아이템 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Item0/Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 
 

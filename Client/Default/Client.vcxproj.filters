@@ -550,6 +550,9 @@
     <Filter Include="03.UIObject\1.UIObjClass\4.UI_InteractableIndicator">
       <UniqueIdentifier>{f2720733-8f65-41bd-a925-d799258f8fe7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\GameItem">
+      <UniqueIdentifier>{3c0b2ffd-b652-4a4d-928a-816e0e31a3ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1038,6 +1041,9 @@
     <ClInclude Include="..\Public\UI_InteractableIndicator.h">
       <Filter>03.UIObject\1.UIObjClass\4.UI_InteractableIndicator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GameItem.h">
+      <Filter>02.GameObject\GameItem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1516,6 +1522,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_InteractableIndicator.cpp">
       <Filter>03.UIObject\1.UIObjClass\4.UI_InteractableIndicator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameItem.cpp">
+      <Filter>02.GameObject\GameItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

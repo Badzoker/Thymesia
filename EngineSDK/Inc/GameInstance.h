@@ -186,9 +186,9 @@ public:
 
 
 #pragma region ItemMgr 
-	_uint   Count_Item(_wstring _ItemName);	
-	HRESULT Add_Item(_wstring _ItemName);	
-	HRESULT Sub_Item(_wstring _ItemName);	
+	HRESULT		Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, class CItem* _pGameObject);
+	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject);
+	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
 #pragma endregion 
 
 #pragma region SHADOW

@@ -96,6 +96,25 @@ void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
         m_pState_Manager->ChangeState(new CNormal_VillageM0::Stun_State(), this);
     }
 
+    /*if (m_pGameInstance->isKeyEnter(DIK_K))
+    {
+        m_fRecoveryTime = 0.f;
+        m_bHP_Bar_Active = true;
+        m_fHP_Bar_Active_Timer = 0.f;
+        m_fMonsterCurHP -= 100.f;
+        m_fShieldHP -= 100.f;
+
+        if (!m_bPatternProgress)
+        {
+            m_pState_Manager->ChangeState(new CNormal_VillageM0::Hit_State(), this);
+        }
+
+        m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, pPosition, this);
+    }*/
+
+
+
+
     if (m_bHP_Bar_Active)
     {
         m_fHP_Bar_Active_Timer += fTimeDelta;

@@ -253,6 +253,9 @@
     <Filter Include="01.Utility\17.TriggerMgr\TriggerManager">
       <UniqueIdentifier>{ab095f23-d85a-4ce5-9262-560fbcc70c66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\15.ItemMgr\ItemManager">
+      <UniqueIdentifier>{d0112355-af11-4688-a1c0-7e1f2361956c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -450,9 +453,6 @@
     <ClInclude Include="..\public\VIBuffer_Effect_Rect_Instancing.h">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Rect\Effect_Rect_Instancing</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ItemMgr.h">
-      <Filter>01.Utility\15.ItemMgr</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Shadow.h">
       <Filter>01.Utility\16.Shadow</Filter>
     </ClInclude>
@@ -494,6 +494,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Trigger.h">
       <Filter>01.Utility\17.TriggerMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemMgr.h">
+      <Filter>01.Utility\15.ItemMgr\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Item.h">
+      <Filter>01.Utility\15.ItemMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -677,9 +683,6 @@
     <ClCompile Include="..\private\VIBuffer_Effect_Rect_Instancing.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Particle_Instancing\Rect\Effect_Rect_Instancing</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ItemMgr.cpp">
-      <Filter>01.Utility\15.ItemMgr</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Shadow.cpp">
       <Filter>01.Utility\16.Shadow</Filter>
     </ClCompile>
@@ -721,6 +724,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Trigger.cpp">
       <Filter>01.Utility\17.TriggerMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemMgr.cpp">
+      <Filter>01.Utility\15.ItemMgr\ItemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Item.cpp">
+      <Filter>01.Utility\15.ItemMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
