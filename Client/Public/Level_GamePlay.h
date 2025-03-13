@@ -44,6 +44,7 @@ private:
 	HRESULT Ready_Layer_NPC(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Fade(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
 
 
 	HRESULT Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag);

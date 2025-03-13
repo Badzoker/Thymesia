@@ -10,6 +10,7 @@
 #include "BlackScreen.h"
 
 #include "UI_LeftBackground.h"
+#include "UI_InteractableIndicator.h"
 
 
 
@@ -53,6 +54,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
+	
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
 
@@ -376,6 +380,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Fade(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_GAMEPLAY, pLayerTag, &BlackScreenDesc)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
+{
+	CUI_InteractableIndicator::InterAct_Desc TextDesc = {};
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"), LEVEL_GAMEPLAY, pLayerTag,&TextDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

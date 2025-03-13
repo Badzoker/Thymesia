@@ -144,6 +144,8 @@
 #include "UI_DialogBackground.h"
 
 #include "UI_GameLogoImage.h"
+#include "UI_InteractableIndicator.h"
+
 #pragma endregion
 
 #pragma region 오브젝트
@@ -935,6 +937,21 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_DialogBackground"),
 		CUI_DialogBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	//==================================================================================================================================== 월드 상호 작용 ui
+
+
+
+	/* For.Prototype_Component_Texture_UI_InteractableIndicator*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_InteractableIndicator"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_InteractableIndicator.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_InteractableIndicator */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"),
+		CUI_InteractableIndicator::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
 
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/
