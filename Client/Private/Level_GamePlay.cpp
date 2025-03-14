@@ -213,7 +213,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(107);
 	//Load_Objects(98);
 	//Load_Objects(129); 3/14일 전까지
-	Load_Objects(134);
+	//Load_Objects(134); 3/14일
+	Load_Objects(135);
 
 	Load_TriggerObjects(0);
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */

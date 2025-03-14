@@ -54,14 +54,17 @@ void CStaticObject::Update(_float fTimeDelta)
 
 void CStaticObject::Late_Update(_float fTimeDelta)
 {
-	if(m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
+	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
+	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);	
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
+	}
+	
+	
+	
+	
 }
 
 HRESULT CStaticObject::Render()
