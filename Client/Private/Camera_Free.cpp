@@ -554,7 +554,7 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 
 	_float  fRatio = m_fCutScene_CurTime / m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_LerpTime;
 
-	_uint CamCount = m_vecCamera_Event.size();
+	_uint CamCount = static_cast<_uint>(m_vecCamera_Event.size());
 
 
 	if (fRatio <= 1.f)

@@ -116,6 +116,24 @@ void CRightWeapon::Update(_float fTimeDelta)
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+#pragma region Effect 0314
+                    if (!strcmp(iter.szName, "LAttack1_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "LAttack2_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD2, m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "LAttack3_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD3, m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "LAttack4_1_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_1, m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "LAttack4_2_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_2, m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "LAttack5_Start"))
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD5, m_pParentWorldMatrix);
+#pragma endregion
+
+
+
                 }
 
 

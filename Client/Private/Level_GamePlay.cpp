@@ -372,10 +372,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_NPC(const _tchar* pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
-	//Compute Shader Test용도 그냥 남겨두는중 지워도될듯?
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
-
+	//Mesh Effect
 	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW1)))
 		return E_FAIL;
@@ -384,6 +381,31 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW2)))
 		return E_FAIL;
 
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD1)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack2.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack3.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD3)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_1)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_2.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack5.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD5)))
+		return E_FAIL;
+
+	//Particle Effect
 	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffectData_Test.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
 		return E_FAIL;

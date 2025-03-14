@@ -62,7 +62,7 @@ HRESULT CEffect_Mesh::Initialize(void* _pArg)
 
 
 	m_pTransformCom->Scaling(pDesc->vScale);
-	m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z));
+	m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z * -1.f)); //이부분은 Tool이랑 뭔가 이상함
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vTranslation), 1.f));
 
 
