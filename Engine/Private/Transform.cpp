@@ -318,6 +318,33 @@ void CTransform::Orbit_Move_Once(_fvector vAxis, _float Radian, _fvector vCenter
 	Set_State(STATE_POSITION, vNewCamPos);	
 }
 
+_float4x4 CTransform::Orbit_Move_RelativePos(_fmatrix vWorldMatrix, _fvector vRelativePos, _fvector vAxis, _float Radian, _fvector vCenter)
+{
+	_vector			vRight = vWorldMatrix.r[0];
+	_vector			vUp = vWorldMatrix.r[1];
+	_vector			vLook = vWorldMatrix.r[2];
+
+	_matrix			RotationMatrix = XMMatrixRotationAxis(vAxis, Radian);
+
+	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
+	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+	_vector         vNewCamPos = XMVectorSetW(vCenter + XMVector3TransformCoord(vRelativePos, RotationMatrix), 1.f);
+
+	_matrix  ConvertedMatrix = XMMatrixIdentity();
+
+	ConvertedMatrix.r[0] = vRight;
+	ConvertedMatrix.r[1] = vUp;
+	ConvertedMatrix.r[2] = vLook;
+	ConvertedMatrix.r[3] = vNewCamPos;
+
+	_float4x4  finalConvertedMatrix = {};
+	XMStoreFloat4x4(&finalConvertedMatrix, ConvertedMatrix);
+
+	return  finalConvertedMatrix;
+}
+
 void CTransform::Set_State_UIObj(STATE eState, _float2 _fPos)
 {
 	_uint2			vViewportSize = { 1600,900 };

@@ -72,6 +72,8 @@
 #pragma region Effect
 
 #include "Particle_Compute_Example.h"
+#include "Effect_Mesh.h"
+#include "Effect_Particle.h"
 
 #pragma endregion
 
@@ -144,7 +146,6 @@
 #include "UI_DialogBackground.h"
 
 #include "UI_GameLogoImage.h"
-#include "UI_InteractableIndicator.h"
 
 #pragma endregion
 
@@ -154,6 +155,9 @@
 #include "TriggerObject.h"		// 트리거용 게임오브젝트
 #include "BlackScreen.h"
 #pragma endregion
+
+#include "GameItem.h"
+#include "Button.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice{ pDevice }
@@ -176,8 +180,6 @@ _uint APIENTRY Thread_Main(void* pArg)
 
 HRESULT CLoader::Initialize(LEVELID eNextLevelID)
 {
-
-
 	m_eNextLevelID = eNextLevelID;
 
 	InitializeCriticalSection(&m_CriticalSection);
@@ -294,9 +296,15 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/T_GroundMud_BC.png"), 1))))
 		return E_FAIL;
 
+	//이전 Height
+	//lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain")
+	//	, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr, TEXT("../Bin/DataFiles/HeightData/TerrainHeight11.txt")))))
+	//	return E_FAIL;
+
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/TerrainHeight11.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/TerrainHeight17.txt")))))
 		return E_FAIL;
 
 
@@ -398,10 +406,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance.hlsl"), VTX_POINT_INSTANCE::Elements, VTX_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Drop */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop"),
-		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Drop", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
-		return E_FAIL;
+	
 
 	/* For.Prototype_Component_Shader_VtxPosTex_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
@@ -413,52 +418,115 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 #pragma region Effect_Mesh
 
+	_matrix PreTransformMatrix_Effect = XMMatrixIdentity(); //Effect 전용 Matrix
+	PreTransformMatrix_Effect = XMMatrixScaling(0.005f, 0.005f, 0.005f);
+
+	/* For.Prototype_Component_Shader_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Effect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Mesh_Diffuse*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Effect_Mesh_Diffuse"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Diffuse/texDiffuse%d.dds"), 42))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 24))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Mesh_Mask*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 33))))
+		return E_FAIL;
+
+
+
+	/* For.Prototype_Component_Model_Effect_Donut*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Donut"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Donut.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_ThinDonut*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_ThinDonut"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_ThinDonut.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Rainbow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Rainbow"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Rainbow.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Claw*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Claw"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Claw.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Sword*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Sword"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Twist*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Twist"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Twist.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Strange*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Strange"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Strange.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Tornado*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect_Tornado"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Tornado.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Effect_Mesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Mesh"),
+		CEffect_Mesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 #pragma endregion
 
 #pragma region Effect_Particle
 
-
-	//아마 이렇게 Desc 들을 Save & Load 로 받아와야함
-	CVIBuffer_Point_Compute::PARTICLE_COMPUTE_DESC particle_Drop_Desc = {};
-
-	particle_Drop_Desc.iNumInstance = 64 * 2 * 2;
-	particle_Drop_Desc.vCenter = _float3(0.f, 0.f, 0.f);
-	particle_Drop_Desc.vRange = _float3(25.f, 25.f, 25.f);
-	particle_Drop_Desc.vSpeed = _float2(0.5f, 1.f);
-	particle_Drop_Desc.vLifeTime = _float2(1.f, 1.5f);
-	particle_Drop_Desc.vSize = _float2(1.f, 1.f);
-
-	/* For.Prototype_Component_VIBuffer_Point_Compute */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Compute"),
-		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, &particle_Drop_Desc))))
+	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Drop */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop"),
+		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Drop", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Particle_Example*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Particle_Example"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Example/T_Y_Ring_02.dds"), 1))))
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Test */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Compute_Test"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffectData_Test_Buffer.dat")))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Particle_Compute_Example */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Particle_Compute_Example"),
-		CParticle_Compute_Example::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_Component_Texture_Particle_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Particle_Image"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Particle_Image/texParticle%d.dds"), 16))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Effect_Particle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		CEffect_Particle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion
 
 
 #pragma region Navigation 
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
-	/* For.Prototype_Component_Navigation */	
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),	
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Navigation_File/test49.bin")))))	
-	//	return E_FAIL;	
 
-
+	// 03.13 전까지 네비
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation8.txt")))))
+	//	return E_FAIL;
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), 
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation6.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation9.txt")))))
 		return E_FAIL;
 
 
@@ -939,18 +1007,13 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 	//==================================================================================================================================== 월드 상호 작용 ui
 
-
-
-	/* For.Prototype_Component_Texture_UI_InteractableIndicator*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_InteractableIndicator"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_InteractionButton"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_InteractableIndicator.dds"), 1))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_UI_InteractableIndicator */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"),
-		CUI_InteractableIndicator::Create(m_pDevice, m_pContext))))
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_InteractionButton"),
+		CButton::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
 
 
 	//====================================================================================================================================
@@ -1974,13 +2037,21 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma endregion
 
 
-#pragma region
+#pragma region 트리거 오브젝트
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"),
 		CTriggerObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
 #pragma endregion
+
+#pragma region 아이템 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Item0/Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 
 

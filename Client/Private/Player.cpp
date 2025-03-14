@@ -48,7 +48,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
-	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM | GROUP_TYPE::OBJECT;
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
@@ -68,12 +68,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC ¿· À§Ä¡
-	//_vector vTestPosition = { 111.648903, 15.8868837, -41.30, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡
+	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC ¿· À§Ä¡
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
 
-	m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
+	m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
 
 
 	return S_OK;
@@ -127,7 +127,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		}
 
 		else if (m_iState == STATE_ATTACK_L4
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
 				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 		{
 			m_pStateMgr->Get_VecState().at(44)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -751,7 +751,11 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			}
 
 
-
+#pragma region Effect 0313
+			//Hit Effect
+			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
+			m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition);
+#pragma endregion
 		}
 	}
 }

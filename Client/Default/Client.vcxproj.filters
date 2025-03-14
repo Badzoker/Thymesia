@@ -547,8 +547,23 @@
     <Filter Include="03.UIObject\1.UIObjClass\2.Boss_HP_Bar\Boss_HP_Phase">
       <UniqueIdentifier>{ee9d9d36-0db9-4626-a3fe-6a09c8a6b11c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\4.UI_InteractableIndicator">
-      <UniqueIdentifier>{f2720733-8f65-41bd-a925-d799258f8fe7}</UniqueIdentifier>
+    <Filter Include="02.GameObject\Effect\Mesh">
+      <UniqueIdentifier>{cb3d6cbc-ba9e-4430-989f-099650047ea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\Particle">
+      <UniqueIdentifier>{91b481c9-7fb2-47d8-935f-a4dbc8ae8565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\3.UIButton">
+      <UniqueIdentifier>{f8f29f6e-bd5f-4190-a779-613a64f5f002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\3.UIButton\0.Button">
+      <UniqueIdentifier>{f7d0d441-ee38-4668-8376-7e9cd5811837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InteractionObject">
+      <UniqueIdentifier>{bf45c47c-f9d7-4800-bead-90e9fe4d815b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InteractionObject\GameItem">
+      <UniqueIdentifier>{3c0b2ffd-b652-4a4d-928a-816e0e31a3ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1035,8 +1050,17 @@
     <ClInclude Include="..\Public\UI_Boss_HP_Phase.h">
       <Filter>03.UIObject\1.UIObjClass\2.Boss_HP_Bar\Boss_HP_Phase</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_InteractableIndicator.h">
-      <Filter>03.UIObject\1.UIObjClass\4.UI_InteractableIndicator</Filter>
+    <ClInclude Include="..\Public\GameItem.h">
+      <Filter>02.GameObject\InteractionObject\GameItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Mesh.h">
+      <Filter>02.GameObject\Effect\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Particle.h">
+      <Filter>02.GameObject\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>03.UIObject\3.UIButton\0.Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1514,8 +1538,17 @@
     <ClCompile Include="..\Private\UI_Boss_HP_Phase.cpp">
       <Filter>03.UIObject\1.UIObjClass\2.Boss_HP_Bar\Boss_HP_Phase</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_InteractableIndicator.cpp">
-      <Filter>03.UIObject\1.UIObjClass\4.UI_InteractableIndicator</Filter>
+    <ClCompile Include="..\Private\GameItem.cpp">
+      <Filter>02.GameObject\InteractionObject\GameItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Mesh.cpp">
+      <Filter>02.GameObject\Effect\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Particle.cpp">
+      <Filter>02.GameObject\Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button.cpp">
+      <Filter>03.UIObject\3.UIButton\0.Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1580,6 +1613,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

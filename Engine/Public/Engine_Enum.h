@@ -26,7 +26,8 @@ namespace Engine
 		MONSTER_WEAPON = 1 << 3,  /* 0x0001000 */
 		ENEMY = 1 << 4,		  /* 0x0010000 */
 		OBJECT = 1 << 5,		  /* 0x0100000 */
-		GROUP_END = 1 << 6,		  /* 0x1000000 */
+		ITEM = 1 << 6,			/* 0x1000000 */
+		GROUP_END = 1 << 7,		  
 	};
 
 	enum class EVENT_TYPE{
@@ -104,6 +105,41 @@ namespace Engine
 		TT_FADE_OUT,
 		TT_INTERACTION,
 		TT_END
+	};
+
+	enum class ITEM_TYPE
+	{
+		ITEM_KEY1,
+		ITEM_KEY2,
+		ITEM_MEMORY,
+		ITEM_FORGIVEN,
+		ITEM_END
+	};
+
+	enum class EFFECT_TYPE
+	{
+		EFFECT_TYPE_PARTICLE,
+		EFFECT_TYPE_MESH,
+		EFFECT_TYPE_END
+	};
+
+	enum class EFFECT_NAME
+	{
+		//Mesh
+		EFFECT_PLAYER_SWORD1,
+		EFFECT_PLAYER_SWORD2,
+		EFFECT_PLAYER_SWORD3,
+		EFFECT_PLAYER_SWORD4_1,
+		EFFECT_PLAYER_SWORD4_2,
+		EFFECT_PLAYER_SWORD5,
+		EFFECT_PLAYER_CLAW1,
+		EFFECT_PLAYER_CLAW2,
+
+		//Particle
+		EFFECT_PARTICLE_SPARK,
+
+
+		EFFECT_NAME_END
 	};
 }
 #endif // Engine_Enum_h__

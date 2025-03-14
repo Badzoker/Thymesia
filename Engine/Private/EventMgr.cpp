@@ -126,17 +126,17 @@ HRESULT CEventMgr::Update()
 	}
 
 
-	if (m_vecDeadEffect.size() > 0)	
-	{
-		for (auto& iterator = m_vecDeadEffect.begin(); iterator != m_vecDeadEffect.end(); iterator++)
-		{
-			m_pGameInstance->Sub_Effect(*iterator);	
-			m_vecDeadEffect.erase(iterator);	
-
-			if (m_vecDeadEffect.size() == 0)	
-				break;	
-		}
-	}
+	//if (m_vecDeadEffect.size() > 0)	
+	//{
+	//	for (auto& iterator = m_vecDeadEffect.begin(); iterator != m_vecDeadEffect.end(); iterator++)
+	//	{
+	//		m_pGameInstance->Sub_Effect(*iterator);	
+	//		m_vecDeadEffect.erase(iterator);	
+	//
+	//		if (m_vecDeadEffect.size() == 0)	
+	//			break;	
+	//	}
+	//}
 
 
 	return S_OK;

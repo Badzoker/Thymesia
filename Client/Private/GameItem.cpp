@@ -1,0 +1,270 @@
+#include "pch.h"
+#include "GameItem.h"
+#include "GameInstance.h"
+
+CGameItem::CGameItem(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
+    :CItem{ _pDevice, _pContext }
+{
+}
+
+CGameItem::CGameItem(const CGameItem& _Prototype)
+    :CItem(_Prototype)
+{
+}
+
+HRESULT CGameItem::Initialize_Prototype()
+{
+    if (FAILED(__super::Initialize_Prototype()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CGameItem::Initialize(void* _pArg)
+{
+    strcpy_s(m_szName, "GAMEITEM");
+
+    GAMEITEM_DESC* pDesc = static_cast<GAMEITEM_DESC*>(_pArg);
+
+    if (FAILED(__super::Initialize(_pArg)))
+        return E_FAIL;
+
+    strcpy_s(m_GameItemName, pDesc->GameItemName.c_str());
+
+    m_eItemType = pDesc->eItemType;
+
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Button"), "BUTTON");
+    m_pButton = static_cast<CButton*>(m_pButtonGameObject);
+
+    if (FAILED(Ready_Components()))
+        return E_FAIL;
+
+    _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); ;
+    XMStoreFloat4(&m_vInitialPos, vItemPos);
+
+    m_pTransformCom->Scaling(_float3(0.003f, 0.003f, 0.003f));
+
+    //m_pInteractButton = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), "INTERBUTTON");
+    m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
+    m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+    switch (m_eItemType)
+    {
+    case Engine::ITEM_TYPE::ITEM_KEY1:
+        m_fAlphaValue = { 1.0f, 1.0f, 1.0f, 1.0f };
+        break;
+    case Engine::ITEM_TYPE::ITEM_KEY2:
+        m_fAlphaValue = { 0.0f, 1.0f, 0.0f, 1.0f };
+        break;
+    case Engine::ITEM_TYPE::ITEM_MEMORY:
+        m_fAlphaValue = { 0.0f, 0.0f, 1.0f, 1.0f };
+        break;
+    case Engine::ITEM_TYPE::ITEM_FORGIVEN:
+        m_fAlphaValue = { 0.0f, 0.0f, 0.0f, 1.0f };
+        break;
+    }
+
+    return S_OK;
+}
+
+void CGameItem::Priority_Update(_float _fTimeDelta)
+{
+
+}
+
+void CGameItem::Update(_float _fTimeDelta)
+{
+    if (!m_bAcquired)
+    {
+        if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+    }
+
+    if (m_fElapsedTime >= 3.0f)
+    {
+        m_bDropping = false;
+    }
+
+    if (m_bDropping)
+    {
+        m_fElapsedTime += _fTimeDelta * 0.5f;
+        _vector vItemPos = XMLoadFloat4(&Bezier(m_vInitialPos, m_vCurvePos, m_vEndPos, m_fElapsedTime));
+        _vector vDir = XMVector3Normalize(vItemPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+        m_pTransformCom->LookAt(vItemPos + vDir);
+        m_pTransformCom->Set_State(CTransform::STATE_POSITION, vItemPos);
+
+        if (XMVectorGetY(vItemPos) <= m_vEndPos.y)
+            m_bDropping = false;
+    }
+}
+
+void CGameItem::Late_Update(_float fTimeDelta)
+{
+    if (/*m_iDropItemCount > 0 && */!m_bAcquired)
+    {
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+    }
+}
+
+HRESULT CGameItem::Render()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(0);
+        m_pModelCom->Render(i);
+    }
+
+    return S_OK;
+}
+
+HRESULT CGameItem::Render_Glow()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaValue", &m_fAlphaValue, sizeof(_float4))))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(8);
+        m_pModelCom->Render(i);
+    }
+
+    return S_OK;
+}
+
+HRESULT CGameItem::Ready_Components()
+{
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+        return E_FAIL;
+
+    string strComponentName = "Prototype_Component_Model_";
+    strComponentName += m_GameItemName;
+
+    _tchar  szComponentName[MAX_PATH] = {};
+
+    MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);
+
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, szComponentName, TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CGameItem::Bind_ShaderResources()
+{
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CGameItem::Set_ItemPos(_fvector _vPosition)
+{
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vPosition);
+}
+
+
+// 닿기 시작할 때 순간
+void CGameItem::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+    if (!m_bAcquired && !m_bDropping)
+    {
+        _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+        vItemPos = XMVectorSetY(vItemPos, XMVectorGetY(vItemPos) + 1.0f);
+
+        _float4 vItemPosition;
+        XMStoreFloat4(&vItemPosition, vItemPos);
+
+        m_pButton->Set_WorldPosition(vItemPosition);
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("줍기"));
+        m_pButton->Activate_Button(true);
+    }
+}
+
+// 닿는 중.
+void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+    if (!m_bAcquired)
+    {
+        switch (m_eItemType)
+        {
+        case Engine::ITEM_TYPE::ITEM_KEY1:
+        case Engine::ITEM_TYPE::ITEM_KEY2:
+        case Engine::ITEM_TYPE::ITEM_MEMORY:
+        case Engine::ITEM_TYPE::ITEM_FORGIVEN:
+            if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
+            {
+                m_pGameInstance->Acquire_Item(m_eItemType);
+                m_pButton->Activate_Button(false);
+            }
+            break;
+        }
+    }
+}
+
+// 떨어질 때 ( 나가기 직전. )
+void CGameItem::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+    if (!m_bAcquired)
+    {
+        m_pButton->Activate_Button(false);
+    }
+}
+
+CGameItem* CGameItem::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
+{
+    CGameItem* pInstance = new CGameItem(_pDevice, _pContext);
+    if (FAILED(pInstance->Initialize_Prototype()))
+    {
+        MSG_BOX("Failed To Created : CGameItem");
+        Safe_Release(pInstance);
+    }
+    return pInstance;
+}
+
+CGameObject* CGameItem::Clone(void* _pArg)
+{
+    CGameItem* pInstance = new CGameItem(*this);
+    if (FAILED(pInstance->Initialize(_pArg)))
+    {
+        MSG_BOX("Failed To Cloned : CGameItem");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+void CGameItem::Free()
+{
+    __super::Free();
+
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+    Safe_Release(m_pShaderCom);
+    Safe_Release(m_pModelCom);
+}

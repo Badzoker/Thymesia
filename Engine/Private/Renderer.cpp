@@ -234,6 +234,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;*/
 #endif // _DEBUG
 
+	Add_NoiseTexture();
 
  	return S_OK;
 }
@@ -834,6 +835,36 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 		return E_FAIL;
 
 
+	_float3 FogFactor = _float3(0.2f, 0.f, 5.f);
+	_float2 NoiseFactor = _float2(0.01f, 0.2f);
+	_float2 HeightNoiseFactor = _float2(0.f, 5.f);
+
+	m_fTime += 0.001f;
+
+	_float	fFogRange = 0.03f;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_FogRange", &fFogRange, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("fFogFactor", &FogFactor, sizeof(_float3))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("fHeightNoiseFactor", &HeightNoiseFactor, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("fNoiseFactor", &NoiseFactor, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(Bind_NoiseTexture(m_pShader, "g_NoiseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fTime", &m_fTime, sizeof(_float))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -964,6 +995,121 @@ HRESULT CRenderer::Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D1
 	return S_OK;
 }
 
+
+float Clamp(float x, float minVal, float maxVal) {
+	return (x < minVal) ? minVal : (x > maxVal) ? maxVal : x;
+}
+
+float SmoothStep(float edge0, float edge1, float x) {
+	float t = Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+	return t * t * (3.0f - 2.0f * t);
+}
+
+float fade(float t) {
+	return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
+float lerp(float a, float b, float t) {
+	return a + t * (b - a);
+}
+
+float grad(int hash, float x, float y, float z) {
+	int h = hash & 15;
+	float u = h < 8 ? x : y;
+	float v = h < 4 ? y : (h == 12 || h == 14 ? x : z);
+	return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+}
+
+void GeneratePermutationTable(int perm[512]) {
+	std::vector<int> p(256);
+
+	for (int i = 0; i < 256; ++i) {
+		p[i] = i;
+	}
+
+	std::srand(std::time(nullptr));
+
+	for (int i = 255; i > 0; --i) {
+		int j = std::rand() % (i + 1);
+		std::swap(p[i], p[j]);
+	}
+
+	for (int i = 0; i < 256; ++i) {
+		perm[i] = perm[i + 256] = p[i];
+	}
+}
+
+float CRenderer::PerlinNoise3D(float x, float y, float z) {
+	int X = (int)floor(x) & 255;
+	int Y = (int)floor(y) & 255;
+	int Z = (int)floor(z) & 255;
+
+	x -= floor(x);
+	y -= floor(y);
+	z -= floor(z);
+
+	float u = fade(x);
+	float v = fade(y);
+	float w = fade(z);
+
+	int A = m_perm[X] + Y;
+	int AA = m_perm[A] + Z;
+	int AB = m_perm[A + 1] + Z;
+	int B = m_perm[X + 1] + Y;
+	int BA = m_perm[B] + Z;
+	int BB = m_perm[B + 1] + Z;
+
+	return lerp(
+		lerp(
+			lerp(grad(m_perm[AA], x, y, z), grad(m_perm[BA], x - 1, y, z), u),
+			lerp(grad(m_perm[AB], x, y - 1, z), grad(m_perm[BB], x - 1, y - 1, z), u),
+			v),
+		lerp(
+			lerp(grad(m_perm[AA + 1], x, y, z - 1), grad(m_perm[BA + 1], x - 1, y, z - 1), u),
+			lerp(grad(m_perm[AB + 1], x, y - 1, z - 1), grad(m_perm[BB + 1], x - 1, y - 1, z - 1), u),
+			v),
+		w);
+}
+
+float CRenderer::PerlinNoise3D_Tiled(float x, float y, float z, float tileSize) {
+	float theta = x * (2.0f * XM_PI / tileSize);
+	float phi = y * (2.0f * XM_PI / tileSize);
+	float omega = z * (2.0f * XM_PI / tileSize);
+
+	float nx = cos(theta) * cos(phi);
+	float ny = sin(theta) * cos(phi);
+	float nz = sin(phi);
+
+	return PerlinNoise3D(nx * tileSize, ny * tileSize, nz * tileSize);
+}
+
+
+const int textureSize = 128;
+
+void CRenderer::Generate3DPerlinNoise() {
+	noiseData.resize(textureSize * textureSize * textureSize);
+
+	GeneratePermutationTable(m_perm);
+
+	for (int z = 0; z < textureSize; ++z) {
+		for (int y = 0; y < textureSize; ++y) {
+			for (int x = 0; x < textureSize; ++x) {
+				float fx = (float)x / (float)textureSize;
+				float fy = (float)y / (float)textureSize;
+				float fz = (float)z / (float)textureSize;
+
+				// Perlin Noise 값 계산
+				float noiseValue = PerlinNoise3D(fx * 8.0f, fy * 8.0f, fz * 8.0f);
+
+				float heightFactor = 1.0f - SmoothStep(0.0f, 1.0f, fy);
+
+				noiseData[x + y * 128 + z * 128 * 128] =
+					noiseValue * heightFactor;
+			}
+		}
+	}
+}
+
 HRESULT CRenderer::SetUp_ViewportDesc(_uint iWidth, _uint iHeight)
 {
 	D3D11_VIEWPORT			ViewPortDesc;	
@@ -978,6 +1124,44 @@ HRESULT CRenderer::SetUp_ViewportDesc(_uint iWidth, _uint iHeight)
 	m_pContext->RSSetViewports(1, &ViewPortDesc);	
 
 	return S_OK;
+}
+
+HRESULT CRenderer::Add_NoiseTexture()
+{
+	Generate3DPerlinNoise();
+
+	D3D11_TEXTURE3D_DESC textureDesc = {};
+	textureDesc.Width = textureSize;
+	textureDesc.Height = textureSize;
+	textureDesc.Depth = textureSize;
+	textureDesc.MipLevels = 1;
+	textureDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	D3D11_SUBRESOURCE_DATA initData = {};
+	initData.pSysMem = noiseData.data();
+	initData.SysMemPitch = textureSize * sizeof(float);
+	initData.SysMemSlicePitch = textureSize * textureSize * sizeof(float);
+
+	HRESULT hr = m_pDevice->CreateTexture3D(&textureDesc, &initData, &m_pNoiseTexture3D);
+	if (FAILED(hr))
+		return E_FAIL;
+
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { DXGI_FORMAT_R32_FLOAT, D3D11_SRV_DIMENSION_TEXTURE3D, 0, 0 };
+	srvDesc.Texture3D.MipLevels = 1;
+	srvDesc.Texture3D.MostDetailedMip = 0;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pNoiseTexture3D, &srvDesc, &m_pNoiseSRV)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Bind_NoiseTexture(CShader* pShader, const _char* pConstantName)
+{
+	return pShader->Bind_SRV(pConstantName, m_pNoiseSRV);
 }
 
 HRESULT CRenderer::Render_Debug()
@@ -1053,5 +1237,8 @@ void CRenderer::Free()
 	Safe_Release(m_pContext);	
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pShadowShader);
+
+	Safe_Release(m_pNoiseTexture3D);
+	Safe_Release(m_pNoiseSRV);
 }	
 

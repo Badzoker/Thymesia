@@ -2,27 +2,27 @@
 #include "Shader_Compute.h"
 #include "GameInstance.h"
 
-CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CVIBuffer(pDevice, pContext)
+CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
+	:CVIBuffer(_pDevice, _pContext)
 {
 }
 
-CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& Prototype)
-	:CVIBuffer(Prototype)
-    , m_pUAV(Prototype.m_pUAV)
-    , m_pSRV(Prototype.m_pSRV)
-    , m_pBuffer_UAV(Prototype.m_pBuffer_UAV)
-    , m_pBuffer_SRV(Prototype.m_pBuffer_SRV)
-    , m_pBuffer_Copy(Prototype.m_pBuffer_Copy)
-    , m_InstanceBufferDesc(Prototype.m_InstanceBufferDesc)
-    , m_InstanceInitialData(Prototype.m_InstanceInitialData)
-    , m_iInstanceVertexStride(Prototype.m_iInstanceVertexStride)
-    , m_iNumIndexPerInstance(Prototype.m_iNumIndexPerInstance)
-    , m_iNumInstance(Prototype.m_iNumInstance)
-    , m_pVBInstance(Prototype.m_pVBInstance)
-    , m_pInstanceVertices(Prototype.m_pInstanceVertices)
+CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& _Prototype)
+	:CVIBuffer(_Prototype)
+    , m_pUAV(_Prototype.m_pUAV)
+    , m_pSRV(_Prototype.m_pSRV)
+    , m_pBuffer_UAV(_Prototype.m_pBuffer_UAV)
+    , m_pBuffer_SRV(_Prototype.m_pBuffer_SRV)
+    , m_pBuffer_Copy(_Prototype.m_pBuffer_Copy)
+    , m_InstanceBufferDesc(_Prototype.m_InstanceBufferDesc)
+    , m_InstanceInitialData(_Prototype.m_InstanceInitialData)
+    , m_iInstanceVertexStride(_Prototype.m_iInstanceVertexStride)
+    , m_iNumIndexPerInstance(_Prototype.m_iNumIndexPerInstance)
+    , m_iNumInstance(_Prototype.m_iNumInstance)
+    , m_pVBInstance(_Prototype.m_pVBInstance)
+    , m_pInstanceVertices(_Prototype.m_pInstanceVertices)
     //, m_pSpeeds(Prototype.m_pSpeeds)
-    , m_isLoop(Prototype.m_isLoop)
+    , m_isLoop(_Prototype.m_isLoop)
 {
     Safe_AddRef(m_pUAV);
     Safe_AddRef(m_pSRV);
@@ -32,11 +32,43 @@ CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& 
     Safe_AddRef(m_pVBInstance);
 }
 
-HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const PARTICLE_COMPUTE_DESC* _pDesc)
+HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDataFile)
 {
-	const PARTICLE_COMPUTE_DESC* pDesc = static_cast<const PARTICLE_COMPUTE_DESC*>(_pDesc);
+    HANDLE hFile = CreateFile(_pParticleDataFile, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-	m_iNumInstance = pDesc->iNumInstance;
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Particle Loading ½ÇÆÐ!");
+        return E_FAIL;
+    }
+
+    DWORD dwByte = 0;
+
+    PARTICLE_COMPUTE_DESC pDesc = {};
+
+    ReadFile(hFile, &pDesc.iNumInstance, sizeof(_uint), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.vCenter.x, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vCenter.y, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vCenter.z, sizeof(_float), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.vRange.x, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vRange.y, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vRange.z, sizeof(_float), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.vSpeed.x, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vSpeed.y, sizeof(_float), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.vLifeTime.x, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vLifeTime.y, sizeof(_float), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.vSize.x, sizeof(_float), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vSize.y, sizeof(_float), &dwByte, nullptr);
+
+
+    CloseHandle(hFile);
+
+	m_iNumInstance = pDesc.iNumInstance;
 	m_iNumVertices = 1;
 	m_iVertexStride = sizeof(VTXPOSTEX);
 	m_iInstanceVertexStride = sizeof(COMPUTE_PARTICLE_INSTANCE);
@@ -68,9 +100,9 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const PARTICLE_COMPUTE_DES
     {
         _float4         vTranslation = {};
 
-        vTranslation.x = m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f);
-        vTranslation.y = m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f);
-        vTranslation.z = m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f);
+        vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
+        vTranslation.y = m_pGameInstance->Compute_Random(pDesc.vCenter.y - pDesc.vRange.y * 0.5f, pDesc.vCenter.y + pDesc.vRange.y * 0.5f);
+        vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z - pDesc.vRange.z * 0.5f, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
         vTranslation.w = 1;
 
         //m_pSpeeds[i] = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
@@ -79,10 +111,10 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const PARTICLE_COMPUTE_DES
         m_pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
         m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
         m_pInstanceVertices[i].vTranslation = vTranslation;
-        m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc->vLifeTime.x, pDesc->vLifeTime.y);
-        m_pInstanceVertices[i].fSpeed = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
+        m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
+        m_pInstanceVertices[i].fSpeed = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y);
 
-        _float fScale = m_pGameInstance->Compute_Random(pDesc->vSize.x, pDesc->vSize.y);
+        _float fScale = m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y);
 
         XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * fScale);
         XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * fScale);
@@ -153,7 +185,7 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const PARTICLE_COMPUTE_DES
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Point_Compute::Initialize(void* pArg)
+HRESULT CVIBuffer_Point_Compute::Initialize(void* _pArg)
 {
     if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InstanceInitialData, &m_pVBInstance)))
         return E_FAIL;
@@ -237,6 +269,33 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader(CShader_Compute* _pComputeShader
     if (FAILED(CreateAndCopyBuffer()))
         return E_FAIL;
     
+
+    return S_OK;
+}
+
+HRESULT CVIBuffer_Point_Compute::Compute_Shader_Reset(CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ)
+{
+    m_pContext->CSSetShader(_pComputeShader->Get_ComputeShader_Reset(), NULL, 0);
+
+    m_pContext->CSSetShaderResources(0, 1, &m_pSRV);
+
+    m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, (_uint*)&m_pUAV);
+
+    m_pContext->Dispatch(_iThreadCountX, _iThreadCountY, _iThreadCountZ);
+
+
+
+    ID3D11UnorderedAccessView* ppUAVnull[1] = { nullptr };
+    ID3D11ShaderResourceView* ppSRVnull[3] = { nullptr, nullptr };
+    ID3D11Buffer* ppCBnull[1] = { nullptr };
+
+    m_pContext->CSSetShader(nullptr, nullptr, 0);
+    m_pContext->CSSetUnorderedAccessViews(0, 1, ppUAVnull, (_uint*)(&ppUAVnull));
+    m_pContext->CSSetShaderResources(0, 2, ppSRVnull);
+    m_pContext->CSSetConstantBuffers(0, 1, ppCBnull);
+
+    if (FAILED(CreateAndCopyBuffer()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -353,11 +412,11 @@ HRESULT CVIBuffer_Point_Compute::CreateAndCopyBuffer()
     return S_OK;
 }
 
-CVIBuffer_Point_Compute* CVIBuffer_Point_Compute::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const PARTICLE_COMPUTE_DESC* pArg)
+CVIBuffer_Point_Compute* CVIBuffer_Point_Compute::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile)
 {
-	CVIBuffer_Point_Compute* pInstance = new CVIBuffer_Point_Compute(pDevice, pContext);
+	CVIBuffer_Point_Compute* pInstance = new CVIBuffer_Point_Compute(_pDevice, _pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pArg)))
+	if (FAILED(pInstance->Initialize_Prototype(_pParticleDataFile)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Point_Compute");
 		Safe_Release(pInstance);
@@ -366,11 +425,11 @@ CVIBuffer_Point_Compute* CVIBuffer_Point_Compute::Create(ID3D11Device* pDevice, 
 	return pInstance;
 }
 
-CComponent* CVIBuffer_Point_Compute::Clone(void* pArg)
+CComponent* CVIBuffer_Point_Compute::Clone(void* _pArg)
 {
 	CVIBuffer_Point_Compute* pInstance = new CVIBuffer_Point_Compute(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(_pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CVIBuffer_Point_Compute");
 		Safe_Release(pInstance);

@@ -80,7 +80,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pEvent_Manager)
 		return E_FAIL;
 
-	m_pEffect_Manager = CEffectMgr::Create(*ppDevice, *ppContext);		
+	m_pEffect_Manager = CEffectMgr::Create();		
 	if (nullptr == m_pEffect_Manager)	
 		return E_FAIL;	
 
@@ -496,14 +496,31 @@ HRESULT CGameInstance::Add_DeadEffect(CGameObject* pGameObject)
 
 #pragma region Effect Manager
 
-HRESULT CGameInstance::Add_Effect(CGameObject* pEffect)
+
+
+HRESULT CGameInstance::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg)
 {
-	return m_pEffect_Manager->Add_Effect(pEffect);	
+	return m_pEffect_Manager->Add_Effect(_iPrototypeLevelIndex, _strPrototypeTag, _eEffectName, _pArg);
 }
 
-HRESULT CGameInstance::Sub_Effect(CGameObject* pEffect)
+HRESULT CGameInstance::Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos)
 {
-	return m_pEffect_Manager->Sub_Effect(pEffect);	
+	return m_pEffect_Manager->Play_Effect(_eEffectName, _vPos);
+}
+
+HRESULT CGameInstance::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos)
+{
+	return m_pEffect_Manager->Play_Effect_With_Timer(_eEffectName, _fDuration, _vPos);
+}
+
+HRESULT CGameInstance::Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix(_eEffectName, _pMatrix);
+}
+
+HRESULT CGameInstance::Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_With_Timer_Matrix(_eEffectName, _fDuration, _pMatrix);
 }
 
 #pragma endregion 
@@ -575,17 +592,17 @@ _bool CGameInstance::isAABB_InFrustum(const XMFLOAT3& _fMin, const XMFLOAT3& _fM
 #pragma endregion
 
 #pragma region ITEM_MANAGER
-_uint CGameInstance::Count_Item(_wstring _ItemName)
+HRESULT CGameInstance::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject)
 {
-	return m_pItemMgr->Count_Item(_ItemName);	
+	return m_pItemMgr->Add_Item(_eItemType, _iItemCount, _pGameObject);
 }
-HRESULT CGameInstance::Add_Item(_wstring _ItemName)
+HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, CGameObject* _pGameObject)
 {
-	return m_pItemMgr->Add_Item(_ItemName);	
+	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject);
 }
-HRESULT CGameInstance::Sub_Item(_wstring _ItemName)
+HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
-	return m_pItemMgr->Sub_Item(_ItemName);	
+	return m_pItemMgr->Acquire_Item(_eItemType);
 }
 #pragma endregion
 

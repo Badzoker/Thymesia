@@ -27,6 +27,15 @@ HRESULT CStaticObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Button"), "BUTTON");
+	m_pButton = static_cast<CButton*>(m_pButtonGameObject);
+
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+	_uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
+	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::OBJECT, iSettingColliderGroup);
+	m_pGameInstance->Add_Actor_Scene(m_pActor);
+
 	return S_OK;
 }
 
@@ -36,18 +45,26 @@ void CStaticObject::Priority_Update(_float fTimeDelta)
 
 void CStaticObject::Update(_float fTimeDelta)
 {
+	if (!strcmp(m_MeshName, ("P_Archive_Chair01")) || !strcmp(m_MeshName, ("Ladder")))
+	{
+		if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+			m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+	}
 }
 
 void CStaticObject::Late_Update(_float fTimeDelta)
 {
-	if(m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
+	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
+	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);	
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_OCCULUSION, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
+	}
+	
+	
+	
+	
 }
 
 HRESULT CStaticObject::Render()
@@ -124,6 +141,28 @@ HRESULT CStaticObject::Render_Motion_Blur()
 	}
 
 	return S_OK;
+}
+void CStaticObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+	if (!strcmp(m_MeshName, ("P_Archive_Chair01")))
+	{
+		_vector vChairPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vChairPos = XMVectorSetY(vChairPos, XMVectorGetY(vChairPos) + 1.0f);
+
+		_float4 vChairPosition;
+		XMStoreFloat4(&vChairPosition, vChairPos);
+
+		m_pButton->Set_WorldPosition(vChairPosition);
+		m_pButton->Set_ButtonText(TEXT("E"), TEXT("¾É±â"));
+		m_pButton->Activate_Button(true);
+	}
+}
+void CStaticObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+}
+void CStaticObject::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+	m_pButton->Activate_Button(false);
 }
 HRESULT CStaticObject::Ready_Components()
 {

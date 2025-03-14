@@ -9,8 +9,10 @@ CShader_Compute::CShader_Compute(ID3D11Device * pDevice, ID3D11DeviceContext * p
 CShader_Compute::CShader_Compute(const CShader_Compute & Prototype)
 	: CShader( Prototype )
 	, m_pComputeShader(Prototype.m_pComputeShader)
+	, m_pComputeShader_Reset(Prototype.m_pComputeShader_Reset)
 {
 	Safe_AddRef(m_pComputeShader);
+	Safe_AddRef(m_pComputeShader_Reset);
 }
 
 HRESULT CShader_Compute::Initialize_Prototype(const _tchar * pShaderFilePath, const _char* _pFunctionName, const D3D11_INPUT_ELEMENT_DESC* pVertexElements, _uint iNumElements)
@@ -201,8 +203,35 @@ HRESULT CShader_Compute::Create_ComputeShader(const _tchar* _pShaderFilePath, co
 
 	Safe_Release(pError);
 	Safe_Release(pBlob);
+
+
+	//Reset용도 모든 Shader는 이놈을 들고있을것임
+	if (FAILED(D3DCompileFromFile(TEXT("../../EngineSDK/Hlsl/Shader_Compute.hlsl"), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CSMain_Particle_Reset", pProfile, dwShaderFlags, 0, &pBlob, &pError)))
+	{
+		if (pError != nullptr)
+		{
+			OutputDebugStringA((_char*)pError->GetBufferPointer());
+			_char* asd = (_char*)pError->GetBufferPointer();
+			int a = 10;
+
+		}
+
+
+		Safe_Release(pError);
+		Safe_Release(pBlob);
+
+		return E_FAIL;
+	}
+
+	if (FAILED(m_pDevice->CreateComputeShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pComputeShader_Reset)))
+		return E_FAIL;
+
+	Safe_Release(pError);
+	Safe_Release(pBlob);
+
 #ifdef _DEBUG
 	(m_pComputeShader)->SetPrivateData(WKPDID_D3DDebugObjectName, lstrlenA(_pFunctionName), _pFunctionName);
+	(m_pComputeShader_Reset)->SetPrivateData(WKPDID_D3DDebugObjectName, lstrlenA("CSMain_Particle_Reset"), "CSMain_Particle_Reset");
 #endif // _DEBUG
 
 
@@ -240,4 +269,5 @@ void CShader_Compute::Free()
 	__super::Free();
 
 	Safe_Release(m_pComputeShader);
+	Safe_Release(m_pComputeShader_Reset);
 }

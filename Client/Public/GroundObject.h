@@ -5,12 +5,6 @@ BEGIN(Client)
 class CGroundObject final : public CEnvironmentObject
 {
 public:
-	struct InstanceInfo
-	{
-		XMMATRIX		mInstanceToWorld;
-	};
-
-public:
 	struct GROUND_OBJECCT_DESC : public CEnvironmentObject::ENVIRONMENT_OBJECT_DESC
 	{
 

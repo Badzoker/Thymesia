@@ -4,39 +4,37 @@
 
 BEGIN(Engine)
 
-class CGameObject;	
+class CEffect;
 
 
-class CEffectMgr : public CBase 
+class CEffectMgr final : public CBase
 {
 private:
-	CEffectMgr(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);	 
-	virtual ~CEffectMgr() = default; 
+	CEffectMgr();
+	virtual ~CEffectMgr() = default;
 
 public:
 	HRESULT Initialize();
-	void Priority_Update(_float _fTimeDelta);		
-	void Update(_float _fTimeDelta);		
+	void Priority_Update(_float _fTimeDelta);
+	void Update(_float _fTimeDelta);
 	void Late_Update(_float _fTimeDelta);
 
 public:
-	HRESULT Add_Effect(CGameObject* pEffect); 
-	HRESULT Sub_Effect(CGameObject* pEffect);
+	HRESULT Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg);
+	HRESULT Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos);
+	HRESULT Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos);
 
-
-private:
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pContext = { nullptr };
-
+	HRESULT Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix);
+	HRESULT Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix);
 
 private:
-	vector<CGameObject*>  m_vecEffect;
-
-
+	vector<vector<CEffect*>>	m_vecEffect; //Effect 저장용 누가누가 안쓰고있나 Check 용도
+	deque<CEffect*>				m_dequePlayingEffect; //Effect를 진짜 출력해야할놈은 여기로 넣어서 Update 돌리는 녀석 알아서 빠져나갈것임
+	class CGameInstance*		m_pGameInstance = { nullptr };
 
 public:
-	static CEffectMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual void Free() override; 
+	static CEffectMgr* Create();
+	virtual void Free() override;
 };
 
 END
