@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "Button.h"
 
 BEGIN(Client)
 
@@ -30,10 +31,23 @@ public:
 	HRESULT Render_Shadow() override;
 	virtual HRESULT Render_Motion_Blur() override;	
 
+public:
+	virtual void                OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void                OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void                OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
 	virtual HRESULT Bind_Motion_Blur_ShaderResources();
+
+
+private:
+	PxRigidDynamic* m_pActor = { nullptr };
+	class CGameObject* m_pInteractButton = { nullptr };
+
+	CGameObject* m_pButtonGameObject = { nullptr };
+	CButton* m_pButton = { nullptr };
 
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

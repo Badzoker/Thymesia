@@ -113,8 +113,6 @@ void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
     }
 
 
-
-
     if (m_bHP_Bar_Active)
     {
         m_fHP_Bar_Active_Timer += fTimeDelta;

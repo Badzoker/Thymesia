@@ -496,6 +496,21 @@ PS_OUT PS_Boss_HP_Flash(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_INTERACTION_BUTTON(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
+	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor.a *= g_fAlpha;
+    
+
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     // 0번
@@ -689,5 +704,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Boss_HP_Flash();
+    }
+
+//16번 
+    pass InterAction_Button
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_INTERACTION_BUTTON();
     }
 }

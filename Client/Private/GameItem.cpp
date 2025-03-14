@@ -22,6 +22,8 @@ HRESULT CGameItem::Initialize_Prototype()
 
 HRESULT CGameItem::Initialize(void* _pArg)
 {
+    strcpy_s(m_szName, "GAMEITEM");
+
     GAMEITEM_DESC* pDesc = static_cast<GAMEITEM_DESC*>(_pArg);
 
     if (FAILED(__super::Initialize(_pArg)))
@@ -31,6 +33,9 @@ HRESULT CGameItem::Initialize(void* _pArg)
 
     m_eItemType = pDesc->eItemType;
 
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Button"), "BUTTON");
+    m_pButton = static_cast<CButton*>(m_pButtonGameObject);
+
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
@@ -39,7 +44,7 @@ HRESULT CGameItem::Initialize(void* _pArg)
 
     m_pTransformCom->Scaling(_float3(0.003f, 0.003f, 0.003f));
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    //m_pInteractButton = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), "INTERBUTTON");
     m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this);
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
@@ -68,6 +73,7 @@ HRESULT CGameItem::Initialize(void* _pArg)
 
 void CGameItem::Priority_Update(_float _fTimeDelta)
 {
+
 }
 
 void CGameItem::Update(_float _fTimeDelta)
@@ -75,10 +81,8 @@ void CGameItem::Update(_float _fTimeDelta)
     if (!m_bAcquired)
     {
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-           m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
     }
-    
-
 
     if (m_fElapsedTime >= 3.0f)
     {
@@ -188,13 +192,18 @@ void CGameItem::Set_ItemPos(_fvector _vPosition)
 // 닿기 시작할 때 순간
 void CGameItem::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    // 여기서 E 키 버튼 UI 틀기.
-    if (!m_bAcquired)
+    if (!m_bAcquired && !m_bDropping)
     {
-        //cout << "T 키" << endl;
+        _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+        vItemPos = XMVectorSetY(vItemPos, XMVectorGetY(vItemPos) + 1.0f);
 
+        _float4 vItemPosition;
+        XMStoreFloat4(&vItemPosition, vItemPos);
+
+        m_pButton->Set_WorldPosition(vItemPosition);
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("줍기"));
+        m_pButton->Activate_Button(true);
     }
-
 }
 
 // 닿는 중.
@@ -210,7 +219,8 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
             if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
             {
-                m_pGameInstance->Acquire_Item(m_eItemType/*, 1*/);
+                m_pGameInstance->Acquire_Item(m_eItemType);
+                m_pButton->Activate_Button(false);
             }
             break;
         }
@@ -220,6 +230,10 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
 // 떨어질 때 ( 나가기 직전. )
 void CGameItem::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
+    if (!m_bAcquired)
+    {
+        m_pButton->Activate_Button(false);
+    }
 }
 
 CGameItem* CGameItem::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)

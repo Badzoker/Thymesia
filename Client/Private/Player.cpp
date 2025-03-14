@@ -48,7 +48,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
-	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM;
+	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM | GROUP_TYPE::OBJECT;
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
@@ -66,9 +66,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	//_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //의자 옆 위치
+	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //의자 옆 위치
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-	_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
+	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
