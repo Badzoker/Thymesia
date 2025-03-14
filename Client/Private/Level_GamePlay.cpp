@@ -26,8 +26,6 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 HRESULT CLevel_GamePlay::Initialize()
 {
-	/*if (FAILED(Ready_Lights()))
-		return E_FAIL;*/
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
@@ -48,6 +46,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
@@ -159,7 +160,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
 
-	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(100.7f, 100.3f, -1.f, 1.0f), XMVectorSet(0.f, -1.f, 0.f, 1.f),
+	if (FAILED(m_pGameInstance->SetUp_ShadowLight(XMVectorSet(200.7f, 100.3f, -1.f, 1.0f), XMVectorSet(100.f, 0.f, -1.f, 1.f),
 		XMConvertToRadians(60.f), g_iWinSizeX / static_cast<_float>(g_iWinSizeY), 0.1f, 800.f
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
@@ -168,8 +169,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	/* 2¿ù 8ÀÏ ºû */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, 1.f, 1.f, 0.f);
-	LightDesc.vDiffuse   = _float4(0.9f, 0.9f, 0.9f, 1.f);
-	LightDesc.vAmbient   = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.vDiffuse   = _float4(0.7f, 0.7f, 0.7f, 1.f);
+	LightDesc.vAmbient   = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular  = _float4(0.3f, 0.3f, 0.3f, 1.f);
 
 

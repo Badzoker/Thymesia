@@ -62,7 +62,7 @@ HRESULT CTerrain::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(1);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -83,6 +83,18 @@ HRESULT CTerrain::Ready_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain_Normal"),
+		TEXT("Com_NormalTexture"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain_ORM"),
+		TEXT("Com_ORMTexture"), reinterpret_cast<CComponent**>(&m_pTextureORMCom))))
+		return E_FAIL;
+	
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_TerrainMask"),
+		TEXT("Com_TerrainMaskTexture"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
+		return E_FAIL;
+
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -90,7 +102,7 @@ HRESULT CTerrain::Ready_Components()
 
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		TEXT("Com_VIBuffer_Terrain"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* Com_Navigation */
@@ -103,6 +115,7 @@ HRESULT CTerrain::Ready_Components()
 
 HRESULT CTerrain::Bind_ShaderResources()
 {
+
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -110,9 +123,19 @@ HRESULT CTerrain::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
 
+	if (FAILED(m_pTextureNormalCom->Bind_ShaderResources(m_pShaderCom, "g_NormalTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureORMCom->Bind_ShaderResources(m_pShaderCom, "g_ORMTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureMaskCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+		return E_FAIL;
+
+	return S_OK;
 
 
 	return S_OK;

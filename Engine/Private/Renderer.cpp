@@ -33,7 +33,12 @@ HRESULT CRenderer::Initialize()
 
 	/* Target_Depth */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 1000.f, 0.f, 0.f))))
-		return E_FAIL;	
+		return E_FAIL;
+
+	/* Target_Specular */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_MtrlSpecular"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 
 	/*Target Occulusion*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Occulusion"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -116,6 +121,8 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
+		return E_FAIL;;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_MtrlSpecular"))))
 		return E_FAIL;
 
 	//Occulusion Texture
@@ -201,13 +208,13 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pShader->Bind_RawValue("g_fViewPortHeight", &fHeight, sizeof(_float))))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), 300.f, 100.f, 200.f, 200.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), 300.f, 300.f, 200.f, 200.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), 300.f, 500.f, 200.f, 200.f)))
-	//	return E_FAIL;
+#ifdef _DEBUG/*
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), 300.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), 300.f, 300.f, 200.f, 200.f)))
+		return E_FAIL;*/
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), 300.f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), 350.f, 150.f, 300.f, 300.f)))
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Specular"), 350.f, 450.f, 300.f, 300.f)))
@@ -226,12 +233,12 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;*/
 	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulusion"), ViewportDesc.Width - 300.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
-
+		*/
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftX"), ViewportDesc.Width - 300.f, 450.f, 300.f, 300.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftY"), ViewportDesc.Width - 300.f, 750.f, 300.f, 300.f)))
-		return E_FAIL;*/
+		return E_FAIL;
 #endif // _DEBUG
 
 	Add_NoiseTexture();
@@ -263,8 +270,8 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
 
-	if (FAILED(Render_Occulusion()))
-		return E_FAIL;
+	//if (FAILED(Render_Occulusion()))
+	//	return E_FAIL;
 
 	if (FAILED(Render_LightAcc()))	
 		return E_FAIL;	
@@ -416,20 +423,6 @@ HRESULT CRenderer::Render_Occulusion()
 
 		Safe_Release(pRenderObject);
 	}
-	_float4 fLight4Pos = m_pGameInstance->Get_LightPos();
-
-	_float2 fLight2Pos = { fLight4Pos.x, fLight4Pos.y };
-	_float	fFogRange = 0.03f;
-	_float4 fLightShaft = _float4(0.4f, 0.97f, 0.8f, 1.f);
-
-	if (FAILED(m_pShader->Bind_RawValue("g_FogRange", &fFogRange, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_ScreenLightPos", &fLight2Pos, sizeof(_float2))))
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_LightShaftValue", &fLightShaft, sizeof(_float4))))
-		return E_FAIL;
 
 	m_RenderObjects[RG_OCCULUSION].clear();
 
@@ -537,7 +530,15 @@ HRESULT CRenderer::Render_LightShaftX()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightShaftX"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Occulusion"), m_pShader, "g_OccusionTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_OccusionTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_LightDir(m_pShader, "g_ScreenLightDir")))
+		return E_FAIL;
+
+	_float4 fLightShaft = _float4(0.4f, 0.97f, 0.8f, 1.f);
+
+	if (FAILED(m_pShader->Bind_RawValue("g_LightShaftValue", &fLightShaft, sizeof(_float4))))
 		return E_FAIL;
 
 	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
@@ -627,7 +628,9 @@ HRESULT CRenderer::Render_LightAcc()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))	
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))	
-		return E_FAIL;	
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_MtrlSpecular"), m_pShader, "g_MtrlSpecular")))
+		return E_FAIL;
 	
 	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
 	m_pShader->Bind_Matrix("g_ViewMatrix",  &m_ViewMatrix);
@@ -1171,8 +1174,8 @@ HRESULT CRenderer::Render_Debug()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))	
@@ -1192,11 +1195,11 @@ HRESULT CRenderer::Render_Debug()
 
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
 
 	return S_OK;

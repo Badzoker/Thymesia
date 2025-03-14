@@ -2,7 +2,12 @@
 
 float4x4		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-Texture2D       g_DiffuseTexture;
+Texture2D g_DiffuseTexture[2];
+Texture2D g_NormalTexture[2];
+Texture2D g_ORMTexture[2];
+Texture2D g_MouseTexture;
+
+Texture2D g_MaskTexture;
 
 struct VS_IN
 {
@@ -50,13 +55,14 @@ struct PS_OUT
     float4 vDiffuse : SV_TARGET0;	
     float4 vNormal  : SV_TARGET1;	
     float4 vDepth   : SV_TARGET2;
+    float fSpecular : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord * 30.f);	 	
+	vector		vMtrlDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);	 	
 
 	//vector		vShade = max(dot(normalize(g_vLightDir) * -1.f, 
 	//	normalize(In.vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient);
@@ -78,11 +84,38 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);		
 
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-	
+    Out.fSpecular = 0.1f;
 
 	return Out;
 }
 
+PS_OUT PS_MASKING_MAIN(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vSourDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vDestDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexcoord * 30.f);
+    
+    vector vSourNormal = g_NormalTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vDestNormal = g_NormalTexture[1].Sample(LinearSampler, In.vTexcoord * 30.f);
+    
+    vector vSourORM = g_ORMTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vDestORM = g_ORMTexture[1].Sample(LinearSampler, In.vTexcoord * 30.f);
+    
+    vector vMaskTexture = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    vector vMtrlDiffuse = vDestDiffuse * vMaskTexture + vSourDiffuse * (1.f - vMaskTexture);
+    vector vMtrlNormal = vector(vDestNormal.xyz * 0.5f + 0.5f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 0.5f + 0.5f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
+	
+    /* vector vNormal = vNormalDesc.xyz * 2.0f - 1.0f; */
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vMtrlNormal;
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = ((1 - vDestORM.b) * 0.5f + (vDestORM.b * 1.f)) * (1 - vDestORM.g) * vMaskTexture // Dest의 specular 계산
+    + ((1 - vSourORM.b) * 0.5f + (vSourORM.b * 1.f)) * (1 - vSourORM.g) * (1.f - vMaskTexture); // Sour의 specular 계산
+	
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -95,5 +128,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+    }
+    pass TerrainMasking
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MASKING_MAIN();
+    }
 }
