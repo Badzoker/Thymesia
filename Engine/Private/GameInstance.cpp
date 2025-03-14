@@ -625,9 +625,13 @@ HRESULT CGameInstance::Bind_LightZ(CShader* pShader)
 {
 	return m_pShadow->Bind_LightZ(pShader);
 }
-_float4 CGameInstance::Get_LightPos()
+HRESULT CGameInstance::Bind_LightPos(CShader* pShader, const _char* pConstantName)
 {
-	return m_pShadow->Get_LightPos();
+	return m_pShadow->Bind_LightPos(pShader, pConstantName);
+}
+HRESULT CGameInstance::Bind_LightDir(CShader* pShader, const _char* pConstantName)
+{
+	return m_pShadow->Bind_LightDir(pShader, pConstantName);
 }
 #pragma endregion
 

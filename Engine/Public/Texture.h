@@ -17,6 +17,7 @@ public:
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName, _uint iIndex);
+	HRESULT Bind_ShaderResources(CShader* pShader, const _char* pConstantName);
 
 
 private:

@@ -24,6 +24,8 @@ Texture2D g_OccusionTexture;
 Texture2D g_LightShaftXTexture;
 Texture2D g_LightShaftYTexture;
 
+Texture2D g_MtrlSpecular;
+
 Texture2D g_FinalTexture;
 
 Texture2D g_HighLightTexture;
@@ -48,6 +50,7 @@ float g_fViewPortWidth, g_fViewPortHeight;
 
 float4 g_LightShaftValue;
 
+float2 g_ScreenLightDir;
 float2 g_ScreenLightPos;
 
 float4x4 g_PreFrameViewInvMatrix; // 이전 프레임의 뷰 매트릭스 
@@ -77,14 +80,16 @@ float4 psLightShaft(float2 texcoord)
 {
     int NUM_SAMPLES = 128;
     
-    float2 DeltaTexCoord = (g_ScreenLightPos.xy - texcoord.xy);
-    
-    if (DeltaTexCoord.x > 0)
-        return float4(0.f, 0.f, 0.f, 0.f);
+    float2 DeltaTexCoord = g_ScreenLightDir;
     
     DeltaTexCoord *= 1.f / (float) NUM_SAMPLES * g_LightShaftValue.x;
     
     float4 vColor = g_OccusionTexture.Sample(LinearSampler, texcoord);
+    
+    if (vColor.r <= 0.f)
+        vColor = float4(1.f, 1.f, 1.f, 1.f);
+    else
+        vColor = float4(0.f, 0.f, 0.f, 0.f);
     
     float IlluminationDecay = 1.f;
     
@@ -93,6 +98,11 @@ float4 psLightShaft(float2 texcoord)
         texcoord -= DeltaTexCoord;
         
         float4 Sample2 = g_OccusionTexture.Sample(LinearSampler, texcoord);
+        
+        if (Sample2.r <= 0.f)
+            Sample2 = float4(1.f, 1.f, 1.f, 1.f);
+        else
+            Sample2 = float4(0.f, 0.f, 0.f, 0.f);
         
         Sample2 *= IlluminationDecay * g_LightShaftValue.z;
         
@@ -165,7 +175,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-
+    vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
+    
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
 	
@@ -195,7 +206,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition; // 캠에서 해당 물체를 바라보는 look 방향을 구한거 .
 	
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 90.f);
+    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 90.f);
 
     return Out;
 
@@ -207,7 +218,9 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-
+    
+    vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
+    
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
 
@@ -243,7 +256,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
     vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
 
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 50.f) * fAtt;
+    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 50.f) * fAtt;
     
     return Out;
 }
@@ -255,7 +268,9 @@ PS_OUT_LIGHT PS_MAIN_SPOT(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-
+    
+    vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
+    
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
 
@@ -295,7 +310,7 @@ PS_OUT_LIGHT PS_MAIN_SPOT(PS_IN In)
     vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
 
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 50.f) * fAtt;
+    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 50.f) * fAtt;
     
     return Out;
 }
@@ -365,13 +380,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬  */
     vWorldPos = vWorldPos.xyzw * fViewZ;
     
-    float FogFactor = 1.f - saturate((1.f / 2.71828f) * pow((vWorldPos.z * g_FogRange), 2.f));
-    
     Out.vColor = vFinal + vHighLight + vGlow  + vGodRay + vWeightBlend;
-    
-    float3 vFogGodRay = vGodRay.xyz;
-    
-    vector FogColor = lerp(vector(0.5, 0.5, 0.5, 1.f), vector(1.0, 0.9, 0.7, 1.f), length(vFogGodRay));
     
     float fDistanceFogFactor = 1.f - saturate((1.f / 2.71828f) * pow((vWorldPos.z * g_FogRange), 2.f));
     
@@ -383,8 +392,12 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 	/* 로컬위치 * 월드행렬  */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
     
-    float3 vFogColor = float3(0.5f, 0.5f, 0.5f);
-
+    float3 vFogGodRay = vGodRay.xyz;
+    
+    vector FogColor = lerp(vector(0.55, 0.58, 0.57, 1.f), vector(1.0f, 1.f, 1.f, 1.f), length(vFogGodRay));
+    
+    //vector(1.0, 0.9, 0.7, 1.f) Yellow
+    
     float fogFade = smoothstep(8.f * 0.3f, 8.f * 1.5f, length(vWorldPos - g_vCamPosition));
     float fHeightFogFactor = 1.f - saturate((1.f / 2.71828f) * exp(-fFogFactor.x * (vWorldPos.y - fFogFactor.z)));
     float fHeightNoiseFogFactor = smoothstep(fHeightNoiseFactor.x - 10.f, fHeightNoiseFactor.y + 10.f, vWorldPos.y);
@@ -394,7 +407,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     float2 noiseFlow = float2(g_fTime, g_fTime);
     
     float scaleFactor = 0.01f;
-    float3 scaledPos = vWorldPos * scaleFactor;
+    float3 scaledPos = (vWorldPos * scaleFactor).xyz;
     
     float3 noiseUV = frac(scaledPos + float3(g_fTime * 0.1f, 0.0f, g_fTime * 0.1f));
     
@@ -408,9 +421,9 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     fFinalFogFactor = smoothstep(0.f, 1.f, fFinalFogFactor);
     
     if (vDepth.x <= 0.f)
-        Out.vColor = float4(0.5f, 0.5f, 0.5f, 1.f);
+        Out.vColor = FogColor;
     else
-        Out.vColor = float4(lerp(float4(vFogColor, 0.1f), vFinal.rgba, fFinalFogFactor));
+        Out.vColor = float4(lerp(FogColor, Out.vColor, fFinalFogFactor));
     
     return Out;
 }
@@ -509,40 +522,40 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
     Out.vColor = vDiffuse * vShade + vSpecular;
 	
-    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y;
+    //vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    //float fViewZ = vDepthDesc.y;
 	
-    vector vWorldPos;
+ //   vector vWorldPos;
 	
-	/* 투영공간상의 위치 */
-	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 * 1/w */
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x;
-    vWorldPos.w = 1.f;
+	///* 투영공간상의 위치 */
+	///* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 * 1/w */
+ //   vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+ //   vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+ //   vWorldPos.z = vDepthDesc.x;
+ //   vWorldPos.w = 1.f;
    
-	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬  */
-    vWorldPos = vWorldPos.xyzw * fViewZ;
+	///* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬  */
+ //   vWorldPos = vWorldPos.xyzw * fViewZ;
 
-	/* 로컬위치 * 월드행렬 * 뷰행렬 */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	/* 월드위치 */
+	///* 로컬위치 * 월드행렬 * 뷰행렬 */
+ //   vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+	///* 월드위치 */
 
-	/* 로컬위치 * 월드행렬  */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+	///* 로컬위치 * 월드행렬  */
+ //   vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    vWorldPos = mul(vWorldPos, g_LightViewMatrix);
-    vWorldPos = mul(vWorldPos, g_LightProjMatrix);
+ //   vWorldPos = mul(vWorldPos, g_LightViewMatrix);
+ //   vWorldPos = mul(vWorldPos, g_LightProjMatrix);
     
-    float2 vTexcoord;
+ //   float2 vTexcoord;
 
-    vTexcoord.x = (vWorldPos.x / vWorldPos.w) * 0.5f + 0.5f;
-    vTexcoord.y = (vWorldPos.y / vWorldPos.w) * -0.5f + 0.5f;
+ //   vTexcoord.x = (vWorldPos.x / vWorldPos.w) * 0.5f + 0.5f;
+ //   vTexcoord.y = (vWorldPos.y / vWorldPos.w) * -0.5f + 0.5f;
 
-    vector vShadowDepthDesc = g_ShadowTexture.Sample(LinearSampler, vTexcoord);
+ //   vector vShadowDepthDesc = g_ShadowTexture.Sample(LinearSampler, vTexcoord);
     
-    if (vShadowDepthDesc.y + 0.15f <= vWorldPos.w)
-        Out.vColor = Out.vColor * 0.7f;
+ //   if (vShadowDepthDesc.y + 0.15f <= vWorldPos.w)
+ //       Out.vColor = Out.vColor * 0.7f;
     
     return Out;
 }

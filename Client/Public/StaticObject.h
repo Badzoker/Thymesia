@@ -26,8 +26,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual HRESULT Render_Occulusion() override;
-
 	HRESULT Render_Shadow() override;
 	virtual HRESULT Render_Motion_Blur() override;	
 
