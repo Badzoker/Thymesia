@@ -146,7 +146,6 @@
 #include "UI_DialogBackground.h"
 
 #include "UI_GameLogoImage.h"
-#include "UI_InteractableIndicator.h"
 
 #pragma endregion
 
@@ -158,6 +157,7 @@
 #pragma endregion
 
 #include "GameItem.h"
+#include "Button.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice{ pDevice }
@@ -180,8 +180,6 @@ _uint APIENTRY Thread_Main(void* pArg)
 
 HRESULT CLoader::Initialize(LEVELID eNextLevelID)
 {
-
-
 	m_eNextLevelID = eNextLevelID;
 
 	InitializeCriticalSection(&m_CriticalSection);
@@ -1003,18 +1001,13 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 	//==================================================================================================================================== 월드 상호 작용 ui
 
-
-
-	/* For.Prototype_Component_Texture_UI_InteractableIndicator*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_InteractableIndicator"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_InteractionButton"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_InteractableIndicator.dds"), 1))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_UI_InteractableIndicator */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"),
-		CUI_InteractableIndicator::Create(m_pDevice, m_pContext))))
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_InteractionButton"),
+		CButton::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
 
 
 	//====================================================================================================================================

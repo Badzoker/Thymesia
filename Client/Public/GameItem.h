@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Item.h"
+#include "Button.h"
 
 BEGIN(Engine)
 class CShader;
@@ -32,6 +33,7 @@ public:
     virtual HRESULT             Render()override;
     virtual HRESULT             Render_Glow() override;
 
+
 public:
     virtual HRESULT             Ready_Components();
     virtual HRESULT             Bind_ShaderResources();
@@ -48,10 +50,12 @@ private:
     _char		                m_GameItemName[MAX_PATH] = {};
 
     PxRigidDynamic* m_pActor = { nullptr };
-    class CGameObject* m_pPlayer = { nullptr };
+    class CGameObject* m_pInteractButton = { nullptr };
 
     _float4                     m_fAlphaValue = {};
 
+    CGameObject* m_pButtonGameObject = { nullptr };
+    CButton* m_pButton = { nullptr };
 
 
 public:

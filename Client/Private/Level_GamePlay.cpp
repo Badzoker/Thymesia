@@ -10,8 +10,8 @@
 #include "BlackScreen.h"
 
 #include "UI_LeftBackground.h"
-#include "UI_InteractableIndicator.h"
 
+#include "Button.h"
 #include "GameItem.h"
 #include "Effect_Mesh.h"
 #include "Effect_Particle.h"
@@ -35,13 +35,11 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Button(TEXT("Layer_Button"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
-
-
-	// 테스트용 사다리 레이어 준비 함수 호출
-	//if (FAILED(Ready_Layer_Ladder(TEXT("Layer_Ladder"))))
-	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))	
 		return E_FAIL;
@@ -59,9 +57,6 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 	
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
@@ -423,13 +418,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Fade(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar* pLayerTag)
+
+HRESULT CLevel_GamePlay::Ready_Layer_Button(const _tchar* pLayerTag)
 {
-	CUI_InteractableIndicator::InterAct_Desc TextDesc = {};
-	TextDesc.iTextNum = 2;
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_InteractableIndicator"), LEVEL_GAMEPLAY, pLayerTag,&TextDesc)))
-		return E_FAIL;
+	CButton::BUTTON_DESC ButtonDesc = {};
+
+	for (_uint i = 0; i < 1; ++i)
+	{
+		ButtonDesc._iButtonTypeIndex = i;
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_GAMEPLAY, pLayerTag, &ButtonDesc)))
+			return E_FAIL;
+	}
+
 	return S_OK;
+
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Item(const _tchar* pLayerTag)
