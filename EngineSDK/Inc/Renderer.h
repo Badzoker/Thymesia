@@ -46,6 +46,14 @@ private:
 
 	_bool					m_bMotionBlurOnOff = { false };	
 
+	vector<_float>									noiseData;
+
+	_int											m_perm[512] = {};
+	ID3D11Texture3D*								m_pNoiseTexture3D = { nullptr };
+	ID3D11ShaderResourceView*						m_pNoiseSRV = { nullptr };
+
+	_float											m_fTime = { 0.f };
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();	
@@ -75,8 +83,13 @@ private:
 
 private:
 	HRESULT Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut);	
-	HRESULT SetUp_ViewportDesc(_uint iWidth, _uint iHeight);	
+	float PerlinNoise3D(float x, float y, float z);
+	float PerlinNoise3D_Tiled(float x, float y, float z, float tileSize);
+	void Generate3DPerlinNoise();
+	HRESULT SetUp_ViewportDesc(_uint iWidth, _uint iHeight);
 
+	HRESULT Add_NoiseTexture();
+	HRESULT Bind_NoiseTexture(class CShader* pShader, const _char* pConstantName);
 
 #ifdef _DEBUG
 private:
