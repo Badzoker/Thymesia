@@ -156,6 +156,7 @@ struct PS_OUT
     float4 vDiffuse : SV_TARGET0;	// ·»´õÅ¸°Ù 0¹ø¿¡ ÀúÀå 
     float4 vNormal  : SV_TARGET1;   // ·»´õÅ¸°Ù 1¹ø¿¡ ÀúÀå 
     float4 vDepth   : SV_TARGET2;   // ·»´õÅ¸°Ù 2¹ø¿¡ ÀúÀå 
+    float fSpecular : SV_TARGET3;
 };
 
 struct PS_IN_SHADOW
@@ -200,7 +201,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);       
     //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth  = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-
+    Out.fSpecular = 0.1f;
 
 
 	return Out;
@@ -262,7 +263,7 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
     Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
     //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-
+    Out.fSpecular = 1.f;
 
 
     return Out;

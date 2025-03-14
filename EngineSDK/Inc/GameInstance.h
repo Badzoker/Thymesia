@@ -198,7 +198,8 @@ public:
 	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform);
 	HRESULT Bind_Shadow_Matrices(class CShader* pShader, const _char* pViewConstantName, const _char* pProjConstantName);
 	HRESULT Bind_LightZ(CShader* pShader);
-	_float4	Get_LightPos();
+	HRESULT Bind_LightPos(CShader* pShader, const _char* pConstantName);
+	HRESULT Bind_LightDir(CShader* pShader, const _char* pConstantName);
 #pragma endregion
 
 #pragma region UI_Manager

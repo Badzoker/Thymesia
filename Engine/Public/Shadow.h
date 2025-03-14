@@ -15,7 +15,9 @@ private:
 	virtual ~CShadow() = default;
 
 public:
-	_float4				Get_LightPos();
+	HRESULT Bind_LightPos(class CShader* pShader, const _char* pConstantName);
+
+	HRESULT Bind_LightDir(class CShader* pShader, const _char* pConstantName);
 
 public:
 	HRESULT Initialize();
@@ -36,11 +38,10 @@ private:
 
 	_float	    		 m_cascadeEnd[4] = {};
 
-	_vector	    		 m_cascadeFrustum[3][8] = {};
+	_float4	    		 m_cascadeFrustum[3][8] = {};
 
 	_float4x4		     m_shadowOrthoView[3] = {};
 	_float4x4			 m_shadowOrthoProj[3] = {};
-
 
 	_float4x4		     m_shadowCopyOrthoView[3] = {};
 	_float4x4			 m_shadowCopyOrthoProj[3] = {};
@@ -48,9 +49,8 @@ private:
 
 	class CGameInstance* m_pGameInstance = { nullptr };
 
-	_matrix				 m_LightTransform = {};
 	_float				 m_CascadeEndCliSpaceZ[3] = {};
-	_vector				 m_LightDir = { };
+	_float4				 m_LightDir = { };
 
 	CTransform* m_pPlayerTransform = { nullptr };
 

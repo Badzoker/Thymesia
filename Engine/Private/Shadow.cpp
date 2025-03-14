@@ -15,22 +15,36 @@ CShadow::CShadow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pGameInstance);
 }
 
-_float4 CShadow::Get_LightPos()
+HRESULT CShadow::Bind_LightPos(CShader* pShader, const _char* pConstantName)
 {
-	//_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightViewMatrix)));
-	//vLightPos = XMVector3TransformCoord(vLightPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_LightProjMatrix)));
-
 	_matrix lightProjectionMatrix = XMLoadFloat4x4(&m_LightViewMatrix) * XMLoadFloat4x4(&m_LightProjMatrix);
 
-	//_vector vLightPos = XMVector3TransformCoord(XMLoadFloat4(&m_LightPos), lightProjectionMatrix);
+	_vector vLightPos = XMLoadFloat4(&m_LightPos);
 
- 	_float4 fLightPos = { 0.4f, 0.45f, 1.f, 1.f};
+	vLightPos = XMVector3TransformCoord(vLightPos, lightProjectionMatrix);
 
+	_float2 vLightViewProjPos = { XMVectorGetX(vLightPos), XMVectorGetY(vLightPos) };
 
-	//XMStoreFloat4(&fLightPos, vLightPos);
-
-	return fLightPos;
+	return pShader->Bind_RawValue(pConstantName, &vLightViewProjPos, sizeof(_float2));
 }
+
+
+HRESULT CShadow::Bind_LightDir(CShader* pShader, const _char* pConstantName)
+{
+	_float4x4 vLightViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+	_float4x4 vLightProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
+
+	_matrix lightProjectionMatrix = XMLoadFloat4x4(&vLightViewMatrix) * XMLoadFloat4x4(&vLightProjMatrix);
+
+	_vector vLightDir = XMLoadFloat4(&m_LightDir);
+
+	vLightDir = XMVector3TransformNormal(XMVector3Normalize(vLightDir), lightProjectionMatrix);
+
+	_float2 vLightViewProjPos = { XMVectorGetX(vLightDir), -XMVectorGetY(vLightDir) };
+
+	return pShader->Bind_RawValue(pConstantName, &vLightViewProjPos, sizeof(_float2));
+}
+
 
 HRESULT CShadow::Initialize()
 {
@@ -43,24 +57,10 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 
 	XMStoreFloat4(&m_LightPos, vEye);
 
-	// m_LightDir = XMVectorSet(-1.f, -1.f, 0.f, 0.f);
-
-	m_LightDir = XMVector3Normalize(vAt - vEye);
+	XMStoreFloat4(&m_LightDir, XMVector3Normalize(vAt - vEye));
 
 	XMStoreFloat4x4(&m_LightViewMatrix, XMMatrixLookAtLH(vAt, vEye, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 	XMStoreFloat4x4(&m_LightProjMatrix, XMMatrixPerspectiveFovLH(fLightAngle, fAspect, fNear, fFar));
-
-	m_LightTransform = XMMatrixIdentity();
-
-	m_LightTransform.r[3] = vEye;
-
-	_vector vLook = vAt - vEye;
-	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
-	_vector vUp = XMVector3Cross(vLook, vRight);
-
-	m_LightTransform.r[0] = XMVector3Normalize(vRight);
-	m_LightTransform.r[1] = XMVector3Normalize(vUp);
-	m_LightTransform.r[2] = XMVector3Normalize(vLook);
 
 	_matrix camInv = matInvCam;
 
@@ -111,7 +111,7 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 		};
 
 		for (size_t l = 0; l < 8; ++l)
-			m_cascadeFrustum[i][l] = frustumCorners[l];
+			XMStoreFloat4(&m_cascadeFrustum[i][l], frustumCorners[l]);
 
 		_vector centerPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 
@@ -137,7 +137,7 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 		_vector minExtents = -maxExtents;
 
 		//_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_LightPos);
-		_vector vDir = m_LightDir;
+		_vector vDir = XMLoadFloat4(&m_LightDir);
 
 		_float3 shadowCamPos;
 		XMStoreFloat3(&shadowCamPos, centerPos + XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents)));
@@ -150,7 +150,7 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 
 		_vector cascadeExtents = maxExtents - minExtents;
 
-		XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), -XMVectorGetZ(maxExtents), XMVectorGetZ(maxExtents) * 2.f));
+		XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.f, XMVectorGetZ(maxExtents) * 2.f));
 	}
 
 	return S_OK;
@@ -180,7 +180,7 @@ void CShadow::Update()
 			};
 
 			for (size_t l = 0; l < 8; ++l)
-				frustumCorners[l] = m_cascadeFrustum[i][l];
+				frustumCorners[l] = XMLoadFloat4(&m_cascadeFrustum[i][l]);
 
 			for (uint32_t j = 0; j < 8; ++j)
 			{
@@ -203,18 +203,10 @@ void CShadow::Update()
 			_vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
 			_vector minExtents = -maxExtents;
 
-			_vector vDir = m_LightDir;
-
-			//vDir = XMVector3TransformNormal(m_LightDir, matView);
-
-			//float worldUnitsPerTexel = (radius * 2.f) / g_iMaxWidth;
-
-
+			_vector vDir = XMLoadFloat4(&m_LightDir);
 
 			_float3 shadowCamPos;
 			XMStoreFloat3(&shadowCamPos, centerPos + XMVector3Normalize(vDir) * (XMVectorGetZ(minExtents)));
-
-			// XMStoreFloat3(&shadowCamPos, XMVectorFloor(XMLoadFloat4(&m_LightPos) / worldUnitsPerTexel) * worldUnitsPerTexel);
 
 			_vector vEyePos = XMVectorSetW(XMLoadFloat3(&shadowCamPos), 1.f);
 
