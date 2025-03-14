@@ -2,6 +2,9 @@
 #include "UIGroup_PlayerScreen.h"
 #include "UI_Scene.h"
 #include "GameInstance.h"
+#include "GameInstance.h"
+#include "UI_Text.h"
+#include "Player.h"
 
 CUIGroup_PlayerScreen::CUIGroup_PlayerScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -26,6 +29,9 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+
 	return S_OK;
 }
 
@@ -37,17 +43,14 @@ void CUIGroup_PlayerScreen::Priority_Update(_float fTimeDelta)
 void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-	if (m_bRenderOpen)
-	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-	}
 
+	Player_Info_GageBar();
 }
 
 void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_PlayerScreen::Render()
@@ -64,11 +67,46 @@ HRESULT CUIGroup_PlayerScreen::Render()
 	return S_OK;
 }
 
+void CUIGroup_PlayerScreen::Player_Info_GageBar()
+{
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+	const _tchar* CountTextDouble = L"%d / %d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (10 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp());
+			TextBox->Set_Content(ChangeText);
+		}
+		if (20 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp());
+			TextBox->Set_Content(ChangeText);
+		}
+		if (30 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountTextDouble, 3, 3);
+			TextBox->Set_Content(ChangeText);
+		}
+		if (40 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountTextDouble, 3, 3);
+			TextBox->Set_Content(ChangeText);
+		}
+		if (100 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
+			TextBox->Set_Content(ChangeText);
+		}
+	}
+}
+
 HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
 {
 
 	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
-	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerScreen", m_TextInfo);
 
 	return S_OK;
 }

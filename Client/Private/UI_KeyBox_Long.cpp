@@ -37,6 +37,18 @@ void CUI_KeyBox_Long::Priority_Update(_float fTimeDelta)
 
 void CUI_KeyBox_Long::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
+	{
+		if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+		{
+			m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
+		}
+		else
+		{
+			m_bMouseSelectOn = false; // 
+
+		}
+	}
 }
 
 void CUI_KeyBox_Long::Late_Update(_float fTimeDelta)

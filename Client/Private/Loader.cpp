@@ -834,7 +834,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	/* For.Prototype_Component_Texture_UI_SkillLeftBackground*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI_ButtonBackground"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_ButtonBackground.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_ButtonBackground_%d.dds"), 3))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_SkillLeftBackground */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_ButtonBackground"),

@@ -2,6 +2,14 @@
 #include "UIGroup_PlayerLevelUP.h"
 #include "UI_Scene.h"
 #include "GameInstance.h"
+#include "Player.h"
+
+#include "UI_Button.h"
+#include "UI_Text.h"
+#include "UI_Image.h"
+#include "UI_ButtonBackground.h"
+#include "UI_ButtonHighlight.h"
+#include "UI_KeyBox_Long.h"
 
 CUIGroup_PlayerLevelUP::CUIGroup_PlayerLevelUP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -9,7 +17,7 @@ CUIGroup_PlayerLevelUP::CUIGroup_PlayerLevelUP(ID3D11Device* pDevice, ID3D11Devi
 }
 
 CUIGroup_PlayerLevelUP::CUIGroup_PlayerLevelUP(const CUIGroup_PlayerLevelUP& Prototype)
-	: CUIObject( Prototype )
+	: CUIObject(Prototype)
 {
 }
 
@@ -27,32 +35,79 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+
+	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+
+
+	//선행 조건이 필요한 ui들 최초에는 off 하도록 설정
+	m_pApplyPopUp = m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_2");
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, false);
+
+	m_pResetPopUp = m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_3");
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(3000);
+	Setting_Default_Status_Value();
+
 	return S_OK;
 }
 
 void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_pMyScene->Get_Scene_Render_State())
+	{
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pApplyPopUp, true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pResetPopUp, true);
+	}
+	else
+	{
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pApplyPopUp, false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pResetPopUp, false);
+	}
+	if (m_iMemoryCurrentCount != dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment())
+	{
+		// 유저 보유 수 가져와서 개수가 다르면 정보 갱신
+		m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
+		m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+	}
 }
 
 void CUIGroup_PlayerLevelUP::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
+		__super::Update(fTimeDelta);
+
+		Button_Input_Check();
+		Button_Render_Check();
+		Button_Image_On_Check();
+		Button_Render_Check();
+		LevelUP_Memory_Check();
+		LevelUP_Status_Check();
+		LevelUP_Status_Info_Check();
+		LevelUP_TalentPoint_Check();
+
+		LevelUP_Apply_Button();
+		LevelUP_Reset_Button();
+
 	}
 }
 
 void CUIGroup_PlayerLevelUP::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	if (m_bRenderOpen)
+	{
+		__super::Late_Update(fTimeDelta);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	}
 }
 
 HRESULT CUIGroup_PlayerLevelUP::Render()
 {
-	if (m_bRenderOpen)
+	/*if (m_bRenderOpen)
 	{
 		vector<UI_TextInfo>::iterator it;
 		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
@@ -60,39 +115,691 @@ HRESULT CUIGroup_PlayerLevelUP::Render()
 			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
 
 		}
+	}*/
+	return S_OK;
+}
+
+void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
+{
+	// 레벨
+	m_iCurrentLevel = { 1 };
+	m_iNextLevel = { 1 };
+
+
+	// 캐릭터 능력치 변수
+	m_iCurrentPower = { 1 }; // 힘 수치
+	m_iNextPower = { 1 }; // 힘 수치
+
+	m_iCurrentVitality = { 1 }; // 활력 수치
+	m_iNextVitality = { 1 }; // 활력 수치
+
+	m_iCurrentPlague = { 1 }; // 역병 수치
+	m_iNextPlague = { 1 }; // 역병 수치
+
+	// 캐릭터 상태 변수
+	m_iCurrentAttackPower = { 25 }; // 공격 대미지 
+	m_iNextAttackPower = { 25 }; // 공격 대미지
+
+	m_iCurrentAmountOfWounds = { 75 }; // 상처 수
+	m_iNextAmountOfWounds = { 75 }; // 상처 수
+
+	m_iCurrentClawAttackPower = { 200 }; // 발톱대미지
+	m_iNextClawAttackPower = { 200 }; // 발톱대미지
+
+	m_iCurrentFullHp = { 300 }; // 체력
+	m_iNextFullHp = { 300 }; // 체력
+
+	m_iCurrentFullMp = { 150 }; // 에너지
+	m_iNextFullMp = { 150 }; // 에너지
+
+
+	m_iCurrentTalentPoint = { 0 };
+	m_iNextTalentPoint = { 0 };
+
+	m_iCurrentUnspent = { 0 };
+	m_iNextUnspent = { 0 };
+
+	m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
+	m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+
+
+
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (210 <= Image->Get_UI_GroupID() &&
+			230 >= Image->Get_UI_GroupID())
+			Image->Set_OnOff(false); // 기본값으로 버튼 연출 용인 그리기는 꺼준다
+
+		if (100 == Image->Get_UI_GroupID()) // 특성 전체 이미지
+			Image->Set_OnOff(false); // 기본값으로 버튼 연출 용인 그리기는 꺼준다
+		if (110 == Image->Get_UI_GroupID()) // 특성 전체 이미지
+			Image->Set_OnOff(false); // 기본값으로 버튼 연출 용인 그리기는 꺼준다
+
 	}
+
+
+}
+
+HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
+{
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (200 == Button->Get_UI_GroupID()) // 적용 버튼 
+		{
+			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, true);
+				m_bApplyOn = true;
+			}
+		}
+		if (300 == Button->Get_UI_GroupID()) // 적용 버튼 
+		{
+			if (dynamic_cast<CUI_KeyBox_Long*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, true);
+				m_bResetOn = true;
+			}
+		}
+
+		if (211 == Button->Get_UI_GroupID()) // 힘 감소 
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 힘 감소
+			{
+				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextPower -= 1;
+				m_iNextAttackPower -= 1;
+				m_iNextAmountOfWounds -= 2;
+				m_iNextTalentPoint -= 1;
+				m_iNextUnspent -= 1;
+				m_iMemoryNextCount += m_iMemoryNeed;
+			}
+		}
+		if (212 == Button->Get_UI_GroupID())
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 힘 증가 
+			{
+				m_iNextLevel += 1; // 레벨 증가
+				m_iNextPower += 1;
+				m_iNextAttackPower += 1;
+				m_iNextAmountOfWounds += 2;
+				m_iNextTalentPoint += 1;
+				m_iNextUnspent += 1;
+				m_iMemoryNextCount -= m_iMemoryNeed;
+			}
+		}
+
+		if (221 == Button->Get_UI_GroupID()) // 활력 감소 
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 활력 감소
+			{
+				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextVitality -= 1;
+				m_iNextFullHp -= 14;
+				m_iNextTalentPoint -= 1;
+				m_iNextUnspent -= 1;
+				m_iMemoryNextCount += m_iMemoryNeed;
+
+			}
+		}
+		if (222 == Button->Get_UI_GroupID())
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 활력 증가 
+			{
+				m_iNextLevel += 1; // 레벨 증가
+				m_iNextVitality += 1;
+				m_iNextFullHp += 14;
+				m_iNextTalentPoint += 1;
+				m_iNextUnspent += 1;
+				m_iMemoryNextCount -= m_iMemoryNeed;
+			}
+		}
+
+		if (231 == Button->Get_UI_GroupID()) // 역병 감소 
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 역병 감소
+			{
+				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextPlague -= 1;
+				m_iNextClawAttackPower -= 10;
+				m_iNextFullMp -= 10;
+				m_iNextTalentPoint -= 1;
+				m_iNextUnspent -= 1;
+				m_iMemoryNextCount += m_iMemoryNeed;
+			}
+		}
+		if (232 == Button->Get_UI_GroupID())
+		{
+			if (Button->Get_Mouse_Select_OnOff()) // 역병 증가 
+			{
+				m_iNextLevel += 1; // 레벨 증가
+				m_iNextPlague += 1;
+				m_iNextClawAttackPower += 10;
+				m_iNextFullMp += 10;
+				m_iNextTalentPoint += 1;
+				m_iNextUnspent += 1;
+				m_iMemoryNextCount -= m_iMemoryNeed;
+			}
+		}
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::Button_Render_Check()
+{
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (211 == Button->Get_UI_GroupID()) // 힘 감소 
+		{
+			if (m_iNextPower > m_iCurrentPower)
+				Button->Set_OnOff(true); // 현재보다 다음이 큰 경우 ( 증가 버튼을 누른 상태
+			else
+				Button->Set_OnOff(false); // 증가 버튼을 누르지 않았을 때 감소 없음
+		}
+		if (221 == Button->Get_UI_GroupID()) // 활력 감소
+		{
+			if (m_iNextVitality > m_iCurrentVitality)
+				Button->Set_OnOff(true); // 현재보다 다음이 큰 경우 ( 증가 버튼을 누른 상태
+			else
+				Button->Set_OnOff(false); // 증가 버튼을 누르지 않았을 때 감소 없음
+		}
+		if (231 == Button->Get_UI_GroupID()) // 역병 감소
+		{
+			if (m_iNextPlague > m_iCurrentPlague)
+				Button->Set_OnOff(true); // 현재보다 다음이 큰 경우 ( 증가 버튼을 누른 상태
+			else
+				Button->Set_OnOff(false); // 증가 버튼을 누르지 않았을 때 감소 없음
+		}
+		if (212 == Button->Get_UI_GroupID() ||
+			222 == Button->Get_UI_GroupID() ||
+			232 == Button->Get_UI_GroupID()) // 힘, 활력, 역병 증가 버튼 오픈 조건
+		{
+			if (((int)(m_iMemoryNextCount - m_iMemoryNeed)) > 0) // .uint는 0 보다 작은수 체크를 못함 
+				Button->Set_OnOff(true); // 레벨 업이 가능한 경우에만 증가 버튼 생성
+			else
+				Button->Set_OnOff(false); // 레벨 업이 불가능한 경우 증가 버튼 제거
+		}
+
+
+	}
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::Button_Image_On_Check()
+{
+	_bool bPower = false;
+	_bool bVitality = false;
+	_bool bPlague = false;
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (210 == Image->Get_UI_GroupID()) // 힘 활성화 이미지                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+		{
+			if (Image->Get_Open_Image()) // 열려 있다면 = > 마우스 on한 상태     
+			{
+				bPower = true;
+			}
+
+		}
+
+		if (220 == Image->Get_UI_GroupID()) // 활력 활성화 이미지
+		{
+			if (Image->Get_Open_Image()) // 열려 있다면 = > 마우스 on한 상태     
+			{
+				bVitality = true;
+			}
+
+		}
+
+		if (230 == Image->Get_UI_GroupID()) // 역병 활성화 이미지
+		{
+			if (Image->Get_Open_Image()) // 열려 있다면
+			{
+				bPlague = true;
+
+			}
+
+		}
+	}
+	Button_Image_OnOff_Check(bPower, bVitality, bPlague);
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::Button_Image_OnOff_Check(_bool bPower, _bool bVitality, _bool bPlaque)
+{
+
+	_bool bTalentOn = { false };
+
+	if (true == bPower || true == bVitality || true == bPlaque)
+		bTalentOn = true;
+
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (210 == Image->Get_UI_GroupID()) // 힘 이미지
+		{
+			Image->Set_OnOff(bPower); // 힘이 켜지면, 공격 대미지, 상처 수도 이미지가 on
+		}
+		if (220 == Image->Get_UI_GroupID()) // 활력 이미지
+		{
+			Image->Set_OnOff(bVitality); // 활력이 켜지면 체력 이미지 on
+		}
+		if (230 == Image->Get_UI_GroupID()) // 역병 이미지
+		{
+			Image->Set_OnOff(bPlaque); // 역병이 켜지면, 발톱 대미지, 에너지 이미지가 on
+		}
+		if (100 == Image->Get_UI_GroupID()) // 특성 전체 이미지
+		{
+			Image->Set_OnOff(bTalentOn);
+		}
+		if (110 == Image->Get_UI_GroupID()) // 특성 미사용 이미지
+		{
+			Image->Set_OnOff(bTalentOn);
+		}
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Memory_Check()
+{
+
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (10 == TextBox->Get_UI_GroupID()) // 현재 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentLevel);
+			TextBox->Set_Content(ChangeText);
+		}
+		if (11 == TextBox->Get_UI_GroupID()) // 다음 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iNextLevel);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentLevel != m_iNextLevel)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+
+		}
+		if (12 == TextBox->Get_UI_GroupID()) // 유저가 보유하고 있는 기억의 파편 수 
+		{
+			wsprintf(ChangeText, CountText, m_iMemoryCurrentCount);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (13 == TextBox->Get_UI_GroupID()) //  유저 보유 기억 파편 - 레벨 업에 소모되는 기억 파편 = 결과 값 출력
+		{
+			wsprintf(ChangeText, CountText, m_iMemoryNextCount);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentLevel != m_iNextLevel)
+				TextBox->Set_Change_TextColor(FONT_RED);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+
+		}
+		if (14 == TextBox->Get_UI_GroupID()) //  다음 레벨을 상승 시키는데 필요한 개수 표시
+		{
+			wsprintf(ChangeText, CountText, m_iMemoryNeed);
+			TextBox->Set_Content(ChangeText);
+		}
+
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Status_Check()
+{
+
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (20 == TextBox->Get_UI_GroupID()) // 현재 파워 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentPower);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (21 == TextBox->Get_UI_GroupID()) // 다음 파워 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iNextPower);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentPower != m_iNextPower)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+
+		}
+
+		if (30 == TextBox->Get_UI_GroupID()) // 현재 활력 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentVitality);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (31 == TextBox->Get_UI_GroupID()) // 다음 활력 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iNextVitality);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentVitality != m_iNextVitality)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+
+		}
+
+		if (40 == TextBox->Get_UI_GroupID()) // 현재 파워 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentPlague);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (41 == TextBox->Get_UI_GroupID()) // 다음 파워 레벨 표시
+		{
+			wsprintf(ChangeText, CountText, m_iNextPlague);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentPlague != m_iNextPlague)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Status_Info_Check()
+{
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (50 == TextBox->Get_UI_GroupID()) // 공격 대미지 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentAttackPower);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (51 == TextBox->Get_UI_GroupID()) // 공격 대미지 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextAttackPower);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentAttackPower != m_iNextAttackPower)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+
+		if (60 == TextBox->Get_UI_GroupID()) // 상처 수 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentAmountOfWounds);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (61 == TextBox->Get_UI_GroupID()) // 상처 수 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextAmountOfWounds);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentAmountOfWounds != m_iNextAmountOfWounds)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+
+		if (70 == TextBox->Get_UI_GroupID())  // 발톱 대미지 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentClawAttackPower);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (71 == TextBox->Get_UI_GroupID()) // 발톱 대미지 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextClawAttackPower);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentClawAttackPower != m_iNextClawAttackPower)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+
+		if (80 == TextBox->Get_UI_GroupID()) // 체력 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentFullHp);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (81 == TextBox->Get_UI_GroupID()) // 체력 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextFullHp);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentFullHp != m_iNextFullHp)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+
+		if (90 == TextBox->Get_UI_GroupID()) // 에너지 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentFullMp);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (91 == TextBox->Get_UI_GroupID()) // 에너지 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextFullMp);
+			TextBox->Set_Content(ChangeText);
+
+			if (m_iCurrentFullMp != m_iNextFullMp)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_TalentPoint_Check()
+{
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (100 == TextBox->Get_UI_GroupID()) // 특성 전체 포인트 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentTalentPoint);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (101 == TextBox->Get_UI_GroupID()) // 특성 전체 포인트 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextTalentPoint);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentTalentPoint != m_iNextTalentPoint)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+		if (110 == TextBox->Get_UI_GroupID()) // 미사용 특성 포인트 전
+		{
+			wsprintf(ChangeText, CountText, m_iCurrentUnspent);
+			TextBox->Set_Content(ChangeText);
+
+		}
+		if (111 == TextBox->Get_UI_GroupID()) // 미사용 특성 포인트 후
+		{
+			wsprintf(ChangeText, CountText, m_iNextUnspent);
+			TextBox->Set_Content(ChangeText);
+			if (m_iCurrentUnspent != m_iNextUnspent)
+				TextBox->Set_Change_TextColor(FONT_GREEN);
+			else
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Apply_Button()
+{
+	if (m_bApplyOn)
+	{
+		for (auto& Button : m_pApplyPopUp->Find_UI_Button())
+		{
+			if (1 == Button->Get_UI_GroupID()) // 네
+			{
+				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				{
+					LevelUP_Apply();
+					m_bApplyOn = false;
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, false);
+				}
+			}
+			if (2 == Button->Get_UI_GroupID()) // 아니요
+			{
+				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				{
+					m_bApplyOn = false;
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, false);
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset_Button()
+{
+	if (m_bResetOn)
+	{
+		for (auto& Button : m_pApplyPopUp->Find_UI_Button())
+		{
+			if (1 == Button->Get_UI_GroupID()) // 네
+			{
+				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				{
+					LevelUP_Reset();
+					m_bResetOn = false;
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+				}
+			}
+			if (2 == Button->Get_UI_GroupID()) // 아니요
+			{
+				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				{
+					m_bResetOn = false;
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Apply()
+{
+	// 레벨
+	m_iCurrentLevel = m_iNextLevel;
+
+	int iMomoryCount = m_iMemoryCurrentCount - m_iMemoryNextCount;
+	// 기억 파편
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(-iMomoryCount);
+	m_iMemoryTotalUse += m_iMemoryCurrentCount - m_iMemoryNextCount; //지금까지 플레이어가 레벨업에 사용한 기억 파편 개수를 저장함
+
+
+	m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
+	m_iMemoryNextCount = m_iMemoryCurrentCount;
+
+	m_iMemoryNeed = { 529 }; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴 지금은 그냥 상수값
+
+
+	// 캐릭터 능력치 변수
+	m_iCurrentPower = m_iNextPower; // 힘 수치
+
+	m_iCurrentVitality = m_iNextVitality; // 활력 수치
+
+	m_iCurrentPlague = m_iNextPlague; // 역병 수치
+
+	// 캐릭터 상태 변수
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_AttackPower(m_iNextAttackPower);
+	m_iCurrentAttackPower = m_iNextAttackPower; // 공격 대미지 
+
+	m_iCurrentAmountOfWounds = m_iNextAmountOfWounds; // 상처 수
+
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_ClawAttackPower(m_iNextClawAttackPower);
+	m_iCurrentClawAttackPower = m_iNextClawAttackPower; // 발톱대미지
+
+	dynamic_cast<CPlayer*>(m_pPlayer)->Set_PlayerFullHp(m_iNextFullHp);
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_PlayerHp(m_iNextFullHp - m_iCurrentFullHp);
+	m_iCurrentFullHp = m_iNextFullHp; // 체력
+
+	dynamic_cast<CPlayer*>(m_pPlayer)->Set_PlayerFullMp(m_iNextFullMp);
+	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_PlayerMp(m_iNextFullMp - m_iCurrentFullMp);
+	m_iCurrentFullMp = m_iNextFullMp; // 에너지
+
+	// 특성 변수
+	m_iCurrentTalentPoint = m_iNextTalentPoint;
+
+	m_iCurrentUnspent = m_iNextUnspent;
+
+
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset()
+{
+	// 올렸던 값들 모두 초기화
+	// 레벨
+	m_iNextLevel = m_iCurrentLevel;
+	m_iMemoryNextCount = m_iMemoryCurrentCount;
+
+	m_iMemoryNeed = { 529 }; // 나중에 레벨별 상수 값 달리 설정 해야 함
+
+	m_iNextPower = m_iCurrentPower; // 힘 수치
+	m_iNextVitality = m_iCurrentVitality; // 활력 수치
+
+	m_iNextPlague = m_iCurrentPlague; // 역병 수치
+
+	// 캐릭터 상태 변수
+	m_iNextAttackPower = m_iCurrentAttackPower; // 공격 대미지
+
+	m_iNextAmountOfWounds = m_iCurrentAmountOfWounds; // 상처 수
+
+	m_iNextClawAttackPower = m_iCurrentClawAttackPower; // 발톱대미지
+
+	m_iNextFullHp = m_iCurrentFullHp; // 체력
+
+	m_iNextFullMp = m_iCurrentFullMp; // 에너지
+
+	// 특성 변수
+	m_iNextTalentPoint = m_iCurrentTalentPoint;
+	m_iNextUnspent = m_iCurrentUnspent;
+
 	return S_OK;
 }
 
 HRESULT CUIGroup_PlayerLevelUP::Ready_UIObject()
 {
-	//LoadData_UI_Scene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
-
-	//CUIObject::UIOBJECT_DESC Desc{};
-
-
-	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, L"Prototype_GameObject_UI_MouseCursor", UISCENE_LEVELUP, L"UIScene_PlayerLevelUP", UI_IMAGE, &Desc)))
-	//return S_OK;
-
-	/*CUIObject::UIOBJECT_DESC Desc{};
-	Desc.fSizeX = 400.f;
-	Desc.fSizeY = 900.f;
-	Desc.fX = 300.f;
-	Desc.fY = 450.f;
-	m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY,TEXT("Prototype_GameObject_UI_Component"),UISCENE_LEVELUP,TEXT("UIScene_LevelUP"),CUI_Scene::UI_IMAGE,&Desc);
-
-	m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY,TEXT("Prototype_GameObject_UI_Slot_Attribute"),UISCENE_LEVELUP,TEXT("UIScene_LevelUP"),CUI_Scene::UI_BUTTONPLAYER,&Desc);
-
-	*/
-
 	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
-	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerLevelUP", m_TextInfo);
-	
-	//CUI_Component::UI_COMPONENT_DESC Desc{};
-//__super::Add_UI_Type(CUI_Scene::UITYPE::UI_IMAGE, LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Component"), &Desc);
-
-//CAttribute_Button::BUTTON_DESC ButtonDesc{};
-//__super::Add_UI_Type(CUI_Scene::UITYPE::UI_BUTTONPLAYER, LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Slot_Attribute"), &ButtonDesc);
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_2");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_3");
 
 	return S_OK;
 }
