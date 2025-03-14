@@ -423,7 +423,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     if (vDepth.x <= 0.f)
         Out.vColor = FogColor;
     else
-        Out.vColor = float4(lerp(FogColor, vFinal, fFinalFogFactor));
+        Out.vColor = float4(lerp(FogColor, Out.vColor, fFinalFogFactor));
     
     return Out;
 }
