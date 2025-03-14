@@ -46,8 +46,6 @@ float4 g_vCamPosition;
 
 float g_fViewPortWidth, g_fViewPortHeight;
 
-float g_FogRange;
-
 float4 g_LightShaftValue;
 
 float2 g_ScreenLightPos;
@@ -63,6 +61,17 @@ bool g_bMotionBlurOnOff;
 //y == Decay
 //z == Weight
 //w == Exposure
+
+/* FogFactors */
+
+float g_FogRange;
+float3 fFogFactor; //x : FogDensity , y : FogStartHeight, z : FogEndHeight
+float2 fNoiseFactor; //x : NoiseScale, y : NoiseSpeed
+float2 fHeightNoiseFactor;
+
+Texture3D g_NoiseTexture;
+
+float g_fTime;
 
 float4 psLightShaft(float2 texcoord)
 {
@@ -364,10 +373,44 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector FogColor = lerp(vector(0.5, 0.5, 0.5, 1.f), vector(1.0, 0.9, 0.7, 1.f), length(vFogGodRay));
     
-    //if (vWorldPos.z <= 0.f)
-    //    Out.vColor = float4(0.5f, 0.5f, 0.5f, 1.f);
-    //else
-    //    Out.vColor = FogFactor * Out.vColor + (1.f - FogFactor) * FogColor;
+    float fDistanceFogFactor = 1.f - saturate((1.f / 2.71828f) * pow((vWorldPos.z * g_FogRange), 2.f));
+    
+	/* 로컬위치 * 월드행렬 * 뷰행렬 */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+    float4 vViewPos = vWorldPos;
+	/* 월드위치 */
+	/* 로컬위치 * 월드행렬  */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+    
+    float3 vFogColor = float3(0.5f, 0.5f, 0.5f);
+
+    float fogFade = smoothstep(8.f * 0.3f, 8.f * 1.5f, length(vWorldPos - g_vCamPosition));
+    float fHeightFogFactor = 1.f - saturate((1.f / 2.71828f) * exp(-fFogFactor.x * (vWorldPos.y - fFogFactor.z)));
+    float fHeightNoiseFogFactor = smoothstep(fHeightNoiseFactor.x - 10.f, fHeightNoiseFactor.y + 10.f, vWorldPos.y);
+    float fHeightNoise = (1.f - fHeightNoiseFogFactor) * 0.2f;
+    
+
+    float2 noiseFlow = float2(g_fTime, g_fTime);
+    
+    float scaleFactor = 0.01f;
+    float3 scaledPos = vWorldPos * scaleFactor;
+    
+    float3 noiseUV = frac(scaledPos + float3(g_fTime * 0.1f, 0.0f, g_fTime * 0.1f));
+    
+    float noise = g_NoiseTexture.SampleLevel(LinearSampler, noiseUV, 0.f).r;
+    noise = smoothstep(0.3, 0.7, noise);
+    
+    fHeightFogFactor += noise;
+    
+    float fFinalFogFactor = min(fDistanceFogFactor, fHeightFogFactor);
+    fFinalFogFactor /= fogFade;
+    fFinalFogFactor = smoothstep(0.f, 1.f, fFinalFogFactor);
+    
+    if (vDepth.x <= 0.f)
+        Out.vColor = float4(0.5f, 0.5f, 0.5f, 1.f);
+    else
+        Out.vColor = float4(lerp(float4(vFogColor, 0.1f), vFinal.rgba, fFinalFogFactor));
     
     return Out;
 }
