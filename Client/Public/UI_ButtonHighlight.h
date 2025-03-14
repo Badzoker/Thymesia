@@ -33,7 +33,6 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-	_bool m_bImageOn = { false };
 	_bool m_bMouseSelectOn = { false };
 	_float3 m_fTextPosition = {};
 

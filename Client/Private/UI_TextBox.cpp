@@ -41,7 +41,7 @@ void CUI_TextBox::Late_Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		if (m_bOpen)
-			m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 

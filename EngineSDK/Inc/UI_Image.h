@@ -19,6 +19,10 @@ public:
 	_bool On_Mouse_UI(HWND hWnd, _int iSize);
 	_bool On_Mouse_Side_Select(HWND hWnd, _int iSize, MOUSEKEYSTATE eMouseKey);
 
+	void Set_Open_Image(_bool bOpen) { m_bImageOn = bOpen; }
+	_bool Get_Open_Image() { return m_bImageOn; }
+protected:
+	_bool m_bImageOn = { false };
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

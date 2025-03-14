@@ -39,6 +39,15 @@ void CUI_Arrow::Priority_Update(_float fTimeDelta)
 
 void CUI_Arrow::Update(_float fTimeDelta)
 {
+	if (m_bOpen)
+	{
+		if (__super::Mouse_Select(g_hWnd, DIM_LB, 2))
+			m_bMouseSelectOn = true;
+		else
+			m_bMouseSelectOn = false;
+	}
+	else
+		m_bMouseSelectOn = false;
 }
 
 void CUI_Arrow::Late_Update(_float fTimeDelta)

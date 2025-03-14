@@ -3,21 +3,21 @@
 #include "GameInstance.h"
 
 CUI_ButtonBackground::CUI_ButtonBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI_Image{ pDevice, pContext }
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
 CUI_ButtonBackground::CUI_ButtonBackground(const CUI_ButtonBackground& Prototype)
-    : CUI_Image(Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
 HRESULT CUI_ButtonBackground::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
-        return E_FAIL;
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CUI_ButtonBackground::Initialize(void* pArg)
@@ -37,13 +37,22 @@ void CUI_ButtonBackground::Priority_Update(_float fTimeDelta)
 
 void CUI_ButtonBackground::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
+	{
+		if (__super::On_Mouse_UI(g_hWnd, 3))
+			m_bImageOn = true;
+		else
+			m_bImageOn = false;
+
+	}
 }
 
 void CUI_ButtonBackground::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if (m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 
@@ -54,6 +63,8 @@ HRESULT CUI_ButtonBackground::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))

@@ -1,6 +1,11 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
+BEGIN(Engine)
+class CUI_Scene;
+END
+
+
 BEGIN(Client)
 
 class CUIGroup_PlayerScreen final : public CUIObject
@@ -19,9 +24,17 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	void Player_Info_GageBar();
+
+public:
 	HRESULT Ready_UIObject();
 
 private:
+	CUI_Scene* m_pMyScene = {}; //플레이어 화면
+	class CGameObject* m_pPlayer = { nullptr };
+
+
+
 	vector<UI_TextInfo> m_TextInfo = {};
 
 public:

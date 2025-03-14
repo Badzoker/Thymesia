@@ -34,6 +34,7 @@ protected:
 	//_bool m_bMouseClick = { false };
 	_int iTestCount = { 0 };
 	_bool m_bMouseSelectOn = { false };
+	_bool m_bImageOn = { false };
 };
 
 END

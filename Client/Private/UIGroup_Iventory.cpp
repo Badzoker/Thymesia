@@ -54,91 +54,88 @@ HRESULT CUIGroup_Iventory::Initialize(void* pArg)
 
 void CUIGroup_Iventory::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
+		__super::Priority_Update(fTimeDelta);
 
-	// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
-	if (m_pMyBaseScene->Get_Scene_Render_State())
-	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
-	}
-	else
-	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, false);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, false);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, false);
-		m_iMouseOnLastSlot = 0; // 끄는 시점에 값 초기화
-	}
-
+		// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
+		if (m_pMyBaseScene->Get_Scene_Render_State())
+		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
+		}
+		else
+		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, false);
+			m_iMouseOnLastSlot = 0; // 끄는 시점에 값 초기화
+		}
 }
 
 void CUIGroup_Iventory::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
-
-	//if (m_bRenderOpen) // 
-	//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, true);
-	if (!m_bItemUsePopOpen)
+	if (m_bRenderOpen)
 	{
-		Change_UI_Item_Tab();
-
-		if (!m_bItemTypePopOpen)
+		__super::Update(fTimeDelta);
+		if (!m_bItemUsePopOpen)
 		{
-			if (m_pGameInstance->isKeyEnter(DIK_1))
+			Change_UI_Item_Tab();
+
+			if (!m_bItemTypePopOpen)
 			{
-				Create_Item(1);
+				if (m_pGameInstance->isKeyEnter(DIK_1))
+				{
+					Create_Item(1);
+				}
+				if (m_pGameInstance->isKeyEnter(DIK_2))
+				{
+					Create_Item(2);
+				}
+				if (m_pGameInstance->isKeyEnter(DIK_3))
+				{
+					Create_Item(3);
+				}
+				if (m_pGameInstance->isKeyEnter(DIK_4))
+				{
+					Create_Item(4);
+				}
+				if (m_pGameInstance->isKeyEnter(DIK_5))
+				{
+					Create_Item(5);
+				}
+				if (m_pGameInstance->isKeyEnter(DIK_6))
+				{
+					Create_Item(6);
+				}
+				if (m_bCommonOpen)
+					Slot_Button_MouseOn_Check(m_InvenItem);
+				if (m_bSkillOpen)
+					Slot_Button_MouseOn_Check(m_InvenItemSkill);
+
 			}
-			if (m_pGameInstance->isKeyEnter(DIK_2))
-			{
-				Create_Item(2);
-			}
-			if (m_pGameInstance->isKeyEnter(DIK_3))
-			{
-				Create_Item(3);
-			}
-			if (m_pGameInstance->isKeyEnter(DIK_4))
-			{
-				Create_Item(4);
-			}
-			if (m_pGameInstance->isKeyEnter(DIK_5))
-			{
-				Create_Item(5);
-			}
-			if (m_pGameInstance->isKeyEnter(DIK_6))
-			{
-				Create_Item(6);
-			}
+			// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
+
 			if (m_bCommonOpen)
-				Slot_Button_MouseOn_Check(m_InvenItem);
+				Slot_Button_Select_Check(m_InvenItem);
 			if (m_bSkillOpen)
-				Slot_Button_MouseOn_Check(m_InvenItemSkill);
-
+				Slot_Button_Select_Check(m_InvenItemSkill);
+			ItemType_PopUP_Button();
 		}
-		// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
+		else
+		{
+			ItemUse_PopUP_Button();
+		}
 
-		if (m_bCommonOpen)
-			Slot_Button_Select_Check(m_InvenItem);
-		if (m_bSkillOpen)
-			Slot_Button_Select_Check(m_InvenItemSkill);
-		ItemType_PopUP_Button();
 	}
-	else
-	{
-		ItemUse_PopUP_Button();
-	}
-
-
-
-
 }
 
 void CUIGroup_Iventory::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
-
-
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	if (m_bRenderOpen)
+	{
+		__super::Late_Update(fTimeDelta);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	}
 }
 
 HRESULT CUIGroup_Iventory::Render()
