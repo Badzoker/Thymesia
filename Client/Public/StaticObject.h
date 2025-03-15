@@ -25,6 +25,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Glow() override;
 
 	HRESULT Render_Shadow() override;
 	virtual HRESULT Render_Motion_Blur() override;	
@@ -41,11 +42,15 @@ private:
 
 
 private:
-	PxRigidDynamic* m_pActor = { nullptr };
-	class CGameObject* m_pInteractButton = { nullptr };
+	PxRigidDynamic*				m_pActor = { nullptr };
+	class CGameObject*			m_pInteractButton = { nullptr };
 
-	CGameObject* m_pButtonGameObject = { nullptr };
-	CButton* m_pButton = { nullptr };
+	CGameObject*				m_pButtonGameObject = { nullptr };
+	CButton*					m_pButton = { nullptr };
+	_bool						m_bInteractOn = { false };
+	_float						m_fAlphaValue = {};
+	_bool                       m_bFadingIn = { false };
+	_bool                       m_bFadingOut = { false };
 
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

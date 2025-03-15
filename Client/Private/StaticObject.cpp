@@ -54,11 +54,36 @@ void CStaticObject::Update(_float fTimeDelta)
 
 void CStaticObject::Late_Update(_float fTimeDelta)
 {
+	if (m_bFadingIn)
+	{
+		m_fAlphaValue += fTimeDelta * 2.0f;
+		if (m_fAlphaValue >= 1.0f)
+		{
+			m_fAlphaValue = 1.0f;
+			m_bFadingIn = false;
+		}
+	}
+
+	if (m_bFadingOut)
+	{
+		m_fAlphaValue -= fTimeDelta * 2.0f;
+		if (m_fAlphaValue <= 0.0f)
+		{
+			m_fAlphaValue = 0.0f;
+			m_bFadingOut = false;
+		}
+	}
+
 	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
 	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
+
+		if (!strcmp(m_MeshName, ("P_Archive_Chair01")) || !strcmp(m_MeshName, ("Ladder")))
+		{
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		}
 	}
 }
 
@@ -78,6 +103,32 @@ HRESULT CStaticObject::Render()
 			return E_FAIL;
 
 		m_pShaderCom->Begin(0);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CStaticObject::Render_Glow()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fObjectAlpha", &m_fAlphaValue, sizeof(_float))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(10);
+
 		m_pModelCom->Render(i);
 	}
 
@@ -131,6 +182,9 @@ void CStaticObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
 		m_pButton->Set_WorldPosition(vChairPosition);
 		m_pButton->Set_ButtonText(TEXT("E"), TEXT("¾É±â"));
 		m_pButton->Activate_Button(true);
+		m_bInteractOn = true;
+		m_bFadingIn = true;
+		m_bFadingOut = false;
 	}
 }
 void CStaticObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -139,6 +193,9 @@ void CStaticObject::OnCollision(CGameObject* _pOther, PxContactPair _information
 void CStaticObject::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 	m_pButton->Activate_Button(false);
+	m_bInteractOn = false;
+	m_bFadingIn = false;
+	m_bFadingOut = true;
 }
 HRESULT CStaticObject::Ready_Components()
 {
