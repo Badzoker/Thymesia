@@ -40,12 +40,12 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
-	_bool* m_bCollider_ON_OFF = { nullptr };
 
 private:
 	const _uint* m_pParentState = { nullptr };

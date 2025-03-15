@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -15,6 +16,8 @@ class CBody_VillageF1 final : public CPartObject
 public:
 	struct BODY_VillageF1_DESC : public CPartObject::PARTOBJECT_DESC
 	{
+		const _uint* pParentState = { nullptr };
+		_bool* bDead = {};
 	};
 
 private:
@@ -34,6 +37,13 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+private:
+	const _uint* m_pParentState = { nullptr };
+	_uint m_iPassNum = {};
+	_float m_fDeadTimer = {};
+	_float m_fFinishTime = {};
+	_bool* m_bDead = {};
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

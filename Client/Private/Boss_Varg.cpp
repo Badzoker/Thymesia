@@ -34,7 +34,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
     Desc->fSpeedPerSec = 1.f;
-    Desc->fScaling = _float3{ 0.002f,0.002f,0.002f };
+    Desc->fScaling = _float3{ 0.0025f,0.0025f,0.0025f };
     Desc->fRotationPerSec = XMConvertToRadians(90.f);
     XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
 
@@ -57,7 +57,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.5f,0.5f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.5f,0.5f,0.2f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
 
@@ -81,7 +81,7 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
 
-    if (m_fDistance <= 15.f && !m_bBossActive)
+    if (m_fDistance <= 15.f && !m_bBossActive && !m_bDead)
     {
         m_iPhase = 1;
         m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
@@ -102,7 +102,7 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
         m_fShieldHP -= 100.f;
     }
 
-    if (!m_bPatternProgress)
+    if (!m_bPatternProgress && !m_bDead)
     {
         m_fLookTime = 0.f;
         RotateDegree_To_Player();
@@ -179,6 +179,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
 
     Varg_Knife_Desc.pParent = this;
     Varg_Knife_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
+    Varg_Knife_Desc.pParentState = &m_iState;
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Varg_Knife_Desc.pParentModel = m_pModelCom;
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
@@ -192,6 +193,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     pBoss_HP_Bar.fCurHP = &m_fBossCurHP;
     pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
     pBoss_HP_Bar.bBossActive = &m_bBossActive;
+    pBoss_HP_Bar.bBossDead = &m_bDead;
     pBoss_HP_Bar.iPhase = &m_iPhase;
 
     //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
@@ -1049,6 +1051,7 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_bPatternProgress = true;
     pObject->m_bCanRecovery = true;
     pObject->m_IsStun = false;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_STUN;
     pObject->m_iState = CBoss_Varg::Varg_Attack_Roar_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -1125,6 +1128,8 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 37;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bDead = true;
+    pObject->m_bBossActive = false;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_iState = CBoss_Varg::Varg_Dead_State;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1135,7 +1140,8 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 39;
-        pObject->m_pModelCom->SetUp_Animation(39, true);
+        pObject->m_pModelCom->SetUp_Animation(39, false);
+        pObject->m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), pObject);
     }
 }
 

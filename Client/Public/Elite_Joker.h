@@ -15,6 +15,20 @@ BEGIN(Client)
 
 class CElite_Joker final : public CContainerObject
 {
+public:
+	enum STATE
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_RUN,
+		STATE_ATTACK,
+		STATE_HIT,
+		STATE_STUN,
+		STATE_EXECUTION,
+		STATE_DEAD,
+		STATE_END
+	};
+
 private:
 	CElite_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CElite_Joker(const CElite_Joker& Prototype);
@@ -48,15 +62,19 @@ private:
 	_bool                            m_bNeedControl = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
+	_bool                            m_bDead = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
+	_uint                            m_iSpawn_Cell_Index = {};
+	_uint                            m_iState = { STATE::STATE_END };
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fPlaySpeed = {};
 	_float                           m_fDistance = {};
+	_float                           m_fSpawn_Distance = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fHP_Bar_Active_Timer = {};
 
@@ -226,7 +244,17 @@ public:
 		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
 		void State_Exit(CElite_Joker* pObject) override;
 	};
-
+	class Return_To_SpawnPoint_State : public CStates<CElite_Joker>
+	{
+	public:
+		Return_To_SpawnPoint_State() = default;
+		virtual ~Return_To_SpawnPoint_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CElite_Joker* pObject) override;
+		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
+		void State_Exit(CElite_Joker* pObject) override;
+	};
 
 };
 

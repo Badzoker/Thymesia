@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Weapon_GreatSword.h"
+#include "HArmorLV2.h"
 #include "GameInstance.h"
 #include "Animation.h"
 
@@ -54,6 +55,11 @@ HRESULT CWeapon_GreatSword::Initialize(void* pArg)
 
 void CWeapon_GreatSword::Priority_Update(_float fTimeDelta)
 {
+	if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+	{
+		m_fDeadTimer += fTimeDelta * 0.5f;
+		m_fFinishTime += fTimeDelta * 0.5f;
+	}
 }
 
 void CWeapon_GreatSword::Update(_float fTimeDelta)
@@ -67,7 +73,7 @@ void CWeapon_GreatSword::Update(_float fTimeDelta)
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
-	
+
 	for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 	{
 		if (iter.isPlay == false)
@@ -102,7 +108,23 @@ HRESULT CWeapon_GreatSword::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+		{
+			m_iPassNum = 9;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else
+			m_iPassNum = 0;
+
+
+		m_pShaderCom->Begin(m_iPassNum);
 		m_pModelCom->Render(i);
 	}
 
@@ -119,6 +141,10 @@ HRESULT CWeapon_GreatSword::Ready_Components()
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_GreatSword"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
+		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -180,4 +206,5 @@ void CWeapon_GreatSword::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureCom);
 }

@@ -325,9 +325,10 @@
     <ClInclude Include="..\Public\UI_UnderLine.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
-    <ClInclude Include="..\Public\VillageF_Weapon.h" />
-    <ClInclude Include="..\Public\VillageM_Weapon.h" />
+    <ClInclude Include="..\Public\Weapon_Dagger.h" />
+    <ClInclude Include="..\Public\Weapon_Axe.h" />
     <ClInclude Include="..\Public\Weapon_GreatSword.h" />
+    <ClInclude Include="..\Public\Weapon_Shield.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="pch.h" />
@@ -491,9 +492,10 @@
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
-    <ClCompile Include="..\Private\VillageF_Weapon.cpp" />
-    <ClCompile Include="..\Private\VillageM_Weapon.cpp" />
+    <ClCompile Include="..\Private\Weapon_Dagger.cpp" />
+    <ClCompile Include="..\Private\Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Weapon_GreatSword.cpp" />
+    <ClCompile Include="..\Private\Weapon_Shield.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

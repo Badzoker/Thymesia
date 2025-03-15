@@ -375,8 +375,11 @@ void CNavigation::Start_Astar(_uint iGoalIndex)
         pPortals.push_front(XMLoadFloat3(&pCell->eLine[j][1]));
 
         for (auto pPotal : pPortals)
-            m_Portal.push_back(pPotal);
-
+        {
+            _float4 fPotal;
+            XMStoreFloat4(&fPotal, pPotal);
+            m_Portal.push_back(fPotal);
+        }
         iter++;
     }
 }
@@ -459,22 +462,22 @@ _float CNavigation::Calculate_Squared_Distance(const _vector fPointA, const _vec
     return XMVectorGetX(XMVector3Length(fPointB - fPointA));
 }
 
-_int CNavigation::Navigate_Portals(vector<_vector> pPortals, _float3 fStartPos, _float3 fEndPos, vector<_vector>& vPoints)
+_int CNavigation::Navigate_Portals(vector<_float4> pPortals, _float3 fStartPos, _float3 fEndPos, vector<_vector>& vPoints)
 {
     _int iNumPoints = {};
     _vector vCurrentPotal, vLeftPortal, vRightPortal;
     _int iCurrentPotalIndex{}, iLeftPortalIndex{}, iRightPortalIndex{};
 
     vCurrentPotal = XMLoadFloat3(&fStartPos);
-    vLeftPortal = pPortals[0];
-    vRightPortal = pPortals[1];
+    vLeftPortal = XMLoadFloat4(&pPortals[0]);
+    vRightPortal = XMLoadFloat4(&pPortals[1]);
 
     iNumPoints++;
 
     for (_int i = 1; (i * 2) < pPortals.size(); i++)
     {
-        _vector vLeft = pPortals[(i * 2) - 2]; // ¿ÞÂÊ Æ÷Å»
-        _vector vRight = pPortals[(i * 2) - 1]; // ¿À¸¥ÂÊ Æ÷Å»
+        _vector vLeft = XMLoadFloat4(&pPortals[(i * 2) - 2]); // ¿ÞÂÊ Æ÷Å»
+        _vector vRight = XMLoadFloat4(&pPortals[(i * 2) - 1]); // ¿À¸¥ÂÊ Æ÷Å»
 
         if (TriangleArea2x(vCurrentPotal, vRightPortal, vRight) <= 0.f)
         {

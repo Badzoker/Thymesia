@@ -39,6 +39,7 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
     m_fBoss_Max_HP = pDesc->fMaxHP;
     m_fBoss_Shield_HP = pDesc->fShieldHP;
     m_bBossActive = pDesc->bBossActive;
+    m_bBossDead = pDesc->bBossDead;
 
     m_fBoss_Pre_HP = *m_fBoss_Max_HP;
     m_fBoss_Pre_Shield_HP = *m_fBoss_Max_HP;
@@ -54,6 +55,9 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Priority_Update(_float fTimeDelta)
 {
+    if (*m_bBossDead)
+        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
+
     if (!(*m_bBossActive))
         return;
 

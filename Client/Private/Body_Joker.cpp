@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Body_Joker.h"
+#include "Elite_Joker.h"
 #include "GameInstance.h"
 
 CBody_Joker::CBody_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -24,7 +25,8 @@ HRESULT CBody_Joker::Initialize(void* pArg)
 {
     CBody_Joker::BODY_JOKER_DESC* pDesc = static_cast<CBody_Joker::BODY_JOKER_DESC*>(pArg);
 
-    m_fAnimSpeed = pDesc->fPlaySpeed;
+    m_pParentState = pDesc->pParentState;
+    m_bDead = pDesc->bDead;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -39,6 +41,15 @@ HRESULT CBody_Joker::Initialize(void* pArg)
 
 void CBody_Joker::Priority_Update(_float fTimeDelta)
 {
+    if (*m_pParentState == CElite_Joker::STATE_DEAD)
+    {
+        m_fDeadTimer += fTimeDelta * 0.5f;
+        m_fFinishTime += fTimeDelta * 0.5f;
+        if (m_fDeadTimer >= 1.5)
+        {
+            *m_bDead = true;
+        }
+    }
 }
 
 void CBody_Joker::Update(_float fTimeDelta)
@@ -74,7 +85,22 @@ HRESULT CBody_Joker::Render()
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        if (*m_pParentState == CElite_Joker::STATE_DEAD)
+        {
+            m_iPassNum = 5;
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+                return E_FAIL;
+        }
+        else
+            m_iPassNum = 0;
+
+        m_pShaderCom->Begin(m_iPassNum);
         m_pModelCom->Render(i);
     }
 
@@ -96,6 +122,10 @@ HRESULT CBody_Joker::Ready_Components()
     /* Com_Model */
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elite_Joker_Body"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
+        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
     return S_OK;
@@ -144,4 +174,5 @@ void CBody_Joker::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pTextureCom);
 }

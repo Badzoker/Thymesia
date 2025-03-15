@@ -95,6 +95,8 @@ namespace Engine
 		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
 		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
 		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
+		PLAYER_HURT_STUN,			    // 스턴걸기
+		PLAYER_HURT_REBOUND,            // 몬스터가 패링했을때
 		PLAYER_HURT_END
 	};
 

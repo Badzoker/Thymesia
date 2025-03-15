@@ -37,6 +37,7 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
 	m_bBossActive = pDesc->bBossActive;
+	m_bBossDead = pDesc->bBossDead;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -64,6 +65,9 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar::Priority_Update(_float fTimeDelta)
 {
+	if (*m_bBossDead)
+		m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
+
 	if (!(*m_bBossActive))
 		return;
 }

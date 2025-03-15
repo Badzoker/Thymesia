@@ -18,6 +18,7 @@ public:
 	struct UI_Boss_HP_Bar_Gage_DESC : CUIObject::UIOBJECT_DESC
 	{
 		_bool* bBossActive = {};
+		_bool* bBossDead = {};
 		_float* fMaxHP = {};
 		_float* fCurHP = {};
 		_float* fShieldHP = {};
@@ -35,6 +36,7 @@ public:
 	virtual HRESULT Render() override;
 private:
 	_bool* m_bBossActive = {};
+	_bool* m_bBossDead = {};
 
 	_float* m_fBoss_Max_HP = {};
 	_float* m_fBoss_Cur_HP = {};

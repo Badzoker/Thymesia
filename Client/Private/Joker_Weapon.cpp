@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Joker_Weapon.h"
 #include "GameInstance.h"
+#include "Elite_Joker.h"
 #include "Animation.h"
 
 CJoker_Weapon::CJoker_Weapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -54,6 +55,11 @@ HRESULT CJoker_Weapon::Initialize(void* pArg)
 
 void CJoker_Weapon::Priority_Update(_float fTimeDelta)
 {
+	if (*m_pParentState == CElite_Joker::STATE_DEAD)
+	{
+		m_fDeadTimer += fTimeDelta * 0.5f;
+		m_fFinishTime += fTimeDelta * 0.5f;
+	}
 }
 
 void CJoker_Weapon::Update(_float fTimeDelta)
@@ -66,7 +72,7 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 		XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-     	m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,0.f,1.f });
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,0.f,1.f });
 
 	for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 	{
@@ -102,7 +108,23 @@ HRESULT CJoker_Weapon::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (*m_pParentState == CElite_Joker::STATE_DEAD)
+		{
+			m_iPassNum = 9;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else
+			m_iPassNum = 0;
+
+
+		m_pShaderCom->Begin(m_iPassNum);
 		m_pModelCom->Render(i);
 	}
 
@@ -119,6 +141,10 @@ HRESULT CJoker_Weapon::Ready_Components()
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elite_Joker_Weapon"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
+		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -180,4 +206,5 @@ void CJoker_Weapon::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureCom);
 }

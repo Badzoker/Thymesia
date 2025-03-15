@@ -64,18 +64,6 @@
     <Filter Include="02.GameObject\LobTrap">
       <UniqueIdentifier>{a04912fe-774e-47db-acec-0001369a83bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Boss">
-      <UniqueIdentifier>{46740bbd-aaa2-41ea-90b6-48784443a5b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Boss\Boss_Varg">
-      <UniqueIdentifier>{679ae7ba-e520-4f34-8aaf-d67c4e2c4368}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Boss\Boss_Varg\Body">
-      <UniqueIdentifier>{7e7712b3-d4c4-416b-ae1b-55d59b91f521}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Boss\Boss_Varg\Weapon">
-      <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State">
       <UniqueIdentifier>{8356e62b-b30a-448f-a67b-7aeb368b9d32}</UniqueIdentifier>
     </Filter>
@@ -106,12 +94,6 @@
     <Filter Include="02.GameObject\Object\StaticObject">
       <UniqueIdentifier>{50f8610f-56b9-4747-9177-020ac098ecc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Boss\Boss_State">
-      <UniqueIdentifier>{4dba1b24-96a1-43eb-bafa-d7802a782405}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Boss\Boss_State\Manager">
-      <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_2">
       <UniqueIdentifier>{a6c0a5c2-8ab6-4bc0-91c0-365bc448433c}</UniqueIdentifier>
     </Filter>
@@ -129,9 +111,6 @@
     </Filter>
     <Filter Include="02.GameObject\Monster\Elite\Joker\Body">
       <UniqueIdentifier>{03222064-bbb1-4940-9c87-c533d8e007ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Elite\Joker\Weapon">
-      <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\Player\State\Attack\Attack_LongClaw_1">
       <UniqueIdentifier>{364e1570-b486-476c-ad20-b46433dc06bf}</UniqueIdentifier>
@@ -331,42 +310,6 @@
     <Filter Include="02.GameObject\Monster\Normal\Male">
       <UniqueIdentifier>{4530c1bc-4968-435a-bbc7-0b822c307c62}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe">
-      <UniqueIdentifier>{63d47406-afd8-4b05-9775-b7ae7515c3e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM0">
-      <UniqueIdentifier>{b7597bf1-ec90-4088-aaec-0b197531acb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body">
-      <UniqueIdentifier>{939aab8b-324e-4363-83d3-b4c12840d82c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\Weapon">
-      <UniqueIdentifier>{53d039ff-3035-4114-b64e-1b97442e30f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM1">
-      <UniqueIdentifier>{5b080730-052e-438f-b7a6-6364aa05a932}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body">
-      <UniqueIdentifier>{69806c70-f33d-4b9d-82c3-78aa263467e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife">
-      <UniqueIdentifier>{82f736ad-f7e5-48bd-9d8c-2357ea851276}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF0">
-      <UniqueIdentifier>{28c270ee-82c4-43ca-81f3-053f5a49e241}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF1">
-      <UniqueIdentifier>{5002b426-9c9a-4053-95a0-7c7add3ee9d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\Weapon">
-      <UniqueIdentifier>{39515359-527a-4d47-b3e9-7920a82e6285}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body">
-      <UniqueIdentifier>{45193e73-be8f-4cbf-81ef-2a928baf5f0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body">
-      <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State\Evade">
       <UniqueIdentifier>{fa098d4f-62ce-4010-84fc-d1e95fb3f5e4}</UniqueIdentifier>
     </Filter>
@@ -493,9 +436,6 @@
     <Filter Include="02.GameObject\Monster\Elite\HArmorLV2\Body">
       <UniqueIdentifier>{e2c212ce-896d-433a-bd38-d7584f603d05}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\Elite\HArmorLV2\Weapon">
-      <UniqueIdentifier>{cf69e356-915c-48aa-ba6d-9086209d5c54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\NPC">
       <UniqueIdentifier>{87bbd46f-85e5-424d-a601-817de0477e07}</UniqueIdentifier>
     </Filter>
@@ -565,6 +505,72 @@
     <Filter Include="02.GameObject\InteractionObject\GameItem">
       <UniqueIdentifier>{3c0b2ffd-b652-4a4d-928a-816e0e31a3ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\VillageM0">
+      <UniqueIdentifier>{b7597bf1-ec90-4088-aaec-0b197531acb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\VillageM0\Body">
+      <UniqueIdentifier>{939aab8b-324e-4363-83d3-b4c12840d82c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\VillageM1">
+      <UniqueIdentifier>{5b080730-052e-438f-b7a6-6364aa05a932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Male\VillageM1\Body">
+      <UniqueIdentifier>{69806c70-f33d-4b9d-82c3-78aa263467e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Weapon">
+      <UniqueIdentifier>{39515359-527a-4d47-b3e9-7920a82e6285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Weapon\Axe">
+      <UniqueIdentifier>{0df7d1e5-ac03-4efc-942c-d7f0c8aee05e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Weapon\Dagger">
+      <UniqueIdentifier>{7a1dc798-c085-4418-b2f0-c4dcce23e3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Weapon\Shield">
+      <UniqueIdentifier>{6faa52ca-25b2-423f-9eff-7bbf51676826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\VillageF0">
+      <UniqueIdentifier>{28c270ee-82c4-43ca-81f3-053f5a49e241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\VillageF0\Body">
+      <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\VillageF1">
+      <UniqueIdentifier>{5002b426-9c9a-4053-95a0-7c7add3ee9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\Female\VillageF1\Body">
+      <UniqueIdentifier>{45193e73-be8f-4cbf-81ef-2a928baf5f0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Weapon">
+      <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Weapon\Joker">
+      <UniqueIdentifier>{aab500ba-37d8-4a03-ab7f-4754cd66e68d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Elite\Weapon\HArmorLV2">
+      <UniqueIdentifier>{c1f388a7-ae17-44f1-b239-d125d2c611a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss">
+      <UniqueIdentifier>{46740bbd-aaa2-41ea-90b6-48784443a5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_Varg">
+      <UniqueIdentifier>{679ae7ba-e520-4f34-8aaf-d67c4e2c4368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_Varg\Body">
+      <UniqueIdentifier>{7e7712b3-d4c4-416b-ae1b-55d59b91f521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_Varg\Weapon">
+      <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_State">
+      <UniqueIdentifier>{4dba1b24-96a1-43eb-bafa-d7802a782405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_State\Manager">
+      <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\Boss_Magician">
+      <UniqueIdentifier>{eb53bb80-12e0-4720-8190-53d078b3e292}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -621,17 +627,14 @@
     <ClInclude Include="..\Public\LobTrap.h">
       <Filter>02.GameObject\LobTrap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Boss_Magician.h">
-      <Filter>02.GameObject\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Boss_Varg.h">
-      <Filter>02.GameObject\Boss\Boss_Varg</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_Varg.h">
-      <Filter>02.GameObject\Boss\Boss_Varg\Body</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VargKnife.h">
-      <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\State.h">
       <Filter>02.GameObject\Player\State</Filter>
@@ -661,10 +664,10 @@
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\States.h">
-      <Filter>02.GameObject\Boss\Boss_State</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Machine.h">
-      <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_State\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Attack_LButton_2.h">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_2</Filter>
@@ -677,9 +680,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Joker.h">
       <Filter>02.GameObject\Monster\Elite\Joker\Body</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Joker_Weapon.h">
-      <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Attack_LongClaw_1.h">
       <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_1</Filter>
@@ -862,34 +862,28 @@
       <Filter>03.UIObject\2.UIObjGroup\5.PlayerScreen</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Normal_VillageM0.h">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VillageM_Weapon.h">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM0</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Normal_VillageM1.h">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM1</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_VillageM0.h">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM0\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_VillageM1.h">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM1\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_VillageF0.h">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF0\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_VillageF1.h">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF1\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Normal_VillageF0.h">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF0</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Normal_VillageF1.h">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VillageF_Weapon.h">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF1</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LockOn_Evade_B.h">
       <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_B</Filter>
@@ -996,9 +990,6 @@
     <ClInclude Include="..\Public\HArmorLV2.h">
       <Filter>02.GameObject\Monster\Elite\HArmorLV2</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Weapon_GreatSword.h">
-      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Aisemy.h">
       <Filter>02.GameObject\NPC</Filter>
     </ClInclude>
@@ -1062,6 +1053,24 @@
     <ClInclude Include="..\Public\Button.h">
       <Filter>03.UIObject\3.UIButton\0.Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Dagger.h">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Dagger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Axe.h">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Axe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Shield.h">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Joker_Weapon.h">
+      <Filter>02.GameObject\Monster\Elite\Weapon\Joker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_GreatSword.h">
+      <Filter>02.GameObject\Monster\Elite\Weapon\HArmorLV2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Magician.h">
+      <Filter>02.GameObject\Monster\Boss\Boss_Magician</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1106,17 +1115,14 @@
     <ClCompile Include="..\Private\LobTrap.cpp">
       <Filter>02.GameObject\LobTrap</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Boss_Magician.cpp">
-      <Filter>02.GameObject\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Boss_Varg.cpp">
-      <Filter>02.GameObject\Boss\Boss_Varg</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_Varg.cpp">
-      <Filter>02.GameObject\Boss\Boss_Varg\Body</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VargKnife.cpp">
-      <Filter>02.GameObject\Boss\Boss_Varg\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_Varg\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\State.cpp">
       <Filter>02.GameObject\Player\State</Filter>
@@ -1146,10 +1152,10 @@
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\States.cpp">
-      <Filter>02.GameObject\Boss\Boss_State</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Machine.cpp">
-      <Filter>02.GameObject\Boss\Boss_State\Manager</Filter>
+      <Filter>02.GameObject\Monster\Boss\Boss_State\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Attack_LButton_2.cpp">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_2</Filter>
@@ -1162,9 +1168,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Joker.cpp">
       <Filter>02.GameObject\Monster\Elite\Joker\Body</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Joker_Weapon.cpp">
-      <Filter>02.GameObject\Monster\Elite\Joker\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Attack_LongClaw_1.cpp">
       <Filter>02.GameObject\Player\State\Attack\Attack_LongClaw_1</Filter>
@@ -1347,34 +1350,28 @@
       <Filter>03.UIObject\2.UIObjGroup\5.PlayerScreen</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageM0.cpp">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VillageM_Weapon.cpp">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM0</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageM1.cpp">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM1</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_VillageM0.cpp">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM0\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM0\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_VillageM1.cpp">
-      <Filter>02.GameObject\Monster\Normal\Male\Axe\VillageM1\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Male\VillageM1\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_VillageF0.cpp">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF0\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_VillageF1.cpp">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1\Body</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF1\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageF0.cpp">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF0</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF0</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageF1.cpp">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\VillageF1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VillageF_Weapon.cpp">
-      <Filter>02.GameObject\Monster\Normal\Female\Knife\Weapon</Filter>
+      <Filter>02.GameObject\Monster\Normal\Female\VillageF1</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LockOn_Evade_B.cpp">
       <Filter>02.GameObject\Player\State\Evade\LockOn\LockOn_Evade_B</Filter>
@@ -1484,9 +1481,6 @@
     <ClCompile Include="..\Private\HArmorLV2.cpp">
       <Filter>02.GameObject\Monster\Elite\HArmorLV2</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Weapon_GreatSword.cpp">
-      <Filter>02.GameObject\Monster\Elite\HArmorLV2\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Aisemy.cpp">
       <Filter>02.GameObject\NPC</Filter>
     </ClCompile>
@@ -1549,6 +1543,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Button.cpp">
       <Filter>03.UIObject\3.UIButton\0.Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Dagger.cpp">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Dagger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Axe.cpp">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Axe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Shield.cpp">
+      <Filter>02.GameObject\Monster\Normal\Weapon\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Joker_Weapon.cpp">
+      <Filter>02.GameObject\Monster\Elite\Weapon\Joker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_GreatSword.cpp">
+      <Filter>02.GameObject\Monster\Elite\Weapon\HArmorLV2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Magician.cpp">
+      <Filter>02.GameObject\Monster\Boss\Boss_Magician</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

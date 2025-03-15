@@ -15,6 +15,19 @@ BEGIN(Client)
 
 class CNormal_VillageF0 final : public CContainerObject
 {
+public:
+	enum STATE
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_RUN,
+		STATE_ATTACK,
+		STATE_HIT,
+		STATE_STUN,
+		STATE_EXECUTION,
+		STATE_DEAD,
+		STATE_END
+	};
 private:
 	CNormal_VillageF0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CNormal_VillageF0(const CNormal_VillageF0& Prototype);
@@ -43,19 +56,24 @@ private:
 	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
+	_bool						     m_bFirst_Active = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bMove = {};
+	_bool                            m_bDead = {};
 
 	_uint                            m_iHitNum = -1;
+	_uint                            m_iSpawn_Cell_Index = {};
+	_uint                            m_iState = { STATE::STATE_END };
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fDistance = {};
+	_float                           m_fSpawn_Distance = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fHP_Bar_Active_Timer = {};
 
@@ -212,6 +230,21 @@ public:
 		void State_Update(_float fTimeDelta, CNormal_VillageF0* pObject) override;
 		void State_Exit(CNormal_VillageF0* pObject) override;
 	};
+
+	class Return_To_SpawnPoint_State : public CStates<CNormal_VillageF0>
+	{
+	public:
+		Return_To_SpawnPoint_State() = default;
+		virtual ~Return_To_SpawnPoint_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CNormal_VillageF0* pObject) override;
+		void State_Update(_float fTimeDelta, CNormal_VillageF0* pObject) override;
+		void State_Exit(CNormal_VillageF0* pObject) override;
+	private:
+		_bool bCheck = {};
+	};
+
 };
 
 END

@@ -18,6 +18,7 @@ public:
 	struct UI_Boss_HP_Bar_Gage_Effect_Desc : CUIObject::UIOBJECT_DESC
 	{
 		_bool* bBossActive = {};
+		_bool* bBossDead = {};
 		_float* fMaxHP = {};
 		_float* fCurHP = {};
 		_float* fShieldHP = {};
@@ -41,6 +42,7 @@ private:
 	_float m_fBoss_Pre_HP = {};
 
 	_bool* m_bBossActive = {};
+	_bool* m_bBossDead = {};
 	_bool m_bActive = {};
 
 	_float m_fSizeX = {};
