@@ -150,18 +150,18 @@ HRESULT CUIGroup_Iventory::Render()
 HRESULT CUIGroup_Iventory::Ready_UIObject()
 {
 	// ESC 메뉴 배경
-	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_INVEN, L"UIScene_EscMenuBase")))
+	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_EscMenuBase")))
 		return E_FAIL;
 
 	// 인벤 아이템 슬롯 영역
-	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_INVEN, L"UIScene_Inven_ItemUse")))
+	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_Inven_ItemUse")))
 		return E_FAIL;
 
 	// 인벤 아이템 사용 버리기 최종 팝업
-	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_INVEN, L"UIScene_ItemUse_PopUp")))
+	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_ItemUse_PopUp")))
 		return E_FAIL;
 	//인벤 아이템 타입에 따른 팝업
-	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_INVEN, L"UIScene_ItemType_PopUp")))
+	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_ItemType_PopUp")))
 		return E_FAIL;
 	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerScreen", m_TextInfo);
 

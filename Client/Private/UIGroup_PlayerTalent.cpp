@@ -67,7 +67,7 @@ HRESULT CUIGroup_PlayerTalent::Render()
 HRESULT CUIGroup_PlayerTalent::Ready_UIObject()
 {
 
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_TALENT, L"UIScene_PlayerTalent");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_TALENT, L"UIScene_PlayerTalent");
 	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerTalent", m_TextInfo);
 
 	return S_OK;

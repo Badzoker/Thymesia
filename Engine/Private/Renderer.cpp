@@ -1180,40 +1180,40 @@ HRESULT CRenderer::Render_Debug()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))	
-	//	return E_FAIL;	
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))	
+	////	return E_FAIL;	
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Final"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightX"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+
+	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
+	////	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowBegin"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowX"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowY"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Final"), m_pShader, m_pVIBuffer)))
 	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightX"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftX"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_LightShaftY"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowBegin"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowX"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_GlowY"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Final"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
 
 
 	return S_OK;

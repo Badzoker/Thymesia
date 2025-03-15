@@ -70,7 +70,7 @@ HRESULT CUIGroup_GameIntro::Render()
 
 HRESULT CUIGroup_GameIntro::Ready_UIObject()
 {
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_INTRO, L"UIScene_Intro");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INTRO, L"UIScene_Intro");
 //	m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_Intro", m_TextInfo);
 	return S_OK;
 }

@@ -30,7 +30,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(LEVEL_LOGO)))
+	if (FAILED(Start_Level(LEVEL_STATIC)))
 		return E_FAIL;
 
 	if (FAILED(LoadFont_Thymasia()))

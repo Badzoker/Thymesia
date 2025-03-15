@@ -797,9 +797,9 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset()
 
 HRESULT CUIGroup_PlayerLevelUP::Ready_UIObject()
 {
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_2");
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_3");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_2");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_3");
 
 	return S_OK;
 }

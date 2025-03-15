@@ -106,7 +106,7 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
 {
 
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
 
 	return S_OK;
 }
