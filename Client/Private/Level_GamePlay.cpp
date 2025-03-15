@@ -47,10 +47,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
+			
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
 		return E_FAIL;
 
