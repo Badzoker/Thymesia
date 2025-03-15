@@ -9,6 +9,7 @@ float			g_MpState;
 float           g_CurHP;
 float           g_PreHP;
 float           g_TimeDelta;
+float3          g_ButtonColor;
 
 /* 이펙트 관련 상수 버퍼들 */ 
 Texture2D g_HitEffect0;
@@ -510,6 +511,24 @@ PS_OUT PS_INTERACTION_BUTTON(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_Thymesia_UI_Change_To_White(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    // 텍스처 색상을 샘플링
+    float4 fDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    // 검은색(거의 0,0,0)에 가까우면 흰색(1,1,1)으로 변경
+    float threshold = 0.05; // 검은색으로 판별할 임계값
+    if (fDiffuse.x < threshold && fDiffuse.y < threshold && fDiffuse.z < threshold)
+    {
+        fDiffuse = float4(1, 1, 1, fDiffuse.w);
+    }
+
+    Out.vColor = fDiffuse;
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -716,5 +735,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_INTERACTION_BUTTON();
+    }
+//17번
+    pass Thymesia_UI_Change_To_White
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_Change_To_White();
     }
 }

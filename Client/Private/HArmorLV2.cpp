@@ -125,14 +125,15 @@ void CHArmorLV2::Update(_float fTimeDelta)
     PatternCreate();
     RootAnimation();
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
-
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
     m_pState_Manager->State_Update(fTimeDelta, this);
     __super::Update(fTimeDelta);
+  
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+
 }
 
 void CHArmorLV2::Late_Update(_float fTimeDelta)

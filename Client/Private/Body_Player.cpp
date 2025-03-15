@@ -280,6 +280,13 @@ void CBody_Player::Update(_float fTimeDelta)
                     {
                         m_pCamera->ResetZoomInCameraPos();
                     }
+
+                    if (!strcmp(iter.szName, "Evade"))
+                    {
+                        if (m_pModelCom->Get_CurrentAnmationTrackPosition() > (iter.fEndTime + 3.f))
+                            m_pGameInstance->Add_Actor_Scene(m_pParentActor);
+                    }
+
                 }
 
                 if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
@@ -297,11 +304,10 @@ void CBody_Player::Update(_float fTimeDelta)
         }
     }
 
-    else
+   /* else
     {
         m_pGameInstance->Add_Actor_Scene(m_pParentActor);
-
-    }
+    }*/
 #pragma endregion  
 
 
