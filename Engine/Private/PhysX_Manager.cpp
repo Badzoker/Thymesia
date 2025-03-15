@@ -362,7 +362,7 @@ HRESULT CPhysX_Manager::Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMat
         PxVec3(XMVectorGetX(translation), XMVectorGetY(translation), XMVectorGetZ(translation)),
         pxRotation);
 
-
+    Actor->setGlobalPose(newTransform);
     Actor->setKinematicTarget(newTransform);
 
     return S_OK;

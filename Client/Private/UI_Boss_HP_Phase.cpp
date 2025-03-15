@@ -105,7 +105,7 @@ HRESULT CUI_Boss_HP_Phase::Render()
         if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 4)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(16);
+        m_pShaderCom->Begin(17);
 
         m_pVIBufferCom->Bind_InputAssembler();
 
