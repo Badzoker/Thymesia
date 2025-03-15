@@ -26,6 +26,13 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
+	if (true == m_pLoader->isFinished())
+	{
+		if (m_eNextLevelID == LEVEL_STATIC)
+		{
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO));
+		}
+	}
 	if (GetKeyState(VK_SPACE) < 0)
 	{
 		if (true == m_pLoader->isFinished())
@@ -57,7 +64,7 @@ CLevel_Loading * CLevel_Loading::Create(ID3D11Device * pDevice, ID3D11DeviceCont
 {
 	CLevel_Loading*	pInstance = new CLevel_Loading(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eNextLevelID)))
+  	if (FAILED(pInstance->Initialize(eNextLevelID)))
 	{
 		MSG_BOX("Failed To Created : CLevel_Loading");
 		Safe_Release(pInstance);

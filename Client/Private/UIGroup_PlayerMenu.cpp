@@ -65,7 +65,7 @@ HRESULT CUIGroup_PlayerMenu::Render()
 
 HRESULT CUIGroup_PlayerMenu::Ready_UIObject()
 {
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_GAMEPLAY, UISCENE_MENU, L"UIScene_PlayerMenu");
+	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_MENU, L"UIScene_PlayerMenu");
 	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerMenu", m_TextInfo);
 	return S_OK;
 }
