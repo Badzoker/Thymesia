@@ -9,6 +9,10 @@ matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
 
 float4 g_fAlphaValue;
+float g_RimPower = 7.0f;
+float4 g_RimColor = { 0.8f, 0.8f, 0.8f, 1.0f };
+float g_fObjectAlpha;
+
 
 /*  Dissolve 관련 상수 버퍼들 */
 Texture2D g_NoiseTexture;
@@ -242,6 +246,11 @@ struct PS_OUT_WEIGHTBLEND
 struct PS_OUT_ITEM_GLOW
 {
     float4 vItemGlow : SV_TARGET0;
+};
+
+struct PS_OUT_RIMLIGHT
+{
+    float4 vColor : SV_TARGET0;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -580,9 +589,20 @@ PS_OUT PS_MONSTER_WEAPON_DISSOLVE(PS_IN In)
     return Out;
 }
 
+PS_OUT_RIMLIGHT PS_MAIN_OBJECT_RIMLIGHT(PS_IN In)
+{
+    PS_OUT_RIMLIGHT Out = (PS_OUT_RIMLIGHT) 0;
 
+    float3 vDirection = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
 
+    float fRim = (1 - saturate(dot(vDirection, In.vNormal.xyz)));
+    fRim = pow(abs(fRim), g_RimPower);
+    
+    float3 RimLight = fRim * g_RimPower * g_RimColor * g_fObjectAlpha;
+    Out.vColor.rgb += RimLight;
 
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -695,6 +715,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MONSTER_WEAPON_DISSOLVE();
+    }
+
+    pass ObjectRimLight // 10
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_OBJECT_RIMLIGHT();
     }
 
 }
