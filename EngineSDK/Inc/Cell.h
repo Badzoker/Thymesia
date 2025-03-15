@@ -55,7 +55,7 @@ private:
 	_int						m_iIndex = {};
 
 	_float4						m_vPlane = {};
-	_vector						m_vPos = {};
+	_float4						m_vPos = {};
 #ifdef _DEBUG
 private:
 	class CVIBuffer_Cell* m_pVIBuffer = { nullptr };

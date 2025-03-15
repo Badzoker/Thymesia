@@ -3,11 +3,6 @@
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_OldViewMatrix, g_OldWorldMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
-Texture2D g_NoiseTexture;
-
-float g_Time;
-float g_DissolveAmount;
-
 vector g_vCamPosition;
 
 matrix g_LightViewMatrix[3];
@@ -15,6 +10,12 @@ matrix g_LightProjMatrix[3];
 
 float4 g_fAlphaValue;
 
+/*  Dissolve 관련 상수 버퍼들 */
+Texture2D g_NoiseTexture;
+float g_DissolveAmount;
+float g_EdgeWidth = 1.f;
+float4 g_EdgeColor = { 0.f, 0.f, 1.f, 1.f };
+float g_Time;
 
 float4x4 g_PreWorldMatrix, g_PreViewMatrix; 
 
@@ -540,6 +541,48 @@ PSOut PSMainShadow(PSIn In)
     return Out;
 }
 
+PS_OUT PS_MONSTER_WEAPON_DISSOLVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 g_LineColor = float4(0.8f, 0.6f, 0.4f, 1.0f);
+    
+    if (vMtrlDiffuse.a < 0.1f)  
+        discard;
+    
+    float2 noiseUV = In.vTexcoord + float2(0.0f, g_Time * 0.1);
+    float noiseValue = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+
+    float EdgeFactor = smoothstep(g_DissolveAmount - g_EdgeWidth, g_DissolveAmount, noiseValue);
+    float EdgeStrength = 1.0 - EdgeFactor;
+    
+    float4 GlowColor = g_LineColor * 3.f;
+    float4 EdgeBlend = lerp(vMtrlDiffuse, GlowColor, EdgeStrength * 2.5f);
+    
+    if (noiseValue < g_DissolveAmount - g_EdgeWidth * 0.2)
+    {
+        clip(-1);
+    }
+
+    float4 finalColor = EdgeBlend;
+    finalColor += GlowColor * EdgeStrength * 0.5f;
+
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    Out.vDiffuse = finalColor;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    return Out;
+}
+
+
+
+
 
 technique11 DefaultTechnique
 {
@@ -642,4 +685,16 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_ITEM_GLOW();
     }
+
+    pass MONSTER_WEAPON_DISSOLVE //9
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MONSTER_WEAPON_DISSOLVE();
+    }
+
 }

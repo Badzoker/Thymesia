@@ -25,13 +25,15 @@ HRESULT CMonster_HP_Bar::Initialize_Prototype()
 
 HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
 	Monster_HP_Bar_DESC* pDesc = static_cast<Monster_HP_Bar_DESC*>(pArg);
 
 	m_pParentState = pDesc->pParentState;
 	m_pMonsterMatrix = pDesc->pMonsterMatrix;
 	m_bHP_Bar_Active = pDesc->bHP_Bar_Active;
+	m_bMonsterDead = pDesc->bDead;
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
@@ -49,6 +51,9 @@ HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 
 void CMonster_HP_Bar::Priority_Update(_float fTimeDelta)
 {
+	if (*m_bMonsterDead)
+		m_pGameInstance->Add_DeadObject(TEXT("Layer_MonsterHP"), this);
+
 	if (!*m_bHP_Bar_Active)
 		return;
 

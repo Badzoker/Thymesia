@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Normal_VillageM1.h"
-#include "VillageM_Weapon.h"
+#include "Weapon_Axe.h"
+#include "Weapon_Shield.h"
 #include "Body_VillageM1.h"
 #include "GameInstance.h"
 #include "Animation.h"
@@ -34,7 +35,7 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
     Desc->fSpeedPerSec = 1.f;
-    Desc->fScaling = _float3{ 0.002f,0.002f,0.002f };
+    Desc->fScaling = _float3{ 0.0025f,0.0025f,0.0025f };
     Desc->fRotationPerSec = XMConvertToRadians(90.f);
     XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
 
@@ -50,7 +51,7 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
-
+    m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
 
 
     m_pState_Manager = CState_Machine<CNormal_VillageM1>::Create();
@@ -59,9 +60,9 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
-    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
+    _uint setting_Body_ColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
 
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, setting_Body_ColliderGroup);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
 
@@ -76,18 +77,24 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
 
 void CNormal_VillageM1::Priority_Update(_float fTimeDelta)
 {
-
+    if (m_bDead)
+        m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
     //플레이어와의 거리 계산
     m_fTimeDelta = fTimeDelta;
     XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
     _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
 
     //거리에따른 Active 활성화
-    if (m_fDistance <= 15.f && !m_bActive)
+    if (m_fDistance <= 5.f && !m_bActive)
     {
         m_bActive = true;
         m_pState_Manager->ChangeState(new CNormal_VillageM1::Idle_State(), this);
+    }
+    if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
+    {
+        m_pState_Manager->ChangeState(new CNormal_VillageM1::Return_To_SpawnPoint_State(), this);
     }
 
     if (m_fMonsterCurHP <= 0.f && !m_IsStun)
@@ -121,6 +128,7 @@ void CNormal_VillageM1::Update(_float fTimeDelta)
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
+
     m_pState_Manager->State_Update(fTimeDelta, this);
 
     __super::Update(fTimeDelta);
@@ -133,7 +141,7 @@ void CNormal_VillageM1::Late_Update(_float fTimeDelta)
     if (m_bNeed_Rotation)
         Rotation_To_Player();
 
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
     {
         __super::Late_Update(fTimeDelta);
     }
@@ -166,26 +174,42 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
 {
     CBody_VillageM1::BODY_VillageM1_DESC BodyDesc = {};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    BodyDesc.pParentState = &m_iState;
+    BodyDesc.bDead = &m_bDead;
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Body_VillageM1"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM1_Body"), &BodyDesc)))
         return E_FAIL;
 
-    CVillageM_Weapon::VillageM_WEAPON_DESC		VillageM_Weapon_Desc = {};
+    CWeapon_Axe::WEAPON_AXE_DESC		Weapon_Desc = {};
 
     m_pModelCom = dynamic_cast<CModel*>(__super::Find_PartObject_Component(TEXT("Part_Body_VillageM1"), TEXT("Com_Model")));
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
-    VillageM_Weapon_Desc.pParent = this;
-    VillageM_Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
-    VillageM_Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-    VillageM_Weapon_Desc.pParentModel = m_pModelCom;
-    VillageM_Weapon_Desc.fSpeedPerSec = 0.f;
-    VillageM_Weapon_Desc.fRotationPerSec = 0.f;
+    Weapon_Desc.pParent = this;
+    Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
+    Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Weapon_Desc.pParentModel = m_pModelCom;
+    Weapon_Desc.pParentState = &m_iState;
+    Weapon_Desc.fSpeedPerSec = 0.f;
+    Weapon_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_VillageM_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM_Weapon"), &VillageM_Weapon_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Axe"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Axe"), &Weapon_Desc)))
+        return E_FAIL;
+
+    CWeapon_Shield::WEAPON_SHIELD_DESC		Weapon2_Desc = {};
+
+    Weapon2_Desc.pParent = this;
+    Weapon2_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("lowerarm_l");
+    Weapon2_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Weapon2_Desc.pParentModel = m_pModelCom;
+    Weapon2_Desc.pParentState = &m_iState;
+    Weapon2_Desc.fSpeedPerSec = 0.f;
+    Weapon2_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Shield"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Shield"), &Weapon2_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -194,6 +218,7 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
     Monster_HP_Bar_Desc.fCurHP = &m_fMonsterCurHP;
     Monster_HP_Bar_Desc.fShieldHP = &m_fShieldHP;
     Monster_HP_Bar_Desc.bHP_Bar_Active = &m_bHP_Bar_Active;
+    Monster_HP_Bar_Desc.bDead = &m_bDead;
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
@@ -323,11 +348,21 @@ void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
-        //m_fRecoveryTime = 0.f;
+        if (m_iHitCount >= 4.f)
+        {
+            m_iHitCount = 0;
+            m_fDelayTime = 0.f;
+            m_bPatternProgress = true;
+            m_pState_Manager->ChangeState(new Parry_State(), this);
+            m_fMonsterCurHP += 5.f;
+        }
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
         m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
         m_fShieldHP -= 10.f;
+        m_iHitCount += 1;
         if (!m_bPatternProgress)
         {
             m_pState_Manager->ChangeState(new CNormal_VillageM1::Hit_State(), this);
@@ -391,17 +426,18 @@ void CNormal_VillageM1::Idle_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 30;
     pObject->m_bPatternProgress = false;
+    pObject->m_iState = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CNormal_VillageM1::Idle_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
 {
-    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f && pObject->m_fDistance >= 10.f)
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f && pObject->m_fDistance >= 10.f && pObject->m_bActive)
     {
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
     }
-    else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f && pObject->m_fDistance < 10.f)
+    else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f && pObject->m_fDistance < 10.f && pObject->m_bActive)
     {
         pObject->m_pState_Manager->ChangeState(new Move_State(), pObject);
     }
@@ -409,6 +445,7 @@ void CNormal_VillageM1::Idle_State::State_Update(_float fTimeDelta, CNormal_Vill
 
 void CNormal_VillageM1::Idle_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -434,6 +471,7 @@ void CNormal_VillageM1::Move_State::State_Enter(CNormal_VillageM1* pObject)
             break;
         }
     }
+    pObject->m_iState = STATE_MOVE;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -465,9 +503,10 @@ void CNormal_VillageM1::Move_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Run_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 1;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+    pObject->m_iState = STATE_RUN;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
     pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
-    pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
 void CNormal_VillageM1::Run_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
@@ -492,6 +531,7 @@ void CNormal_VillageM1::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageM1::Run_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion 
@@ -501,6 +541,7 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 29;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_iState = STATE_STUN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -544,6 +585,7 @@ void CNormal_VillageM1::Stun_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_01_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 4;
+    pObject->m_iState = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -563,6 +605,7 @@ void CNormal_VillageM1::Attack_01_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_02_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 5;
+    pObject->m_iState = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -588,6 +631,7 @@ void CNormal_VillageM1::Attack_02_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_03_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 8;
+    pObject->m_iState = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -623,6 +667,7 @@ void CNormal_VillageM1::Hit_State::State_Enter(CNormal_VillageM1* pObject)
         break;
     }
     pObject->RotateDegree_To_Player();
+    pObject->m_iState = STATE_HIT;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -643,15 +688,17 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 39;
     pObject->m_bHP_Bar_Active = false;
+    pObject->m_iState = STATE_EXECUTION;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CNormal_VillageM1::Execution_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
 {
-    if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 40;
+        pObject->m_iState = STATE_DEAD;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 }
@@ -661,3 +708,75 @@ void CNormal_VillageM1::Execution_State::State_Exit(CNormal_VillageM1* pObject)
 }
 #pragma endregion
 
+void CNormal_VillageM1::Parry_Attack_State::State_Enter(CNormal_VillageM1* pObject)
+{
+    m_iIndex = 9;
+    pObject->m_iState = STATE_PARRY_ATTACK;
+    pObject->RotateDegree_To_Player();
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CNormal_VillageM1::Parry_Attack_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
+{
+    if (pObject->m_pModelCom->GetAniFinish())
+        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+}
+
+void CNormal_VillageM1::Parry_Attack_State::State_Exit(CNormal_VillageM1* pObject)
+{
+}
+
+void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
+{
+    m_iIndex = 48;
+    pObject->m_iState = STATE_PARRY;
+    pObject->RotateDegree_To_Player();
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CNormal_VillageM1::Parry_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
+{
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+        pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
+}
+
+void CNormal_VillageM1::Parry_State::State_Exit(CNormal_VillageM1* pObject)
+{
+}
+
+void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageM1* pObject)
+{
+    m_iIndex = 43;
+    pObject->m_fDelayTime = 0.f;
+    pObject->m_iState = STATE_MOVE;
+    pObject->m_bPatternProgress = true;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+}
+
+void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
+{
+    pObject->m_pNavigationCom->Start_Astar(pObject->m_iSpawn_Cell_Index);
+    _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
+    if (bCheck)
+    {
+        pObject->m_pTransformCom->LookAt_Astar(vDir);
+        pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta, pObject->m_pNavigationCom);
+    }
+    if (pObject->m_fDistance <= 1.f)
+    {
+        pObject->m_pState_Manager->ChangeState(new Idle_State, pObject);
+    }
+
+    if (pObject->m_fSpawn_Distance <= 5.f)
+    {
+        pObject->m_pState_Manager->ChangeState(new Idle_State, pObject);
+    }
+}
+
+void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Exit(CNormal_VillageM1* pObject)
+{
+    pObject->m_bActive = false;
+}

@@ -6,7 +6,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
-
+class CTexture;
 
 END
 
@@ -39,11 +39,14 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
 private:
+	_uint              m_iPassNum = {};
 	_float			   m_fTimeDelta = { 0.f };
-
+	_float             m_fDeadTimer = {};
+	_float             m_fFinishTime = {};
 
 private:
 	const _uint* m_pParentState = { nullptr };

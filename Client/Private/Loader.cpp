@@ -41,8 +41,9 @@
 #include "Body_VillageF0.h"
 #include "Body_VillageF1.h"
 
-#include "VillageM_Weapon.h"
-#include "VillageF_Weapon.h"
+#include "Weapon_Axe.h"
+#include "Weapon_Dagger.h"
+#include "Weapon_Shield.h"
 
 #include "Monster_HP_Bar.h"
 #include "Monster_HP_Gage.h"
@@ -2211,15 +2212,22 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF1/Normal_VillageF1.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Normal_VillageM_Weapon"),
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Axe"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Axe/HandAxe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Normal_VillageF_Weapon"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Knife/Knife.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Dagger"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Dagger/Dagger.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Shield"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Shield/Shield.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	//몬스터 Body
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0_Body"),
 		CBody_VillageM0::Create(m_pDevice, m_pContext))))
@@ -2237,13 +2245,21 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CBody_VillageF1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM_Weapon"),
-		CVillageM_Weapon::Create(m_pDevice, m_pContext))))
+	//몬스터 Weapon
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Axe"),
+		CWeapon_Axe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF_Weapon"),
-		CVillageF_Weapon::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Dagger"),
+		CWeapon_Dagger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Shield"),
+		CWeapon_Shield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//몬스터 객체
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0"),
 		CNormal_VillageM0::Create(m_pDevice, m_pContext))))
@@ -2261,6 +2277,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CNormal_VillageF1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//몬스터 HP바
 	/* For.Prototype_Component_Texture_Monster_HP*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_HP"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Monster_HP/MonsterHP%d.dds"), 6))))
@@ -2278,6 +2295,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"),
 		CMonster_HP_Bar_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//몬스터용 노이즈 텍스쳐 /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise6.dds"), 1))))
+		return E_FAIL;
+
 #pragma endregion 
 
 #pragma region NPC

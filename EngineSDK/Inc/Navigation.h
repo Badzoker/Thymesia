@@ -81,7 +81,7 @@ public:
 public:
 	_float                TriangleArea2x(const _vector fPointA, const _vector fPointB, const _vector fPointC);
 	_float                Calculate_Squared_Distance(const _vector fPointA, const _vector fPointB);
-	_int                  Navigate_Portals(vector<_vector> pPortals, _float3 fStartPos, _float3 fEndPos, vector<_vector>& vPoints);
+	_int                  Navigate_Portals(vector<_float4> pPortals, _float3 fStartPos, _float3 fEndPos, vector<_vector>& vPoints);
 
 #ifdef _DEBUG
 public:
@@ -117,7 +117,7 @@ private:
 	vector<CELL*>          m_CellInfo;
 	vector<list<CELL*>>    m_CellAdj;
 
-	vector<_vector>        m_Portal;
+	vector<_float4>        m_Portal;
 
 private:
 	HRESULT SetUp_Neighbors();

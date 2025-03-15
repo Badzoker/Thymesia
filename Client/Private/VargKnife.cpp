@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "VargKnife.h"
+#include "Boss_Varg.h"
 #include "GameInstance.h"
 #include "Animation.h"
 
@@ -32,6 +33,7 @@ HRESULT CVargKnife::Initialize(void* pArg)
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
 
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -44,12 +46,15 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
+    m_pStunActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,5.f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pStunActor, _fvector{ 0.f,0.f,101.f,1.f });
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
     return S_OK;
 }
@@ -68,7 +73,14 @@ void CVargKnife::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    {
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
+    }
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
+    {
+        m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 0.f,0,1.f });
+    }
+
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
@@ -77,13 +89,20 @@ void CVargKnife::Update(_float fTimeDelta)
         {
             if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
             {
-                // 그 구간에서는 계속 진행        
-                m_pGameInstance->Add_Actor_Scene(m_pActor);
+                // 그 구간에서는 계속 진행 
+
+                if (*m_pParentState == CBoss_Varg::Varg_Attack_Roar_State)
+                {
+                    m_pGameInstance->Add_Actor_Scene(m_pStunActor);
+                }
+                else
+                    m_pGameInstance->Add_Actor_Scene(m_pActor);
             }
 
             else
             {
                 m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
             }
 
             if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    

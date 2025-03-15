@@ -34,7 +34,7 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
 
     vPos /= 3.f;
 
-    m_vPos = vPos;
+    XMStoreFloat4(&m_vPos, vPos);
 
     return S_OK;
 }
@@ -104,20 +104,31 @@ void CCell::Set_CellInfo(vector<CNavigation::CELL*>& pCells)
     pCellInfo->iIndex = m_iIndex;
     pCellInfo->byOption = 0;
     pCellInfo->iParentIndex = 0;
-    XMStoreFloat3(&pCellInfo->vPos, m_vPos);
+    XMStoreFloat3(&pCellInfo->vPos, XMLoadFloat4(&m_vPos));
+    _float3 vCenter = {};
+    XMStoreFloat3(&vCenter, (XMLoadFloat3(&m_vPoints[POINT_A]) + XMLoadFloat3(&m_vPoints[POINT_B]) + XMLoadFloat3(&m_vPoints[POINT_C])) / 3);
 
-    pCellInfo->ePoint[CNavigation::N_POINT_A] = m_vPoints[POINT_A];
-    pCellInfo->ePoint[CNavigation::N_POINT_B] = m_vPoints[POINT_B];
-    pCellInfo->ePoint[CNavigation::N_POINT_C] = m_vPoints[POINT_C];
+    _vector vACenter = XMLoadFloat3(&vCenter) - (XMLoadFloat3(&m_vPoints[POINT_A]));
+    _vector vBCenter = XMLoadFloat3(&vCenter) - (XMLoadFloat3(&m_vPoints[POINT_B]));
+    _vector vCCenter = XMLoadFloat3(&vCenter) - (XMLoadFloat3(&m_vPoints[POINT_C]));
 
-    pCellInfo->eLine[CNavigation::N_LINE_AB][0] = m_vPoints[POINT_A];
-    pCellInfo->eLine[CNavigation::N_LINE_AB][1] = m_vPoints[POINT_B];
+    _float3 NewPoint_A{}, NewPoint_B{}, NewPoint_C{};
+    XMStoreFloat3(&NewPoint_A, (XMLoadFloat3(&m_vPoints[POINT_A])) + (vACenter * 0.3f));
+    XMStoreFloat3(&NewPoint_B, (XMLoadFloat3(&m_vPoints[POINT_B])) + (vBCenter * 0.3f));
+    XMStoreFloat3(&NewPoint_C, (XMLoadFloat3(&m_vPoints[POINT_C])) + (vCCenter * 0.3f));
 
-    pCellInfo->eLine[CNavigation::N_LINE_BC][0] = m_vPoints[POINT_B];
-    pCellInfo->eLine[CNavigation::N_LINE_BC][1] = m_vPoints[POINT_C];
+    pCellInfo->ePoint[CNavigation::N_POINT_A] = NewPoint_A;
+    pCellInfo->ePoint[CNavigation::N_POINT_B] = NewPoint_B;
+    pCellInfo->ePoint[CNavigation::N_POINT_C] = NewPoint_C;
 
-    pCellInfo->eLine[CNavigation::N_LINE_CA][0] = m_vPoints[POINT_C];
-    pCellInfo->eLine[CNavigation::N_LINE_CA][1] = m_vPoints[POINT_A];
+    pCellInfo->eLine[CNavigation::N_LINE_AB][0] = NewPoint_A;
+    pCellInfo->eLine[CNavigation::N_LINE_AB][1] = NewPoint_B;
+
+    pCellInfo->eLine[CNavigation::N_LINE_BC][0] = NewPoint_B;
+    pCellInfo->eLine[CNavigation::N_LINE_BC][1] = NewPoint_C;
+
+    pCellInfo->eLine[CNavigation::N_LINE_CA][0] = NewPoint_C;
+    pCellInfo->eLine[CNavigation::N_LINE_CA][1] = NewPoint_A;
 
     pCellInfo->eLineInfo[CNavigation::N_LINE_AB] = m_iNeighborIndices[LINE_AB];
     pCellInfo->eLineInfo[CNavigation::N_LINE_BC] = m_iNeighborIndices[LINE_BC];

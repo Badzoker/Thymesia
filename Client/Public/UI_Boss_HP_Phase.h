@@ -17,6 +17,10 @@ public:
 	struct UI_Boss_HP_Phase_Desc : CUIObject::UIOBJECT_DESC
 	{
 		_bool* bBossActive = {};
+		_bool* bBossDead = {};
+		_float* fMaxHP = {};
+		_float* fCurHP = {};
+		_float* fShieldHP = {};
 		_uint* iPhase = {};
 	};
 private:
@@ -33,12 +37,13 @@ public:
 private:
 
 	_bool* m_bBossActive = {};
+	_bool* m_bBossDead = {};
 	_uint* m_iPhase = {};
 	_vector vPos = {};
 
 	_float m_fSizeX = {};
 	_float m_fSizeY = {};
-	_uint  m_iTest = {};
+	_uint m_RenderNum = {};
 	_float m_fTimeDelta = {};
 private:
 	CShader* m_pShaderCom = { nullptr };

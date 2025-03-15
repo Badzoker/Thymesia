@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Body_VillageM0.h"
 #include "GameInstance.h"
+#include "Normal_VillageM0.h"
 
 CBody_VillageM0::CBody_VillageM0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -25,6 +26,9 @@ HRESULT CBody_VillageM0::Initialize(void* pArg)
 
     CBody_VillageM0::BODY_VillageM0_DESC* pDesc = static_cast<CBody_VillageM0::BODY_VillageM0_DESC*>(pArg);
 
+    m_pParentState = pDesc->pParentState;
+    m_bDead = pDesc->bDead;
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -47,6 +51,17 @@ HRESULT CBody_VillageM0::Initialize(void* pArg)
 
 void CBody_VillageM0::Priority_Update(_float fTimeDelta)
 {
+
+    if (*m_pParentState == CNormal_VillageM0::STATE_DEAD)
+    {
+        m_fDeadTimer += fTimeDelta * 0.5f;
+        m_fFinishTime += fTimeDelta * 0.5f;
+        if (m_fDeadTimer >= 1.5)
+        {
+            *m_bDead = true;
+        }
+    }
+
 }
 
 void CBody_VillageM0::Update(_float fTimeDelta)
@@ -62,7 +77,6 @@ void CBody_VillageM0::Late_Update(_float fTimeDelta)
 
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
-
 }
 
 HRESULT CBody_VillageM0::Render()
@@ -84,7 +98,22 @@ HRESULT CBody_VillageM0::Render()
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        if (*m_pParentState == CNormal_VillageM0::STATE_DEAD)
+        {
+            m_iPassNum = 5;
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+                return E_FAIL;
+        }
+        else
+            m_iPassNum = 0;
+
+        m_pShaderCom->Begin(m_iPassNum);
         m_pModelCom->Render(i);
     }
 
@@ -94,7 +123,8 @@ HRESULT CBody_VillageM0::Render()
 HRESULT CBody_VillageM0::Render_Shadow()
 {
     if (FAILED(Bind_ShaderResources()))
-        return E_FAIL;/*
+        return E_FAIL;
+    /*
     if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_ViewMatrix", "g_ProjMatrix")))
         return E_FAIL;*/
 
@@ -126,6 +156,10 @@ HRESULT CBody_VillageM0::Ready_Components()
     /* Com_Model */
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Normal_VillageM0_Body"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
+        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
     return S_OK;
@@ -175,4 +209,5 @@ void CBody_VillageM0::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pTextureCom);
 }

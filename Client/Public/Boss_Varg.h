@@ -79,7 +79,7 @@ private:
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_IsStun = false;
-	_bool                            m_bWeapon_Collider_On_Off = {};
+	_bool                            m_bDead = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;

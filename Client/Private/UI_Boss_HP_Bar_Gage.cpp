@@ -35,6 +35,7 @@ HRESULT CUI_Boss_HP_Bar_Gage::Initialize(void* pArg)
     pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
     m_bBossActive = pDesc->bBossActive;
+    m_bBossDead = pDesc->bBossDead;
 
     m_fBoss_Max_HP = pDesc->fMaxHP;
     m_fBoss_Cur_HP = pDesc->fCurHP;
@@ -51,6 +52,9 @@ HRESULT CUI_Boss_HP_Bar_Gage::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar_Gage::Priority_Update(_float fTimeDelta)
 {
+    if (*m_bBossDead)
+        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
+
     if (!(*m_bBossActive))
         return;
 }

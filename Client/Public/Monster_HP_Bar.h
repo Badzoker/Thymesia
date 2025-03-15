@@ -22,6 +22,7 @@ public:
 		_float* fCurHP = { nullptr };
 		_float* fShieldHP = { nullptr };
 		_bool* bHP_Bar_Active = { nullptr };
+		_bool* bDead = { nullptr };
 	};
 private:
 	CMonster_HP_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -47,8 +48,10 @@ private:
 	_float4x4 m_ResultMatrix = {};
 
 private:
-	_float			   m_fTimeDelta = { 0.f };
 	_bool* m_bHP_Bar_Active = { nullptr };
+	_bool* m_bMonsterDead = { nullptr };
+
+	_float			   m_fTimeDelta = { 0.f };
 private:
 	const _uint* m_pParentState = { nullptr };
 
