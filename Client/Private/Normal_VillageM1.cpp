@@ -173,7 +173,7 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
 {
     CBody_VillageM1::BODY_VillageM1_DESC BodyDesc = {};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-    BodyDesc.pParentState = &m_iState;
+    BodyDesc.pParentState = &m_iMonster_State;
     BodyDesc.bDead = &m_bDead;
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
@@ -191,7 +191,7 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
     Weapon_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
     Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon_Desc.pParentModel = m_pModelCom;
-    Weapon_Desc.pParentState = &m_iState;
+    Weapon_Desc.pParentState = &m_iMonster_State;
     Weapon_Desc.fSpeedPerSec = 0.f;
     Weapon_Desc.fRotationPerSec = 0.f;
 
@@ -204,7 +204,7 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
     Weapon2_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("lowerarm_l");
     Weapon2_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon2_Desc.pParentModel = m_pModelCom;
-    Weapon2_Desc.pParentState = &m_iState;
+    Weapon2_Desc.pParentState = &m_iMonster_State;
     Weapon2_Desc.fSpeedPerSec = 0.f;
     Weapon2_Desc.fRotationPerSec = 0.f;
 
@@ -425,7 +425,7 @@ void CNormal_VillageM1::Idle_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 30;
     pObject->m_bPatternProgress = false;
-    pObject->m_iState = STATE_IDLE;
+    pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -470,7 +470,7 @@ void CNormal_VillageM1::Move_State::State_Enter(CNormal_VillageM1* pObject)
             break;
         }
     }
-    pObject->m_iState = STATE_MOVE;
+    pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -503,7 +503,7 @@ void CNormal_VillageM1::Run_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 1;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
-    pObject->m_iState = STATE_RUN;
+    pObject->m_iMonster_State = STATE_RUN;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
     pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
 }
@@ -540,7 +540,7 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 29;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_iState = STATE_STUN;
+    pObject->m_iMonster_State = STATE_STUN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -584,7 +584,7 @@ void CNormal_VillageM1::Stun_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_01_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 4;
-    pObject->m_iState = STATE_ATTACK;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -604,7 +604,7 @@ void CNormal_VillageM1::Attack_01_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_02_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 5;
-    pObject->m_iState = STATE_ATTACK;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -630,7 +630,7 @@ void CNormal_VillageM1::Attack_02_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_03_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 8;
-    pObject->m_iState = STATE_ATTACK;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -666,7 +666,7 @@ void CNormal_VillageM1::Hit_State::State_Enter(CNormal_VillageM1* pObject)
         break;
     }
     pObject->RotateDegree_To_Player();
-    pObject->m_iState = STATE_HIT;
+    pObject->m_iMonster_State = STATE_HIT;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -687,7 +687,7 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 39;
     pObject->m_bHP_Bar_Active = false;
-    pObject->m_iState = STATE_EXECUTION;
+    pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -697,7 +697,7 @@ void CNormal_VillageM1::Execution_State::State_Update(_float fTimeDelta, CNormal
     if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 40;
-        pObject->m_iState = STATE_DEAD;
+        pObject->m_iMonster_State = STATE_DEAD;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 }
@@ -710,7 +710,7 @@ void CNormal_VillageM1::Execution_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Parry_Attack_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 9;
-    pObject->m_iState = STATE_PARRY_ATTACK;
+    pObject->m_iMonster_State = STATE_PARRY_ATTACK;
     pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -729,7 +729,7 @@ void CNormal_VillageM1::Parry_Attack_State::State_Exit(CNormal_VillageM1* pObjec
 void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 48;
-    pObject->m_iState = STATE_PARRY;
+    pObject->m_iMonster_State = STATE_PARRY;
     pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -749,7 +749,7 @@ void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageM
 {
     m_iIndex = 43;
     pObject->m_fDelayTime = 0.f;
-    pObject->m_iState = STATE_MOVE;
+    pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);

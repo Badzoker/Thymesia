@@ -100,6 +100,11 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState ^= PHASE_LOCKON;
 	}
 
+	if (!m_bLockOn)	
+	{
+		m_iPhaseState &= ~PHASE_LOCKON;	
+	}
+
 	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		if (m_iState == STATE_ATTACK_L1

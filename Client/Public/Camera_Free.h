@@ -83,8 +83,8 @@ private:
 
 	_bool				m_bStop = { false };
 	_bool				m_bLockOnOff = { false };
-	_bool			    m_bFirst = { true };
-	_bool				m_bLockOnCameraFirst = { false };
+	_bool			    m_bFirst = { false };
+
 	/* 카메라 이벤트 관련 */
 	_bool				m_bShakeOnOff = { false };
 	_bool				m_bZoomIn = { false };

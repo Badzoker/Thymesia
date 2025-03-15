@@ -55,7 +55,7 @@ HRESULT CWeapon_GreatSword::Initialize(void* pArg)
 
 void CWeapon_GreatSword::Priority_Update(_float fTimeDelta)
 {
-	if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+	if (*m_pParentState == STATE_DEAD)
 	{
 		m_fDeadTimer += fTimeDelta * 0.5f;
 		m_fFinishTime += fTimeDelta * 0.5f;
@@ -108,7 +108,7 @@ HRESULT CWeapon_GreatSword::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 
-		if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+		if (*m_pParentState == STATE_DEAD)
 		{
 			m_iPassNum = 9;
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))

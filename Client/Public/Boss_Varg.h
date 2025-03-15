@@ -85,6 +85,7 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
 	_uint                            m_iState = { CBoss_Varg::Varg_State_END };
+					
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
