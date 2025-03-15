@@ -43,7 +43,7 @@ HRESULT CBody_HArmorLV2::Initialize(void* pArg)
 
 void CBody_HArmorLV2::Priority_Update(_float fTimeDelta)
 {
-	if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+	if (*m_pParentState == STATE_DEAD)
 	{
 		m_fDeadTimer += fTimeDelta * 0.5f;
 		m_fFinishTime += fTimeDelta * 0.5f;
@@ -86,7 +86,7 @@ HRESULT CBody_HArmorLV2::Render()
 		if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
 			return E_FAIL;
 
-		if (*m_pParentState == CHArmorLV2::STATE_DEAD)
+		if (*m_pParentState == STATE_DEAD)
 		{
 			m_iPassNum = 5;
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))

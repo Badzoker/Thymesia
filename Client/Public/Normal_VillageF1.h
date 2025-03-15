@@ -16,19 +16,7 @@ BEGIN(Client)
 
 class CNormal_VillageF1 final : public CContainerObject
 {
-public:
-	enum STATE
-	{
-		STATE_IDLE,
-		STATE_MOVE,
-		STATE_RUN,
-		STATE_ATTACK,
-		STATE_HIT,
-		STATE_STUN,
-		STATE_EXECUTION,
-		STATE_DEAD,
-		STATE_END
-	};
+
 private:
 	CNormal_VillageF1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CNormal_VillageF1(const CNormal_VillageF1& Prototype);
@@ -70,7 +58,6 @@ private:
 
 	_uint                            m_iHitNum = -1;
 	_uint                            m_iHitCount = {};
-	_uint                            m_iState = { STATE::STATE_END };
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};

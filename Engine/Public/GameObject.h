@@ -55,6 +55,8 @@ public:
 public:
 	class CComponent* Find_Component(const _wstring& strComponetTag);
 	_uint Get_Player_Hitted_State() const { return m_iPlayer_Hitted_State; }
+	_uint Get_Monster_State() const { return m_iMonster_State; }	
+	void Set_Locked_On(_bool pLocked_On) { m_bLocked_On = pLocked_On; }
 	CModel* Get_GameObject_Model() { return m_pGameObjectModel; }
 
 protected:
@@ -65,7 +67,9 @@ protected:
 	class CGameInstance* m_pGameInstance = { nullptr };
 	class CTransform* m_pTransformCom = { nullptr };	
 
-	_uint                       m_iPlayer_Hitted_State = { Player_Hitted_State::PLAYER_HURT_END };	
+	_uint                       m_iPlayer_Hitted_State = { Player_Hitted_State::PLAYER_HURT_END };		
+	_uint                       m_iMonster_State = { MONSTER_STATE::STATE_END };	
+	_bool						m_bLocked_On = { false };	
 
 protected:
 	map<const _wstring, class CComponent*>		m_Components;	

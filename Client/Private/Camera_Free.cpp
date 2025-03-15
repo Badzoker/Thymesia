@@ -148,7 +148,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	}
 	CloseHandle(hFile);
 
-	m_mapCamera_Event.emplace(TEXT("Test"), test);	
+	m_mapCamera_Event.emplace(TEXT("Test"), test);
 
 	return S_OK;
 }
@@ -162,7 +162,24 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	{
 		m_bLockOnOff = !m_bLockOnOff;
 		m_bFirst = true;
-		m_bLockOnCameraFirst = false;
+
+		// 락온이 되어있을때는 락온 해제 락온이 안되어있을 때는 락온 
+		if (m_bLockOnOff)
+		{
+			if (m_pTargetMonster != nullptr)
+			{
+				m_pTargetMonster->Set_Locked_On(true);
+			}
+		}
+
+		else
+		{
+			if (m_pTargetMonster != nullptr)
+			{
+				m_pTargetMonster->Set_Locked_On(false);
+			}
+		}
+
 	}
 
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
@@ -251,6 +268,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bFirst)
 		{
 			m_pTargetMonster = Find_LockOnTarget();
+
 			if (m_pTargetMonster == nullptr)
 			{
 				m_bLockOnOff = !m_bLockOnOff;
@@ -261,49 +279,65 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 		if (m_bLockOnOff)
 		{
-			/* 플레이어 회전 관련 */
-			_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
-			_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+			/* 삭제이벤트가 발생했다면 m_pTargetMonster가 nullptr가 되어야함. */
+			if (m_pTargetMonster->Get_Monster_State() == STATE_EXECUTION)
+			{
 
-			_vector vDir = (MonsterPos - PlayerPos);
+				m_bLockOnOff = false;
+				m_bFirst = true;
 
-			_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
+				m_pPlayer->Set_Lockon(false);
+				m_pTargetMonster->Set_Locked_On(false);
 
-			_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
-			_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
-
-			_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
-			dotResult = max(-1.0f, min(dotResult, 1.0f));
-			float Radian = acosf(dotResult);
-
-			_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
-			float crossY = XMVectorGetY(crossResult);
-			if (crossY < 0.0f) {
-				Radian = -Radian;
+				m_pTargetMonster = nullptr;
 
 			}
-			/* =============================================== */
+
+			else if (m_pTargetMonster->Get_Monster_State() != STATE_EXECUTION)
+			{
+				/* 플레이어 회전 관련 */
+				_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
+				_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+				_vector vDir = (MonsterPos - PlayerPos);
+
+				_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
+
+				_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
+				_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
+
+				_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
+				dotResult = max(-1.0f, min(dotResult, 1.0f));
+				float Radian = acosf(dotResult);
+
+				_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
+				float crossY = XMVectorGetY(crossResult);
+				if (crossY < 0.0f) {
+					Radian = -Radian;
+
+				}
+				/* =============================================== */
 
 
-			/* 카메라 회전 관련 */
+				/* 카메라 회전 관련 */
 
 
 
 
 
-			/* 카메라 방향 전환 관련 */
+				/* 카메라 방향 전환 관련 */
 
-			//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
-			LockOnCameraTurn(fTimeDelta);
-
-
-
-			/* 플레이어 방향 전환 */
-			//if (abs(Radian) > 0.1f)
-			m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
-			m_bLockOnCameraFirst = true;
+				//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
+				LockOnCameraTurn(fTimeDelta);
 
 
+
+				/* 플레이어 방향 전환 */
+				//if (abs(Radian) > 0.1f)
+				m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
+
+
+			}
 		}
 	}
 	/* ===================================================================== */
@@ -409,8 +443,10 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 			_float  Distance = XMVectorGetX(XMVector3Length(MonsterPosition - PlayerPosition));
 			// 거리 제한 
 			if (Distance < 25.f)
-				m_maptMonsterDistance.emplace(Distance, iter);
+				m_maptMonsterDistance.insert(pair<_float, CGameObject*>(Distance, iter));
 		}
+
+
 	}
 
 	if (m_maptMonsterDistance.size() >= 1)
@@ -421,7 +457,9 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 		return Pair.begin()->second;
 	}
 
-	else
+
+
+	else if (m_maptMonsterDistance.size() == 0)
 	{
 		m_pPlayer->Set_Lockon(false);
 		return nullptr;

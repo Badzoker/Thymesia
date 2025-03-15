@@ -100,6 +100,21 @@ namespace Engine
 		PLAYER_HURT_END
 	};
 
+	enum MONSTER_STATE	
+	{
+		STATE_IDLE,
+		STATE_MOVE,	
+		STATE_RUN,
+		STATE_ATTACK,	
+		STATE_HIT,
+		STATE_STUN,		
+		STATE_PARRY,		
+		STATE_PARRY_ATTACK,	
+		STATE_EXECUTION,	
+		STATE_DEAD,	
+		STATE_END	
+	};
+
 
 	enum class TRIGGER_TYPE
 	{

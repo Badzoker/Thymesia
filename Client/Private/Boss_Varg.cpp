@@ -990,10 +990,12 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
     if (pObject->m_iPhase == 1)
     {
         pObject->m_iState = CBoss_Varg::Varg_Execution_First_State;
+        pObject->m_iMonster_State = STATE_EXECUTION;
     }
     else
     {
         pObject->m_iState = CBoss_Varg::Varg_Execution_Second_State;
+        pObject->m_iMonster_State = STATE_EXECUTION;    
     }
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1133,6 +1135,7 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_bBossActive = false;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_iState = CBoss_Varg::Varg_Dead_State;
+    pObject->m_iMonster_State = STATE_DEAD;     
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
