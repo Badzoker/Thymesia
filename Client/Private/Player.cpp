@@ -634,6 +634,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		_information.extractContacts(contactPoints, 1);
 
 		PxVec3 position = contactPoints[0].position;
+		PxVec3 dir = contactPoints[0].normal;
 		_vector PlayerPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 		int a = 4;
@@ -759,7 +760,10 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 #pragma region Effect 0313
 			//Hit Effect
 			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
-			m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition);
+			_vector vHitDir = { dir.x, dir.y, dir.z, 1.f };
+			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition, vHitDir);
+			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, vHitDir);
+			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
 #pragma endregion
 		}
 	}

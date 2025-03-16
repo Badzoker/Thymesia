@@ -4,9 +4,7 @@
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D g_Texture;
 Texture2D g_NoiseTexture; 
-float  g_DissolveAmount;
-float  g_Time;
-float4 g_vCamPosition;
+float3 g_vRGB;
 
 struct VS_IN
 {
@@ -22,8 +20,12 @@ struct VS_IN
 struct VS_OUT
 {
     float4 vPosition : POSITION;
-    float  fPSize : PSIZE;
+    float fPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
+    
+    float3 vRight : TEXCOORD1;
+    float3 vUp : TEXCOORD2;
+    float3 vLook : TEXCOORD3S;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -37,7 +39,10 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.fPSize = length(In.TransformMatrix._11_12_13);
     Out.vLifeTime = In.vLifeTime;
  
-
+    Out.vRight = mul(In.TransformMatrix._11_12_13_14, g_WorldMatrix);
+    Out.vUp = mul(In.TransformMatrix._21_22_23_24, g_WorldMatrix);
+    Out.vLook = mul(In.TransformMatrix._31_32_33_34, g_WorldMatrix);
+    
     return Out;
 }
 
@@ -46,6 +51,10 @@ struct GS_IN
     float4 vPosition : POSITION;
     float fPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
+    
+    float3 vRight : TEXCOORD1;
+    float3 vUp : TEXCOORD2;
+    float3 vLook : TEXCOORD3S;
 };
 
 struct GS_OUT
@@ -71,10 +80,14 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> DataStream)
 {
     GS_OUT Out[4];
 
-    float3 vLook = g_vCamPosition.xyz - In[0].vPosition.xyz;
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * (In[0].fPSize * 0.5f);
-    float3 vUp = normalize(cross(vLook, vRight)) * (In[0].fPSize * 0.5f);
+    //float3 vLook = g_vCamPosition.xyz - In[0].vPosition.xyz;
+    //float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * (In[0].fPSize * 0.5f);
+    //float3 vUp = normalize(cross(vLook, vRight)) * (In[0].fPSize * 0.5f);
 
+    float3 vRight = (In[0].vRight * (In[0].fPSize * 0.5f));
+    float3 vUp = (In[0].vUp * (In[0].fPSize * 0.5f));
+    float3 vLook = (In[0].vLook * (In[0].fPSize * 0.5f));
+    
     float4x4 matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
     Out[0].vPosition = float4(In[0].vPosition.xyz + vRight + vUp, 1.f);
@@ -115,10 +128,14 @@ void GS_MAIN_WEIGHT(point GS_IN In[1], inout TriangleStream<GS_OUT_WEIGHT> DataS
 {
     GS_OUT_WEIGHT Out[4];
 
-    float3 vLook = g_vCamPosition.xyz - In[0].vPosition.xyz;
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * (In[0].fPSize * 0.5f);
-    float3 vUp = normalize(cross(vLook, vRight)) * (In[0].fPSize * 0.5f);
-
+    //float3 vLook = g_vCamPosition.xyz - In[0].vPosition.xyz;
+    //float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * (In[0].fPSize * 0.5f);
+    //float3 vUp = normalize(cross(vLook, vRight)) * (In[0].fPSize * 0.5f);
+    
+    float3 vRight = (In[0].vRight * (In[0].fPSize * 0.5f));
+    float3 vUp = (In[0].vUp * (In[0].fPSize * 0.5f));
+    float3 vLook = (In[0].vLook * (In[0].fPSize * 0.5f));
+    
     float4x4 matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
     Out[0].vPosition = float4(In[0].vPosition.xyz + vRight + vUp, 1.f);
@@ -190,6 +207,9 @@ PS_OUT PS_MAIN(PS_IN In)
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
 
+    float3 vRGB = g_vRGB;
+    Out.vColor *= vector(vRGB, 1.f);
+    
     return Out;
 }
 
@@ -201,6 +221,9 @@ PS_OUT PS_MAIN_WEIGHTBLEND(PS_IN_WEIGHT In)
     vector vResult = vDiffuse;
     if (vResult.a < 0.01f)
         discard;
+    
+    float3 vRGB = g_vRGB;
+    vResult *= vector(vRGB, 1.f);
     
     float x = (In.vProjPos.z / In.vProjPos.w);
     float fWeight = saturate(max(1e-2, In.vProjPos.w / 70.f));
@@ -219,7 +242,7 @@ technique11 DefaultTechnique
     
     pass DefaultPass // 0 ¹ø 
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -230,7 +253,7 @@ technique11 DefaultTechnique
 
     pass WeightBlend // 1 ¹ø 
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_WeightBlend, 0);
         SetBlendState(BS_WeightBlend_Client, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

@@ -49,6 +49,7 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
 
     if (m_bFirst)
     {
+        m_fSpeed_Final = m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         *pCurrentTrackPoisiton += m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
         m_bFirst = false;
@@ -57,6 +58,7 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
 
     else if (*pCurrentTrackPoisiton <= m_fDuration)
     {
+        m_fSpeed_Final = m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         *pCurrentTrackPoisiton += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
         m_fCurrentTrackPosition = *pCurrentTrackPoisiton;
     }

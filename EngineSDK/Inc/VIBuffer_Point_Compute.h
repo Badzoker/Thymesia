@@ -14,6 +14,10 @@ public:
 		_float2     vSize = {};
 		_float2     vSpeed = {};
 		_float2     vLifeTime = {};
+		_float3		vPivot = {};
+		_bool		bReverse_XYZ[3] = { false, false, false };
+		_float3		vSpeed_Weight; //속도 가중치
+		_float3		vScale_Weight; //Scale 가중치
 	};
 private:
 	CVIBuffer_Point_Compute(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);

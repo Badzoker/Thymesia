@@ -36,6 +36,9 @@ public:
 	vector<ANIMEVENT>* Get_vecEvent() { return &m_vecAnimFrameEvent; }
 
 	void Set_HitStopTime(_float _fHitStopTime) { m_fHitStopTime = _fHitStopTime; }
+
+	_float& Get_CurAnimation_FinalSpeed() { return m_fSpeed_Final; } //3.16 종한 추가
+
 private:
 	_bool                      m_bReset = { false };
 	_bool					   m_isFinished = { false };
@@ -51,6 +54,7 @@ private:
 	_float					   m_LerpTime = 0.2f;
 	_float					   m_LerpTimeAcc = 0.f;
 	_float					   m_fHitStopTime = 1.f;
+	_float					   m_fSpeed_Final = {}; //3.16 종한 추가
 
 	/*Channel == Bone*/
 	vector<class CChannel*>    m_Channels;

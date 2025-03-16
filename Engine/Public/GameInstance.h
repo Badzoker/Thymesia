@@ -143,10 +143,13 @@ public:
 #pragma region EFFECT MANAGER
 
 	HRESULT Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg = nullptr);
-	HRESULT Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos);
-	HRESULT Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos);
+	HRESULT Play_Effect(EFFECT_NAME _eEffectName, _fvector _vPos);
+	HRESULT Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _fvector _vPos);
 	HRESULT Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix);
+	HRESULT Play_Effect_Speed_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float* _pAnimation_Speed);
 	HRESULT Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix);
+	HRESULT Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir);
+	HRESULT Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir);
 
 #pragma endregion
 
@@ -218,7 +221,7 @@ public:
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut);
 
-#pragma endregion UI_Manager
+#pragma endregion
 
 
 #pragma region PhysX_Manager

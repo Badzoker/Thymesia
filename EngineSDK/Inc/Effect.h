@@ -30,19 +30,19 @@ public:
 public:
 
 	_bool Get_IsPlaying() { return m_bIsPlaying; }
-	_bool Get_IsHave_SettinMatrix() {
-		if (nullptr != m_pSettingMatrix)
-			return true;
-		return false;
-	}
+	
 	void Set_MaxTimer(_float _fMaxTimer) { m_fMaxTimer = _fMaxTimer; }
 	void Set_SettingMatrix(const _float4x4* _pSettingMatrix) { m_pSettingMatrix = _pSettingMatrix; }
-	void Clear_SettingMatrix() { m_pSettingMatrix = nullptr; }
+	void Clear_Setting();
+	void Set_Direction(_fvector _vDir);
 
+	void Set_Animation_Speed(const _float* _pAnimation_Speed);
 
 protected:
 	//EFFECT_TYPE m_eEffectType = { EFFECT_TYPE::EFFECT_TYPE_END };
 	const _float4x4* m_pSettingMatrix = { nullptr };
+	const _float* m_pAnimation_Speed = { nullptr };
+
 	_float4x4 m_matCombined = {};
 
 	_bool m_bIsPlaying = { false };
@@ -56,6 +56,7 @@ protected:
 	_float m_fTimer_SpeedX = { 1.f };
 	_float m_fTimer_SpeedY = { 1.f };
 	_float m_fDissolve_Speed = { 1.f };
+
 
 protected:
 	void Timer_Check(_float _fTimeDelta);

@@ -27,7 +27,8 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_iDiffuse = pDesc->iDiffuse;
     m_iParticle_Count = pDesc->iParticle_Count;
     m_fMaxTimer = pDesc->fMaxTimer;
-    
+    m_vRGB = pDesc->vRGB;
+    m_eShaderPass = static_cast<SHADERPASS>(pDesc->iShaderPass);
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
@@ -46,6 +47,10 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom))))
         return E_FAIL;
 
+    m_pTransformCom->Scaling(pDesc->vScale);
+    m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z)); //이부분은 Tool이랑 뭔가 이상함
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vTranslation), 1.f));
+
 
     return S_OK;
 }
@@ -63,26 +68,41 @@ void CEffect_Particle::Update(_float _fTimeDelta)
 
 void CEffect_Particle::Late_Update(_float _fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this);
+    switch (m_eShaderPass)
+    {
+    case Client::CEffect_Particle::SHADERPASS_DEFAULT:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+        break;
+
+    case Client::CEffect_Particle::SHADERPASS_WEIGHTBLEND:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this);
+        break;
+
+    case Client::CEffect_Particle::SHADERPASS_GLOW:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+        break;
+    }
+}
+
+HRESULT CEffect_Particle::Render()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    m_pShaderCom->Begin(0); //WeightBlend
+
+    m_pBufferCom->Bind_InputAssembler();
+
+    m_pBufferCom->Render();
+
+    return S_OK;
 }
 
 HRESULT CEffect_Particle::Render_WeightBlend()
 {
-    //if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-    //    return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+    if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-        return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-        return E_FAIL;
-
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-        return E_FAIL;
-
-    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iDiffuse)))
-        return E_FAIL;
-
+    
     m_pShaderCom->Begin(1); //WeightBlend
 
     m_pBufferCom->Bind_InputAssembler();
@@ -106,14 +126,29 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
 
 HRESULT CEffect_Particle::Ready_Components()
 {
-    
-
     /* Com_Texture */
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Particle_Image"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
-    
+    return S_OK;
+}
+
+HRESULT CEffect_Particle::Bind_ShaderResources()
+{
+    //if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+    //    return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iDiffuse)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vRGB", &m_vRGB, sizeof(_float3))))
+        return E_FAIL;
 
     return S_OK;
 }

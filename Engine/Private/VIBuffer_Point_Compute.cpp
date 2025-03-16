@@ -65,6 +65,11 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
     ReadFile(hFile, &pDesc.vSize.x, sizeof(_float), &dwByte, nullptr);
     ReadFile(hFile, &pDesc.vSize.y, sizeof(_float), &dwByte, nullptr);
 
+    ReadFile(hFile, &pDesc.vPivot, sizeof(_float3), &dwByte, nullptr);
+
+    ReadFile(hFile, &pDesc.bReverse_XYZ, sizeof(_bool) * 3, &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vSpeed_Weight, sizeof(_float3), &dwByte, nullptr);
+    ReadFile(hFile, &pDesc.vScale_Weight, sizeof(_float3), &dwByte, nullptr);
 
     CloseHandle(hFile);
 
@@ -112,14 +117,41 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
         m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
         m_pInstanceVertices[i].vTranslation = vTranslation;
         m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
-        m_pInstanceVertices[i].fSpeed = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y);
+        m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
+        m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
+        m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
+        m_pInstanceVertices[i].vPivot = pDesc.vPivot;
 
-        _float fScale = m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y);
+        _float fRandom = {};
+        if (true == pDesc.bReverse_XYZ[0])
+        {
+            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+            if (fRandom < 0.f)
+                m_pInstanceVertices[i].vPivot.x *= -1.f;
+        }
+        if (true == pDesc.bReverse_XYZ[1])
+        {
+            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+            if (fRandom < 0.f)
+                m_pInstanceVertices[i].vPivot.y *= -1.f;
+        }
+        if (true == pDesc.bReverse_XYZ[2])
+        {
+            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+            if (fRandom < 0.f)
+                m_pInstanceVertices[i].vPivot.z *= -1.f;
+        }
 
-        XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * fScale);
-        XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * fScale);
-        XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * fScale);
+        _float3 vScale = { m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.x,
+                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.y,
+                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.z };
 
+        XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * vScale.x);
+        XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * vScale.y);
+        XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
+
+
+        m_pInstanceVertices[i].vScale = vScale;
     }
 
     m_InstanceInitialData.pSysMem = m_pInstanceVertices;

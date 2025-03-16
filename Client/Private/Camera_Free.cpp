@@ -464,6 +464,8 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 		m_pPlayer->Set_Lockon(false);
 		return nullptr;
 	}
+
+	return nullptr;
 }
 
 void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)

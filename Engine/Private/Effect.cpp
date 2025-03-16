@@ -70,6 +70,24 @@ void CEffect::Set_IsPlaying(_bool _bIsPlaying)
 	}
 }
 
+void CEffect::Clear_Setting()
+{
+	if (nullptr != m_pSettingMatrix)
+		m_pSettingMatrix = nullptr;
+	if (nullptr != m_pAnimation_Speed)
+		m_pAnimation_Speed = nullptr;
+}
+
+void CEffect::Set_Direction(_fvector _vDir)
+{
+	m_pTransformCom->Look(_vDir);
+}
+
+void CEffect::Set_Animation_Speed(const _float* _pAnimation_Speed)
+{
+	m_pAnimation_Speed = _pAnimation_Speed;
+}
+
 void CEffect::Timer_Check(_float _fTimeDelta)
 {
 	if (m_fMaxTimer < m_fTimerX || m_fMaxTimer < m_fTimerY)
@@ -80,9 +98,19 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 	}
 	else
 	{
-		m_fTimerX += _fTimeDelta * m_fTimer_SpeedX;
-		m_fTimerY += _fTimeDelta * m_fTimer_SpeedY;
-		m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //이놈은 TimerX 한테 영향받음 나중에 따로 뺼지 아니면 X와 Y를 같이 넣어줘야할지 고민됨
+		if (nullptr != m_pAnimation_Speed)
+		{
+			m_fTimerX += _fTimeDelta * m_fTimer_SpeedX * (*m_pAnimation_Speed);
+			m_fTimerY += _fTimeDelta * m_fTimer_SpeedY * (*m_pAnimation_Speed);
+			m_fDissolve += _fTimeDelta * m_fDissolve_Speed * (*m_pAnimation_Speed);
+		}
+		else
+		{
+			m_fTimerX += _fTimeDelta * m_fTimer_SpeedX;
+			m_fTimerY += _fTimeDelta * m_fTimer_SpeedY;
+			m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //이놈은 TimerX 한테 영향받음 나중에 따로 뺼지 아니면 X와 Y를 같이 넣어줘야할지 고민됨
+		}
+		
 	}
 }
 

@@ -155,6 +155,19 @@ void CTransform::Go_Dir(_fvector vDir, class CNavigation* pNavigation, _float fT
 	}
 }
 
+void CTransform::Look(_fvector _vDir)
+{
+	_float3		vScale = Compute_Scaled();
+
+	_vector		vLook = _vDir;
+	_vector		vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+
+	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	Set_State(STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * vScale.z);
+}
+
 void CTransform::LookAt(_fvector vAt)
 {
 	_float3		vScale = Compute_Scaled();

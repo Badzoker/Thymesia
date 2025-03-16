@@ -178,7 +178,9 @@ namespace Engine
 		XMFLOAT4	   vLook;
 		XMFLOAT4       vTranslation;
 		XMFLOAT2       vLifeTime;
-		float		   fSpeed;
+		XMFLOAT3	   vSpeed;
+		XMFLOAT3	   vPivot;
+		XMFLOAT3	   vScale;
 	};
 
 	struct ENGINE_DLL ANIMEVENT	

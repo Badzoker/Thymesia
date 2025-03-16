@@ -59,6 +59,8 @@ public:
 	/* 애니메이션 연속 동작을 위한 함수 */
 	void Set_Continuous_Ani(_bool _first) { m_bFirst = _first; }		
 
+	_float& Get_CurAnimation_FinalSpeed(); //3.16 종한 추가
+
 private:
 	/* 가져온 정보를 저장한다. */
 	//const aiScene*					m_pAIScene = { nullptr };

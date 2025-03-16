@@ -503,12 +503,12 @@ HRESULT CGameInstance::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _
 	return m_pEffect_Manager->Add_Effect(_iPrototypeLevelIndex, _strPrototypeTag, _eEffectName, _pArg);
 }
 
-HRESULT CGameInstance::Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos)
+HRESULT CGameInstance::Play_Effect(EFFECT_NAME _eEffectName, _fvector _vPos)
 {
 	return m_pEffect_Manager->Play_Effect(_eEffectName, _vPos);
 }
 
-HRESULT CGameInstance::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos)
+HRESULT CGameInstance::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _fvector _vPos)
 {
 	return m_pEffect_Manager->Play_Effect_With_Timer(_eEffectName, _fDuration, _vPos);
 }
@@ -518,9 +518,24 @@ HRESULT CGameInstance::Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float
 	return m_pEffect_Manager->Play_Effect_Matrix(_eEffectName, _pMatrix);
 }
 
+HRESULT CGameInstance::Play_Effect_Speed_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float* _pAnimation_Speed)
+{
+	return m_pEffect_Manager->Play_Effect_Speed_Matrix(_eEffectName, _pMatrix, _pAnimation_Speed);
+}
+
 HRESULT CGameInstance::Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix)
 {
 	return m_pEffect_Manager->Play_Effect_With_Timer_Matrix(_eEffectName, _fDuration, _pMatrix);
+}
+
+HRESULT CGameInstance::Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir)
+{
+	return m_pEffect_Manager->Play_Effect_Dir(_eEffectName, _vPos, _vDir);
+}
+
+HRESULT CGameInstance::Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix_Dir(_eEffectName, _pMatrix, _vDir);
 }
 
 #pragma endregion 

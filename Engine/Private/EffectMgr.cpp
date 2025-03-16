@@ -39,8 +39,7 @@ void CEffectMgr::Late_Update(_float _fTimeDelta)
             {
                 for (auto& pEffect : m_dequePlayingEffect)
                 {
-                    if (iter->Get_IsHave_SettinMatrix())
-                        iter->Clear_SettingMatrix();
+                    iter->Clear_Setting();
                 }
                 m_dequePlayingEffect.clear();
                 break;
@@ -64,7 +63,7 @@ HRESULT CEffectMgr::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _str
     return S_OK;
 }
 
-HRESULT CEffectMgr::Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos)
+HRESULT CEffectMgr::Play_Effect(EFFECT_NAME _eEffectName, _fvector _vPos)
 {
     for (auto& iter : m_vecEffect[(_uint)_eEffectName])
     {
@@ -79,7 +78,7 @@ HRESULT CEffectMgr::Play_Effect(EFFECT_NAME _eEffectName, _vector _vPos)
     return S_OK;
 }
 
-HRESULT CEffectMgr::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _vector _vPos)
+HRESULT CEffectMgr::Play_Effect_With_Timer(EFFECT_NAME _eEffectName, _float _fDuration, _fvector _vPos)
 {
     for (auto& iter : m_vecEffect[(_uint)_eEffectName])
     {
@@ -110,6 +109,22 @@ HRESULT CEffectMgr::Play_Effect_Matrix(EFFECT_NAME _eEffectName, const _float4x4
     return S_OK;
 }
 
+HRESULT CEffectMgr::Play_Effect_Speed_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float* _pAnimation_Speed)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (false == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(true);
+            iter->Set_SettingMatrix(_pMatrix);
+            iter->Set_Animation_Speed(_pAnimation_Speed);
+            m_dequePlayingEffect.push_back(iter);
+            break;
+        }
+    }
+    return S_OK;
+}
+
 HRESULT CEffectMgr::Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix)
 {
     for (auto& iter : m_vecEffect[(_uint)_eEffectName])
@@ -118,6 +133,38 @@ HRESULT CEffectMgr::Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _flo
         {
             iter->Set_IsPlaying(true);
             iter->Set_MaxTimer(_fDuration);
+            iter->Set_SettingMatrix(_pMatrix);
+            m_dequePlayingEffect.push_back(iter);
+            break;
+        }
+    }
+    return S_OK;
+}
+
+HRESULT CEffectMgr::Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (false == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(true);
+            iter->Set_Direction(_vDir);
+            iter->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _vPos);
+            m_dequePlayingEffect.push_back(iter);
+            break;
+        }
+    }
+    return S_OK;
+}
+
+HRESULT CEffectMgr::Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (false == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(true);
+            iter->Set_Direction(_vDir);
             iter->Set_SettingMatrix(_pMatrix);
             m_dequePlayingEffect.push_back(iter);
             break;

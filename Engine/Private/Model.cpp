@@ -355,6 +355,11 @@ HRESULT CModel::Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INST
 	return S_OK;
 }
 
+_float& CModel::Get_CurAnimation_FinalSpeed() //3.16 종한 추가
+{
+	return m_Animations[m_iCurrentAnimIndex]->Get_CurAnimation_FinalSpeed();
+}
+
 HRESULT CModel::Save_Model(const _char* pModelFilePath)
 {
 	string binaryFile = "../Bin/BinaryFile/";

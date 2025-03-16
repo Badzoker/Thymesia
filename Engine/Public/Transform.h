@@ -80,6 +80,7 @@ public:
 	void Go_Right(_float fTimeDelta);
 	void Go_Right_Navi(_float fTimeDelta, class CNavigation* pNavigation);
 	void Go_Dir(_fvector vDir, class CNavigation* pNavigation, _float fTimeDelta);
+	void Look(_fvector _vDir); //종한->오로지 방향만 바꿔야하기에 추가 03.16
 	void LookAt(_fvector vAt);
 	void LookAt_Astar(_fvector vAt);
 	void Sliding_Move(_float fTimeDelta, class CNavigation* pNavigation, _vector vTargetPos);
