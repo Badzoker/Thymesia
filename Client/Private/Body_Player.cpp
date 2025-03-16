@@ -30,6 +30,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_pParent = pDesc->pParent;
     m_pParentState = pDesc->pParentState;
+    m_pPreParentState = pDesc->pPreParentState;
     m_pParentPhsaeState = pDesc->pParentPhaseState;
     m_pParentNextStateCan = pDesc->pParentNextStateCan;
     m_pParentStateMgr = pDesc->pParentStateMgr;
@@ -258,10 +259,10 @@ void CBody_Player::Update(_float fTimeDelta)
                     {
                         // 카메라 포인터 가져오고 싶다.
 
-                        m_pCamera->ShakeOn(1000.f, 1000.f, 10.f, 10.f);
+                        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
                     }
 
-                    else if (!strcmp(iter.szName, "Camera_Zoom_In"))
+                    else if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
                         // 카메라 포인터 가져오고 싶다.
                         m_pCamera->ZoomIn();
@@ -275,17 +276,6 @@ void CBody_Player::Update(_float fTimeDelta)
 
                 else
                 {
-                    //m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                    if (!strcmp(iter.szName, "Camera_Zoom_In"))
-                    {
-                        m_pCamera->ResetZoomInCameraPos();
-                    }
-
-                    if (!strcmp(iter.szName, "Evade"))
-                    {
-                        if (m_pModelCom->Get_CurrentAnmationTrackPosition() > (iter.fEndTime + 3.f))
-                            m_pGameInstance->Add_Actor_Scene(m_pParentActor);
-                    }
 
                 }
 
@@ -304,10 +294,11 @@ void CBody_Player::Update(_float fTimeDelta)
         }
     }
 
-   /* else
+    else
     {
-        m_pGameInstance->Add_Actor_Scene(m_pParentActor);
-    }*/
+        m_pGameInstance->Add_Actor_Scene(m_pParentActor);   
+        m_pCamera->ResetZoomInCameraPos();  
+    }
 #pragma endregion  
 
 
@@ -315,9 +306,11 @@ void CBody_Player::Update(_float fTimeDelta)
 
 void CBody_Player::Late_Update(_float fTimeDelta)
 {
+    if (m_pParentState != m_pPreParentState)    
+        m_pModelCom->Get_CurAnimation()->Set_HitStopTime(1.f);  
+
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
-    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);   
 }
 
 HRESULT CBody_Player::Render()
@@ -1499,25 +1492,22 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
         && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
     {
         m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.15f && m_bParryStopOnOff)
+        if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
         {
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-            m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
         }
 
         else
         {
             m_bParryStopOnOff = false;
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-            m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-
         }
     }
 
     else
-    {
-        //m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        //m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    { 
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+
 
         m_fHitStopTime = 0.f;
         m_bParryStopOnOff = true;
@@ -1528,7 +1518,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     {
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
-        m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(25)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
     }
 
     /* 여기 애니메이션 안끝났을 때 다른 동작시 문제 생김 */
@@ -1544,26 +1533,23 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
         && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
     {
         m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.15f && m_bParryStopOnOff)
+        if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
         {
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-            m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
+        
         }
 
         else
         {
             m_bParryStopOnOff = false;
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-            m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-
+           
         }
     }
 
     else
     {
-        /* m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-         m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);*/
-
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
         m_fHitStopTime = 0.f;
         m_bParryStopOnOff = true;
     }
@@ -1573,7 +1559,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
     {
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
-        m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_VecAnimation().at(m_pParentStateMgr->Get_VecState().at(24)->Get_MonsterModel()->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
     }
 }
 void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()

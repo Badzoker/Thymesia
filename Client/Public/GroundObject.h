@@ -22,12 +22,14 @@ public:
 	virtual void Update(_float _fTimeDelta) override;
 	virtual void Late_Update(_float _fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Motion_Blur() override;	
 
 	void Update_InstanceBuffer(_uint _iInstanceIndex, const XMFLOAT3& _vPosition, const XMFLOAT3& _vScale, const XMFLOAT4& _vRotation);
 	void Update_InstanceBuffer_ForCulling();
 private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
+	virtual HRESULT Bind_Motion_Blur_ShaderResources();	
 	vector<_bool>			m_vecVisible;
 
 public:

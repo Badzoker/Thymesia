@@ -186,14 +186,15 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 #pragma region 패링	
 	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
-		if (m_iState == STATE_PARRY_L) // 패링 모션		
+		if (m_iState == STATE_PARRY_L ||
+			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP)))) // 패링 2번째 모션			
 		{
 			m_pStateMgr->Get_VecState().at(20)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_R;
 
 
 		}
-		else if (m_iState != STATE_PARRY_L)  // 패링 2번째 모션	
+		else if (m_iState != STATE_PARRY_L)  // 패링 모션 
 		{
 			m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_L;
@@ -558,6 +559,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	BodyDesc.pParentNavigationCom = m_pNavigationCom;
 	BodyDesc.pParentStateMgr = m_pStateMgr;
 	BodyDesc.pParentState = &m_iState;
+	BodyDesc.pPreParentState = &m_iPreState;	
 	BodyDesc.pParentPhaseState = &m_iPhaseState;
 	BodyDesc.pParentNextStateCan = &m_bNextStateCanPlay;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -651,12 +653,10 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				if (Parry == 0)
 				{
 					m_iState = STATE_PARRY_DEFLECT_L;
-					m_pStateMgr->Get_VecState().at(24)->Set_MonsterModel(dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_GameObject_Model());
 				}
 				else
 				{
 					m_iState = STATE_PARRY_DEFLECT_L_UP;
-					m_pStateMgr->Get_VecState().at(25)->Set_MonsterModel(dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_GameObject_Model());
 				}
 				break;
 			case STATE::STATE_PARRY_R:
@@ -766,6 +766,12 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
 #pragma endregion
 		}
+	}
+
+
+	if (!strcmp("MONSTER", _pOther->Get_Name()))
+	{
+		m_bMove = false;
 	}
 }
 

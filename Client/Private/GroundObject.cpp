@@ -136,7 +136,10 @@ void CGroundObject::Late_Update(_float _fTimeDelta)
 {
     //if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
     if (m_iNumInstance > 0)
+    {
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
+    }
 }
 
 HRESULT CGroundObject::Render()
@@ -174,6 +177,42 @@ HRESULT CGroundObject::Render()
         if (m_iNumInstance > 0)
         {
             m_pShaderCom->Begin(0);
+            m_pModelCom->Render_Instance(i, iVisibleCount);
+        }
+    }
+
+    return S_OK;
+}
+
+HRESULT CGroundObject::Render_Motion_Blur()
+{
+    if (m_iNumInstance == 0)
+        return S_OK;
+
+    if (FAILED(Bind_Motion_Blur_ShaderResources()))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        vector<VTX_MODEL_INSTANCE> vecVTXInstance;
+        for (_uint j = 0; j < m_iNumInstance; ++j)
+        {
+            if (m_vecVisible[j])
+                vecVTXInstance.push_back(m_vecInstanceData[j]);
+        }
+
+        _uint iVisibleCount = static_cast<_uint>(vecVTXInstance.size());
+
+        if (iVisibleCount == 0)
+            continue;
+
+        m_pModelCom->Update_InstanceBuffer(iVisibleCount, vecVTXInstance.data());
+
+        if (m_iNumInstance > 0)
+        {
+            m_pShaderCom->Begin(1);
             m_pModelCom->Render_Instance(i, iVisibleCount);
         }
     }
@@ -296,6 +335,22 @@ HRESULT CGroundObject::Bind_ShaderResources()
         return E_FAIL;
 
     return S_OK;
+}
+
+HRESULT CGroundObject::Bind_Motion_Blur_ShaderResources()
+{
+    /* 물체는 멈춰있기 때문에 월드 매트릭스를 바인딩 안해도 되겠다. */
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_PreViewMatrix", &m_pGameInstance->Get_PreTransform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    return S_OK;    
 }
 
 CGroundObject* CGroundObject::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)

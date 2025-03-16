@@ -225,14 +225,16 @@ void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
     if (!strcmp("MONSTER", _pOther->Get_Name()))
     {
-        m_fHitStopTime += 1.f/80.f;     
-        if (m_fHitStopTime < 0.15f) 
+        m_fHitStopTime += 1.f / 80.f;
+        if (m_fHitStopTime < 0.1f)
         {
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
-            m_pCamera->ShakeOn(500.f, 500.f, 6.f, 6.f);
+            m_pCamera->ShakeOn(300.f, 300.f, 3.f, 3.f);
         }
         else
+        {
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        }
     }
 }
 
