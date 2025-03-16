@@ -223,6 +223,11 @@ HRESULT CGameInstance::Open_Level(_uint iNewLevelIndex, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iNewLevelIndex, pNewLevel);	
 }
 
+void CGameInstance::Set_NextLevel_Open(_bool bOpen)
+{
+	return m_pLevel_Manager->Set_NextLevel_Open(bOpen);
+}
+
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -383,6 +388,11 @@ _bool CGameInstance::isKeyEnter(_int _iKey)
 _bool CGameInstance::isKeyPressed(_int _iKey)
 {
 	return m_pInput_Device->isKeyPressed(_iKey);	
+}
+
+_bool CGameInstance::isAnyEnter()
+{
+	return m_pInput_Device->isAnyEnter();
 }
 
 _bool CGameInstance::isKeyReleased(_int _iKey)

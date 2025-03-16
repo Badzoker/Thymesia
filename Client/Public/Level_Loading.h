@@ -16,18 +16,20 @@ private:
 
 
 public:
-	virtual HRESULT Initialize(LEVELID eNextLevelID);
+	virtual HRESULT Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _bool bCheck);
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	HRESULT Ready_Layer_UIGroup_Loading(const _tchar* pLayerTag);
 private:
 	LEVELID				m_eNextLevelID = { LEVEL_END };
 	class CLoader*		m_pLoader = { nullptr };
-
+	_uint				m_iLoadingeNum = {}; // 테스트 용도로 추가
 
 
 public:
-	static CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);
+	static CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID, _uint iLoadingNum,_bool bCheck);
 	virtual void Free() override;
 };
 

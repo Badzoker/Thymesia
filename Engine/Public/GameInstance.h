@@ -52,6 +52,7 @@ public: /* For.Timer_Manager */
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Open_Level(_uint iNewLevelIndex, class CLevel* pNewLevel);
+	void Set_NextLevel_Open(_bool bOpen);
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -103,6 +104,8 @@ public:
 	_bool   isKeyEnter(_int _iKey);
 	_bool	isKeyReleased(_int _iKey);	
 	_bool   isKeyPressed(_int _iKey);
+
+	_bool	isAnyEnter();	// 아무 키를 눌렀을 때 반응
 
 	_bool   isMouseEnter(_uint _iKey); 
 	void    Push_MouseState(MOUSEKEYSTATE eMouseKeyState);

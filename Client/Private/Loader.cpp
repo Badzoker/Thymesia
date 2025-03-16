@@ -96,6 +96,7 @@
 #include "UIGroup_PlayerTalent.h"
 #include "UIGroup_PlayerScreen.h"
 #include "UIGroup_Iventory.h"
+#include "UIGroup_Loading.h"
 
 #include "UI_MouseCursor.h"
 
@@ -148,7 +149,8 @@
 #include "UI_DialogBackground.h"
 
 #include "UI_GameLogoImage.h"
-
+#include "UI_LoadingScreen.h"
+#include "UI_LoadingIcon.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -233,6 +235,9 @@ HRESULT CLoader::Loading_For_Level_Static()
 
 #pragma region UI 텍스쳐
 	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxPosTex_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
@@ -706,7 +711,27 @@ HRESULT CLoader::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DialogBackground"),
 		CUI_DialogBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
+	//====================================================================================================================================로딩창
+	/* For.Prototype_Component_Texture_UI_LoadingScreen */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LoadingScreen"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 8))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_LoadingScreen */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LoadingScreen"),
+		CUI_LoadingScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_UI_LoadingIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LoadingIcon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/UI_LoadingIcon.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_LoadingIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LoadingIcon"),
+		CUI_LoadingIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/
@@ -743,6 +768,10 @@ HRESULT CLoader::Loading_For_Level_Static()
 		CUIGroup_Iventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UIGroup_Loading */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Loading"),
+		CUIGroup_Loading::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 	/* 로딩이 완료되었습니다.*/
@@ -793,8 +822,8 @@ HRESULT CLoader::Loading_For_Level_Logo()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), CBlackScreen::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_FadeTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxFadeTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;

@@ -17,6 +17,7 @@ private:
 
 public:
 	HRESULT Open_Level(_uint iNewLevelIndex, class CLevel* pNewLevel);
+	void Set_NextLevel_Open(_bool bOpen);
 
 public:
 	void Update(_float fTimeDelta);

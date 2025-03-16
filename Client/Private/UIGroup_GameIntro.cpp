@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "UIGroup_GameIntro.h"
 #include "GameInstance.h"
+#include "Level_Loading.h"
 
 #include "UI_Scene.h"
 #include "UI_Text.h"
 #include "UI_TextBox.h"
+#include "UI_Button.h"
+
+
+#include "UI_ButtonHighlight.h"
 
 CUIGroup_GameIntro::CUIGroup_GameIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -33,7 +38,7 @@ HRESULT CUIGroup_GameIntro::Initialize(void* pArg)
 
 	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
 	{
-		dynamic_cast<CUI_TextBox*>(TextBox)->Set_Change_TextColor({ 105.f,105.f,105.f,255.f });
+		dynamic_cast<CUI_TextBox*>(TextBox)->Set_Change_TextColor(FONT_GRAY);
 		dynamic_cast<CUI_TextBox*>(TextBox)->Set_TextRenderType(Engine::CUI_Text::FONT_OUTLINE);
 	}
 	return S_OK;
@@ -50,14 +55,14 @@ void CUIGroup_GameIntro::Update(_float fTimeDelta)
 
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, true);
+		Button_Check();
 	}
 }
 
 void CUIGroup_GameIntro::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_GameIntro::Render()
@@ -66,6 +71,48 @@ HRESULT CUIGroup_GameIntro::Render()
 	{
 	}
 	return S_OK;
+}
+
+void CUIGroup_GameIntro::Button_Check()
+{
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+		{
+			if (1 == Button->Get_UI_GroupID())
+			{
+				m_pGameInstance->Set_NextLevel_Open(true);
+			}
+
+			if (2 == Button->Get_UI_GroupID())
+			{
+
+			}
+
+			if (3 == Button->Get_UI_GroupID())
+			{
+
+			}
+
+			if (4 == Button->Get_UI_GroupID())
+			{
+
+			}
+
+			if (5 == Button->Get_UI_GroupID())
+			{
+
+			}
+
+			if (6 == Button->Get_UI_GroupID())
+			{
+
+			}
+		}
+
+
+	}
+
 }
 
 HRESULT CUIGroup_GameIntro::Ready_UIObject()

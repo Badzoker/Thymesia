@@ -33,6 +33,7 @@ public:
 	_bool isKeyPressed(_int _iKey);
 	_bool isKeyReleased(_int _iKey);
 	_bool isKeyEnter(_int _iKey);	
+	_bool isAnyEnter();	// 아무 키를 눌렀을 때 반응
 	_bool isMouseEnter(_uint iKey);	
 	_bool isMouseRelease();	 
 	

@@ -24,6 +24,11 @@ HRESULT CLevel_Manager::Open_Level(_uint iNewLevelIndex, CLevel * pNewLevel)
 	return S_OK;
 }
 
+void CLevel_Manager::Set_NextLevel_Open(_bool bOpen)
+{
+	m_pCurrentLevel->Set_NextLevel_Open(bOpen);
+}
+
 void CLevel_Manager::Update(_float fTimeDelta)
 {
 	if(nullptr != m_pCurrentLevel)

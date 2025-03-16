@@ -4,17 +4,16 @@
 
 BEGIN(Engine)
 class CUI_Scene;
-//class CUI_Text;
 END
 
 BEGIN(Client)
 
-class CUIGroup_GameIntro final : public CUIObject
+class CUIGroup_Loading final : public CUIObject
 {
 private:
-	CUIGroup_GameIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUIGroup_GameIntro(const CUIGroup_GameIntro& Prototype);
-	virtual ~CUIGroup_GameIntro() = default;
+	CUIGroup_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUIGroup_Loading(const CUIGroup_Loading& Prototype);
+	virtual ~CUIGroup_Loading() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -25,7 +24,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Button_Check();
+	void Texture_Num_Check();
 
 
 public:
@@ -36,7 +35,7 @@ private:
 	CUI_Scene* m_pMyScene = {};
 
 public:
-	static CUIGroup_GameIntro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUIGroup_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
