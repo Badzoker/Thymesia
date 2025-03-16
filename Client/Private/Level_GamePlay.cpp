@@ -165,15 +165,15 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
 
 	LIGHT_DESC LightDesc{};
-	///* 2¿ù 8ÀÏ ºû */
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
-	//LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
-	//LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	//LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	/* 2¿ù 8ÀÏ ºû */
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 
-	//if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
 
 	ZeroMemory(&LightDesc, sizeof(LightDesc));
 
