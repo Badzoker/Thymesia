@@ -289,7 +289,7 @@ HRESULT CLoader::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_UI_Effect_SlotFrame*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_SkillIcon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_SkillIcon_%d.dds"), 21))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_SkillIcon_%d.dds"), 22))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UI_Effect_SlotFrame */
