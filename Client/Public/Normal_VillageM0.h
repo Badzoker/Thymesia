@@ -51,7 +51,7 @@ private:
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
-	_bool							 m_bMove = {};
+	_bool							 m_bMove = true;
 	_bool                            m_bDead = {};
 
 	_uint                            m_iSpawn_Cell_Index = {};

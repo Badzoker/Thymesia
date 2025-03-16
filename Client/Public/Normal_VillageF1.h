@@ -53,7 +53,7 @@ private:
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
-	_bool							 m_bMove = {};
+	_bool							 m_bMove = true;
 	_bool                            m_bDead = {};
 
 	_uint                            m_iHitNum = -1;
