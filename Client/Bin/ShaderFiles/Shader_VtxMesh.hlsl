@@ -140,8 +140,8 @@ VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
     float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
    
     Out.vDir.xy = velocity * 0.5f;
-    if (velocity.x <= 0.f || velocity.y <= 0.f)      
-        Out.vDir.xy = 0.001f;
+    if (abs(velocity.x) <= 0.1f || abs(velocity.y) <= 0.1f)      
+        Out.vDir.xy = 0.0025f;
     
   
     Out.vDir.y *= -1.f;

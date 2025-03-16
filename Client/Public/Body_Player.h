@@ -96,6 +96,7 @@ public:
 	struct BODY_PLAYER_DESC : public CPartObject::PARTOBJECT_DESC
 	{
 		_uint* pParentState = { nullptr };
+		_uint* pPreParentState = { nullptr };	
 		_uint* pParentPhaseState = { nullptr };
 		_bool* pParentNextStateCan = { nullptr };
 		CStateMgr* pParentStateMgr = { nullptr };
@@ -207,6 +208,7 @@ private:
 private:
 
 	_uint* m_pParentState = { nullptr };
+	_uint* m_pPreParentState = { nullptr };	
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};

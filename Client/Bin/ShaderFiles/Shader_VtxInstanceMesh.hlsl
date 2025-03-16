@@ -9,6 +9,8 @@ Texture2D       g_NoiseTexture;
 float           g_Time;
 float           g_DissolveAmount;   
 
+float4x4 g_PreWorldMatrix, g_PreViewMatrix;
+
 struct VS_IN
 {
 	float3			vPosition : POSITION;	
@@ -31,6 +33,14 @@ struct VS_OUT
 	   
     float4			vTangent  : TANGENT;
     float4			vBinormal : BINORMAL;
+};
+
+struct VS_OUT_MotionBlur
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal   : NORMAL;
+    float4 vDir      : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -64,6 +74,60 @@ VS_OUT VS_MAIN(VS_IN In)
 }
 
 
+VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
+{
+    VS_OUT_MotionBlur Out = (VS_OUT_MotionBlur) 0;
+
+    matrix matWV, matWVP;
+
+    
+    matrix WorldMatrix = matrix
+    (
+        In.InstanceMatrix[0],
+        In.InstanceMatrix[1],
+        In.InstanceMatrix[2],
+        In.InstanceMatrix[3]
+    );
+    
+    matWV = mul(WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), matWV));
+    Out.vTexcoord = In.vTexcoord;
+    
+    
+    //motion blur를 위한 추가작업시작    
+    float4 vNewPos = Out.vPosition;
+    float4 vOldPos = mul(vector(In.vPosition, 1.f), WorldMatrix);
+    vOldPos = mul(vOldPos, g_PreViewMatrix);
+    vOldPos = mul(vOldPos, g_ProjMatrix);
+	
+    float3 vDir = vNewPos.xyz - vOldPos.xyz;
+    
+    float a = dot(normalize(vDir), normalize(Out.vNormal.xyz));
+    if (a < 0.f)
+        Out.vPosition = vOldPos;
+    else
+        Out.vPosition = vNewPos;
+   
+    
+    float2 velocity = (vNewPos.xy / vNewPos.w) - (vOldPos.xy / vOldPos.w);
+   
+    Out.vDir.xy = velocity * 0.5f;
+    if (abs(velocity.x) <= 0.1f || abs(velocity.y) <= 0.1f)      
+        Out.vDir.xy = 0.0025f;
+    
+  
+    Out.vDir.y *= -1.f;
+    
+    Out.vDir.z = Out.vPosition.z;
+    Out.vDir.w = Out.vPosition.w;
+	
+    return Out;
+}
+
 struct PS_IN
 {
 	float4			vPosition : SV_POSITION;
@@ -77,12 +141,25 @@ struct PS_IN
     float4          vBinormal : BINORMAL;
 };
 
+struct PS_IN_MOTIONBLUR
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal   : NORMAL;
+    float4 vDir      : TEXCOORD0;
+    float2 vTexcoord : TEXCOORD1;
+};
+
 struct PS_OUT
 {
     float4 vDiffuse : SV_TARGET0;
     float4 vNormal  : SV_TARGET1;
     float4 vDepth   : SV_TARGET2;
     float fSpecular : SV_TARGET3;
+};
+
+struct PS_OUT_MOTIONBLUR
+{
+    float4 vColor : SV_TARGET0;
 };
 
 
@@ -117,6 +194,21 @@ PS_OUT PS_MAIN(PS_IN In)
 }
 
 
+PS_OUT_MOTIONBLUR PS_MAIN_MOTIONBLUR(PS_IN_MOTIONBLUR In)
+{
+    PS_OUT_MOTIONBLUR Out = (PS_OUT_MOTIONBLUR) 0;
+    
+    Out.vColor.xy = In.vDir.xy * 11.f;
+    
+    //방향(속도)
+    Out.vColor.z = 1.0f;
+    Out.vColor.w = In.vDir.z / In.vDir.w;
+    
+
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -130,6 +222,17 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
+
+    pass MotionBlur //1
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_MOTIONBLUR();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MOTIONBLUR();
+    }
     //pass InstancingPass
     //{
     //    SetRasterizerState(RS_Default);
