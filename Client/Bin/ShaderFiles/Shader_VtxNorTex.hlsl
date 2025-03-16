@@ -33,7 +33,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     Out.vPosition = mul(Out.vPosition, g_ViewMatrix);
     Out.vPosition = mul(Out.vPosition, g_ProjMatrix);
-    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), mul(g_WorldMatrix, g_ViewMatrix)));
     Out.vTexcoord = In.vTexcoord;
     Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
     Out.vProjPos = Out.vPosition;
@@ -119,7 +119,7 @@ PS_OUT PS_MASKING_MAIN(PS_IN In)
     */
 	
     vector vMtrlDiffuse = vDestDiffuse * vMaskTexture + vSourDiffuse * (1.f - vMaskTexture);
-    vector vMtrlNormal = vector(vDestNormal.xyz * 0.5f + 0.5f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 0.5f + 0.5f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
+    vector vMtrlNormal = vector(vDestNormal.xyz * 2.f - 1.f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 2.f - 1.f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
 	
     /* vector vNormal = vNormalDesc.xyz * 2.0f - 1.0f; */
     Out.vDiffuse = vMtrlDiffuse;
