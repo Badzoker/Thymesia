@@ -32,7 +32,8 @@ public:
 	HRESULT Ready_PartObjects();
 public:
 	void RootAnimation();
-
+	void CalCulate_Distance();
+	void Culling();
 public:
 	void PatternCreate();
 	void RotateDegree_To_Player();
@@ -50,6 +51,7 @@ private:
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bMove = true;
 	_bool                            m_bDead = {};
+	_bool                            m_bCulling = {};
 
 	_uint                            m_iHitCount = {};
 	_uint                            m_iSpawn_Cell_Index = {};
@@ -62,6 +64,7 @@ private:
 	_float                           m_fSpawn_Distance = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fHP_Bar_Active_Timer = {};
+	_float                           m_fHP_Bar_Height = {};
 
 	_float                           m_fMonsterMaxHP = {};
 	_float                           m_fMonsterCurHP = {};

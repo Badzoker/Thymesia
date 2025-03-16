@@ -32,6 +32,7 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
     m_fRotateSpeed = 180.f;
+    m_fHP_Bar_Height = 500.f;
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
     Desc->fSpeedPerSec = 1.f;
@@ -75,15 +76,15 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
 
 void CNormal_VillageF0::Priority_Update(_float fTimeDelta)
 {
+    Culling();
+    if (m_bCulling)
+        return;
+
     if (m_bDead)
         m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
 
-    //플레이어와의 거리, 스폰포인트와의 거리 계산
     m_fTimeDelta = fTimeDelta;
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
-    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
+    CalCulate_Distance();
 
     //거리에따른 Active 활성화
     if (m_fDistance <= 5.f && !m_bActive)
@@ -123,9 +124,10 @@ void CNormal_VillageF0::Priority_Update(_float fTimeDelta)
 
 void CNormal_VillageF0::Update(_float fTimeDelta)
 {
+    if (m_bCulling)
+        return;
     PatternCreate();
     RootAnimation();
-
 
     m_pState_Manager->State_Update(fTimeDelta, this);
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -139,15 +141,15 @@ void CNormal_VillageF0::Update(_float fTimeDelta)
 
 void CNormal_VillageF0::Late_Update(_float fTimeDelta)
 {
+    if (m_bCulling)
+        return;
+
     Recovery_HP();
 
     if (m_bNeed_Rotation)
         Rotation_To_Player();
 
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
-    {
-        __super::Late_Update(fTimeDelta);
-    }
+    __super::Late_Update(fTimeDelta);
 }
 
 HRESULT CNormal_VillageF0::Render()
@@ -216,6 +218,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     Monster_HP_Bar_Desc.fShieldHP = &m_fShieldHP;
     Monster_HP_Bar_Desc.bHP_Bar_Active = &m_bHP_Bar_Active;
     Monster_HP_Bar_Desc.bDead = &m_bDead;
+    Monster_HP_Bar_Desc.fHeight = &m_fHP_Bar_Height;
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
@@ -243,6 +246,32 @@ void CNormal_VillageF0::RootAnimation()
             XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
             const _float4x4* test2 = const_cast<_float4x4*>(&test);
             m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
+    }
+}
+
+void CNormal_VillageF0::CalCulate_Distance()
+{
+    //플레이어와의 거리 계산
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
+}
+
+void CNormal_VillageF0::Culling()
+{
+    //절두체 안에있을때
+    if (!m_bActive)
+    {
+        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
+        {
+            m_bCulling = false;
+        }
+        //절두체 안에 없을때
+        else
+        {
+            m_bCulling = true;
         }
     }
 }

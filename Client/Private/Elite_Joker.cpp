@@ -32,6 +32,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
     m_fRotateSpeed = 180.f;
+    m_fHP_Bar_Height = 800.f;
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
@@ -78,14 +79,15 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
+    Culling();
+    if (m_bCulling)
+        return;
+
     if (m_bDead)
         m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
 
     m_fTimeDelta = fTimeDelta;
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
-    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
+    CalCulate_Distance();
 
     if (m_fDistance <= 15.f && !m_bActive)
     {
@@ -122,7 +124,7 @@ void CElite_Joker::Priority_Update(_float fTimeDelta)
 
 void CElite_Joker::Update(_float fTimeDelta)
 {
-    if (!m_bActive)
+    if (m_bCulling)
         return;
 
     PatternCreate();
@@ -142,13 +144,11 @@ void CElite_Joker::Update(_float fTimeDelta)
 
 void CElite_Joker::Late_Update(_float fTimeDelta)
 {
+    if (m_bCulling)
+        return;
     if (m_bNeed_Rotation)
         Rotation_To_Player();
-
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
-    {
-        __super::Late_Update(fTimeDelta);
-    }
+    __super::Late_Update(fTimeDelta);
 }
 
 HRESULT CElite_Joker::Render()
@@ -207,6 +207,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Monster_HP_Bar_Desc.fShieldHP = &m_fShieldHP;
     Monster_HP_Bar_Desc.bHP_Bar_Active = &m_bHP_Bar_Active;
     Monster_HP_Bar_Desc.bDead = &m_bDead;
+    Monster_HP_Bar_Desc.fHeight = &m_fHP_Bar_Height;
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
@@ -234,6 +235,33 @@ void CElite_Joker::RootAnimation()
             XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
             const _float4x4* test2 = const_cast<_float4x4*>(&test);
             m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
+    }
+}
+
+void CElite_Joker::CalCulate_Distance()
+{
+    //플레이어와의 거리 계산
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
+}
+
+
+void CElite_Joker::Culling()
+{
+    //절두체 안에있을때
+    if (!m_bActive)
+    {
+        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
+        {
+            m_bCulling = false;
+        }
+        //절두체 안에 없을때
+        else
+        {
+            m_bCulling = true;
         }
     }
 }
