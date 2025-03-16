@@ -54,11 +54,13 @@ private:
 
 	_float											m_fTime = { 0.f };
 
+	class CShader_Compute_Sample* m_pLightShaftComputeShader = { nullptr };
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();	
 	HRESULT Render_NonBlend();
-	HRESULT Render_Occulusion();
+	HRESULT Render_Occulsion();
 	HRESULT Render_Distortion();
 	HRESULT Render_GlowBegin();
 	HRESULT Render_GlowX();

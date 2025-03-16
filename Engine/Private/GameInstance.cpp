@@ -413,9 +413,9 @@ const LIGHT_DESC * CGameInstance::Get_LightDesc(_uint iIndex) const
 	return m_pLight_Manager->Get_LightDesc(iIndex);
 }
 
-HRESULT CGameInstance::Add_Light(const LIGHT_DESC & LightDesc)
+HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform)
 {
-	return m_pLight_Manager->Add_Light(LightDesc);
+	return m_pLight_Manager->Add_Light(LightDesc, pTransform);
 }
 void CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
@@ -453,6 +453,16 @@ HRESULT CGameInstance::End_MRT(ID3D11DepthStencilView* _pDSV)
 HRESULT CGameInstance::Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize)
 {
 	return m_pTarget_Manager->Add_Shadow_RenderTarget(strRenderTargetTag, iWidth, iHeight, ePixelFormat , vClearColor, iArraySize);
+}
+
+HRESULT CGameInstance::Add_UAV_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
+{
+	return  m_pTarget_Manager->Add_UAV_RenderTarget(strRenderTargetTag, iWidth, iHeight, ePixelFormat, vClearColor);
+}
+
+HRESULT CGameInstance::Compute_Copy_RTV(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, CShader_Compute_Sample* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
+{
+	return m_pTarget_Manager->Compute_Copy_RTV(strRenderTargetTagToRead, strRenderTargetTagToWrite, pCompute_Shader, _iThreadCountX, _iThreadCountY, _iThreadCountZ, pArg);
 }
 
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -647,6 +657,14 @@ HRESULT CGameInstance::Bind_LightPos(CShader* pShader, const _char* pConstantNam
 HRESULT CGameInstance::Bind_LightDir(CShader* pShader, const _char* pConstantName)
 {
 	return m_pShadow->Bind_LightDir(pShader, pConstantName);
+}
+HRESULT CGameInstance::Bind_LightProjDir(CShader* pShader, const _char* pConstantName)
+{
+	return m_pShadow->Bind_LightDir(pShader, pConstantName);
+}
+_float2 CGameInstance::Get_LightPos()
+{
+	return m_pShadow->Get_LightPos();
 }
 #pragma endregion
 

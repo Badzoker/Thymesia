@@ -17,19 +17,30 @@ CShadow::CShadow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CShadow::Bind_LightPos(CShader* pShader, const _char* pConstantName)
 {
-	_matrix lightProjectionMatrix = XMLoadFloat4x4(&m_LightViewMatrix) * XMLoadFloat4x4(&m_LightProjMatrix);
+	_float4x4 vCamViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+	_float4x4 vCamProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
 
 	_vector vLightPos = XMLoadFloat4(&m_LightPos);
 
-	vLightPos = XMVector3TransformCoord(vLightPos, lightProjectionMatrix);
+	vLightPos = XMVector3TransformCoord(vLightPos, XMLoadFloat4x4(&vCamViewMatrix) * XMLoadFloat4x4(&vCamProjMatrix));
 
-	_float2 vLightViewProjPos = { XMVectorGetX(vLightPos), XMVectorGetY(vLightPos) };
+	vLightPos = XMVectorSet(vLightPos.m128_f32[0] * 0.5f + 0.5f, vLightPos.m128_f32[1] * -0.5f + 0.5f, vLightPos.m128_f32[2], 1.f);
 
-	return pShader->Bind_RawValue(pConstantName, &vLightViewProjPos, sizeof(_float2));
+	_float4 vLightViewProjPos;
+
+	XMStoreFloat4(&vLightViewProjPos, vLightPos);
+
+	return pShader->Bind_RawValue(pConstantName, &vLightViewProjPos, sizeof(_float4));
 }
 
 
 HRESULT CShadow::Bind_LightDir(CShader* pShader, const _char* pConstantName)
+{
+	return pShader->Bind_RawValue(pConstantName, &XMLoadFloat4(&m_LightDir), sizeof(_float4));
+}
+
+
+HRESULT CShadow::Bind_LightProjDir(CShader* pShader, const _char* pConstantName)
 {
 	_float4x4 vLightViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
 	_float4x4 vLightProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
@@ -44,6 +55,24 @@ HRESULT CShadow::Bind_LightDir(CShader* pShader, const _char* pConstantName)
 
 	return pShader->Bind_RawValue(pConstantName, &vLightViewProjPos, sizeof(_float2));
 }
+
+_float2 CShadow::Get_LightPos()
+{
+	_float4x4 vCamViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+	_float4x4 vCamProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
+
+	_vector vLightPos = XMLoadFloat4(&m_LightPos);
+
+	vLightPos = XMVector3TransformCoord(vLightPos, XMLoadFloat4x4(&vCamViewMatrix) * XMLoadFloat4x4(&vCamProjMatrix));
+
+	vLightPos = XMVectorSet(vLightPos.m128_f32[0] * 0.5f + 0.5f, vLightPos.m128_f32[1] * -0.5f + 0.5f, vLightPos.m128_f32[2], 1.f);
+
+	_float2 vLightViewProjPos = { XMVectorGetX(vLightPos), XMVectorGetY(vLightPos) };
+
+	return vLightViewProjPos;
+}
+
+
 
 
 HRESULT CShadow::Initialize()

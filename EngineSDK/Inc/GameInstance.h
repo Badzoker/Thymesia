@@ -110,8 +110,8 @@ public:
 #pragma endregion
 
 #pragma region LIGHT_MANAGER
-	const LIGHT_DESC* Get_LightDesc(_uint iIndex) const;	
-	HRESULT Add_Light(const LIGHT_DESC& LightDesc);	
+	const LIGHT_DESC* Get_LightDesc(_uint iIndex) const;
+	HRESULT Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform = nullptr);
 	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);	
 #pragma endregion
 
@@ -122,6 +122,10 @@ public:
 	HRESULT Begin_MRT(const _wstring& strMRTTag, _bool isClear = true, ID3D11DepthStencilView* pDSV = nullptr);
 	HRESULT End_MRT(ID3D11DepthStencilView* _pDSV = nullptr);
 	HRESULT Add_Shadow_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
+	HRESULT Add_UAV_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+
+	HRESULT Compute_Copy_RTV(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, class CShader_Compute_Sample* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg);
+
 #ifdef _DEBUG
 public:
 	HRESULT Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
@@ -203,6 +207,8 @@ public:
 	HRESULT Bind_LightZ(CShader* pShader);
 	HRESULT Bind_LightPos(CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_LightDir(CShader* pShader, const _char* pConstantName);
+	HRESULT Bind_LightProjDir(CShader* pShader, const _char* pConstantName);
+	_float2 Get_LightPos();
 #pragma endregion
 
 #pragma region UI_Manager

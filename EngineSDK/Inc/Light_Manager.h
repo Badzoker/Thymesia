@@ -15,13 +15,14 @@ public:
 
 public:
 	HRESULT Initialize();
-	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
+	HRESULT Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform);
 	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);		
 
 private:
 	ID3D11Device*					m_pDevice = {};
 	ID3D11DeviceContext*			m_pContext = {};
 	list<class CLight*>				m_Lights;
+	list<class CLight_Dynamic*>		m_LightDynamics;
 
 public:
 	static CLight_Manager* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);

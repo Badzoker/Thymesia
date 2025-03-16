@@ -205,6 +205,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\Level.h" />
     <ClInclude Include="..\public\Level_Manager.h" />
     <ClInclude Include="..\public\Light.h" />
+    <ClInclude Include="..\Public\Light_Dynamic.h" />
     <ClInclude Include="..\public\Light_Manager.h" />
     <ClInclude Include="..\public\Material.h" />
     <ClInclude Include="..\public\Mesh.h" />
@@ -220,6 +221,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\Public\Shader_Compute.h" />
+    <ClInclude Include="..\Public\Shader_Compute_Sample.h" />
     <ClInclude Include="..\public\Shadow.h" />
     <ClInclude Include="..\public\SoundMgr.h" />
     <ClInclude Include="..\public\SwordTrail_Buffer.h" />
@@ -283,6 +285,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\Level.cpp" />
     <ClCompile Include="..\private\Level_Manager.cpp" />
     <ClCompile Include="..\private\Light.cpp" />
+    <ClCompile Include="..\Private\Light_Dynamic.cpp" />
     <ClCompile Include="..\private\Light_Manager.cpp" />
     <ClCompile Include="..\private\Material.cpp" />
     <ClCompile Include="..\private\Mesh.cpp" />
@@ -298,6 +301,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
     <ClCompile Include="..\Private\Shader_Compute.cpp" />
+    <ClCompile Include="..\Private\Shader_Compute_Sample.cpp" />
     <ClCompile Include="..\private\Shadow.cpp" />
     <ClCompile Include="..\private\SoundMgr.cpp" />
     <ClCompile Include="..\private\SwordTrail_Buffer.cpp" />
@@ -335,6 +339,7 @@ call UpdateLib.bat</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Sample.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Shadow.hlsl" />
   </ItemGroup>

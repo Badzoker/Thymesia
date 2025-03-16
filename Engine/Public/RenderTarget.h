@@ -14,12 +14,14 @@ private:
 public:
 	HRESULT Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4 & vClearColor);	
 	HRESULT Initialize_ShadowMap(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
+	HRESULT Initialize_UAV(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	void Clear();
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
 
 public:
 	ID3D11RenderTargetView* Get_RTV() const { return m_pRTV; }
 	ID3D11ShaderResourceView* Get_SRV() const { return m_pSRV; }
+	ID3D11UnorderedAccessView* Get_UAV() const { return m_pUAV; }
 
 #ifdef _DEBUG
 public:
@@ -33,6 +35,7 @@ private:
 	ID3D11Texture2D*          m_pTexture2D    = { nullptr };
 	ID3D11RenderTargetView*   m_pRTV          = { nullptr };
 	ID3D11ShaderResourceView* m_pSRV          = { nullptr };
+	ID3D11UnorderedAccessView* m_pUAV		  = { nullptr };
 
 	_float4			          m_vClearColor   = {};
 
@@ -46,6 +49,7 @@ private:
 public:
 	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	static CRenderTarget* Create_ShadowMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArraySize);
+	static CRenderTarget* Create_UAV(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	virtual void Free() override; 
 
 

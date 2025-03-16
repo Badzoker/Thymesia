@@ -1,6 +1,8 @@
 #include "..\Public\Light_Manager.h"
 
 #include "Light.h"
+#include "Light_Dynamic.h"
+#include "Transform.h"
 
 CLight_Manager::CLight_Manager(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice { pDevice }
@@ -25,14 +27,25 @@ HRESULT CLight_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Add_Light(const LIGHT_DESC & LightDesc)
+HRESULT CLight_Manager::Add_Light(const LIGHT_DESC & LightDesc, CTransform* pTransform)
 {
-	CLight*			pLight = CLight::Create(m_pDevice, m_pContext, LightDesc);
-	if (nullptr == pLight)
-		return E_FAIL;
+	if (pTransform == nullptr)
+	{
+		CLight* pLight = CLight::Create(m_pDevice, m_pContext, LightDesc);
+		if (nullptr == pLight)
+			return E_FAIL;
 
-	m_Lights.push_back(pLight);
+		m_Lights.push_back(pLight);
+	}
+	else
+	{
+		CLight_Dynamic* pLight = CLight_Dynamic::Create(m_pDevice, m_pContext, LightDesc, pTransform);
+		if (nullptr == pLight)
+			return E_FAIL;
 
+		m_LightDynamics.push_back(pLight);
+
+	}
 	return S_OK;
 }
 
@@ -41,6 +54,11 @@ void CLight_Manager::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	for (auto& pLight : m_Lights)
 	{
 		pLight->Render(pShader, pVIBuffer);		
+	}
+
+	for (auto& pLightDynamic : m_LightDynamics)
+	{
+		pLightDynamic->Render(pShader, pVIBuffer);
 	}
 }
 
@@ -67,6 +85,9 @@ void CLight_Manager::Free()
 
 	for (auto& pLight : m_Lights)
 		Safe_Release(pLight);
+
+	for (auto& pLightDynamic : m_LightDynamics)
+		Safe_Release(pLightDynamic);
 
 	m_Lights.clear();
 }
