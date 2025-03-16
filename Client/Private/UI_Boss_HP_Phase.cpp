@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "UI_Boss_HP_Phase.h"
+#include "Boss_Varg.h"
 #include "GameInstance.h"
 
 CUI_Boss_HP_Phase::CUI_Boss_HP_Phase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -58,7 +59,7 @@ void CUI_Boss_HP_Phase::Priority_Update(_float fTimeDelta)
 
     if (!(*m_bBossActive))
         return;
-    if (*m_iPhase == 2)
+    if (*m_iPhase == CBoss_Varg::PHASE_TWO)
         m_RenderNum = 1;
 
 }

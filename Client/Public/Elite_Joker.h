@@ -32,6 +32,8 @@ public:
 	HRESULT Ready_PartObjects();
 public:
 	void RootAnimation();
+	void CalCulate_Distance();
+	void Culling();
 public:
 	void PatternCreate();
 	void Near_Pattern_Create();
@@ -49,6 +51,7 @@ private:
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bDead = {};
+	_bool                            m_bCulling = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
@@ -61,6 +64,7 @@ private:
 	_float                           m_fSpawn_Distance = {};
 	_float                           m_fTimeDelta = {};
 	_float                           m_fHP_Bar_Active_Timer = {};
+	_float                           m_fHP_Bar_Height = {};
 
 
 	_float                           m_fMonsterMaxHP = {};

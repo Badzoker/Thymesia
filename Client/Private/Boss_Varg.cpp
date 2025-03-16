@@ -77,14 +77,16 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
+    Culling();
+    if (m_bCulling)
+        return;
+
     m_fTimeDelta = fTimeDelta;
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+    CalCulate_Distance();
 
     if (m_fDistance <= 15.f && !m_bBossActive && !m_bDead)
     {
-        m_iPhase = 1;
+        m_iPhase = PHASE_ONE;
         m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
     }
 
@@ -97,7 +99,7 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
     }
     m_fLookTime += fTimeDelta;
 
-    if (m_pGameInstance->isKeyEnter(DIK_K))
+    if (m_pGameInstance->isKeyEnter(DIK_M))
     {
         m_fBossCurHP -= 50.f;  //나중에 플레이어의 공격력 받아오기
         m_fShieldHP -= 100.f;
@@ -113,35 +115,32 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
 
 void CBoss_Varg::Update(_float fTimeDelta)
 {
-
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
-
+    if (m_bCulling)
+        return;
     PatternCreate();
     RootAnimation();
-
 
     m_pState_Manager->State_Update(fTimeDelta, this);
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
-
     __super::Update(fTimeDelta);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
-
 }
 
 void CBoss_Varg::Late_Update(_float fTimeDelta)
 {
-    Recovery_HP();
+    if (m_bCulling)
+        return;
 
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
-    {
-        __super::Late_Update(fTimeDelta);
-    }
+    Recovery_HP();
+    if (m_bNeed_Rotation)
+        Rotation_To_Player();
+
+    __super::Late_Update(fTimeDelta);
 }
 
 HRESULT CBoss_Varg::Render()
@@ -232,10 +231,34 @@ void CBoss_Varg::RootAnimation()
     }
 }
 
+void CBoss_Varg::CalCulate_Distance()
+{
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+}
+
+void CBoss_Varg::Culling()
+{
+    //절두체 안에있을때
+    if (!m_bBossActive)
+    {
+        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
+        {
+            m_bCulling = false;
+        }
+        //절두체 안에 없을때
+        else
+        {
+            m_bCulling = true;
+        }
+    }
+}
+
 void CBoss_Varg::PatternCreate()
 {
     //2페이즈 들어온 후
-    if (m_iPhase == 2 && m_bBossActive)
+    if (m_iPhase == PHASE_TWO && m_bBossActive)
     {
         m_fSpecial_Skill_CoolTime += 1 * m_fTimeDelta;
     }
@@ -247,7 +270,7 @@ void CBoss_Varg::PatternCreate()
         {
             if (m_fSpecial_Skill_CoolTime >= 30.f)
             {
-                m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(false), this);
+                m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(), this);
             }
             else if (m_fDistance >= 5.f)
                 Far_Pattern_Create();
@@ -988,54 +1011,52 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 {
     //나중에 페이즈 구분 해줘야할듯
       //1페이즈이고 애님 끝났으면 변환시키기
-    if (m_iIndex == 41 && pObject->m_iPhase == 1 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 118.f)
+    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 118.f)
     {
         m_iIndex = 40;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 41 && pObject->m_iPhase == 2 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
     }
 
     if (m_iIndex == 40 && pObject->m_pModelCom->GetAniFinish())
     {
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(), pObject);
     }
 }
 
 void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
 {
-    if (pObject->m_iPhase == 1)
+    if (pObject->m_iPhase == PHASE_ONE)
     {
-        pObject->m_iPhase = 2;
+        pObject->m_iPhase = PHASE_TWO;
         pObject->m_fCoolTime = 0.1f;
     }
+    else if (pObject->m_iPhase == PHASE_TWO)
+        pObject->m_iPhase = PHASE_END;
 
     pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
 
 #pragma region Roar_State
-CBoss_Varg::Roar_State::Roar_State(_bool m_bCheck)
-    : m_bFirst(m_bCheck)
-{
-}
-
 void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
 {
-    if (m_bFirst)
+    if (pObject->m_iPhase == PHASE_TWO)
     {
         m_iIndex = 32;
+        pObject->m_fBossCurHP = pObject->m_fBossMaxHP;
+        pObject->m_bCanRecovery = true;
     }
     else
     {
         m_iIndex = 31;
     }
+
     pObject->m_fSpecial_Skill_CoolTime = 0.f;
-    pObject->m_fBossCurHP = pObject->m_fBossMaxHP;
     pObject->m_bPatternProgress = true;
-    pObject->m_bCanRecovery = true;
     pObject->m_IsStun = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_STUN;
     pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
@@ -1114,10 +1135,9 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 37;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bDead = true;
-    pObject->m_bBossActive = false;
-    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_iMonster_State = STATE_DEAD;
+    pObject->m_bDead = true;
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1126,6 +1146,7 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 39;
+        pObject->m_bBossActive = false;
         pObject->m_pModelCom->SetUp_Animation(39, false);
         pObject->m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), pObject);
     }

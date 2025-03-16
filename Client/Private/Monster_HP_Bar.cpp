@@ -31,7 +31,7 @@ HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 	m_pMonsterMatrix = pDesc->pMonsterMatrix;
 	m_bHP_Bar_Active = pDesc->bHP_Bar_Active;
 	m_bMonsterDead = pDesc->bDead;
-
+	m_fHeight = pDesc->fHeight;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -41,10 +41,11 @@ HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects(pDesc)))
 		return E_FAIL;
 
+	_vector vHPBar_Offset = { 0.f,*m_fHeight,0.f,1.f };
 
-	_vector vPos = { 0.f,500.f,0.f,1.f };
 	m_pTransformCom->Scaling(_float3(229.f, 15.f, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vHPBar_Offset);
 
 	return S_OK;
 }
@@ -101,8 +102,8 @@ void CMonster_HP_Bar::Bill_Board()
 	_matrix matWithoutRotation = XMMatrixAffineTransformation(vParentScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), vParentTranslation);
 
 	_vector vRight{}, vUp{}, vLook{};
-	_vector vPos = XMLoadFloat4(&m_pGameInstance->Get_CamPosition());
-	vLook = matWithoutRotation.r[3] - vPos;
+	_vector vCamPos = XMLoadFloat4(&m_pGameInstance->Get_CamPosition());
+	vLook = matWithoutRotation.r[3] - vCamPos;
 
 	vLook = XMVector3Normalize(vLook);
 	vUp = matWithoutRotation.r[1];
@@ -112,14 +113,21 @@ void CMonster_HP_Bar::Bill_Board()
 
 	_float3 vScale = _float3(XMVectorGetX(XMVector3Length(matWithoutRotation.r[0])), XMVectorGetY(XMVector3Length(matWithoutRotation.r[1])), XMVectorGetZ(XMVector3Length(matWithoutRotation.r[2])));
 
-	matWithoutRotation.r[0] = XMVector3Normalize(vRight) * vScale.x;
-	matWithoutRotation.r[1] = XMVector3Normalize(vUp) * vScale.y;
-	matWithoutRotation.r[2] = XMVector3Normalize(vLook) * vScale.z;
+	_float fDistance = XMVectorGetX(XMVector3Length(matWithoutRotation.r[3]) - vCamPos);
+	_float fBaseSize = 50.f;
+	_float fScaleFactor = fBaseSize * (fDistance + 1.f);
+
+	fScaleFactor = max(0.1f, min(fScaleFactor, 1.0f));
+
+	matWithoutRotation.r[0] = XMVector3Normalize(vRight) * vScale.x * fScaleFactor;
+	matWithoutRotation.r[1] = XMVector3Normalize(vUp) * vScale.y * fScaleFactor;
+	matWithoutRotation.r[2] = XMVector3Normalize(vLook) * vScale.z * fScaleFactor;
 
 
 	XMStoreFloat4x4(&m_ResultMatrix, matWithoutRotation);
 
 }
+
 
 HRESULT CMonster_HP_Bar::Ready_Components()
 {

@@ -15,6 +15,8 @@ BEGIN(Client)
 
 class CBoss_Varg final : public CContainerObject
 {
+public:
+	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
 private:
 	CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoss_Varg(const CBoss_Varg& Prototype);
@@ -32,6 +34,8 @@ public:
 	HRESULT Ready_PartObjects();
 public:
 	void RootAnimation();
+	void CalCulate_Distance();
+	void Culling();
 public:
 	void PatternCreate();
 	void Near_Pattern_Create();
@@ -50,6 +54,7 @@ private:
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_IsStun = false;
 	_bool                            m_bDead = {};
+	_bool                            m_bCulling = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
@@ -268,14 +273,12 @@ public:
 	class Roar_State : public CStates<CBoss_Varg>
 	{
 	public:
-		Roar_State(_bool m_bCheck);
+		Roar_State() = default;
 		virtual ~Roar_State() = default;
 	public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
-	private:
-		_bool   m_bFirst = {};
 	};
 
 	class Catch_State : public CStates<CBoss_Varg>
