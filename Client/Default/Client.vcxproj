@@ -233,6 +233,7 @@
     <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_Iventory.h" />
+    <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerScreen.h" />
@@ -305,6 +306,8 @@
     <ClInclude Include="..\Public\UI_KeyBox_Long.h" />
     <ClInclude Include="..\Public\UI_LeftBackground.h" />
     <ClInclude Include="..\Public\UI_LevelImage.h" />
+    <ClInclude Include="..\Public\UI_LoadingIcon.h" />
+    <ClInclude Include="..\Public\UI_LoadingScreen.h" />
     <ClInclude Include="..\Public\UI_LockedIcon.h" />
     <ClInclude Include="..\Public\UI_MemoryShardsIcon.h" />
     <ClInclude Include="..\Public\UI_MouseCursor.h" />
@@ -403,6 +406,7 @@
     <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_Iventory.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerScreen.cpp" />
@@ -473,6 +477,8 @@
     <ClCompile Include="..\Private\UI_KeyBox_Long.cpp" />
     <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
     <ClCompile Include="..\Private\UI_LevelImage.cpp" />
+    <ClCompile Include="..\Private\UI_LoadingIcon.cpp" />
+    <ClCompile Include="..\Private\UI_LoadingScreen.cpp" />
     <ClCompile Include="..\Private\UI_LockedIcon.cpp" />
     <ClCompile Include="..\Private\UI_MemoryShardsIcon.cpp" />
     <ClCompile Include="..\Private\UI_MouseCursor.cpp" />

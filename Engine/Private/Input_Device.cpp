@@ -34,6 +34,25 @@ _bool CInput_Device::isKeyEnter(_int _iKey)
 		return false;		
 }
 
+_bool CInput_Device::isAnyEnter()
+{
+	for (int i = 0; i < 256; i++)
+	{
+		if (m_bKeyState[i] & 0x80)
+			return true;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (m_tMouseState.rgbButtons[i] & 0x80)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 _bool CInput_Device::isMouseEnter(_uint _iKey)		
 {
 	if ((m_tMouseState.rgbButtons[_iKey] & 0x80) && !(m_tPreMouseState.rgbButtons[_iKey] & 0x80))	

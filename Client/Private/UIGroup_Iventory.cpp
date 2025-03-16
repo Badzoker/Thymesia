@@ -39,7 +39,7 @@ HRESULT CUIGroup_Iventory::Initialize(void* pArg)
 	m_pMyBaseScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase");
 	m_pItemScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_Inven_ItemUse");
 
-	// 선행 조건이 필요한 ui들 최총에는 off 하도록 설정
+	// 선행 조건이 필요한 ui들 최초에는 off 하도록 설정
 	m_pItemUsePopUp = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_ItemUse_PopUp");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemUsePopUp, false);
 

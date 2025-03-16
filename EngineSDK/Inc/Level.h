@@ -15,11 +15,17 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	void Set_NextLevel_Open(_bool bOpen) { m_bNextLevelOpen = bOpen; }
+
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
 	class CGameInstance*		m_pGameInstance = { nullptr };
+protected:
+	_bool m_bNextLevelOpen = { false };
+
 
 public:
 	virtual void Free() override;

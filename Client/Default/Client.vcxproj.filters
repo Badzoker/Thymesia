@@ -574,6 +574,15 @@
     <Filter Include="02.GameObject\Monster\01. Elite\Weapon\HArmorLV2">
       <UniqueIdentifier>{c1f388a7-ae17-44f1-b239-d125d2c611a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_LoadingIcon">
+      <UniqueIdentifier>{b84166d4-0f85-42cd-834a-3b05804a2f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_LoadingScreen">
+      <UniqueIdentifier>{eab023f6-50fb-42c8-ae74-0d4af48b4f96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\07.Loading">
+      <UniqueIdentifier>{6baf2a65-efd6-4b5e-9f43-12444af93610}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1077,6 +1086,15 @@
     <ClInclude Include="..\Public\Locked_On.h">
       <Filter>02.GameObject\Monster\97. Locked_On</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_LoadingIcon.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_LoadingIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LoadingScreen.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_LoadingScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Loading.h">
+      <Filter>03.UIObject\2.UIObjGroup\07.Loading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1570,6 +1588,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Locked_On.cpp">
       <Filter>02.GameObject\Monster\97. Locked_On</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LoadingIcon.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_LoadingIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LoadingScreen.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_LoadingScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Loading.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\07.Loading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
