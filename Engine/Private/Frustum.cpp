@@ -81,32 +81,32 @@ _bool CFrustum::isIn_AABB_Box(const XMFLOAT3& _fMin, const XMFLOAT3& _fMax)
 	XMFLOAT3 fAdjustMin = XMFLOAT3(_fMin.x - m_fOffSet, _fMin.y - m_fOffSet, _fMin.z - m_fOffSet);
 	XMFLOAT3 fAdjustMax = XMFLOAT3(_fMin.x + m_fOffSet, _fMin.y + m_fOffSet, _fMin.z + m_fOffSet);
 
+	XMFLOAT3 fPoints[8] =
+	{
+		/*XMFLOAT3(_fMin.x, _fMax.y, _fMin.z),
+		XMFLOAT3(_fMax.x, _fMax.y, _fMin.z),
+		XMFLOAT3(_fMax.x, _fMin.y, _fMin.z),
+		XMFLOAT3(_fMin.x, _fMin.y, _fMin.z),
+
+		XMFLOAT3(_fMin.x, _fMax.y, _fMax.z),
+		XMFLOAT3(_fMax.x, _fMax.y, _fMax.z),
+		XMFLOAT3(_fMax.x, _fMin.y, _fMax.z),
+		XMFLOAT3(_fMin.x, _fMin.y, _fMax.z)*/
+
+		XMFLOAT3(fAdjustMin.x, fAdjustMax.y, fAdjustMin.z),
+		XMFLOAT3(fAdjustMax.x, fAdjustMax.y, fAdjustMin.z),
+		XMFLOAT3(fAdjustMax.x, fAdjustMin.y, fAdjustMin.z),
+		XMFLOAT3(fAdjustMin.x, fAdjustMin.y, fAdjustMin.z),
+
+		XMFLOAT3(fAdjustMin.x, fAdjustMax.y, fAdjustMax.z),
+		XMFLOAT3(fAdjustMax.x, fAdjustMax.y, fAdjustMax.z),
+		XMFLOAT3(fAdjustMax.x, fAdjustMin.y, fAdjustMax.z),
+		XMFLOAT3(fAdjustMin.x, fAdjustMin.y, fAdjustMax.z)
+	};
+
 	for (_uint i = 0; i < 6; ++i)
 	{
 		XMVECTOR vPlane = XMLoadFloat4(&m_vWorld_Planes[i]);
-
-		XMFLOAT3 fPoints[8] =
-		{
-			/*XMFLOAT3(_fMin.x, _fMax.y, _fMin.z),
-			XMFLOAT3(_fMax.x, _fMax.y, _fMin.z),
-			XMFLOAT3(_fMax.x, _fMin.y, _fMin.z),
-			XMFLOAT3(_fMin.x, _fMin.y, _fMin.z),
-
-			XMFLOAT3(_fMin.x, _fMax.y, _fMax.z),
-			XMFLOAT3(_fMax.x, _fMax.y, _fMax.z),
-			XMFLOAT3(_fMax.x, _fMin.y, _fMax.z),
-			XMFLOAT3(_fMin.x, _fMin.y, _fMax.z)*/
-
-			XMFLOAT3(fAdjustMin.x, fAdjustMax.y, fAdjustMin.z),
-			XMFLOAT3(fAdjustMax.x, fAdjustMax.y, fAdjustMin.z),
-			XMFLOAT3(fAdjustMax.x, fAdjustMin.y, fAdjustMin.z),
-			XMFLOAT3(fAdjustMin.x, fAdjustMin.y, fAdjustMin.z),
-
-			XMFLOAT3(fAdjustMin.x, fAdjustMax.y, fAdjustMax.z),
-			XMFLOAT3(fAdjustMax.x, fAdjustMax.y, fAdjustMax.z),
-			XMFLOAT3(fAdjustMax.x, fAdjustMin.y, fAdjustMax.z),
-			XMFLOAT3(fAdjustMin.x, fAdjustMin.y, fAdjustMax.z)
-		};
 
 		_uint iCulledPointCount = {};
 
