@@ -32,6 +32,7 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
     m_fMonsterMaxHP = 100.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
+    m_fRotateSpeed = 180.f;
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
     Desc->fSpeedPerSec = 1.f;
@@ -289,36 +290,34 @@ void CNormal_VillageM1::RotateDegree_To_Player()
     //회전해야 하는 각도
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
-    m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 5.f)
-    {
-        m_bNeed_Rotation = true;
-    }
     _vector fCrossResult = XMVector3Cross(vLook, vLook2);
+
     if (XMVectorGetY(fCrossResult) < 0)
     {
-        m_fRotateDegree *= -1;
+        fAngle *= -1;
     }
+    m_fRotateDegree = fAngle;
+
+    if (fabs(m_fRotateDegree) > 1.f)
+        m_bNeed_Rotation = true;
 
 }
 
 void CNormal_VillageM1::Rotation_To_Player()
 {
-    _float fRadians = 3.f;
+    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
     if (m_fRotateDegree < 0.f)
-    {
         fRadians *= -1;
-        m_fAngle -= 3.f;
-    }
-    else
-    {
-        m_fAngle += 3.f;
-    }
+
+    if (fabs(m_fRotateDegree) < fabs(fRadians))
+        fRadians = m_fRotateDegree;
 
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-    if (fabs(m_fAngle) >= fabs(m_fRotateDegree))
+
+    m_fRotateDegree -= fRadians;
+
+    if (fabs(m_fRotateDegree) <= 1.f)
     {
-        m_fAngle = 0.f;
         m_fRotateDegree = 0.f;
         m_bNeed_Rotation = false;
     }

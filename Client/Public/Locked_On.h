@@ -5,26 +5,26 @@
 
 BEGIN(Engine)
 class CShader;
-class CModel;
 class CTexture;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
 
-class CBody_Joker final : public CPartObject
+class CLocked_On final : public CPartObject
 {
 public:
-	struct BODY_JOKER_DESC : public CPartObject::PARTOBJECT_DESC
+	struct LOCKED_ON_DESC : public CPartObject::PARTOBJECT_DESC
 	{
 		const _uint* pParentState = { nullptr };
-		_bool* bDead = { nullptr };
-		_bool* bActive = { nullptr };
+		const _float4x4* pSocketMatrix = { nullptr };
+		_bool* bLocked_On_Active = { nullptr };
 	};
 
 private:
-	CBody_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CBody_Joker(const CBody_Joker& Prototype);
-	virtual ~CBody_Joker() = default;
+	CLocked_On(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLocked_On(const CLocked_On& Prototype);
+	virtual ~CLocked_On() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -33,27 +33,28 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual HRESULT Render_Shadow() override;
+public:
+	void Bill_Board();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+
+	const _float4x4* m_pSocketMatrix = { nullptr };
 private:
 	const _uint* m_pParentState = { nullptr };
-	_uint m_iPassNum = {};
-	_float m_fDeadTimer = 1.f;
-	_float m_fFinishTime = 1.f;
-	_bool* m_bDead = {};
-	_bool* m_bActive = {};
+	_bool* m_bLocked_On = { nullptr };
 
+	_uint m_iTextureNum = {};
+	_uint m_iPassNum = {};
 
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CBody_Joker* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLocked_On* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

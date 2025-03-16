@@ -58,7 +58,7 @@ private:
 
 
 	_float                           m_fRotateDegree = {};
-	_float                           m_fAngle = {};
+	_float                           m_fRotateSpeed = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fDistance = {};
 	_float                           m_fSpawn_Distance = {};

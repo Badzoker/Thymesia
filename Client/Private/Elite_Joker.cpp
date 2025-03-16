@@ -31,6 +31,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_fMonsterMaxHP = 100.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
+    m_fRotateSpeed = 180.f;
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
@@ -86,13 +87,10 @@ void CElite_Joker::Priority_Update(_float fTimeDelta)
     m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
     m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
 
-    if (m_fDistance <= 8.f && !m_bActive)
+    if (m_fDistance <= 15.f && !m_bActive)
     {
         m_pState_Manager->ChangeState(new CElite_Joker::Intro_State(), this);
     }
-
-    if (!m_bActive)
-        return;
 
     if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
     {
@@ -134,7 +132,7 @@ void CElite_Joker::Update(_float fTimeDelta)
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-    
+
     __super::Update(fTimeDelta);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
@@ -178,6 +176,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     BodyDesc.pParentState = &m_iMonster_State;
     BodyDesc.bDead = &m_bDead;
+    BodyDesc.bActive = &m_bActive;
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
@@ -322,35 +321,33 @@ void CElite_Joker::RotateDegree_To_Player()
     //회전해야 하는 각도
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
-    m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 5.f)
-    {
-        m_bNeed_Rotation = true;
-    }
     _vector fCrossResult = XMVector3Cross(vLook, vLook2);
+
     if (XMVectorGetY(fCrossResult) < 0)
     {
-        m_fRotateDegree *= -1;
+        fAngle *= -1;
     }
+    m_fRotateDegree = fAngle;
+
+    if (fabs(m_fRotateDegree) > 1.f)
+        m_bNeed_Rotation = true;
 }
 
 void CElite_Joker::Rotation_To_Player()
 {
-    _float fRadians = 3.f;
+    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
     if (m_fRotateDegree < 0.f)
-    {
         fRadians *= -1;
-        m_fAngle -= 3.f;
-    }
-    else
-    {
-        m_fAngle += 3.f;
-    }
+
+    if (fabs(m_fRotateDegree) < fabs(fRadians))
+        fRadians = m_fRotateDegree;
 
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-    if (fabs(m_fAngle) >= fabs(m_fRotateDegree))
+
+    m_fRotateDegree -= fRadians;
+
+    if (fabs(m_fRotateDegree) <= 1.f)
     {
-        m_fAngle = 0.f;
         m_fRotateDegree = 0.f;
         m_bNeed_Rotation = false;
     }
@@ -443,7 +440,7 @@ void CElite_Joker::Idle_State::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Intro_State::State_Enter(CElite_Joker* pObject)
 {
     pObject->m_bPatternProgress = true;
-    pObject->m_iMonster_State = STATE_IDLE;
+    pObject->m_iMonster_State = STATE_INTRO;
     m_iIndex = 15;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -727,6 +724,7 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 22;
     pObject->m_bHP_Bar_Active = false;
+    pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

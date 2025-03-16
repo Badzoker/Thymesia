@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Monster_HP_Bar.h"
+#include "Locked_On.h"
 
 CNormal_VillageF0::CNormal_VillageF0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -30,6 +31,7 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
     m_fMonsterMaxHP = 100.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
+    m_fRotateSpeed = 180.f;
 
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
     Desc->fSpeedPerSec = 1.f;
@@ -196,6 +198,17 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Dagger"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Dagger"), &Weapon_Desc)))
         return E_FAIL;
 
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+        return E_FAIL;
+
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
     Monster_HP_Bar_Desc.pMonsterMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Monster_HP_Bar_Desc.fMaxHP = &m_fMonsterMaxHP;
@@ -270,35 +283,33 @@ void CNormal_VillageF0::RotateDegree_To_Player()
     //회전해야 하는 각도
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
-    m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 5.f)
-    {
-        m_bNeed_Rotation = true;
-    }
     _vector fCrossResult = XMVector3Cross(vLook, vLook2);
+
     if (XMVectorGetY(fCrossResult) < 0)
     {
-        m_fRotateDegree *= -1;
+        fAngle *= -1;
     }
+    m_fRotateDegree = fAngle;
+
+    if (fabs(m_fRotateDegree) > 1.f)
+        m_bNeed_Rotation = true;
 }
 
 void CNormal_VillageF0::Rotation_To_Player()
 {
-    _float fRadians = 3.f;
+    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
     if (m_fRotateDegree < 0.f)
-    {
         fRadians *= -1;
-        m_fAngle -= 3.f;
-    }
-    else
-    {
-        m_fAngle += 3.f;
-    }
+
+    if (fabs(m_fRotateDegree) < fabs(fRadians))
+        fRadians = m_fRotateDegree;
 
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-    if (fabs(m_fAngle) >= fabs(m_fRotateDegree))
+
+    m_fRotateDegree -= fRadians;
+
+    if (fabs(m_fRotateDegree) <= 1.f)
     {
-        m_fAngle = 0.f;
         m_fRotateDegree = 0.f;
         m_bNeed_Rotation = false;
     }
@@ -477,9 +488,9 @@ void CNormal_VillageF0::Move_State::State_Enter(CNormal_VillageF0* pObject)
 
 void CNormal_VillageF0::Move_State::State_Update(_float fTimeDelta, CNormal_VillageF0* pObject)
 {
-    if (pObject->m_fDistance >= 2.f)
+    if (pObject->m_fDistance >= 5.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 2.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 5.f && pObject->m_bMove)
     {
         pObject->RotateDegree_To_Player();
         if (m_iIndex == 46)
@@ -556,10 +567,10 @@ void CNormal_VillageF0::Run_State::State_Exit(CNormal_VillageF0* pObject)
 void CNormal_VillageF0::Run_Attack::State_Enter(CNormal_VillageF0* pObject)
 {
     m_iIndex = 6;
-    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-    pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(3.f);
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(3.f);
 }
 
 void CNormal_VillageF0::Run_Attack::State_Update(_float fTimeDelta, CNormal_VillageF0* pObject)

@@ -91,7 +91,7 @@ void CVargKnife::Update(_float fTimeDelta)
             {
                 // 그 구간에서는 계속 진행 
 
-                if (*m_pParentState == CBoss_Varg::Varg_Attack_Roar_State)
+                if (*m_pParentState == STATE_SPECIAL_ATTACK)
                 {
                     m_pGameInstance->Add_Actor_Scene(m_pStunActor);
                 }

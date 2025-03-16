@@ -201,6 +201,7 @@
     <ClInclude Include="..\public\HURTSL.h" />
     <ClInclude Include="..\public\HURTXXLF.h" />
     <ClInclude Include="..\public\HURT_FallDown.h" />
+    <ClInclude Include="..\Public\Locked_On.h" />
     <ClInclude Include="..\public\LockOn_Evade_B.h" />
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
@@ -369,6 +370,7 @@
     <ClCompile Include="..\private\HURTSL.cpp" />
     <ClCompile Include="..\private\HURTXXLF.cpp" />
     <ClCompile Include="..\private\HURT_FallDown.cpp" />
+    <ClCompile Include="..\Private\Locked_On.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_B.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />

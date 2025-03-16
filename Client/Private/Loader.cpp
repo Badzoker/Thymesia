@@ -49,6 +49,7 @@
 #include "Monster_HP_Gage.h"
 #include "Monster_HP_Gage_Effect.h"
 #include "Monster_HP_Bar_Effect.h"
+#include "Locked_On.h"
 #pragma endregion 
 
 #pragma region NPC
@@ -2358,12 +2359,18 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"),
 		CMonster_HP_Bar_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"),
+		CLocked_On::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	//몬스터용 노이즈 텍스쳐 /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Noise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise6.dds"), 1))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_Locked_On"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/LockOn/LockOn%d.dds"), 2))))
+		return E_FAIL;
 #pragma endregion 
 
 #pragma region NPC

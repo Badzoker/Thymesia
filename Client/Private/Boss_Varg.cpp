@@ -30,6 +30,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     m_fBossMaxHP = 100.f;
     m_fBossCurHP = m_fBossMaxHP;
     m_fShieldHP = m_fBossMaxHP;
+    m_fRotateSpeed = 180.f;
     m_fCoolTime = 1.f;
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
@@ -180,7 +181,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
 
     Varg_Knife_Desc.pParent = this;
     Varg_Knife_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
-    Varg_Knife_Desc.pParentState = &m_iState;
+    Varg_Knife_Desc.pParentState = &m_iMonster_State;
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Varg_Knife_Desc.pParentModel = m_pModelCom;
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
@@ -345,35 +346,33 @@ void CBoss_Varg::RotateDegree_To_Player()
     //회전해야 하는 각도
     _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
     fAngle = XMConvertToDegrees(fAngle);
-    m_fRotateDegree = fAngle;
-    if (m_fRotateDegree > 5.f)
-    {
-        m_bNeed_Rotation = true;
-    }
     _vector fCrossResult = XMVector3Cross(vLook, vLook2);
+
     if (XMVectorGetY(fCrossResult) < 0)
     {
-        m_fRotateDegree *= -1;
+        fAngle *= -1;
     }
+    m_fRotateDegree = fAngle;
+
+    if (fabs(m_fRotateDegree) > 1.f)
+        m_bNeed_Rotation = true;
 }
 
 void CBoss_Varg::Rotation_To_Player()
 {
-    _float fRadians = 1.f;
+    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
     if (m_fRotateDegree < 0.f)
-    {
         fRadians *= -1;
-        m_fAngle -= 1.f;
-    }
-    else
-    {
-        m_fAngle += 1.f;
-    }
+
+    if (fabs(m_fRotateDegree) < fabs(fRadians))
+        fRadians = m_fRotateDegree;
 
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-    if (fabs(m_fAngle) >= fabs(m_fRotateDegree))
+
+    m_fRotateDegree -= fRadians;
+
+    if (fabs(m_fRotateDegree) <= 1.f)
     {
-        m_fAngle = 0.f;
         m_fRotateDegree = 0.f;
         m_bNeed_Rotation = false;
     }
@@ -466,7 +465,7 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 36;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_iState = CBoss_Varg::Varg_Stun_State;
+    pObject->m_iMonster_State = STATE_STUN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -494,7 +493,7 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 {
     pObject->m_bBossActive = true;
     pObject->m_bPatternProgress = true;
-    pObject->m_iState = CBoss_Varg::Varg_Intro_State;
+    pObject->m_iMonster_State = STATE_INTRO;
     pObject->m_pModelCom->SetUp_Animation(17, false);
 }
 
@@ -519,7 +518,7 @@ void CBoss_Varg::Idle_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 19;
     //Idle로 돌아오면 패턴 진행할수 있게 진행중이라는 불값 해제 
     pObject->m_bPatternProgress = false;
-    pObject->m_iState = CBoss_Varg::Varg_Idle_State;
+    pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     //애니메이션 실행
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -544,7 +543,7 @@ void CBoss_Varg::Idle_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Avoid_State::State_Enter(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_iState = CBoss_Varg::Varg_Avoid_State;
+    pObject->m_iMonster_State = STATE_MOVE;
     m_iIndex = (rand() % 3) + 4;
     _uint iBonus_Attack = rand() % 2;
     switch (iBonus_Attack)
@@ -567,7 +566,7 @@ void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
         {
             m_iIndex = 3;
             pObject->RotateDegree_To_Player();
-            pObject->m_iState = CBoss_Varg::Varg_Avoid_Attack_State;
+            pObject->m_iMonster_State = STATE_ATTACK;
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
             m_bBonusAttack = false;
@@ -590,7 +589,7 @@ void CBoss_Varg::Avoid_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Hit_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 18;
-    pObject->m_iState = CBoss_Varg::Varg_Hit_State;
+    pObject->m_iMonster_State = STATE_HIT;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -633,7 +632,7 @@ void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
         }
     }
     pObject->m_bPatternProgress = false;
-    pObject->m_iState = CBoss_Varg::Varg_Walk_State;
+    pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
@@ -673,7 +672,7 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
 {
     //1단
     m_iIndex = 7;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -686,7 +685,6 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex += 1;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_02_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //3단
@@ -695,7 +693,6 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex += 1;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_03_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //끝
@@ -725,7 +722,7 @@ void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -736,7 +733,6 @@ void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex = 11;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_02_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -766,7 +762,7 @@ void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -776,7 +772,6 @@ void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     {
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_03_State;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -807,7 +802,7 @@ void CBoss_Varg::Attack_Combo_D::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 7;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_A_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -818,7 +813,6 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex = 10;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
@@ -826,7 +820,6 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex = 12;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_03_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
@@ -856,7 +849,7 @@ void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_B_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -867,7 +860,6 @@ void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         m_iIndex = 14;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-        pObject->m_iState = CBoss_Varg::Varg_Attack_Combo_C_01_State;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
@@ -894,7 +886,7 @@ void CBoss_Varg::Attack_Combo_E::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Run_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 25;
-    pObject->m_iState = CBoss_Varg::Varg_Run_State;
+    pObject->m_iMonster_State = STATE_RUN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -925,7 +917,7 @@ void CBoss_Varg::Run_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Raid_Attack_01::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 21;
-    pObject->m_iState = CBoss_Varg::Varg_Raid_Attack_01_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -956,7 +948,7 @@ void CBoss_Varg::Raid_Attack_01::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Raid_Attack_02::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 22;
-    pObject->m_iState = CBoss_Varg::Varg_Raid_Attack_02_State;
+    pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -987,16 +979,7 @@ void CBoss_Varg::Raid_Attack_02::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 41;
-    if (pObject->m_iPhase == 1)
-    {
-        pObject->m_iState = CBoss_Varg::Varg_Execution_First_State;
-        pObject->m_iMonster_State = STATE_EXECUTION;
-    }
-    else
-    {
-        pObject->m_iState = CBoss_Varg::Varg_Execution_Second_State;
-        pObject->m_iMonster_State = STATE_EXECUTION;    
-    }
+    pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -1055,7 +1038,7 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_bCanRecovery = true;
     pObject->m_IsStun = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_STUN;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Roar_State;
+    pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1077,7 +1060,7 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 30;
     //pObject->m_bCan_Move_Anim = true;
     m_bCanCatch = true;
-    pObject->m_iState = CBoss_Varg::Varg_Attack_Catch_State;
+    pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1134,8 +1117,7 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_bDead = true;
     pObject->m_bBossActive = false;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
-    pObject->m_iState = CBoss_Varg::Varg_Dead_State;
-    pObject->m_iMonster_State = STATE_DEAD;     
+    pObject->m_iMonster_State = STATE_DEAD;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
