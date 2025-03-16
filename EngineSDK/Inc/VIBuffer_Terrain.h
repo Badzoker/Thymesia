@@ -21,7 +21,8 @@ public:
 
 private:
 	_float4                 m_vPlane = {};
-	XMVECTOR*				m_VertexPos = { nullptr };
+	//XMVECTOR*				m_VertexPos = { nullptr };
+	_float4*				m_VertexPos = { nullptr };
 	VTXNORTEX*				m_pVertices = { nullptr };
 	_int                   m_iNumverticesX, m_iNumverticesZ;
 	_float3					m_fTerrainPos = {};

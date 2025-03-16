@@ -35,7 +35,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 
 	/* 그러면 내가 해야할 일이 VTXNORTEX에 있는 POSITION, NORAML , Texcoord 내용 채워주기*/
 
-	m_VertexPos = new XMVECTOR[m_iNumVertices];
+	//m_VertexPos = new XMVECTOR[m_iNumVertices];
+	m_VertexPos = new XMFLOAT4[m_iNumVertices];
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 
 	const _tchar* strFilePath{};
@@ -68,7 +69,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 				for (_uint j = 0; j < dwCntX; j++)
 				{
 					memcpy(pVertices, m_pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
-					m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+					XMLoadFloat4(&m_VertexPos[dwCntZ * i + j]) = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 				}
 			}
 		}
@@ -82,7 +83,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 					pVertices[dwCntZ * i + j].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, 0.f, static_cast<_float>(i));
 					pVertices[dwCntZ * i + j].vNormal = _float3(0.f, 1.f, 0.f);
 					pVertices[dwCntZ * i + j].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
-					m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+					//m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+					XMLoadFloat4(&m_VertexPos[dwCntZ * i + j]) = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 				}
 			}
 		}
@@ -198,7 +200,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint dwCntX, const  _uint
 				pVertices[iIndex].vPosition = _float3(static_cast<_float>(j) * dwVertexItv, (pPixel[iIndex] & 0x000000ff) / 10.f, static_cast<_float>(i));
 				pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 				pVertices[iIndex].vTexcoord = _float2(j * dwVertexItv / (dwCntX - 1.f), i / (dwCntZ - 1.f));
-				m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+				//m_VertexPos[dwCntZ * i + j] = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
+				XMLoadFloat4(&m_VertexPos[dwCntZ * i + j]) = XMLoadFloat3(&pVertices[dwCntZ * i + j].vPosition);
 			}
 		}
 
@@ -334,22 +337,22 @@ _float CVIBuffer_Terrain::Get_Height(const XMFLOAT3& _vPos)
 
 	_long dwIndex = uCurrentZ * m_iNumverticesX + uCurrentX;
 
-	_float fRatioX = vLocalPos.x - XMVectorGetX(m_VertexPos[dwIndex]);
-	_float fRatioZ = XMVectorGetZ(m_VertexPos[dwIndex]) - vLocalPos.z;
+	_float fRatioX = vLocalPos.x - XMVectorGetX(XMLoadFloat4(&m_VertexPos[dwIndex]));
+	_float fRatioZ = XMVectorGetZ(XMLoadFloat4(&m_VertexPos[dwIndex])) - vLocalPos.z;
 
 	XMVECTOR v0, v1, v2;
 
 	if (fRatioX > fRatioZ)
 	{
-		v0 = m_VertexPos[dwIndex];
-		v1 = m_VertexPos[dwIndex + 1];
-		v2 = m_VertexPos[dwIndex + m_iNumverticesX + 1];
+		v0 = XMLoadFloat4(&m_VertexPos[dwIndex]);
+		v1 = XMLoadFloat4(&m_VertexPos[dwIndex + 1]);
+		v2 = XMLoadFloat4(&m_VertexPos[dwIndex + m_iNumverticesX + 1]);
 	}
 	else
 	{
-		v0 = m_VertexPos[dwIndex];
-		v1 = m_VertexPos[dwIndex + m_iNumverticesX];
-		v2 = m_VertexPos[dwIndex + m_iNumverticesX + 1];
+		v0 = XMLoadFloat4(&m_VertexPos[dwIndex]);
+		v1 = XMLoadFloat4(&m_VertexPos[dwIndex + m_iNumverticesX]);
+		v2 = XMLoadFloat4(&m_VertexPos[dwIndex + m_iNumverticesX + 1]);
 	}
 
 	XMVECTOR vDir0 = v1 - v0;
