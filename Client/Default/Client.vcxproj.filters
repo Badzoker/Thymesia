@@ -478,30 +478,6 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician">
       <UniqueIdentifier>{eb53bb80-12e0-4720-8190-53d078b3e292}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite">
-      <UniqueIdentifier>{fe134013-31cf-4aad-b09a-51cb79385ac4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\Joker">
-      <UniqueIdentifier>{f6c59891-ee28-42ba-84e3-0978a68aa655}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\Joker\Body">
-      <UniqueIdentifier>{03222064-bbb1-4940-9c87-c533d8e007ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\HArmorLV2">
-      <UniqueIdentifier>{5110f6b4-32bf-4c04-86c8-353f08025121}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\HArmorLV2\Body">
-      <UniqueIdentifier>{e2c212ce-896d-433a-bd38-d7584f603d05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\Weapon">
-      <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\Weapon\Joker">
-      <UniqueIdentifier>{aab500ba-37d8-4a03-ab7f-4754cd66e68d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\01. Elite\Weapon\HArmorLV2">
-      <UniqueIdentifier>{c1f388a7-ae17-44f1-b239-d125d2c611a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Monster\99. Monster_HP_Bar">
       <UniqueIdentifier>{45b57392-3dd5-4831-89d6-24accc305b8c}</UniqueIdentifier>
     </Filter>
@@ -570,6 +546,33 @@
     </Filter>
     <Filter Include="02.GameObject\Monster\98. Boss_HP_Bar\Boss_HP_Phase">
       <UniqueIdentifier>{ee9d9d36-0db9-4626-a3fe-6a09c8a6b11c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\97. Locked_On">
+      <UniqueIdentifier>{9825bfe6-1287-44c9-92b1-0f11a0063877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite">
+      <UniqueIdentifier>{fe134013-31cf-4aad-b09a-51cb79385ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Joker">
+      <UniqueIdentifier>{f6c59891-ee28-42ba-84e3-0978a68aa655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Joker\Body">
+      <UniqueIdentifier>{03222064-bbb1-4940-9c87-c533d8e007ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\HArmorLV2">
+      <UniqueIdentifier>{5110f6b4-32bf-4c04-86c8-353f08025121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\HArmorLV2\Body">
+      <UniqueIdentifier>{e2c212ce-896d-433a-bd38-d7584f603d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Weapon">
+      <UniqueIdentifier>{766bbaf7-e294-4925-8fe2-d3eba10e7252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Weapon\Joker">
+      <UniqueIdentifier>{aab500ba-37d8-4a03-ab7f-4754cd66e68d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Weapon\HArmorLV2">
+      <UniqueIdentifier>{c1f388a7-ae17-44f1-b239-d125d2c611a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1071,6 +1074,9 @@
     <ClInclude Include="..\Public\Boss_Magician.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Locked_On.h">
+      <Filter>02.GameObject\Monster\97. Locked_On</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1561,6 +1567,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Boss_Magician.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Locked_On.cpp">
+      <Filter>02.GameObject\Monster\97. Locked_On</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

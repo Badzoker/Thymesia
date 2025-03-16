@@ -530,6 +530,27 @@ PS_OUT PS_Thymesia_UI_Change_To_White(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_STUN_LOCKED_ON(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+   
+ 
+    if (Out.vColor.a < 0.2f)
+    {
+        discard;
+    }
+    
+    float2 center = float2(0.5f, 0.5f);
+    float dist = length(In.vTexcoord - center);
+    
+    float redIntensity = saturate(1.0 - dist * 2.f);
+    Out.vColor.rgb = lerp(Out.vColor.rgb, float3(1.f, 0.f, 0.f), redIntensity);
+    
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     // 0¹ø
@@ -747,4 +768,27 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_Change_To_White();
     }
+//18¹ø
+    pass UI_Blend
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_UI_ALPHA_BLEND();
+    }
+//19¹ø
+    pass STUN_LOCKED_ON
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_STUN_LOCKED_ON();
+    }
+
 }

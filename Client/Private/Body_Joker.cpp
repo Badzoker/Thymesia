@@ -27,6 +27,7 @@ HRESULT CBody_Joker::Initialize(void* pArg)
 
     m_pParentState = pDesc->pParentState;
     m_bDead = pDesc->bDead;
+    m_bActive = pDesc->bActive;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -34,7 +35,7 @@ HRESULT CBody_Joker::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-    //m_pModelCom->SetUp_Animation(10, false);
+    m_pModelCom->SetUp_Animation(15, false);
 
     return S_OK;
 }
@@ -50,14 +51,26 @@ void CBody_Joker::Priority_Update(_float fTimeDelta)
             *m_bDead = true;
         }
     }
+    else if (*m_pParentState == MONSTER_STATE::STATE_INTRO)
+    {
+        m_fDeadTimer -= fTimeDelta;
+        m_fFinishTime -= fTimeDelta;
+        if (m_fDeadTimer <= 0.f)
+        {
+            m_fDeadTimer = 0.f;
+            m_fFinishTime = 0.f;
+        }
+    }
+
 }
 
 void CBody_Joker::Update(_float fTimeDelta)
 {
-    m_pModelCom->Play_Animation(fTimeDelta);
-
+    if (*m_bActive)
+    {
+        m_pModelCom->Play_Animation(fTimeDelta);
+    }
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
-
 }
 
 void CBody_Joker::Late_Update(_float fTimeDelta)
@@ -85,7 +98,7 @@ HRESULT CBody_Joker::Render()
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
             return E_FAIL;
 
-        if (*m_pParentState ==STATE_DEAD)
+        if (*m_pParentState == STATE_DEAD || *m_pParentState == STATE_INTRO)
         {
             m_iPassNum = 5;
             if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))

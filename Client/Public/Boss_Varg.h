@@ -15,35 +15,6 @@ BEGIN(Client)
 
 class CBoss_Varg final : public CContainerObject
 {
-public:
-	enum Attack_Power
-	{
-		Varg_Intro_State,
-		Varg_Idle_State,
-		Varg_Walk_State,
-		Varg_Run_State,
-		Varg_Stun_State,
-		Varg_Hit_State,
-		Varg_Dead_State,
-		Varg_Avoid_State,
-		Varg_Avoid_Attack_State,        // KnockDown 시키기
-		Varg_Raid_Attack_01_State,          // 날리기
-		Varg_Raid_Attack_02_State,          // KnockDown 시키기
-		Varg_Attack_Combo_A_01_State,   // 약공 찍기
-		Varg_Attack_Combo_A_02_State,   // 약공 찍기
-		Varg_Attack_Combo_A_03_State,   // 강공 찌르기
-		Varg_Attack_Combo_B_01_State,   // 약공 돌면서 베기
-		Varg_Attack_Combo_B_02_State,   // 강공 돌아서 찍기
-		Varg_Attack_Combo_B_03_State,   // knockbackF
-		Varg_Attack_Combo_B_04_State,   // knockbackF
-		Varg_Attack_Combo_C_01_State,   // 강공 돌면서 베기
-		Varg_Attack_Roar_State,         // 기절 걸기
-		Varg_Attack_Catch_State,        // 붙잡기 패턴
-		Varg_Execution_First_State,
-		Varg_Execution_Second_State,
-		Varg_State_END
-	};
-
 private:
 	CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoss_Varg(const CBoss_Varg& Prototype);
@@ -55,8 +26,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-public:
-	_uint Get_Varg_State() const { return m_iState; }
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
@@ -84,17 +54,16 @@ private:
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
-	_uint                            m_iState = { CBoss_Varg::Varg_State_END };
-					
+
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fCoolTime = {};
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fDistance = {};
-	_float                           m_fAngle = {};
 	_float                           m_fLookTime = {};
 	_float                           m_fRotateDegree = {};
+	_float                           m_fRotateSpeed = {};
 
 	_float                           m_fBossMaxHP = {};
 	_float                           m_fShieldHP = {};
