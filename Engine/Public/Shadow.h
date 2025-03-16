@@ -19,6 +19,10 @@ public:
 
 	HRESULT Bind_LightDir(class CShader* pShader, const _char* pConstantName);
 
+	HRESULT Bind_LightProjDir(CShader* pShader, const _char* pConstantName);
+
+	_float2 Get_LightPos();
+
 public:
 	HRESULT Initialize();
 	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform); // 여기서 플레이어 위치 포인터로 넘겨주자

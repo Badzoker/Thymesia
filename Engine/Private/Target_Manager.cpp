@@ -1,6 +1,8 @@
 #include "Target_Manager.h"
 #include "RenderTarget.h"   
 
+#include "Shader_Compute_Sample.h"
+
 CTarget_Manager::CTarget_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :m_pDevice(pDevice)
     ,m_pContext(pContext)
@@ -43,6 +45,20 @@ HRESULT CTarget_Manager::Add_Shadow_RenderTarget(const _wstring& strRenderTarget
         return E_FAIL;
 
     CRenderTarget* pRenderTarget = CRenderTarget::Create_ShadowMap(m_pDevice, m_pContext, iWidth, iHeight, ePixelFormat, vClearColor, iArraySize);
+    if (nullptr == pRenderTarget)
+        return E_FAIL;
+
+    m_RenderTargets.emplace(strRenderTargetTag, pRenderTarget);
+
+    return S_OK;
+}
+
+HRESULT CTarget_Manager::Add_UAV_RenderTarget(const _wstring& strRenderTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
+{
+    if (nullptr != Find_RenderTarget(strRenderTargetTag))
+        return E_FAIL;
+
+    CRenderTarget* pRenderTarget = CRenderTarget::Create_UAV(m_pDevice, m_pContext, iWidth, iHeight, ePixelFormat, vClearColor);
     if (nullptr == pRenderTarget)
         return E_FAIL;
 
@@ -105,8 +121,8 @@ HRESULT CTarget_Manager::Begin_MRT(const _wstring& strMRTTag, _bool isClear, ID3
 
     if (nullptr != pDSV)
     {
-        m_pContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-        m_pContext->OMSetRenderTargets(iNumRenderTarget, pRTVs, pDSV);
+        // m_pContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+        m_pContext->OMSetRenderTargets(0, nullptr, pDSV);
     }
     else
         m_pContext->OMSetRenderTargets(iNumRenderTarget, pRTVs, m_pOriginalDSV);    
@@ -123,10 +139,25 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DepthStencilView* _pDSV)
     Safe_Release(m_pOriginalDSV);
     Safe_Release(m_pBackRTV);
 
-    if (nullptr != _pDSV)
-        m_pContext->ClearDepthStencilView(_pDSV, D3D11_CLEAR_DEPTH || D3D11_CLEAR_STENCIL, 1.f, 0); 
+   /* if (nullptr != _pDSV)
+        m_pContext->ClearDepthStencilView(_pDSV, D3D11_CLEAR_DEPTH || D3D11_CLEAR_STENCIL, 1.f, 0); */
 
     return S_OK;
+}
+
+HRESULT CTarget_Manager::Compute_Copy_RTV(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, CShader_Compute_Sample* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
+{
+    CRenderTarget* pRenderTargetToRead = Find_RenderTarget(strRenderTargetTagToRead);
+
+    if (pRenderTargetToRead == nullptr)
+        return E_FAIL;
+
+    CRenderTarget* pRenderTargetToWrite = Find_RenderTarget(strRenderTargetTagToWrite);
+
+    if (pRenderTargetToRead == nullptr)
+        return E_FAIL;
+
+    return pCompute_Shader->Compute_Shader(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetToRead->Get_SRV(), pRenderTargetToWrite->Get_UAV(), pArg);
 }
 
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)

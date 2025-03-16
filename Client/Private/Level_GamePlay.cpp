@@ -162,22 +162,29 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
 
+	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+
 	LIGHT_DESC LightDesc{};
-	/* 2¿ù 8ÀÏ ºû */
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, 1.f, 1.f, 0.f);
-	LightDesc.vDiffuse   = _float4(0.7f, 0.7f, 0.7f, 1.f);
-	LightDesc.vAmbient   = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vSpecular  = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	///* 2¿ù 8ÀÏ ºû */
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
+	//LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	//LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 
+	//if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	//	return E_FAIL;
 
-	/*LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;	
-	LightDesc.vDirection = _float4(1.f, 1.f, 1.f, 0.f);	
-	LightDesc.vDiffuse   = _float4(0.9f, 0.9f, 0.9f, 1.f);	
-	LightDesc.vAmbient   = _float4(0.5f, 0.5f, 0.5f, 1.f);	
-	LightDesc.vSpecular  = _float4(0.3f, 0.3f, 0.3f, 1.f);	*/
+	ZeroMemory(&LightDesc, sizeof(LightDesc));
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+	LightDesc.fRange = 3.f;
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
 		return E_FAIL;
 
 	return S_OK;

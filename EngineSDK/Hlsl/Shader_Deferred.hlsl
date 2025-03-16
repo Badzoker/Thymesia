@@ -50,8 +50,10 @@ float g_fViewPortWidth, g_fViewPortHeight;
 
 float4 g_LightShaftValue;
 
-float2 g_ScreenLightDir;
-float2 g_ScreenLightPos;
+float4 g_ScreenLightDir;
+float4 g_ScreenLightPos;
+float4 g_ScreenCameraDir;
+float4 g_LightViewProjDir;
 
 float4x4 g_PreFrameViewInvMatrix; // 이전 프레임의 뷰 매트릭스 
 float4x4 g_CurFrameViewMatrix, g_CurFrameProjMatrix; // 현재 프레임의 뷰 매트릭스와 투영 매트릭스 
@@ -76,43 +78,43 @@ Texture3D g_NoiseTexture;
 
 float g_fTime;
 
-float4 psLightShaft(float2 texcoord)
-{
-    int NUM_SAMPLES = 128;
+//float4 psLightShaft(float2 texcoord)
+//{
+//    int NUM_SAMPLES = 128;
     
-    float2 DeltaTexCoord = g_ScreenLightDir;
+//    float2 DeltaTexCoord = g_ScreenLightDir;
     
-    DeltaTexCoord *= 1.f / (float) NUM_SAMPLES * g_LightShaftValue.x;
+//    DeltaTexCoord *= 1.f / (float) NUM_SAMPLES * g_LightShaftValue.x;
     
-    float4 vColor = g_OccusionTexture.Sample(LinearSampler, texcoord);
+//    float4 vColor = g_OccusionTexture.Sample(LinearSampler, texcoord);
     
-    if (vColor.r <= 0.f)
-        vColor = float4(1.f, 1.f, 1.f, 1.f);
-    else
-        vColor = float4(0.f, 0.f, 0.f, 0.f);
+//    if (vColor.r <= 0.f)
+//        vColor = float4(1.f, 1.f, 1.f, 1.f);
+//    else
+//        vColor = float4(0.f, 0.f, 0.f, 0.f);
     
-    float IlluminationDecay = 1.f;
+//    float IlluminationDecay = 1.f;
     
-    for (int i = 0; i < NUM_SAMPLES; ++i)
-    {
-        texcoord -= DeltaTexCoord;
+//    for (int i = 0; i < NUM_SAMPLES; ++i)
+//    {
+//        texcoord -= DeltaTexCoord;
         
-        float4 Sample2 = g_OccusionTexture.Sample(LinearSampler, texcoord);
+//        float4 Sample2 = g_OccusionTexture.Sample(LinearSampler, texcoord);
         
-        if (Sample2.r <= 0.f)
-            Sample2 = float4(1.f, 1.f, 1.f, 1.f);
-        else
-            Sample2 = float4(0.f, 0.f, 0.f, 0.f);
+//        if (Sample2.r <= 0.f)
+//            Sample2 = float4(1.f, 1.f, 1.f, 1.f);
+//        else
+//            Sample2 = float4(0.f, 0.f, 0.f, 0.f);
         
-        Sample2 *= IlluminationDecay * g_LightShaftValue.z;
+//        Sample2 *= IlluminationDecay * g_LightShaftValue.z;
         
-        vColor += Sample2;
+//        vColor += Sample2;
         
-        IlluminationDecay *= g_LightShaftValue.y;
-    }
+//        IlluminationDecay *= g_LightShaftValue.y;
+//    }
     
-    return saturate(vColor * g_LightShaftValue.w);
-}
+//    return saturate(vColor * g_LightShaftValue.w);
+//}
 
 struct VS_IN
 {
@@ -611,16 +613,14 @@ float g_fWeights_GodRay[31] =
 PS_OUT PS_MAIN_GODRAY_X(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-
-    float2 vTexcoord = 0.f;
     
-    float4 LightShaft = psLightShaft(In.vTexcoord);
+    float2 vTexcoord = 0.f;
     
     for (int i = -15; i < 16; i++)
     {
         vTexcoord = float2(In.vTexcoord.x + (1.f / g_fViewPortWidth) * i, In.vTexcoord.y);
 
-        Out.vColor += g_fWeights_GodRay[i + 15] * LightShaft;
+        Out.vColor += g_fWeights_GodRay[i + 15] * g_OccusionTexture.Sample(LinearSampler_Clamp, vTexcoord);
     }
     
     Out.vColor /= 15.f;
@@ -642,6 +642,35 @@ PS_OUT PS_MAIN_GODRAY_Y(PS_IN In)
     }
     
     Out.vColor /= 15.f;
+    
+    return Out;
+}
+
+PS_OUT PS_OCCULSION(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    if (vDepth.x > 0.f)
+    {
+        Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
+        return Out;
+    }
+    float result = pow(((In.vTexcoord.x - g_ScreenLightPos.x) / (9.f / 16.f)), 2.f) + pow((In.vTexcoord.y - g_ScreenLightPos.y), 2.f);
+    float radiusPow = pow(0.022f, 2.f);
+    
+    float vColor = float4(2.f, 2.f, 2.f, 1.f);
+    
+    float3 CameraDir = g_ScreenCameraDir.xyz;
+    
+    if (result < radiusPow)
+    {
+        Out.vColor = vColor;
+    }
+    else
+    {
+        Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
+    }
     
     return Out;
 }
@@ -778,5 +807,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GODRAY_Y();
+    }
+
+
+    pass Occulsion //13
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_OCCULSION();
     }
 }

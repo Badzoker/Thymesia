@@ -1,10 +1,11 @@
-#include "..\Public\Light.h"
+#include "..\Public\Light_Dynamic.h"
 #include "Shader.h"
 #include "VIBuffer_Rect.h"	
 #include "Engine_struct.h"
+#include "Transform.h"
 
 
-CLight::CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLight_Dynamic::CLight_Dynamic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
 {
@@ -12,28 +13,27 @@ CLight::CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pDevice);
 }
 
-HRESULT CLight::Initialize(const LIGHT_DESC& LightDesc)
+HRESULT CLight_Dynamic::Initialize(const LIGHT_DESC& LightDesc, CTransform* pTransform)
 {
 	m_LightDesc = LightDesc;
+
+	if (pTransform == nullptr)
+		return E_FAIL;
+
+	m_pTransform = pTransform;
 
 	return S_OK;
 }
 
-void CLight::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+void CLight_Dynamic::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	_uint iPassIndex = { 1 };
+	_uint iPassIndex = { 2 };
 
-	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
-	{
-		iPassIndex = 1;
-
-		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
-			return;
-	}
-
-	else if (LIGHT_DESC::TYPE_POINT == m_LightDesc.eType)
+	if (LIGHT_DESC::TYPE_POINT == m_LightDesc.eType)
 	{
 		iPassIndex = 2;
+
+		XMStoreFloat4(&m_LightDesc.vPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
 
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
 			return;
@@ -74,13 +74,13 @@ void CLight::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 }
 
-CLight* CLight::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc)
+CLight_Dynamic* CLight_Dynamic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc, CTransform* pTransform)
 {
-	CLight* pInstance = new CLight(pDevice, pContext);
+	CLight_Dynamic* pInstance = new CLight_Dynamic(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(LightDesc)))
+	if (FAILED(pInstance->Initialize(LightDesc, pTransform)))
 	{
-		MSG_BOX("Failed to Created : CLight");
+		MSG_BOX("Failed to Created : CLight_Dynamic");
 		Safe_Release(pInstance);
 	}
 
@@ -88,7 +88,7 @@ CLight* CLight::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, con
 }
 
 
-void CLight::Free()
+void CLight_Dynamic::Free()
 {
 	__super::Free();
 

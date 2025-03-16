@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "GameInstance.h"
 
+#include "Shader_Compute_Sample.h"
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
@@ -41,8 +43,15 @@ HRESULT CRenderer::Initialize()
 
 
 	/*Target Occulusion*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Occulusion"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Occulsion"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
+	CShader_Compute_Sample::LIGHTSHAFTPARAMS Desc = {};
+
+	Desc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
+	Desc.g_ScreenLightPos = _float2(0.f, 0.f);
+
+	m_pLightShaftComputeShader = CShader_Compute_Sample::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Compute_Sample.hlsl"), "CSMain_Sample", nullptr, 0, &Desc);
 
 	/* Target_Shade */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shade"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -50,6 +59,10 @@ HRESULT CRenderer::Initialize()
 
 	/* Target_Specular */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Specular"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target LightShaft*/
+	if (FAILED(m_pGameInstance->Add_UAV_RenderTarget(TEXT("Target_Compute_LightShaft"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target LightShaft*/
@@ -126,7 +139,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	//Occulusion Texture
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Occulusion"), TEXT("Target_Occulusion"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Occulsion"), TEXT("Target_Occulsion"))))
 		return E_FAIL;
 
 	//LightShaft Blur Texture
@@ -276,8 +289,8 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
 
-	//if (FAILED(Render_Occulusion()))
-	//	return E_FAIL;
+	if (FAILED(Render_Occulsion()))
+		return E_FAIL;
 
 	if (FAILED(Render_LightAcc()))	
 		return E_FAIL;	
@@ -368,13 +381,15 @@ HRESULT CRenderer::Render_Priority()
 HRESULT CRenderer::Render_Shadow()			
 {
 	/* Shadow */
-  	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow"), true, m_pShadowDSV)))	
+	m_pContext->ClearDepthStencilView(m_pShadowDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow"), false, m_pShadowDSV)))
 		return E_FAIL;
 
-	if (FAILED(SetUp_ViewportDesc(g_iMaxWidth, g_iMaxHeight)))	
-		return E_FAIL;	
+	if (FAILED(SetUp_ViewportDesc(g_iMaxWidth, g_iMaxHeight)))
+		return E_FAIL;
 
-	for (auto& pRenderObject : m_RenderObjects[RG_SHADOW])	
+	for (auto& pRenderObject : m_RenderObjects[RG_SHADOW])
 	{
 		if (FAILED(pRenderObject->Render_Shadow()))
 			return E_FAIL;
@@ -384,14 +399,14 @@ HRESULT CRenderer::Render_Shadow()
 
 	m_RenderObjects[RG_SHADOW].clear();
 
-	if (FAILED(m_pGameInstance->End_MRT(m_pShadowDSV)))		
-		return E_FAIL;	
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
 
-	if (FAILED(SetUp_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))			
-		return E_FAIL;	
+	if (FAILED(SetUp_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
+		return E_FAIL;
 
 
-	return S_OK;	
+	return S_OK;
 }
 
 HRESULT CRenderer::Render_NonBlend()
@@ -417,20 +432,35 @@ HRESULT CRenderer::Render_NonBlend()
 }
 
 
-HRESULT CRenderer::Render_Occulusion()
+HRESULT CRenderer::Render_Occulsion()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulusion"))))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulsion"))))
 		return E_FAIL;
 
-	for (auto& pRenderObject : m_RenderObjects[RG_OCCULUSION])
-	{
-		if (FAILED(pRenderObject->Render_Occulusion()))
-			return E_FAIL;
+	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+	m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-		Safe_Release(pRenderObject);
-	}
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
 
-	m_RenderObjects[RG_OCCULUSION].clear();
+	if (FAILED(m_pGameInstance->Bind_LightPos(m_pShader, "g_ScreenLightPos")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_LightDir(m_pShader, "g_ScreenLightDir")))
+		return E_FAIL;
+
+	_matrix matWorld = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
+
+	_float4 CamDir;
+	XMStoreFloat4(&CamDir, matWorld.r[1]);
+
+	if (FAILED(m_pShader->Bind_RawValue("g_ScreenCameraDir", &CamDir, sizeof(_float4))))
+		return E_FAIL;
+
+	m_pShader->Begin(13);
+	m_pVIBuffer->Bind_InputAssembler();
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
@@ -533,23 +563,23 @@ HRESULT CRenderer::Render_GlowY()
 
 HRESULT CRenderer::Render_LightShaftX()
 {
+	CShader_Compute_Sample::LIGHTSHAFTPARAMS ParamDesc = {  };
+
+	ParamDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
+	ParamDesc.g_ScreenLightPos = m_pGameInstance->Get_LightPos();
+
+	if (FAILED(m_pGameInstance->Compute_Copy_RTV(TEXT("Target_Occulsion"), TEXT("Target_Compute_LightShaft"), m_pLightShaftComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightShaftX"))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_OccusionTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_LightDir(m_pShader, "g_ScreenLightDir")))
-		return E_FAIL;
-
-	_float4 fLightShaft = _float4(0.4f, 0.97f, 0.8f, 1.f);
-
-	if (FAILED(m_pShader->Bind_RawValue("g_LightShaftValue", &fLightShaft, sizeof(_float4))))
 		return E_FAIL;
 
 	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
 	m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
 	m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Compute_LightShaft"), m_pShader, "g_OccusionTexture")))
+		return E_FAIL;
 
 	m_pShader->Begin(11);
 
@@ -1036,7 +1066,7 @@ void GeneratePermutationTable(int perm[512]) {
 		p[i] = i;
 	}
 
-	std::srand(std::time(nullptr));
+	std::srand((unsigned int)std::time(nullptr));
 
 	for (int i = 255; i > 0; --i) {
 		int j = std::rand() % (i + 1);
@@ -1257,5 +1287,7 @@ void CRenderer::Free()
 
 	Safe_Release(m_pNoiseTexture3D);
 	Safe_Release(m_pNoiseSRV);
+
+	Safe_Release(m_pLightShaftComputeShader);
 }	
 
