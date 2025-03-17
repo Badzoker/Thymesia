@@ -145,9 +145,6 @@
     <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F">
       <UniqueIdentifier>{d125fb7d-b677-4a68-92a8-978b9bf00ddd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Effect\Example">
-      <UniqueIdentifier>{10a763fb-584a-42e8-92b5-65795e4d0fe4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.UIObject\1.UIObjClass">
       <UniqueIdentifier>{420a30ad-8a10-42b2-bcc7-ddad3d6fef83}</UniqueIdentifier>
     </Filter>
@@ -741,9 +738,6 @@
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h">
       <Filter>02.GameObject\Monster\98. Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Particle_Compute_Example.h">
-      <Filter>02.GameObject\Effect\Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Arrow.h">
       <Filter>03.UIObject\1.UIObjClass\UI_Arrow</Filter>
     </ClInclude>
@@ -1240,9 +1234,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp">
       <Filter>02.GameObject\Monster\98. Boss_HP_Bar\Boss_HP_Bar_Gage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Compute_Example.cpp">
-      <Filter>02.GameObject\Effect\Example</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Arrow.cpp">
       <Filter>03.UIObject\1.UIObjClass\UI_Arrow</Filter>

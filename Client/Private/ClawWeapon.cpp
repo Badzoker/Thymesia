@@ -123,21 +123,64 @@ void CClawWeapon::Update(_float fTimeDelta)
                         }
                     }
 
-                    if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
-                        && iter.isEventActivate == true
-                        && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
+                    if ((iter.eType == EVENT_SOUND)
+                        && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
                     {
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로
 
-#pragma region Effect 0313
-
-                        if (!strcmp(iter.szName, "Claw1_Start"))
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
-                        else if (!strcmp(iter.szName, "Claw2_Start"))
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
-
-#pragma endregion
                     }
+
+#pragma region Effect 0316
+                    if ((iter.eType == EVENT_EFFECT)
+                        && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
+                    {
+                        if (!strcmp(iter.szName, "Claw1_Start"))
+                        {
+
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
+                            //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                            //m_fTimer_Effect1 = 0.5f;
+                        }
+                        else if (!strcmp(iter.szName, "Claw2_Start"))
+                        {
+
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
+                            //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                            //m_fTimer_Effect2 = 0.5f;
+                        }
+                        else if (!strcmp(iter.szName, "Claw1_Effect"))
+                        {
+                            m_fTimer_Effect1 += fTimeDelta;
+                            if (0.03f < m_fTimer_Effect1)
+                            {
+                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
+                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
+                                m_fTimer_Effect1 = 0.f;
+                            }
+                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                            {
+                                iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                                m_fTimer_Effect1 = 0.5f;
+                            }
+                        }
+                        else if (!strcmp(iter.szName, "Claw2_Effect"))
+                        {
+
+                            m_fTimer_Effect2 += fTimeDelta;
+                            if (0.03f < m_fTimer_Effect2)
+                            {
+                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
+                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
+                                m_fTimer_Effect2 = 0.f;
+                            }
+                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                            {
+                                iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                                m_fTimer_Effect2 = 0.5f;
+                            }
+                        }
+                    }
+#pragma endregion
                 }
             }
         }

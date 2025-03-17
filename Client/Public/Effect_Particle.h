@@ -13,8 +13,6 @@ BEGIN(Client)
 class CEffect_Particle final : public CEffect
 {
 public:
-	enum SHADERPASS { SHADERPASS_DEFAULT, SHADERPASS_WEIGHTBLEND, SHADERPASS_GLOW, SHADERPASS_END };
-public:
 	struct EFFECT_PARTICLE_DESC : public CEffect::EFFECT_DESC
 	{
 		wstring szBufferName;
@@ -52,7 +50,7 @@ private:
 	_uint m_iParticle_Count = {};
 	_uint m_iDiffuse = {}; //Texture »ö±ò ¹ºÁö
 
-	SHADERPASS m_eShaderPass = {};
+	_uint m_iShaderPass = {};
 
 	_float3 m_vRGB = {};
 

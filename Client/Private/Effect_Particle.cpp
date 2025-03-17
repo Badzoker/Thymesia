@@ -28,7 +28,7 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_iParticle_Count = pDesc->iParticle_Count;
     m_fMaxTimer = pDesc->fMaxTimer;
     m_vRGB = pDesc->vRGB;
-    m_eShaderPass = static_cast<SHADERPASS>(pDesc->iShaderPass);
+    m_iShaderPass = pDesc->iShaderPass;
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
@@ -68,18 +68,22 @@ void CEffect_Particle::Update(_float _fTimeDelta)
 
 void CEffect_Particle::Late_Update(_float _fTimeDelta)
 {
-    switch (m_eShaderPass)
+    switch (m_iShaderPass)
     {
-    case Client::CEffect_Particle::SHADERPASS_DEFAULT:
+    case 0:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
         break;
 
-    case Client::CEffect_Particle::SHADERPASS_WEIGHTBLEND:
+    case 1:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this);
         break;
 
-    case Client::CEffect_Particle::SHADERPASS_GLOW:
+    case 2:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+        break;
+
+    case 3:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
         break;
     }
 }
@@ -89,7 +93,14 @@ HRESULT CEffect_Particle::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    m_pShaderCom->Begin(0); //WeightBlend
+    if (3 == m_iShaderPass) //BLOOD
+    {
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+            return E_FAIL;
+    }
+
+
+    m_pShaderCom->Begin(m_iShaderPass);
 
     m_pBufferCom->Bind_InputAssembler();
 
@@ -103,7 +114,7 @@ HRESULT CEffect_Particle::Render_WeightBlend()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
     
-    m_pShaderCom->Begin(1); //WeightBlend
+    m_pShaderCom->Begin(m_iShaderPass); //WeightBlend
 
     m_pBufferCom->Bind_InputAssembler();
 
@@ -120,6 +131,7 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
         m_fTimerX = 0.f;
         m_fTimerY = 0.f;
         m_fDissolve = 0.f;
+        m_fTimer_Timelag = 0.f;
         m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 2, 1, 1);
     }
 }

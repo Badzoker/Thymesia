@@ -50,6 +50,9 @@ private:
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };
 
+	_float			   m_fTimer_Effect1 = { 0.5f };
+	_float			   m_fTimer_Effect2 = { 0.5f };
+
 	_uint		     m_iPreParentState = {};
 
 private:

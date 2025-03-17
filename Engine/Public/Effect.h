@@ -57,6 +57,7 @@ protected:
 	_float m_fTimer_SpeedY = { 1.f };
 	_float m_fDissolve_Speed = { 1.f };
 
+	_float m_fTimer_Timelag = {};
 
 protected:
 	void Timer_Check(_float _fTimeDelta);

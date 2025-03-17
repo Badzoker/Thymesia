@@ -96,7 +96,7 @@ void CSMain_Particle_Spark(int3 dispatchThreadID : SV_DispatchThreadID)
     GroupMemoryBarrierWithGroupSync();
 }
 
-[numthreads(128, 1, 1)]
+[numthreads(32, 1, 1)]
 void CSMain_Particle_Holding(int3 dispatchThreadID : SV_DispatchThreadID)
 {
     Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
@@ -126,6 +126,34 @@ void CSMain_Particle_Holding(int3 dispatchThreadID : SV_DispatchThreadID)
     GroupMemoryBarrierWithGroupSync();
 }
 
+[numthreads(4, 1, 1)]
+void CSMain_Particle_Blood(int3 dispatchThreadID : SV_DispatchThreadID)
+{
+    Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
+    float fSpeed = length(g_tOutput_Compute[dispatchThreadID.x].vSpeed);
+    g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x = tInput.vLifeTime.x * 1.f;
+    g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y += 0.0167f * 2.f;
+    
+    float3 vDir = float3(normalize(tInput.vTranslation.xyz - tInput.vPivot));
+    
+    g_tOutput_Compute[dispatchThreadID.x].vRight = float4(normalize(vDir), 0.f) * tInput.vScale.x;
+    float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
+    g_tOutput_Compute[dispatchThreadID.x].vUp = vUp * tInput.vScale.y;
+    float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
+    g_tOutput_Compute[dispatchThreadID.x].vLook = vLook * tInput.vScale.z;
+    
+    if (fSpeed > length(0.0167f * tInput.vSpeed * 2.f))
+    {
+        g_tOutput_Compute[dispatchThreadID.x].vSpeed -= 0.0167f * 2.f * tInput.vSpeed;
+        vDir = vDir * g_tOutput_Compute[dispatchThreadID.x].vSpeed * 0.0167f;
+        
+        g_tOutput_Compute[dispatchThreadID.x].vTranslation.xyz -= vDir;
+        g_tOutput_Compute[dispatchThreadID.x].vTranslation.w = 1.f;
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+}
+
 technique11 DefaultTechnique
 {
     pass ParticleReset //0
@@ -142,24 +170,31 @@ technique11 DefaultTechnique
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Drop()));
     }
 
-    pass ParticleExplosion //1
+    pass ParticleExplosion //2
     {
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Explosion()));
     }
 
-    pass ParticleSpark //1
+    pass ParticleSpark //3
     {
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Spark()));
     }
 
-    pass ParticleHolding //1
+    pass ParticleHolding //4
     {
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Holding()));
+    }
+
+    pass ParticleBlood //5
+    {
+        SetVertexShader(NULL);
+        SetPixelShader(NULL);
+        SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Blood()));
     }
 }

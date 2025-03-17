@@ -645,25 +645,25 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		if (m_iPhaseState & CPlayer::PHASE_PARRY)
 		{
 			int Parry = rand() % 2;
-
+			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
 			/* 여기서 플레이어의 특정 프레임 */
 			switch (m_iState)
 			{
 			case STATE::STATE_PARRY_L:
 				if (Parry == 0)
-				{
 					m_iState = STATE_PARRY_DEFLECT_L;
-				}
 				else
-				{
 					m_iState = STATE_PARRY_DEFLECT_L_UP;
-				}
+
+				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
 			case STATE::STATE_PARRY_R:
 				if (Parry == 0)
 					m_iState = STATE_PARRY_DEFLECT_R;
 				else
 					m_iState = STATE_PARRY_DEFLECT_R_UP;
+
+				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
 			}
 		}
@@ -757,13 +757,13 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			}
 
 
-#pragma region Effect 0313
+#pragma region Effect 0317
 			//Hit Effect
 			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
 			_vector vHitDir = { dir.x, dir.y, dir.z, 1.f };
 			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition, vHitDir);
-			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, vHitDir);
-			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
+			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, vHitDir);
+			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
 #pragma endregion
 		}
 	}

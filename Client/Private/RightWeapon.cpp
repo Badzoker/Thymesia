@@ -225,16 +225,22 @@ void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
     if (!strcmp("MONSTER", _pOther->Get_Name()))
     {
-        m_fHitStopTime += 1.f / 80.f;
         if (m_fHitStopTime < 0.1f)
         {
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
             m_pCamera->ShakeOn(300.f, 300.f, 3.f, 3.f);
+#pragma region Effect 0317
+            _vector vPlayerLook = { (*m_pParentWorldMatrix)._31, (*m_pParentWorldMatrix)._32, (*m_pParentWorldMatrix)._33, 0.f };
+            _vector vPosition = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+            if (*m_pParentState == CPlayer::STATE_ATTACK_L1)
+                m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, vPosition, vPlayerLook);
+#pragma endregion
         }
         else
         {
             m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         }
+        m_fHitStopTime += 1.f / 80.f;
     }
 }
 

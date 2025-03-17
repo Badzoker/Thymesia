@@ -445,6 +445,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, 2)))
 		return E_FAIL;
 
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, 64)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, 64)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, 4)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1015,6 +1027,18 @@ HRESULT CLevel_GamePlay::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 		case Engine::EFFECT_NAME::EFFECT_PARTICLE_HOLDING:
 			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1");
 			break;
 		}
 #pragma endregion

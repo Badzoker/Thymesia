@@ -156,6 +156,21 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
+#pragma region 마우스 잠그기
+	_uint2 Size = m_pGameInstance->Get_ViewportSize();
+	POINT ptMouse{ (LONG)Size.x >> 1, (LONG)Size.y >> 1 };
+
+	ShowCursor(FALSE);
+	if (!m_pGameInstance->isKeyPressed(DIK_LCONTROL))
+	{
+		ShowCursor(TRUE);
+		ClientToScreen(g_hWnd, &ptMouse);
+		SetCursorPos(ptMouse.x, ptMouse.y);
+	}
+#pragma endregion
+
+
+
 	m_fTimeDelta = fTimeDelta;
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB))

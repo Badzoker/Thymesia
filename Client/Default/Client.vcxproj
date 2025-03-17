@@ -229,7 +229,6 @@
     <ClInclude Include="..\public\ParryDeflect_RUp.h" />
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
-    <ClInclude Include="..\Public\Particle_Compute_Example.h" />
     <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_Iventory.h" />
@@ -401,7 +400,6 @@
     <ClCompile Include="..\private\ParryDeflect_RUp.cpp" />
     <ClCompile Include="..\private\Parry_L.cpp" />
     <ClCompile Include="..\private\Parry_R.cpp" />
-    <ClCompile Include="..\Private\Particle_Compute_Example.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
