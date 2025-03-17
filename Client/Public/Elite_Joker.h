@@ -40,6 +40,7 @@ public:
 	void Far_Pattern_Create();
 	void RotateDegree_To_Player();
 	void Rotation_To_Player();
+	void Recovery_HP();
 private:
 	_float4                          m_vPlayerPos = {};
 	_float4                          m_vSpawnPoint = {};
@@ -52,14 +53,18 @@ private:
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bDead = {};
 	_bool                            m_bCulling = {};
+	_bool                            m_bCanRecovery = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iSpawn_Cell_Index = {};
+	const _uint* m_Player_Attack = {};
+
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fRotateSpeed = {};
+	_float                           m_fRotateCoolTime = {};
 	_float                           m_fDistance = {};
 	_float                           m_fSpawn_Distance = {};
 	_float                           m_fTimeDelta = {};
@@ -70,6 +75,7 @@ private:
 	_float                           m_fMonsterMaxHP = {};
 	_float                           m_fMonsterCurHP = {};
 	_float                           m_fShieldHP = {};
+	_float                           m_fRecoveryTime = {};
 
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };

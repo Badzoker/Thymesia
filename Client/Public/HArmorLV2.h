@@ -41,6 +41,7 @@ public:
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
 	void RotateDegree_To_Player();
+	_bool Is_Need_Turn_Attack();
 	void Rotation_To_Player();
 	void Recovery_HP();
 private:
@@ -60,6 +61,9 @@ private:
 
 	_uint                            m_iNearPatternIndex = {};
 	_uint							 m_iSpawn_Cell_Index = {};
+	_uint							 m_iHit_Motion_Index = {};
+	_uint                            m_iHitCount = {};
+	const _uint* m_Player_Attack = {};
 
 
 	_float                           m_fRotateDegree = {};
@@ -196,6 +200,10 @@ public:
 		void State_Enter(CHArmorLV2* pObject) override;
 		void State_Update(_float fTimeDelta, CHArmorLV2* pObject) override;
 		void State_Exit(CHArmorLV2* pObject) override;
+	private:
+		_float4 m_vOriginalLook = {};
+		_float4 m_vChangeLook = {};
+		_float m_fLinear = {};
 	};
 
 	class Attack_Pattern_05 : public CStates<CHArmorLV2>
@@ -234,12 +242,14 @@ public:
 	class Hit_State : public CStates<CHArmorLV2>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint pHitNum);
 		virtual ~Hit_State() = default;
 	public:
 		void State_Enter(CHArmorLV2* pObject) override;
 		void State_Update(_float fTimeDelta, CHArmorLV2* pObject) override;
 		void State_Exit(CHArmorLV2* pObject) override;
+	private:
+		_uint m_iHitNum = {};
 	};
 
 	class Execution_State : public CStates<CHArmorLV2>
@@ -280,7 +290,26 @@ public:
 
 	};
 
-
+	class Parry_State : public CStates<CHArmorLV2>
+	{
+	public:
+		Parry_State() = default;
+		virtual ~Parry_State() = default;
+	public:
+		void State_Enter(CHArmorLV2* pObject) override;
+		void State_Update(_float fTimeDelta, CHArmorLV2* pObject) override;
+		void State_Exit(CHArmorLV2* pObject) override;
+	};
+	class Parry_Attack_State : public CStates<CHArmorLV2>
+	{
+	public:
+		Parry_Attack_State() = default;
+		virtual ~Parry_Attack_State() = default;
+	public:
+		void State_Enter(CHArmorLV2* pObject) override;
+		void State_Update(_float fTimeDelta, CHArmorLV2* pObject) override;
+		void State_Exit(CHArmorLV2* pObject) override;
+	};
 };
 
 END

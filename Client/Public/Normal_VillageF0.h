@@ -48,15 +48,19 @@ private:
 	_bool						     m_bFirst_Active = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_bPatternProgress = {};
+	_bool                            m_bCanRecovery = {};
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bMove = true;
 	_bool                            m_bDead = {};
 	_bool                            m_bCulling = {};
+	_bool                            m_bCanHit = true;
 
 	_uint                            m_iHitNum = -1;
 	_uint                            m_iSpawn_Cell_Index = {};
+	_uint							 m_iHit_Motion_Index = -1;
+	const _uint* m_Player_Attack = {};
 
 
 	_float                           m_fRotateDegree = {};
@@ -72,7 +76,6 @@ private:
 	_float                           m_fMonsterCurHP = {};
 	_float                           m_fShieldHP = {};
 	_float                           m_fRecoveryTime = {};
-	_bool                            m_bCanRecovery = {};
 
 private:
 	const _float4x4* m_pRootMatrix = { nullptr };
@@ -185,7 +188,7 @@ public:
 	class Hit_State : public CStates<CNormal_VillageF0>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint pHitNum);
 		virtual ~Hit_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨

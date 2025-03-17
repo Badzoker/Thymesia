@@ -60,6 +60,7 @@ private:
 
 	_uint                            m_iHitNum = -1;
 	_uint                            m_iHitCount = {};
+	const _uint* m_Player_Attack = {};
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fRotateSpeed = {};

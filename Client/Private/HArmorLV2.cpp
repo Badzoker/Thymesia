@@ -4,7 +4,9 @@
 #include "Body_HArmorLv2.h"
 #include "Weapon_GreatSword.h"
 #include "Monster_HP_Bar.h"
+#include "Player.h"
 #include "Animation.h"
+#include "Locked_On.h"
 
 CHArmorLV2::CHArmorLV2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -54,6 +56,7 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
 
     m_pState_Manager = CState_Machine<CHArmorLV2>::Create();
     if (m_pState_Manager == nullptr)
@@ -92,6 +95,7 @@ void CHArmorLV2::Priority_Update(_float fTimeDelta)
         if (m_bFirst_Active)
         {
             m_bFirst_Active = false;
+            m_bPatternProgress = true;
             m_pState_Manager->ChangeState(new CHArmorLV2::Intro_State(), this);
         }
     }
@@ -117,6 +121,7 @@ void CHArmorLV2::Priority_Update(_float fTimeDelta)
             m_bHP_Bar_Active = false;
         }
     }
+
     __super::Priority_Update(fTimeDelta);
 
 }
@@ -136,6 +141,7 @@ void CHArmorLV2::Update(_float fTimeDelta)
     __super::Update(fTimeDelta);
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+
 
 }
 
@@ -195,6 +201,17 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Weapon_GreatSword_Desc.fRotationPerSec = 0.f;
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_GreatSword"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_GreatSword"), &Weapon_GreatSword_Desc)))
+        return E_FAIL;
+
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -267,7 +284,7 @@ void CHArmorLV2::PatternCreate()
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 2.f && m_fDistance <= 1.5f)
+        if (m_fDelayTime >= 1.f)
         {
             if (m_fDistance >= 5.f)
                 Far_Pattern_Create();
@@ -346,6 +363,26 @@ void CHArmorLV2::RotateDegree_To_Player()
         m_bNeed_Rotation = true;
 }
 
+_bool CHArmorLV2::Is_Need_Turn_Attack()
+{
+    _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
+
+    vLook = XMVector3Normalize(vLook);
+    vLook2 = XMVector3Normalize(vLook2);
+
+    //회전해야 하는 각도
+    _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
+    fAngle = XMConvertToDegrees(fAngle);
+
+    if (fAngle >= 150.f)
+    {
+        return true;
+    }
+    return false;
+}
+
 void CHArmorLV2::Rotation_To_Player()
 {
     _float fRadians = m_fRotateSpeed * m_fTimeDelta;
@@ -390,14 +427,35 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
+        _uint m_iNoDamage = 1;
+        m_iHitCount += 1;
         m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
+        if (m_iHitCount >= 3.f)
+        {
+            m_iHitCount = 0;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+            m_iNoDamage = 0;
+            m_pState_Manager->ChangeState(new Parry_State(), this);
+        }
+        m_fMonsterCurHP -= *m_Player_Attack / 3.f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= (*m_Player_Attack / 3.f) * 1.5f * m_iNoDamage;
         if (!m_bPatternProgress)
         {
-            //m_pState_Manager->ChangeState(new C::Hit_State(), this);
+            _uint iRandom = rand() % 2;
+            while (true)
+            {
+                if (iRandom == m_iHit_Motion_Index)
+                {
+                    iRandom = rand() % 2;
+                }
+                else
+                    break;
+            }
+            m_pState_Manager->ChangeState(new CHArmorLV2::Hit_State(iRandom), this);
         }
     }
 }
@@ -463,7 +521,12 @@ void CHArmorLV2::Intro_State::State_Enter(CHArmorLV2* pObject)
 void CHArmorLV2::Intro_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
     if (pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+    {
+        _vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+        vLook *= -1;
+        pObject->m_pTransformCom->Look(vLook);
+        pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+    }
 }
 
 void CHArmorLV2::Intro_State::State_Exit(CHArmorLV2* pObject)
@@ -479,6 +542,7 @@ void CHArmorLV2::Idle_State::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 26;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bPatternProgress = false;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -502,41 +566,43 @@ void CHArmorLV2::Idle_State::State_Exit(CHArmorLV2* pObject)
 void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
 {
     if (pObject->m_fDistance > 0.5f)
-        m_iIndex = 43;
+        m_iIndex = 47;
     else
     {
         _uint iRandom = rand() % 3;
         switch (iRandom)
         {
         case 0:
-            m_iIndex = 46;
+            m_iIndex = 44;
             break;
         case 1:
-            m_iIndex = 47;
+            m_iIndex = 51;
             break;
         case 2:
-            m_iIndex = 41;
+            m_iIndex = 52;
             break;
         }
     }
+    pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
 void CHArmorLV2::Move_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_fDistance >= 2.f)
+    if (pObject->m_fDistance >= 5.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 2.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 5.f && pObject->m_bMove)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 43)
+        if (m_iIndex == 47)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
-        else if (m_iIndex == 41)
+        else if (m_iIndex == 44)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
-        else if (m_iIndex == 46)
+        else if (m_iIndex == 51)
             pObject->m_pTransformCom->Go_Left_Navi(fTimeDelta, pObject->m_pNavigationCom);
-        else if (m_iIndex == 47)
+        else if (m_iIndex == 52)
             pObject->m_pTransformCom->Go_Right_Navi(fTimeDelta, pObject->m_pNavigationCom);
     }
 }
@@ -669,7 +735,23 @@ void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 7 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_01::State_Exit(CHArmorLV2* pObject)
@@ -699,7 +781,23 @@ void CHArmorLV2::Attack_Pattern_02::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_02::State_Exit(CHArmorLV2* pObject)
@@ -729,7 +827,23 @@ void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_03::State_Exit(CHArmorLV2* pObject)
@@ -744,15 +858,21 @@ void CHArmorLV2::Attack_Pattern_04::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 39;
     pObject->m_iMonster_State = STATE_ATTACK;
-    pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    XMStoreFloat4(&m_vOriginalLook, pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+    XMStoreFloat4(&m_vChangeLook, XMLoadFloat4(&m_vOriginalLook) * -1);
+
 }
 
 void CHArmorLV2::Attack_Pattern_04::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
     if (pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        pObject->m_pTransformCom->Look(XMLoadFloat4(&m_vChangeLook));
+        pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_04::State_Exit(CHArmorLV2* pObject)
@@ -782,7 +902,23 @@ void CHArmorLV2::Attack_Pattern_05::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 
 }
 
@@ -813,7 +949,23 @@ void CHArmorLV2::Attack_Pattern_06::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 4 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_06::State_Exit(CHArmorLV2* pObject)
@@ -843,7 +995,23 @@ void CHArmorLV2::Attack_Pattern_07::State_Update(_float fTimeDelta, CHArmorLV2* 
     }
 
     if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
-        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+    {
+        if (pObject->Is_Need_Turn_Attack())
+        {
+            pObject->m_pState_Manager->ChangeState(new Attack_Pattern_04(), pObject);
+            return;
+        }
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
 }
 
 void CHArmorLV2::Attack_Pattern_07::State_Exit(CHArmorLV2* pObject)
@@ -874,9 +1042,27 @@ void CHArmorLV2::Execution_State::State_Exit(CHArmorLV2* pObject)
 }
 #pragma endregion
 
+#pragma region Hit_State
+
+CHArmorLV2::Hit_State::Hit_State(_uint pHitNum)
+{
+    m_iHitNum = pHitNum;
+}
 void CHArmorLV2::Hit_State::State_Enter(CHArmorLV2* pObject)
 {
+    switch (m_iHitNum)
+    {
+    case 0:
+        m_iIndex = 20;
+        break;
+    case 1:
+        m_iIndex = 21;
+        break;
+    }
+    pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_HIT;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CHArmorLV2::Hit_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
@@ -886,6 +1072,7 @@ void CHArmorLV2::Hit_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 void CHArmorLV2::Hit_State::State_Exit(CHArmorLV2* pObject)
 {
 }
+#pragma endregion
 
 #pragma region Return_To_SpawnPoint_State
 
@@ -957,3 +1144,54 @@ void CHArmorLV2::NotActive_Idle::State_Exit(CHArmorLV2* pObject)
 }
 
 #pragma endregion
+
+void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
+{
+    m_iIndex = 29;
+    pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CHArmorLV2::Parry_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
+{
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+    {
+        pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
+    }
+}
+
+void CHArmorLV2::Parry_State::State_Exit(CHArmorLV2* pObject)
+{
+}
+
+void CHArmorLV2::Parry_Attack_State::State_Enter(CHArmorLV2* pObject)
+{
+    m_iIndex = 6;
+    pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY_ATTACK;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+    pObject->RotateDegree_To_Player();
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CHArmorLV2::Parry_Attack_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
+{
+    if (m_iIndex == 6 && pObject->m_pModelCom->GetAniFinish())
+    {
+        _uint iRandom = rand() % 2;
+        switch (iRandom)
+        {
+        case 0:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
+            break;
+        case 1:
+            pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
+            break;
+        }
+    }
+}
+
+void CHArmorLV2::Parry_Attack_State::State_Exit(CHArmorLV2* pObject)
+{
+}

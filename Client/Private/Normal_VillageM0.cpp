@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "Monster_HP_Bar.h"
 #include "Locked_On.h"
+#include "Player.h"
 
 CNormal_VillageM0::CNormal_VillageM0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -54,6 +55,8 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+
 
     m_pState_Manager = CState_Machine<CNormal_VillageM0>::Create();
     if (m_pState_Manager == nullptr)
@@ -373,14 +376,25 @@ void CNormal_VillageM0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
-        //m_fRecoveryTime = 0.f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
-        if (!m_bPatternProgress)
+        m_fMonsterCurHP -= *m_Player_Attack * 0.5f;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f;
+        if (m_bCanHit)
         {
-            m_pState_Manager->ChangeState(new CNormal_VillageM0::Hit_State(), this);
+            _uint iRandom = rand() % 2;
+            while (true)
+            {
+                if (iRandom == m_iHit_Motion_Index)
+                {
+                    iRandom = rand() % 2;
+                }
+                else
+                    break;
+            }
+            m_pState_Manager->ChangeState(new CNormal_VillageM0::Hit_State(iRandom), this);
         }
     }
 
@@ -631,6 +645,7 @@ void CNormal_VillageM0::Stun_State::State_Exit(CNormal_VillageM0* pObject)
 void CNormal_VillageM0::Attack_01_State::State_Enter(CNormal_VillageM0* pObject)
 {
     m_iIndex = 4;
+    pObject->m_bCanHit = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -644,6 +659,7 @@ void CNormal_VillageM0::Attack_01_State::State_Update(_float fTimeDelta, CNormal
 
 void CNormal_VillageM0::Attack_01_State::State_Exit(CNormal_VillageM0* pObject)
 {
+    pObject->m_bCanHit = true;
 }
 #pragma endregion
 
@@ -675,17 +691,14 @@ void CNormal_VillageM0::Attack_02_State::State_Exit(CNormal_VillageM0* pObject)
 #pragma endregion
 
 #pragma region Hit_State
+
+CNormal_VillageM0::Hit_State::Hit_State(_uint pHitNum)
+{
+    m_iHitNum = pHitNum;
+}
 void CNormal_VillageM0::Hit_State::State_Enter(CNormal_VillageM0* pObject)
 {
-    _uint iRandom = rand() % 2;
-    while (true)
-    {
-        iRandom = rand() % 2;
-        if (m_iHitNum != iRandom)
-            break;
-    }
-
-    switch (iRandom)
+    switch (m_iHitNum)
     {
     case 0:
         m_iIndex = 25;

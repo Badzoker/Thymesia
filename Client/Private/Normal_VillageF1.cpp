@@ -5,6 +5,8 @@
 #include "Weapon_Dagger.h"
 #include "Animation.h"
 #include "Monster_HP_Bar.h"
+#include "Player.h"
+#include "Locked_On.h"
 
 CNormal_VillageF1::CNormal_VillageF1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -51,7 +53,7 @@ HRESULT CNormal_VillageF1::Initialize(void* pArg)
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
-
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
 
     m_pState_Manager = CState_Machine<CNormal_VillageF1>::Create();
     if (m_pState_Manager == nullptr)
@@ -198,6 +200,17 @@ HRESULT CNormal_VillageF1::Ready_PartObjects()
     Weapon_Desc.fRotationPerSec = 0.f;
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Dagger"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Dagger"), &Weapon_Desc)))
+        return E_FAIL;
+
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -363,10 +376,11 @@ void CNormal_VillageF1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
         m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
+        m_fMonsterCurHP -= *m_Player_Attack * 0.5f;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f;
         m_iHitCount++;
         if (m_iHitCount >= 4)
         {

@@ -86,7 +86,7 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 	{
 		if (iter.isPlay == false)
 		{
-			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
+			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
 			{
 				if (*m_pParentState != STATE_PARRY)
 				{
@@ -131,7 +131,7 @@ HRESULT CWeapon_Axe::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 
-		if (*m_pParentState == STATE_DEAD)	
+		if (*m_pParentState == STATE_DEAD)
 		{
 			m_iPassNum = 9;
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))

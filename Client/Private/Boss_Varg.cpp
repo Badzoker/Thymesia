@@ -3,8 +3,10 @@
 #include "Body_Varg.h"
 #include "VargKnife.h"
 #include "UI_Boss_HP_Bar.h"
+#include "Player.h"
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Locked_On.h"
 
 CBoss_Varg::CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CContainerObject(pDevice, pContext)
@@ -51,6 +53,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 
     m_pState_Manager = CState_Machine<CBoss_Varg>::Create();
@@ -189,6 +193,17 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
         return E_FAIL;
 
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("Bip001-Spine2");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+        return E_FAIL;
+
     CUI_Boss_HP_Bar::UI_BOSS_HP_BAR_DESC pBoss_HP_Bar = {};
     pBoss_HP_Bar.fMaxHP = &m_fBossMaxHP;
     pBoss_HP_Bar.fCurHP = &m_fBossCurHP;
@@ -270,7 +285,7 @@ void CBoss_Varg::PatternCreate()
         {
             if (m_fSpecial_Skill_CoolTime >= 30.f)
             {
-                m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(), this);
+                m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(false), this);
             }
             else if (m_fDistance >= 5.f)
                 Far_Pattern_Create();
@@ -429,8 +444,9 @@ void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
     {
         m_fRecoveryTime = 0.f;
-        m_fBossCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
+        m_bCanRecovery = false;
+        m_fBossCurHP -= *m_Player_Attack / 5.f;
+        m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
         if (!m_bPatternProgress)
         {
             m_pState_Manager->ChangeState(new CBoss_Varg::Hit_State(), this);
@@ -487,6 +503,7 @@ void CBoss_Varg::Free()
 void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 36;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_bCan_Move_Anim = true;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1023,7 +1040,7 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 
     if (m_iIndex == 40 && pObject->m_pModelCom->GetAniFinish())
     {
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(), pObject);
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
     }
 }
 
@@ -1033,22 +1050,26 @@ void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
     {
         pObject->m_iPhase = PHASE_TWO;
         pObject->m_fCoolTime = 0.1f;
+        pObject->m_fBossCurHP = pObject->m_fBossMaxHP;
+        pObject->m_bCanRecovery = true;
     }
-    else if (pObject->m_iPhase == PHASE_TWO)
-        pObject->m_iPhase = PHASE_END;
 
     pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
 
 #pragma region Roar_State
+
+CBoss_Varg::Roar_State::Roar_State(_bool pCheck)
+    : m_bFirst(pCheck)
+{
+}
+
 void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
 {
-    if (pObject->m_iPhase == PHASE_TWO)
+    if (m_bFirst)
     {
         m_iIndex = 32;
-        pObject->m_fBossCurHP = pObject->m_fBossMaxHP;
-        pObject->m_bCanRecovery = true;
     }
     else
     {
@@ -1087,13 +1108,9 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    //pObject->RotateDegree_To_Player();
-    if (m_iIndex == 33)
-        m_fTimer += fTimeDelta;
-
-    pObject->m_pTransformCom->LookAt(XMLoadFloat4(&pObject->m_vPlayerPos));
+    pObject->RotateDegree_To_Player();
     //첫번째 잡을려하는 모션 끝내고 달려가는거 넣기
-    if (m_iIndex == 30 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 17.f && m_bFirst)
+    if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f && m_bFirst)
     {
         m_bFirst = false;
         m_iIndex = 33;
@@ -1103,11 +1120,9 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     if (m_iIndex == 33 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 30;
-        m_bCanCatch = false;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-        pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(25.f);
+        pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(20.f);
     }
-
     //항상 거리가 짧으면 바로 잡히는 애니메이션 실행
     if (pObject->m_fDistance <= 1.5f && m_bCanCatch)
     {

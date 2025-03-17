@@ -87,7 +87,7 @@ void CVargKnife::Update(_float fTimeDelta)
     {
         if (iter.isPlay == false)
         {
-            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN) // EVENT_COLLIDER 부분      
             {
                 // 그 구간에서는 계속 진행 
 
@@ -98,7 +98,6 @@ void CVargKnife::Update(_float fTimeDelta)
                 else
                     m_pGameInstance->Add_Actor_Scene(m_pActor);
             }
-
             else
             {
                 m_pGameInstance->Sub_Actor_Scene(m_pActor);
