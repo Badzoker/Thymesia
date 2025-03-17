@@ -105,7 +105,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState &= ~PHASE_LOCKON;	
 	}
 
-	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
 		if (m_iState == STATE_ATTACK_L1
 			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
@@ -183,8 +183,19 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+
+#pragma region 처형 
+	if (m_pGameInstance->isKeyEnter(DIK_Y))
+	{
+		m_pStateMgr->Get_VecState().at(45)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+		m_iState = STATE_HARMOR_EXECUTION;
+
+		m_iPhaseState |= PHASE_EXECUTION;
+	}
+#pragma endregion 
+
 #pragma region 패링	
-	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
 		if (m_iState == STATE_PARRY_L ||
 			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP)))) // 패링 2번째 모션			
@@ -204,7 +215,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 #pragma endregion	
 
 #pragma region 8방향 Run 
-	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
+	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -285,7 +296,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 	}
 #pragma endregion 
 #pragma region 락온모드 8방향 이동 
-	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)

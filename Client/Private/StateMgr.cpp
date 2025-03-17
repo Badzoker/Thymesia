@@ -68,7 +68,11 @@
 #pragma endregion 
 
 
+#pragma region 처형 관련 
 
+#include "HArmorLV1_Execution.h"
+
+#pragma endregion 
 
 CStateMgr::CStateMgr()
 {
@@ -276,6 +280,14 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(pAttack_LButton_5);
 
 #pragma endregion 
+
+
+#pragma region 처형 모션
+	/* 45번 HArmorLV1 처형 모션 */
+	CHArmorLV1_Execution* pHArmorLV1_Execution = CHArmorLV1_Execution::Create();
+	m_vecState.push_back(pHArmorLV1_Execution);
+#pragma endregion 
+
 
 	return S_OK;
 }

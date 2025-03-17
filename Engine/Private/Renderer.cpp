@@ -242,25 +242,25 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shadow"), ViewportDesc.Width - 150.f, 150.f, 300.f, 300.f)))
 	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Final"), 300.f, 100.f, 200.f, 200.f)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Final"), 300.f, 100.f, 200.f, 200.f)))
+	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightX"), 100.f, 300.f, 200.f, 200.f)))
 	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightY"), 100.f, 500.f, 200.f, 200.f)))
 	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur_By_Velocity"), 100.f, 500.f, 200.f, 200.f)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur_By_Velocity"), 100.f, 500.f, 200.f, 200.f)))	
+		return E_FAIL;	
 	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur"), 100.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;*/
 	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulusion"), ViewportDesc.Width - 300.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
 		*/
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowBegin"), 100.f, 300.f, 200.f, 200.f)))
-			return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowX"), 100.f, 500.f, 200.f, 200.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowY"), 100.f, 700.f, 200.f, 200.f)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowBegin"), 100.f, 300.f, 200.f, 200.f)))
+	//		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowX"), 100.f, 500.f, 200.f, 200.f)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowY"), 100.f, 700.f, 200.f, 200.f)))
+	//	return E_FAIL;
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftX"), ViewportDesc.Width - 300.f, 450.f, 300.f, 300.f)))
 	//	return E_FAIL;
 	//
@@ -321,8 +321,8 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_Distortion()))
 		return E_FAIL;
 
-	if (FAILED(Render_Deferred()))	
-		return E_FAIL;	
+	if (FAILED(Render_Deferred()))
+		return E_FAIL;
 
 	if (FAILED(Render_Shadow_Final()))
 		return E_FAIL;
@@ -345,11 +345,11 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_WeightBlend()))
 		return E_FAIL;
 
-	if (FAILED(Render_Final()))	
+	if (FAILED(Render_Final()))
 		return E_FAIL;
 
 	if (FAILED(Render_NonLight()))
-		return E_FAIL;	
+		return E_FAIL;
 
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
@@ -882,8 +882,8 @@ HRESULT CRenderer::Render_HighLightY()
 
 HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 {
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))
-		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))	
+		return E_FAIL;	
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_HighLightY"), m_pShader, "g_HighLightYTexture")))
 		return E_FAIL;
@@ -1254,8 +1254,8 @@ HRESULT CRenderer::Render_Debug()
 	////	return E_FAIL;
 	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_HighLightY"), m_pShader, m_pVIBuffer)))
 	////	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur_By_Velocity"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 	////if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_MotionBlur"), m_pShader, m_pVIBuffer)))
 	////	return E_FAIL;
 

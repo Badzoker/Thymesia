@@ -104,7 +104,7 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 			m_fTimerX += _fTimeDelta * m_fTimer_SpeedX * (*m_pAnimation_Speed);
 			m_fTimerY += _fTimeDelta * m_fTimer_SpeedY * (*m_pAnimation_Speed);
 			m_fDissolve += _fTimeDelta * m_fDissolve_Speed * (*m_pAnimation_Speed);
-			if (0.01f > (*m_pAnimation_Speed))
+			if (0.1f > (*m_pAnimation_Speed))
 			{
 				m_fTimer_Timelag += _fTimeDelta;
 				if (0.2f < m_fTimer_Timelag)

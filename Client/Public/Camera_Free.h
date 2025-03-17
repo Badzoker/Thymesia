@@ -22,6 +22,7 @@ public:
 		_float  Cam_LerpTime;
 		_float  Cam_LerpSpeed;
 		_float4x4  Cam_ConvertedWorldMatrix;
+		_uint   Cam_LerpMethod;
 	};
 
 public:
@@ -54,6 +55,13 @@ public:
 	_vector			    Camera_Shake(float deltaTime, XMVECTOR& cameraPosition);
 
 	bool                Camera_Cut_Scene_Activate(_wstring _CutSceneName);
+
+
+private:
+	_vector CatmullRom_Position_Lerp(vector<Camera_Event> CameraEvent, _float _fRatio);
+	void   CutSceneEndLerp(_matrix pWorldMatrix);
+	void   FirstLerpFinish();
+
 private:
 	_float* m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
@@ -63,6 +71,7 @@ private:
 	_float				m_fCamFarLimitDistance = { 4.5f };
 	_float				m_fCurCamDistance = { 3.5f };
 	_float				m_fTimeDelta = {};
+
 
 	/* 카메라 셰이킹 관련 변수 */
 	_float				m_fXaxisShakeSpeed = {};
@@ -93,10 +102,19 @@ private:
 
 	/* 카메라 툴 이벤트 관련*/
 	_bool               m_bCamera_Cut_Scene_OnOff = { false };
-	_uint				m_iPlayCamera_Index = {};
-	_float				m_fCutScene_CurTime = {};
 	_bool				m_bCutSceneFirst = { true };
+	_bool				m_bCutSceneFristLerpEnd = { false };
+	_bool				m_bGetBackCamPos = { false };
+
+	_uint				m_iPlayCamera_Index = { 1 };
+
+	_float				m_fCutScene_CurTime = {};
 	_float				m_fRadian = {};
+	_float				m_fTest = {};
+	_float				m_fEndLerpTime = {};
+	_float4x4			m_pAfterCutSceneWorldMatrix = {};
+	_float4x4           m_pCurWorldMatrix = {};
+
 	/* ----------------  */
 
 
@@ -105,6 +123,7 @@ private:
 	map<_float, CGameObject*>							m_maptMonsterDistance;
 
 	vector<Camera_Event>								m_vecCamera_Event;
+	vector<Camera_Event>								m_vecPlayingCamera_Event;
 	map<wstring, vector<Camera_Event>>					m_mapCamera_Event;
 
 

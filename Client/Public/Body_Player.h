@@ -84,6 +84,9 @@ class CBody_Player final : public CPartObject
 		STATE_NORMAL_EVADE_B,
 		/* ------------------------- */
 
+		/* 贸屈 葛记 */
+		STATE_HARMOR_EXECUTION,
+
 	};
 
 	enum RENDER_STATE
@@ -194,6 +197,8 @@ public:
 	void STATE_NORMAL_EVADE_B_Method();
 	/* ------------------------- */
 
+	/* 贸屈 葛记 */
+	void STATE_HARMOR_EXECUTION_Method();	
 
 private:
 	CShader* m_pShaderCom = { nullptr };

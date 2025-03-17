@@ -121,7 +121,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	_ulong dwByte = {};
 
 	//m_mapCamera_Event.emplace("Camera_Test", m_vec)
-	HANDLE hFile = CreateFile(TEXT("../Camera_Bin/Camera_2.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(TEXT("../Camera_Bin/real4.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	while (true)
 	{
 		Camera_Event pEventDesc{};
@@ -143,6 +143,9 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 		/* 카메라 툴에 있는 보간 속도 가져오기*/
 		ReadFile(hFile, &pEventDesc.Cam_LerpSpeed, sizeof(_float), &dwByte, nullptr);
+
+		/* 카메라 툴에 있는 보간 방식 가져오기*/
+		ReadFile(hFile, &pEventDesc.Cam_LerpMethod, sizeof(_uint), &dwByte, nullptr);
 
 		test.push_back(pEventDesc);
 	}
@@ -168,7 +171,6 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		SetCursorPos(ptMouse.x, ptMouse.y);
 	}
 #pragma endregion
-
 
 
 	m_fTimeDelta = fTimeDelta;
@@ -201,215 +203,239 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 	}
 
-	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
-	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
-
-	// 플레이어의 충돌체를 기준으로할까.	
-	m_vPlayerHeadPos = XMVectorSet(
-		XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
-		XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		1.0f
-	);
-
-	m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
-
-	// 카메라 이동 처리
-	_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-	_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
-
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpCamPos);	 // 위치를 이렇게 세팅하니깐 다시 위에서는 vCamPosition 값이 증가하게되어 보간효과 o 
-
-	/* 이동속도를 줌으로써 계산을 진행? */
-	float CosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	float OppostieCosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, -1.f, 0.f, 0.f)));
-	//angleRadians = acosf(cosTheta); // 라디안 값	
-	float AngleDegrees = XMConvertToDegrees(acosf(CosTheta));         // 각도를 도(degree)로 변환							
-	float OppositeAngleDegrees = XMConvertToDegrees(acosf(OppostieCosTheta)); // 각도를 도(degree)로 변환			
-
-
-
-
-	/* 평상시 카메라 */
-	if (!m_bCamLockOnOff)
-	{
-
-		if (m_pGameInstance->isKeyEnter(DIK_TAB))
-		{
-			if (m_bStop)
-				m_bStop = false;
-			else
-				m_bStop = true;
-		}
-
-		if (!m_bStop)
-		{
-
-			if (MouseMoveX != 0 || MouseMoveY != 0)
-			{
-				// X축(Y축 기준 회전)
-				if (MouseMoveX != 0)
-				{
-					m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-				}
-
-				// Y축(Right 축 기준 회전)
-				if (MouseMoveY != 0)
-				{
-
-					if (AngleDegrees > 60.f && OppositeAngleDegrees > 80.f)
-						m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-
-
-					else if (AngleDegrees < 60.f && MouseMoveY < 0.f)
-					{
-						m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-					}
-
-					else if (OppositeAngleDegrees < 80.f && MouseMoveY > 0.f)
-					{
-						m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-					}
-				}
-			}
-		}
-	}
-	/* ======================================================= */
-
-	/* 락온 카메라 */
-	else // Lock On 카메라 상태 
-	{
-
-		/* 삭제이벤트가 발생했다면 m_pTargetMonster가 nullptr가 되어야함. */
-		if (m_pTargetMonster->Get_Monster_State() == STATE_EXECUTION || m_pTargetMonster->Get_Monster_State() == STATE_DEAD)
-		{
-
-			m_bCamLockOnOff = false;
-
-			m_pPlayer->Set_Lockon(false);
-			m_pTargetMonster->Set_Locked_On(false);
-
-			m_pTargetMonster = nullptr;
-
-		}
-
-		else if (m_pTargetMonster->Get_Monster_State() != STATE_EXECUTION)
-		{
-			/* 플레이어 회전 관련 */
-			_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
-			_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-
-			_vector vDir = (MonsterPos - PlayerPos);
-
-			_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
-
-			_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
-			_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
-
-			_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
-			dotResult = max(-1.0f, min(dotResult, 1.0f));
-			float Radian = acosf(dotResult);
-
-			_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
-			float crossY = XMVectorGetY(crossResult);
-			if (crossY < 0.0f) {
-				Radian = -Radian;
-
-			}
-			/* =============================================== */
-
-
-			/* 카메라 회전 관련 */
-
-
-
-
-
-			/* 카메라 방향 전환 관련 */
-
-			//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
-			LockOnCameraTurn(fTimeDelta);
-
-
-
-			/* 플레이어 방향 전환 */
-			//if (abs(Radian) > 0.1f)
-			m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
-
-
-		}
-
-	}
-	/* ===================================================================== */
-
-	// Look 벡터 갱신 (플레이어 머리 위치를 바라보도록 설정)
-	_vector CamDir = XMVectorSetW(XMVector3Normalize(m_vLerpPlayerHeadPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
-
-	// Right 벡터 갱신 (Up × Look)
-	_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));
-
-	// Up 벡터 갱신 (Look × Right)
-	_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));
-
-	// Transform 갱신
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);
-
-
-
-	/* 여기에 이벤트가 들어와야함. */
-	if (m_bShakeOnOff)
-	{
-		_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
-	}
-
-
-	if (m_bZoomIn)
-	{
-		if (m_fCamCloseLimitDistance < m_fCurCamDistance)
-			m_fCurCamDistance -= fTimeDelta * 10.f;
-
-		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-	}
-
-
-	if (m_bZoomOut)
-	{
-		if (m_fCamFarLimitDistance > m_fCurCamDistance)
-			m_fCurCamDistance += fTimeDelta * 5.f;
-
-		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-	}
-
-
+	/* 컷신 관련 */
 	if (m_pGameInstance->isKeyEnter(DIK_Y))
 	{
 		m_bCamera_Cut_Scene_OnOff = true;
-	}
+		m_pCurWorldMatrix = *m_pTransformCom->Get_WorldMatrix_Ptr();
+		m_bCutSceneFirst = true;
+		m_bGetBackCamPos = true;
 
+		//m_bCutSceneFristLerpEnd = false;	 // 이거 보간 속도랑 캐릭터 애니메이션 진행속도 간격 차이 발생해서 안됨. 
+	}
 
 	if (m_bCamera_Cut_Scene_OnOff)
 	{
 		Camera_Cut_Scene_Activate(TEXT("Test"));
 	}
+	/* ======================================= */
+
+	// 현재 카메라가 갑자기 멀리가는 경향이 있음 이거 보간해야함 
+
+	/* ======================================= */
 
 
-	m_bShakeOnOff = false;
-	m_bZoomIn = false;
-	m_bZoomOut = false;
+	if (m_bCamera_Cut_Scene_OnOff == false)
+	{
+		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
+		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
+			// 플레이어의 충돌체를 기준으로할까.	
+			m_vPlayerHeadPos = XMVectorSet(
+				XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+				XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
+				XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+				1.0f
+			);
+
+		if (m_bGetBackCamPos)
+		{
+			m_vLerpPlayerHeadPos = XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_vPlayerHeadPos, m_fLerpTime), 1.f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
+			m_bGetBackCamPos = false;
+		}
+		else
+			m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);
+
+		// 카메라 이동 처리
+		_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+		_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
+
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpCamPos);	 // 위치를 이렇게 세팅하니깐 다시 위에서는 vCamPosition 값이 증가하게되어 보간효과 o 
+
+
+		/* 이동속도를 줌으로써 계산을 진행? */
+		float CosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+		float OppostieCosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, -1.f, 0.f, 0.f)));
+		//angleRadians = acosf(cosTheta); // 라디안 값	
+		float AngleDegrees = XMConvertToDegrees(acosf(CosTheta));         // 각도를 도(degree)로 변환							
+		float OppositeAngleDegrees = XMConvertToDegrees(acosf(OppostieCosTheta)); // 각도를 도(degree)로 변환			
+
+
+
+
+		/* 평상시 카메라 */
+		if (!m_bCamLockOnOff)
+		{
+
+			if (m_pGameInstance->isKeyEnter(DIK_TAB))
+			{
+				if (m_bStop)
+					m_bStop = false;
+				else
+					m_bStop = true;
+			}
+
+			if (!m_bStop)
+			{
+
+				if (MouseMoveX != 0 || MouseMoveY != 0)
+				{
+					// X축(Y축 기준 회전)
+					if (MouseMoveX != 0)
+					{
+						m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+					}
+
+					// Y축(Right 축 기준 회전)
+					if (MouseMoveY != 0)
+					{
+
+						if (AngleDegrees > 40.f && OppositeAngleDegrees > 80.f)
+							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+
+
+						else if (AngleDegrees < 40.f && MouseMoveY < 0.f)
+						{
+							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+						}
+
+						else if (OppositeAngleDegrees < 80.f && MouseMoveY > 0.f)
+						{
+							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+						}
+					}
+				}
+			}
+		}
+		/* ======================================================= */
+
+		/* 락온 카메라 */
+		else // Lock On 카메라 상태 
+		{
+
+			/* 삭제이벤트가 발생했다면 m_pTargetMonster가 nullptr가 되어야함. */
+			if (m_pTargetMonster->Get_Monster_State() == STATE_EXECUTION || m_pTargetMonster->Get_Monster_State() == STATE_DEAD)
+			{
+
+				m_bCamLockOnOff = false;
+
+				m_pPlayer->Set_Lockon(false);
+				m_pTargetMonster->Set_Locked_On(false);
+
+				m_pTargetMonster = nullptr;
+
+			}
+
+			else if (m_pTargetMonster->Get_Monster_State() != STATE_EXECUTION)
+			{
+				/* 플레이어 회전 관련 */
+				_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
+				_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+				_vector vDir = (MonsterPos - PlayerPos);
+
+				_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
+
+				_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
+				_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
+
+				_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
+				dotResult = max(-1.0f, min(dotResult, 1.0f));
+				float Radian = acosf(dotResult);
+
+				_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
+				float crossY = XMVectorGetY(crossResult);
+				if (crossY < 0.0f) {
+					Radian = -Radian;
+
+				}
+				/* =============================================== */
+
+
+				/* 카메라 회전 관련 */
+
+
+
+
+
+				/* 카메라 방향 전환 관련 */
+
+				//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
+				LockOnCameraTurn(fTimeDelta);
+
+
+
+				/* 플레이어 방향 전환 */
+				//if (abs(Radian) > 0.1f)
+				m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
+
+
+			}
+
+		}
+		/* ===================================================================== */
+
+		// Look 벡터 갱신 (플레이어 머리 위치를 바라보도록 설정)
+		_vector CamDir = XMVectorSetW(XMVector3Normalize(m_vLerpPlayerHeadPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
+		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
+
+		// Right 벡터 갱신 (Up × Look)
+		_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);
+		_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));
+
+		// Up 벡터 갱신 (Look × Right)
+		_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));
+
+		// Transform 갱신
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
+
+
+
+
+
+
+
+		/* 여기에 이벤트가 들어와야함. */
+		if (m_bShakeOnOff)
+		{
+			_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
+		}
+
+
+		if (m_bZoomIn)
+		{
+			if (m_fCamCloseLimitDistance < m_fCurCamDistance)
+				m_fCurCamDistance -= fTimeDelta * 10.f;
+
+			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+		}
+
+
+		if (m_bZoomOut)
+		{
+			if (m_fCamFarLimitDistance > m_fCurCamDistance)
+				m_fCurCamDistance += fTimeDelta * 5.f;
+
+			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+		}
+
+
+		m_bShakeOnOff = false;
+		m_bZoomIn = false;
+		m_bZoomOut = false;
+	}
 
 	__super::Priority_Update(fTimeDelta);
 }
@@ -554,20 +580,23 @@ _vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)
 
 bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 {
-
+	// 여기서 그러면 일단 해당 좌표가 오염되니깐 다른걸로 교체해야할듯 원본은 냅두고 
 	auto& iter = m_mapCamera_Event.find(_CutSceneName);
 
 	m_vecCamera_Event = iter->second;
+	m_vecPlayingCamera_Event = m_vecCamera_Event;
 
 	if (m_bCutSceneFirst)
 	{
-		_vector playerXZright = { m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT).m128_f32[0], 0.f, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT).m128_f32[2],1.f };
-		playerXZright = XMVector3Normalize(playerXZright);
-		float dotResult = XMVectorGetX(XMVector3Dot(_fvector{ 1.f,0.f,0.f }, playerXZright));
-		dotResult = max(-1.0f, min(dotResult, 1.0f));
-		m_fRadian = acosf(dotResult);
+		/*플레이어의 xz좌표 */
+		_vector pPlayerRightDir = { 1.f ,0.f,0.f,0.f };
+		_vector pPlayerCurrentRightDir = XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT));
 
-		_vector crossResult = XMVector3Cross(playerXZright, _fvector{ 1.f,0.f,0.f,0.f });
+		_float dot = XMVectorGetX(XMVector3Dot(pPlayerRightDir, pPlayerCurrentRightDir));
+		dot = max(-1.0f, min(dot, 1.0f));
+		m_fRadian = acosf(dot);
+
+		_vector crossResult = XMVector3Cross(pPlayerRightDir, pPlayerCurrentRightDir);
 		float crossY = XMVectorGetY(crossResult);
 		if (crossY < 0.0f) {
 			m_fRadian = -m_fRadian;
@@ -575,42 +604,143 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 		m_bCutSceneFirst = false;
 	}
 
-	/* 왜 한번 지나고 가면 초기화 되는지에 대해 검사 */
-	//if (m_bCutSceneFirst)
-	//{
-	for (auto& iter : m_vecCamera_Event)
+
+
+	for (auto& iter : m_vecPlayingCamera_Event)
 	{
 		_float4x4 ConvertedWorldMatrix
 			= m_pTransformCom->Orbit_Move_RelativePos(XMLoadFloat4x4(&iter.Cam_WorldMatrix),
 				XMLoadFloat4(&iter.Cam_RelativePos),
 				_fvector{ 0.f,1.f,0.f,0.f },
-				m_fRadian,	 // 이걸 dot 해줘야 함.		
+				m_fRadian,	 // 이걸 dot 해줘야 함.			
 				m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
 
 
 		XMStoreFloat4x4(&iter.Cam_WorldMatrix, XMLoadFloat4x4(&ConvertedWorldMatrix));
 	}
-	//	m_bCutSceneFirst = false;
-	//}
 
 
-	m_fCutScene_CurTime += m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_LerpSpeed * m_fTimeDelta;
+	/* 여기서 현재 카메라와 카메라컷신의 Cam_1의 보간이 끝나고 진행되어야함 */
+#pragma region 카메라 첫번째 보간
 
-	_float  fRatio = m_fCutScene_CurTime / m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_LerpTime;
+	if (m_bCutSceneFristLerpEnd)
+	{
+#pragma endregion 
+		/* ===============================================================  */
 
-	_uint CamCount = static_cast<_uint>(m_vecCamera_Event.size());
+		m_fCutScene_CurTime += m_vecPlayingCamera_Event.at(m_iPlayCamera_Index).Cam_LerpSpeed * m_fTimeDelta;
 
+		_float  fRatio = m_fCutScene_CurTime / m_vecPlayingCamera_Event.at(m_iPlayCamera_Index).Cam_LerpTime;
+
+		_uint CamCount = static_cast<_uint>(m_vecPlayingCamera_Event.size());
+
+		// 문제가 Cam_0 부터 시작하면 어색함 현재 카메라 위치부터 시작하도록 만들어야함.
+		// 흠.
+		if (fRatio <= 1.f)
+		{
+
+			_vector   vScale, vRotation, vTranslation;
+			XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(&m_vecPlayingCamera_Event.at(m_iPlayCamera_Index).Cam_WorldMatrix));
+
+			_vector    vNextScale, vNextRotation, vNextTranslation;
+			XMMatrixDecompose(&vNextScale, &vNextRotation, &vNextTranslation, XMLoadFloat4x4(&m_vecPlayingCamera_Event.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix));
+
+
+
+			vScale = XMVectorLerp(vScale, vNextScale, fRatio);
+
+			vRotation = XMQuaternionSlerp(vRotation, vNextRotation, fRatio);
+
+			if (m_vecPlayingCamera_Event.at(m_iPlayCamera_Index).Cam_LerpMethod == 0)
+				vTranslation = XMVectorSetW(XMVectorLerp(vTranslation, vNextTranslation, fRatio), 1.f);
+			else
+			{
+				vTranslation = XMVectorSetW(CatmullRom_Position_Lerp(m_vecPlayingCamera_Event, fRatio), 1.f);
+			}
+
+			_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+			_float4x4 test = {};
+			XMStoreFloat4x4(&test, TransformationMatrix);
+
+			m_pTransformCom->Set_WorldMatrix(test);
+
+
+		}
+
+		else if (fRatio > 1.f)
+		{
+			if (m_iPlayCamera_Index < (CamCount - 2))
+			{
+				m_fCutScene_CurTime = 0.f;
+				m_iPlayCamera_Index++;
+			}
+
+			else
+			{
+				m_bCamera_Cut_Scene_OnOff = false;
+				m_fCutScene_CurTime = 0.f;
+				m_iPlayCamera_Index = 0;
+			}
+		}
+	}
+
+	else
+	{
+		FirstLerpFinish();
+	}
+
+
+	return m_bCamera_Cut_Scene_OnOff;
+}
+
+_vector CCamera_Free::CatmullRom_Position_Lerp(vector<Camera_Event> CameraEvent, _float _fRatio)
+{
+	_vector  p1 = { CameraEvent.at(m_iPlayCamera_Index - 1).Cam_WorldMatrix._41,
+				   CameraEvent.at(m_iPlayCamera_Index - 1).Cam_WorldMatrix._42,
+				   CameraEvent.at(m_iPlayCamera_Index - 1).Cam_WorldMatrix._43,
+					1.f };
+
+	_vector  p2 = { CameraEvent.at(m_iPlayCamera_Index).Cam_WorldMatrix._41,
+				   CameraEvent.at(m_iPlayCamera_Index).Cam_WorldMatrix._42,
+				   CameraEvent.at(m_iPlayCamera_Index).Cam_WorldMatrix._43,
+					1.f };
+
+	_vector  p3 = { CameraEvent.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix._41,
+					CameraEvent.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix._42,
+					CameraEvent.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix._43,
+					1.f };
+
+	_vector  p4 = { CameraEvent.at(m_iPlayCamera_Index + 2).Cam_WorldMatrix._41,
+					CameraEvent.at(m_iPlayCamera_Index + 2).Cam_WorldMatrix._42,
+					CameraEvent.at(m_iPlayCamera_Index + 2).Cam_WorldMatrix._43,
+					1.f };
+
+	_vector position = 0.5f * ((2 * p2) +
+		(-p1 + p3) * _fRatio +
+		(2 * p1 - 5 * p2 + 4 * p3 - p4) * (_fRatio * _fRatio) +
+		(-p1 + 3 * p2 - 3 * p3 + p4) * (_fRatio * _fRatio * _fRatio));
+
+
+	position = XMVectorSetW(position, 1.f);
+
+	return position;
+}
+
+void CCamera_Free::CutSceneEndLerp(_matrix pWorldMatrix)
+{
+	m_fEndLerpTime += m_fTimeDelta;
+
+	float fRatio = m_fEndLerpTime / 1.f;
 
 	if (fRatio <= 1.f)
 	{
 
 		_vector   vScale, vRotation, vTranslation;
-		XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(&m_vecCamera_Event.at(m_iPlayCamera_Index).Cam_WorldMatrix));
+		XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
 		_vector    vNextScale, vNextRotation, vNextTranslation;
-		XMMatrixDecompose(&vNextScale, &vNextRotation, &vNextTranslation, XMLoadFloat4x4(&m_vecCamera_Event.at(m_iPlayCamera_Index + 1).Cam_WorldMatrix));
-
-
+		XMMatrixDecompose(&vNextScale, &vNextRotation, &vNextTranslation, pWorldMatrix);
 
 		vScale = XMVectorLerp(vScale, vNextScale, fRatio);
 
@@ -624,29 +754,60 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 		XMStoreFloat4x4(&test, TransformationMatrix);
 
 		m_pTransformCom->Set_WorldMatrix(test);
-
-
 	}
 
 	else if (fRatio > 1.f)
 	{
-		if (m_iPlayCamera_Index < (CamCount - 2))
-		{
-			m_fCutScene_CurTime = 0.f;
-			m_iPlayCamera_Index++;
-		}
+		m_fEndLerpTime = 0.f;
+		m_bGetBackCamPos = false;
+	}
 
-		else
-		{
-			m_bCamera_Cut_Scene_OnOff = false;
-			m_fCutScene_CurTime = 0.f;
-			m_iPlayCamera_Index = 0;
-		}
+}
+
+void CCamera_Free::FirstLerpFinish()
+{
+	m_fCutScene_CurTime += m_vecPlayingCamera_Event.at(0).Cam_LerpSpeed * m_fTimeDelta;
+
+	_float  fRatio = m_fCutScene_CurTime / m_vecPlayingCamera_Event.at(0).Cam_LerpTime;
+
+
+
+	if (fRatio <= 1.0f)
+	{
+
+		_vector   vScale, vRotation, vTranslation;
+		XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(&m_pCurWorldMatrix)); // 아 이게 계속달라짐.		
+
+		_vector    vNextScale, vNextRotation, vNextTranslation;
+		XMMatrixDecompose(&vNextScale, &vNextRotation, &vNextTranslation, XMLoadFloat4x4(&m_vecPlayingCamera_Event.at(1).Cam_WorldMatrix));
+
+
+
+		vScale = XMVectorLerp(vScale, vNextScale, fRatio);
+		vRotation = XMQuaternionSlerp(vRotation, vNextRotation, fRatio);
+		vTranslation = XMVectorSetW(XMVectorLerp(vTranslation, vNextTranslation, fRatio), 1.f);
+
+
+
+		_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+		_float4x4 test = {};
+		XMStoreFloat4x4(&test, TransformationMatrix);
+
+
+
+		m_pTransformCom->Set_WorldMatrix(test);
+
+
+	}
+
+	else
+	{
+		m_fCutScene_CurTime = 0.f;
+		m_bCutSceneFristLerpEnd = true;
 	}
 
 
-
-	return m_bCamera_Cut_Scene_OnOff;
 }
 
 
