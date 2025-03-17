@@ -78,7 +78,7 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 	{
 		if (iter.isPlay == false)
 		{
-			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
+			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
 				m_pGameInstance->Add_Actor_Scene(m_pActor);
 			else
 				m_pGameInstance->Sub_Actor_Scene(m_pActor);

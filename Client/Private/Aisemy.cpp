@@ -66,21 +66,27 @@ HRESULT CAisemy::Initialize(void* pArg)
 
 void CAisemy::Priority_Update(_float fTimeDelta)
 {
+    Culling();
+    if (m_bCulling)
+        return;
     m_fTimeDelta = fTimeDelta;
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+    CalCulate_Distance();
 
     if (m_fDistance <= 20.f && !m_bActive)
     {
+        m_bActive = true;
         m_pState_Manager->ChangeState(new CAisemy::Intro_State(), this);
     }
+    else if (m_fDistance > 20.f)
+        m_bActive = false;
 
     __super::Priority_Update(fTimeDelta);
 }
 
 void CAisemy::Update(_float fTimeDelta)
 {
+    if (m_bCulling)
+        return;
 
     m_pState_Manager->State_Update(fTimeDelta, this);
 
@@ -95,13 +101,13 @@ void CAisemy::Update(_float fTimeDelta)
 
 void CAisemy::Late_Update(_float fTimeDelta)
 {
+    if (m_bCulling)
+        return;
+
     if (m_bNeed_Rotation)
         Rotation_To_Player();
 
-    if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
-    {
-        __super::Late_Update(fTimeDelta);
-    }
+    __super::Late_Update(fTimeDelta);
 }
 
 HRESULT CAisemy::Render()
@@ -135,6 +141,30 @@ HRESULT CAisemy::Ready_PartObjects()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CAisemy::CalCulate_Distance()
+{
+    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
+}
+
+void CAisemy::Culling()
+{
+    //절두체 안에있을때
+    if (!m_bActive)
+    {
+        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER))
+        {
+            m_bCulling = false;
+        }
+        //절두체 안에 없을때
+        else
+        {
+            m_bCulling = true;
+        }
+    }
 }
 
 void CAisemy::RootAnimation()

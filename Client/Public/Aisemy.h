@@ -31,6 +31,9 @@ public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
 public:
+	void CalCulate_Distance();
+	void Culling();
+public:
 	void RootAnimation();
 	void RotateDegree_To_Player();
 	void Rotation_To_Player();
@@ -41,6 +44,7 @@ private:
 	_bool                            m_bActive = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_bNeedControl = {};
+	_bool                            m_bCulling = {};
 
 	_float                           m_fRotateDegree = {};
 	_float                           m_fAngle = {};

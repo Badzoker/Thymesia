@@ -45,6 +45,7 @@ private:
 
 	_bool                            m_bActive = {};
 	_bool                            m_bCan_Move_Anim = {};
+	_bool                            m_bCanHit = true;
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_IsStun = {};
@@ -55,6 +56,7 @@ private:
 
 	_uint                            m_iHitCount = {};
 	_uint                            m_iSpawn_Cell_Index = {};
+	const _uint* m_Player_Attack = {};
 
 
 	_float                           m_fRotateDegree = {};

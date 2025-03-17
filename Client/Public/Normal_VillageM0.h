@@ -49,6 +49,7 @@ private:
 	_bool						     m_bFirst_Active = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_bCan_Move_Anim = {};
+	_bool                            m_bCanHit = true;
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_IsStun = {};
 	_bool                            m_bHP_Bar_Active = {};
@@ -57,6 +58,8 @@ private:
 	_bool                            m_bCulling = {};
 
 	_uint                            m_iSpawn_Cell_Index = {};
+	_uint							 m_iHit_Motion_Index = -1;
+	const _uint* m_Player_Attack = {};
 
 
 	_float                           m_fRotateDegree = {};
@@ -188,7 +191,7 @@ public:
 	class Hit_State : public CStates<CNormal_VillageM0>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint pHitNum);
 		virtual ~Hit_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨

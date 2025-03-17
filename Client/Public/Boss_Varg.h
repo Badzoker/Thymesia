@@ -59,7 +59,7 @@ private:
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
-
+	const _uint* m_Player_Attack = {};
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};
@@ -273,12 +273,14 @@ public:
 	class Roar_State : public CStates<CBoss_Varg>
 	{
 	public:
-		Roar_State() = default;
+		Roar_State(_bool pCheck);
 		virtual ~Roar_State() = default;
 	public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
+	private:
+		_bool m_bFirst = {};
 	};
 
 	class Catch_State : public CStates<CBoss_Varg>

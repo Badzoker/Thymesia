@@ -44,7 +44,7 @@ HRESULT CWeapon_Shield::Initialize(void* pArg)
 	_vector vOffSetPos = { 20.f,0.f,-10.f,1.f };
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vOffSetPos);
 
-	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.8f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.6f,0.6f,0.8f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,80.f,1.f });
 
@@ -74,15 +74,15 @@ void CWeapon_Shield::Update(_float fTimeDelta)
 		XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 10, 300.f,0.f,1.f });
 
 	for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 	{
 		if (iter.isPlay == false)
 		{
-			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
+			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
 			{
-				if (*m_pParentState == STATE_PARRY)
+				if (*m_pParentState == MONSTER_STATE::STATE_PARRY)
 				{
 					m_pGameInstance->Add_Actor_Scene(m_pActor);
 				}

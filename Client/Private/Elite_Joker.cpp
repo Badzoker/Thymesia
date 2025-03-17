@@ -3,8 +3,10 @@
 #include "GameInstance.h"
 #include "Body_Joker.h"
 #include "Joker_Weapon.h"
+#include "Player.h"
 #include "Animation.h"
 #include "Monster_HP_Bar.h"
+#include "Locked_On.h"
 
 CElite_Joker::CElite_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -53,7 +55,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
-
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
 
     m_pState_Manager = CState_Machine<CElite_Joker>::Create();
     if (m_pState_Manager == nullptr)
@@ -146,6 +148,9 @@ void CElite_Joker::Late_Update(_float fTimeDelta)
 {
     if (m_bCulling)
         return;
+
+    Recovery_HP();
+
     if (m_bNeed_Rotation)
         Rotation_To_Player();
     __super::Late_Update(fTimeDelta);
@@ -198,6 +203,17 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Joker_Weapon_Desc.fRotationPerSec = 0.f;
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Joker_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker_Weapon"), &Joker_Weapon_Desc)))
+        return E_FAIL;
+
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -381,15 +397,36 @@ void CElite_Joker::Rotation_To_Player()
     }
 }
 
+void CElite_Joker::Recovery_HP()
+{
+    if (m_fMonsterCurHP != m_fShieldHP)
+    {
+        m_fRecoveryTime += m_fTimeDelta;
+        if (m_fRecoveryTime >= 5.f)
+            m_bCanRecovery = true;
+    }
+    if (m_bCanRecovery)
+    {
+        m_fShieldHP += 0.1f;
+        if (m_fShieldHP >= m_fMonsterCurHP)
+        {
+            m_fShieldHP = m_fMonsterCurHP;
+            m_bCanRecovery = false;
+            m_fRecoveryTime = 0.f;
+        }
+    }
+}
+
 void CElite_Joker::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
-        //m_fRecoveryTime = 0.f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
+        m_fMonsterCurHP -= *m_Player_Attack / 3.f;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= (*m_Player_Attack / 3.f) * 1.5f;
         if (!m_bPatternProgress)
         {
             //m_pModelCom->Get_CurAnimation()->Set_LerpTime(0.f);

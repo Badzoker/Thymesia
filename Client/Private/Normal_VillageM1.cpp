@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Normal_VillageM1.h"
+#include "Player.h"
 #include "Weapon_Axe.h"
 #include "Weapon_Shield.h"
 #include "Body_VillageM1.h"
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Monster_HP_Bar.h"
+#include "Locked_On.h"
 
 CNormal_VillageM1::CNormal_VillageM1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
@@ -54,8 +56,8 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
-
-
+    m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+    //   _uint Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower();
     m_pState_Manager = CState_Machine<CNormal_VillageM1>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
@@ -213,6 +215,17 @@ HRESULT CNormal_VillageM1::Ready_PartObjects()
     Weapon2_Desc.fRotationPerSec = 0.f;
 
     if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Shield"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_Shield"), &Weapon2_Desc)))
+        return E_FAIL;
+
+    CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+    Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+    Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Locked_On_Desc.pParentState = &m_iMonster_State;
+    Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+    Locked_On_Desc.fSpeedPerSec = 0.f;
+    Locked_On_Desc.fRotationPerSec = 0.f;
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -376,22 +389,23 @@ void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
+        _uint m_iNoDamage = 1;
         if (m_iHitCount >= 4.f)
         {
             m_iHitCount = 0;
             m_fDelayTime = 0.f;
             m_bPatternProgress = true;
             m_pState_Manager->ChangeState(new Parry_State(), this);
-            m_fMonsterCurHP += 5.f;
+            m_iNoDamage = 0;
         }
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= 5.f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= 10.f;
+        m_fMonsterCurHP -= *m_Player_Attack * 0.5f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
+        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f * m_iNoDamage;
         m_iHitCount += 1;
-        if (!m_bPatternProgress)
+        if (m_bCanHit)
         {
             m_pState_Manager->ChangeState(new CNormal_VillageM1::Hit_State(), this);
         }
@@ -615,6 +629,7 @@ void CNormal_VillageM1::Attack_01_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 4;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_bCanHit = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -627,6 +642,7 @@ void CNormal_VillageM1::Attack_01_State::State_Update(_float fTimeDelta, CNormal
 
 void CNormal_VillageM1::Attack_01_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bCanHit = true;
 }
 #pragma endregion
 
@@ -660,6 +676,7 @@ void CNormal_VillageM1::Attack_02_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_03_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 8;
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -673,6 +690,7 @@ void CNormal_VillageM1::Attack_03_State::State_Update(_float fTimeDelta, CNormal
 
 void CNormal_VillageM1::Attack_03_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bCanHit = true;
 }
 
 #pragma endregion
@@ -741,6 +759,7 @@ void CNormal_VillageM1::Execution_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Parry_Attack_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 9;
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_State = STATE_PARRY_ATTACK;
     pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
@@ -755,11 +774,13 @@ void CNormal_VillageM1::Parry_Attack_State::State_Update(_float fTimeDelta, CNor
 
 void CNormal_VillageM1::Parry_Attack_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bCanHit = true;
 }
 
 void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 48;
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_State = STATE_PARRY;
     pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
@@ -768,12 +789,13 @@ void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
 
 void CNormal_VillageM1::Parry_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
 {
-    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 100.f)
+    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 150.f)
         pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
 }
 
 void CNormal_VillageM1::Parry_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bCanHit = true;
 }
 
 void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageM1* pObject)
