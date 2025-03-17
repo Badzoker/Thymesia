@@ -637,7 +637,7 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
         GeometryShader = compile gs_5_0 GS_MAIN();
-        PixelShader = compile ps_5_0 PSMainShadow();
+        PixelShader = NULL;
     }
 
     pass Distortion //3

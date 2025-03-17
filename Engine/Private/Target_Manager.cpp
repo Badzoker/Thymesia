@@ -1,7 +1,7 @@
 #include "Target_Manager.h"
 #include "RenderTarget.h"   
 
-#include "Shader_Compute_Sample.h"
+#include "Shader_Compute_Deferred.h"
 
 CTarget_Manager::CTarget_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :m_pDevice(pDevice)
@@ -145,7 +145,7 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DepthStencilView* _pDSV)
     return S_OK;
 }
 
-HRESULT CTarget_Manager::Compute_Copy_RTV(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, CShader_Compute_Sample* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
+HRESULT CTarget_Manager::RTV_Compute_LightShaft(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
 {
     CRenderTarget* pRenderTargetToRead = Find_RenderTarget(strRenderTargetTagToRead);
 
@@ -157,7 +157,33 @@ HRESULT CTarget_Manager::Compute_Copy_RTV(const _wstring& strRenderTargetTagToRe
     if (pRenderTargetToRead == nullptr)
         return E_FAIL;
 
-    return pCompute_Shader->Compute_Shader(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetToRead->Get_SRV(), pRenderTargetToWrite->Get_UAV(), pArg);
+    return pCompute_Shader->Compute_Shader_LightShaft(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetToRead->Get_SRV(), pRenderTargetToWrite->Get_UAV(), pArg);
+}
+
+HRESULT CTarget_Manager::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetTagFog, CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
+{
+
+    CRenderTarget* pRenderTargetDepth = Find_RenderTarget(strRenderTargetTagDepth);
+
+    if (pRenderTargetDepth == nullptr)
+        return E_FAIL;
+
+    CRenderTarget* pRenderTargetGodRay = Find_RenderTarget(strRenderTargetTagGodRay);
+
+    if (pRenderTargetGodRay == nullptr)
+        return E_FAIL;
+
+    CRenderTarget* pRenderTargetFinal = Find_RenderTarget(strRenderTargetTagFinal);
+
+    if (pRenderTargetFinal == nullptr)
+        return E_FAIL;
+
+    CRenderTarget* pRenderTargetFog = Find_RenderTarget(strRenderTargetTagFog);
+
+    if (pRenderTargetFog == nullptr)
+        return E_FAIL;
+
+    return pCompute_Shader->Compute_Shader_Fog(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetDepth->Get_SRV(), pNoiseSRV, pRenderTargetGodRay->Get_SRV(), pRenderTargetFinal->Get_SRV(), pRenderTargetFog->Get_UAV(), pArg);
 }
 
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)

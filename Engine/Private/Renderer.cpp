@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "GameInstance.h"
 
-#include "Shader_Compute_Sample.h"
+#include "Shader_Compute_Deferred.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
@@ -46,12 +46,20 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Occulsion"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	CShader_Compute_Sample::LIGHTSHAFTPARAMS Desc = {};
+	CShader_Compute_Deferred::LIGHTSHAFTPARAMS LightShaftDesc = {};
 
-	Desc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
-	Desc.g_ScreenLightPos = _float2(0.f, 0.f);
+	LightShaftDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
+	LightShaftDesc.g_ScreenLightPos = _float2(0.f, 0.f);
 
-	m_pLightShaftComputeShader = CShader_Compute_Sample::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Compute_Sample.hlsl"), "CSMain_Sample", nullptr, 0, &Desc);
+	m_pLightShaftComputeShader = CShader_Compute_Deferred::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Compute_Sample.hlsl"), "CSMain_Sample", nullptr, 0, &LightShaftDesc, CShader_Compute_Deferred::DEFERRED_TYPE_LIGHTSHAFT);
+
+	CShader_Compute_Deferred::FOGPARAMS FogDesc = {};
+
+	m_pFogComputeShader = CShader_Compute_Deferred::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Compute_Fog.hlsl"), "CSMain_Fog", nullptr, 0, &FogDesc, CShader_Compute_Deferred::DEFERRED_TYPE_FOG);
+
+	/* Target_Fog */
+	if (FAILED(m_pGameInstance->Add_UAV_RenderTarget(TEXT("Target_Fog"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
 
 	/* Target_Shade */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shade"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -260,7 +268,7 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 #endif // _DEBUG
 
-	Add_NoiseTexture();
+	//Add_NoiseTexture();
 
  	return S_OK;
 }
@@ -317,6 +325,9 @@ HRESULT CRenderer::Render()
 		return E_FAIL;	
 
 	if (FAILED(Render_Shadow_Final()))
+		return E_FAIL;
+
+	if (FAILED(Render_Fog()))
 		return E_FAIL;
 
 	if (FAILED(Render_MotionBlur_By_Velocity()))
@@ -563,12 +574,12 @@ HRESULT CRenderer::Render_GlowY()
 
 HRESULT CRenderer::Render_LightShaftX()
 {
-	CShader_Compute_Sample::LIGHTSHAFTPARAMS ParamDesc = {  };
+	CShader_Compute_Deferred::LIGHTSHAFTPARAMS ParamDesc = {  };
 
 	ParamDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
 	ParamDesc.g_ScreenLightPos = m_pGameInstance->Get_LightPos();
 
-	if (FAILED(m_pGameInstance->Compute_Copy_RTV(TEXT("Target_Occulsion"), TEXT("Target_Compute_LightShaft"), m_pLightShaftComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
+	if (FAILED(m_pGameInstance->RTV_Compute_LightShaft(TEXT("Target_Occulsion"), TEXT("Target_Compute_LightShaft"), m_pLightShaftComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightShaftX"))))
@@ -612,6 +623,25 @@ HRESULT CRenderer::Render_LightShaftY()
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Fog()
+{
+	CShader_Compute_Deferred::FOGPARAMS ParamDesc = {};
+
+	ParamDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+	ParamDesc.fFogStartDistance = _float2(0.03f, 8.f);
+	ParamDesc.g_fTime = m_fTime += 0.001f;
+	ParamDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+	ParamDesc.g_FogColor = m_vFogColor;
+	ParamDesc.g_vCamPosition = m_pGameInstance->Get_CamPosition();
+	XMStoreFloat4x4(&ParamDesc.g_ProjMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_PROJ))));
+	XMStoreFloat4x4(&ParamDesc.g_ViewMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW))));
+
+	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), nullptr, TEXT("Target_LightShaftY"), TEXT("Target_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -852,7 +882,7 @@ HRESULT CRenderer::Render_HighLightY()
 
 HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 {
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow_Final"), m_pShader, "g_FinalTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_HighLightY"), m_pShader, "g_HighLightYTexture")))
@@ -874,34 +904,34 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 		return E_FAIL;
 
 
-	_float3 FogFactor = _float3(0.2f, 0.f, 5.f);
-	_float2 NoiseFactor = _float2(0.01f, 0.2f);
-	_float2 HeightNoiseFactor = _float2(0.f, 5.f);
+	//_float3 FogFactor = _float3(0.2f, 0.f, 5.f);
+	//_float2 NoiseFactor = _float2(0.01f, 0.2f);
+	//_float2 HeightNoiseFactor = _float2(0.f, 5.f);
 
-	m_fTime += 0.001f;
+	//m_fTime += 0.001f;
 
-	_float	fFogRange = 0.03f;
+	//_float	fFogRange = 0.03f;
 
-	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_RawValue("g_FogRange", &fFogRange, sizeof(_float))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("g_FogRange", &fFogRange, sizeof(_float))))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_RawValue("fFogFactor", &FogFactor, sizeof(_float3))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("fFogFactor", &FogFactor, sizeof(_float3))))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_RawValue("fHeightNoiseFactor", &HeightNoiseFactor, sizeof(_float2))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("fHeightNoiseFactor", &HeightNoiseFactor, sizeof(_float2))))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_RawValue("fNoiseFactor", &NoiseFactor, sizeof(_float2))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("fNoiseFactor", &NoiseFactor, sizeof(_float2))))
+	//	return E_FAIL;
 
-	if (FAILED(Bind_NoiseTexture(m_pShader, "g_NoiseTexture")))
-		return E_FAIL;
+	//if (FAILED(Bind_NoiseTexture(m_pShader, "g_NoiseTexture")))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_RawValue("g_fTime", &m_fTime, sizeof(_float))))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_RawValue("g_fTime", &m_fTime, sizeof(_float))))
+	//	return E_FAIL;
 
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1289,5 +1319,6 @@ void CRenderer::Free()
 	Safe_Release(m_pNoiseSRV);
 
 	Safe_Release(m_pLightShaftComputeShader);
+	Safe_Release(m_pFogComputeShader);
 }	
 

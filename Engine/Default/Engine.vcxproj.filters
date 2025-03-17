@@ -259,14 +259,14 @@
     <Filter Include="01.Utility\11.Effect\Manager">
       <UniqueIdentifier>{a7943271-11ec-45cb-903a-e70432608afb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\Shader\Shader_Compute_Sample">
-      <UniqueIdentifier>{054f64e6-f379-4ba8-a5e1-9035ea37b636}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\07.Lights\Static_Light">
       <UniqueIdentifier>{d7aeb7eb-542a-494e-93c3-68cc0a5f16c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\07.Lights\Dynamic_Light">
       <UniqueIdentifier>{c69c4d79-843a-4a60-b569-d8f8c3376dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Shader\Shader_Compute_Deferred">
+      <UniqueIdentifier>{054f64e6-f379-4ba8-a5e1-9035ea37b636}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -513,8 +513,8 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>01.Utility\11.Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Shader_Compute_Sample.h">
-      <Filter>01.Utility\04.Components\Shader\Shader_Compute_Sample</Filter>
+    <ClInclude Include="..\Public\Shader_Compute_Deferred.h">
+      <Filter>01.Utility\04.Components\Shader\Shader_Compute_Deferred</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Light.h">
       <Filter>01.Utility\07.Lights\Static_Light</Filter>
@@ -752,8 +752,8 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>01.Utility\11.Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Shader_Compute_Sample.cpp">
-      <Filter>01.Utility\04.Components\Shader\Shader_Compute_Sample</Filter>
+    <ClCompile Include="..\Private\Shader_Compute_Deferred.cpp">
+      <Filter>01.Utility\04.Components\Shader\Shader_Compute_Deferred</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Light.cpp">
       <Filter>01.Utility\07.Lights\Static_Light</Filter>
@@ -776,6 +776,9 @@
       <Filter>98.ShaderFile</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Sample.hlsl">
+      <Filter>98.ShaderFile</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Fog.hlsl">
       <Filter>98.ShaderFile</Filter>
     </FxCompile>
   </ItemGroup>

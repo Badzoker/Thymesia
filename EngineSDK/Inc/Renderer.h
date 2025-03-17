@@ -53,8 +53,10 @@ private:
 	ID3D11ShaderResourceView*						m_pNoiseSRV = { nullptr };
 
 	_float											m_fTime = { 0.f };
+	_float4											m_vFogColor = { 0.55f, 0.58f, 0.56f, 1.f }; // 나중에 스테이지 변경시 안개색도 변경가능하게
 
-	class CShader_Compute_Sample* m_pLightShaftComputeShader = { nullptr };
+	class CShader_Compute_Deferred* m_pLightShaftComputeShader = { nullptr };
+	class CShader_Compute_Deferred* m_pFogComputeShader = { nullptr };
 
 private:
 	HRESULT Render_Priority();
@@ -67,6 +69,7 @@ private:
 	HRESULT Render_GlowY();
 	HRESULT Render_LightShaftX();
 	HRESULT Render_LightShaftY();
+	HRESULT Render_Fog();
 	HRESULT Render_MotionBlur_By_Velocity();
 
 	HRESULT Render_NonLight();
