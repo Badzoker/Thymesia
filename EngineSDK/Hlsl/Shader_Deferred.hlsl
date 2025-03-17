@@ -339,7 +339,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector vWeightBlend = g_WeightBlendTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vVelocity = g_VelocityTexture.Sample(LinearSampler, In.vTexcoord);   
+    vector vVelocity = g_VelocityTexture.Sample(LinearSampler, In.vTexcoord);
     
     float fViewZ = vDepth.y;
 	
@@ -371,61 +371,8 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
         vFinal.xyzw /= (float) iCnt;
     }
-	
-	/* 투영공간상의 위치 */
-	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 * 1/w */
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepth.x;
-    vWorldPos.w = 1.f;
-   
-	/* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬  */
-    vWorldPos = vWorldPos.xyzw * fViewZ;
     
-    Out.vColor = vFinal + vHighLight + vGlow  + vGodRay + vWeightBlend;
-    
-    float fDistanceFogFactor = 1.f - saturate((1.f / 2.71828f) * pow((vWorldPos.z * g_FogRange), 2.f));
-    
-	/* 로컬위치 * 월드행렬 * 뷰행렬 */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-    float4 vViewPos = vWorldPos;
-	/* 월드위치 */
-	/* 로컬위치 * 월드행렬  */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-    
-    float3 vFogGodRay = vGodRay.xyz;
-    
-    vector FogColor = lerp(vector(0.55, 0.58, 0.57, 1.f), vector(1.0f, 1.f, 1.f, 1.f), length(vFogGodRay));
-    
-    //vector(1.0, 0.9, 0.7, 1.f) Yellow
-    
-    float fogFade = smoothstep(8.f * 0.3f, 8.f * 1.5f, length(vWorldPos - g_vCamPosition));
-    float fHeightFogFactor = 1.f - saturate((1.f / 2.71828f) * exp(-fFogFactor.x * (vWorldPos.y - fFogFactor.z)));
-    float fHeightNoiseFogFactor = smoothstep(fHeightNoiseFactor.x - 10.f, fHeightNoiseFactor.y + 10.f, vWorldPos.y);
-    float fHeightNoise = (1.f - fHeightNoiseFogFactor) * 0.2f;
-    
-
-    float2 noiseFlow = float2(g_fTime, g_fTime);
-    
-    float scaleFactor = 0.01f;
-    float3 scaledPos = (vWorldPos * scaleFactor).xyz;
-    
-    float3 noiseUV = frac(scaledPos + float3(g_fTime * 0.1f, 0.0f, g_fTime * 0.1f));
-    
-    float noise = g_NoiseTexture.SampleLevel(LinearSampler, noiseUV, 0.f).r;
-    noise = smoothstep(0.3, 0.7, noise);
-    
-    fHeightFogFactor += noise;
-    
-    float fFinalFogFactor = min(fDistanceFogFactor, fHeightFogFactor);
-    fFinalFogFactor /= fogFade;
-    fFinalFogFactor = smoothstep(0.f, 1.f, fFinalFogFactor);
-    
-    if (vDepth.x <= 0.f)
-        Out.vColor = FogColor;
-    else
-        Out.vColor = float4(lerp(FogColor, Out.vColor, fFinalFogFactor));
+    Out.vColor = vFinal + vHighLight + vGlow + vGodRay + vWeightBlend;
     
     return Out;
 }

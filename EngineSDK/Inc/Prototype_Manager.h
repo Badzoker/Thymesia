@@ -15,7 +15,7 @@
 
 #include "Shader_Compute.h"
 #include "VIBuffer_Point_Compute.h"
-#include "Shader_Compute_Sample.h"
+#include "Shader_Compute_Deferred.h"
 
 #include "Navigation.h"
 

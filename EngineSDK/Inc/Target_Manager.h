@@ -21,7 +21,10 @@ public:
 	HRESULT Begin_MRT(const _wstring& strMRTTag, _bool isClear = true, ID3D11DepthStencilView* pDSV = nullptr);	
 	HRESULT End_MRT(ID3D11DepthStencilView* _pDSV = nullptr);		
 
-	HRESULT Compute_Copy_RTV(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, class CShader_Compute_Sample* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg);
+	HRESULT RTV_Compute_LightShaft(const _wstring& strRenderTargetTagToRead, const _wstring& strRenderTargetTagToWrite, class CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg);
+
+	HRESULT RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetTagFog,
+		CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg);
 #ifdef _DEBUG
 public:
 	HRESULT Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);

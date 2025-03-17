@@ -221,7 +221,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\Public\Shader_Compute.h" />
-    <ClInclude Include="..\Public\Shader_Compute_Sample.h" />
+    <ClInclude Include="..\Public\Shader_Compute_Deferred.h" />
     <ClInclude Include="..\public\Shadow.h" />
     <ClInclude Include="..\public\SoundMgr.h" />
     <ClInclude Include="..\public\SwordTrail_Buffer.h" />
@@ -301,7 +301,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
     <ClCompile Include="..\Private\Shader_Compute.cpp" />
-    <ClCompile Include="..\Private\Shader_Compute_Sample.cpp" />
+    <ClCompile Include="..\Private\Shader_Compute_Deferred.cpp" />
     <ClCompile Include="..\private\Shadow.cpp" />
     <ClCompile Include="..\private\SoundMgr.cpp" />
     <ClCompile Include="..\private\SwordTrail_Buffer.cpp" />
@@ -339,6 +339,7 @@ call UpdateLib.bat</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Fog.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Sample.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Shadow.hlsl" />
