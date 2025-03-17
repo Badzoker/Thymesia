@@ -205,6 +205,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_NORMAL_EVADE_B:
         STATE_NORMAL_EVADE_B_Method();
         break;
+    case STATE_HARMOR_EXECUTION:    
+        STATE_HARMOR_EXECUTION_Method();    
+        break;  
     default:
         break;
     }
@@ -1829,6 +1832,18 @@ void CBody_Player::STATE_NORMAL_EVADE_B_Method()
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+    }
+}
+
+void CBody_Player::STATE_HARMOR_EXECUTION_Method()  
+{
+    m_pModelCom->SetUp_Animation(222, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(222)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
     }
 }
 

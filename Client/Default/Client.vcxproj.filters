@@ -580,6 +580,12 @@
     <Filter Include="03.UIObject\2.UIObjGroup\07.Loading">
       <UniqueIdentifier>{6baf2a65-efd6-4b5e-9f43-12444af93610}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Execution">
+      <UniqueIdentifier>{a2ee6059-41bc-4383-b472-dc9ce8822ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Execution\HArmorLV1_Execution">
+      <UniqueIdentifier>{46bc66e8-6dad-4c7d-91f3-b18405dbf9fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1089,6 +1095,9 @@
     <ClInclude Include="..\Public\UIGroup_Loading.h">
       <Filter>03.UIObject\2.UIObjGroup\07.Loading</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HArmorLV1_Execution.h">
+      <Filter>02.GameObject\Player\State\Execution\HArmorLV1_Execution</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1588,6 +1597,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Loading.cpp">
       <Filter>03.UIObject\2.UIObjGroup\07.Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HArmorLV1_Execution.cpp">
+      <Filter>02.GameObject\Player\State\Execution\HArmorLV1_Execution</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

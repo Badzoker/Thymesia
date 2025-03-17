@@ -78,6 +78,9 @@ public:
 		STATE_NORMAL_EVADE_BL,
 		STATE_NORMAL_EVADE_B,
 		/* ------------------------- */
+
+		/* 처형 모션 */	
+		STATE_HARMOR_EXECUTION,	
 	};
 
 
@@ -89,6 +92,7 @@ public:
 		PHASE_HITTED = 1 << 3,
 		PHASE_PARRY = 1 << 4,
 		PHASE_DASH = 1 << 5,
+		PHASE_EXECUTION = 1 << 6,	
 
 	};
 
