@@ -117,7 +117,7 @@ void CRightWeapon::Update(_float fTimeDelta)
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 
-#pragma region Effect 0314
+#pragma region Effect0318수정
                     if (!strcmp(iter.szName, "LAttack1_Start"))
                         m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
                     else if (!strcmp(iter.szName, "LAttack2_Start"))
@@ -130,6 +130,12 @@ void CRightWeapon::Update(_float fTimeDelta)
                         m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
                     else if (!strcmp(iter.szName, "LAttack5_Start"))
                         m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD5, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                    else if (!strcmp(iter.szName, "LAttack5_Dust"))
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos);
+                        //m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST, m_pParentWorldMatrix); //요놈은 고쳐야함!!
+                    }
 #pragma endregion
 
 
@@ -234,6 +240,19 @@ void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
             _vector vPosition = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
             if (*m_pParentState == CPlayer::STATE_ATTACK_L1)
                 m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, vPosition, vPlayerLook);
+            else if (*m_pParentState == CPlayer::STATE_ATTACK_L2)
+                m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING, vPosition, vPlayerLook);
+            else if (*m_pParentState == CPlayer::STATE_ATTACK_L3)
+                m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING, vPosition, vPlayerLook);
+            else if (*m_pParentState == CPlayer::STATE_ATTACK_L4)
+            {
+                if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= 24.f)
+                    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING, vPosition, vPlayerLook);
+                else
+                    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING, vPosition, vPlayerLook);
+            }
+            else if (*m_pParentState == CPlayer::STATE_ATTACK_L5)
+                m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING, vPosition, vPlayerLook);
 #pragma endregion
         }
         else

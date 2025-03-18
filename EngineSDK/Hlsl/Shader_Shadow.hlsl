@@ -140,7 +140,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     fShadow /= 3.f;
     
-    vector vShadow = (0.f, 0.f, 0.f, 0.f);
+    vector vShadow = vector(0.f, 0.f, 0.f, 0.f);
     
     Out.vColor = lerp(vColor, vShadow, fShadow);
     

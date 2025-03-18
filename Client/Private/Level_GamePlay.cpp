@@ -458,6 +458,30 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar* pLayerTag)
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, 4)))
 		return E_FAIL;
 
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_2.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_3.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_1.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_2.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_5.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAttack5_Dust.dat"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, 2)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1061,6 +1085,30 @@ HRESULT CLevel_GamePlay::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING:
 			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_2");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_3");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_4_1");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_4_2");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_5");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_PlayerAttack_5_Dust");
 			break;
 		}
 #pragma endregion

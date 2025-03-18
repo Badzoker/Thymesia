@@ -54,6 +54,7 @@ public:
 	virtual void Priority_Update(_float _fTimeDelta) override;
 	virtual void Update(_float _fTimeDelta) override;
 	virtual void Late_Update(_float _fTimeDelta) override;
+	virtual HRESULT Render_Distortion() override;
 	virtual HRESULT Render_Glow() override;
 
 public:

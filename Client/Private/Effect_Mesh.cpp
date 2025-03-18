@@ -83,8 +83,42 @@ void CEffect_Mesh::Update(_float _fTimeDelta)
 
 void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 {
-	// RG 넣어주기
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+	switch (m_iShaderPass)
+	{
+	case 0:
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		break;
+	case 1:
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		break;
+	case 2:
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this);
+		break;
+	case 3:
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		break;
+	case 4:
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		break;
+	}
+}
+
+HRESULT CEffect_Mesh::Render_Distortion()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Begin(m_iShaderPass);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
 }
 
 HRESULT CEffect_Mesh::Render_Glow()

@@ -607,7 +607,7 @@ PS_OUT PS_OCCULSION(PS_IN In)
     float result = pow(((In.vTexcoord.x - g_ScreenLightPos.x) / (9.f / 16.f)), 2.f) + pow((In.vTexcoord.y - g_ScreenLightPos.y), 2.f);
     float radiusPow = pow(0.022f, 2.f);
     
-    float vColor = float4(2.f, 2.f, 2.f, 1.f);
+    float4 vColor = float4(2.f, 2.f, 2.f, 1.f);
     
     float3 CameraDir = g_ScreenCameraDir.xyz;
     
