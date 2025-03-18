@@ -232,7 +232,7 @@
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
-    <ClInclude Include="..\Public\UIGroup_Iventory.h" />
+    <ClInclude Include="..\Public\UIGroup_Inventory.h" />
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
@@ -405,7 +405,7 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
-    <ClCompile Include="..\Private\UIGroup_Iventory.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Inventory.cpp" />
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />

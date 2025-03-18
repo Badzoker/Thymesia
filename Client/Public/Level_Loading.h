@@ -22,6 +22,9 @@ public:
 
 public:
 	HRESULT Ready_Layer_UIGroup_Loading(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Mouse(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Fade(const _tchar* pLayerTag);
+
 private:
 	LEVELID				m_eNextLevelID = { LEVEL_END };
 	class CLoader*		m_pLoader = { nullptr };

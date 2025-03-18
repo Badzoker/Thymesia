@@ -94,7 +94,7 @@
 #include "UIGroup_PlayerLevelUP.h"
 #include "UIGroup_PlayerTalent.h"
 #include "UIGroup_PlayerScreen.h"
-#include "UIGroup_Iventory.h"
+#include "UIGroup_Inventory.h"
 #include "UIGroup_Loading.h"
 
 #include "UI_MouseCursor.h"
@@ -235,8 +235,20 @@ HRESULT CLoader::Loading_For_Level_Static()
 #pragma region UI 텍스쳐
 	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
 
+
+#pragma region BlackScreen
+	lstrcpy(m_szLoadingText, TEXT("Fade 용 Object 생성 중.."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Black"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/BlackScreen/Fade2.png"), 1))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), CBlackScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_FadeTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxFadeTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+#pragma endregion
+
 
 	/* For.Prototype_Component_Shader_VtxPosTex_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
@@ -735,7 +747,7 @@ HRESULT CLoader::Loading_For_Level_Static()
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MouseCursor"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/TexUI_GameCursor.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/UI_GameCursor.dds"), 1))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_MouseCursor */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_MouseCursor"),
@@ -763,8 +775,8 @@ HRESULT CLoader::Loading_For_Level_Static()
 		CUIGroup_PlayerScreen::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UIGroup_Iventory */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Iventory"),
-		CUIGroup_Iventory::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"),
+		CUIGroup_Inventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Loading */
@@ -815,18 +827,6 @@ HRESULT CLoader::Loading_For_Level_Logo()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;	
 
-#pragma region BlackScreen
-	lstrcpy(m_szLoadingText, TEXT("Fade 용 Object 생성 중.."));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Black"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/BlackScreen/Fade2.png"), 1))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), CBlackScreen::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_FadeTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxFadeTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
-		return E_FAIL;
-#pragma endregion
 
 
 	/* 로딩이 완료되었습니다.*/

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "UIGroup_Iventory.h"
+#include "UIGroup_Inventory.h"
 #include "UI_Scene.h"
 #include "UI_Button.h"
 #include "UI_Text.h"
@@ -12,18 +12,21 @@
 #include "UI_SquareFrame.h"
 #include "UI_SquareFrame_Hover.h"
 #include "UI_UnderLine.h"
+#include "UI_Arrow.h"
 
-CUIGroup_Iventory::CUIGroup_Iventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+#include "Player.h"
+
+CUIGroup_Inventory::CUIGroup_Inventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
 }
 
-CUIGroup_Iventory::CUIGroup_Iventory(const CUIGroup_Iventory& Prototype)
+CUIGroup_Inventory::CUIGroup_Inventory(const CUIGroup_Inventory& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIGroup_Iventory::Initialize_Prototype()
+HRESULT CUIGroup_Inventory::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -31,7 +34,7 @@ HRESULT CUIGroup_Iventory::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::Initialize(void* pArg)
+HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 {
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
@@ -46,90 +49,76 @@ HRESULT CUIGroup_Iventory::Initialize(void* pArg)
 	m_pItemTypePopUp = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_ItemType_PopUp");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 
-	if (FAILED(Ready_MiniView_ItemInfo()))
-		return E_FAIL;
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+
+
+	Ready_MiniView_ItemInfo();
+	
 
 	return S_OK;
 }
 
-void CUIGroup_Iventory::Priority_Update(_float fTimeDelta)
+void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 {
-		__super::Priority_Update(fTimeDelta);
+	__super::Priority_Update(fTimeDelta);
 
-		// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
-		if (m_pMyBaseScene->Get_Scene_Render_State())
-		{
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
-		}
-		else
-		{
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, false);
-			m_iMouseOnLastSlot = 0; // 끄는 시점에 값 초기화
-		}
+	// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
+	if (m_pMyBaseScene->Get_Scene_Render_State())
+	{
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
+	}
+	else
+	{
+		m_bItemUsePopOpen = false;
+		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemUsePopUp, false);
+		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, false);
+		m_iMouseOnLastSlot = 0; // 끄는 시점에 값 초기화
+	}
 }
 
-void CUIGroup_Iventory::Update(_float fTimeDelta)
+void CUIGroup_Inventory::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
+
 	if (m_bRenderOpen)
 	{
-		__super::Update(fTimeDelta);
 		if (!m_bItemUsePopOpen)
 		{
+			Update_Get_ItemMgr();
+			Update_ItemInfo();
 			Change_UI_Item_Tab();
 
 			if (!m_bItemTypePopOpen)
 			{
-				if (m_pGameInstance->isKeyEnter(DIK_1))
-				{
-					Create_Item(1);
-				}
-				if (m_pGameInstance->isKeyEnter(DIK_2))
-				{
-					Create_Item(2);
-				}
-				if (m_pGameInstance->isKeyEnter(DIK_3))
-				{
-					Create_Item(3);
-				}
-				if (m_pGameInstance->isKeyEnter(DIK_4))
-				{
-					Create_Item(4);
-				}
-				if (m_pGameInstance->isKeyEnter(DIK_5))
-				{
-					Create_Item(5);
-				}
-				if (m_pGameInstance->isKeyEnter(DIK_6))
-				{
-					Create_Item(6);
-				}
 				if (m_bCommonOpen)
-					Slot_Button_MouseOn_Check(m_InvenItem);
+					Slot_Button_MouseOn_Check(m_InvenItemCommon);
 				if (m_bSkillOpen)
 					Slot_Button_MouseOn_Check(m_InvenItemSkill);
-
 			}
 			// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
 
 			if (m_bCommonOpen)
-				Slot_Button_Select_Check(m_InvenItem);
+				Slot_Button_Select_Check(m_InvenItemCommon);
 			if (m_bSkillOpen)
 				Slot_Button_Select_Check(m_InvenItemSkill);
 			ItemType_PopUP_Button();
 		}
 		else
 		{
-			ItemUse_PopUP_Button();
+			if (1 == m_iPopUpOpenNum)
+				ItemUse_PopUP_Use_Button();
+			else if (2 == m_iPopUpOpenNum)
+				ItemUse_PopUP_Drop_Button();
 		}
-
 	}
 }
 
-void CUIGroup_Iventory::Late_Update(_float fTimeDelta)
+void CUIGroup_Inventory::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
@@ -138,16 +127,12 @@ void CUIGroup_Iventory::Late_Update(_float fTimeDelta)
 	}
 }
 
-HRESULT CUIGroup_Iventory::Render()
+HRESULT CUIGroup_Inventory::Render()
 {
-	if (m_bRenderOpen)
-	{
-
-	}
 	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::Ready_UIObject()
+HRESULT CUIGroup_Inventory::Ready_UIObject()
 {
 	// ESC 메뉴 배경
 	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_EscMenuBase")))
@@ -160,21 +145,22 @@ HRESULT CUIGroup_Iventory::Ready_UIObject()
 	// 인벤 아이템 사용 버리기 최종 팝업
 	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_ItemUse_PopUp")))
 		return E_FAIL;
+
 	//인벤 아이템 타입에 따른 팝업
 	if (FAILED(m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_INVEN, L"UIScene_ItemType_PopUp")))
 		return E_FAIL;
-	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerScreen", m_TextInfo);
 
 	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::Change_UI_Tab()
+void CUIGroup_Inventory::Change_UI_Item_Tab()
 {
-	return S_OK;
-}
+	if (m_bCommonOpen)
+		Itme_View_Inventory(m_InvenItemCommon); // 일반 아이템을 슬롯에 띄우기
 
-HRESULT CUIGroup_Iventory::Change_UI_Item_Tab()
-{
+	if (m_bSkillOpen)
+		Itme_View_Inventory(m_InvenItemSkill);// 스킬 아이템을 슬롯에 띄우기
+
 	for (auto& Button : m_pItemScene->Find_UI_Button())
 	{
 		CUI_UnderLine* pButton = dynamic_cast<CUI_UnderLine*>(Button);
@@ -185,18 +171,10 @@ HRESULT CUIGroup_Iventory::Change_UI_Item_Tab()
 			{
 				m_bCommonOpen = true;
 				m_bSkillOpen = false;
-				/*if (m_InvenItem.empty())
-				{
-					DisConnect_MiniView_ItemInfo();
-				}*/
-				Itme_View_Inventory(m_InvenItem);
 			}
 
 		}
-		if (20 == Button->Get_UI_GroupID()) // 이야기
-		{
-
-		}
+		if (20 == Button->Get_UI_GroupID()) {} // 이야기
 		if (30 == Button->Get_UI_GroupID()) // 기술의 파편
 		{
 			if (pButton->Get_Mouse_Select_OnOff()) // 기술의 파편 버튼을 누를 시
@@ -204,31 +182,16 @@ HRESULT CUIGroup_Iventory::Change_UI_Item_Tab()
 				m_bCommonOpen = false;
 				m_bSkillOpen = true;
 
-
-
-
-				/*	if (m_InvenItemSkill.empty())
-					{
-						DisConnect_MiniView_ItemInfo();
-					}*/
-
-				Itme_View_Inventory(m_InvenItemSkill);
 			}
 		}
-		if (40 == Button->Get_UI_GroupID()) // 재료
-		{
-
-		}
+		if (40 == Button->Get_UI_GroupID()) {} // 재료
 
 	}
-
-
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::Ready_MiniView_ItemInfo()
+void CUIGroup_Inventory::Ready_MiniView_ItemInfo()
 {
-	// 
+	// 자주 쓰는 기본 정보객체 미리 가져와서 저장하기
 	for (auto& TextBox : m_pItemScene->Find_UI_TextBox())
 	{
 		_tchar* pTemp = { L"" };
@@ -273,145 +236,17 @@ HRESULT CUIGroup_Iventory::Ready_MiniView_ItemInfo()
 		}
 
 	}
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::Create_Item(_int iKeyNum)
-{
-	//임시 아이템 생성 함수 
-	UI_Item test = {};
-
-	switch (iKeyNum)
-	{
-	case 1:
-		test.ItemID = 10;
-		test.ItemIconNum = 1;
-		test.ItemType = ITEM_COMMON;
-		test.ItemName = L"헤르메스 왕궁 열쇠";
-		test.ItemDesc = L"비밀의 방을 블라블라 열 수 있다";
-		test.ItemCount = 1;
-		Item_Get(test);
-		break;
-
-	case 2:
-		test.ItemID = 20;
-		test.ItemType = ITEM_DIRECT_USE;
-		test.ItemIconNum = 5;
-		test.ItemName = L"기억의 파편";
-		test.ItemDesc = L"레벨 업에 소모되는 재화";
-		test.ItemCount = 1;
-		Item_Get(test);
-		break;
-
-	case 3:
-		test.ItemID = 30;
-		test.ItemType = ITEM_NOUSE;
-		test.ItemIconNum = 4;
-		test.ItemName = L"잊혀지는 깃털";
-		test.ItemDesc = L"모든 능력치가 초기화된다";
-		test.ItemCount = 1;
-		Item_Get(test);
-		break;
-	case 4:
-		test.ItemID = 40;
-		test.ItemType = ITEM_SKILL;
-		test.ItemIconNum = 7;
-		test.ItemName = L"망치";
-		test.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병무기를 해제하거나\n업그레이드 하세요.";
-		test.ItemCount = 1;
-		Item_Get2(test);
-		break;
-	case 5:
-		test.ItemID = 50;
-		test.ItemType = ITEM_SKILL;
-		test.ItemIconNum = 7;
-		test.ItemName = L"단도";
-		test.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병무기를 해제하거나\n업그레이드 하세요.";
-		test.ItemCount = 1;
-		Item_Get2(test);
-		break;
-	case 6:
-		test.ItemID = 60;
-		test.ItemType = ITEM_SKILL;
-		test.ItemIconNum = 7;
-		test.ItemName = L"손도끼";
-		test.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병무기를 해제하거나\n업그레이드 하세요.";
-		test.ItemCount = 1;
-		Item_Get2(test);
-		break;
-	}
-
-	return S_OK;
-}
-
-HRESULT CUIGroup_Iventory::Item_Get(UI_Item ItemInfo) // 아이템 매니저가 할거 
-{
-	for (auto& Item : m_InvenItem)
-	{
-		if (Item.ItemID == ItemInfo.ItemID) // 이미 아이템이 있다면
-		{
-			// 아이템 개수 증가
-			Item.ItemCount++; // 99개 제한을 여기서 하면 될 것 같지만....일단 보류
-
-			m_bInvenCheck = true; // 동일한 아이템이 있었다를 체크
-			break; // 찾았으니 반복문을 멈춘다
-		}
-		else
-		{
-			// 컨테이너에 획득한 아이템과 동일한게 없음을 체크
-			m_bInvenCheck = false;
-		}
-	}
-
-	if (!m_bInvenCheck) // 컨테이너에 아이템이 없다면 새롭게 적재한다
-	{
-		m_InvenItem.push_back(ItemInfo);
-	}
-
-	if (m_bCommonOpen) // 사실 인벤에 있을 때 아이템을 먹을 일이 없어서 필요 없는 코드이긴 함 => 테스트용으로 추가해 둠
-		Itme_View_Inventory(m_InvenItem); // 인벤 슬롯에 아이템 정보를 갱신한다
-
-	return S_OK;
-}
-
-HRESULT CUIGroup_Iventory::Item_Get2(UI_Item ItemInfo)
-{
-	for (auto& Item : m_InvenItemSkill)
-	{
-		if (Item.ItemID == ItemInfo.ItemID) // 이미 아이템이 있다면
-		{
-			// 아이템 개수 증가
-			Item.ItemCount++; // 99개 제한을 여기서 하면 될 것 같지만....일단 보류
-
-			m_bSkillItemCheck = true; // 동일한 아이템이 있었다를 체크
-			break; // 찾았으니 반복문을 멈춘다
-		}
-		else
-		{
-			// 컨테이너에 획득한 아이템과 동일한게 없음을 체크
-			m_bSkillItemCheck = false;
-		}
-	}
-
-	if (!m_bSkillItemCheck) // 컨테이너에 아이템이 없다면 새롭게 적재한다
-	{
-		m_InvenItemSkill.push_back(ItemInfo);
-	}
-
-	if (m_bSkillOpen)
-		Itme_View_Inventory(m_InvenItemSkill); // 인벤 슬롯에 아이템 정보를 갱신한다
-
-	return S_OK;
-}
-
-HRESULT CUIGroup_Iventory::Itme_View_Inventory(vector<UI_Item>& vecContainer)
+void CUIGroup_Inventory::Itme_View_Inventory(vector<UI_Item>& vecContainer)
 {
 	// 보여줄 아이템 순서를 정리한다
-	sort(vecContainer.begin(), vecContainer.end(), [](UI_Item a, UI_Item b) {return a.ItemID < b.ItemID; }); // 오름차순 정렬
+	sort(vecContainer.begin(), vecContainer.end(), [](UI_Item a, UI_Item b) {return a.ItemType < b.ItemType; }); // 아이템 타입 기준 오름차순 정렬
 
 	// 인벤토리에 획득한 아이템들을 보여준다
 
 	_int iOpenSlotCount = 100; // 슬롯 번호
+
 	for (auto& InvenItem : vecContainer) // 아이템 정보 돌면서 슬롯에 넣기
 	{
 		for (auto& Slot : m_pItemScene->Find_UI_Button()) // 슬롯 가져오기
@@ -449,16 +284,9 @@ HRESULT CUIGroup_Iventory::Itme_View_Inventory(vector<UI_Item>& vecContainer)
 			}
 		}
 	}
-	//if (!m_InvenItem.empty())
-	//	Connect_TextBox_ItemInfo(m_InvenItem.front());
-
-	//// 정렬 확인용 디버그
-	//for (auto& Item : m_InvenItem)
-	//	std::cout << Item.ItemID << endl;
-
-	return S_OK;
 }
-HRESULT CUIGroup_Iventory::Slot_Button_Select_Check(vector<UI_Item>& vecContainer)
+
+void CUIGroup_Inventory::Slot_Button_Select_Check(vector<UI_Item>& vecContainer)
 {
 	for (auto& Button : m_pItemScene->Find_UI_Button())
 	{
@@ -467,13 +295,14 @@ HRESULT CUIGroup_Iventory::Slot_Button_Select_Check(vector<UI_Item>& vecContaine
 			CUI_ItemBackground* pButton = dynamic_cast<CUI_ItemBackground*>(Button);
 			if (pButton->Get_Mouse_Select_OnOff())
 			{
-				// 버튼들 중 마우스를 셀렉한 녀석이 있다!
-				pButton->Set_Mouse_Select_OnOff(false);
-				m_pCurrentButton = Button;
+				// 버튼들 중 마우스가 셀렉한 녀석이 있다!
+				pButton->Set_Mouse_Select_OnOff(false); // 1회 체크만 할 것이기에 값을 끄고
+
 				for (auto& Item : vecContainer)
 				{
 					if (Item.ItemIconNum == pButton->Get_Item_Icon())
 					{
+						m_CurrentItemInfo = Item; // 선택한 아이템 저장
 						_float3 ButtonPos = dynamic_cast<CTransform*>(pButton->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION);
 						ItemType_PopUP_Open(Item.ItemType, ButtonPos);
 						break;
@@ -483,12 +312,10 @@ HRESULT CUIGroup_Iventory::Slot_Button_Select_Check(vector<UI_Item>& vecContaine
 		}
 	}
 
-
-
-
-	return S_OK;
+	
 }
-HRESULT CUIGroup_Iventory::Slot_Button_MouseOn_Check(vector<UI_Item>& vecContainer)
+
+void CUIGroup_Inventory::Slot_Button_MouseOn_Check(vector<UI_Item>& vecContainer)
 {
 	for (auto& Slot : m_pItemScene->Find_UI_Button())
 	{
@@ -547,23 +374,25 @@ HRESULT CUIGroup_Iventory::Slot_Button_MouseOn_Check(vector<UI_Item>& vecContain
 			{
 				DisConnect_MiniView_ItemInfo();
 			}
-
 		}
 	}
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::ItemType_PopUP_Open(_uint iItemType, _float3 fSetPos)
+void CUIGroup_Inventory::ItemType_PopUP_Open(ITEM_TYPE eItemType, _float3 fSetPos)
 {
 	_float3 fImagePos = {};
 
-	switch (iItemType)
+	switch (eItemType)
 	{
-	case 0: //ITEM_COMMON // 아무것도 안 뜸
+	case ITEM_TYPE::ITEM_KEY1: // 아무것도 안 뜸
 		ItemType_PopUP_State(false);
 		m_bItemTypePopOpen = false;
 		break;
-	case 1: //ITEM_DIRECT_USE // 즉시 사용되는 아이템 // 사용 버리기 종료 뜸
+	case ITEM_TYPE::ITEM_KEY2: // 아무것도 안 뜸
+		ItemType_PopUP_State(false);
+		m_bItemTypePopOpen = false;
+		break;
+	case ITEM_TYPE::ITEM_MEMORY:// 사용 버리기 종료 뜸
 		for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
 		{
 			if (300 == Image->Get_UI_GroupID())
@@ -597,74 +426,11 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_Open(_uint iItemType, _float3 fSetPos)
 		}
 		m_bItemTypePopOpen = true;
 		break;
-	case 2: //ITEM_NOUSE // 버리기, 종료 뜸
-		for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
-		{
-			if (300 == Image->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fSetPos.x + 125,fSetPos.y + 75 });
-				fImagePos = dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION);
-				Image->Set_OnOff(true);
-			}
-			if (400 == Image->Get_UI_GroupID())
-			{
-				Image->Set_OnOff(true);
-			}
-		}
-		for (auto& Button : m_pItemTypePopUp->Find_UI_Button())
-		{
-			if (310 == Button->Get_UI_GroupID())
-			{
-				Button->Set_OnOff(false);
-			}
-			if (320 == Button->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y - 40.f });
-				Button->Set_OnOff(true);
-			}
-			if (330 == Button->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y });
-				Button->Set_OnOff(true);
-			}
-		}
-		m_bItemTypePopOpen = true;
+	case ITEM_TYPE::ITEM_FORGIVEN:// 아무것도 안 뜸
+		ItemType_PopUP_State(false);
+		m_bItemTypePopOpen = false;
 		break;
-
-	case 3: //ITEM_ONLYUSE // 사용하기, 종료 뜸 // 그 신호기로 가는 칼 아이템
-		for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
-		{
-			if (300 == Image->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fSetPos.x + 125,fSetPos.y + 75 });
-				fImagePos = dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION);
-				Image->Set_OnOff(true);
-			}
-			if (400 == Image->Get_UI_GroupID())
-			{
-				Image->Set_OnOff(true);
-			}
-		}
-		for (auto& Button : m_pItemTypePopUp->Find_UI_Button())
-		{
-			if (310 == Button->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y - 40.f });
-				Button->Set_OnOff(true);
-			}
-			if (320 == Button->Get_UI_GroupID())
-			{
-				Button->Set_OnOff(false);
-			}
-			if (330 == Button->Get_UI_GroupID())
-			{
-				dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y });
-				Button->Set_OnOff(true);
-			}
-		}
-		m_bItemTypePopOpen = true;
-		break;
-	case 4: //기술의 파편 버리기 종료하기 존재
+	case ITEM_TYPE::ITEM_SKILLPIECE:// 버리기, 종료 뜸
 		for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
 		{
 			if (300 == Image->Get_UI_GroupID())
@@ -700,16 +466,46 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_Open(_uint iItemType, _float3 fSetPos)
 	default: //빈슬롯
 		ItemType_PopUP_State(false);
 		m_bItemTypePopOpen = false;
-
 		break;
+		//case 3: //ITEM_ONLYUSE // 사용하기, 종료 뜸 // 그 신호기로 가는 칼 아이템
+		//	for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
+		//	{
+		//		if (300 == Image->Get_UI_GroupID())
+		//		{
+		//			dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fSetPos.x + 125,fSetPos.y + 75 });
+		//			fImagePos = dynamic_cast<CTransform*>(Image->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION);
+		//			Image->Set_OnOff(true);
+		//		}
+		//		if (400 == Image->Get_UI_GroupID())
+		//		{
+		//			Image->Set_OnOff(true);
+		//		}
+		//	}
+		//	for (auto& Button : m_pItemTypePopUp->Find_UI_Button())
+		//	{
+		//		if (310 == Button->Get_UI_GroupID())
+		//		{
+		//			dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y - 40.f });
+		//			Button->Set_OnOff(true);
+		//		}
+		//		if (320 == Button->Get_UI_GroupID())
+		//		{
+		//			Button->Set_OnOff(false);
+		//		}
+		//		if (330 == Button->Get_UI_GroupID())
+		//		{
+		//			dynamic_cast<CTransform*>(Button->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { fImagePos.x ,fImagePos.y });
+		//			Button->Set_OnOff(true);
+		//		}
+		//	}
+		//	m_bItemTypePopOpen = true;
+		//	break;
 	}
 
 
-
-
-	return S_OK;
+	
 }
-HRESULT CUIGroup_Iventory::ItemType_PopUP_State(_bool bOpen)
+void CUIGroup_Inventory::ItemType_PopUP_State(_bool bOpen)
 {
 
 	for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
@@ -738,11 +534,9 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_State(_bool bOpen)
 			Button->Set_OnOff(bOpen);
 		}
 	}
-
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::ItemType_PopUP_Button()
+void CUIGroup_Inventory::ItemType_PopUP_Button()
 {
 	// 팝업 종료 조건 => 이미지 바깥 선택
 	for (auto& Image : m_pItemTypePopUp->Find_UI_Image())
@@ -753,6 +547,7 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_Button()
 			{
 				ItemType_PopUP_State(false);
 				m_bItemTypePopOpen = false;
+				m_CurrentItemInfo = {};
 			}
 		}
 	}
@@ -765,6 +560,7 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_Button()
 			{
 				ItemType_PopUP_State(false);
 				m_bItemTypePopOpen = false;
+				m_CurrentItemInfo = {};
 			}
 		}
 	}
@@ -776,22 +572,31 @@ HRESULT CUIGroup_Iventory::ItemType_PopUP_Button()
 		{
 			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 			{
+				m_iPopUpOpenNum = 1;
 				ItemUse_PopUP_Open();
+
 			}
 		}
 	}
+	// 버리기 버튼 클릭
+	for (auto& Button : m_pItemTypePopUp->Find_UI_Button())
+	{
+		if (320 == Button->Get_UI_GroupID())
+		{
+			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_iPopUpOpenNum = 2;
+				ItemUse_PopUP_Open();
 
-
-
-
-	return S_OK;
+			}
+		}
+	}
 }
 
-HRESULT CUIGroup_Iventory::ItemUse_PopUP_Open()
+void CUIGroup_Inventory::ItemUse_PopUP_Open()
 {
 	_float3 fImagePos = {};
 
-	//// 아이템 조건에 따라 바꿔야 하는데 기준점이 애매해서 우선 디폴트로 만든다
 
 	for (auto& Image : m_pItemUsePopUp->Find_UI_Image())
 	{
@@ -810,20 +615,79 @@ HRESULT CUIGroup_Iventory::ItemUse_PopUP_Open()
 
 
 	m_bItemUsePopOpen = true;
-
-
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::ItemUse_PopUP_Button()
+void CUIGroup_Inventory::ItemUse_PopUP_Use_Button()
 {
+	m_iItemMaxCount = m_CurrentItemInfo.ItemCount;
+
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%s";
+	const _tchar* CountNum = L"%d";
+	for (auto& TextBox : m_pItemUsePopUp->Find_UI_TextBox())
+	{
+		if (0 == TextBox->Get_UI_GroupID())
+		{
+			TextBox->Set_Content(L"사용");
+		}
+		if (1 == TextBox->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountText, m_CurrentItemInfo.ItemName);
+			TextBox->Set_Content(ChangeText);
+			TextBox->Set_Change_TextColor(FONT_GREEN);
+		}
+		if (2 == TextBox->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountNum, m_iItemStatCount);
+			TextBox->Set_Content(ChangeText);
+
+		}
+	}
 	for (auto& Button : m_pItemUsePopUp->Find_UI_Button())
 	{
-		if (30 == Button->Get_UI_GroupID())
+		if (10 == Button->Get_UI_GroupID()) // 개수 감소
+		{
+			if (dynamic_cast<CUI_Arrow*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_iItemStatCount -= 1;
+				if (m_iItemStatCount == 0)
+				{
+					m_iItemStatCount = m_iItemMaxCount;
+				}
+
+			}
+
+		}
+		if (20 == Button->Get_UI_GroupID()) // 개수 증가
+		{
+			if (dynamic_cast<CUI_Arrow*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				if (m_iItemMaxCount > m_iItemStatCount)
+				{
+					m_iItemStatCount += 1;
+				}
+			}
+		}
+
+
+		if (30 == Button->Get_UI_GroupID()) // 아이템 사용
 		{
 			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 			{
+				if (m_pGameInstance->Use_Item(m_CurrentItemInfo.ItemType, m_iItemStatCount))
+				{
+					for (auto It = m_InvenItemCommon.begin(); It != m_InvenItemCommon.end();)
+					{
+						if (It->ItemType == m_CurrentItemInfo.ItemType)
+							It = m_InvenItemCommon.erase(It);
+						else
+							++It;
+					}
+				}
+				Item_Use_Set(m_CurrentItemInfo.ItemType, m_iItemStatCount);
+				ItemUse_Update();
 				ItemType_PopUP_State(false);
+				m_iItemStatCount = 1;
 				m_bItemTypePopOpen = false;
 				m_bItemUsePopOpen = false;
 				for (auto& Image : m_pItemUsePopUp->Find_UI_Image())
@@ -842,10 +706,12 @@ HRESULT CUIGroup_Iventory::ItemUse_PopUP_Button()
 				}
 			}
 		}
-		if (40 == Button->Get_UI_GroupID())
+		if (40 == Button->Get_UI_GroupID())// 창 종료
 		{
+
 			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 			{
+				m_iItemStatCount = 1;
 				m_bItemUsePopOpen = false;
 				for (auto& Image : m_pItemUsePopUp->Find_UI_Image())
 				{
@@ -861,44 +727,244 @@ HRESULT CUIGroup_Iventory::ItemUse_PopUP_Button()
 				{
 					TextBox->Set_OnOff(false);
 				}
-
 			}
 		}
 	}
-	return S_OK;
 }
 
-//
-//HRESULT CUIGroup_Iventory::InventoryUpdate()
-//{
-//	for(auto& Slot : m_pMyScene->Find_UI_Button())
-//	{
-//		if (100 <= Slot->Get_UI_GroupID() && 125 > Slot->Get_UI_GroupID())
-//		{
-//			if (dynamic_cast<CUI_ItemBackground*>(Slot)->Get_Item_Icon_OnOff())
-//			{
-//				for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
-//				{
-//					if(Slot->Get_UI_GroupID() == TextBox->Get_UI_GroupID())
-//						TextBox->Set_Render_OnOff(true);
-//					break;
-//				}
-//			}
-//			else // 나중에 아이템 삭제 시 조건
-//			{
-//				for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
-//				{
-//					if (Slot->Get_UI_GroupID() == TextBox->Get_UI_GroupID())
-//						TextBox->Set_Render_OnOff(false);
-//				}
-//			}
-//		}
-//	}
-//
-//	return S_OK;
-//}
+void CUIGroup_Inventory::ItemUse_PopUP_Drop_Button()
+{
+	m_iItemMaxCount = m_CurrentItemInfo.ItemCount;
 
-HRESULT CUIGroup_Iventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%s";
+	const _tchar* CountNum = L"%d";
+	for (auto& TextBox : m_pItemUsePopUp->Find_UI_TextBox())
+	{
+		if (0 == TextBox->Get_UI_GroupID())
+		{
+			TextBox->Set_Content(L"버리기");
+		}
+		if (1 == TextBox->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountText, m_CurrentItemInfo.ItemName);
+			TextBox->Set_Content(ChangeText);
+			TextBox->Set_Change_TextColor(FONT_GREEN);
+		}
+		if (2 == TextBox->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountNum, m_iItemStatCount);
+			TextBox->Set_Content(ChangeText);
+
+		}
+	}
+	for (auto& Button : m_pItemUsePopUp->Find_UI_Button())
+	{
+		if (10 == Button->Get_UI_GroupID()) // 개수 감소
+		{
+			if (dynamic_cast<CUI_Arrow*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_iItemStatCount -= 1;
+				if (m_iItemStatCount == 0)
+				{
+					m_iItemStatCount = m_iItemMaxCount;
+				}
+
+			}
+
+		}
+		if (20 == Button->Get_UI_GroupID()) // 개수 증가
+		{
+			if (dynamic_cast<CUI_Arrow*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				if (m_iItemMaxCount > m_iItemStatCount)
+				{
+					m_iItemStatCount += 1;
+				}
+			}
+		}
+
+
+		if (30 == Button->Get_UI_GroupID()) // 아이템 버리기
+		{
+			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				if (m_pGameInstance->Use_Item(m_CurrentItemInfo.ItemType, m_iItemStatCount)) // 아이템이 저장되어 있는 컨테이너에서 Item_type이 맞는 녀석의 개수를 빼기
+				{
+					for (auto It = m_InvenItemCommon.begin(); It != m_InvenItemCommon.end();)
+					{
+						if (It->ItemType == m_CurrentItemInfo.ItemType)
+							It = m_InvenItemCommon.erase(It);
+						else
+							++It;
+					}
+				}
+
+				m_mapDropItemInfo.emplace(m_CurrentItemInfo.ItemType, m_iItemStatCount);
+				
+				m_pGameInstance->Drop_Item(m_CurrentItemInfo.ItemType, dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION), m_pPlayer);
+
+				ItemUse_Update();
+				ItemType_PopUP_State(false);
+				m_iItemStatCount = 1;
+				m_bItemTypePopOpen = false;
+				m_bItemUsePopOpen = false;
+				for (auto& Image : m_pItemUsePopUp->Find_UI_Image())
+				{
+					Image->Set_OnOff(false);
+				}
+
+				for (auto& Button : m_pItemUsePopUp->Find_UI_Button())
+				{
+					Button->Set_OnOff(false);
+				}
+
+				for (auto& TextBox : m_pItemUsePopUp->Find_UI_TextBox())
+				{
+					TextBox->Set_OnOff(false);
+				}
+			}
+		}
+		if (40 == Button->Get_UI_GroupID())// 창 종료
+		{
+			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+			{
+				m_iItemStatCount = 1;
+				m_bItemUsePopOpen = false;
+				for (auto& Image : m_pItemUsePopUp->Find_UI_Image())
+				{
+					Image->Set_OnOff(false);
+				}
+
+				for (auto& Button : m_pItemUsePopUp->Find_UI_Button())
+				{
+					Button->Set_OnOff(false);
+				}
+
+				for (auto& TextBox : m_pItemUsePopUp->Find_UI_TextBox())
+				{
+					TextBox->Set_OnOff(false);
+				}
+			}
+		}
+	}
+}
+
+void CUIGroup_Inventory::ItemUse_Update()
+{
+	_int iOpenSlotCount = 100; // 슬롯 번호
+	for (auto& Slot : m_pItemScene->Find_UI_Button()) // 슬롯 가져오기
+	{
+		if (iOpenSlotCount == Slot->Get_UI_GroupID())
+		{
+			const _tchar* Text = { L"x%d" };
+
+			if (lstrcmp(Slot->Get_Content().c_str(), L"x0"))
+			{
+				dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Item_Icon_OnOff(false);
+				dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Content(L"");
+				iOpenSlotCount++;
+			}
+		}
+	}
+	if (m_bCommonOpen)
+		Itme_View_Inventory(m_InvenItemCommon); // 일반 아이템을 슬롯에 띄우기
+
+	if (m_bSkillOpen)
+		Itme_View_Inventory(m_InvenItemSkill);// 스킬 아이템을 슬롯에 띄우기
+
+}
+
+void CUIGroup_Inventory::Item_Use_Set(ITEM_TYPE etype, _uint iCount)
+{
+	switch (etype)
+	{
+	case Engine::ITEM_TYPE::ITEM_KEY1:
+		break;
+	case Engine::ITEM_TYPE::ITEM_KEY2:
+		break;
+	case Engine::ITEM_TYPE::ITEM_MEMORY:
+		dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(iCount * 100);
+		break;
+	case Engine::ITEM_TYPE::ITEM_FORGIVEN:
+		break;
+	case Engine::ITEM_TYPE::ITEM_SKILLPIECE:
+		break;
+	case Engine::ITEM_TYPE::ITEM_END:
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+void CUIGroup_Inventory::Update_Get_ItemMgr()
+{
+	UI_Item ItemBox = {};
+	m_InvenItemCommon.clear();
+	m_InvenItemSkill.clear();
+
+	m_ItemMgrContainerRef = m_pGameInstance->Get_Item_Info(); // 아이템 매니저에서 정보 가져오고
+
+	for (auto& ItemInfo : m_ItemMgrContainerRef)
+	{
+		ItemBox.ItemType = ItemInfo.first;
+		ItemBox.ItemCount = ItemInfo.second.first;
+
+		if (0 != ItemBox.ItemCount)
+		{
+			if (ItemBox.ItemType == ITEM_TYPE::ITEM_SKILLPIECE)
+				m_InvenItemSkill.push_back(ItemBox);
+			else
+				m_InvenItemCommon.push_back(ItemBox);
+
+		}
+	}
+}
+
+void CUIGroup_Inventory::Update_ItemInfo()
+{
+	for (auto& InvenInfo : m_InvenItemCommon)
+	{
+		switch (InvenInfo.ItemType)
+		{
+		case ITEM_TYPE::ITEM_KEY1:
+			InvenInfo.ItemIconNum = 1;
+			InvenInfo.ItemName = L"열쇠A";
+			InvenInfo.ItemDesc = L"열쇠 입니다.";
+			break;
+		case ITEM_TYPE::ITEM_KEY2:
+			InvenInfo.ItemIconNum = 3;
+			InvenInfo.ItemName = L"열쇠B";
+			InvenInfo.ItemDesc = L"열쇠 입니다.";
+			break;
+		case ITEM_TYPE::ITEM_MEMORY:
+			InvenInfo.ItemIconNum = 5;
+			InvenInfo.ItemName = L"기억의 모음집";
+			InvenInfo.ItemDesc = L"이 아이템을 사용하면 기억의 파편을 획득합니다.";
+			break;
+		case ITEM_TYPE::ITEM_FORGIVEN:
+			InvenInfo.ItemIconNum = 4;
+			InvenInfo.ItemName = L"잊혀진 깃털";
+			InvenInfo.ItemDesc = L"잊혀진 깃털을 사용하면, 아이세미와 대화하거나 신호기를 사용하여\n코르버스의 레벨과 상태를 초기화할 수 있습니다.";
+			break;
+		}
+	}
+	for (auto& InvenInfo : m_InvenItemSkill)
+	{
+		switch (InvenInfo.ItemType)
+		{
+		case ITEM_TYPE::ITEM_SKILLPIECE:
+			InvenInfo.ItemIconNum = 7;
+			InvenInfo.ItemName = L"단도";
+			InvenInfo.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
+			break;
+		}
+	}
+}
+
+void CUIGroup_Inventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 {
 	_tchar* pTemp = {};
 
@@ -918,19 +984,19 @@ HRESULT CUIGroup_Iventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 
 	switch (ItemInfo.ItemType)
 	{
-	case ITEM_COMMON:
+	case ITEM_TYPE::ITEM_KEY1:
 		pTemp = L"일반";
 		break;
-	case ITEM_DIRECT_USE:
+	case ITEM_TYPE::ITEM_KEY2:
+		pTemp = L"일반";
+		break;
+	case ITEM_TYPE::ITEM_MEMORY:
 		pTemp = L"소비 아이템";
 		break;
-	case ITEM_NOUSE:
-		pTemp = L"사용하기 없음";
+	case ITEM_TYPE::ITEM_FORGIVEN:
+		pTemp = L"소비 아이템";
 		break;
-	case ITEM_ONLYUSE:
-		pTemp = L"버리기 없음";
-		break;
-	case ITEM_SKILL:
+	case ITEM_TYPE::ITEM_SKILLPIECE:
 		pTemp = L"기술의 파편";
 		break;
 	}
@@ -948,11 +1014,9 @@ HRESULT CUIGroup_Iventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 		}
 	}
 
-
-	return S_OK;
 }
 
-HRESULT CUIGroup_Iventory::DisConnect_MiniView_ItemInfo()
+void CUIGroup_Inventory::DisConnect_MiniView_ItemInfo()
 {
 	_tchar* pTemp = { L"" };
 
@@ -970,36 +1034,35 @@ HRESULT CUIGroup_Iventory::DisConnect_MiniView_ItemInfo()
 
 	}
 
-	return S_OK;
 }
 
-CUIGroup_Iventory* CUIGroup_Iventory::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUIGroup_Inventory* CUIGroup_Inventory::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUIGroup_Iventory* pInstance = new CUIGroup_Iventory(pDevice, pContext);
+	CUIGroup_Inventory* pInstance = new CUIGroup_Inventory(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUIGroup_Iventory");
+		MSG_BOX("Failed To Created : CUIGroup_Inventory");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUIGroup_Iventory::Clone(void* pArg)
+CGameObject* CUIGroup_Inventory::Clone(void* pArg)
 {
-	CUIGroup_Iventory* pInstance = new CUIGroup_Iventory(*this);
+	CUIGroup_Inventory* pInstance = new CUIGroup_Inventory(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUIGroup_Iventory");
+		MSG_BOX("Failed To Cloned : CUIGroup_Inventory");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIGroup_Iventory::Free()
+void CUIGroup_Inventory::Free()
 {
 	__super::Free();
 }

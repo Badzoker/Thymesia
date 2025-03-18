@@ -22,18 +22,18 @@ HRESULT CUI_MouseCursor::Initialize_Prototype()
 
 HRESULT CUI_MouseCursor::Initialize(void* pArg)
 {
-	UI_COMPONENT_DESC* pDesc = static_cast<UI_COMPONENT_DESC*>(pArg);
-	pDesc->fPosition.z = 0.1f;
-	pDesc->fZ = 0.1f;
-	pDesc->fSizeX = 50;
-	pDesc->fSizeY = 50;
-	pDesc->fNear = 0.f;
-	pDesc->fFar = 1.f;
+	UI_COMPONENT_DESC pDesc = {};
+	pDesc.fPosition.z = 0.0f;
+	pDesc.fZ = 0.0f;
+	pDesc.fSizeX = 50;
+	pDesc.fSizeY = 50;
+	pDesc.fNear = 0.f;
+	pDesc.fFar = 1.f;
 
-	pDesc->fSpeedPerSec = 5.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
+	pDesc.fSpeedPerSec = 5.f;
+	pDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(&pDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
@@ -52,12 +52,12 @@ void CUI_MouseCursor::Update(_float fTimeDelta)
 	GetCursorPos(&ptMouse);
 	ScreenToClient(g_hWnd, &ptMouse);
 	_float2 vMousePos = { (_float)ptMouse.x,(_float)ptMouse.y };
-	m_pTransformCom->Set_State_UIObj(CTransform::STATE_POSITION,vMousePos);
+	m_pTransformCom->Set_State_UIObj(CTransform::STATE_POSITION, { vMousePos.x + 15.f,vMousePos.y + 15.f });
 }
 
 void CUI_MouseCursor::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
 }
 
 HRESULT CUI_MouseCursor::Render()
@@ -73,9 +73,9 @@ HRESULT CUI_MouseCursor::Render()
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(12);
+	m_pShaderCom->Begin(1);
 
-	m_pVIBufferCom->Bind_InputAssembler();
+	m_pVIBufferCom->Bind_InputAssembler();	
 
 	m_pVIBufferCom->Render();
 
@@ -90,7 +90,7 @@ HRESULT CUI_MouseCursor::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

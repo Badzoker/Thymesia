@@ -645,6 +645,18 @@ HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
 	return m_pItemMgr->Acquire_Item(_eItemType);
 }
+HRESULT CGameInstance::Acquire_Item2(ITEM_TYPE _eItemType, _uint iNum)
+{
+	return m_pItemMgr->Acquire_Item2(_eItemType, iNum);
+}
+const map<ITEM_TYPE, pair<_uint, vector<CItem*>>> CGameInstance::Get_Item_Info()
+{
+	return m_pItemMgr->Get_Item_Info();
+}
+_bool CGameInstance::Use_Item(ITEM_TYPE _eItemType, _uint iNum)
+{
+	return m_pItemMgr->Use_Item(_eItemType, iNum);
+}
 #pragma endregion
 
 #pragma region SHADOW

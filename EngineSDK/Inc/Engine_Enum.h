@@ -132,6 +132,7 @@ namespace Engine
 		ITEM_KEY2,
 		ITEM_MEMORY,
 		ITEM_FORGIVEN,
+		ITEM_SKILLPIECE,
 		ITEM_END
 	};
 
