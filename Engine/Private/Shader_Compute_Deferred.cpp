@@ -10,9 +10,11 @@ CShader_Compute_Deferred::CShader_Compute_Deferred(const CShader_Compute_Deferre
 	: CShader(Prototype)
 	, m_pComputeShader(Prototype.m_pComputeShader)
 	, m_pSampleParmsBuffer(Prototype.m_pSampleParmsBuffer)
+	, m_pComputeShaderSampler(Prototype.m_pComputeShaderSampler)
 {
 	Safe_AddRef(m_pComputeShader);
 	Safe_AddRef(m_pSampleParmsBuffer);
+	Safe_AddRef(m_pComputeShaderSampler);
 }
 
 HRESULT CShader_Compute_Deferred::Initialize_Prototype(const _tchar* pShaderFilePath, const _char* _pFunctionName, const D3D11_INPUT_ELEMENT_DESC* pVertexElements, _uint iNumElements, void* pArg, Compute_Deferred_Type eType)
@@ -191,6 +193,7 @@ HRESULT CShader_Compute_Deferred::Compute_Shader_Fog(_uint _iThreadCountX, _uint
 	m_pContext->CSSetShaderResources(2, 1, &pSRVGodRay);
 	m_pContext->CSSetShaderResources(3, 1, &pSRVFinal);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &pUAV, nullptr);
+	m_pContext->CSSetSamplers(0, 1, &m_pComputeShaderSampler);
 
 	D3D11_MAPPED_SUBRESOURCE	SubResource{};
 
@@ -258,6 +261,18 @@ HRESULT CShader_Compute_Deferred::Create_Buffer_Fog(FogParams* ParamDesc)
 	if (m_pSampleParmsBuffer == nullptr)
 		return E_FAIL;
 
+	D3D11_SAMPLER_DESC sampDesc = {};
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	if (FAILED(m_pDevice->CreateSamplerState(&sampDesc, &m_pComputeShaderSampler)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -295,4 +310,5 @@ void CShader_Compute_Deferred::Free()
 
 	Safe_Release(m_pComputeShader);
 	Safe_Release(m_pSampleParmsBuffer);
+	Safe_Release(m_pComputeShaderSampler);
 }
