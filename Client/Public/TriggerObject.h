@@ -15,7 +15,6 @@ public:
         _float4 fPosition = {};
         _float3 fRotation = {};
         _float3 fScale = {};
-        //TRIGGER_TYPE eTriggerType = {};
     };
 
     struct TC_INFO
@@ -45,11 +44,9 @@ public:
 public:
     HRESULT                                             Ready_Components();
 
-    //_bool                                               Check_Collision_With_Player();
     TRIGGER_TYPE                                        m_eTriggerType = { TRIGGER_TYPE::TT_END };
 private:
-    //CCollider* m_pColliderCom = { nullptr };
-    PxRigidDynamic* m_pActor = { nullptr };
+    PxRigidDynamic*                                     m_pActor = { nullptr };
 
 
 private:
