@@ -89,6 +89,37 @@ HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
     return S_OK;
 }
 
+HRESULT CItemMgr::Acquire_Item2(ITEM_TYPE _eItemType, _uint iCount)
+{
+    vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
+
+    if (nullptr == pVecItems)
+        return E_FAIL;
+
+    for (auto& pItems : *pVecItems)
+    {
+        pItems->Set_BeAcquired(true);
+    }
+
+    m_mapItems[_eItemType].first += iCount;
+
+    return S_OK;
+}
+
+_bool CItemMgr::Use_Item(ITEM_TYPE _eItemType, _uint iNum)
+{
+    for (auto& ItemBox : m_mapItems)
+    {
+        if (_eItemType == ItemBox.first)
+        {
+            ItemBox.second.first -= iNum;
+            if (0 > ItemBox.second.first)
+                return true; // 이 아이템이 0개가 되었는지 체크
+        }
+    }
+    return false;
+}
+
 vector<CItem*>* CItemMgr::Find_ItemVector(ITEM_TYPE _eItemType)
 {
     auto iter = m_mapItems.find(_eItemType);

@@ -79,34 +79,34 @@ void CUIGroup_GameIntro::Button_Check()
 	{
 		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 		{
-			if (1 == Button->Get_UI_GroupID())
+			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기
 			{
 				m_pGameInstance->Set_NextLevel_Open(true);
 			}
 
-			if (2 == Button->Get_UI_GroupID())
+			if (2 == Button->Get_UI_GroupID()) // 새게임
 			{
 
 			}
 
-			if (3 == Button->Get_UI_GroupID())
+			if (3 == Button->Get_UI_GroupID()) // 게임 불러오기
 			{
 
 			}
 
-			if (4 == Button->Get_UI_GroupID())
+			if (4 == Button->Get_UI_GroupID()) // 설정
 			{
 
 			}
 
-			if (5 == Button->Get_UI_GroupID())
+			if (5 == Button->Get_UI_GroupID()) // 제작진
 			{
 
 			}
 
-			if (6 == Button->Get_UI_GroupID())
+			if (6 == Button->Get_UI_GroupID()) // 종료
 			{
-
+				DestroyWindow(g_hWnd);
 			}
 		}
 

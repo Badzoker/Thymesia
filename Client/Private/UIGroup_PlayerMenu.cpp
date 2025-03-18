@@ -2,6 +2,7 @@
 #include "UIGroup_PlayerMenu.h"
 #include "UI_Scene.h"
 #include "GameInstance.h"
+#include "UI_ButtonHighlight.h"
 
 CUIGroup_PlayerMenu::CUIGroup_PlayerMenu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -26,6 +27,8 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu");
+
 	return S_OK;
 }
 
@@ -46,21 +49,58 @@ void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 void CUIGroup_PlayerMenu::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_PlayerMenu::Render()
 {
 	if (m_bRenderOpen)
 	{
-		vector<UI_TextInfo>::iterator it;
-		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
-		{
-			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
-
-		}
+		
 	}
 	return S_OK;
+}
+
+void CUIGroup_PlayerMenu::MenuButton_Check()
+{
+
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+		{
+			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기
+			{
+				m_pGameInstance->Set_NextLevel_Open(true);
+			}
+
+			if (2 == Button->Get_UI_GroupID()) // 새게임
+			{
+
+			}
+
+			if (3 == Button->Get_UI_GroupID()) // 게임 불러오기
+			{
+
+			}
+
+			if (4 == Button->Get_UI_GroupID()) // 설정
+			{
+
+			}
+
+			if (5 == Button->Get_UI_GroupID()) // 제작진
+			{
+
+			}
+
+			if (6 == Button->Get_UI_GroupID()) // 종료
+			{
+				DestroyWindow(g_hWnd);
+			}
+		}
+
+
+	}
 }
 
 HRESULT CUIGroup_PlayerMenu::Ready_UIObject()

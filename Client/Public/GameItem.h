@@ -44,18 +44,20 @@ public:
     virtual void                OnCollision(CGameObject* _pOther, PxContactPair _information);
     virtual void                OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 private:
-    CShader* m_pShaderCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
+    CShader*                    m_pShaderCom = { nullptr };
+    CModel*                     m_pModelCom = { nullptr };
     ITEM_TYPE                   m_eItemType = { ITEM_TYPE::ITEM_END };
     _char		                m_GameItemName[MAX_PATH] = {};
 
-    PxRigidDynamic* m_pActor = { nullptr };
-    class CGameObject* m_pInteractButton = { nullptr };
+    PxRigidDynamic*             m_pActor = { nullptr };
+    class CGameObject*          m_pInteractButton = { nullptr };
 
     _float4                     m_fAlphaValue = {};
 
-    CGameObject* m_pButtonGameObject = { nullptr };
-    CButton* m_pButton = { nullptr };
+    CGameObject*                m_pButtonGameObject = { nullptr };
+    CButton*                    m_pButton = { nullptr };
+    
+    CGameObject*                m_pGroupInven = { nullptr };
 
 
 public:

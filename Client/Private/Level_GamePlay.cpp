@@ -54,9 +54,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
-		return E_FAIL;
-	
  	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
 
@@ -72,7 +69,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_UIGroup_Iventory(TEXT("Layer_PlayerInventory"))))
+	if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))	
@@ -508,6 +508,27 @@ HRESULT CLevel_GamePlay::Ready_Layer_Item(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
+	ItemDesc.GameItemName = m_strObjectNames[0];
+	ItemDesc.iItemCount = 0;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
+	ItemDesc.GameItemName = m_strObjectNames[0];
+	ItemDesc.iItemCount = 0;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
+	ItemDesc.GameItemName = m_strObjectNames[0];
+	ItemDesc.iItemCount = 0;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -543,9 +564,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTa
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_Iventory(const _tchar* pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Iventory"), LEVEL_GAMEPLAY, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_GAMEPLAY, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }

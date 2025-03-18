@@ -2,7 +2,6 @@
 #include "UIGroup_PlayerScreen.h"
 #include "UI_Scene.h"
 #include "GameInstance.h"
-#include "GameInstance.h"
 #include "UI_Text.h"
 #include "Player.h"
 

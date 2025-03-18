@@ -28,14 +28,16 @@ public:
 	map<const _wstring, class CUI_Scene*>* Find_UIScene_ALL();
 
 public:
+	// UIScene 에 UIObj 추가 => A라는 씬에 1,2,3 오브젝트 추가 B라는 씬에 2,3,4 오브젝트 추가 => 씬별로 사용할 오브젝트들만 집어 넣는 방식
 	HRESULT Add_UIObject_To_UIScene(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iSceneIndex, const _wstring& strSceneTag, _uint iUIType, void* pArg = nullptr);
-	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene,_bool bOpen);
-	_bool Get_Scene_Render_State(CUI_Scene* pScene);
-	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen);
+	
+	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene,_bool bOpen); // A라는 씬에 있는 모든 UIObj의 랜더(그리기)를 켜고 끄기
+	_bool Get_Scene_Render_State(CUI_Scene* pScene); // A라는 씬 자체가 그려지고 있는지 확인
+	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen); // UIObj를 그리고 있지만 화면에 끄고 켜고를 설정
 
 
-	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
-	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut);
+	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName); // UI 오브젝트 데이터 로드
+	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut); // 텍스트 데이터 로드
 
 
 private:

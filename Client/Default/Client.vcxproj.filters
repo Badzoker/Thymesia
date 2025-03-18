@@ -1041,9 +1041,6 @@
     <ClInclude Include="..\Public\UI_ItemBackground.h">
       <Filter>03.UIObject\1.UIObjClass\UI_ItemBackground</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIGroup_Iventory.h">
-      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Attack_LButton_4.h">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
     </ClInclude>
@@ -1097,6 +1094,9 @@
     </ClInclude>
     <ClInclude Include="..\public\HArmorLV1_Execution.h">
       <Filter>02.GameObject\Player\State\Execution\HArmorLV1_Execution</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Inventory.h">
+      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1544,9 +1544,6 @@
     <ClCompile Include="..\Private\UI_ItemBackground.cpp">
       <Filter>03.UIObject\1.UIObjClass\UI_ItemBackground</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIGroup_Iventory.cpp">
-      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Attack_LButton_4.cpp">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_4</Filter>
     </ClCompile>
@@ -1600,6 +1597,9 @@
     </ClCompile>
     <ClCompile Include="..\private\HArmorLV1_Execution.cpp">
       <Filter>02.GameObject\Player\State\Execution\HArmorLV1_Execution</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Inventory.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

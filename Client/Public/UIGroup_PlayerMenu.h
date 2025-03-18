@@ -1,6 +1,9 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
+BEGIN(Engine)
+class CUI_Scene;
+END
 
 BEGIN(Client)
 
@@ -20,10 +23,15 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	void MenuButton_Check();
+
+
+public:
 	HRESULT Ready_UIObject();
 	
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
+	CUI_Scene* m_pMyScene = {};
 
 public:
 	static CUIGroup_PlayerMenu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

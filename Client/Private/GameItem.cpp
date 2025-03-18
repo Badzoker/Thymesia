@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameItem.h"
 #include "GameInstance.h"
+#include "UIGroup_Inventory.h"
 
 CGameItem::CGameItem(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
     :CItem{ _pDevice, _pContext }
@@ -51,6 +52,11 @@ HRESULT CGameItem::Initialize(void* _pArg)
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
     m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+    m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), "Inventory");
+
+
+
 
     switch (m_eItemType)
     {
@@ -217,9 +223,18 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_KEY2:
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
-            if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
-            {
-                m_pGameInstance->Acquire_Item(m_eItemType);
+        if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
+            { 
+                if (0 == dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().size())
+                {
+                    m_pGameInstance->Acquire_Item(m_eItemType);
+                }
+                else
+                {
+                    m_pGameInstance->Acquire_Item2((*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).first, 
+                        (*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).second);
+                    dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().clear();
+                }
                 m_pButton->Activate_Button(false);
             }
             break;
