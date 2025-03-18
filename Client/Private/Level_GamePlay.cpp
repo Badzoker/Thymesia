@@ -792,7 +792,7 @@ HRESULT CLevel_GamePlay::Load_TriggerObjects(_int iObject_Level)
 		CTriggerObject::TC_DESC Desc{};
 		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScale, sizeof(_float3), &dwByte, nullptr);
 
 		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_GAMEPLAY, TEXT("Layer_TriggerObject"), &Desc));
 
