@@ -60,6 +60,8 @@ private:
 
 	ID3D11Buffer* m_pSampleParmsBuffer = { nullptr };
 
+	ID3D11SamplerState* m_pComputeShaderSampler = { nullptr }; // 샘플러 바인딩하지 않고 사용해서 생기는 경고 메시지 없애기 용도
+
 public:
 	static CShader_Compute_Deferred* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pShaderFilePath, const _char* _pFunctionName, const D3D11_INPUT_ELEMENT_DESC* pVertexElements, _uint iNumElements, void* pArg, Compute_Deferred_Type eType);
 	virtual CComponent* Clone(void* pArg) override;

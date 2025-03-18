@@ -5,6 +5,8 @@
 
 #include "Shader_Compute_Deferred.h"
 
+#include "FastNoiseLite/FastNoiseLite.h"
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
@@ -268,7 +270,7 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 #endif // _DEBUG
 
-	//Add_NoiseTexture();
+	Add_NoiseTexture();
 
  	return S_OK;
 }
@@ -641,7 +643,7 @@ HRESULT CRenderer::Render_Fog()
 	XMStoreFloat4x4(&ParamDesc.g_ProjMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_PROJ))));
 	XMStoreFloat4x4(&ParamDesc.g_ViewMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW))));
 
-	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), nullptr, TEXT("Target_LightShaftY"), TEXT("Target_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
+	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Shadow_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -770,7 +772,7 @@ HRESULT CRenderer::Render_Shadow_Final()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShadowShader, "g_DepthTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow"), m_pShadowShader, "g_CascadeShadowMapTexture")))
+	if (FAILED(m_pShadowShader->Bind_SRV("g_CascadeShadowMapTexture", m_pShadowSRV)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShadowShader, "g_lightviewmatrix", "g_lightprojmatrix")))
@@ -1156,24 +1158,21 @@ float CRenderer::PerlinNoise3D_Tiled(float x, float y, float z, float tileSize) 
 const int textureSize = 128;
 
 void CRenderer::Generate3DPerlinNoise() {
+
 	noiseData.resize(textureSize * textureSize * textureSize);
 
-	GeneratePermutationTable(m_perm);
+	FastNoiseLite noiseGenerator;
+	noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+	noiseGenerator.SetFrequency(0.05f);
 
-	for (int z = 0; z < textureSize; ++z) {
-		for (int y = 0; y < textureSize; ++y) {
-			for (int x = 0; x < textureSize; ++x) {
-				float fx = (float)x / (float)textureSize;
-				float fy = (float)y / (float)textureSize;
-				float fz = (float)z / (float)textureSize;
-
-				// Perlin Noise °ª °è»ê
-				float noiseValue = PerlinNoise3D(fx * 8.0f, fy * 8.0f, fz * 8.0f);
-
-				float heightFactor = 1.0f - SmoothStep(0.0f, 1.0f, fy);
-
-				noiseData[x + y * 128 + z * 128 * 128] =
-					noiseValue * heightFactor;
+	for (int z = 0; z < textureSize; ++z)
+	{
+		for (int y = 0; y < textureSize; ++y)
+		{
+			for (int x = 0; x < textureSize; ++x)
+			{
+				float noisevalue = noiseGenerator.GetNoise((float)x, (float)y, (float)z);
+				noiseData[x + y * textureSize + z * textureSize * textureSize] = static_cast<unsigned char>((noisevalue + 1) * 127.5f);
 			}
 		}
 	}
@@ -1204,21 +1203,21 @@ HRESULT CRenderer::Add_NoiseTexture()
 	textureDesc.Height = textureSize;
 	textureDesc.Depth = textureSize;
 	textureDesc.MipLevels = 1;
-	textureDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	textureDesc.Format = DXGI_FORMAT_R8_UNORM;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	D3D11_SUBRESOURCE_DATA initData = {};
 	initData.pSysMem = noiseData.data();
-	initData.SysMemPitch = textureSize * sizeof(float);
-	initData.SysMemSlicePitch = textureSize * textureSize * sizeof(float);
+	initData.SysMemPitch = textureSize * sizeof(unsigned char);
+	initData.SysMemSlicePitch = textureSize * textureSize * sizeof(unsigned char);
 
 	HRESULT hr = m_pDevice->CreateTexture3D(&textureDesc, &initData, &m_pNoiseTexture3D);
 	if (FAILED(hr))
 		return E_FAIL;
 
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { DXGI_FORMAT_R32_FLOAT, D3D11_SRV_DIMENSION_TEXTURE3D, 0, 0 };
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { DXGI_FORMAT_R8_UNORM, D3D11_SRV_DIMENSION_TEXTURE3D, 0, 0 };
 	srvDesc.Texture3D.MipLevels = 1;
 	srvDesc.Texture3D.MostDetailedMip = 0;
 

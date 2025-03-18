@@ -46,7 +46,7 @@ private:
 
 	_bool					m_bMotionBlurOnOff = { false };	
 
-	vector<_float>									noiseData;
+	vector<unsigned char>							noiseData;
 
 	_int											m_perm[512] = {};
 	ID3D11Texture3D*								m_pNoiseTexture3D = { nullptr };

@@ -5,6 +5,7 @@ Texture3D<float4> g_NoiseTexture : register(t1);
 Texture2D<float4> g_GodRayTexture : register(t2);
 Texture2D<float4> g_FinalTexture : register(t3);
 RWTexture2D<float4> g_OutputTexture : register(u0);
+SamplerState g_LinearSampler : register(s0);
 
 cbuffer FogParams : register(b0)
 {
@@ -55,25 +56,26 @@ void CSMain_Fog(int3 dispatchThreadID : SV_DispatchThreadID)
     
     /* 안개 노이즈 텍스쳐 잠시 삭제 */
     
-    //float fHeightNoiseFogFactor = smoothstep(fHeightNoiseFactor.x - 10.f, fHeightNoiseFactor.y + 10.f, vWorldPos.y); // 높이 안개 y값이 높아지면 강해지게 보간
+    float fHeightNoiseFogFactor = smoothstep(fHeightNoiseFactor.x - 10.f, fHeightNoiseFactor.y + 10.f, vWorldPos.y); // 높이 안개 y값이 높아지면 강해지게 보간
     
-    //float fHeightNoise = (1.f - fHeightNoiseFogFactor) * 0.2f; // noise에 효과 적용
+    float fHeightNoise = (1.f - fHeightNoiseFogFactor) * 0.2f; // noise에 효과 적용
     
-    //float2 noiseFlow = float2(g_fTime, g_fTime); // 시간 흐름에 따라 흐르게 변경
+    float2 noiseFlow = float2(g_fTime, g_fTime); // 시간 흐름에 따라 흐르게 변경
     
-    //float scaleFactor = 0.05f; // noise 텍스쳐 크기 조절 (작을수록 noise 크게 그려짐)
-    //float3 scaledPos = (vWorldPos * scaleFactor).xyz; // 월드에 scalefactor조절
+    float scaleFactor = 0.02f; // noise 텍스쳐 크기 조절 (작을수록 noise 크게 그려짐)
+    float3 scaledPos = (vWorldPos * scaleFactor).xyz; // 월드에 scalefactor조절
     
-    //float3 noiseUV = frac(abs(scaledPos) + float3(g_fTime * 0.1f, 0.0f, g_fTime * 0.1f)); // noise UV frac으로 조절
+    float3 noiseUV = frac(abs(scaledPos) + float3(g_fTime * 0.1f, 0.0f, g_fTime * 0.1f)); // noise UV frac으로 조절
     
     //noiseUV = clamp(noiseUV, 0.f, 1.f);
     
-    //int3 newTexCoord = int3((noiseUV * 511.f) + 0.5f);
+    //float3 newTexCoord = float3((noiseUV) * 127.f + 0.5f);
     
-    //float noise = g_NoiseTexture.Load(int4(newTexCoord, 0.f)).r; // noise에서 샘플링
-    //noise = smoothstep(0.3, 0.7, noise); // 노이즈 선형 보간
+   // float noise = g_NoiseTexture.Load(int4(newTexCoord, 0.f)).r; // noise에서 샘플링
+    float noise = g_NoiseTexture.SampleLevel(g_LinearSampler, noiseUV, 0.f).r; // noise에서 샘플링
+    noise = smoothstep(0.3, 0.7, noise); // 노이즈 선형 보간
     
-    //fHeightFogFactor += noise; // 노이즈 높이안개에만 적용
+    fHeightFogFactor += noise; // 노이즈 높이안개에만 적용
     
     float fFinalFogFactor = min(fDistanceFogFactor, fHeightFogFactor); // 거리가 멀땐 거리 안개, 거리가 가까울땐 높이 안개 적용(더 작은수 적용)
     fFinalFogFactor /= fogFade; // 높이안개 거리에 따라 사라지게 적용
