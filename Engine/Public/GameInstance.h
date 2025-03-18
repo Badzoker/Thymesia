@@ -255,6 +255,7 @@ public:
 	HRESULT Set_BlackScreen(class CUIObject* _pBlackScreen);
 	HRESULT Add_Trigger(TRIGGER_TYPE _eTriggerType, class CGameObject* _pTarget = nullptr);
 	HRESULT Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration);
+	_bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
 #pragma endregion
 
 

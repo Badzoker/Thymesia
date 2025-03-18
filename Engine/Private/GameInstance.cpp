@@ -811,6 +811,10 @@ HRESULT CGameInstance::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duratio
 {
 	return m_pTrigger_Manager->Activate_Fade(_eTriggerType, _Duration);
 }
+_bool CGameInstance::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
+{
+	return m_pTrigger_Manager->Is_Fade_Complete(_eTriggerType);
+}
 #pragma endregion
 
 

@@ -17,6 +17,8 @@ public:
     HRESULT Activate_Awake(TRIGGER_TYPE _eTirggerType, CGameObject* _pTarget, _bool _bAwake);
     void Update(_float _fTimeDelta);
 
+    _bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
