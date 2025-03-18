@@ -63,12 +63,9 @@ void CTriggerObject::Late_Update(_float _fTimeDelta)
         m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.5f);
     }
 
-    if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT) /*&& !m_bFade*/)
-    {
-        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.5f);
-    }
+    
 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CTriggerObject::Render()
@@ -121,11 +118,6 @@ void CTriggerObject::OnCollision(CGameObject* _pOther, PxContactPair _informatio
 
 void CTriggerObject::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    if (m_bFade)
-    {
-        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 2.0f);
-        m_bFade = false;
-    }
 }
 
 CTriggerObject* CTriggerObject::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
