@@ -18,12 +18,16 @@ public:
     void Update(_float _fTimeDelta);
 
     _bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
+    _bool   IsFading() { return m_bFading; }
 
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
 
     CUIObject* m_pBlackScreen = { nullptr };
+    _bool       m_bFading = { false };
+    bool        m_bFadeOutCompletedOnce = { false };
+    bool        m_bFadeInCompletedOnce = { false };
 
 private:
     vector<CTrigger*>           m_vecTriggers;
