@@ -52,6 +52,8 @@ HRESULT CTriggerManager::Add_Trigger(TRIGGER_TYPE _eTriggerType, CGameObject* _p
 
 void CTriggerManager::Update(_float _fTimeDelta)
 {
+    _bool          bUpdateTrigger = false;
+
     for (auto iter = m_mapTriggers.begin(); iter != m_mapTriggers.end(); ++iter)
     {
         TRIGGER_TYPE eTriggerType = iter->first;
@@ -59,9 +61,34 @@ void CTriggerManager::Update(_float _fTimeDelta)
 
         for (auto& pTrigger : vecTriggers)
         {
+            bUpdateTrigger = true;
             pTrigger->Update(_fTimeDelta);
         }
     }
+
+    if (!bUpdateTrigger)
+        return;
+}
+
+_bool CTriggerManager::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
+{
+    auto iter = m_mapTriggers.find(_eTriggerType);
+
+    if (iter == m_mapTriggers.end())
+        return false;
+
+    for (CTrigger* pTrigger : m_mapTriggers[_eTriggerType])
+    {
+        if (pTrigger)
+        {
+            if (_eTriggerType == TRIGGER_TYPE::TT_FADE_OUT && !pTrigger->IsFadeOutComplete())
+                return false;
+            if (_eTriggerType == TRIGGER_TYPE::TT_FADE_IN && !pTrigger->IsFadeInComplete())
+                return false;
+        }
+    }
+
+    return true;
 }
 
 HRESULT CTriggerManager::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _fDuration)

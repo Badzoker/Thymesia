@@ -58,29 +58,30 @@ void CTriggerObject::Update(_float _fTimeDelta)
 
 void CTriggerObject::Late_Update(_float _fTimeDelta)
 {
-   /* if (Check_Collision_With_Player())
-    {
-        if (!m_bFade)
-        {
-            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 2.0f);
-            m_bFade = true;
-        }
-    }
-    else
-    {
-        if (m_bFade)
-        {
-            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 2.0f);
-            m_bFade = false;
-        }
-    }*/
+    // 테스트용, 1번을 누르면 
     if (m_pGameInstance->Get_DIKeyState(DIK_1) & 0x80)
     {
+        // Fade_OUt을 시작한다. (0.5의 duration 만큼 - > 줄일수록 빠르게 어두워짐) 
         m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.5f);
+        
+        // 멤버변수로 한 번 막아놓아야하더라고;; 그래야 음.. 껏 켜? 같이 할수잇음
+        m_bFade = false;
     }
-    else if (m_pGameInstance->Get_DIKeyState(DIK_2) & 0x80)
+
+    // 이제 다 어두워졋어 0.5f 만큼 스르륵 되가지고, 그리고 bool 변수도 false 야. 
+    if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT) && !m_bFade)
     {
-        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 2.0f);
+        // 그럼시발이때, fade in 호출해버려 0.5f만큼. 
+        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.5f);
+
+        // 다시 껏 켜 하기위해서 다시 반대로 돌리셈 
+        m_bFade = true;
+
+
+
+
+
+
     }
 
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);

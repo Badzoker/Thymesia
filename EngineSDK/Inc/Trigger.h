@@ -28,12 +28,17 @@ public:
 
     void Set_Type(TRIGGER_TYPE _eType) { m_eTriggerType = _eType; }
     void Set_TargetObject(CGameObject* _pTarget) { m_pTarget = _pTarget; }
+
+    _bool IsFadeInComplete() const { return m_bFadeInCompleted; }
+    _bool IsFadeOutComplete() const { return m_bFadeOutCompleted; }
 private:
     TRIGGER_TYPE m_eTriggerType = { TRIGGER_TYPE::TT_END };
     _float m_fAlpha = { 0.0f };
     _bool m_bFadeActivated = { false };
     CGameObject* m_pTarget = { nullptr };
     _float m_fDuration = {};
+    _bool m_bFadeOutCompleted = { false };
+    _bool m_bFadeInCompleted = { false };
 public:
     static CTrigger* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
     virtual void Free() override;

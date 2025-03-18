@@ -33,6 +33,9 @@ void CTrigger::Update(_float _fTimeDelta)
     if (!m_pTarget || !m_bFadeActivated)
         return;
 
+    if (m_bFadeOutCompleted || m_bFadeInCompleted)
+        return;
+
     if (m_eTriggerType == TRIGGER_TYPE::TT_FADE_IN)
     {
         if (m_fAlpha > 0.0f)
@@ -42,6 +45,7 @@ void CTrigger::Update(_float _fTimeDelta)
             {
                 m_fAlpha = 0.0f;
                 m_bFadeActivated = false;
+                m_bFadeInCompleted = true;
             }
         }
     }
@@ -54,6 +58,7 @@ void CTrigger::Update(_float _fTimeDelta)
             {
                 m_fAlpha = 1.0f;
                 m_bFadeActivated = false;
+                m_bFadeOutCompleted = true;
             }
         }
     }
@@ -71,6 +76,7 @@ HRESULT CTrigger::Fade_Out(_float _fDuration)
     m_fAlpha = 0.0f;
     m_fDuration = _fDuration;
     m_bFadeActivated = true;
+    m_bFadeOutCompleted = false;
 
     m_pUITarget = dynamic_cast<CUIObject*>(m_pTarget);
 
@@ -85,6 +91,8 @@ HRESULT CTrigger::Fade_In(_float _fDuration)
     m_fAlpha = 1.0f;
     m_fDuration = _fDuration;
     m_bFadeActivated = true;
+    m_bFadeInCompleted = false;
+
 
     m_pUITarget = dynamic_cast<CUIObject*>(m_pTarget);
 
