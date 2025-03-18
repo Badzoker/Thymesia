@@ -64,6 +64,7 @@
 #include "LeftWeapon.h"
 #include "RightWeapon.h"
 #include "ClawWeapon.h"
+#include "PlayerCamera.h"	
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -1270,6 +1271,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 #pragma endregion 
 
+#pragma region 티메시아 카메라 
+	///* For.Prototype_GameObject_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_PlayerCamera"),
+		CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
 
 #pragma region Objects
 	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));

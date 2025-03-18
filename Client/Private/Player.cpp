@@ -7,6 +7,7 @@
 #include "StateMgr.h"
 #include "Animation.h"
 #include "ClawWeapon.h"
+#include "PlayerCamera.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -185,13 +186,43 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
 #pragma region 처형 
-	if (m_pGameInstance->isKeyEnter(DIK_Y))
+	if (m_pGameInstance->isKeyEnter(DIK_5))
 	{
-		m_pStateMgr->Get_VecState().at(45)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
 		m_iState = STATE_HARMOR_EXECUTION;
+		//m_iState = STATE_STUN_EXECUTE;
 
 		m_iPhaseState |= PHASE_EXECUTION;
 	}
+
+
+	if (m_pGameInstance->isKeyEnter(DIK_6))
+	{
+		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
+		m_iState = STATE_LV1Villager_M_Execution;
+		//m_iState = STATE_STUN_EXECUTE;
+
+		m_iPhaseState |= PHASE_EXECUTION;
+	}
+
+	if (m_pGameInstance->isKeyEnter(DIK_7))
+	{
+		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
+		m_iState = STATE_Joker_Execution;
+		//m_iState = STATE_STUN_EXECUTE;
+
+		m_iPhaseState |= PHASE_EXECUTION;
+	}
+
+	if (m_pGameInstance->isKeyEnter(DIK_8))
+	{
+		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
+		m_iState = STATE_Varg_Execution;
+		//m_iState = STATE_STUN_EXECUTE;
+
+		m_iPhaseState |= PHASE_EXECUTION;
+	}
+
 #pragma endregion 
 
 #pragma region 패링	
@@ -630,6 +661,21 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightClawWeaponDesc.fRotationPerSec = 10.f;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
+		return E_FAIL;
+
+
+	/* 플레이어 카메라 */
+	CPlayerCamera::WEAPON_DESC    PlayerCameraDesd{};
+
+	PlayerCameraDesd.pParent = this;
+	PlayerCameraDesd.pParentModel = m_pModel;
+	PlayerCameraDesd.pParentState = &m_iState;
+	PlayerCameraDesd.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("camera"); /* 캐릭터 모델마다 다름 */
+	PlayerCameraDesd.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	PlayerCameraDesd.fSpeedPerSec = 0.f;
+	PlayerCameraDesd.fRotationPerSec = 10.f;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
 		return E_FAIL;
 
 
