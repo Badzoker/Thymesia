@@ -44,6 +44,15 @@ HRESULT CUI_MouseCursor::Initialize(void* pArg)
 
 void CUI_MouseCursor::Priority_Update(_float fTimeDelta)
 {
+	
+	
+	if(false == m_bRenderOpen)
+	{
+		_uint2 Size = m_pGameInstance->Get_ViewportSize();
+		POINT ptMouse{ (LONG)Size.x >> 1, (LONG)Size.y >> 1 };
+		ClientToScreen(g_hWnd, &ptMouse);
+		SetCursorPos(ptMouse.x, ptMouse.y);
+	}
 }
 
 void CUI_MouseCursor::Update(_float fTimeDelta)
@@ -57,7 +66,8 @@ void CUI_MouseCursor::Update(_float fTimeDelta)
 
 void CUI_MouseCursor::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	if (m_bRenderOpen)
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
 }
 
 HRESULT CUI_MouseCursor::Render()

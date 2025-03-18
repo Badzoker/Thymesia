@@ -27,6 +27,8 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iViewportWidth = g_iWinSizeX;
 	EngineDesc.iViewportHeight = g_iWinSizeY;
 
+	ShowCursor(FALSE);
+
 	if (FAILED(m_pGameInstance->Initialize_Engine(EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 

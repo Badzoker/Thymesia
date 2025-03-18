@@ -31,7 +31,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		if (FAILED(Ready_Layer_Mouse(TEXT("Layer_Mouse"))))
 			return E_FAIL;	
 
-		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false);
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
 
 		/*if (FAILED(Ready_Layer_Fade(TEXT("Layer_Loading"))))
 			return E_FAIL;
