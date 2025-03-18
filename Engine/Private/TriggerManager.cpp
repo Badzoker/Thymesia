@@ -81,10 +81,39 @@ _bool CTriggerManager::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
     {
         if (pTrigger)
         {
-            if (_eTriggerType == TRIGGER_TYPE::TT_FADE_OUT && !pTrigger->IsFadeOutComplete())
+           /* if (_eTriggerType == TRIGGER_TYPE::TT_FADE_OUT && !pTrigger->IsFadeOutComplete())
                 return false;
             if (_eTriggerType == TRIGGER_TYPE::TT_FADE_IN && !pTrigger->IsFadeInComplete())
-                return false;
+                return false;*/
+
+
+            if (_eTriggerType == TRIGGER_TYPE::TT_FADE_OUT)
+            {
+                if (!pTrigger->IsFadeOutComplete())
+                    return false;
+
+                if (!m_bFadeOutCompletedOnce)
+                {
+                    m_bFadeOutCompletedOnce = true;
+                    return true;
+                }
+
+                return false; 
+            }
+
+            if (_eTriggerType == TRIGGER_TYPE::TT_FADE_IN)
+            {
+                if (!pTrigger->IsFadeInComplete())
+                    return false;
+
+                if (!m_bFadeInCompletedOnce) 
+                {
+                    m_bFadeInCompletedOnce = true;
+                    return true;
+                }
+
+                return false; 
+            }
         }
     }
 
@@ -109,10 +138,12 @@ HRESULT CTriggerManager::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _fDura
             if (_eTriggerType == TRIGGER_TYPE::TT_FADE_OUT)
             {
                 pTrigger->Fade_Out(_fDuration);
+                m_bFadeOutCompletedOnce = false;
             }
             else if (_eTriggerType == TRIGGER_TYPE::TT_FADE_IN)
             {
                 pTrigger->Fade_In(_fDuration);
+                m_bFadeInCompletedOnce = false;
             }
             return S_OK;
         }
