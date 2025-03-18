@@ -85,7 +85,11 @@ class CBody_Player final : public CPartObject
 		/* ------------------------- */
 
 		/* 贸屈 葛记 */
+		STATE_STUN_EXECUTE,
 		STATE_HARMOR_EXECUTION,
+		STATE_LV1Villager_M_Execution,
+		STATE_Joker_Execution,
+		STATE_Varg_Execution,
 
 	};
 
@@ -198,7 +202,11 @@ public:
 	/* ------------------------- */
 
 	/* 贸屈 葛记 */
-	void STATE_HARMOR_EXECUTION_Method();	
+	void STATE_HARMOR_EXECUTION_Method();
+	void STATE_STUN_EXECUTE_Method();
+	void STATE_LV1Villager_M_Execution_Method();
+	void STATE_Joker_Execution_Method();
+	void STATE_Varg_Execution_Method();
 
 private:
 	CShader* m_pShaderCom = { nullptr };

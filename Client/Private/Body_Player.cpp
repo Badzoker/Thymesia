@@ -205,9 +205,20 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_NORMAL_EVADE_B:
         STATE_NORMAL_EVADE_B_Method();
         break;
-    case STATE_HARMOR_EXECUTION:    
-        STATE_HARMOR_EXECUTION_Method();    
-        break;  
+    case STATE_HARMOR_EXECUTION:
+        STATE_HARMOR_EXECUTION_Method();
+        break;
+    case STATE_STUN_EXECUTE:
+        STATE_STUN_EXECUTE_Method();
+        break;
+    case STATE_LV1Villager_M_Execution:
+        STATE_LV1Villager_M_Execution_Method();
+        break;
+    case STATE_Joker_Execution:
+        STATE_Joker_Execution_Method();
+        break;
+    case STATE_Varg_Execution:
+        STATE_Varg_Execution_Method();
     default:
         break;
     }
@@ -1841,6 +1852,59 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     m_iRenderState = STATE_NORMAL;
 
     if (m_pModelCom->Get_VecAnimation().at(222)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_STUN_EXECUTE_Method()
+{
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL;
+
+    //if(m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
+    //{
+    //    *m_pParentState = STATE_HARMOR_EXECUTION;   
+    //}
+
+    if (m_pModelCom->Get_VecAnimation().at(291)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_LV1Villager_M_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(52, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(52)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_Joker_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(51, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(51)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_Varg_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(50, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(50)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;

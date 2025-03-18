@@ -56,6 +56,9 @@ public:
 
 	bool                Camera_Cut_Scene_Activate(_wstring _CutSceneName);
 
+	void				Set_Camera_Cut_Scene_OnOff(bool _bOnOff) { m_bCamera_Cut_Scene_OnOff = _bOnOff; }
+
+
 
 private:
 	_vector CatmullRom_Position_Lerp(vector<Camera_Event> CameraEvent, _float _fRatio);

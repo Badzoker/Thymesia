@@ -159,13 +159,6 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-#pragma region 마우스 잠그기
-	
-	
-	
-#pragma endregion
-
-
 	m_fTimeDelta = fTimeDelta;
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB))
@@ -199,17 +192,18 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	/* 컷신 관련 */
 	if (m_pGameInstance->isKeyEnter(DIK_Y))
 	{
-		m_bCamera_Cut_Scene_OnOff = true;
-		m_pCurWorldMatrix = *m_pTransformCom->Get_WorldMatrix_Ptr();
-		m_bCutSceneFirst = true;
-		m_bGetBackCamPos = true;
+		//m_bCamera_Cut_Scene_OnOff = true;
+		//m_pCurWorldMatrix = *m_pTransformCom->Get_WorldMatrix_Ptr();	
+		//m_bCutSceneFirst = true;	
+		//m_bGetBackCamPos = true; 
 
 		//m_bCutSceneFristLerpEnd = false;	 // 이거 보간 속도랑 캐릭터 애니메이션 진행속도 간격 차이 발생해서 안됨. 
 	}
 
 	if (m_bCamera_Cut_Scene_OnOff)
 	{
-		Camera_Cut_Scene_Activate(TEXT("Test"));
+		/* 여기서 player camera 작동 시키면 됨 */
+		//Camera_Cut_Scene_Activate(TEXT("Test"));
 	}
 	/* ======================================= */
 
@@ -223,14 +217,15 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-			// 플레이어의 충돌체를 기준으로할까.	
-			m_vPlayerHeadPos = XMVectorSet(
-				XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-				XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
-				XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-				1.0f
-			);
+		// 플레이어의 충돌체를 기준으로할까.	
+		m_vPlayerHeadPos = XMVectorSet(
+			XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+			XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
+			XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+			1.0f
+		);
 
+		//if(m_bCamera_Cut_Scene_OnOff == true)
 		if (m_bGetBackCamPos)
 		{
 			m_vLerpPlayerHeadPos = XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_vPlayerHeadPos, m_fLerpTime), 1.f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
@@ -429,6 +424,25 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_bZoomIn = false;
 		m_bZoomOut = false;
 	}
+
+
+	//else
+	//{
+	//	// Right 벡터 갱신 (Up × Look)
+	//	_vector CamDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);	
+	//
+	//	_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);	
+	//	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));	
+	//
+	//	// Up 벡터 갱신 (Look × Right)
+	//	_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));	
+	//
+	//	// Transform 갱신
+	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);	
+	//	m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);	
+	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);	
+	//}
+
 
 	__super::Priority_Update(fTimeDelta);
 }

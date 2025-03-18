@@ -586,6 +586,9 @@
     <Filter Include="02.GameObject\Player\State\Execution\HArmorLV1_Execution">
       <UniqueIdentifier>{46bc66e8-6dad-4c7d-91f3-b18405dbf9fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\Camera">
+      <UniqueIdentifier>{821e0855-a0ab-4339-b98a-8df59744621b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1098,6 +1101,9 @@
     <ClInclude Include="..\Public\UIGroup_Inventory.h">
       <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerCamera.h">
+      <Filter>02.GameObject\Player\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1600,6 +1606,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Inventory.cpp">
       <Filter>03.UIObject\2.UIObjGroup\6.ESC_Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerCamera.cpp">
+      <Filter>02.GameObject\Player\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
