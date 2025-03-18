@@ -245,7 +245,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(134); 3/14일
 	Load_Objects(135);
 
-	Load_TriggerObjects(0);
+	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
+	Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
 
 	//_ulong dwByte = {}; 
