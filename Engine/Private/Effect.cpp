@@ -49,7 +49,8 @@ void CEffect::Update(_float _fTimeDelta)
 	{
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 	}
-	Timer_Check(_fTimeDelta);
+	if (true == m_bIsPlaying)
+		Timer_Check(_fTimeDelta);
 }
 
 void CEffect::Late_Update(_float _fTimeDelta)
@@ -99,6 +100,7 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 		m_bIsPlaying = false;
 		m_fTimerX = 0.f;
 		m_fTimerY = 0.f;
+		m_fDissolve = 0.f;
 	}
 	else
 	{

@@ -415,13 +415,80 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     return Out;
 }
 
-PS_OUT_MOTIONBLUR PS_MAIN_MOTIONBLUR(PS_IN_MOTIONBLUR In)
+PS_OUT PS_MAIN_BLOOD(PS_IN In)
 {
-    PS_OUT_MOTIONBLUR Out = (PS_OUT_MOTIONBLUR) 0;
+    PS_OUT Out = (PS_OUT) 0;
+
+    float2 vMaskTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
     
-    Out.vMotionBlur.xy = In.vDir.xy * 10.f; //속도가 매Frame 계산되서 너무 작아서 좀 늘려서 Deferred 에 던지기
-    Out.vMotionBlur.z = In.vDir.w;
-    Out.vMotionBlur.w = In.vDir.z / In.vDir.w;
+    float2 vMtrlTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMtrlTexcoord) * fMask;
+    
+    float2 noiseUV = In.vTexcoord + float2(g_TimeX * 0.1f, g_TimeY * 0.1f);
+    float noiseValue = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+    
+    float g_EdgeWidth = 0.3f;
+    float edgeFactor = smoothstep(g_DissolveAmount - g_EdgeWidth, g_DissolveAmount, noiseValue);
+    
+    float4 g_EdgeColor = { 0.f, 0.f, 0.f, 1.f };
+    float edgeStrength = 1.0 - edgeFactor; // 경계 부근에서 1
+    float4 edgeBlend = lerp(vMtrlDiffuse, g_EdgeColor, edgeStrength);
+    float4 finalColor = lerp(vMtrlDiffuse, edgeBlend, edgeStrength);
+    
+    if (noiseValue < g_DissolveAmount)
+    {
+        float alphaFactor = saturate((noiseValue - (g_DissolveAmount - g_EdgeWidth)) / g_EdgeWidth);
+        finalColor.a *= alphaFactor;
+        
+        if (finalColor.a < 0.01f) 
+            clip(-1);
+    }
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    float blendFactor = 0.2f; // 0 ~ 1 사이의 값, 효과의 강도 조절
+    
+    Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(g_vRGB, 1.f);
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.vDiffuse.a = 1.f;
+    
+    
+    return Out;
+}
+
+PS_OUT_DISTORTION PS_MAIN_ROUND(PS_IN In)
+{
+    PS_OUT_DISTORTION Out = (PS_OUT_DISTORTION) 0;
+
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    float2 vRound = In.vTexcoord - float2(0.5f, 0.5f);
+    float fDist = length(vRound);
+    
+    float fWave = sin((fDist - g_TimeX * g_TimeY) * 30) * exp(-fDist * 8) * g_DissolveAmount;
+    
+    float3 vNoise = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord).rgb * 2 - 1.f;
+    
+    float2 vOffset = vNoise.xy * fWave;
+    
+    float4 vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord + vOffset) * vMask;
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    Out.vDistortion = vMtrlDiffuse;
 	
     return Out;
 }
@@ -473,14 +540,25 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_GLOW();
     }
 
-    pass MotionBlur //4
+    pass Blood //4
     {
         SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_SKip_Z, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_MAIN_MOTIONBLUR();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_MOTIONBLUR();
+        PixelShader = compile ps_5_0 PS_MAIN_BLOOD();
+    }
+
+    pass Round //5
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ROUND();
     }
 }

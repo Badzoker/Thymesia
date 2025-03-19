@@ -85,6 +85,10 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
     case 3:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
         break;
+
+    case 4:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this); //¾Æ¸¶ Bloom
+        break;
     }
 }
 

@@ -80,7 +80,9 @@ void CSMain_Particle_Spark(int3 dispatchThreadID : SV_DispatchThreadID)
     g_tOutput_Compute[dispatchThreadID.x].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
     g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x = tInput.vLifeTime.x * 1.f;
     g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y += 0.0167f;
-    g_tOutput_Compute[dispatchThreadID.x].vScale.x = tInput.vScale.x - (tInput.vScale.x * (g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y / g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x));
+    float fScale = tInput.vScale.x - tInput.vScale.x * (g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y / g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x);
+    fScale = (abs(fScale - 0.5f) * -2.f) + 1.f;
+    g_tOutput_Compute[dispatchThreadID.x].vScale.x = fScale;
     
     float3 vDir = float3(normalize(tInput.vTranslation.xyz - tInput.vPivot));
     vDir = vDir * g_tOutput_Compute[dispatchThreadID.x].vSpeed * 0.0167f;

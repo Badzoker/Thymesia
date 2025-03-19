@@ -371,7 +371,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_GLOW();
     }
 
-    pass Blood // 1 ¹ø 
+    pass Blood // 3 ¹ø 
     {
         SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_Default, 0);

@@ -88,17 +88,20 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 0:
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		break;
-	case 1:
+	case 1: //nonblend
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		break;
-	case 2:
+	case 2: //Distortion
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this);
 		break;
-	case 3:
+	case 3: //Glow
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
-	case 4:
+	case 4: //Blood
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		break;
+	case 5: //Round
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this);
 		break;
 	}
 }
