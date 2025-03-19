@@ -119,7 +119,7 @@ PS_OUT PS_MASKING_MAIN(PS_IN In)
     */
 	
     vector vMtrlDiffuse = vDestDiffuse * vMaskTexture + vSourDiffuse * (1.f - vMaskTexture);
-    vector vMtrlNormal = vector(vDestNormal.xyz * 2.f - 1.f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 2.f - 1.f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
+    vector vMtrlNormal = vector(vDestNormal.xyz, 0.f) * vMaskTexture + vector(vSourNormal.xyz, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
 	
     /* vector vNormal = vNormalDesc.xyz * 2.0f - 1.0f; */
     Out.vDiffuse = vMtrlDiffuse;
