@@ -3,6 +3,7 @@
 #include "UI_Scene.h"
 #include "GameInstance.h"
 #include "UI_Text.h"
+#include "UI_TextBox.h"
 #include "UI_Image.h"
 #include "Player.h"
 #include "UI_ItemBackground.h"
@@ -42,8 +43,10 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 		if (101 == Textbox->Get_UI_GroupID())
 		{
 			Textbox->Set_OnOff(false);
+			m_pMonsterText = Textbox;
 		}
 	}
+
 	return S_OK;
 }
 
@@ -67,6 +70,18 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	Player_Info_GageBar();
+	
+	if (m_pMonsterText->Get_OnOff())
+	{
+		m_fMonsterTextOnTime += fTimeDelta;
+		if (m_fMonsterTextOnTime > 2)
+		{
+			m_pMonsterText->Set_OnOff(false);
+			m_fMonsterTextOnTime = 0;
+
+		}
+	}
+
 
 	if (0 != dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().size())// 버린 아이템이 있는 경우
 	{

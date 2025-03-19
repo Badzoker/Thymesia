@@ -53,7 +53,7 @@ void CBlackScreen::Update(_float _fTimeDelta)
 
 void CBlackScreen::Late_Update(_float _fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
 }
 
 HRESULT CBlackScreen::Render()

@@ -3,6 +3,7 @@
 #include "UIObject.h"
 BEGIN(Engine)
 class CUI_Scene;
+class CUI_Text;
 END
 
 
@@ -53,6 +54,8 @@ public:
 	void Set_m_bDrop(_bool bdrop) { m_bDrop = bdrop; }
 private:
 	_bool m_bDrop = { true };
+	CUI_Text* m_pMonsterText = {};
+	_float m_fMonsterTextOnTime = {};
 
 public:
 	static CUIGroup_PlayerScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

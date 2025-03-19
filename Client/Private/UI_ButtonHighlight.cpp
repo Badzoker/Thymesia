@@ -29,6 +29,7 @@ HRESULT CUI_ButtonHighlight::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	Set_Change_TextColor(FONT_GRAY);
 	return S_OK;
 }
 
@@ -41,9 +42,16 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
 	{
 		if (__super::On_Mouse_UI(g_hWnd))
+		{
 			m_bImageOn = true;
+			Set_Change_TextColor(FONT_WHITE);
+
+		}
 		else
+		{
 			m_bImageOn = false;
+			Set_Change_TextColor(FONT_GRAY);
+		}
 
 		if (m_bImageOn)
 		{
@@ -98,7 +106,7 @@ HRESULT CUI_ButtonHighlight::Render()
 		m_fTextPosition.x = fMyPos.x - TextSize.x / 2;
 		m_fTextPosition.y = fMyPos.y - TextSize.y / 2;
 		m_fTextPosition.z = fMyPos.z;
-		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
+		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
 	}
 
 	return S_OK;

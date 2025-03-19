@@ -25,10 +25,7 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Update(_float fTimeDelta)
 {
-	/*m_fRenderTime += fTimeDelta;
-	if (5 < m_fRenderTime)
-	{
-	*/	
+
 	if (!m_bNextLevelOpen)
 	{
 		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), true);
@@ -36,9 +33,15 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	}
 	else
 	{
-		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY, 2, false));
+
+		m_fRenderTime += fTimeDelta;
+		if (1	 < m_fRenderTime)
+		{
+			m_fRenderTime = 0;
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY, 6, false));
+		}
 	}
 	
 }

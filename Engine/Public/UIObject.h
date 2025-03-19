@@ -44,6 +44,7 @@ public:
 	virtual void Set_Render_OnOff(_bool bOpen) { m_bRenderOpen = bOpen; } // UIObj 랜더 상태 제어 - 유빈
 	virtual _bool Get_Render_State() { return  m_bRenderOpen; }
 	void Set_OnOff(_bool bOpen) { m_bOpen = bOpen; }
+	_bool Get_OnOff() { return m_bOpen; }
 
 public:
 	virtual _uint Get_UI_GroupID() { return m_iGroupID; }
