@@ -53,8 +53,6 @@ void CLevel_Loading::Update(_float fTimeDelta)
 {
 	if (m_eNextLevelID > LEVEL_STATIC)
 	{
-		/*CGameObject* pUIgroupLoading = m_pGameInstance->Get_LayerGameObject(LEVEL_LOADING, TEXT("Layer_Loading"))->back();
-		dynamic_cast<CUIGroup_Loading*>(pUIgroupLoading)*/
 		
 		CUI_Scene* pScene = m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading");
 		
@@ -76,19 +74,16 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			}
 		}
 
-
-
 		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
-
-
-		
+		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+		{
+			m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.3f);
+		}
 	}
 	
 	if (true == m_pLoader->isFinished())
 	{
-
-
 
 		if (m_eNextLevelID == LEVEL_STATIC)
 		{
