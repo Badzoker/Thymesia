@@ -42,6 +42,10 @@ Texture2D g_WeightBlendTexture;
 
 Texture2D g_VelocityTexture;
 
+Texture2D g_BloomXTexture;
+Texture2D g_BloomYTexture;
+Texture2D g_BloomBeginTexture;
+
 
 
 float4 g_vCamPosition;
@@ -331,6 +335,8 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
     
     vector vGlow = g_GlowYTexture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vBloom = g_BloomYTexture.Sample(LinearSampler, In.vTexcoord);
+    
     vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
@@ -372,7 +378,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
         vFinal.xyzw /= (float) iCnt;
     }
     
-    Out.vColor = vFinal + vHighLight + vGlow + vGodRay + vWeightBlend;
+    Out.vColor = vFinal + vHighLight + vGlow + vBloom + vGodRay + vWeightBlend;
     
     return Out;
 }
@@ -623,6 +629,91 @@ PS_OUT PS_OCCULSION(PS_IN In)
     return Out;
 }
 
+float Epsilon = 1e-5;
+ 
+float3 RGBtoHCV(in float3 RGB)
+{
+    // Based on work by Sam Hocevar and Emil Persson
+    float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0 / 3.0) : float4(RGB.gb, 0.0, -1.0 / 3.0);
+    float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
+    float C = Q.x - min(Q.w, Q.y);
+    float H = abs((Q.w - Q.y) / (6 * C + Epsilon) + Q.z);
+    return float3(H, C, Q.x);
+}
+
+float3 HUEtoRGB(in float H)
+{
+    H = frac(H);
+    float R = abs(H * 6 - 3) - 1;
+    float G = 2 - abs(H * 6 - 2);
+    float B = 2 - abs(H * 6 - 4);
+    return saturate(float3(R, G, B));
+}
+
+float3 RGBtoHSV(in float3 RGB)
+{
+    float3 HCV = RGBtoHCV(RGB);
+    float S = (HCV.z > 0.0) ? (HCV.y / HCV.z) : 0.0;
+    
+    return float3(HCV.x, S, HCV.z);
+}
+
+float3 HSVtoRGB(in float3 HSV)
+{
+    float3 RGB = HUEtoRGB(HSV.x);
+    return ((RGB - 1) * HSV.y + 1) * HSV.z;
+}
+
+float g_fWeights_Bloom[11] = { 0.045, 0.085, 0.2, 0.45, 0.75, 1.0, 0.75, 0.45, 0.2, 0.085, 0.045 };
+
+PS_OUT PS_BLOOM_X(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float2 vTexcoord = 0.f;
+
+    for (int i = -5; i < 6; i++)  
+    {
+        vTexcoord = float2(In.vTexcoord.x + (1.f / g_fViewPortWidth) * i, In.vTexcoord.y);
+        float4 sampleColor = g_BloomBeginTexture.Sample(LinearSampler_Clamp, vTexcoord);
+
+        float3 hsv = RGBtoHSV(sampleColor.rgb);
+
+        if (hsv.z > 0.8f)  
+        {
+            hsv.z = min(hsv.z * 1.5f, 1.2f); 
+            hsv.y = min(hsv.y * 1.2f, 1.0f); 
+        }
+
+        Out.vColor.rgb += g_fWeights_Bloom[i + 5] * HSVtoRGB(hsv);
+    }
+    
+    Out.vColor /= 0.4f;
+    return Out;
+}
+
+PS_OUT PS_BLOOM_Y(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float2 vTexcoord = 0.f;
+
+    for (int i = -5; i < 6; i++)
+    {
+        vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + (1.f / g_fViewPortHeight) * i);
+        float4 sampleColor = g_BloomXTexture.Sample(LinearSampler_Clamp, vTexcoord);
+        
+        float3 hsv = RGBtoHSV(sampleColor.rgb);
+        
+        float brightnessBoost = smoothstep(0.7, 1.0, hsv.z);
+        hsv.z = min(hsv.z * (1.0 + brightnessBoost * 0.8), 1.5f);
+        hsv.y *= (1.0 + brightnessBoost * 0.3);
+
+        Out.vColor.rgb += g_fWeights_Bloom[i + 5] * HSVtoRGB(hsv);
+    }
+
+    Out.vColor /= 0.4f;
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Debug //0 
@@ -766,5 +857,25 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_OCCULSION();
+    }
+
+    pass BloomX // 14
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_BLOOM_X();
+    }
+
+    pass BloomY // 15
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_BLOOM_Y();
     }
 }

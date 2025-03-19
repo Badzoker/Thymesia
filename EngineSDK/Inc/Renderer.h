@@ -13,7 +13,7 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
-					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND,
+					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND, RG_BLOOM,
 					   RG_END };
 	
 private:
@@ -84,6 +84,10 @@ private:
 	HRESULT Render_WeightBlend();
 	HRESULT Render_UI();
 	HRESULT Render_Font();
+
+	HRESULT	Render_BloomBegin();
+	HRESULT	Render_BloomX();
+	HRESULT	Render_BloomY();
 
 
 private:

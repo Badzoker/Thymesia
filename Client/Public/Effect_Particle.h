@@ -39,6 +39,8 @@ public:
 	virtual void Late_Update(_float _fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_WeightBlend() override;
+	virtual HRESULT Render_Bloom() override;
+
 
 	virtual void Set_IsPlaying(_bool _bIsPlaying) override;
 

@@ -87,7 +87,7 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
         break;
 
     case 4:
-        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this); //¾Æ¸¶ Bloom
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLOOM, this);
         break;
     }
 }
@@ -119,6 +119,20 @@ HRESULT CEffect_Particle::Render_WeightBlend()
         return E_FAIL;
     
     m_pShaderCom->Begin(m_iShaderPass); //WeightBlend
+
+    m_pBufferCom->Bind_InputAssembler();
+
+    m_pBufferCom->Render();
+
+    return S_OK;
+}
+
+HRESULT CEffect_Particle::Render_Bloom()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    m_pShaderCom->Begin(m_iShaderPass); //Bloom
 
     m_pBufferCom->Bind_InputAssembler();
 

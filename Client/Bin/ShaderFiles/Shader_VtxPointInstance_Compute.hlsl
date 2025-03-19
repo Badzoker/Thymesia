@@ -381,4 +381,15 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_MAIN_BLOOD();
         PixelShader = compile ps_5_0 PS_MAIN_BLOOD();
     }
+
+    pass Bloom // 4 ¹ø 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_WeightBlend, 0);
+        SetBlendState(BS_WeightBlend_Client, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN_WEIGHT();
+        PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
+    }
 }
