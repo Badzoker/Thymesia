@@ -804,7 +804,7 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
     _vector vResultPos = vPlayerPos + vPlayerLook;
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
 
-    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -815,6 +815,7 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
         m_iIndex = 21;
         pObject->m_iMonster_State = STATE_DEAD;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     }
 }
 

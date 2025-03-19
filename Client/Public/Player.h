@@ -79,7 +79,7 @@ public:
 		STATE_NORMAL_EVADE_B,
 		/* ------------------------- */
 
-		/* 처형 모션 */	
+		/* 처형 모션 */
 		STATE_STUN_EXECUTE,  // 처형 시작 모션	
 		STATE_HARMOR_EXECUTION,
 		STATE_LV1Villager_M_Execution,
@@ -97,7 +97,7 @@ public:
 		PHASE_HITTED = 1 << 3,
 		PHASE_PARRY = 1 << 4,
 		PHASE_DASH = 1 << 5,
-		PHASE_EXECUTION = 1 << 6,	
+		PHASE_EXECUTION = 1 << 6,
 
 	};
 
@@ -147,6 +147,8 @@ private:
 
 	_uint								m_iPhaseState = { PHASE_IDLE };
 	_uint								m_iPrePhaseState = { PHASE_IDLE };
+
+	_uint								m_iMonsterExectue = {};		 //  몬스터  처형 상태		
 
 	_bool								m_bLockOn = { false };
 	_bool								m_bMove = { false };
@@ -212,7 +214,7 @@ public:
 	_uint    Get_CurrentMp() { return m_iCurrentMp; }
 
 	_uint    Get_AttackPower() { return m_iAttackPower; }
-	_uint*   Get_AttackPower_Ptr() { return &m_iAttackPower; }
+	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
 	_uint    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
 	_uint    Get_MemoryFragment() { return m_iMemoryFragment; }

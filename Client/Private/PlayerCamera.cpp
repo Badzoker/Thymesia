@@ -34,6 +34,8 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
+    m_pParentActor = pDesc->pParentActor;
+
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -46,7 +48,7 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
     //m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
 
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+   /* m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -54,7 +56,7 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
-    m_pGameInstance->Add_Actor_Scene(m_pActor);
+    m_pGameInstance->Add_Actor_Scene(m_pActor);*/
 
     return S_OK;
 
@@ -89,20 +91,21 @@ void CPlayerCamera::Update(_float fTimeDelta)
     );
 
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-    {
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
-    }
+    /*   if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+       {
+           m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
+       }*/
 
 
 
 
 #pragma region 이벤트 관련 작업
-    /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
+       /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     if (*m_pParentState == CPlayer::STATE_HARMOR_EXECUTION
         || *m_pParentState == CPlayer::STATE_LV1Villager_M_Execution
         || *m_pParentState == CPlayer::STATE_Joker_Execution
         || *m_pParentState == CPlayer::STATE_Varg_Execution
+        || *m_pParentState == CPlayer::STATE_STUN_EXECUTE    // 이게 처형 시작 모션 
         )
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
@@ -111,12 +114,19 @@ void CPlayerCamera::Update(_float fTimeDelta)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE 부분           
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime
+
+
+                    //if (!(strcmp(iter.szName, "Camera_Zoom_In")))
+                    //{
+                    //    m_pCamera->Set_Camera_ZoomSpeed(10.f);
+                    //    m_pCamera->ZoomIn();     // 이거 가속도 줘야겠는데. 
+
+                    //}
+
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime     
                         && m_pParentModelCom->Get_CurrentAnmationTrackPosition() < iter.fEndTime)
+
                     {
-
-
-
                         _vector pos = { m_CombinedWorldMatrix._41,m_CombinedWorldMatrix._42,m_CombinedWorldMatrix._43,1.f };
                         _vector vRight = { m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13,0.f };
                         _vector vUp = { m_CombinedWorldMatrix._21,m_CombinedWorldMatrix._22,m_CombinedWorldMatrix._23,0.f };
@@ -130,7 +140,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
 
 
                         vRight = XMVector3TransformNormal(vRight, Rotation);
-                        vRight = XMVectorSetW(XMVector3Normalize(vRight), 0.f); // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f) 
+                        vRight = XMVectorSetW(XMVector3Normalize(vRight), 0.f); // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f)     
 
 
 
@@ -144,7 +154,13 @@ void CPlayerCamera::Update(_float fTimeDelta)
                         m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_UP, vUp);
 
                         m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, pos);
+
+
                         m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
+                        m_pCamera->Set_Camera_GetBackCamPos(true);
+
+                        m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+
                     }
                 }
 
@@ -153,6 +169,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                     {
                         m_pCamera->Set_Camera_Cut_Scene_OnOff(false);
+                        m_pGameInstance->Add_Actor_Scene(m_pParentActor);
                     }
 
                 }
@@ -160,107 +177,52 @@ void CPlayerCamera::Update(_float fTimeDelta)
         }
     }
 
-    /*   else
-       {
-           m_pGameInstance->Sub_Actor_Scene(m_pActor);
-       }
-   #pragma endregion
+    else
+    {
+        //m_pCamera->ResetZoomInCameraPos();    
+    }
 
-       if (m_iPreParentState != *m_pParentState)
-       {
-           m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-           m_fHitStopTime = 0.f;
-       }*/
 }
 
 void CPlayerCamera::Late_Update(_float fTimeDelta)
 {
-
-    /*  if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
-          && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
-      {
-          m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-      }*/
 
     m_iPreParentState = *m_pParentState;
 }
 
 HRESULT CPlayerCamera::Render()
 {
-    /*if (FAILED(Bind_ShaderResources()))
-        return E_FAIL;
 
-    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-    for (_uint i = 0; i < iNumMeshes; i++)
-    {
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
-
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
-            return E_FAIL;
-
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render(i);
-    }*/
 
     return S_OK;
 }
 
 HRESULT CPlayerCamera::Ready_Components()
 {
-    ///* Com_Shader */
-    //if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
-    //    TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-    //    return E_FAIL;
 
-    ///* Com_Model */
-    //if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Corvus_Right_Weapon"),
-    //    TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-    //    return E_FAIL;
 
     return S_OK;
 }
 
 HRESULT CPlayerCamera::Bind_ShaderResources()
 {
-    //if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
-    //    return E_FAIL;
-    //if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-    //    return E_FAIL;
-    //if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-    //    return E_FAIL;
 
     return S_OK;
 }
 
 void CPlayerCamera::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    //m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    //m_fHitStopTime = 0.f;
+
 }
 
 void CPlayerCamera::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    /*if (!strcmp("MONSTER", _pOther->Get_Name()))
-    {
-        m_fHitStopTime += 1.f / 80.f;
-        if (m_fHitStopTime < 0.1f)
-        {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
-            m_pCamera->ShakeOn(300.f, 300.f, 3.f, 3.f);
-        }
-        else
-        {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        }
-    }*/
+
 }
 
 void CPlayerCamera::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    //m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    //m_fHitStopTime = 0.f;
+
 }
 
 CPlayerCamera* CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

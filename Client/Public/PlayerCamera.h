@@ -23,7 +23,9 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		PxRigidDynamic* pParentActor = { nullptr };
 	};
+
 private:
 	CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayerCamera(const CPlayerCamera& Prototype);
@@ -47,7 +49,7 @@ private:
 	float			   m_AccColliderLifeAttack2 = { 0.f };
 
 	PxRigidDynamic* m_pActor = { nullptr };
-
+	PxRigidDynamic* m_pParentActor = { nullptr };
 private:
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };

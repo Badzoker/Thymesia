@@ -70,7 +70,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //의자 옆 위치
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
 	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
-	//_vector vTestPosition = { -43.1595f, 99.282f, -142.037f, 1.f }; //서커스맵 위치
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
@@ -102,59 +101,74 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState ^= PHASE_LOCKON;
 	}
 
-	if (!m_bLockOn)	
+	if (!m_bLockOn)
 	{
-		m_iPhaseState &= ~PHASE_LOCKON;	
+		m_iPhaseState &= ~PHASE_LOCKON;
+		m_bNextStateCanPlay = true;	
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
-		if (m_iState == STATE_ATTACK_L1
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
-				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+		/* 처형 관련 작업 */
+		if ( (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL))
 		{
-			m_pStateMgr->Get_VecState().at(3)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_L2;
-		}
+			
+			m_iState = STATE_STUN_EXECUTE;	
 
-		else if (m_iState == STATE_ATTACK_L2
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
-				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
-		{
-			m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_L3;
-		}
-
-		else if (m_iState == STATE_ATTACK_L3
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
-				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
-		{
-			m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_L4;
-		}
-
-		else if (m_iState == STATE_ATTACK_L4
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
-				&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
-		{
-			m_pStateMgr->Get_VecState().at(44)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_L5;
+			m_iPhaseState = 0;	
+			m_iPhaseState |= PHASE_EXECUTION;	
+			
 		}
 
 		else
 		{
-			if (m_iState != STATE_ATTACK_L1 && m_iState != STATE_ATTACK_L2 && m_iState != STATE_ATTACK_L3 && m_iState != STATE_ATTACK_L4 && m_iState != STATE_ATTACK_L5)
+			if (m_iState == STATE_ATTACK_L1
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 			{
-				m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-				m_iState = STATE_ATTACK_L1;
+				m_pStateMgr->Get_VecState().at(3)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_L2;
 			}
 
+			else if (m_iState == STATE_ATTACK_L2
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+			{
+				m_pStateMgr->Get_VecState().at(4)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_L3;
+			}
+
+			else if (m_iState == STATE_ATTACK_L3
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+			{
+				m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_L4;
+			}
+
+			else if (m_iState == STATE_ATTACK_L4
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
+					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+			{
+				m_pStateMgr->Get_VecState().at(44)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_L5;
+			}
+
+			else
+			{
+				if (m_iState != STATE_ATTACK_L1 && m_iState != STATE_ATTACK_L2 && m_iState != STATE_ATTACK_L3 && m_iState != STATE_ATTACK_L4 && m_iState != STATE_ATTACK_L5)
+				{
+					m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+					m_iState = STATE_ATTACK_L1;
+				}
+
+			}
+
+			m_iPhaseState |= PHASE_FIGHT;
+
+			/* 페이즈 상태 해제 */
+			m_iPhaseState &= ~PHASE_DASH;
 		}
-
-		m_iPhaseState |= PHASE_FIGHT;
-
-		/* 페이즈 상태 해제 */
-		m_iPhaseState &= ~PHASE_DASH;
 	}
 
 	else if (m_pGameInstance->isMouseEnter(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
@@ -187,40 +201,48 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
 #pragma region 처형 
+	if (m_pGameInstance->isKeyEnter(DIK_4))
+	{
+		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);		
+		m_iState = STATE_STUN_EXECUTE;
+
+		m_iPhaseState = 0;
+		m_iPhaseState |= PHASE_EXECUTION;
+
+	}
+
 	if (m_pGameInstance->isKeyEnter(DIK_5))
 	{
-		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
 		m_iState = STATE_HARMOR_EXECUTION;
-		//m_iState = STATE_STUN_EXECUTE;
 
+		m_iPhaseState = 0;
 		m_iPhaseState |= PHASE_EXECUTION;
 	}
 
 
 	if (m_pGameInstance->isKeyEnter(DIK_6))
 	{
-		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
-		m_iState = STATE_LV1Villager_M_Execution;
-		//m_iState = STATE_STUN_EXECUTE;
 
+		m_iState = STATE_LV1Villager_M_Execution;
+
+		m_iPhaseState = 0;
 		m_iPhaseState |= PHASE_EXECUTION;
 	}
 
 	if (m_pGameInstance->isKeyEnter(DIK_7))
 	{
-		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
-		m_iState = STATE_Joker_Execution;
-		//m_iState = STATE_STUN_EXECUTE;
 
+		m_iState = STATE_Joker_Execution;
+
+		m_iPhaseState = 0;
 		m_iPhaseState |= PHASE_EXECUTION;
 	}
 
 	if (m_pGameInstance->isKeyEnter(DIK_8))
 	{
-		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);	
 		m_iState = STATE_Varg_Execution;
-		//m_iState = STATE_STUN_EXECUTE;
 
+		m_iPhaseState = 0;
 		m_iPhaseState |= PHASE_EXECUTION;
 	}
 
@@ -242,6 +264,9 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_L;
 		}
+
+
+		m_iPhaseState &= ~CPlayer::PHASE_PARRY;
 
 	}
 #pragma endregion	
@@ -602,10 +627,12 @@ HRESULT CPlayer::Ready_PartObjects()
 	BodyDesc.pParentNavigationCom = m_pNavigationCom;
 	BodyDesc.pParentStateMgr = m_pStateMgr;
 	BodyDesc.pParentState = &m_iState;
-	BodyDesc.pPreParentState = &m_iPreState;	
+	BodyDesc.pPreParentState = &m_iPreState;
 	BodyDesc.pParentPhaseState = &m_iPhaseState;
 	BodyDesc.pParentNextStateCan = &m_bNextStateCanPlay;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	BodyDesc.pParentExectueMonsterState = &m_iMonster_Execution_Category;
+
 	BodyDesc.fSpeedPerSec = 0.f;
 	//BodyDesc.fSpeedPerSec = 1.f;
 	BodyDesc.fRotationPerSec = 0.f;
@@ -668,6 +695,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	/* 플레이어 카메라 */
 	CPlayerCamera::WEAPON_DESC    PlayerCameraDesd{};
 
+	PlayerCameraDesd.pParentActor = m_pActor;
 	PlayerCameraDesd.pParent = this;
 	PlayerCameraDesd.pParentModel = m_pModel;
 	PlayerCameraDesd.pParentState = &m_iState;
@@ -848,6 +876,11 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 		}
 
 		m_bMove = false;
+
+		/* 몬스터 상태 받아오기 */
+		//m_iMonster_State  = _pOther->Get_Monster_State();			
+		m_iMonster_Execution_Category = _pOther->Get_Monster_Execution_Category();
+		/* =========================== */
 	}
 }
 
