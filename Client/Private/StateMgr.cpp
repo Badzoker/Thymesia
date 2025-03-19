@@ -53,6 +53,7 @@
 #include "HURTSL.h"
 #include "HURTXXLF.h"	
 #include "HURT_FallDown.h"	
+#include "HURT_FallDown_End.h"	
 #pragma endregion 
 
 

@@ -61,7 +61,7 @@ HRESULT CMainApp::Render()
 
 
 #ifdef _DEBUG
-	++m_iDrawCount;
+	/*++m_iDrawCount;
 	
 	if (1.f <= m_fTimerAcc)
 	{
@@ -70,7 +70,7 @@ HRESULT CMainApp::Render()
 		m_iDrawCount = 0;
 	}
 
-	m_pGameInstance->Render_Font(TEXT("Font_Gulim_Default"), m_szFPS, _float2(0.f, 0.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Gulim_Default"), m_szFPS, _float2(0.f, 0.f));*/
 	//SetWindowText(g_hWnd, m_szFPS);
 	
 #endif

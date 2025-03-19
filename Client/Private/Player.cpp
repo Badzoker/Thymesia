@@ -67,7 +67,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //의자 옆 위치
+	_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
 	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
 
@@ -104,21 +104,21 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	if (!m_bLockOn)
 	{
 		m_iPhaseState &= ~PHASE_LOCKON;
-		m_bNextStateCanPlay = true;	
+		m_bNextStateCanPlay = true;
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
 		/* 처형 관련 작업 */
-		if ( (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
-			&& (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1))
+		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
+			&& m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1)
 		{
-			
-			m_iState = STATE_STUN_EXECUTE;	
 
-			m_iPhaseState = 0;	
-			m_iPhaseState |= PHASE_EXECUTION;	
-			
+			m_iState = STATE_STUN_EXECUTE;
+
+			m_iPhaseState = 0;
+			m_iPhaseState |= PHASE_EXECUTION;
+
 		}
 
 		else
@@ -267,13 +267,14 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 
 
-		m_iPhaseState &= ~CPlayer::PHASE_PARRY;
+		m_iPhaseState &= ~CPlayer::PHASE_PARRY; // 3월 19일
 
 	}
 #pragma endregion	
 
 #pragma region 8방향 Run 
-	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)) // 공격 페이즈와 락온 페이즈가 아닐 때 			
+	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & PHASE_PARRY)) // // 3월 19일 공격 페이즈와 락온 페이즈가 아닐 때 			
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -351,10 +352,12 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 
 		m_iPhaseState |= PHASE_IDLE;
+
 	}
 #pragma endregion 
 #pragma region 락온모드 8방향 이동 
-	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
+	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & PHASE_PARRY))	 // 3월 19일
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
@@ -446,7 +449,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(18)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_F;
 			m_bNextStateCanPlay = false;
-			//m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨	
+
 		}
 
 		else if (m_pGameInstance->isKeyPressed(DIK_A)
@@ -455,7 +458,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(16)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_L;
 			m_bNextStateCanPlay = false;
-			//m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨 
+
 		}
 
 		else if (m_pGameInstance->isKeyPressed(DIK_D)
@@ -464,7 +467,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(17)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_R;
 			m_bNextStateCanPlay = false;
-			//m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨
+
 		}
 
 		else if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -472,7 +475,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(15)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_B;
 			m_bNextStateCanPlay = false;
-			//m_pModel->Set_Continuous_Ani(true);	 // 3월 6일 이거 추가됨
+
 		}
 
 		/* 아무 키도 안눌려있다면 IDLE 상태로 */
@@ -525,11 +528,6 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_HURT_KNOCKDOWN
 		|| m_iState == STATE_HURT_FALLDOWN
 		|| m_iState == STATE_WEAK_GETUP_F
-		|| m_iState == STATE_STUN_EXECUTE
-		|| m_iState == STATE_HARMOR_EXECUTION
-		|| m_iState == STATE_LV1Villager_M_Execution
-		|| m_iState == STATE_Joker_Execution
-		|| m_iState == STATE_Varg_Execution
 		)
 	{
 		m_bMove = true;
@@ -764,11 +762,15 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		else  // 여기다가 패링 실패의 상황도 넣어야 겠네. 
 		{
 			/* 패링 실패 시 ( 즉 맞을 때 ) */
-			m_iPhaseState &= ~CPlayer::PHASE_PARRY;
-			m_iPhaseState &= ~CPlayer::PHASE_DASH;
-			m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+			m_iPhaseState &= ~CPlayer::PHASE_PARRY;	   // 3월 19일
+			m_iPhaseState &= ~CPlayer::PHASE_DASH;	   // 3월 19일 
+			m_iPhaseState &= ~CPlayer::PHASE_FIGHT;	   // 3월 19일
+			m_iPhaseState &= ~CPlayer::PHASE_IDLE;     // 3월 19일
+			m_iPhaseState &= ~CPlayer::PHASE_DASH;     // 3월 19일
+			m_iPhaseState &= ~CPlayer::PHASE_EXECUTION;	  // 3월 19일 
 
-			m_iPhaseState |= CPlayer::PHASE_HITTED;
+
+			m_iPhaseState |= CPlayer::PHASE_HITTED;    // 3월 19일 
 
 			_float4 fMonsterLookDir = {};
 			const _float4x4* ParentMatrix = dynamic_cast<CPartObject*>(_pOther)->Get_ParentWorldMatrix();
@@ -837,8 +839,8 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(37)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(37)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-
 				break;
+
 			default:
 				m_iState = CPlayer::STATE_HurtMFR_R;  // 22		
 				/* 몬스터 공격 방향 */
@@ -853,10 +855,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			//Hit Effect
 			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
 			_vector vHitDir = { dir.x, dir.y, dir.z, 1.f };
-			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition, vHitDir);
+			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition, vHitDir);
 			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, vHitDir);
 			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
-			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING, vHitPosition, vHitDir);
 #pragma endregion
 		}
 	}

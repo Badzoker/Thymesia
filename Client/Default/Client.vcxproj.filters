@@ -607,6 +607,9 @@
     <Filter Include="03.UIObject\1.UIObjClass\UI_ButtonBackground">
       <UniqueIdentifier>{1da24ee1-2c2a-4ea0-8f1c-3f79ad91698d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\HURT_FallDown_End">
+      <UniqueIdentifier>{f2c0a84f-255e-4a9b-af99-5d4630c586ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1134,6 +1137,9 @@
     <ClInclude Include="..\Public\UI_LootNotifyBackground.h">
       <Filter>03.UIObject\1.UIObjClass\UI_LootNotifyBackground</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HURT_FallDown_End.h">
+      <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown_End</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1651,6 +1657,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LootNotifyBackground.cpp">
       <Filter>03.UIObject\1.UIObjClass\UI_LootNotifyBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HURT_FallDown_End.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown_End</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

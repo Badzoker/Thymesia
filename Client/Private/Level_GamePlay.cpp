@@ -95,11 +95,11 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isKeyEnter(DIK_TAB))
 	{
-		if (m_bStopMenuOpen)
+		if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")))
 		{
-			if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")))
-
+			if (m_bStopMenuOpen)
 			{
+
 				m_bStopMenuOpen = false;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), false);
@@ -117,6 +117,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 			}
 		}
+		
 	}
 	//}
 	//if (m_pGameInstance->isKeyEnter(DIK_E))
