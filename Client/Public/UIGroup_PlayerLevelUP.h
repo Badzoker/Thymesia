@@ -95,6 +95,7 @@ private:
 
 public:
 	HRESULT Ready_UIObject();
+	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 	void Setting_Default_Status_Value(); // 최초, 나중에 플레이어가 초기화 하는 경우 설정되는 값
 
 private:

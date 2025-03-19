@@ -361,9 +361,113 @@ void CUIGroup_PlayerScreen::UI_Direction_Item_Nudge()
 
 HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
 {
-	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
- 	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
+	/*m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
+ 	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");*/
 
+
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
+{
+	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
+	_char   szFileName[MAX_PATH] = "";
+
+	WideCharToMultiByte(CP_ACP, 0, szSceneName, (_int)(wcslen(szSceneName)), szFileName, MAX_PATH, nullptr, nullptr);
+
+	_char   szEXT[MAX_PATH] = ".dat";
+
+	_char   szFullPath[MAX_PATH] = "";
+	strcat_s(szFullPath, szDir);
+	strcat_s(szFullPath, szFileName);
+	strcat_s(szFullPath, szEXT);
+
+	_tchar  szLastPath[MAX_PATH] = {};
+	MultiByteToWideChar(CP_ACP, 0, szFullPath, (_int)strlen(szFullPath), szLastPath, MAX_PATH);
+
+
+	HANDLE		hFile = CreateFile(szLastPath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, szLastPath, TEXT("Fail"), MB_OK);
+		return S_OK;
+	}
+
+	DWORD	dwByte(0);
+	CUIObject::UIOBJECT_DESC Desc{};
+	_float3  fPos = {};
+	_float2  fSize = {};
+	_float3  fRotation = {};
+	_uint  iLen = {};
+	_wstring szFontName = {};
+	_wstring szContentText = {};
+	_wstring szSaveName = {};
+	_uint iUIType = {};
+	_uint iShaderNum = {};
+	_uint iTextureNum = {};
+	_uint iGroupID = {};
+
+	while (true)
+	{
+		ReadFile(hFile, &fPos, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &fSize, sizeof(_float2), &dwByte, nullptr);
+		ReadFile(hFile, &fRotation, sizeof(_float3), &dwByte, nullptr);
+
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szSaveName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
+		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
+		{
+			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+			szFontName.resize(iLen);
+			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+			szContentText.resize(iLen);
+			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+
+		}
+
+		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &iGroupID, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+
+		Desc.fNear = 0.f;
+		Desc.fFar = 1.f;
+
+		Desc.fX = fPos.x;
+		Desc.fY = fPos.y;
+		Desc.fZ = fPos.z;
+		Desc.fSizeX = fSize.x;
+		Desc.fSizeY = fSize.y;
+
+		Desc.strFontName = szFontName;
+		Desc.strContent = szContentText;
+
+		Desc.strProtoName = szSaveName;
+		Desc.iShaderPassNum = iShaderNum;
+		Desc.iTexNumber = iTextureNum;
+		Desc.iGroupID = iGroupID;
+		Desc.fRotation = fRotation;
+		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
+			return E_FAIL;
+
+	}
+
+	CloseHandle(hFile);
+
+	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
 	return S_OK;
 }
 

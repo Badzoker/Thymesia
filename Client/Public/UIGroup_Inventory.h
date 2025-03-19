@@ -26,6 +26,7 @@ public:
 
 public:
 	HRESULT Ready_UIObject(); // 인벤용 ui 로드
+	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 
 public:
 	void Ready_MiniView_ItemInfo(); // 반고정 내용 바뀌는 텍스트들 그냥 편하게 가지고 있기
