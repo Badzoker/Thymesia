@@ -117,6 +117,7 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
         m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
         m_pInstanceVertices[i].vTranslation = vTranslation;
         m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
+        m_pInstanceVertices[i].vLifeTime.y = 0.f;
         m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
         m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
         m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
