@@ -95,6 +95,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 		if (m_bStopMenuOpen)
 		{
 			m_bStopMenuOpen = false;
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), true);
@@ -103,6 +104,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 		else
 		{
 			m_bStopMenuOpen = true;
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), false);

@@ -189,6 +189,17 @@ void CStaticObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
 }
 void CStaticObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+	{
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 끄기
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+		
+	}
+
 }
 void CStaticObject::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {

@@ -223,7 +223,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_KEY2:
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
-        if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
+        if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
             { 
                 if (0 == dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().size())
                 {

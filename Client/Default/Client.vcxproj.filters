@@ -169,9 +169,6 @@
     <Filter Include="03.UIObject\1.UIObjClass\UI_BlackBar">
       <UniqueIdentifier>{0edba770-596e-4f5c-b7a6-99e4b5d20fc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\UI_ButtonBackground">
-      <UniqueIdentifier>{1da24ee1-2c2a-4ea0-8f1c-3f79ad91698d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\UI_ButtonHighlight">
       <UniqueIdentifier>{b284783b-bc96-4e7e-b501-22277dd1d693}</UniqueIdentifier>
     </Filter>
@@ -606,6 +603,9 @@
     </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\UI_LootNotifyBackground">
       <UniqueIdentifier>{7ec6a342-df91-4e62-82d0-72b4ad8bc7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_ButtonBackground">
+      <UniqueIdentifier>{1da24ee1-2c2a-4ea0-8f1c-3f79ad91698d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

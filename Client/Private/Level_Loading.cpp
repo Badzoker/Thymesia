@@ -126,7 +126,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				switch (m_eNextLevelID)
 				{
 				case LEVEL_GAMEPLAY:
-					
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+
 					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOADING, TEXT("Layer_Loading"), false);
 					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), false);
 					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_GamePlay::Create(m_pDevice, m_pContext));

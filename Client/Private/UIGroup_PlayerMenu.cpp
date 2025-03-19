@@ -3,6 +3,7 @@
 #include "UI_Scene.h"
 #include "GameInstance.h"
 #include "UI_ButtonHighlight.h"
+#include "UI_KeyBox_Long.h"
 
 CUIGroup_PlayerMenu::CUIGroup_PlayerMenu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -35,21 +36,28 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 void CUIGroup_PlayerMenu::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+	if (m_bRenderOpen)
+	{
+	}
+
 }
 
 void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-	if (m_bRenderOpen)
+	if (m_bRenderOpen)	
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+		MenuButton_Check();
 	}
 }
 
 void CUIGroup_PlayerMenu::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	if (m_bRenderOpen)
+	{
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	}
 }
 
 HRESULT CUIGroup_PlayerMenu::Render()
@@ -66,40 +74,53 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 
 	for (auto& Button : m_pMyScene->Find_UI_Button())
 	{
-		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+		if (Button->Get_Mouse_Select_OnOff())
 		{
-			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기
+			if (100 == Button->Get_UI_GroupID()) // 레벨업
 			{
-				m_pGameInstance->Set_NextLevel_Open(true);
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerLevelUP"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
+			}
+			if (101 == Button->Get_UI_GroupID()) // 특성 해제
+			{
+			}
+			if (102 == Button->Get_UI_GroupID()) // 역병무기
+			{
+			}
+			if (103 == Button->Get_UI_GroupID()) // 물약
+			{
+			}
+			if (104 == Button->Get_UI_GroupID()) // 잊혀진 깃털 사용
+			{
+			}
+			if (105 == Button->Get_UI_GroupID()) //기억 되살리기 중단
+			{
+			}
+			if (106 == Button->Get_UI_GroupID()) //게임 재개
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+
+			}
+			if (120 == Button->Get_UI_GroupID()) //게임 재개
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_GAMEPLAY, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+
 			}
 
-			if (2 == Button->Get_UI_GroupID()) // 새게임
-			{
-
-			}
-
-			if (3 == Button->Get_UI_GroupID()) // 게임 불러오기
-			{
-
-			}
-
-			if (4 == Button->Get_UI_GroupID()) // 설정
-			{
-
-			}
-
-			if (5 == Button->Get_UI_GroupID()) // 제작진
-			{
-
-			}
-
-			if (6 == Button->Get_UI_GroupID()) // 종료
-			{
-				DestroyWindow(g_hWnd);
-			}
 		}
-
-
 	}
 }
 
