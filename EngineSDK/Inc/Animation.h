@@ -32,6 +32,9 @@ public:
 
 	void Set_StartOffSetTrackPosition(_float _fOffsetTrackValue) { m_fSetStartOffSetTrackPosition = _fOffsetTrackValue; }
 
+	/* 3월 1일 수정 사항 */
+	_float Get_StartOffSetTrackPosition() { return m_fSetStartOffSetTrackPosition; }		
+
 
 	vector<ANIMEVENT>* Get_vecEvent() { return &m_vecAnimFrameEvent; }
 

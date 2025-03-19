@@ -202,54 +202,6 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
-#pragma region 처형 
-	if (m_pGameInstance->isKeyEnter(DIK_4))
-	{
-		//m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, fTimeDelta);		
-		m_iState = STATE_STUN_EXECUTE;
-
-		m_iPhaseState = 0;
-		m_iPhaseState |= PHASE_EXECUTION;
-
-	}
-
-	if (m_pGameInstance->isKeyEnter(DIK_5))
-	{
-		m_iState = STATE_HARMOR_EXECUTION;
-
-		m_iPhaseState = 0;
-		m_iPhaseState |= PHASE_EXECUTION;
-	}
-
-
-	if (m_pGameInstance->isKeyEnter(DIK_6))
-	{
-
-		m_iState = STATE_LV1Villager_M_Execution;
-
-		m_iPhaseState = 0;
-		m_iPhaseState |= PHASE_EXECUTION;
-	}
-
-	if (m_pGameInstance->isKeyEnter(DIK_7))
-	{
-
-		m_iState = STATE_Joker_Execution;
-
-		m_iPhaseState = 0;
-		m_iPhaseState |= PHASE_EXECUTION;
-	}
-
-	if (m_pGameInstance->isKeyEnter(DIK_8))
-	{
-		m_iState = STATE_Varg_Execution;
-
-		m_iPhaseState = 0;
-		m_iPhaseState |= PHASE_EXECUTION;
-	}
-
-#pragma endregion 
-
 #pragma region 패링	
 	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
@@ -268,7 +220,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 
 
-		m_iPhaseState &= ~CPlayer::PHASE_PARRY; // 3월 19일
+		m_iPhaseState &= ~CPlayer::PHASE_PARRY; // 3월 19일	
 
 	}
 #pragma endregion	
@@ -332,7 +284,11 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 #pragma endregion 
 
-		else if (((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000) || (GetKeyState('A') & 0x8000) || (GetKeyState('D') & 0x8000))
+		else if (
+			((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+				|| (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+				|| (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
+				|| (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))
 			&& !(m_iPhaseState & PHASE_DASH))
 		{
 			m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -361,27 +317,28 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & PHASE_PARRY))	 // 3월 19일
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
-		if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
-			|| (GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000)
-			|| (GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000)
-			|| (GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000)
-			|| (GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000)
-			|| (GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000))
+		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
+			|| ((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))  // WD
+			|| ((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))  // SA
+			|| ((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))  // SD 
+			|| ((m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))  // AD 
+			|| ((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)))
+			)// WS
 		{
-			if ((GetKeyState('W') & 0x8000) && (GetKeyState('A') & 0x8000)
+			if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))) //WA
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(10)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_FL;
 			}
-			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('D') & 0x8000)
+			else if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))) //WD
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(9)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_FR;
 			}
 
-			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('A') & 0x8000)
+			else if (((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))) //SA
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -389,7 +346,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 
 
-			else if ((GetKeyState('S') & 0x8000) && (GetKeyState('D') & 0x8000)
+			else if (((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))) //SD
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(11)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -397,14 +354,14 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 
 
-			else if ((GetKeyState('W') & 0x8000) && (GetKeyState('S') & 0x8000)
+			else if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))) //WS
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
 			}
 
-			else if ((GetKeyState('A') & 0x8000) && (GetKeyState('D') & 0x8000)
+			else if (((m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))) //AD
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -480,17 +437,17 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 
 		/* 아무 키도 안눌려있다면 IDLE 상태로 */
-		if (!(GetKeyState('W') & 0x8000)
-			&& !(GetKeyState('S') & 0x8000)
-			&& !(GetKeyState('A') & 0x8000)
-			&& !(GetKeyState('D') & 0x8000)
+		if (!(m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))  // W키	
+			&& !(m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) // S키	
+			&& !(m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)) // A키	
+			&& !(m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)) // D키	
 			&& m_bNextStateCanPlay
 			&& (m_iState != STATE_PARRY_L)
 			&& (m_iState != STATE_PARRY_R)
 			&& (m_iState != STATE_PARRY_DEFLECT_L)
 			&& (m_iState != STATE_PARRY_DEFLECT_L_UP)
 			&& (m_iState != STATE_PARRY_DEFLECT_R)
-			&& (m_iState != STATE_PARRY_DEFLECT_R_UP)
+			&& (m_iState != STATE_PARRY_DEFLECT_R_UP)	
 			)
 		{
 			m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -529,6 +486,11 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_HURT_KNOCKDOWN
 		|| m_iState == STATE_HURT_FALLDOWN
 		|| m_iState == STATE_WEAK_GETUP_F
+		|| m_iState == STATE_STUN_EXECUTE	
+		|| m_iState == STATE_HARMOR_EXECUTION	
+		|| m_iState == STATE_LV1Villager_M_Execution	
+		|| m_iState == STATE_Joker_Execution	
+		|| m_iState == STATE_Varg_Execution	
 		)
 	{
 		m_bMove = true;

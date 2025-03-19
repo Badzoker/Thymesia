@@ -168,6 +168,34 @@ void CChannel::Lerp_TransformationMatrix(const vector<class CBone*>& Bones, CCha
 
 }
 
+void CChannel::Lerp_TransformationMatrix_Offset(const vector<class CBone*>& Bones, CChannel* pNextChannel, _float LerpTime, _float LerpTimeAcc, _uint* pCurrentKeyFrameIndex, _float OffSet)
+{
+    /* 3월 18일 여기서 부터 다시 하기 */
+    _vector   vScale, vRotation, vTranslation;
+
+    _float		fRatio = LerpTimeAcc / LerpTime;
+
+
+
+    _uint iNextIndex = 0;
+
+    // OffSet에 맞는 키프레임 찾기	
+    while (OffSet >= pNextChannel->m_Keyframes[iNextIndex].fTrackPosition)
+    {
+        ++iNextIndex;
+    }
+
+    /* 선형보간*/
+    vScale = XMVectorLerp(XMLoadFloat3(&m_Keyframes[*pCurrentKeyFrameIndex].vScale), XMLoadFloat3(&pNextChannel->m_Keyframes.at(iNextIndex).vScale), fRatio);
+    vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_Keyframes[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&pNextChannel->m_Keyframes.at(iNextIndex).vRotation), fRatio);
+    vTranslation = XMVectorLerp(XMLoadFloat3(&m_Keyframes[*pCurrentKeyFrameIndex].vTranslation), XMLoadFloat3(&pNextChannel->m_Keyframes.at(iNextIndex).vTranslation), fRatio);
+    vTranslation = XMVectorSetW(vTranslation, 1.f);
+
+    _matrix  TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+    Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+}
+
 void CChannel::Reset_TransformationMatrix(const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex)
 {
     *pCurrentKeyFrameIndex = 0;

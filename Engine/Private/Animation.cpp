@@ -155,11 +155,25 @@ _bool CAnimation::Lerp_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimati
     if (pNextAnimation && m_LerpTimeAcc <= m_LerpTime)
     {
         _uint iChannelIndex = 0;
-        for (auto& pChannel : m_Channels)
+
+
+        if (pNextAnimation->Get_StartOffSetTrackPosition() > 0.f)
         {
-            pChannel->Lerp_TransformationMatrix(Bones, pNextAnimation->m_Channels[iChannelIndex], m_LerpTime, m_LerpTimeAcc, &CurrentKeyFrameIndices[iChannelIndex]);
-            iChannelIndex++;
+            for (auto& pChannel : m_Channels)
+            {
+                pChannel->Lerp_TransformationMatrix_Offset(Bones, pNextAnimation->m_Channels[iChannelIndex], m_LerpTime, m_LerpTimeAcc, &CurrentKeyFrameIndices[iChannelIndex], pNextAnimation->Get_StartOffSetTrackPosition());
+                iChannelIndex++;
+            }
         }
+        else
+        {
+            for (auto& pChannel : m_Channels)
+            {
+                pChannel->Lerp_TransformationMatrix(Bones, pNextAnimation->m_Channels[iChannelIndex], m_LerpTime, m_LerpTimeAcc, &CurrentKeyFrameIndices[iChannelIndex]);
+                iChannelIndex++;
+            }
+        }
+
         return false;
     }
 
