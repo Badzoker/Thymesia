@@ -96,7 +96,7 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			if (104 == Button->Get_UI_GroupID()) // 잊혀진 깃털 사용
 			{
 			}
-			if (105 == Button->Get_UI_GroupID()) //기억 되살리기 중단
+			if (105 == Button->Get_UI_GroupID()) //기억 되살리기 중단	
 			{
 			}
 			if (106 == Button->Get_UI_GroupID()) //게임 재개
