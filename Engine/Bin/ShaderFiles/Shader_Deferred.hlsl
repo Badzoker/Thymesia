@@ -687,7 +687,7 @@ PS_OUT PS_BLOOM_X(PS_IN In)
         Out.vColor.rgb += g_fWeights_Bloom[i + 5] * HSVtoRGB(hsv);
     }
     
-    Out.vColor /= 0.4f;
+    Out.vColor /= 1.2f;
     return Out;
 }
 
@@ -710,7 +710,7 @@ PS_OUT PS_BLOOM_Y(PS_IN In)
         Out.vColor.rgb += g_fWeights_Bloom[i + 5] * HSVtoRGB(hsv);
     }
 
-    Out.vColor /= 0.4f;
+    Out.vColor /= 1.2f;
     return Out;
 }
 
