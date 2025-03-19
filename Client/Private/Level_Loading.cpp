@@ -33,14 +33,14 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 
 		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
 
-		/*if (FAILED(Ready_Layer_Fade(TEXT("Layer_Loading"))))
+		if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
 			return E_FAIL;
 
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
-		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);*/
+		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
 		
 	}
-	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.2f);
+	//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.2f);
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
 	if (nullptr == m_pLoader)

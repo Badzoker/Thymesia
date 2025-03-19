@@ -51,6 +51,17 @@ namespace Engine
 		_float4     fTextColor;         // 텍스트 색상 저장하자!
 	};
 
+	struct UI_Item //아이템 ui 정보 저장용
+	{
+		//_uint ItemID = {};
+		ITEM_TYPE ItemType = {};
+		_uint ItemIconNum = {};
+		_tchar* ItemName = {};
+		_tchar* ItemDesc = {};
+		_uint ItemCount = {};
+	};
+
+
 	struct ENGINE_DLL VTXPOS	
 	{
 		XMFLOAT3  vPosition; 

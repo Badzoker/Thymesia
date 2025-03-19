@@ -34,6 +34,7 @@ public:
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
 	CUI_Scene* m_pMyScene = {};
+	_bool bUIChange = { true };
 
 public:
 	static CUIGroup_GameIntro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

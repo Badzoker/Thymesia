@@ -137,6 +137,12 @@ HRESULT CUI_Manager::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bO
 	return pScene->Set_All_UIObject_Condition_Open(bOpen);
 }
 
+void CUI_Manager::Find_TextBox_Monster_Memory(CUI_Scene* pScene,_uint iCount)
+{
+	return pScene->Find_TextBox_Monster_Memory(iCount);
+
+}
+
 HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
@@ -226,7 +232,7 @@ HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint 
 		Desc.iTexNumber = iTextureNum;
 		Desc.iGroupID = iGroupID;
 		Desc.fRotation = fRotation;
-		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
+ 		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
 			return E_FAIL;
 
 	}

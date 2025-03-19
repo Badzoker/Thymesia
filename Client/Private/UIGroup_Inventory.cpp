@@ -13,6 +13,7 @@
 #include "UI_SquareFrame_Hover.h"
 #include "UI_UnderLine.h"
 #include "UI_Arrow.h"
+#include "UIGroup_PlayerScreen.h"
 
 #include "Player.h"
 
@@ -50,10 +51,12 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
-
-
-	Ready_MiniView_ItemInfo();
 	
+	m_pGroupPlayerScreen = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), "PlayerScreen");
+
+
+	Ready_MiniView_ItemInfo(); // 아이템 정보 띄우는 부분 상시 바뀌니깐 별도로 저장해서 사용
+	Set_Item_Default_Info(); // 아이템 ui 정보 연결을 위해 정보를 가진 벡터 컨테이너 하나 준비
 
 	return S_OK;
 }
@@ -71,7 +74,7 @@ void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 	}
 	else
 	{
-		m_bItemUsePopOpen = false;
+		m_bItemUsePopOpen = false; // 아이템 사용/버리기 팝업 off
 		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemUsePopUp, false);
 		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, false);
@@ -85,33 +88,38 @@ void CUIGroup_Inventory::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
+	Change_UI_Item_Tab(); // 아이템 탭안의 아이템 종류 탭을 변경 시 마다 슬롯 정보 변경
+
+
 	if (m_bRenderOpen)
 	{
-		if (!m_bItemUsePopOpen)
+		if (!m_bItemUsePopOpen)// 아이템 사용/ 버리기 팝업이 켜져 있지 않다면
 		{
-			Update_Get_ItemMgr();
-			Update_ItemInfo();
-			Change_UI_Item_Tab();
+			Update_Get_ItemMgr(); //아이템 매니저가 갖고 있는 보유 아이템 목록을 가져옴
+			Update_ItemInfo(); // 보유 아이템 타입 정보를 토대로 아이템의 부가적인 설명들 채워넣기
 
-			if (!m_bItemTypePopOpen)
+			if (!m_bItemTypePopOpen) // 아이템 타입 팝업이 켜져 있지 않다면
 			{
-				if (m_bCommonOpen)
-					Slot_Button_MouseOn_Check(m_InvenItemCommon);
-				if (m_bSkillOpen)
+				if (m_bCommonOpen) // 아이템 탭 켜져있을 때
+					Slot_Button_MouseOn_Check(m_InvenItemCommon); // 슬롯을 마우스로 가리키는지
+				if (m_bSkillOpen) // 스킬 탭 켜져 있을 때
 					Slot_Button_MouseOn_Check(m_InvenItemSkill);
 			}
 			// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
 
+			/* 아이템 타입 팝업은 모달이기에 여기서 슬롯 버튼 누르기 설정을 하고 있음*/
 			if (m_bCommonOpen)
-				Slot_Button_Select_Check(m_InvenItemCommon);
+				Slot_Button_Select_Check(m_InvenItemCommon); // 슬롯을 마우스로 누르는지
 			if (m_bSkillOpen)
 				Slot_Button_Select_Check(m_InvenItemSkill);
-			ItemType_PopUP_Button();
+			
+			if (m_bItemTypePopOpen)
+				ItemType_PopUP_Button(); // 아이템 타입 팝업이 켜져 있다면 버튼 누르기 활성화
 		}
 		else
 		{
-			if (1 == m_iPopUpOpenNum)
-				ItemUse_PopUP_Use_Button();
+			if (1 == m_iPopUpOpenNum)// 아이템 사용 팝업이 켜져 있다면 아이템 사용 함수 체크
+				ItemUse_PopUP_Use_Button(); // 아이템 버리기 팝업이 켜져 있다면 아이템 버리기 함수 체크
 			else if (2 == m_iPopUpOpenNum)
 				ItemUse_PopUP_Drop_Button();
 		}
@@ -588,6 +596,9 @@ void CUIGroup_Inventory::ItemType_PopUP_Button()
 				m_iPopUpOpenNum = 2;
 				ItemUse_PopUP_Open();
 
+
+
+
 			}
 		}
 	}
@@ -791,16 +802,16 @@ void CUIGroup_Inventory::ItemUse_PopUP_Drop_Button()
 			{
 				if (m_pGameInstance->Use_Item(m_CurrentItemInfo.ItemType, m_iItemStatCount)) // 아이템이 저장되어 있는 컨테이너에서 Item_type이 맞는 녀석의 개수를 빼기
 				{
-					for (auto It = m_InvenItemCommon.begin(); It != m_InvenItemCommon.end();)
-					{
-						if (It->ItemType == m_CurrentItemInfo.ItemType)
-							It = m_InvenItemCommon.erase(It);
-						else
-							++It;
-					}
+
+					Update_Get_ItemMgr(); // 컨테이너에서 정보 뺐으니깐 인벤토리 슬롯 정보 다시 업데이트
+
+					//dynamic_cast<CUIGroup_PlayerScreen*>(m_pGroupPlayerScreen)->Set_m_bDrop(true);
 				}
 
-				m_mapDropItemInfo.emplace(m_CurrentItemInfo.ItemType, m_iItemStatCount);
+
+				UI_Item tagDrop = m_CurrentItemInfo;
+				tagDrop.ItemCount = m_iItemStatCount;
+				m_mapDropItemInfo.emplace(m_CurrentItemInfo.ItemType, tagDrop); // 버릴 아이템 정보 전달용
 				
 				m_pGameInstance->Drop_Item(m_CurrentItemInfo.ItemType, dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION), m_pPlayer);
 
@@ -1065,5 +1076,48 @@ CGameObject* CUIGroup_Inventory::Clone(void* pArg)
 void CUIGroup_Inventory::Free()
 {
 	__super::Free();
+}
+
+void CUIGroup_Inventory::Set_Item_Default_Info()
+{
+	UI_Item SaveData = {};
+	SaveData.ItemType = ITEM_TYPE::ITEM_KEY1;
+	SaveData.ItemIconNum = 1;
+	SaveData.ItemName = L"열쇠A";
+	SaveData.ItemDesc = L"열쇠 입니다.";
+	SaveData.ItemCount = 0;
+
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+	SaveData.ItemType = ITEM_TYPE::ITEM_KEY2;
+	SaveData.ItemIconNum = 3;
+	SaveData.ItemName = L"열쇠B";
+	SaveData.ItemDesc = L"열쇠 입니다.";
+	SaveData.ItemCount = 0;
+
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+	SaveData.ItemType = ITEM_TYPE::ITEM_MEMORY;
+	SaveData.ItemIconNum = 5;
+	SaveData.ItemName = L"기억의 모음집";
+	SaveData.ItemDesc = L"이 아이템을 사용하면 기억의 파편을 획득합니다.";
+	SaveData.ItemCount = 0;
+
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+	SaveData.ItemType = ITEM_TYPE::ITEM_FORGIVEN;
+	SaveData.ItemIconNum = 4;
+	SaveData.ItemName = L"잊혀진 깃털";
+	SaveData.ItemDesc = L"잊혀진 깃털을 사용하면, 아이세미와 대화하거나 신호기를 사용하여\n코르버스의 레벨과 상태를 초기화할 수 있습니다.";
+	SaveData.ItemCount = 0;
+
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+
+	SaveData.ItemType = ITEM_TYPE::ITEM_SKILLPIECE;
+	SaveData.ItemIconNum = 7;
+	SaveData.ItemName = L"단도";
+	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
+	SaveData.ItemCount = 0;
 }
 

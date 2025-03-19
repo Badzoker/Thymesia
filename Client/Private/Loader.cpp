@@ -156,6 +156,7 @@
 #include "UI_GameLogoImage.h"
 #include "UI_LoadingScreen.h"
 #include "UI_LoadingIcon.h"
+#include "UI_LootNotifyBackground.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -746,6 +747,16 @@ HRESULT CLoader::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UI_LoadingIcon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LoadingIcon"),
 		CUI_LoadingIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_UI_LootNotifyBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LootNotifyBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_LootNotifyBackground_0%d.dds"), 4))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_LootNotifyBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LootNotifyBackground"),
+		CUI_LootNotifyBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

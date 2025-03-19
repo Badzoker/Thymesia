@@ -34,6 +34,7 @@ public:
 	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene,_bool bOpen); // A라는 씬에 있는 모든 UIObj의 랜더(그리기)를 켜고 끄기
 	_bool Get_Scene_Render_State(CUI_Scene* pScene); // A라는 씬 자체가 그려지고 있는지 확인
 	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen); // UIObj를 그리고 있지만 화면에 끄고 켜고를 설정
+	void Find_TextBox_Monster_Memory(CUI_Scene* pScene,_uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
 
 
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName); // UI 오브젝트 데이터 로드

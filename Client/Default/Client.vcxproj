@@ -311,6 +311,7 @@
     <ClInclude Include="..\Public\UI_LoadingIcon.h" />
     <ClInclude Include="..\Public\UI_LoadingScreen.h" />
     <ClInclude Include="..\Public\UI_LockedIcon.h" />
+    <ClInclude Include="..\Public\UI_LootNotifyBackground.h" />
     <ClInclude Include="..\Public\UI_MemoryShardsIcon.h" />
     <ClInclude Include="..\Public\UI_MouseCursor.h" />
     <ClInclude Include="..\Public\UI_MPBar1_Border.h" />
@@ -486,6 +487,7 @@
     <ClCompile Include="..\Private\UI_LoadingIcon.cpp" />
     <ClCompile Include="..\Private\UI_LoadingScreen.cpp" />
     <ClCompile Include="..\Private\UI_LockedIcon.cpp" />
+    <ClCompile Include="..\Private\UI_LootNotifyBackground.cpp" />
     <ClCompile Include="..\Private\UI_MemoryShardsIcon.cpp" />
     <ClCompile Include="..\Private\UI_MouseCursor.cpp" />
     <ClCompile Include="..\Private\UI_MPBar1_Border.cpp" />
