@@ -21,9 +21,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	
-	m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.8f);
+	m_pGameInstance->PlayBGM(L"LogoSound2.ogg", 0.8f);
 
-
+	
 
 	return S_OK;
 }
@@ -45,7 +45,10 @@ void CLevel_Logo::Update(_float fTimeDelta)
 			m_fRenderTime = 0;
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
+			m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+			m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.8f);
 			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY, 6, false));
+			
 		}
 	}
 	
