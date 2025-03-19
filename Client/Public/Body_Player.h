@@ -69,6 +69,7 @@ class CBody_Player final : public CPartObject
 		STATE_HURT_KNOCKBACK,
 		STATE_HURT_KNOCKDOWN,
 		STATE_HURT_FALLDOWN,
+		STATE_HURT_FALLDOWN_END,
 		STATE_WEAK_GETUP_F,
 		/*-----------------*/
 
@@ -188,6 +189,7 @@ public:
 	void   STATE_HURT_KNOCKBACK_Method();
 	void   STATE_HURT_KNOCKDOWN_Method();
 	void   STATE_HURT_FALLDOWN_Method();
+	void   STATE_HURT_FALLDOWN_END_Method();	
 	void   STATE_WEAK_GETUP_F_Method();
 	/*-----------------*/
 

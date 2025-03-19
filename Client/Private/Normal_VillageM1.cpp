@@ -585,8 +585,11 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_bCan_Move_Anim = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_STUN;
+    pObject->m_pModelCom->Set_Continuous_Ani(true); 
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
 }
 
 void CNormal_VillageM1::Stun_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)

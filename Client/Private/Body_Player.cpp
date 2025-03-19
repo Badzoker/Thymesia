@@ -167,6 +167,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case STATE_HURT_FALLDOWN:
         STATE_HURT_FALLDOWN_Method();
         break;
+    case STATE_HURT_FALLDOWN_END:   
+        STATE_HURT_FALLDOWN_END_Method();   
+        break;  
     case STATE_WEAK_GETUP_F:
         STATE_WEAK_GETUP_F_Method();
         break;
@@ -1532,6 +1535,11 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     }
 
 
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가 
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
     {
         *m_pParentState = STATE_IDLE;
@@ -1572,6 +1580,11 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
         m_bParryStopOnOff = true;
     }
 
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가   
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+    }   
+
 
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
@@ -1584,6 +1597,12 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
     m_pModelCom->SetUp_Animation(59, false);
     m_iRenderState = STATE_NORMAL;
 
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가 
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
     {
         *m_pParentState = STATE_IDLE;
@@ -1594,6 +1613,12 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 {
     m_pModelCom->SetUp_Animation(58, false);
     m_iRenderState = STATE_NORMAL;
+
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가   
+    {   
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+    }   
 
     if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
     {
@@ -1741,12 +1766,31 @@ void CBody_Player::STATE_HURT_FALLDOWN_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(27)->isAniMationFinish())
     {
+        /* *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+         *m_pParentNextStateCan = true;*/
+
+        *m_pParentState = STATE_HURT_FALLDOWN_END;
+
+        //*m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+    }
+}
+
+void CBody_Player::STATE_HURT_FALLDOWN_END_Method()
+{
+    m_pModelCom->SetUp_Animation(28, false);
+    m_iRenderState = STATE_NORMAL;  
+
+    if (m_pModelCom->Get_VecAnimation().at(28)->isAniMationFinish())    
+    {   
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
 }
 

@@ -105,8 +105,8 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	_fvector CameraPos =
 	{
 		 XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.2f, // 머리 높이 보정
-		 XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.5f, // 머리 높이 보정
+		 XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f,
 		 1.0f
 	};
 
@@ -159,6 +159,9 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
+
+
+
 	m_fTimeDelta = fTimeDelta;
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB))
@@ -189,22 +192,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 	}
 
-	/* 컷신 관련 */
-	if (m_pGameInstance->isKeyEnter(DIK_Y))
-	{
-		//m_bCamera_Cut_Scene_OnOff = true;
-		//m_pCurWorldMatrix = *m_pTransformCom->Get_WorldMatrix_Ptr();	
-		//m_bCutSceneFirst = true;	
-		//m_bGetBackCamPos = true; 
 
-		//m_bCutSceneFristLerpEnd = false;	 // 이거 보간 속도랑 캐릭터 애니메이션 진행속도 간격 차이 발생해서 안됨. 
-	}
-
-	if (m_bCamera_Cut_Scene_OnOff)
-	{
-		/* 여기서 player camera 작동 시키면 됨 */
-		//Camera_Cut_Scene_Activate(TEXT("Test"));
-	}
 	/* ======================================= */
 
 	// 현재 카메라가 갑자기 멀리가는 경향이 있음 이거 보간해야함 
@@ -220,7 +208,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		// 플레이어의 충돌체를 기준으로할까.	
 		m_vPlayerHeadPos = XMVectorSet(
 			XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-			XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	
+			XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	 // 3월 19일 수정
 			XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 			1.0f
 		);
