@@ -70,6 +70,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	_vector vTestPosition = { 85.84f, 5.3999f, -118.63f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC ¿· À§Ä¡
 	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡
+	//_vector vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; //¼­Ä¿½º¸Ê À§Ä¡
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC ¿· À§Ä¡
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
