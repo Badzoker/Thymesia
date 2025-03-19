@@ -243,7 +243,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(98);
 	//Load_Objects(129); 3/14일 전까지
 	//Load_Objects(134); 3/14일
-	Load_Objects(135);
+	//Load_Objects(135);
+	Load_Objects(300);
+
+	//Load_Objects(300); // 서커스 보스 맵(네비 필요)
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
 	Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
@@ -637,6 +640,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.iPassIndex, sizeof(_uint), &dwByte, nullptr);
 
 		Desc.ObjectName = szLoadName;
 
@@ -717,6 +721,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		_char szLoadName[MAX_PATH] = {};
 
 		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
+		ReadFile(hFile, &Desc.iPassIndex, sizeof(_uint), &dwByte, nullptr);
 		Desc.ObjectName = szLoadName;
 
 		_uint iInstanceCount = 0;

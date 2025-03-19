@@ -33,6 +33,8 @@ public:
         vector<VTX_MODEL_INSTANCE>  vecStructModelInstance;
         _int                        iBoxSize = {  };
         vector<_int>                vecBoxSize = {};
+
+        _uint                       iPassIndex = { 0 };
     };
 
 public:
@@ -87,6 +89,8 @@ protected:
     vector<_int>        m_vecBoxSize = {};
 
     vector<CCollider*>      m_vecColliderCom;
+
+    _uint               m_iPassIndex = { 0 };
 
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;

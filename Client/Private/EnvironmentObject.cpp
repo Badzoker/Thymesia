@@ -16,6 +16,7 @@ HRESULT CEnvironmentObject::Initialize(void* _pArg)
     CEnvironmentObject::ENVIRONMENT_OBJECT_DESC* pDesc = static_cast<CEnvironmentObject::ENVIRONMENT_OBJECT_DESC*>(_pArg);
 
     m_fFrustumRadius = pDesc->fFrustumRadius;
+	m_iPassIndex = pDesc->iPassIndex;
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;

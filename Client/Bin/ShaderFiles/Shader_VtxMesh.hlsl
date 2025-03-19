@@ -717,7 +717,18 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MONSTER_WEAPON_DISSOLVE();
     }
 
-    pass ObjectRimLight // 10
+    pass CullNonePass // 10
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass ObjectRimLight // 11
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

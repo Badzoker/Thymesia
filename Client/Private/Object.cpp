@@ -18,6 +18,7 @@ HRESULT CObject::Initialize(void* pArg)
 	CObject::OBJECT_DESC* pDesc = static_cast<CObject::OBJECT_DESC*>(pArg);
 
 	m_fFrustumRadius = pDesc->fFrustumRadius;
+	m_iPassIndex = pDesc->iPassIndex;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

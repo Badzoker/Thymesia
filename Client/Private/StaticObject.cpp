@@ -102,7 +102,7 @@ HRESULT CStaticObject::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(m_iPassIndex);
 		m_pModelCom->Render(i);
 	}
 
@@ -127,7 +127,7 @@ HRESULT CStaticObject::Render_Glow()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fObjectAlpha", &m_fAlphaValue, sizeof(_float))))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(10);
+		m_pShaderCom->Begin(11);
 
 		m_pModelCom->Render(i);
 	}
