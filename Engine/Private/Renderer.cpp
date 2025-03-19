@@ -291,12 +291,12 @@ HRESULT CRenderer::Initialize()
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftY"), ViewportDesc.Width - 300.f, 750.f, 300.f, 300.f)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomBegin"), 300.0f, 100.0f, 300.0f, 300.0f)))
+	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomBegin"), 300.0f, 100.0f, 300.0f, 300.0f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomX"), 300.0f, 400.0f, 300.0f, 300.0f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomY"), 300.0f, 700.0f, 300.0f, 300.0f)))
-		return E_FAIL;
+		return E_FAIL;*/
 #endif // _DEBUG
 
 	Add_NoiseTexture();

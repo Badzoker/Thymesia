@@ -737,7 +737,7 @@ void CNormal_VillageM0::Dead_State::State_Enter(CNormal_VillageM0* pObject)
     dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(60);
     pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 60);
     // 몬스터 사망 시 아이템 드랍 추가하기
-
+    pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY1, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
 
 #pragma endregion
 
