@@ -214,7 +214,10 @@ public:
 	_uint    Get_CurrentMp() { return m_iCurrentMp; }
 
 	_uint    Get_AttackPower() { return m_iAttackPower; }
-	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
+
+	_uint*	 Get_AttackPower_Ptr() { return &m_iAttackPower; }
+	_uint*   Get_PhaseState_Ptr() { return &m_iPhaseState; }
+
 	_uint    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
 	_uint    Get_MemoryFragment() { return m_iMemoryFragment; }

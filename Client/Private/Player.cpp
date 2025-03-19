@@ -525,6 +525,11 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_HURT_KNOCKDOWN
 		|| m_iState == STATE_HURT_FALLDOWN
 		|| m_iState == STATE_WEAK_GETUP_F
+		|| m_iState == STATE_STUN_EXECUTE
+		|| m_iState == STATE_HARMOR_EXECUTION
+		|| m_iState == STATE_LV1Villager_M_Execution
+		|| m_iState == STATE_Joker_Execution
+		|| m_iState == STATE_Varg_Execution
 		)
 	{
 		m_bMove = true;

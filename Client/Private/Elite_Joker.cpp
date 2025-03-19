@@ -56,22 +56,26 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
 
     m_pState_Manager = CState_Machine<CElite_Joker>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.5f,0.5f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pStunActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
-
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
+    settingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER, settingColliderGroup);
+
+
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pStunActor, _fvector{ 0.f,25.f,0.f,1.f });
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
-
-
 
     /* 3월 9일 추가 */
     m_pGameObjectModel = m_pModelCom;
@@ -141,7 +145,8 @@ void CElite_Joker::Update(_float fTimeDelta)
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
-
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
+        m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 }
 
 void CElite_Joker::Late_Update(_float fTimeDelta)
@@ -437,10 +442,22 @@ void CElite_Joker::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
 void CElite_Joker::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
+    //if (!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name())))
+    //{
+    //    m_bMove = false;
+    //    m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    //}
+
+    if (!strcmp("PLAYER", _pOther->Get_Name()) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
+    {
+        m_bExecution_Progress = true;
+        m_pState_Manager->ChangeState(new Execution_State(), this);
+    }
 }
 
 void CElite_Joker::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
+    //m_bMove = true;
 }
 
 CElite_Joker* CElite_Joker::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -750,6 +767,10 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
+
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER;
 }
 
@@ -769,8 +790,6 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
         m_iIndex = 17;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    else if (m_iIndex == 18 && /*pObject->m_fDistance < 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
-        pObject->m_pState_Manager->ChangeState(new CElite_Joker::Execution_State(), pObject);
 
     if (m_iIndex == 17 && pObject->m_pModelCom->GetAniFinish())
     {
@@ -804,28 +823,26 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
     _vector vResultPos = vPlayerPos + vPlayerLook;
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
 
-    
+
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
     if (m_iIndex == 22 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 21;
         pObject->m_iMonster_State = STATE_DEAD;
+        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 
 #pragma region UI상호작용
         // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
         dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(210);
         pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 210);
         // 몬스터 사망 시 아이템 드랍 추가하기
-
-
 #pragma endregion
-
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
-        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     }
 }
 

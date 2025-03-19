@@ -240,7 +240,7 @@ void CNormal_VillageF1::RootAnimation()
     _uint iTest = m_pModelCom->Get_Current_Animation_Index();
     if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bMove))
     {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 0.5f) || m_bCan_Move_Anim)
+        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.f) || m_bCan_Move_Anim)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
 
         if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
@@ -398,7 +398,7 @@ void CNormal_VillageF1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
 void CNormal_VillageF1::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()))
+    if (!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));

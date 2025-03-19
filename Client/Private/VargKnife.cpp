@@ -83,33 +83,39 @@ void CVargKnife::Update(_float fTimeDelta)
 
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN) // EVENT_COLLIDER 부분      
+            if (iter.isPlay == false)
             {
-                // 그 구간에서는 계속 진행 
-
-                if (*m_pParentState == STATE_SPECIAL_ATTACK)
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
                 {
-                    m_pGameInstance->Add_Actor_Scene(m_pStunActor);
+                    // 그 구간에서는 계속 진행 
+
+                    if (*m_pParentState == STATE_SPECIAL_ATTACK)
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pStunActor);
+                    }
+                    else
+                        m_pGameInstance->Add_Actor_Scene(m_pActor);
                 }
                 else
-                    m_pGameInstance->Add_Actor_Scene(m_pActor);
-            }
-            else
-            {
-                m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
-            }
+                {
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
+                }
 
-            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-            {
-                iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                {
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                }
             }
         }
     }
+    else
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
 #pragma endregion  
 
 

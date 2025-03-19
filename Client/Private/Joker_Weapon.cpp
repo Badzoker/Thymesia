@@ -73,22 +73,26 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,0.f,1.f });
-
-	for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
 	{
-		if (iter.isPlay == false)
+		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
-			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
-				m_pGameInstance->Add_Actor_Scene(m_pActor);
-			else
-				m_pGameInstance->Sub_Actor_Scene(m_pActor);
-
-			if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			if (iter.isPlay == false)
 			{
-				iter.isPlay = true;
+				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
+					m_pGameInstance->Add_Actor_Scene(m_pActor);
+				else
+					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+				if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+				{
+					iter.isPlay = true;
+				}
 			}
 		}
 	}
+	else
+		m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
 
 void CJoker_Weapon::Late_Update(_float fTimeDelta)
