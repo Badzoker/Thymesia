@@ -76,11 +76,11 @@ HRESULT CTriggerObject::Ready_Components()
 
 void CTriggerObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!m_bFade)
-    {
-        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 2.0f);
-        m_bFade = true;
-    }
+    //if (!m_bFade)
+    //{
+    //    m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 2.0f);
+    //    m_bFade = true;
+    //}
 }
 
 void CTriggerObject::OnCollision(CGameObject* _pOther, PxContactPair _information)

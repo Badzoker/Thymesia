@@ -69,7 +69,7 @@ HRESULT CTerrain::Render()
 	m_pVIBufferCom->Render();
 
 #ifdef _DEBUG				
-	m_pNavigationCom->Render();
+	//m_pNavigationCom->Render();
 #endif // _DEBUG
 
 
