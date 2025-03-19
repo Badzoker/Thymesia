@@ -24,6 +24,7 @@ public:
 		_float		fFrustumRadius = { 0.f };
 		_float3		fRotation = { };
 		string		ObjectName = {};
+		_uint		iPassIndex = { 0 };
 
 	}OBJECT_DESC;
 
@@ -46,6 +47,8 @@ protected:
 	_float3		   m_fScale		= { 0.f, 0.f, 0.f };
 
 	_char		   m_MeshName[MAX_PATH] = {};
+
+	_uint		   m_iPassIndex = { 0 };
 
 protected:
 	virtual HRESULT Ready_Components();
