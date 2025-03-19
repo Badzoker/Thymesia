@@ -787,11 +787,14 @@ void CNormal_VillageF0::Dead_State::State_Enter(CNormal_VillageF0* pObject)
     }
     pObject->m_bHP_Bar_Active = false;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    // 몬스터 사망 시 아이템 드랍 추가하기
+
+#pragma region UI상호작용
    // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-    for (_int i = 0; i < 64; i++)
-        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(1);
+    dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(64);
     pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 64);
+   // 몬스터 사망 시 아이템 드랍 추가하기
+
+#pragma endregion
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

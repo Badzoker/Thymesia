@@ -814,6 +814,16 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
     {
         m_iIndex = 21;
         pObject->m_iMonster_State = STATE_DEAD;
+
+#pragma region UI상호작용
+        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(210);
+        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 210);
+        // 몬스터 사망 시 아이템 드랍 추가하기
+
+
+#pragma endregion
+
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     }

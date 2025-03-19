@@ -437,7 +437,7 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        if (m_iHitCount >= 3.f)
+        if (m_iHitCount >= 5.f)
         {
             m_iHitCount = 0;
             m_bPatternProgress = true;
@@ -1050,6 +1050,14 @@ void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pO
 {
     if (pObject->m_pModelCom->GetAniFinish())
     {
+#pragma region UI상호작용
+        // 몬스터 사망 시 아이템 드랍 추가하기
+        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
+        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
+#pragma endregion
+
+
         pObject->m_iMonster_State = STATE_DEAD;
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     }

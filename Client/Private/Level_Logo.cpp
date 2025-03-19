@@ -20,6 +20,11 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
 
+	
+	m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.8f);
+
+
+
 	return S_OK;
 }
 
