@@ -110,7 +110,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 	{
 		/* 처형 관련 작업 */
-		if ( (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL))
+		if ( (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
+			&& (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1))
 		{
 			
 			m_iState = STATE_STUN_EXECUTE;	

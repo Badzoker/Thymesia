@@ -9,6 +9,8 @@ CEffect::CEffect(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
 CEffect::CEffect(const CEffect& _Prototype)
 	: CGameObject(_Prototype)
 	, m_bIsPlaying{ _Prototype.m_bIsPlaying }
+	, m_pAnimation_Speed{ _Prototype.m_pAnimation_Speed }
+	, m_pSettingMatrix{ _Prototype.m_pSettingMatrix }
 	//, m_eEffectType{ _Prototype.m_eEffectType }
 {
 }
@@ -68,6 +70,7 @@ void CEffect::Set_IsPlaying(_bool _bIsPlaying)
 		m_fTimerY = 0.f;
 		m_fDissolve = 0.f;
 		m_fTimer_Timelag = 0.f;
+		Clear_Setting();
 	}
 }
 
@@ -107,7 +110,7 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 			if (0.1f > (*m_pAnimation_Speed))
 			{
 				m_fTimer_Timelag += _fTimeDelta;
-				if (0.2f < m_fTimer_Timelag)
+				if (0.02f < m_fTimer_Timelag)
 					m_pAnimation_Speed = nullptr;
 			}
 		}

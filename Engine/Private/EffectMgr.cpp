@@ -29,24 +29,23 @@ void CEffectMgr::Update(_float _fTimeDelta)
 
 void CEffectMgr::Late_Update(_float _fTimeDelta)
 {
-    _int iCheck = (_int)m_dequePlayingEffect.size();
-    for (auto& iter : m_dequePlayingEffect)
+    for (auto& iter = m_dequePlayingEffect.begin(); iter != m_dequePlayingEffect.end();)
     {
-        if (false == iter->Get_IsPlaying())
+        if (false == (*iter)->Get_IsPlaying())
         {
-            --iCheck;
-            if (1 > iCheck)
+            (*iter)->Clear_Setting();
+            if (1 == m_dequePlayingEffect.size())
             {
-                for (auto& pEffect : m_dequePlayingEffect)
-                {
-                    iter->Clear_Setting();
-                }
                 m_dequePlayingEffect.clear();
                 break;
             }
+            iter = m_dequePlayingEffect.erase(iter);
         }
         else
-            iter->Late_Update(_fTimeDelta);
+        {
+            (*iter)->Late_Update(_fTimeDelta);
+            ++iter;
+        }
     }
 }
 
