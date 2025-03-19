@@ -204,6 +204,11 @@ public:
 	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject);
 	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
 
+
+	void Item_Save_Info(UI_Item SaveItem); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
+	vector<UI_Item>& Get_Item_Save_Info(); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
+
+
 	HRESULT		Acquire_Item2(ITEM_TYPE _eItemType, _uint iNum); // ui 아이템 버리기를 통해 버려지는 아이템 종류와 개수 세팅
 	const map<ITEM_TYPE, pair<_uint, vector<CItem*>>> Get_Item_Info(); // 저장된 아이템 컨테이너 가져오기 - 유빈
 	_bool Use_Item(ITEM_TYPE _eItemType, _uint iNum); // 인벤토리에서 아이템 사용 시 컨테이너에 저장하고 있는 아이템 개수 감소 - 유빈
@@ -227,6 +232,8 @@ public:
 	HRESULT UIScene_UIObject_Render_OnOff(CUI_Scene* pScene, _bool bOpen); // UI 오브젝트 모드 랜더 하면서 => 해당 오브젝트들을 가지고 있는 씬의 랜더 또한 오픈함
 	_bool Get_Scene_Render_State(CUI_Scene* pScene); // 씬이 켜져 있는지 체크
 	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen);
+
+	void Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
 
 	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
 	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기

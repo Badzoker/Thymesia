@@ -25,6 +25,9 @@ public: // 그려진다는 건 Update를 할지 말지를 체크 하는 것
 	void Clear_Last(_uint iUIType);; // 마지막에 추가한 객체 삭제
 	void Clear_Choice(_uint iUIType, CUIObject* pUIObj); // 마지막에 추가한 객체 삭제
 
+
+	void Find_TextBox_Monster_Memory(_uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
+
 	vector<class CUI_Button*> Find_UI_Button() { return m_Button; }
 	vector<class CUI_Button_Player*> Find_UI_Button_Player() { return m_ButtonPlayer; }
 	vector<class CUI_Image*> Find_UI_Image() { return m_Image; }

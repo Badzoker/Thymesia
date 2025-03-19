@@ -645,6 +645,14 @@ HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
 	return m_pItemMgr->Acquire_Item(_eItemType);
 }
+void CGameInstance::Item_Save_Info(UI_Item SaveItem)
+{
+	return m_pItemMgr->Item_Save_Info(SaveItem);
+}
+vector<UI_Item>& CGameInstance::Get_Item_Save_Info()
+{
+	return m_pItemMgr->Get_Item_Save_Info();
+}
 HRESULT CGameInstance::Acquire_Item2(ITEM_TYPE _eItemType, _uint iNum)
 {
 	return m_pItemMgr->Acquire_Item2(_eItemType, iNum);
@@ -727,6 +735,12 @@ HRESULT CGameInstance::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool 
 {
 	return m_pUI_Manager->Set_All_UIObject_Condition_Open(pScene, bOpen);
 }
+
+void CGameInstance::Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount)
+{
+	return m_pUI_Manager->Find_TextBox_Monster_Memory(pScene, iCount);
+}
+
 
 void CGameInstance::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)
 {

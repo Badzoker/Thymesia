@@ -81,6 +81,7 @@ void CUIGroup_GameIntro::Button_Check()
 		{
 			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기
 			{
+				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.5);
 				m_pGameInstance->Set_NextLevel_Open(true);
 			}
 

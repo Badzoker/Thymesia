@@ -11,17 +11,6 @@ BEGIN(Client)
 
 class CUIGroup_Inventory final : public CUIObject
 {
-public:
-	struct UI_Item {
-
-		//_uint ItemID = {};
-		ITEM_TYPE ItemType = {};
-		_uint ItemIconNum = {};
-		_tchar* ItemName = {};
-		_tchar* ItemDesc = {};
-		_uint ItemCount = {};
-	};
-
 private:
 	CUIGroup_Inventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_Inventory(const CUIGroup_Inventory& Prototype);
@@ -64,7 +53,7 @@ public:
 	void ItemUse_PopUP_Open(); // 2번 팝업 오픈 => 어떤 팝업을 부를지 설정
 	void ItemUse_PopUP_Use_Button(); // 아이템 사용 팝업 설정 
 	void ItemUse_PopUP_Drop_Button();// 아이템 버리기 팝업 설정
-	void ItemUse_Update(); // 아이템을 버리거나 사용 시 인벤 정보 업데이트
+	void ItemUse_Update(); // 아이템을 버리거나 사용 시 인벤 정보 업데이트 => 아이템 매니저를 다시 받아오는게 아니어서 문제가 발생할 것 같음
 
 public:
 	void Item_Use_Set(ITEM_TYPE etype, _uint iCount); // 사용한 아이템에 따라 기능 구현
@@ -112,10 +101,17 @@ public:
 	virtual void Free() override;
 
 public:
-	map<ITEM_TYPE, _uint>& Get_Drop_Item_Info() { return m_mapDropItemInfo; } // 내 정보 읽어가
-private:
-	map<ITEM_TYPE, _uint> m_mapDropItemInfo; // 버릴 아이템 정보 저장
+	map<ITEM_TYPE, UI_Item>& Get_Drop_Item_Info() { return m_mapDropItemInfo; } // 내 정보 읽어가
+	void Set_Item_Default_Info();
+	const vector<UI_Item> Get_Vector_Itme_default_Info() { return m_vecItemDefaultInfo; } // 내 정보 읽어가
+//public:
+//	void Set_m_bDrop(_bool bdrop) { m_bDrop = bdrop; }
+//	_bool m_bDrop = { false };
 
+private:
+	map<ITEM_TYPE, UI_Item> m_mapDropItemInfo; // 버릴 아이템 정보 저장
+	vector<UI_Item> m_vecItemDefaultInfo;
+	CGameObject* m_pGroupPlayerScreen = { nullptr };
 
 
 };

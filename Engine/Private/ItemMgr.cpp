@@ -71,6 +71,11 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
     return S_OK;
 }
 
+void CItemMgr::Item_Save_Info(UI_Item SaveItem)
+{
+    m_vecSaveItem.push_back(SaveItem);
+}
+
 HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
 {
     vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
@@ -113,7 +118,7 @@ _bool CItemMgr::Use_Item(ITEM_TYPE _eItemType, _uint iNum)
         if (_eItemType == ItemBox.first)
         {
             ItemBox.second.first -= iNum;
-            if (0 > ItemBox.second.first)
+            if (0 >= ItemBox.second.first)
                 return true; // 이 아이템이 0개가 되었는지 체크
         }
     }

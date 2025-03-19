@@ -222,6 +222,25 @@ void CUI_Scene::Clear_Choice(_uint iUIType, CUIObject* pUIObj)
 	}
 }
 
+void CUI_Scene::Find_TextBox_Monster_Memory(_uint iCount)
+{
+
+	_tchar pDust[MAX_PATH] = {};
+	_tchar* pSor = { L"+%d" };
+
+	wsprintf(pDust, pSor, iCount);
+	for (auto& TextBox : m_TextBox)
+	{
+		if (101 == TextBox->Get_UI_GroupID())
+		{
+			TextBox->Set_OnOff(true);
+			TextBox->Set_Change_TextColor(FONT_GREEN);
+			TextBox->Set_Content(pDust);
+		}
+	}
+
+}
+
 CUI_Scene* CUI_Scene::Create()
 {
 	return new CUI_Scene();
