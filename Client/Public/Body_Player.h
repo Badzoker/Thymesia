@@ -102,9 +102,11 @@ class CBody_Player final : public CPartObject
 public:
 	struct BODY_PLAYER_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		_uint* pParentState = { nullptr };
-		_uint* pPreParentState = { nullptr };	
-		_uint* pParentPhaseState = { nullptr };
+		_uint* pParentState               = { nullptr };
+		_uint* pPreParentState            = { nullptr };	
+		_uint* pParentPhaseState          = { nullptr };
+		_uint* pParentExectueMonsterState = { nullptr };	
+
 		_bool* pParentNextStateCan = { nullptr };
 		CStateMgr* pParentStateMgr = { nullptr };
 		CNavigation* pParentNavigationCom = { nullptr };
@@ -220,11 +222,13 @@ private:
 	_float							m_fHitStopTime = {};
 private:
 
+	_uint* m_pParentMonsterExecute = { nullptr };	
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pPreParentState = { nullptr };	
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};
+
 	CStateMgr* m_pParentStateMgr = { nullptr };
 	CNavigation* m_pParentNavigationCom = { nullptr };
 	PxRigidDynamic* m_pParentActor = { nullptr };

@@ -384,64 +384,49 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
 
 
+	}
+
+	_vector vCamDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 
+	/* 여기에 이벤트가 들어와야함. */
+	if (m_bShakeOnOff)
+	{
+		_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-
-
-		/* 여기에 이벤트가 들어와야함. */
-		if (m_bShakeOnOff)
-		{
-			_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
-		}
-
-
-		if (m_bZoomIn)
-		{
-			if (m_fCamCloseLimitDistance < m_fCurCamDistance)
-				m_fCurCamDistance -= fTimeDelta * 10.f;
-
-			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-		}
-
-
-		if (m_bZoomOut)
-		{
-			if (m_fCamFarLimitDistance > m_fCurCamDistance)
-				m_fCurCamDistance += fTimeDelta * 5.f;
-
-			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-		}
-
-
-		m_bShakeOnOff = false;
-		m_bZoomIn = false;
-		m_bZoomOut = false;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
 	}
 
 
-	//else
-	//{
-	//	// Right 벡터 갱신 (Up × Look)
-	//	_vector CamDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);	
-	//
-	//	_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);	
-	//	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));	
-	//
-	//	// Up 벡터 갱신 (Look × Right)
-	//	_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));	
-	//
-	//	// Transform 갱신
-	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);	
-	//	m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);	
-	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);	
-	//}
+	if (m_bZoomIn)
+	{
+		if (m_fCamCloseLimitDistance < m_fCurCamDistance)
+			m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomSpeed;
+
+		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+
+	}
+
+
+	if (m_bZoomOut)
+	{
+		if (m_fCamFarLimitDistance > m_fCurCamDistance)
+			m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomSpeed;
+
+		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+
+	}
+
+
+	m_fZoomSpeed = 1.f;
+	m_bShakeOnOff = false;
+	m_bZoomIn = false;
+	m_bZoomOut = false;
+
 
 
 	__super::Priority_Update(fTimeDelta);

@@ -36,6 +36,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pParentStateMgr = pDesc->pParentStateMgr;
     m_pParentNavigationCom = pDesc->pParentNavigationCom;
     m_pParentActor = pDesc->pParentActor;
+    m_pParentMonsterExecute = pDesc->pParentExectueMonsterState;       
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -310,8 +311,11 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
-        m_pGameInstance->Add_Actor_Scene(m_pParentActor);   
-        m_pCamera->ResetZoomInCameraPos();  
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)     
+        {
+            m_pGameInstance->Add_Actor_Scene(m_pParentActor); // 이걸 빼줘야하는데 처형신에서는 ;;           
+            m_pCamera->ResetZoomInCameraPos();      
+        }   
     }
 #pragma endregion  
 
@@ -1438,7 +1442,7 @@ void CBody_Player::STATE_PARRY_L_Method()
     }
 
     /* 패링 조건 */
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 10.f
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 0.5f
         && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
     {
 
@@ -1471,7 +1475,7 @@ void CBody_Player::STATE_PARRY_R_Method()
     }
 
     /* 패링 조건 */
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 10.f
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 0.5f
         && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
     {
 
@@ -1611,6 +1615,7 @@ void CBody_Player::STATE_HurtMFR_L_Method()
         //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);  
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 void CBody_Player::STATE_HurtMFR_R_Method()
@@ -1628,6 +1633,7 @@ void CBody_Player::STATE_HurtMFR_R_Method()
         //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;      
     }
 }
 
@@ -1643,6 +1649,7 @@ void CBody_Player::STATE_HURT_LF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1658,6 +1665,7 @@ void CBody_Player::STATE_HURT_SF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;      
     }
 }
 
@@ -1689,6 +1697,7 @@ void CBody_Player::STATE_HURT_HURXXLF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1704,6 +1713,7 @@ void CBody_Player::STATE_HURT_KNOCKBACK_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1720,6 +1730,7 @@ void CBody_Player::STATE_HURT_KNOCKDOWN_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;*/
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1735,6 +1746,7 @@ void CBody_Player::STATE_HURT_FALLDOWN_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1750,6 +1762,7 @@ void CBody_Player::STATE_WEAK_GETUP_F_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1855,6 +1868,7 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;   
     }
 }
 
@@ -1863,16 +1877,30 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
     m_pModelCom->SetUp_Animation(291, false);
     m_iRenderState = STATE_NORMAL;
 
-    //if(m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
-    //{
-    //    *m_pParentState = STATE_HARMOR_EXECUTION;   
-    //}
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
+    {
+        switch (*m_pParentMonsterExecute)
+        {
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:    
+            *m_pParentState = STATE_HARMOR_EXECUTION;   
+            break;
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER: 
+            *m_pParentState = STATE_Joker_Execution;    
+            break;
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:  
+            *m_pParentState = STATE_Varg_Execution; 
+            break;
+        default:
+            break;  
+        }   
+        // 여기를 이제 부모에서 받아온 몬스터 처형 스테이트로 switch case 문으로 하면 될듯 
+    }
 
-    if (m_pModelCom->Get_VecAnimation().at(291)->isAniMationFinish())
+    /*if (m_pModelCom->Get_VecAnimation().at(291)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-    }
+    }*/
 }
 
 void CBody_Player::STATE_LV1Villager_M_Execution_Method()
@@ -1884,6 +1912,7 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;       
     }
 }
 
@@ -1896,6 +1925,7 @@ void CBody_Player::STATE_Joker_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute= MONSTER_EXECUTION_CATEGORY::MONSTER_START;    
     }
 }
 
@@ -1908,6 +1938,7 @@ void CBody_Player::STATE_Varg_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;       
     }
 }
 

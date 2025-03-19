@@ -49,6 +49,7 @@ public:
 	void				LockOnCameraTurn(_float fTimeDelta);
 	void				ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _float _fXaxisMoveAmount, _float _fZaxisMoveAmount);
 	void				ZoomIn() { m_bZoomIn = true; }
+	void                ZoomSpeed() {}
 	void				ZoomOut() { m_bZoomOut = true; }
 	void				ResetZoomInCameraPos();
 	bool				ResetZoomOutCameraPos();
@@ -57,7 +58,8 @@ public:
 	bool                Camera_Cut_Scene_Activate(_wstring _CutSceneName);
 
 	void				Set_Camera_Cut_Scene_OnOff(bool _bOnOff) { m_bCamera_Cut_Scene_OnOff = _bOnOff; }
-
+	void				Set_Camera_GetBackCamPos(bool _bOnOff) { m_bGetBackCamPos = _bOnOff; }
+	void				Set_Camera_ZoomSpeed(_float _fSpeed) { m_fZoomSpeed = _fSpeed; }
 
 
 private:
@@ -101,6 +103,7 @@ private:
 	_bool				m_bShakeOnOff = { false };
 	_bool				m_bZoomIn = { false };
 	_bool				m_bZoomOut = { false };
+	_float				m_fZoomSpeed = { 1.f };
 	/*  ---------------  */
 
 	/* 카메라 툴 이벤트 관련*/

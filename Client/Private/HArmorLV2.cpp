@@ -466,7 +466,7 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
 
 void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()))
+    if (!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name()))   
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
@@ -1042,14 +1042,17 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     _vector vResultPos = vPlayerPos + vPlayerLook;
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
     //pObject->m_pNavigationCom->Set_CurrentNaviIndex(vResultPos);
-    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+   
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
     if (pObject->m_pModelCom->GetAniFinish())
+    {
         pObject->m_iMonster_State = STATE_DEAD;
+        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    }
     //Á×À½ Ã³¸®
 }
 
