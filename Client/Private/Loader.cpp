@@ -1174,15 +1174,16 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 #pragma region Navigation 
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
 
-	// 03.13 전까지 네비
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation8.txt")))))
-	//	return E_FAIL;
-
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), 
+	// 03.19 네비 Tutorial Map 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation9.txt")))))
 		return E_FAIL;
+
+	// 03.19 네비 Circus Map 
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation10.txt")))))
+	//	return E_FAIL;
+	
 
 
 
