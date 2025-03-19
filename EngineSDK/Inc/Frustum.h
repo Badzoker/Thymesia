@@ -28,7 +28,7 @@ private:
 	_float4					m_vWorld_Planes[6];
 	_float4					m_vWorld_Planes_Monster[6];
 
-	_float					m_fOffSet = { 0.1f };
+	_float					m_fOffSet = { 10.1f };
 
 private:
 	void Make_Planes(const _float4* pPoints, _float4* pPlanes);

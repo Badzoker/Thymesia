@@ -239,14 +239,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
 	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
 	// 
-	//Load_Objects(107);
-	//Load_Objects(98);
-	//Load_Objects(129); 3/14일 전까지
-	//Load_Objects(134); 3/14일
-	//Load_Objects(135);
-	Load_Objects(300);
+	Load_Objects(140); //Tutorial Map
+	//Load_Objects(300); //Circus Map
 
-	//Load_Objects(300); // 서커스 보스 맵(네비 필요)
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
 	Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
