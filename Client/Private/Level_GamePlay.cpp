@@ -338,12 +338,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-	//	return E_FAIL;
+
 	Load_MonsterIndex(3);
 
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
-	//70.7f, 1.3f, -110.5f, 1.0f
+
+	_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
+	XMStoreFloat4(&pDesc.fPosition, vTestPosition);
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+		return E_FAIL;
+	
 	for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
 	{
 		switch (m_MonsterSpawnInfos[i].iMonsterIndex)

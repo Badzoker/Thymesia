@@ -53,6 +53,7 @@ private:
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bDead = {};
 	_bool                            m_bCulling = {};
+	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_bCanRecovery = {};
 
 	_uint                            m_iNearPatternIndex = -1;

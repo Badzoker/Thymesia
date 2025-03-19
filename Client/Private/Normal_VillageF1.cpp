@@ -140,7 +140,7 @@ void CNormal_VillageF1::Update(_float fTimeDelta)
 
 void CNormal_VillageF1::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling)
+    if (m_bCulling || m_bDead)
         return;
 
     Recovery_HP();
@@ -728,6 +728,7 @@ void CNormal_VillageF1::Stun_State::State_Enter(CNormal_VillageF1* pObject)
     m_iIndex = 31;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_iMonster_State = STATE_STUN;
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 

@@ -117,6 +117,24 @@ namespace Engine
 		STATE_END	
 	};
 
+	enum MONSTER_EXECUTION_CATEGORY
+	{
+		MONSTER_START = 0,
+		MONSTER_VARG,           //바그
+		MONSTER_HARMOR,         //검병
+		MONSTER_JOKER,          //조커
+		MONSTER_VILLAGEM1,      //방패병
+		MONSTER_NORMAL          //기본몬스터
+	};
+
+	enum PROJECTILE_CATEGORY
+	{
+		PROJECTILE_CARD,
+		PROJECTILE_ARROW,
+		PROJECTILE_FEATHER,
+		PROJECTILE_SWORD,
+		PROJECTILE_END
+	};
 
 	enum class TRIGGER_TYPE
 	{

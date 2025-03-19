@@ -463,15 +463,6 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Varg\Body">
       <UniqueIdentifier>{7e7712b3-d4c4-416b-ae1b-55d59b91f521}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Varg\Weapon">
-      <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\02. Boss\Boss_State">
-      <UniqueIdentifier>{4dba1b24-96a1-43eb-bafa-d7802a782405}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\02. Boss\Boss_State\Manager">
-      <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician">
       <UniqueIdentifier>{eb53bb80-12e0-4720-8190-53d078b3e292}</UniqueIdentifier>
     </Filter>
@@ -589,6 +580,30 @@
     <Filter Include="02.GameObject\Player\Camera">
       <UniqueIdentifier>{821e0855-a0ab-4339-b98a-8df59744621b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\96. Monster_State">
+      <UniqueIdentifier>{4dba1b24-96a1-43eb-bafa-d7802a782405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\96. Monster_State\Manager">
+      <UniqueIdentifier>{eb644ae3-6938-42ab-83d0-154ce9b75955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon">
+      <UniqueIdentifier>{32204b1c-dcff-43a8-a755-bf39406b7d96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Varg">
+      <UniqueIdentifier>{061d35fd-cb8e-487e-a024-5bfa7463611d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Magician">
+      <UniqueIdentifier>{71b14270-88db-4a20-819b-c52c22fb8822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Magician\Cane">
+      <UniqueIdentifier>{365fcaea-fda9-41c3-a6d9-4ca5f91be5a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Magician\Sword">
+      <UniqueIdentifier>{a685380c-b7b4-42e3-9e43-2a30b4f79000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician\Body">
+      <UniqueIdentifier>{3989ba5c-6de1-4869-851c-91d090f671fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -645,14 +660,8 @@
     <ClInclude Include="..\Public\LobTrap.h">
       <Filter>02.GameObject\LobTrap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Boss_Varg.h">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Varg.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Body</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VargKnife.h">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\State.h">
       <Filter>02.GameObject\Player\State</Filter>
@@ -682,10 +691,10 @@
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\States.h">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_State</Filter>
+      <Filter>02.GameObject\Monster\96. Monster_State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Machine.h">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_State\Manager</Filter>
+      <Filter>02.GameObject\Monster\96. Monster_State\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Attack_LButton_2.h">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_2</Filter>
@@ -1104,6 +1113,21 @@
     <ClInclude Include="..\public\PlayerCamera.h">
       <Filter>02.GameObject\Player\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Boss_Varg.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VargKnife.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Varg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Magician.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Magician_Sword.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Cane.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Cane</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1154,9 +1178,6 @@
     <ClCompile Include="..\Private\Body_Varg.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VargKnife.cpp">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\State.cpp">
       <Filter>02.GameObject\Player\State</Filter>
     </ClCompile>
@@ -1185,10 +1206,10 @@
       <Filter>02.GameObject\Object\StaticObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\States.cpp">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_State</Filter>
+      <Filter>02.GameObject\Monster\96. Monster_State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Machine.cpp">
-      <Filter>02.GameObject\Monster\02. Boss\Boss_State\Manager</Filter>
+      <Filter>02.GameObject\Monster\96. Monster_State\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Attack_LButton_2.cpp">
       <Filter>02.GameObject\Player\State\Attack\Attack_LButton_2</Filter>
@@ -1609,6 +1630,18 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerCamera.cpp">
       <Filter>02.GameObject\Player\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VargKnife.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Varg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Magician.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Cane.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Cane</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

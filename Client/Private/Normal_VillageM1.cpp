@@ -142,7 +142,7 @@ void CNormal_VillageM1::Update(_float fTimeDelta)
 
 void CNormal_VillageM1::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling)
+    if (m_bCulling || m_bDead)
         return;
     Recovery_HP();
     if (m_bNeed_Rotation)
@@ -585,6 +585,7 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_bCan_Move_Anim = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_STUN;
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -604,7 +605,7 @@ void CNormal_VillageM1::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
         m_iIndex = 27;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    else if (m_iIndex == 28 && pObject->m_fDistance <= 1.5f && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    else if (m_iIndex == 28 && /*pObject->m_fDistance <= 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
     {
         pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
     }
@@ -735,8 +736,16 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 39;
     pObject->m_bHP_Bar_Active = false;
+    pObject->m_bCan_Move_Anim = true;
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->RotateDegree_To_Player();
+
+    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
+    _vector vResultPos = vPlayerPos + vPlayerLook;
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -753,6 +762,7 @@ void CNormal_VillageM1::Execution_State::State_Update(_float fTimeDelta, CNormal
 
 void CNormal_VillageM1::Execution_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
 

@@ -99,6 +99,10 @@ void CHArmorLV2::Priority_Update(_float fTimeDelta)
             m_pState_Manager->ChangeState(new CHArmorLV2::Intro_State(), this);
         }
     }
+    if (m_pGameInstance->isKeyEnter(DIK_N))
+    {
+        m_fMonsterCurHP -= 50.f;
+    }
 
     if (m_fSpawn_Distance >= 10.f && !m_bPatternProgress)
     {
@@ -147,7 +151,7 @@ void CHArmorLV2::Update(_float fTimeDelta)
 
 void CHArmorLV2::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling)
+    if (m_bCulling || m_bDead)
         return;
     Recovery_HP();
     if (m_bNeed_Rotation)
@@ -658,8 +662,10 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 24;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR;
 }
 
 void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
@@ -685,7 +691,7 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
         m_iIndex = 22;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    else if (m_iIndex == 23 && pObject->m_fDistance <= 1.5f && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    else if (m_iIndex == 23 && /*pObject->m_fDistance <= 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
     {
         pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
     }
@@ -1026,6 +1032,16 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->RotateDegree_To_Player();
     pObject->m_bHP_Bar_Active = false;
+    pObject->m_bCan_Move_Anim = true;
+
+    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
+    //vPlayerLook *= 1.f;
+
+    _vector vResultPos = vPlayerPos + vPlayerLook;
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+    //pObject->m_pNavigationCom->Set_CurrentNaviIndex(vResultPos);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -1039,6 +1055,7 @@ void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pO
 
 void CHArmorLV2::Execution_State::State_Exit(CHArmorLV2* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
 
