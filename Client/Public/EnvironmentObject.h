@@ -1,3 +1,4 @@
+
 #pragma once
 #include "Client_Defines.h"
 #include "GameObject.h"
@@ -26,13 +27,15 @@ public:
         _float fInstanceCount = {};
         _bool   isBasicMode = { false };
 
-        vector<_float3> vecInstancePosition = {};
-        vector<_float4> vecInstanceRotation = {};
-        vector<_float3> vecInstanceScale = {};
+        vector<_float3>             vecInstancePosition = {};
+        vector<_float4>             vecInstanceRotation = {};
+        vector<_float3>             vecInstanceScale = {};
 
         vector<VTX_MODEL_INSTANCE>  vecStructModelInstance;
-        _int                        iBoxSize = {  };
         vector<_int>                vecBoxSize = {};
+        _int                        iBoxSize = {  };
+
+        _bool                       isCullingObject = { false };
 
         _uint                       iPassIndex = { 0 };
     };
@@ -46,6 +49,8 @@ public:
         _float3 fRotation;
         _float fFrustumRadius;
         _int iBoxSize;
+
+        _bool       bCullingObject = { false };
     };
 
     struct EN_MESH_INFO
@@ -91,6 +96,8 @@ protected:
     vector<CCollider*>      m_vecColliderCom;
 
     _uint               m_iPassIndex = { 0 };
+
+    _bool               m_bCullingObject = { false };
 
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;

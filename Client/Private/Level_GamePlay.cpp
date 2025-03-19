@@ -249,8 +249,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
 	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
 	// 
-	Load_Objects(140); //Tutorial Map
+	//Load_Objects(140); //Tutorial Map
+	//Load_Objects(142); //Tutorial Map
 	//Load_Objects(300); //Circus Map
+	Load_Objects(301); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
@@ -661,7 +663,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 		Desc.ObjectName = szLoadName;
 
-		if(FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
 			return E_FAIL;
 	}
 
@@ -688,11 +690,11 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 	_uint iInstancedGroundObjectNumSize = 0;
 	ReadFile(hFile, &iInstancedGroundObjectNumSize, sizeof(_uint), &dwByte2, nullptr);
 
-	
+
 	vector<_float3>                         vecInstancedGroundObjectPos;
 	vector<_float3>                         vecInstancedGroundObjectScale;
 	vector<_float3>                         vecInstancedGroundObjectRotation;
-	
+
 	vecInstancedGroundObjectPos.resize(iInstancedGroundObjectNumSize);
 	vecInstancedGroundObjectScale.resize(iInstancedGroundObjectNumSize);
 	vecInstancedGroundObjectRotation.resize(iInstancedGroundObjectNumSize);
@@ -741,8 +743,12 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.iPassIndex, sizeof(_uint), &dwByte, nullptr);
 		Desc.ObjectName = szLoadName;
 
+		ReadFile(hFile, &Desc.isCullingObject, sizeof(_bool), &dwByte2, nullptr);
+
 		_uint iInstanceCount = 0;
 		ReadFile(hFile, &iInstanceCount, sizeof(_uint), &dwByte2, nullptr);
+
+
 
 		vector<VTX_MODEL_INSTANCE> vecInstanceData(iInstanceCount);
 		vector<XMFLOAT3> vecInstancePosition(iInstanceCount);
@@ -780,7 +786,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		Desc.vecInstanceRotation = vecInstanceRotation;
 		Desc.vecBoxSize = vecBoxSize;
 
-		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"),LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc));
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_GAMEPLAY, TEXT("Layer_GroundObject"), &Desc));
 
 		if (nullptr == pEnvironment)
 			return E_FAIL;
