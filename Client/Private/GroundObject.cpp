@@ -186,7 +186,7 @@ HRESULT CGroundObject::Render()
     }
     else
     {
-        for (size_t i = 0; i < iNumMeshes; i++)
+        for (_uint i = 0; i < iNumMeshes; i++)
         {
             if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
                 return E_FAIL;

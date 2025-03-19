@@ -250,9 +250,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
 	// 
 	//Load_Objects(140); //Tutorial Map
-	//Load_Objects(142); //Tutorial Map
-	//Load_Objects(300); //Circus Map
-	Load_Objects(301); //Circus Map
+	Load_Objects(142); //Tutorial Map
+	//Load_Objects(301); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
