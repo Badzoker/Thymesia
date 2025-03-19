@@ -37,6 +37,7 @@ public:
 
 public:
 	HRESULT Ready_UIObject();
+	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 
 private:
 	CUI_Scene* m_pMyScene = {}; //플레이어 화면

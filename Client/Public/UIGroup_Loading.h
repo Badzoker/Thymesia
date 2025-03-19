@@ -29,7 +29,8 @@ public:
 
 public:
 	HRESULT Ready_UIObject();
-
+	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+	HRESULT LoadData_UIText_Info(const _tchar* szSceneName);
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
 	CUI_Scene* m_pMyScene = {};
