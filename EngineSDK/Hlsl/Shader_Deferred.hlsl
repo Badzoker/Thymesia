@@ -229,7 +229,11 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
     
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
-
+    
+    vector vShade;
+    
+    vShade = saturate(max(dot(normalize(g_vLightDir * -1.f), normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
+    
     vector vWorldPos;
 
 	/* 투영공간상의 위치 */
@@ -254,9 +258,6 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
     float fAtt = saturate((g_fRange - fLength) / g_fRange);
 
-
-    vector vShade = saturate(max(dot(normalize(vLightDir * -1.f), normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
-
     Out.vShade = g_vLightDiffuse * vShade * fAtt;
 
     vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
@@ -279,7 +280,11 @@ PS_OUT_LIGHT PS_MAIN_SPOT(PS_IN In)
     
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
-
+    
+    vector vShade;
+    
+    vShade = saturate(max(dot(normalize(g_vLightDir * -1.f), normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
+    
     vector vWorldPos;
 
 	/* 투영공간상의 위치 */
@@ -302,10 +307,6 @@ PS_OUT_LIGHT PS_MAIN_SPOT(PS_IN In)
     float fLength = length(vLightDir);
 
     float fAtt = saturate((g_fRange - fLength) / g_fRange);
-
-    vector vShade;
-    
-    vShade = saturate(max(dot(normalize(vLightDir * -1.f), normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
     
     float fAngle = pow(max(dot(normalize(-vLightDir), normalize(-g_vLightDir)), 0.f), g_fSpot);
     
