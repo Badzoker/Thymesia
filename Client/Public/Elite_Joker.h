@@ -46,6 +46,8 @@ private:
 	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
+	_bool                            m_bMove = {};
+	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bNeed_Rotation = {};
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bNeedControl = {};
@@ -60,6 +62,7 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iSpawn_Cell_Index = {};
 	const _uint* m_Player_Attack = {};
+	_uint* m_Player_State = {};
 
 
 	_float                           m_fRotateDegree = {};
@@ -84,6 +87,7 @@ private:
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CElite_Joker>* m_pState_Manager = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 private:
 	class CGameObject* m_pPlayer = { nullptr };
 public:

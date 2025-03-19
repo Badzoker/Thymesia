@@ -49,6 +49,7 @@ private:
 	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bBossActive = {};
+	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bPatternProgress = {};
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_bNeed_Rotation = {};
@@ -60,8 +61,9 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
 	_uint                            m_iAttackPower = {};
-	const _uint* m_Player_Attack = {};
 
+	const _uint* m_Player_Attack = {};
+	const _uint* m_Player_State = {};
 
 
 	_float                           m_fTimeDelta = {};
@@ -85,6 +87,7 @@ private:
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CBoss_Varg>* m_pState_Manager = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 private:
 	class CGameObject* m_pPlayer = { nullptr };
 public:

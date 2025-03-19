@@ -49,6 +49,7 @@ private:
 	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bActive = {};
+	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bFirst_Active = true;
 	_bool                            m_bCan_Move_Anim = {};
 	_bool                            m_bPatternProgress = {};
@@ -63,6 +64,7 @@ private:
 	_uint							 m_iSpawn_Cell_Index = {};
 	_uint							 m_iHit_Motion_Index = {};
 	_uint                            m_iHitCount = {};
+	_uint* m_Player_State = {};
 	const _uint* m_Player_Attack = {};
 
 
@@ -84,6 +86,7 @@ private:
 	const _float4x4* m_pRootMatrix = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CHArmorLV2>* m_pState_Manager = { nullptr };
 	class CGameObject* m_pPlayer = { nullptr };

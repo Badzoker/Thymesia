@@ -82,35 +82,40 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pKickActor)))
 		m_pGameInstance->Update_Collider(m_pKickActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 200.f,0.f,1.f });
 
-	for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
 	{
-		if (iter.isPlay == false)
+		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
-			if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
+			if (iter.isPlay == false)
 			{
-				if (*m_pParentState != STATE_PARRY)
+				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
 				{
-					if (*m_pParentState == STATE_PARRY_ATTACK)
+					if (*m_pParentState != STATE_PARRY)
 					{
-						m_pGameInstance->Add_Actor_Scene(m_pKickActor);
-					}
-					else
-					{
-						m_pGameInstance->Add_Actor_Scene(m_pActor);
+						if (*m_pParentState == STATE_PARRY_ATTACK)
+						{
+							m_pGameInstance->Add_Actor_Scene(m_pKickActor);
+						}
+						else
+						{
+							m_pGameInstance->Add_Actor_Scene(m_pActor);
+						}
 					}
 				}
-			}
-			else
-			{
-				m_pGameInstance->Sub_Actor_Scene(m_pActor);
-				m_pGameInstance->Sub_Actor_Scene(m_pKickActor);
-			}
-			if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				iter.isPlay = true;
+				else
+				{
+					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+					m_pGameInstance->Sub_Actor_Scene(m_pKickActor);
+				}
+				if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+				{
+					iter.isPlay = true;
+				}
 			}
 		}
 	}
+	else
+		m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
 
 void CWeapon_Axe::Late_Update(_float fTimeDelta)

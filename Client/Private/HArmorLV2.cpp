@@ -57,18 +57,24 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
 
     m_pState_Manager = CState_Machine<CHArmorLV2>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pStunActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
-
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
+    settingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER, settingColliderGroup);
+
+
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pStunActor, _fvector{ 0.f,25.f,0.f,1.f });
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
@@ -104,7 +110,7 @@ void CHArmorLV2::Priority_Update(_float fTimeDelta)
         m_fMonsterCurHP -= 50.f;
     }
 
-    if (m_fSpawn_Distance >= 10.f && !m_bPatternProgress)
+    if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
     {
         m_pState_Manager->ChangeState(new CHArmorLV2::Return_To_SpawnPoint_State(), this);
     }
@@ -145,6 +151,8 @@ void CHArmorLV2::Update(_float fTimeDelta)
     __super::Update(fTimeDelta);
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
+        m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
 
 }
@@ -270,7 +278,7 @@ void CHArmorLV2::RootAnimation()
     _uint iTest = m_pModelCom->Get_Current_Animation_Index();
     if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bMove))
     {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 0.5f) || m_bCan_Move_Anim)
+        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.f) || m_bCan_Move_Anim)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
 
         if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
@@ -437,7 +445,7 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        if (m_iHitCount >= 5.f)
+        if (m_iHitCount >= 3.f)
         {
             m_iHitCount = 0;
             m_bPatternProgress = true;
@@ -462,14 +470,22 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
             m_pState_Manager->ChangeState(new CHArmorLV2::Hit_State(iRandom), this);
         }
     }
+
+
+
 }
 
 void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name()))   
+    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_STUN && m_iMonster_State != STATE_EXECUTION))
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+    }
+    if (!strcmp("PLAYER", _pOther->Get_Name()) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
+    {
+        m_bExecution_Progress = true;
+        m_pState_Manager->ChangeState(new Execution_State(), this);
     }
 }
 
@@ -665,6 +681,10 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
+
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR;
 }
 
@@ -689,12 +709,14 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
     if (m_iIndex == 23 && m_fTime >= 5.f)
     {
         m_iIndex = 22;
+        /*       pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+               pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);*/
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    else if (m_iIndex == 23 && /*pObject->m_fDistance <= 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
-    {
-        pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
-    }
+    //else if (m_iIndex == 23 && /*pObject->m_fDistance <= 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    //{
+    //    pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+    //}
 
     if (m_iIndex == 22 && pObject->m_pModelCom->GetAniFinish())
     {
@@ -828,6 +850,7 @@ void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 36;
         pObject->RotateDegree_To_Player();
+        pObject->m_bMove = true;
         pObject->m_bCan_Move_Anim = true;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -1037,29 +1060,29 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
     vPlayerLook = XMVector3Normalize(vPlayerLook);
-    //vPlayerLook *= 1.f;
+    vPlayerLook *= 1.4f;
+
 
     _vector vResultPos = vPlayerPos + vPlayerLook;
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
-    //pObject->m_pNavigationCom->Set_CurrentNaviIndex(vResultPos);
-   
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+
     if (pObject->m_pModelCom->GetAniFinish())
     {
-#pragma region UI상호작용
-        // 몬스터 사망 시 아이템 드랍 추가하기
-        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
-        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
-#pragma endregion
-
-
         pObject->m_iMonster_State = STATE_DEAD;
-        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+
+//#pragma region UI상호작용
+//        // 몬스터 사망 시 아이템 드랍 추가하기
+//        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+//        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
+//        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
+//#pragma endregion
     }
     //죽음 처리
 }
