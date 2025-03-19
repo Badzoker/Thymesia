@@ -25,7 +25,6 @@ public:
 	virtual HRESULT Render() override;
 
 
-	_bool Get_Mouse_Select_OnOff() { return m_bMouseSelectOn; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -33,7 +32,6 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-	_bool m_bMouseSelectOn = { false };
 	_float3 m_fTextPosition = {};
 
 

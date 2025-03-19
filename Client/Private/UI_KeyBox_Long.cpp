@@ -78,6 +78,16 @@ HRESULT CUI_KeyBox_Long::Render()
 
 	m_pVIBufferCom->Render();
 
+	if (lstrcmp(m_strContentText.c_str(), TEXT("UI 기본 출력 값")))
+	{
+		_float3 fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
+
+		_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+		m_fTextPosition.x = fMyPos.x - TextSize.x / 2;
+		m_fTextPosition.y = fMyPos.y - TextSize.y / 2;
+		m_fTextPosition.z = fMyPos.z;
+		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
+	}
 	return S_OK;
 }
 
