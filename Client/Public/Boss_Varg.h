@@ -59,7 +59,10 @@ private:
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = {};
+	_uint                            m_iAttackPower = {};
 	const _uint* m_Player_Attack = {};
+
+
 
 	_float                           m_fTimeDelta = {};
 	_float                           m_fDelayTime = {};

@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\Body_Aisemy.h" />
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
+    <ClInclude Include="..\Public\Body_Magician.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Body_VillageF0.h" />
@@ -330,9 +331,11 @@
     <ClInclude Include="..\Public\UI_UnderLine.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
+    <ClInclude Include="..\Public\Weapon_Cane.h" />
     <ClInclude Include="..\Public\Weapon_Dagger.h" />
     <ClInclude Include="..\Public\Weapon_Axe.h" />
     <ClInclude Include="..\Public\Weapon_GreatSword.h" />
+    <ClInclude Include="..\Public\Weapon_Magician_Sword.h" />
     <ClInclude Include="..\Public\Weapon_Shield.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -353,6 +356,7 @@
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
+    <ClCompile Include="..\Private\Body_Magician.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Body_VillageF0.cpp" />
@@ -502,9 +506,11 @@
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
+    <ClCompile Include="..\Private\Weapon_Cane.cpp" />
     <ClCompile Include="..\Private\Weapon_Dagger.cpp" />
     <ClCompile Include="..\Private\Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Weapon_GreatSword.cpp" />
+    <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp" />
     <ClCompile Include="..\Private\Weapon_Shield.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

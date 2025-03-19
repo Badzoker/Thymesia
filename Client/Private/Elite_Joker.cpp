@@ -242,7 +242,7 @@ void CElite_Joker::RootAnimation()
     _uint iTest = m_pModelCom->Get_Current_Animation_Index();
     if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished()))
     {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) && !m_bNeedControl)
+        if (((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) && !m_bNeedControl) || m_bCan_Move_Anim)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
 
         if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
@@ -746,7 +746,11 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 19;
     pObject->m_iMonster_State = STATE_STUN;
+    pObject->m_bCan_Move_Anim = true;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER;
 }
 
 void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
@@ -765,7 +769,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
         m_iIndex = 17;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    else if (m_iIndex == 18 && pObject->m_fDistance < 1.5f && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    else if (m_iIndex == 18 && /*pObject->m_fDistance < 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Execution_State(), pObject);
 
     if (m_iIndex == 17 && pObject->m_pModelCom->GetAniFinish())
@@ -779,6 +783,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
 
 void CElite_Joker::Stun_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
 }
 
 #pragma endregion
@@ -789,8 +794,16 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 22;
     pObject->m_bHP_Bar_Active = false;
+    pObject->m_bCan_Move_Anim = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_EXECUTION;
+
+    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
+    _vector vResultPos = vPlayerPos + vPlayerLook;
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -807,6 +820,7 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
 
 void CElite_Joker::Execution_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
 }
 
 #pragma endregion

@@ -137,7 +137,7 @@ void CBoss_Varg::Update(_float fTimeDelta)
 
 void CBoss_Varg::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling)
+    if (m_bCulling || m_bDead)
         return;
 
     Recovery_HP();
@@ -176,12 +176,12 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Varg"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Body"), &BodyDesc)))
         return E_FAIL;
 
-    CVargKnife::VARGKNIFE_DESC		Varg_Knife_Desc{};
 
     m_pModelCom = dynamic_cast<CModel*>(__super::Find_PartObject_Component(TEXT("Part_Body_Varg"), TEXT("Com_Model")));
     if (nullptr == m_pModelCom)
         return E_FAIL;
 
+    CVargKnife::VARGKNIFE_DESC		Varg_Knife_Desc{};
     Varg_Knife_Desc.pParent = this;
     Varg_Knife_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r");
     Varg_Knife_Desc.pParentState = &m_iMonster_State;
@@ -506,6 +506,7 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_bCan_Move_Anim = true;
     pObject->m_iMonster_State = STATE_STUN;
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_VARG;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -517,7 +518,7 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
-    if (m_iIndex == 35 && pObject->m_fDistance <= 1.5f && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
+    if (m_iIndex == 35 /*&& pObject->m_fDistance <= 1.5f*/ && pObject->m_pGameInstance->isMouseEnter(DIM_LB))
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), pObject);
 }
 
@@ -713,6 +714,7 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
     //1단
     m_iIndex = 7;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iAttackPower = 145;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -723,6 +725,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
         m_iIndex += 1;
+        pObject->m_iAttackPower = 145;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -731,6 +734,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 8 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
         m_iIndex += 1;
+        pObject->m_iAttackPower = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -761,6 +765,7 @@ void CBoss_Varg::Attack_Combo_A::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iAttackPower = 145;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -771,6 +776,7 @@ void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 11;
+        pObject->m_iAttackPower = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -801,6 +807,7 @@ void CBoss_Varg::Attack_Combo_B::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iAttackPower = 145;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -811,6 +818,7 @@ void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 12;
+        pObject->m_iAttackPower = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -841,6 +849,7 @@ void CBoss_Varg::Attack_Combo_C::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_D::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 7;
+    pObject->m_iAttackPower = 145;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -851,6 +860,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 50.f)
     {
         m_iIndex = 10;
+        pObject->m_iAttackPower = 145;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -858,6 +868,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 12;
+        pObject->m_iAttackPower = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -888,6 +899,7 @@ void CBoss_Varg::Attack_Combo_D::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 10;
+    pObject->m_iAttackPower = 145;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -898,6 +910,7 @@ void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pOb
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
     {
         m_iIndex = 14;
+        pObject->m_iAttackPower = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -957,6 +970,7 @@ void CBoss_Varg::Run_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Raid_Attack_01::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 21;
+    pObject->m_iAttackPower = 174;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -988,6 +1002,7 @@ void CBoss_Varg::Raid_Attack_01::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Raid_Attack_02::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 22;
+    pObject->m_iAttackPower = 174;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1020,7 +1035,15 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 41;
     pObject->m_iMonster_State = STATE_EXECUTION;
+    pObject->RotateDegree_To_Player();
     pObject->m_bCan_Move_Anim = true;
+
+    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
+    _vector vResultPos = vPlayerPos + vPlayerLook;
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1028,7 +1051,7 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 {
     //나중에 페이즈 구분 해줘야할듯
       //1페이즈이고 애님 끝났으면 변환시키기
-    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 118.f)
+    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 120.f)
     {
         m_iIndex = 40;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1127,6 +1150,7 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     if (pObject->m_fDistance <= 1.5f && m_bCanCatch)
     {
         m_iIndex = 28;
+        pObject->m_iAttackPower = 281;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //안부딪혀서 끝까지 진행된 경우
