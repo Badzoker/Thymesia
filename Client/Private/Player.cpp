@@ -67,9 +67,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
+	//_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
 	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
+	 _vector vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // 서커스맵 시작위칩
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
