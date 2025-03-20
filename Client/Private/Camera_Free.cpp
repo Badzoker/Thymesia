@@ -159,265 +159,273 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-
-
-
-	m_fTimeDelta = fTimeDelta;
-
-	if (m_pGameInstance->isMouseEnter(DIM_MB))
+	if (m_pGameInstance->isKeyEnter(DIK_F4))
 	{
-		if (m_pTargetMonster == nullptr)
-		{
-			m_pTargetMonster = Find_LockOnTarget();
+		m_bDebugCameraOnOff = !m_bDebugCameraOnOff;
+	}
 
+	if (!m_bDebugCameraOnOff)
+	{
+#pragma region 카메라 움직임 코드 
+
+		m_fTimeDelta = fTimeDelta;
+
+		if (m_pGameInstance->isMouseEnter(DIM_MB))
+		{
 			if (m_pTargetMonster == nullptr)
-				m_bCamLockOnOff = false;
+			{
+				m_pTargetMonster = Find_LockOnTarget();
+
+				if (m_pTargetMonster == nullptr)
+					m_bCamLockOnOff = false;
+
+				else
+				{
+					m_bCamLockOnOff = true;
+					m_pTargetMonster->Set_Locked_On(true);
+					m_pPlayer->Set_Lockon(true);
+				}
+			}
 
 			else
 			{
-				m_bCamLockOnOff = true;
-				m_pTargetMonster->Set_Locked_On(true);
-				m_pPlayer->Set_Lockon(true);
-			}
-		}
-
-		else
-		{
-			m_bCamLockOnOff = false;
-			m_pTargetMonster->Set_Locked_On(false);
-			m_pPlayer->Set_Lockon(false);
-			m_pTargetMonster = nullptr;
-		}
-
-
-	}
-
-
-	/* ======================================= */
-
-	// 현재 카메라가 갑자기 멀리가는 경향이 있음 이거 보간해야함 
-
-	/* ======================================= */
-
-
-	if (m_bCamera_Cut_Scene_OnOff == false)
-	{
-		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
-		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
-
-		// 플레이어의 충돌체를 기준으로할까.	
-		m_vPlayerHeadPos = XMVectorSet(
-			XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-			XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	 // 3월 19일 수정
-			XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-			1.0f
-		);
-
-		//if(m_bCamera_Cut_Scene_OnOff == true)
-		if (m_bGetBackCamPos)
-		{
-			m_vLerpPlayerHeadPos = XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_vPlayerHeadPos, m_fLerpTime), 1.f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
-			m_bGetBackCamPos = false;
-		}
-		else
-			m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);
-
-		// 카메라 이동 처리
-		_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-		_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-		_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
-
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpCamPos);	 // 위치를 이렇게 세팅하니깐 다시 위에서는 vCamPosition 값이 증가하게되어 보간효과 o 
-
-
-		/* 이동속도를 줌으로써 계산을 진행? */
-		float CosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		float OppostieCosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, -1.f, 0.f, 0.f)));
-		//angleRadians = acosf(cosTheta); // 라디안 값	
-		float AngleDegrees = XMConvertToDegrees(acosf(CosTheta));         // 각도를 도(degree)로 변환							
-		float OppositeAngleDegrees = XMConvertToDegrees(acosf(OppostieCosTheta)); // 각도를 도(degree)로 변환			
-
-
-
-
-		/* 평상시 카메라 */
-		if (!m_bCamLockOnOff)
-		{
-
-			if (m_pGameInstance->isKeyEnter(DIK_TAB))
-			{
-				if (m_bStop)
-					m_bStop = false;
-				else
-					m_bStop = true;
-			}
-
-			if (!m_bStop)
-			{
-
-				if (MouseMoveX != 0 || MouseMoveY != 0)
-				{
-					// X축(Y축 기준 회전)
-					if (MouseMoveX != 0)
-					{
-						m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-					}
-
-					// Y축(Right 축 기준 회전)
-					if (MouseMoveY != 0)
-					{
-
-						if (AngleDegrees > 40.f && OppositeAngleDegrees > 80.f)
-							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-
-
-						else if (AngleDegrees < 40.f && MouseMoveY < 0.f)
-						{
-							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-						}
-
-						else if (OppositeAngleDegrees < 80.f && MouseMoveY > 0.f)
-						{
-							m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
-						}
-					}
-				}
-			}
-		}
-		/* ======================================================= */
-
-		/* 락온 카메라 */
-		else // Lock On 카메라 상태 
-		{
-
-			/* 삭제이벤트가 발생했다면 m_pTargetMonster가 nullptr가 되어야함. */
-			if (m_pTargetMonster->Get_Monster_State() == STATE_EXECUTION || m_pTargetMonster->Get_Monster_State() == STATE_DEAD)
-			{
-
 				m_bCamLockOnOff = false;
-
-				m_pPlayer->Set_Lockon(false);
 				m_pTargetMonster->Set_Locked_On(false);
-
+				m_pPlayer->Set_Lockon(false);
 				m_pTargetMonster = nullptr;
-
 			}
 
-			else if (m_pTargetMonster->Get_Monster_State() != STATE_EXECUTION)
-			{
-				/* 플레이어 회전 관련 */
-				_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
-				_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-
-				_vector vDir = (MonsterPos - PlayerPos);
-
-				_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
-
-				_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
-				_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
-
-				_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
-				dotResult = max(-1.0f, min(dotResult, 1.0f));
-				float Radian = acosf(dotResult);
-
-				_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
-				float crossY = XMVectorGetY(crossResult);
-				if (crossY < 0.0f) {
-					Radian = -Radian;
-
-				}
-				/* =============================================== */
-
-
-				/* 카메라 회전 관련 */
-
-
-
-
-
-				/* 카메라 방향 전환 관련 */
-
-				//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
-				LockOnCameraTurn(fTimeDelta);
-
-
-
-				/* 플레이어 방향 전환 */
-				//if (abs(Radian) > 0.1f)
-				m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
-
-
-			}
 
 		}
-		/* ===================================================================== */
-
-		// Look 벡터 갱신 (플레이어 머리 위치를 바라보도록 설정)
-		_vector CamDir = XMVectorSetW(XMVector3Normalize(m_vLerpPlayerHeadPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
-		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
-
-		// Right 벡터 갱신 (Up × Look)
-		_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);
-		_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));
-
-		// Up 벡터 갱신 (Look × Right)
-		_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));
-
-		// Transform 갱신
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
 
 
+		/* ======================================= */
+
+		// 현재 카메라가 갑자기 멀리가는 경향이 있음 이거 보간해야함 
+
+		/* ======================================= */
+
+
+		if (m_bCamera_Cut_Scene_OnOff == false)
+		{
+			_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
+			_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
+
+			// 플레이어의 충돌체를 기준으로할까.	
+			m_vPlayerHeadPos = XMVectorSet(
+				XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+				XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	 // 3월 19일 수정
+				XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
+				1.0f
+			);
+
+			//if(m_bCamera_Cut_Scene_OnOff == true)
+			if (m_bGetBackCamPos)
+			{
+				m_vLerpPlayerHeadPos = XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_vPlayerHeadPos, m_fLerpTime), 1.f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
+				m_bGetBackCamPos = false;
+			}
+			else
+				m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);
+
+			// 카메라 이동 처리
+			_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+			_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
+
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpCamPos);	 // 위치를 이렇게 세팅하니깐 다시 위에서는 vCamPosition 값이 증가하게되어 보간효과 o 
+
+
+			/* 이동속도를 줌으로써 계산을 진행? */
+			float CosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+			float OppostieCosTheta = XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f, XMVectorSet(0.f, -1.f, 0.f, 0.f)));
+			//angleRadians = acosf(cosTheta); // 라디안 값	
+			float AngleDegrees = XMConvertToDegrees(acosf(CosTheta));         // 각도를 도(degree)로 변환							
+			float OppositeAngleDegrees = XMConvertToDegrees(acosf(OppostieCosTheta)); // 각도를 도(degree)로 변환			
+
+
+
+
+			/* 평상시 카메라 */
+			if (!m_bCamLockOnOff)
+			{
+
+				if (m_pGameInstance->isKeyEnter(DIK_TAB))
+				{
+					if (m_bStop)
+						m_bStop = false;
+					else
+						m_bStop = true;
+				}
+
+				if (!m_bStop)
+				{
+
+					if (MouseMoveX != 0 || MouseMoveY != 0)
+					{
+						// X축(Y축 기준 회전)
+						if (MouseMoveX != 0)
+						{
+							m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+						}
+
+						// Y축(Right 축 기준 회전)
+						if (MouseMoveY != 0)
+						{
+
+							if (AngleDegrees > 40.f && OppositeAngleDegrees > 80.f)
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+
+
+							else if (AngleDegrees < 40.f && MouseMoveY < 0.f)
+							{
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+							}
+
+							else if (OppositeAngleDegrees < 80.f && MouseMoveY > 0.f)
+							{
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+							}
+						}
+					}
+				}
+			}
+			/* ======================================================= */
+
+			/* 락온 카메라 */
+			else // Lock On 카메라 상태 
+			{
+
+				/* 삭제이벤트가 발생했다면 m_pTargetMonster가 nullptr가 되어야함. */
+				if (m_pTargetMonster->Get_Monster_State() == STATE_EXECUTION || m_pTargetMonster->Get_Monster_State() == STATE_DEAD)
+				{
+
+					m_bCamLockOnOff = false;
+
+					m_pPlayer->Set_Lockon(false);
+					m_pTargetMonster->Set_Locked_On(false);
+
+					m_pTargetMonster = nullptr;
+
+				}
+
+				else if (m_pTargetMonster->Get_Monster_State() != STATE_EXECUTION)
+				{
+					/* 플레이어 회전 관련 */
+					_vector PlayerPos = m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION);
+					_vector MonsterPos = m_pTargetMonster->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+					_vector vDir = (MonsterPos - PlayerPos);
+
+					_vector vPlayerLook = m_pPlayerTransformCom->Get_State(CTransform::STATE_LOOK);
+
+					_vector vLookPlayerXZ = XMVector2Normalize(_fvector{ vPlayerLook.m128_f32[0] ,vPlayerLook.m128_f32[2] }); // 이게 플레이어 xz 룩방향
+					_vector vDirLook = XMVector2Normalize(_fvector{ vDir.m128_f32[0],vDir.m128_f32[2] });// 이게 현재 플레이어의 위치에서 몬스터 방향
+
+					_float  dotResult = XMVectorGetX(XMVector2Dot(vLookPlayerXZ, vDirLook));
+					dotResult = max(-1.0f, min(dotResult, 1.0f));
+					float Radian = acosf(dotResult);
+
+					_vector crossResult = XMVector2Cross(vDirLook, vLookPlayerXZ);
+					float crossY = XMVectorGetY(crossResult);
+					if (crossY < 0.0f) {
+						Radian = -Radian;
+
+					}
+					/* =============================================== */
+
+
+					/* 카메라 회전 관련 */
+
+
+
+
+
+					/* 카메라 방향 전환 관련 */
+
+					//m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian* fTimeDelta, m_vLerpPlayerHeadPos);	
+					LockOnCameraTurn(fTimeDelta);
+
+
+
+					/* 플레이어 방향 전환 */
+					//if (abs(Radian) > 0.1f)
+					m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
+
+
+				}
+
+			}
+			/* ===================================================================== */
+
+			// Look 벡터 갱신 (플레이어 머리 위치를 바라보도록 설정)
+			_vector CamDir = XMVectorSetW(XMVector3Normalize(m_vLerpPlayerHeadPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
+			//m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
+
+			// Right 벡터 갱신 (Up × Look)
+			_vector vUp = m_pPlayerTransformCom->Get_State(CTransform::STATE_UP);
+			_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, CamDir));
+
+			// Up 벡터 갱신 (Look × Right)
+			_vector vNewUp = XMVector3Normalize(XMVector3Cross(CamDir, vRight));
+
+			// Transform 갱신
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE_UP, vNewUp);
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
+
+
+		}
+
+		_vector vCamDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+
+		/* 여기에 이벤트가 들어와야함. */
+		if (m_bShakeOnOff)
+		{
+			_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
+		}
+
+
+		if (m_bZoomIn)
+		{
+			if (m_fCamCloseLimitDistance < m_fCurCamDistance)
+				m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomSpeed;
+
+			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+
+		}
+
+
+		if (m_bZoomOut)
+		{
+			if (m_fCamFarLimitDistance > m_fCurCamDistance)
+				m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomSpeed;
+
+			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
+
+		}
+
+
+		m_fZoomSpeed = 1.f;
+		m_bShakeOnOff = false;
+		m_bZoomIn = false;
+		m_bZoomOut = false;
+
+
+		__super::Priority_Update(fTimeDelta);
+
+#pragma endregion 
 	}
-
-	_vector vCamDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-
-	/* 여기에 이벤트가 들어와야함. */
-	if (m_bShakeOnOff)
-	{
-		_vector CamPos = Camera_Shake(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, CamPos);
-	}
-
-
-	if (m_bZoomIn)
-	{
-		if (m_fCamCloseLimitDistance < m_fCurCamDistance)
-			m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomSpeed;
-
-		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-
-	}
-
-
-	if (m_bZoomOut)
-	{
-		if (m_fCamFarLimitDistance > m_fCurCamDistance)
-			m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomSpeed;
-
-		_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
-
-	}
-
-
-	m_fZoomSpeed = 1.f;
-	m_bShakeOnOff = false;
-	m_bZoomIn = false;
-	m_bZoomOut = false;
-
-
-
-	__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_Free::Update(_float fTimeDelta)

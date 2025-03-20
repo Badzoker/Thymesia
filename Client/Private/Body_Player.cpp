@@ -36,7 +36,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pParentStateMgr = pDesc->pParentStateMgr;
     m_pParentNavigationCom = pDesc->pParentNavigationCom;
     m_pParentActor = pDesc->pParentActor;
-    m_pParentMonsterExecute = pDesc->pParentExectueMonsterState;       
+    m_pParentMonsterExecute = pDesc->pParentExectueMonsterState;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -68,161 +68,186 @@ void CBody_Player::Update(_float fTimeDelta)
 
     switch (*m_pParentState)
     {
-    case STATE_IDLE:
+    case CPlayer::STATE_IDLE:
         STATE_IDLE_Method();
         break;
-    case STATE_RUN:
+    case CPlayer::STATE_RUN:
         STATE_RUN_Method();
         break;
-    case STATE_LOCK_ON_RUN_B:
+    case CPlayer::STATE_LOCK_ON_RUN_B:
         STATE_LOCK_ON_RUN_B_Method();
         break;
-    case STATE_LOCK_ON_RUN_BL:
+    case CPlayer::STATE_LOCK_ON_RUN_BL:
         STATE_LOCK_ON_RUN_BL_Method();
         break;
-    case STATE_LOCK_ON_RUN_BR:
+    case CPlayer::STATE_LOCK_ON_RUN_BR:
         STATE_LOCK_ON_RUN_BR_Method();
         break;
-    case STATE_LOCK_ON_RUN_FL:
+    case CPlayer::STATE_LOCK_ON_RUN_FL:
         STATE_LOCK_ON_RUN_FL_Method();
         break;
-    case STATE_LOCK_ON_RUN_FR:
+    case CPlayer::STATE_LOCK_ON_RUN_FR:
         STATE_LOCK_ON_RUN_FR_Method();
         break;
-    case STATE_LOCK_ON_RUN_L:
+    case CPlayer::STATE_LOCK_ON_RUN_L:
         STATE_LOCK_ON_RUN_L_Method();
         break;
-    case STATE_LOCK_ON_RUN_R:
+    case CPlayer::STATE_LOCK_ON_RUN_R:
         STATE_LOCK_ON_RUN_R_Method();
         break;
-    case STATE_WALK:
+    case CPlayer::STATE_WALK:
         STATE_WALK_Method();
         break;
-    case STATE_ATTACK:
+    case CPlayer::STATE_ATTACK:
         STATE_ATTACK_Method();
         break;
-    case STATE_ATTACK_L1:
+    case CPlayer::STATE_ATTACK_L1:
         STATE_ATTACK_L1_Method();
         break;
-    case STATE_ATTACK_L2:
+    case CPlayer::STATE_ATTACK_L2:
         STATE_ATTACK_L2_Method();
         break;
-    case STATE_ATTACK_L3:
+    case CPlayer::STATE_ATTACK_L3:
         STATE_ATTACK_L3_Method();
         break;
-    case STATE_ATTACK_L4:
+    case CPlayer::STATE_ATTACK_L4:
         STATE_ATTACK_L4_Method();
         break;
-    case STATE_ATTACK_L5:
+    case CPlayer::STATE_ATTACK_L5:
         STATE_ATTACK_L5_Method();
         break;
-    case STATE_ATTACK_LONG_CLAW_01:
+    case CPlayer::STATE_ATTACK_LONG_CLAW_01:
         STATE_ATTACK_LONG_CLAW_01_Method();
         break;
-    case STATE_ATTACK_LONG_CLAW_02:
+    case CPlayer::STATE_ATTACK_LONG_CLAW_02:
         STATE_ATTACK_LONG_CLAW_02_Method();
         break;
-    case STATE_LOCK_ON_EVADE_B:
+    case CPlayer::STATE_LOCK_ON_EVADE_B:
         STATE_LOCK_ON_EVADE_B_Method();
         break;
-    case STATE_LOCK_ON_EVADE_L:
+    case CPlayer::STATE_LOCK_ON_EVADE_L:
         STATE_LOCK_ON_EVADE_L_Method();
         break;
-    case STATE_LOCK_ON_EVADE_R:
+    case CPlayer::STATE_LOCK_ON_EVADE_R:
         STATE_LOCK_ON_EVADE_R_Method();
         break;
-    case STATE_LOCK_ON_EVADE_F:
+    case CPlayer::STATE_LOCK_ON_EVADE_F:
         STATE_LOCK_ON_EVADE_F_Method();
         break;
-    case STATE_PARRY_L:
+    case CPlayer::STATE_PARRY_L:
         STATE_PARRY_L_Method();
         break;
-    case STATE_PARRY_R:
+    case CPlayer::STATE_PARRY_R:
         STATE_PARRY_R_Method();
         break;
-    case STATE_HurtMFR_L:
+    case CPlayer::STATE_HurtMFR_L:
         STATE_HurtMFR_L_Method();
         break;
-    case STATE_HurtMFR_R:
+    case CPlayer::STATE_HurtMFR_R:
         STATE_HurtMFR_R_Method();
         break;
-    case STATE_HURT_LF:
+    case CPlayer::STATE_HURT_LF:
         STATE_HURT_LF_Method();
         break;
-    case STATE_HURT_SF:
+    case CPlayer::STATE_HURT_SF:
         STATE_HURT_SF_Method();
         break;
-    case STATE_HURT_SL:
+    case CPlayer::STATE_HURT_SL:
         STATE_HURT_SL_Method();
         break;
-    case STATE_HURT_HURXXLF:
+    case CPlayer::STATE_HURT_HURXXLF:
         STATE_HURT_HURXXLF_Method();
         break;
-    case STATE_HURT_KNOCKBACK:
+    case CPlayer::STATE_HURT_KNOCKBACK:
         STATE_HURT_KNOCKBACK_Method();
         break;
-    case STATE_HURT_KNOCKDOWN:
+    case CPlayer::STATE_HURT_KNOCKDOWN:
         STATE_HURT_KNOCKDOWN_Method();
         break;
-    case STATE_HURT_FALLDOWN:
+    case CPlayer::STATE_HURT_FALLDOWN:
         STATE_HURT_FALLDOWN_Method();
         break;
-    case STATE_HURT_FALLDOWN_END:   
-        STATE_HURT_FALLDOWN_END_Method();   
-        break;  
-    case STATE_WEAK_GETUP_F:
+    case CPlayer::STATE_HURT_FALLDOWN_END:
+        STATE_HURT_FALLDOWN_END_Method();
+        break;
+    case CPlayer::STATE_WEAK_GETUP_F:
         STATE_WEAK_GETUP_F_Method();
         break;
-    case STATE_PARRY_DEFLECT_L:
+    case CPlayer::STATE_REBOUND_R:
+        STATE_REBOUND_R_Method();
+        break;
+    case CPlayer::STATE_STUNNED_START:
+        STATE_STUNNED_START_Method();
+        break;
+    case CPlayer::STATE_STUNNED_LOOP:
+        STATE_STUNNED_LOOP_Method();
+        break;
+    case CPlayer::STATE_PARRY_DEFLECT_L:
         STATE_PARRY_DEFLECT_L_Method();
         break;
-    case STATE_PARRY_DEFLECT_L_UP:
+    case CPlayer::STATE_PARRY_DEFLECT_L_UP:
         STATE_PARRY_DEFLECT_L_UP_Method();
         break;
-    case STATE_PARRY_DEFLECT_R:
+    case CPlayer::STATE_PARRY_DEFLECT_R:
         STATE_PARRY_DEFLECT_R_Method();
         break;
-    case STATE_PARRY_DEFLECT_R_UP:
+    case CPlayer::STATE_PARRY_DEFLECT_R_UP:
         STATE_PARRY_DEFLECT_R_UP_Method();
         break;
-    case STATE_NORMAL_EVADE_R:
+    case CPlayer::STATE_NORMAL_EVADE_R:
         STATE_NORMAL_EVADE_R_Method();
         break;
-    case STATE_NORMAL_EVADE_L:
+    case CPlayer::STATE_NORMAL_EVADE_L:
         STATE_NORMAL_EVADE_L_Method();
         break;
-    case STATE_NORMAL_EVADE_FR:
+    case CPlayer::STATE_NORMAL_EVADE_FR:
         STATE_NORMAL_EVADE_FR_Method();
         break;
-    case STATE_NORMAL_EVADE_FL:
+    case CPlayer::STATE_NORMAL_EVADE_FL:
         STATE_NORMAL_EVADE_FL_Method();
         break;
-    case STATE_NORMAL_EVADE_F:
+    case CPlayer::STATE_NORMAL_EVADE_F:
         STATE_NORMAL_EVADE_F_Method();
         break;
-    case STATE_NORMAL_EVADE_BR:
+    case CPlayer::STATE_NORMAL_EVADE_BR:
         STATE_NORMAL_EVADE_BR_Method();
         break;
-    case STATE_NORMAL_EVADE_BL:
+    case CPlayer::STATE_NORMAL_EVADE_BL:
         STATE_NORMAL_EVADE_BL_Method();
         break;
-    case STATE_NORMAL_EVADE_B:
+    case CPlayer::STATE_NORMAL_EVADE_B:
         STATE_NORMAL_EVADE_B_Method();
         break;
-    case STATE_HARMOR_EXECUTION:
+    case CPlayer::STATE_HARMOR_EXECUTION:
         STATE_HARMOR_EXECUTION_Method();
         break;
-    case STATE_STUN_EXECUTE:
+    case CPlayer::STATE_STUN_EXECUTE:
         STATE_STUN_EXECUTE_Method();
         break;
-    case STATE_LV1Villager_M_Execution:
+    case CPlayer::STATE_LV1Villager_M_Execution:
         STATE_LV1Villager_M_Execution_Method();
         break;
-    case STATE_Joker_Execution:
+    case CPlayer::STATE_Joker_Execution:
         STATE_Joker_Execution_Method();
         break;
-    case STATE_Varg_Execution:
+    case CPlayer::STATE_Varg_Execution:
         STATE_Varg_Execution_Method();
+        break;  
+    case CPlayer::STATE_ARCHIVE_SIT_START:
+        STATE_ARCHIVE_SIT_START_Method();
+        break;
+    case CPlayer::STATE_ARCHIVE_SIT_LOOP:
+        STATE_ARCHIVE_SIT_LOOP_Method();
+        break;
+    case CPlayer::STATE_ARCHIVE_SIT_GETUP:
+        STATE_ARCHIVE_SIT_GETUP_Method();
+        break;
+    case CPlayer::STATE_ARCHIVE_SIT_LIGHT_UP:
+        STATE_ARCHIVE_SIT_LIGHT_UP_Method();
+        break;
+    case CPlayer::STATE_HEAL:
+        STATE_HEAL_Method();
+        break;
     default:
         break;
     }
@@ -288,7 +313,8 @@ void CBody_Player::Update(_float fTimeDelta)
 
                     if (!strcmp(iter.szName, "Evade"))
                     {
-                        m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+                        if (*m_pParentState != CPlayer::STATE_NORMAL_EVADE_F)
+                            m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
                     }
                 }
 
@@ -314,12 +340,13 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
-        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)     
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
         {
             m_pGameInstance->Add_Actor_Scene(m_pParentActor); // 이걸 빼줘야하는데 처형신에서는 ;;           
-            m_pCamera->ResetZoomInCameraPos();      
-        }   
+            m_pCamera->ResetZoomInCameraPos();
+        }
     }
+
 #pragma endregion  
 
 
@@ -327,8 +354,8 @@ void CBody_Player::Update(_float fTimeDelta)
 
 void CBody_Player::Late_Update(_float fTimeDelta)
 {
-    if (m_pParentState != m_pPreParentState)    
-        m_pModelCom->Get_CurAnimation()->Set_HitStopTime(1.f);  
+    if (m_pParentState != m_pPreParentState)
+        m_pModelCom->Get_CurAnimation()->Set_HitStopTime(1.f);
 
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
@@ -474,7 +501,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 {
     m_pModelCom->SetUp_Animation(3, false);
 
-    if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
@@ -482,7 +509,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
     }
 
-    if (*m_pParentState == STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -490,7 +517,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
-    if (*m_pParentState == STATE_ATTACK_L1
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L1
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -501,26 +528,26 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -529,7 +556,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_L1
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L1
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -541,50 +568,50 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -600,13 +627,13 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 {
     m_pModelCom->SetUp_Animation(4, false);
 
-    if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(4)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(4)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -615,7 +642,7 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
 
 #pragma region 락온 상태  O 타격 중  회피 
-    if (*m_pParentState == STATE_ATTACK_L2
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L2
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -626,26 +653,26 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -654,7 +681,7 @@ void CBody_Player::STATE_ATTACK_L2_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_L2
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L2
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -666,50 +693,50 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -723,13 +750,13 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 {
     m_pModelCom->SetUp_Animation(5, false);
 
-    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(5)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(5)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -737,7 +764,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
-    if (*m_pParentState == STATE_ATTACK_L3
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L3
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -748,26 +775,26 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -776,7 +803,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_L3
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L3
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -788,50 +815,50 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -845,13 +872,13 @@ void CBody_Player::STATE_ATTACK_L4_Method()
 {
     m_pModelCom->SetUp_Animation(276, false);
 
-    if (*m_pParentState == STATE_ATTACK_L4 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L4 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_L4 && m_pModelCom->Get_VecAnimation().at(276)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L4 && m_pModelCom->Get_VecAnimation().at(276)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -859,7 +886,7 @@ void CBody_Player::STATE_ATTACK_L4_Method()
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
-    if (*m_pParentState == STATE_ATTACK_L4
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L4
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -870,26 +897,26 @@ void CBody_Player::STATE_ATTACK_L4_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -898,7 +925,7 @@ void CBody_Player::STATE_ATTACK_L4_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_L4
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L4
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -910,50 +937,50 @@ void CBody_Player::STATE_ATTACK_L4_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -969,13 +996,13 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 
     m_pModelCom->SetUp_Animation(277, false);
 
-    if (*m_pParentState == STATE_ATTACK_L5 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L5 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_L5 && m_pModelCom->Get_VecAnimation().at(277)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L5 && m_pModelCom->Get_VecAnimation().at(277)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -983,7 +1010,7 @@ void CBody_Player::STATE_ATTACK_L5_Method()
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
-    if (*m_pParentState == STATE_ATTACK_L5
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L5
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -994,26 +1021,26 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -1022,7 +1049,7 @@ void CBody_Player::STATE_ATTACK_L5_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_L5
+    if (*m_pParentState == CPlayer::STATE_ATTACK_L5
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -1034,50 +1061,50 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -1093,14 +1120,14 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
     m_pModelCom->SetUp_Animation(0, false);
 
 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
 
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_VecAnimation().at(0)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_VecAnimation().at(0)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -1109,7 +1136,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 
 
 #pragma region 락온 상태  O 타격 중  회피    
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -1120,26 +1147,26 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -1148,7 +1175,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_01
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -1160,50 +1187,50 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -1218,13 +1245,13 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 {
     m_pModelCom->SetUp_Animation(1, false);
 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
@@ -1233,7 +1260,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
 
 #pragma region 락온 상태  O 타격 중  회피    
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02
         && (*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -1244,26 +1271,26 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_F;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
 
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_L;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_R;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_LOCK_ON_EVADE_B;
+                *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
@@ -1272,7 +1299,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
     }
 #pragma endregion 
 #pragma region 락온 상태 X 타격 중 노말 회피 
-    if (*m_pParentState == STATE_ATTACK_LONG_CLAW_02
+    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02
         && !(*m_pParentPhsaeState & CPlayer::PHASE_LOCKON)
         && m_pModelCom->Get_CurrentAnmationTrackPosition() > 10.f)
     {
@@ -1284,50 +1311,50 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
             if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_FR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BL;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_BR;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
 
             else if (m_pGameInstance->isKeyPressed(DIK_S))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_B;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_L;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
-                *m_pParentState = STATE_NORMAL_EVADE_R;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
 
             else
             {
-                *m_pParentState = STATE_NORMAL_EVADE_F;
+                *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
             }
         }
@@ -1449,7 +1476,7 @@ void CBody_Player::STATE_PARRY_L_Method()
         && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
     {
 
-        *m_pParentPhsaeState |= CPlayer::PHASE_PARRY;
+        *m_pParentPhsaeState |= CPlayer::PHASE_PARRY; // 
     }
 
     else
@@ -1464,6 +1491,8 @@ void CBody_Player::STATE_PARRY_R_Method()
 {
     m_pModelCom->SetUp_Animation(16, false);
     m_iRenderState = STATE_NORMAL;
+
+    m_pModelCom->Get_VecAnimation().at(16)->Set_StartOffSetTrackPosition(10.f);
 
     if (m_pModelCom->Get_VecAnimation().at(16)->isAniMationFinish())
     {
@@ -1526,7 +1555,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     }
 
     else
-    { 
+    {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
 
 
@@ -1535,15 +1564,11 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     }
 
 
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가 
-    {
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
-    }
-
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
     {
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
     }
 
     /* 여기 애니메이션 안끝났을 때 다른 동작시 문제 생김 */
@@ -1562,34 +1587,29 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
         if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
         {
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-        
+
         }
 
         else
         {
             m_bParryStopOnOff = false;
             m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-           
+
         }
     }
 
     else
     {
-        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         m_fHitStopTime = 0.f;
         m_bParryStopOnOff = true;
     }
-
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가   
-    {
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
-    }   
-
 
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
     }
 }
 void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
@@ -1597,11 +1617,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
     m_pModelCom->SetUp_Animation(59, false);
     m_iRenderState = STATE_NORMAL;
 
-
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가 
-    {
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
-    }
 
     if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
     {
@@ -1615,11 +1630,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
     m_iRenderState = STATE_NORMAL;
 
 
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 20.f)  // 3월 19일 추가   
-    {   
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
-    }   
-
     if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
     {
         *m_pParentState = STATE_IDLE;
@@ -1631,16 +1641,15 @@ void CBody_Player::STATE_HurtMFR_L_Method()
     m_pModelCom->SetUp_Animation(31, false);
     m_iRenderState = STATE_NORMAL;
 
+    *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
     if (m_pModelCom->Get_VecAnimation().at(31)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
-        //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);  
-
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 void CBody_Player::STATE_HurtMFR_R_Method()
@@ -1648,17 +1657,14 @@ void CBody_Player::STATE_HurtMFR_R_Method()
     m_pModelCom->SetUp_Animation(32, false);
     m_iRenderState = STATE_NORMAL;
 
+
     if (m_pModelCom->Get_VecAnimation().at(32)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
-        /* IDLE lerp time 없애주는거 */
-        //m_pModelCom->Get_VecAnimation().at(2)->Set_LerpTime(0.2f);
-
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;      
     }
 }
 
@@ -1667,6 +1673,7 @@ void CBody_Player::STATE_HURT_LF_Method()
     m_pModelCom->SetUp_Animation(30, false);
     m_iRenderState = STATE_NORMAL;
 
+
     if (m_pModelCom->Get_VecAnimation().at(30)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
@@ -1674,7 +1681,7 @@ void CBody_Player::STATE_HURT_LF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+
     }
 }
 
@@ -1683,6 +1690,8 @@ void CBody_Player::STATE_HURT_SF_Method()
     m_pModelCom->SetUp_Animation(33, false);
     m_iRenderState = STATE_NORMAL;
 
+
+
     if (m_pModelCom->Get_VecAnimation().at(33)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
@@ -1690,7 +1699,7 @@ void CBody_Player::STATE_HURT_SF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;      
+
     }
 }
 
@@ -1698,6 +1707,8 @@ void CBody_Player::STATE_HURT_SL_Method()
 {
     m_pModelCom->SetUp_Animation(34, false);
     m_iRenderState = STATE_NORMAL;
+
+
 
     if (m_pModelCom->Get_VecAnimation().at(34)->isAniMationFinish())
     {
@@ -1715,6 +1726,7 @@ void CBody_Player::STATE_HURT_HURXXLF_Method()
     m_pModelCom->SetUp_Animation(37, false);
     m_iRenderState = STATE_NORMAL;
 
+
     if (m_pModelCom->Get_VecAnimation().at(37)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
@@ -1722,7 +1734,7 @@ void CBody_Player::STATE_HURT_HURXXLF_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+
     }
 }
 
@@ -1731,6 +1743,9 @@ void CBody_Player::STATE_HURT_KNOCKBACK_Method()
     m_pModelCom->SetUp_Animation(38, false);
     m_iRenderState = STATE_NORMAL;
 
+
+
+
     if (m_pModelCom->Get_VecAnimation().at(38)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
@@ -1738,7 +1753,7 @@ void CBody_Player::STATE_HURT_KNOCKBACK_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+
     }
 }
 
@@ -1747,15 +1762,12 @@ void CBody_Player::STATE_HURT_KNOCKDOWN_Method()
     m_pModelCom->SetUp_Animation(29, false);
     m_iRenderState = STATE_NORMAL;
 
+
+
     if (m_pModelCom->Get_VecAnimation().at(29)->isAniMationFinish())
     {
-        *m_pParentState = STATE_WEAK_GETUP_F;
-        /**m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
-        *m_pParentNextStateCan = true;
+        *m_pParentState = CPlayer::STATE_WEAK_GETUP_F;
 
-        *m_pParentState = STATE_IDLE;*/
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
     }
 }
 
@@ -1764,33 +1776,29 @@ void CBody_Player::STATE_HURT_FALLDOWN_Method()
     m_pModelCom->SetUp_Animation(27, false);
     m_iRenderState = STATE_NORMAL;
 
+
+
     if (m_pModelCom->Get_VecAnimation().at(27)->isAniMationFinish())
     {
-        /* *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
-         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
-         *m_pParentNextStateCan = true;*/
-
-        *m_pParentState = STATE_HURT_FALLDOWN_END;
-
-        //*m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+        *m_pParentState = CPlayer::STATE_HURT_FALLDOWN_END;
     }
 }
 
 void CBody_Player::STATE_HURT_FALLDOWN_END_Method()
 {
     m_pModelCom->SetUp_Animation(28, false);
-    m_iRenderState = STATE_NORMAL;  
+    m_iRenderState = STATE_NORMAL;
 
-    if (m_pModelCom->Get_VecAnimation().at(28)->isAniMationFinish())    
-    {   
+
+    if (m_pModelCom->Get_VecAnimation().at(28)->isAniMationFinish())
+    {
 
         *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
     }
 }
 
@@ -1806,9 +1814,54 @@ void CBody_Player::STATE_WEAK_GETUP_F_Method()
         *m_pParentNextStateCan = true;
 
         *m_pParentState = STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
 }
+
+void CBody_Player::STATE_REBOUND_R_Method()
+{
+
+    m_pModelCom->SetUp_Animation(62, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(62)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
+        *m_pParentState = STATE_IDLE;
+
+    }
+}
+
+void CBody_Player::STATE_STUNNED_START_Method()
+{
+    m_pModelCom->SetUp_Animation(25, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(25)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_STUNNED_LOOP;
+    }
+}
+
+void CBody_Player::STATE_STUNNED_LOOP_Method()
+{
+    m_pModelCom->SetUp_Animation(24, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(24)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
+        *m_pParentState = STATE_IDLE;
+    }
+}
+
+
 
 void CBody_Player::STATE_NORMAL_EVADE_R_Method()
 {
@@ -1903,7 +1956,7 @@ void CBody_Player::STATE_NORMAL_EVADE_B_Method()
     }
 }
 
-void CBody_Player::STATE_HARMOR_EXECUTION_Method()  
+void CBody_Player::STATE_HARMOR_EXECUTION_Method()
 {
     m_pModelCom->SetUp_Animation(222, false);
     m_iRenderState = STATE_NORMAL;
@@ -1912,7 +1965,7 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;   
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
 }
 
@@ -1925,18 +1978,18 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
     {
         switch (*m_pParentMonsterExecute)
         {
-        case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:    
-            *m_pParentState = STATE_HARMOR_EXECUTION;   
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:
+            *m_pParentState = CPlayer::STATE_HARMOR_EXECUTION;
             break;
-        case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER: 
-            *m_pParentState = STATE_Joker_Execution;    
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:
+            *m_pParentState = CPlayer::STATE_Joker_Execution;
             break;
-        case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:  
-            *m_pParentState = STATE_Varg_Execution; 
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
+            *m_pParentState = CPlayer::STATE_Varg_Execution;
             break;
         default:
-            break;  
-        }   
+            break;
+        }
         // 여기를 이제 부모에서 받아온 몬스터 처형 스테이트로 switch case 문으로 하면 될듯 
     }
 
@@ -1956,7 +2009,7 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;       
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
 }
 
@@ -1969,7 +2022,7 @@ void CBody_Player::STATE_Joker_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentMonsterExecute= MONSTER_EXECUTION_CATEGORY::MONSTER_START;    
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
 }
 
@@ -1982,7 +2035,60 @@ void CBody_Player::STATE_Varg_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;       
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
+void CBody_Player::STATE_ARCHIVE_SIT_START_Method()
+{
+    m_pModelCom->SetUp_Animation(66, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(66)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_ARCHIVE_SIT_LOOP;
+    }
+
+}
+
+void CBody_Player::STATE_ARCHIVE_SIT_LOOP_Method()
+{
+    m_pModelCom->SetUp_Animation(65, false);
+    m_iRenderState = STATE_NORMAL;
+
+    m_pModelCom->Get_VecAnimation().at(65)->Set_AnimationSpeed(0.f);
+    /* if (m_pModelCom->Get_VecAnimation().at(65)->isAniMationFinish())
+     {
+         m_pModelCom->
+     }*/
+}
+
+void CBody_Player::STATE_ARCHIVE_SIT_GETUP_Method()
+{
+    m_pModelCom->SetUp_Animation(63, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(63)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_CHAIR;
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+    }
+}
+
+void CBody_Player::STATE_ARCHIVE_SIT_LIGHT_UP_Method()
+{
+    /* 의자 불켜기 관련 */
+}
+
+void CBody_Player::STATE_HEAL_Method()
+{
+    m_pModelCom->SetUp_Animation(237, false);
+    m_iRenderState = STATE_NORMAL;
+
+    if (m_pModelCom->Get_VecAnimation().at(237)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HEAL;
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
     }
 }
 

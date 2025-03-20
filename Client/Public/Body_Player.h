@@ -18,95 +18,21 @@ class CCamera_Free;
 
 class CBody_Player final : public CPartObject
 {
-	enum STATE
-	{
-		STATE_IDLE,
-		STATE_RUN,
-		/* 락온 상태일때의 모션 */
-		STATE_LOCK_ON_RUN_B,
-		STATE_LOCK_ON_RUN_BL,
-		STATE_LOCK_ON_RUN_BR,
-		STATE_LOCK_ON_RUN_FL,
-		STATE_LOCK_ON_RUN_FR,
-		STATE_LOCK_ON_RUN_L,
-		STATE_LOCK_ON_RUN_R,
-
-		STATE_LOCK_ON_EVADE_F,
-		STATE_LOCK_ON_EVADE_B,
-		STATE_LOCK_ON_EVADE_L,
-		STATE_LOCK_ON_EVADE_R,
-		/* ==================== */
-		STATE_WALK,
-		STATE_ATTACK,
-		STATE_ATTACK_L1,
-		STATE_ATTACK_L2,
-		STATE_ATTACK_L3,
-		STATE_ATTACK_L4,
-		STATE_ATTACK_L5,
-		STATE_ATTACK_LONG_CLAW_01,
-		STATE_ATTACK_LONG_CLAW_02,
-
-		/* 패링 관련 */
-		STATE_PARRY_L,
-		STATE_PARRY_R,
-
-		STATE_PARRY_DEFLECT_LARGE,
-		STATE_PARRY_DEFLECT_L_UP,
-		STATE_PARRY_DEFLECT_L,
-
-		STATE_PARRY_DEFLECT_R_UP,
-		STATE_PARRY_DEFLECT_R,
-
-		/*-----------------*/
-
-		/* 피격 관련 */
-		STATE_HurtMFR_L,
-		STATE_HurtMFR_R,
-		STATE_HURT_LF,
-		STATE_HURT_SF,
-		STATE_HURT_SL,
-		STATE_HURT_HURXXLF,
-		STATE_HURT_KNOCKBACK,
-		STATE_HURT_KNOCKDOWN,
-		STATE_HURT_FALLDOWN,
-		STATE_HURT_FALLDOWN_END,
-		STATE_WEAK_GETUP_F,
-		/*-----------------*/
-
-
-		/* 회피 관련 */
-		STATE_NORMAL_EVADE_R,
-		STATE_NORMAL_EVADE_L,
-		STATE_NORMAL_EVADE_FR,
-		STATE_NORMAL_EVADE_FL,
-		STATE_NORMAL_EVADE_F,
-		STATE_NORMAL_EVADE_BR,
-		STATE_NORMAL_EVADE_BL,
-		STATE_NORMAL_EVADE_B,
-		/* ------------------------- */
-
-		/* 처형 모션 */
-		STATE_STUN_EXECUTE,
-		STATE_HARMOR_EXECUTION,
-		STATE_LV1Villager_M_Execution,
-		STATE_Joker_Execution,
-		STATE_Varg_Execution,
-
-	};
 
 	enum RENDER_STATE
 	{
-		STATE_NORMAL,  /* 평상시 공격 상태 */
-		STATE_CLAW,   /*  발톱 공격시의 상태 */
+		STATE_NORMAL,  /*  평상시 공격 상태       */
+		STATE_CLAW,    /*  발톱 공격시의 상태    */
+
 	};
 
 public:
 	struct BODY_PLAYER_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		_uint* pParentState               = { nullptr };
-		_uint* pPreParentState            = { nullptr };	
-		_uint* pParentPhaseState          = { nullptr };
-		_uint* pParentExectueMonsterState = { nullptr };	
+		_uint* pParentState = { nullptr };
+		_uint* pPreParentState = { nullptr };
+		_uint* pParentPhaseState = { nullptr };
+		_uint* pParentExectueMonsterState = { nullptr };
 
 		_bool* pParentNextStateCan = { nullptr };
 		CStateMgr* pParentStateMgr = { nullptr };
@@ -189,8 +115,11 @@ public:
 	void   STATE_HURT_KNOCKBACK_Method();
 	void   STATE_HURT_KNOCKDOWN_Method();
 	void   STATE_HURT_FALLDOWN_Method();
-	void   STATE_HURT_FALLDOWN_END_Method();	
+	void   STATE_HURT_FALLDOWN_END_Method();
 	void   STATE_WEAK_GETUP_F_Method();
+	void   STATE_REBOUND_R_Method();
+	void   STATE_STUNNED_START_Method();
+	void   STATE_STUNNED_LOOP_Method();
 	/*-----------------*/
 
 
@@ -212,6 +141,17 @@ public:
 	void STATE_Joker_Execution_Method();
 	void STATE_Varg_Execution_Method();
 
+	/* ------------------------------- */
+
+	/* 의자 관련 모션 */
+	void STATE_ARCHIVE_SIT_START_Method();
+	void STATE_ARCHIVE_SIT_LOOP_Method();
+	void STATE_ARCHIVE_SIT_GETUP_Method();
+	void STATE_ARCHIVE_SIT_LIGHT_UP_Method();
+
+	/* 힐 관련 모션 */
+	void STATE_HEAL_Method();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -224,9 +164,9 @@ private:
 	_float							m_fHitStopTime = {};
 private:
 
-	_uint* m_pParentMonsterExecute = { nullptr };	
+	_uint* m_pParentMonsterExecute = { nullptr };
 	_uint* m_pParentState = { nullptr };
-	_uint* m_pPreParentState = { nullptr };	
+	_uint* m_pPreParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};

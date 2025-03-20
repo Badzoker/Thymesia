@@ -65,8 +65,11 @@ public:
 		STATE_HURT_KNOCKBACK,
 		STATE_HURT_KNOCKDOWN,
 		STATE_HURT_FALLDOWN,
-		STATE_HURT_FALLDOWN_END,	
+		STATE_HURT_FALLDOWN_END,
 		STATE_WEAK_GETUP_F,
+		STATE_REBOUND_R,
+		STATE_STUNNED_START,
+		STATE_STUNNED_LOOP,
 		/*-----------------*/
 
 		/* 회피 관련 */
@@ -87,6 +90,14 @@ public:
 		STATE_Joker_Execution,
 		STATE_Varg_Execution,
 
+		/*앉기 및 의자 상호작용 */
+		STATE_ARCHIVE_SIT_START,
+		STATE_ARCHIVE_SIT_LOOP,
+		STATE_ARCHIVE_SIT_GETUP,
+		STATE_ARCHIVE_SIT_LIGHT_UP,
+
+		/*힐링 모션 관련 */
+		STATE_HEAL,
 	};
 
 
@@ -99,21 +110,12 @@ public:
 		PHASE_PARRY = 1 << 4,
 		PHASE_DASH = 1 << 5,
 		PHASE_EXECUTION = 1 << 6,
+		PHASE_CHAIR = 1 << 7,
+		PHASE_HEAL = 1 << 8,
 
 	};
 
-	enum Player_Hitted_State
-	{
-		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운	
-		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청	
-		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청		
-		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청		
-		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음		
-		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김	
-		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
-		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
-		PLAYER_HURT_END
-	};
+
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -185,6 +187,7 @@ private:
 	_uint								m_iAttackPower = { 25 };
 	_uint								m_iClawAttackPower = { 200 };
 
+	_uint								m_iPotionCount = { 3 };
 	_uint								m_iFeathers = { 3 };
 
 	_uint								m_iMemoryFragment = { 0 };
@@ -204,7 +207,8 @@ public:
 	void     Increase_FeatherNumber(_int _iPlusFeather) { m_iFeathers += _iPlusFeather; }
 	void     Increase_MemoryFragment(_int _iMemoryFragment) { m_iMemoryFragment += _iMemoryFragment; }
 
-
+	void     Set_Potion_Number(_uint _iPotionCount) { m_iPotionCount = _iPotionCount; }
+	void     Increase_PotionNumber(_uint _iCount) { m_iPotionCount += _iCount; }
 
 	_uint    Get_Level() { return m_iLevel; }
 
@@ -216,12 +220,14 @@ public:
 
 	_uint    Get_AttackPower() { return m_iAttackPower; }
 
-	_uint*	 Get_AttackPower_Ptr() { return &m_iAttackPower; }
-	_uint*   Get_PhaseState_Ptr() { return &m_iPhaseState; }
+	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
+	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }
 
 	_uint    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
 	_uint    Get_MemoryFragment() { return m_iMemoryFragment; }
+
+	_uint    Get_Potion_Count() { return m_iPotionCount; }
 	/* ============================== */
 #pragma endregion 
 

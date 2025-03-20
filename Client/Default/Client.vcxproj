@@ -168,6 +168,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Aisemy.h" />
+    <ClInclude Include="..\public\ArchiveGetUp.h" />
+    <ClInclude Include="..\public\ArchiveSitLight_Up.h" />
+    <ClInclude Include="..\public\ArchiveSitLoop.h" />
+    <ClInclude Include="..\public\ArchiveSitStart.h" />
     <ClInclude Include="..\public\Attack_LButton_1.h" />
     <ClInclude Include="..\public\Attack_LButton_2.h" />
     <ClInclude Include="..\public\Attack_LButton_3.h" />
@@ -189,6 +193,7 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\public\Camera_Debug.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
@@ -234,6 +239,10 @@
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\public\Rebound_R.h" />
+    <ClInclude Include="..\public\StunnedEnd.h" />
+    <ClInclude Include="..\public\StunnedLoop.h" />
+    <ClInclude Include="..\public\StunnedStart.h" />
     <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_Inventory.h" />
@@ -347,6 +356,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Aisemy.cpp" />
+    <ClCompile Include="..\private\ArchiveGetUp.cpp" />
+    <ClCompile Include="..\private\ArchiveSitLight_Up.cpp" />
+    <ClCompile Include="..\private\ArchiveSitLoop.cpp" />
+    <ClCompile Include="..\private\ArchiveSitStart.cpp" />
     <ClCompile Include="..\private\Attack_LButton_1.cpp" />
     <ClCompile Include="..\private\Attack_LButton_2.cpp" />
     <ClCompile Include="..\private\Attack_LButton_3.cpp" />
@@ -368,6 +381,7 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
+    <ClCompile Include="..\private\Camera_Debug.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
@@ -414,6 +428,10 @@
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\Rebound_R.cpp" />
+    <ClCompile Include="..\private\StunnedEnd.cpp" />
+    <ClCompile Include="..\private\StunnedLoop.cpp" />
+    <ClCompile Include="..\private\StunnedStart.cpp" />
     <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_Inventory.cpp" />

@@ -23,7 +23,7 @@ HRESULT CObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	strcpy_s(m_MeshName, pDesc->ObjectName.c_str());
+	strcpy_s(m_szName, pDesc->ObjectName.c_str());	
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;

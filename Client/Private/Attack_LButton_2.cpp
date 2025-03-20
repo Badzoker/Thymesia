@@ -132,7 +132,7 @@ void CAttack_LButton_2::Priority_Update(CGameObject* pGameObject, CNavigation* p
 	/* 키가 한 개가 눌려져 있을 때 */
 	else
 	{
-		if (GetKeyState('W') & 0x8000)
+		if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
 		{
 			float dotResult = XMVectorGetX(XMVector3Dot(vLookFront, PlayerLook));
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
@@ -150,7 +150,7 @@ void CAttack_LButton_2::Priority_Update(CGameObject* pGameObject, CNavigation* p
 
 		}
 
-		else if (GetKeyState('S') & 0x8000)
+		else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
 		{
 			float dotResult = XMVectorGetX(XMVector3Dot(vLookBack, PlayerLook));
 			dotResult = max(-1.0f, min(dotResult, 1.0f));
@@ -169,7 +169,7 @@ void CAttack_LButton_2::Priority_Update(CGameObject* pGameObject, CNavigation* p
 		}
 
 
-		else if (GetKeyState('A') & 0x8000)
+		else if (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))
 		{
 
 			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));
@@ -194,7 +194,7 @@ void CAttack_LButton_2::Priority_Update(CGameObject* pGameObject, CNavigation* p
 		}
 
 
-		else if (GetKeyState('D') & 0x8000)
+		else if (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
 		{
 
 			_matrix rotationMartix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(90.f));

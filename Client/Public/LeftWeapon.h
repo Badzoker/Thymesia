@@ -21,6 +21,7 @@ public:
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
+		const _uint* pParentPhaseState = { nullptr };
 	};
 private:
 	CLeftWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -49,6 +50,7 @@ private:
 
 private:
 	const _uint* m_pParentState = { nullptr };
+	const _uint* m_pParentPhaseState = { nullptr };
 
 
 public:
