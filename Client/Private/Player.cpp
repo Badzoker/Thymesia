@@ -53,7 +53,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 

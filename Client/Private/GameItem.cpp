@@ -43,9 +43,6 @@ HRESULT CGameItem::Initialize(void* _pArg)
     _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); ;
     XMStoreFloat4(&m_vInitialPos, vItemPos);
 
-    m_pTransformCom->Scaling(_float3(0.003f, 0.003f, 0.003f));
-
-    //m_pInteractButton = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), "INTERBUTTON");
     m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this);
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
@@ -54,9 +51,6 @@ HRESULT CGameItem::Initialize(void* _pArg)
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_PlayerInventory"), "Inventory");
-
-
-
 
     switch (m_eItemType)
     {
@@ -84,13 +78,15 @@ void CGameItem::Priority_Update(_float _fTimeDelta)
 
 void CGameItem::Update(_float _fTimeDelta)
 {
+    m_fTime += _fTimeDelta;
+
     if (!m_bAcquired)
     {
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
             m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
     }
 
-    if (m_fElapsedTime >= 3.0f)
+    if (m_fElapsedTime >= 1.07f)
     {
         m_bDropping = false;
     }
@@ -102,9 +98,6 @@ void CGameItem::Update(_float _fTimeDelta)
         _vector vDir = XMVector3Normalize(vItemPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
         m_pTransformCom->LookAt(vItemPos + vDir);
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, vItemPos);
-
-        if (XMVectorGetY(vItemPos) <= m_vEndPos.y)
-            m_bDropping = false;
     }
 }
 
@@ -112,13 +105,14 @@ void CGameItem::Late_Update(_float fTimeDelta)
 {
     if (/*m_iDropItemCount > 0 && */!m_bAcquired)
     {
+        Setting_BillBoard();
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
     }
 }
 
 HRESULT CGameItem::Render()
 {
-    if (FAILED(Bind_ShaderResources()))
+  /*  if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -135,41 +129,58 @@ HRESULT CGameItem::Render()
         m_pModelCom->Render(i);
     }
 
+    return S_OK;*/
+
     return S_OK;
 }
 
 HRESULT CGameItem::Render_Glow()
 {
-    if (FAILED(Bind_ShaderResources()))
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
         return E_FAIL;
 
-    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+    _float4x4   ViewMatrix, ProjMatrix;
+    ViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+    ProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
 
-    for (_uint i = 0; i < iNumMeshes; i++)
-    {
-        if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaValue", &m_fAlphaValue, sizeof(_float4))))
-            return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+        return E_FAIL;
 
-        m_pShaderCom->Begin(8);
-        m_pModelCom->Render(i);
-    }
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaValue", &m_fAlphaValue, sizeof(_float))))
+        return E_FAIL;
+
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fTime, sizeof(_float))))
+        return E_FAIL;
+
+    if (FAILED(m_pNoiseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+        return E_FAIL;
+
+    m_pShaderCom->Begin(0);
+
+    m_pVIBufferCom->Bind_InputAssembler();
+
+    m_pVIBufferCom->Render();
 
     return S_OK;
 }
 
 HRESULT CGameItem::Ready_Components()
 {
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSoul"), TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
-    string strComponentName = "Prototype_Component_Model_";
-    strComponentName += m_GameItemName;
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSoulNoise"), TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pNoiseTextureCom))))
+        return E_FAIL;
 
-    _tchar  szComponentName[MAX_PATH] = {};
-
-    MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);
-
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, szComponentName, TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+        return E_FAIL;
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxItem"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     return S_OK;
@@ -194,6 +205,19 @@ void CGameItem::Set_ItemPos(_fvector _vPosition)
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, _vPosition);
 }
 
+void CGameItem::Setting_BillBoard()
+{
+    _vector vLook = XMVector3Normalize(XMVectorSetW(XMLoadFloat4(&m_pGameInstance->Get_CamPosition()) - m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.0f));
+    _vector vRight = XMVector3Normalize(XMVector3Cross(_vector{ 0.0f, 1.0f, 0.0f, 0.0f }, vLook)) * 0.5f;
+    _vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * 0.5f;
+
+    vLook = XMVector3Normalize(vLook) * 0.5f;
+
+    m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+    m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+    m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+    m_pTransformCom->Scaling(_float3(1.5f, 1.5f, 1.5f));
+}
 
 // 닿기 시작할 때 순간
 void CGameItem::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
@@ -272,5 +296,7 @@ void CGameItem::Free()
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
     Safe_Release(m_pShaderCom);
-    Safe_Release(m_pModelCom);
+    Safe_Release(m_pTextureCom);
+    Safe_Release(m_pNoiseTextureCom);
+    Safe_Release(m_pVIBufferCom);
 }

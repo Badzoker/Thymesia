@@ -550,35 +550,35 @@ HRESULT CLevel_GamePlay::Ready_Layer_Item(const _tchar* pLayerTag)
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_GAMEPLAY, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 

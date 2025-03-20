@@ -6,6 +6,8 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
@@ -14,9 +16,9 @@ class CGameItem final : public CItem
 public:
     struct GAMEITEM_DESC : public CItem::ITEM_DESC
     {
-        string          GameItemName = {};
-        ITEM_TYPE       eItemType = { ITEM_TYPE::ITEM_END };
-        _uint           iItemCount = {};
+        string                  GameItemName = {};
+        ITEM_TYPE               eItemType = { ITEM_TYPE::ITEM_END };
+        _uint                   iItemCount = {};
     };
 
 private:
@@ -39,13 +41,19 @@ public:
     virtual HRESULT             Bind_ShaderResources();
     void                        Set_ItemPos(_fvector _vPosition);
 
+    void                        Setting_BillBoard();
+
 public:
     virtual void                OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
     virtual void                OnCollision(CGameObject* _pOther, PxContactPair _information);
     virtual void                OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 private:
     CShader*                    m_pShaderCom = { nullptr };
-    CModel*                     m_pModelCom = { nullptr };
+    CTexture*                   m_pTextureCom = { nullptr };
+    CTexture*                   m_pNoiseTextureCom = { nullptr };
+    CVIBuffer_Rect*             m_pVIBufferCom = { nullptr };
+
+private:
     ITEM_TYPE                   m_eItemType = { ITEM_TYPE::ITEM_END };
     _char		                m_GameItemName[MAX_PATH] = {};
 
@@ -59,10 +67,11 @@ private:
     
     CGameObject*                m_pGroupInven = { nullptr };
 
+    _float                      m_fTime = {};
 
 public:
-    static CGameItem* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-    virtual CGameObject* Clone(void* _pArg);
+    static CGameItem*           Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+    virtual CGameObject*        Clone(void* _pArg);
     virtual void                Free() override;
 };
 END
