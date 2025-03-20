@@ -61,7 +61,7 @@ HRESULT CBillBoardObject::Render()
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	for (size_t i = 0; i < iNumMeshes; i++)
+	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		if (i != m_iBillBoardMeshNum)
 		{
@@ -103,7 +103,7 @@ HRESULT CBillBoardObject::Ready_Components()
 
 	_tchar		szComponentName[MAX_PATH] = {};
 
-	MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), strlen(strComponentName.c_str()), szComponentName, MAX_PATH);
+	MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);
 
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, szComponentName,
