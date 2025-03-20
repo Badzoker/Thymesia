@@ -250,8 +250,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
 	// 
 	//Load_Objects(140); //Tutorial Map
-	Load_Objects(142); //Tutorial Map
+	//Load_Objects(142); //Tutorial Map
+	Load_Objects(144); //Tutorial Map
 	//Load_Objects(301); //Circus Map
+	//Load_Objects(302); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
@@ -659,11 +661,23 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.iPassIndex, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.iObjectType, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.iBillBoardMeshNum, sizeof(_uint), &dwByte, nullptr);
 
 		Desc.ObjectName = szLoadName;
 
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
-			return E_FAIL;
+		CObject* pObject = nullptr;
+
+		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
+				return E_FAIL;
+		}
+		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
+		{
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_GAMEPLAY, TEXT("Layer_Object"), &Desc)))
+				return E_FAIL;
+		}
 	}
 
 	ReadFile(hFile, &iSize2, sizeof(_uint), &dwByte2, nullptr);

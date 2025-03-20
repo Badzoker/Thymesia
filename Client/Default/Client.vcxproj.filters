@@ -610,6 +610,9 @@
     <Filter Include="02.GameObject\Player\State\Hurt\HURT_FallDown_End">
       <UniqueIdentifier>{f2c0a84f-255e-4a9b-af99-5d4630c586ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Object\BillBoardObject">
+      <UniqueIdentifier>{bd8f6762-b7c6-4355-9eb0-e58ce34b3ec3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1140,6 +1143,9 @@
     <ClInclude Include="..\public\HURT_FallDown_End.h">
       <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown_End</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BillBoardObject.h">
+      <Filter>02.GameObject\Object\BillBoardObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1660,6 +1666,9 @@
     </ClCompile>
     <ClCompile Include="..\private\HURT_FallDown_End.cpp">
       <Filter>02.GameObject\Player\State\Hurt\HURT_FallDown_End</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BillBoardObject.cpp">
+      <Filter>02.GameObject\Object\BillBoardObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
