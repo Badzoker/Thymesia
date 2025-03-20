@@ -129,6 +129,8 @@ void CBillBoardObject::BillBoard()
 {
 	_vector vCamPos = XMLoadFloat4(&m_pGameInstance->Get_CamPosition());
 
+	vCamPos.m128_f32[1] = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pTransformCom->LookAt(vCamPos);
 }
 

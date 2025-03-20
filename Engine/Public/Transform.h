@@ -93,6 +93,7 @@ public:
 	void Turn_Axis(_fvector vAxis);
 	void Rotation(_fvector vAxis, _float fRadians); /* 고정 회전 : 항상 항등상태를 기준으로 전달해준 각도로 회전해놓는다.  */
 	void Rotation(_float fX, _float fY, _float fZ);
+	void Rotation(_float fX, _float fY, _float fZ, _float fW);
 	void Turn_Move(_fvector vAxis, _float fTimeDelta);	
 	void Orbit_Move(_fvector vAxis, _float fTimeDelta, _fvector vCenter);	
 	void Orbit_Move_Once(_fvector vAxis, _float Radian, _fvector vCenter);	

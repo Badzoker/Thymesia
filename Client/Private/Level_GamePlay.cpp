@@ -251,9 +251,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Structure(const _tchar* pLayerTag)
 	// 
 	//Load_Objects(140); //Tutorial Map
 	//Load_Objects(142); //Tutorial Map
-	Load_Objects(144); //Tutorial Map
+	Load_Objects(145); //Tutorial Map
 	//Load_Objects(301); //Circus Map
-	//Load_Objects(302); //Circus Map
+	//Load_Objects(303); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
@@ -661,7 +661,7 @@ HRESULT CLevel_GamePlay::Load_Objects(_int iObject_Level)
 
 		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
-		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.iPassIndex, sizeof(_uint), &dwByte, nullptr);
