@@ -44,7 +44,7 @@ void CItemMgr::Set_ItemPos(_fvector _vItemWorldPos)
 
 }
 
-HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _GameObject)
+HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _GameObject, _uint _iDropItemCount)
 {
     vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
 
@@ -55,25 +55,23 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
     {
         if (nullptr != pItems)
         {
-            //pItems->Set_DropItemCount(_iItemCount);
+            pItems->Set_DropItemCount(_iDropItemCount);
             pItems->Set_BeAcquired(false);
             pItems->Set_BeDropping(true);
 
             _float4 vDropPosition;
             XMStoreFloat4(&vDropPosition, _vDropPosition);
             pItems->Set_BezierPosition(vDropPosition, _GameObject);
+
             break;
         }
     }
-    //m_mapItems[_eItemType].first -= _iItemCount;
-    //m_mapItems[_eItemType].first--;
+    if (!strcmp(_GameObject->Get_Name(), "PLAYER"))
+    {
+        m_lDropItem.push_back(_eItemType); // 알림용 버림 아이템 저장 
+    }
 
     return S_OK;
-}
-
-void CItemMgr::Item_Save_Info(UI_Item SaveItem)
-{
-    m_vecSaveItem.push_back(SaveItem);
 }
 
 HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
@@ -82,31 +80,17 @@ HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
 
     if (nullptr == pVecItems)
         return E_FAIL;
+    _uint iDropCount = {};
 
     for (auto& pItems : *pVecItems)
     {
         pItems->Set_BeAcquired(true);
+        iDropCount = pItems->Get_DropItemCount();
     }
 
-    //m_mapItems[_eItemType].first += _iItemCount;
-    m_mapItems[_eItemType].first++;
-
-    return S_OK;
-}
-
-HRESULT CItemMgr::Acquire_Item2(ITEM_TYPE _eItemType, _uint iCount)
-{
-    vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
-
-    if (nullptr == pVecItems)
-        return E_FAIL;
-
-    for (auto& pItems : *pVecItems)
-    {
-        pItems->Set_BeAcquired(true);
-    }
-
-    m_mapItems[_eItemType].first += iCount;
+    m_lSaveItem.push_back(_eItemType);// 알림용 획득 아이템 저장 
+    m_mapItems[_eItemType].first += iDropCount;
+    
 
     return S_OK;
 }

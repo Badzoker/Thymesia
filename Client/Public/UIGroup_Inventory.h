@@ -27,6 +27,7 @@ public:
 public:
 	HRESULT Ready_UIObject(); // 인벤용 ui 로드
 	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+	void Set_Item_Default_Info();
 
 public:
 	void Ready_MiniView_ItemInfo(); // 반고정 내용 바뀌는 텍스트들 그냥 편하게 가지고 있기
@@ -95,23 +96,17 @@ private:
 	CUI_Scene* m_pItemUsePopUp = {}; // 2 번 팝업
 	class CGameObject* m_pPlayer = { nullptr };
 
-
 public:
 	static CUIGroup_Inventory* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
 public:
-	map<ITEM_TYPE, UI_Item>& Get_Drop_Item_Info() { return m_mapDropItemInfo; } // 내 정보 읽어가
-	void Set_Item_Default_Info();
 	const vector<UI_Item> Get_Vector_Itme_default_Info() { return m_vecItemDefaultInfo; } // 내 정보 읽어가
-//public:
-//	void Set_m_bDrop(_bool bdrop) { m_bDrop = bdrop; }
-//	_bool m_bDrop = { false };
 
 private:
-	map<ITEM_TYPE, UI_Item> m_mapDropItemInfo; // 버릴 아이템 정보 저장
-	vector<UI_Item> m_vecItemDefaultInfo;
+	map<ITEM_TYPE, UI_Item> m_mapDropItemInfo; // 버릴 아이템 정보 저장 => 플레이어 스크린에서 아이템 알림 할 용도
+	vector<UI_Item> m_vecItemDefaultInfo; // 아이템 기본 정보
 	CGameObject* m_pGroupPlayerScreen = { nullptr };
 
 

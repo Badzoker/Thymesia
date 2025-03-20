@@ -52,7 +52,6 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
 	
-	m_pGroupPlayerScreen = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_PlayerScreen"), "PlayerScreen");
 
 
 	Ready_MiniView_ItemInfo(); // 아이템 정보 띄우는 부분 상시 바뀌니깐 별도로 저장해서 사용
@@ -912,18 +911,9 @@ void CUIGroup_Inventory::ItemUse_PopUP_Drop_Button()
 			{
 				if (m_pGameInstance->Use_Item(m_CurrentItemInfo.ItemType, m_iItemStatCount)) // 아이템이 저장되어 있는 컨테이너에서 Item_type이 맞는 녀석의 개수를 빼기
 				{
-
 					Update_Get_ItemMgr(); // 컨테이너에서 정보 뺐으니깐 인벤토리 슬롯 정보 다시 업데이트
-
-					//dynamic_cast<CUIGroup_PlayerScreen*>(m_pGroupPlayerScreen)->Set_m_bDrop(true);
 				}
-
-
-				UI_Item tagDrop = m_CurrentItemInfo;
-				tagDrop.ItemCount = m_iItemStatCount;
-				m_mapDropItemInfo.emplace(m_CurrentItemInfo.ItemType, tagDrop); // 버릴 아이템 정보 전달용
-				
-				m_pGameInstance->Drop_Item(m_CurrentItemInfo.ItemType, dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION), m_pPlayer);
+				m_pGameInstance->Drop_Item(m_CurrentItemInfo.ItemType, dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION), m_pPlayer, m_iItemStatCount);
 
 				ItemUse_Update();
 				ItemType_PopUP_State(false);

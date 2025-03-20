@@ -33,6 +33,8 @@ public:
     virtual void                Set_DropItemCount(_uint _iItemCount) { m_iDropItemCount = _iItemCount; }
     virtual void                Set_BezierPosition(const _float4& _vStartPos, CGameObject* _pGameObject);
 
+    _uint                       Get_DropItemCount() const { return m_iDropItemCount; }
+
     _float4                      Bezier(_float4 _vStartPos, _float4 _vCurvePos, _float4 _vEndPos, _float _fTimeDelta);
 
 protected:

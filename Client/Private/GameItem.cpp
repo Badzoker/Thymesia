@@ -225,29 +225,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
         if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
             { 
-                if (0 == dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().size())
-                {
-                    m_pGameInstance->Acquire_Item(m_eItemType);
-                    for (const auto& Info : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info())
-                    {
-                        if (m_eItemType == Info.ItemType)
-                        {
-                            m_pGameInstance->Item_Save_Info(Info);
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    /*획득하게 될 아이템*/
-                    m_pGameInstance->Acquire_Item2((*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).first, 
-                        (*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).second.ItemCount);
-                    /*별도로 저장*/
-                    m_pGameInstance->Item_Save_Info((*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).second);
-                    dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().clear();
-
-                    //dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Set_m_bDrop(false);
-                }
+                m_pGameInstance->Acquire_Item(m_eItemType);
                 m_pButton->Activate_Button(false);
             }
             break;
