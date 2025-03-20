@@ -161,6 +161,7 @@
 
 #pragma region 오브젝트
 #include "StaticObject.h"		// (아닐 비)인스턴싱용 게임오브젝트
+#include "BillBoardObject.h"		// (아닐 비)인스턴싱용 게임오브젝트
 #include "GroundObject.h"		// 인스턴싱용 게임오브젝트
 #include "TriggerObject.h"		// 트리거용 게임오브젝트
 #include "BlackScreen.h"
@@ -2361,6 +2362,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_candle01_fire"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/candle/candle01_fire.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
 
 
 
@@ -2379,6 +2383,10 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_StaticObject"),
 		CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Object_BillBoardObject"),
+		CBillBoardObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 

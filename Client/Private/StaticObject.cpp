@@ -27,6 +27,8 @@ HRESULT CStaticObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_iObjectType = OBJECT_DEFAULT;
+
 	m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Button"), "BUTTON");
 	m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
