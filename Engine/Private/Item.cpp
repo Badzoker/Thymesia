@@ -76,7 +76,9 @@ void CItem::Set_BezierPosition(const _float4& _vStartPos, CGameObject* _pGameObj
     m_pTransformCom->LookAt(XMLoadFloat4(&_vStartPos) + vTargetDir);
 
     _vector vMiddlePoint = (XMLoadFloat4(&_vStartPos) + vTargetPos) * 0.5f;
-    vMiddlePoint = XMVectorSetY(vMiddlePoint, XMVectorGetY(vMiddlePoint) + 3.0f);
+    vMiddlePoint = XMVectorSetY(vMiddlePoint, XMVectorGetY(vMiddlePoint) + 2.0f);
+
+    vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 0.5f);
 
     XMStoreFloat4(&m_vEndPos, vTargetPos);
     XMStoreFloat4(&m_vCurvePos, vMiddlePoint);

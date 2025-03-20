@@ -539,6 +539,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMeshNoDefferd.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxItemTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshNoDefferd.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />

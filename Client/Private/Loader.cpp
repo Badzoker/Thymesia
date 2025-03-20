@@ -258,6 +258,25 @@ HRESULT CLoader::Loading_For_Level_Static()
 #pragma endregion
 
 
+#pragma region ITEM
+	/* For.Prototype_GameObject_GameItem */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_ItemSoul */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSoul"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item02/T_Flare_04.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_ItemSoulNoise */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSoulNoise"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item01/T_Noise_03.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxItem */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxItem"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxItemTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+#pragma endregion
+
+
 	/* For.Prototype_Component_Shader_VtxPosTex_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex_UI.hlsl"), VTXPOSTEX_UI::Elements, VTXPOSTEX_UI::iNumElements))))
@@ -2423,19 +2442,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region 아이템 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Item0/Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-#pragma endregion
-
-
-
-
-
+//#pragma region 아이템 
+//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+//		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Item0/Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+//		return E_FAIL;
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//#pragma endregion
 
 #pragma region 테스트용 사다리
 	//lstrcpyW(m_szLoadingText, TEXT("사다리 모델을 생성한다."));
