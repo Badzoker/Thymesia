@@ -201,15 +201,13 @@ public:
 
 #pragma region ItemMgr 
 	HRESULT		Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, class CItem* _pGameObject);
-	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject);
+	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject, _uint _iDropItemCount = 1);
 	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
 
 
-	void Item_Save_Info(UI_Item SaveItem); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
-	vector<UI_Item>& Get_Item_Save_Info(); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
+	list<ITEM_TYPE>& Get_Item_Save_Info(); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
+	list<ITEM_TYPE>& Get_Item_Drop_Info(); // 현재 아이템을 버리는 순간 버림 알림을 띄우기 위한 용도
 
-
-	HRESULT		Acquire_Item2(ITEM_TYPE _eItemType, _uint iNum); // ui 아이템 버리기를 통해 버려지는 아이템 종류와 개수 세팅
 	const map<ITEM_TYPE, pair<_uint, vector<CItem*>>> Get_Item_Info(); // 저장된 아이템 컨테이너 가져오기 - 유빈
 	_bool Use_Item(ITEM_TYPE _eItemType, _uint iNum); // 인벤토리에서 아이템 사용 시 컨테이너에 저장하고 있는 아이템 개수 감소 - 유빈
 #pragma endregion 

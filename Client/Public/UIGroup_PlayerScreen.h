@@ -26,8 +26,8 @@ public:
 
 public:
 	void Player_Info_GageBar();
-	void Item_Save_Info(UI_Item SaveItem,_uint iNum ); // 아이템 획득 시 출력되는 알림
-	void Item_Drop_Info(UI_Item DropItem); // 아이템 버릴 시 출력되는 알림
+	void Item_Save_Info(ITEM_TYPE eItemType); // 아이템 획득 시 출력되는 알림
+	void Item_Drop_Info(ITEM_TYPE eItemType); // 아이템 버릴 시 출력되는 알림
 	
 	void Item_In_Out_Pop();
 

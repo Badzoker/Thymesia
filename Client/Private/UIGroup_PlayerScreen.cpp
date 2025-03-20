@@ -81,17 +81,16 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 
 		}
 	}
-
-
-	if (0 != dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().size())// 버린 아이템이 있는 경우
+	
+	if (0 != m_pGameInstance->Get_Item_Drop_Info().size()) // 버리는 아이템이 있는경우
 	{
-		if (m_bDrop) // 버린걸 먹기 전까지 다시 이 구간을 사용할 수 없는 기형적인 상태가 되어버림
+		for (auto& SaveInfo : m_pGameInstance->Get_Item_Drop_Info())
 		{
-			Item_Drop_Info((*dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().begin()).second);
-			m_bDrop = false;
+			Item_Drop_Info(SaveInfo);
 		}
+		m_pGameInstance->Get_Item_Drop_Info().clear();
 	}
-	else if (0 != m_pGameInstance->Get_Item_Save_Info().size()) // 획득한 아이템이 있는 경우
+	if (0 != m_pGameInstance->Get_Item_Save_Info().size()) // 획득한 아이템이 있는 경우
 	{
 		UI_Direction_Item_Nudge();
 
@@ -103,7 +102,7 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			{
 				if (!m_bNudgeUse[0]) // 1번 넛지 꺼져 있으면
 				{
-					Item_Save_Info(SaveInfo, 1); // 추가해서 재생 
+					Item_Save_Info(SaveInfo); // 추가해서 재생 
 					m_bNudgeUse[0] = true;
 				}
 				/*else if (!m_bNudgeUse[1])
@@ -228,36 +227,46 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 	}
 }
 
-void CUIGroup_PlayerScreen::Item_Save_Info(UI_Item SaveItem, _uint iNum)
+void CUIGroup_PlayerScreen::Item_Save_Info(ITEM_TYPE eItemType)
 {
+	UI_Item MakeInfo = {};
+	for (auto& ItemInfo : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info())
+	{
+		if (eItemType == ItemInfo.ItemType)
+		{
+			MakeInfo = ItemInfo;
+			break;
+		}
+	}
+
 	_uint iTexNum = {};
-	switch (SaveItem.ItemType)
+	switch (MakeInfo.ItemType)
 	{
 	case ITEM_TYPE::ITEM_KEY1:
-		SaveItem.ItemDesc = L"- 일반 아이템 -";
+		MakeInfo.ItemDesc = L"- 일반 아이템 -";
 		iTexNum = 0;
 		break;
 	case ITEM_TYPE::ITEM_KEY2:
-		SaveItem.ItemDesc = L"- 일반 아이템- ";
+		MakeInfo.ItemDesc = L"- 일반 아이템- ";
 		iTexNum = 0;
 		break;
 	case ITEM_TYPE::ITEM_MEMORY:
-		SaveItem.ItemDesc = L"- 소비 아이템 -";
+		MakeInfo.ItemDesc = L"- 소비 아이템 -";
 		iTexNum = 0;
 		break;
 	case ITEM_TYPE::ITEM_FORGIVEN:
-		SaveItem.ItemDesc = L"- 소비 아이템 -";
+		MakeInfo.ItemDesc = L"- 소비 아이템 -";
 		iTexNum = 3;
 		break;
 	case ITEM_TYPE::ITEM_SKILLPIECE:
-		SaveItem.ItemDesc = L"- 기술의 파편 -";
+		MakeInfo.ItemDesc = L"- 기술의 파편 -";
 		iTexNum = 2;
 		break;
 
 	}
 
 	// 여기서 시작, 도착 좌표해서 보간하면 될 듯
-
+	_uint iNum = { 1 };
 	for (auto& Image : m_pItmeScreen->Find_UI_Image())
 	{
 		if (iNum == Image->Get_UI_GroupID()) // 배경 이미지 설정
@@ -268,7 +277,7 @@ void CUIGroup_PlayerScreen::Item_Save_Info(UI_Item SaveItem, _uint iNum)
 		if (iNum +10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
 		{
 			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(SaveItem.ItemIconNum);
+			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(MakeInfo.ItemIconNum);
 		}
 	}
 	for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
@@ -276,22 +285,31 @@ void CUIGroup_PlayerScreen::Item_Save_Info(UI_Item SaveItem, _uint iNum)
 		if (iNum == TextBox->Get_UI_GroupID())
 		{
 			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(SaveItem.ItemName);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemName);
 		}
 		if (iNum +10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
 		{
 			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(SaveItem.ItemDesc);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemDesc);
 		}
 	}
 
 
 }
 
-void CUIGroup_PlayerScreen::Item_Drop_Info(UI_Item DropItem)
+void CUIGroup_PlayerScreen::Item_Drop_Info(ITEM_TYPE eItemType)
 {
+	UI_Item MakeInfo = {};
+	for (auto& ItemInfo : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info())
+	{
+		if (eItemType == ItemInfo.ItemType)
+		{
+			MakeInfo = ItemInfo;
+			break;
+		}
+	}
 
-	DropItem.ItemDesc = L"- 떨어뜨림 -";
+	MakeInfo.ItemDesc = L"- 떨어뜨림 -";
 	m_bNudgeUse[1] = true;
 	_uint iNum = { 1 };
 	for (auto& Image : m_pItmeScreen->Find_UI_Image())
@@ -304,7 +322,7 @@ void CUIGroup_PlayerScreen::Item_Drop_Info(UI_Item DropItem)
 		if (iNum + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
 		{
 			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(DropItem.ItemIconNum);
+			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(MakeInfo.ItemIconNum);
 		}
 	}
 	for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
@@ -312,17 +330,14 @@ void CUIGroup_PlayerScreen::Item_Drop_Info(UI_Item DropItem)
 		if (iNum == TextBox->Get_UI_GroupID())
 		{
 			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(DropItem.ItemName);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemName);
 		}
 		if (iNum + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
 		{
 			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(DropItem.ItemDesc);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemDesc);
 		}
 	}
-
-
-	//dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Drop_Item_Info().clear();
 
 }
 

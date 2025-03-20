@@ -637,25 +637,21 @@ HRESULT CGameInstance::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* 
 {
 	return m_pItemMgr->Add_Item(_eItemType, _iItemCount, _pGameObject);
 }
-HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, CGameObject* _pGameObject)
+HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, CGameObject* _pGameObject, _uint _iDropItemCount)
 {
-	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject);
+	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject, _iDropItemCount);
 }
 HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
 	return m_pItemMgr->Acquire_Item(_eItemType);
 }
-void CGameInstance::Item_Save_Info(UI_Item SaveItem)
-{
-	return m_pItemMgr->Item_Save_Info(SaveItem);
-}
-vector<UI_Item>& CGameInstance::Get_Item_Save_Info()
+list<ITEM_TYPE>& CGameInstance::Get_Item_Save_Info()
 {
 	return m_pItemMgr->Get_Item_Save_Info();
 }
-HRESULT CGameInstance::Acquire_Item2(ITEM_TYPE _eItemType, _uint iNum)
+list<ITEM_TYPE>& CGameInstance::Get_Item_Drop_Info()
 {
-	return m_pItemMgr->Acquire_Item2(_eItemType, iNum);
+	return m_pItemMgr->Get_Item_Drop_Info();
 }
 const map<ITEM_TYPE, pair<_uint, vector<CItem*>>> CGameInstance::Get_Item_Info()
 {
