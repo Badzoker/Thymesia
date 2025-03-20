@@ -55,7 +55,7 @@ protected:
 	_float3		   m_fRotation	= { 0.f, 0.f, 0.f };
 	_float3		   m_fScale		= { 0.f, 0.f, 0.f };
 
-	_char		   m_MeshName[MAX_PATH] = {};
+
 
 	_uint		   m_iPassIndex = { 0 };
 

@@ -101,39 +101,10 @@ void CChannel::Update_TransformationMatrix(_float fCurrentTrackPosition, _uint* 
 
      }
 
-
-     //if(m_iBoneIndex ==2)
-     //{
-     //    
-     //    _matrix Translation = XMMatrixIdentity();
-     //    Translation.r[3] = vTranslation;   
-     //
-     //    XMStoreFloat4x4(&m_WorldTranslation, Translation); 
-     //
-     //    /* 근데 이걸 combined 매트릭스 즉 부모에거에 곱해줘야하는데*/
-     //
-     //    vTranslation = { 0.f,0.f,0.f,1.f };    // 이거 해주니깐 잘되네  
-     //    // 그럼 이거의 combined 행렬을 따로 보관해야할거같은데 
-     //
-     //
-     //    
-     //}
-
-     
      _matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
      Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 
-    /* 루트 모션 적용 */
-    /* 여기서 bone 의 translation을 그러면 월드에도 넣어줘야 겠네요 ㅇㅇ... */
-    //XMStoreFloat4x4(&m_ForWorldMatrix, TransformationMatrix);   // 그러기 위해서 저장. 
-    //if(m_iBoneIndex == 3)  // 최상위 부모 뼈의 이동만 저장하면될듯 어차피 그럼 다 영향받으니깐 
-    //{
-    //    _matrix ForWorldMatrix = XMLoadFloat4x4(&m_WorldTranslation);
-    //    ForWorldMatrix.r[3] = vTranslation; 
-    //   
-    //    XMStoreFloat4x4(&m_WorldTranslation, ForWorldMatrix);   
-    //}
-      
+ 
 
 }
 

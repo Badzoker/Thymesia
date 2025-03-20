@@ -99,7 +99,7 @@ HRESULT CBillBoardObject::Ready_Components()
 		return E_FAIL;
 
 	string strComponentName = "Prototype_Component_Model_";
-	strComponentName += m_MeshName;
+	strComponentName += m_szName;
 
 	_tchar		szComponentName[MAX_PATH] = {};
 

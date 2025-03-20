@@ -47,7 +47,7 @@ void CStaticObject::Priority_Update(_float fTimeDelta)
 
 void CStaticObject::Update(_float fTimeDelta)
 {
-	if (!strcmp(m_MeshName, ("P_Archive_Chair01")) || !strcmp(m_MeshName, ("Ladder")))
+	if (!strcmp(m_szName, ("P_Archive_Chair01")) || !strcmp(m_szName, ("Ladder")))
 	{
 		if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 			m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
@@ -82,7 +82,7 @@ void CStaticObject::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
 
-		if (!strcmp(m_MeshName, ("P_Archive_Chair01")) || !strcmp(m_MeshName, ("Ladder")))
+		if (!strcmp(m_szName, ("P_Archive_Chair01")) || !strcmp(m_szName, ("Ladder")))
 		{
 			m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		}
@@ -173,7 +173,7 @@ HRESULT CStaticObject::Render_Motion_Blur()
 }
 void CStaticObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-	if (!strcmp(m_MeshName, ("P_Archive_Chair01")))
+	if (!strcmp(m_szName, ("P_Archive_Chair01")))
 	{
 		_vector vChairPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		vChairPos = XMVectorSetY(vChairPos, XMVectorGetY(vChairPos) + 1.0f);
@@ -216,7 +216,7 @@ HRESULT CStaticObject::Ready_Components()
 		return E_FAIL;
 
 	string strComponentName = "Prototype_Component_Model_";
-	strComponentName += m_MeshName;
+	strComponentName += m_szName;
 
 	_tchar		szComponentName[MAX_PATH] = {};
 

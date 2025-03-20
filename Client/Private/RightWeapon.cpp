@@ -34,6 +34,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
+    m_pParentPhaseState = pDesc->pParentPhaseState;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -164,7 +165,8 @@ void CRightWeapon::Late_Update(_float fTimeDelta)
 {
 
     if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
-        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
+        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02
+        && !(*m_pParentPhaseState & CPlayer::PHASE_CHAIR))
     {
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }

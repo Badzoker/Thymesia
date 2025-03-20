@@ -54,6 +54,8 @@
 #include "HURTXXLF.h"	
 #include "HURT_FallDown.h"	
 #include "HURT_FallDown_End.h"	
+#include "Rebound_R.h"	
+#include "StunnedStart.h"
 #pragma endregion 
 
 
@@ -74,6 +76,16 @@
 #include "HArmorLV1_Execution.h"
 
 #pragma endregion 
+
+#pragma region 의자 관련 
+
+#include "ArchiveSitStart.h"
+#include "ArchiveSitLoop.h"
+#include "ArchiveGetUp.h"
+#include "ArchiveSitLight_Up.h"
+
+#pragma endregion 
+
 
 CStateMgr::CStateMgr()
 {
@@ -289,6 +301,37 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(pHArmorLV1_Execution);
 #pragma endregion 
 
+
+#pragma region 몬스터가 패링에 성공할 시  
+
+	/* 46번 몬스터가 플레이어 공격 패링 성공할 시 */
+	CRebound_R* pRebound_R = CRebound_R::Create();
+	m_vecState.push_back(pRebound_R);
+
+#pragma endregion 
+
+	/* 47번 몬스터가 스턴 공격을 넣어서 플레이어 기절 모션 */
+	CStunnedStart* pStunnedStart = CStunnedStart::Create();
+	m_vecState.push_back(pStunnedStart);
+
+#pragma region  의자 상호작용 관련 
+	/* 48번 의자 앉는 모션 시작 */
+	CArchiveSitStart* pArchiveSitStart = CArchiveSitStart::Create();
+	m_vecState.push_back(pArchiveSitStart);
+
+	/* 49번 의자 앉고 있는 중인 모션 */
+	CArchiveSitLoop* pArchiveSitLoop = CArchiveSitLoop::Create();
+	m_vecState.push_back(pArchiveSitLoop);
+
+	/* 50번 의자에서 일어나는 모션 */
+	CArchiveGetUp* pArchiveGetUp = CArchiveGetUp::Create();
+	m_vecState.push_back(pArchiveGetUp);
+
+	/* 51번 의자에 조명 불 키는 모션 */
+	CArchiveSitLight_Up* pArchiveSitLight_Up = CArchiveSitLight_Up::Create();
+	m_vecState.push_back(pArchiveSitLight_Up);
+
+#pragma endregion 
 
 	return S_OK;
 }

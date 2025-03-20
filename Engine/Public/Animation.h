@@ -29,18 +29,15 @@ public:
 
 	/* 2월 19일 수정 사항 */
 	void Set_LerpTime(_float _fLerpTime) { m_LerpTime = _fLerpTime; }
-
 	void Set_StartOffSetTrackPosition(_float _fOffsetTrackValue) { m_fSetStartOffSetTrackPosition = _fOffsetTrackValue; }
-
 	/* 3월 1일 수정 사항 */
-	_float Get_StartOffSetTrackPosition() { return m_fSetStartOffSetTrackPosition; }		
-
+	_float Get_StartOffSetTrackPosition() { return m_fSetStartOffSetTrackPosition; }
 
 	vector<ANIMEVENT>* Get_vecEvent() { return &m_vecAnimFrameEvent; }
-
 	void Set_HitStopTime(_float _fHitStopTime) { m_fHitStopTime = _fHitStopTime; }
-
 	_float& Get_CurAnimation_FinalSpeed() { return m_fSpeed_Final; } //3.16 종한 추가
+	_float  Get_Current_TrackPoisition() { return m_fCurrentTrackPosition; }
+	void Set_AnimationSpeed(_float _fSpeed) { m_fAnimationSpeed = _fSpeed; }
 
 private:
 	_bool                      m_bReset = { false };

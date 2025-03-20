@@ -53,6 +53,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
@@ -66,12 +67,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 시작 지점의 플레이어 위치 1_23일 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
 
-	_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
+
+	//_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
 	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치
+	_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
 	//_vector vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // 서커스맵 시작위칩
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치	
 	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
 
 	m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
@@ -82,15 +85,18 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+
 #pragma region Mouse_Input
-	/* 마우스 입력키는 (LB, RB ) 동시 입력을 불가능 하도록 설정 */
-	Mouse_section(fTimeDelta);
+
+	if (!(m_iPhaseState & PHASE_CHAIR))
+	{	 // 의자 관련 
+		Mouse_section(fTimeDelta);
 #pragma endregion 
 
 #pragma region KeyBoard Input
-	Keyboard_section(fTimeDelta);
+		Keyboard_section(fTimeDelta);
+	}
 #pragma endregion 
-
 	__super::Priority_Update(fTimeDelta);
 }
 
@@ -107,7 +113,16 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_bNextStateCanPlay = true;
 	}
 
-	if (m_pGameInstance->isMouseEnter(DIM_LB) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
+	if (m_pGameInstance->isMouseEnter(DIM_LB)
+		&& m_iState != STATE_PARRY_L
+		&& m_iState != STATE_PARRY_R
+		&& m_iState != STATE_ATTACK_LONG_CLAW_01
+		&& m_iState != STATE_ATTACK_LONG_CLAW_02
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		)
 	{
 		/* 처형 관련 작업 */
 		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
@@ -140,7 +155,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			}
 
 			else if (m_iState == STATE_ATTACK_L3
-				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 17.f
 					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 			{
 				m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -148,7 +163,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			}
 
 			else if (m_iState == STATE_ATTACK_L4
-				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 10.f
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 22.f
 					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 			{
 				m_pStateMgr->Get_VecState().at(44)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -169,7 +184,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 			/* 페이즈 상태 해제 */
 			m_iPhaseState &= ~PHASE_DASH;
+
 		}
+		m_iPhaseState &= ~PHASE_PARRY;
 	}
 
 	else if (m_pGameInstance->isMouseEnter(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
@@ -194,19 +211,37 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 		/* 페이즈 상태 해제 */
 		m_iPhaseState &= ~PHASE_DASH;
+		m_iPhaseState &= ~PHASE_PARRY;
 	}
 
 }
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+#pragma region 포션 힐 
+	if (m_pGameInstance->isKeyEnter(DIK_Q)
+		&& m_iState != STATE_HEAL)
+	{
+		m_iPhaseState |= CPlayer::PHASE_HEAL;
+		m_iPotionCount--;	 // 포션 수 감소 
+		m_iState = STATE_HEAL;
+	}
+#pragma endregion 
 
 #pragma region 패링	
-	if (m_pGameInstance->isKeyEnter(DIK_F) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
+	if (m_pGameInstance->isKeyEnter(DIK_F)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& m_iState != STATE_ATTACK_LONG_CLAW_01
+		&& m_iState != STATE_ATTACK_LONG_CLAW_02
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
 	{
-		if (m_iState == STATE_PARRY_L ||
-			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP)))) // 패링 2번째 모션			
+		if ((m_iState == STATE_PARRY_L ||
+			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP))))
+			&& m_pModel->Get_CurrentAnmationTrackPosition() > 20.f) // 패링 2번째 모션				
 		{
+
+
 			m_pStateMgr->Get_VecState().at(20)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_PARRY_R;
 
@@ -214,8 +249,18 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		}
 		else if (m_iState != STATE_PARRY_L)  // 패링 모션 
 		{
-			m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_PARRY_L;
+			if (m_iState == STATE_PARRY_R && m_pModel->Get_VecAnimation().at(16)->Get_Current_TrackPoisition() > 20.f)
+			{
+				m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_pModel->Get_VecAnimation().at(15)->Set_StartOffSetTrackPosition(10.f);
+				m_iState = STATE_PARRY_L;
+			}
+			else if (m_iState != STATE_PARRY_R && m_iState != STATE_PARRY_DEFLECT_L && m_iState != STATE_PARRY_DEFLECT_L_UP)
+			{
+				m_pModel->Get_VecAnimation().at(15)->Set_StartOffSetTrackPosition(0.f);
+				m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_PARRY_L;
+			}
 		}
 
 
@@ -225,8 +270,12 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 #pragma endregion	
 
 #pragma region 8방향 Run 
-	if (!(m_iPhaseState & PHASE_FIGHT) && !(m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & PHASE_PARRY)) // // 3월 19일 공격 페이즈와 락온 페이즈가 아닐 때 			
+	if ((!(m_iPhaseState & PHASE_FIGHT)
+		&& !(m_iPhaseState & PHASE_LOCKON)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
+		&& !(m_iPhaseState & PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -312,8 +361,12 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 	}
 #pragma endregion 
 #pragma region 락온모드 8방향 이동 
-	if (!(m_iPhaseState & PHASE_FIGHT) && (m_iPhaseState & PHASE_LOCKON) && !(m_iPhaseState & CPlayer::PHASE_HITTED) && !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & PHASE_PARRY))	 // 3월 19일
+	if (!(m_iPhaseState & PHASE_FIGHT)
+		&& (m_iPhaseState & PHASE_LOCKON)
+		&& (!(m_iPhaseState & CPlayer::PHASE_HITTED))
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
@@ -446,7 +499,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			&& (m_iState != STATE_PARRY_DEFLECT_L)
 			&& (m_iState != STATE_PARRY_DEFLECT_L_UP)
 			&& (m_iState != STATE_PARRY_DEFLECT_R)
-			&& (m_iState != STATE_PARRY_DEFLECT_R_UP)	
+			&& (m_iState != STATE_PARRY_DEFLECT_R_UP)
 			)
 		{
 			m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
@@ -485,11 +538,12 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_HURT_KNOCKDOWN
 		|| m_iState == STATE_HURT_FALLDOWN
 		|| m_iState == STATE_WEAK_GETUP_F
-		|| m_iState == STATE_STUN_EXECUTE	
-		|| m_iState == STATE_HARMOR_EXECUTION	
-		|| m_iState == STATE_LV1Villager_M_Execution	
-		|| m_iState == STATE_Joker_Execution	
-		|| m_iState == STATE_Varg_Execution	
+		|| m_iState == STATE_STUN_EXECUTE
+		|| m_iState == STATE_HARMOR_EXECUTION
+		|| m_iState == STATE_LV1Villager_M_Execution
+		|| m_iState == STATE_Joker_Execution
+		|| m_iState == STATE_Varg_Execution
+		|| m_iState == STATE_REBOUND_R
 		)
 	{
 		m_bMove = true;
@@ -619,6 +673,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightWeaponDesc.pParent = this;
 	RightWeaponDesc.pParentModel = m_pModel;
 	RightWeaponDesc.pParentState = &m_iState;
+	RightWeaponDesc.pParentPhaseState = &m_iPhaseState;
 	RightWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
 	RightWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	RightWeaponDesc.fSpeedPerSec = 0.f;
@@ -633,6 +688,7 @@ HRESULT CPlayer::Ready_PartObjects()
 
 	RightWeaponDesc.pParent = this;
 	LeftWeaponDesc.pParentState = &m_iState;
+	LeftWeaponDesc.pParentPhaseState = &m_iPhaseState;
 	LeftWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
 	LeftWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	LeftWeaponDesc.fSpeedPerSec = 0.f;
@@ -703,17 +759,29 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			{
 			case STATE::STATE_PARRY_L:
 				if (Parry == 0)
+				{
 					m_iState = STATE_PARRY_DEFLECT_L;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+				}
 				else
+				{
 					m_iState = STATE_PARRY_DEFLECT_L_UP;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+				}
 
 				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
 			case STATE::STATE_PARRY_R:
 				if (Parry == 0)
+				{
 					m_iState = STATE_PARRY_DEFLECT_R;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+				}
 				else
+				{
 					m_iState = STATE_PARRY_DEFLECT_R_UP;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+				}
 
 				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
@@ -747,6 +815,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(42)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(42)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 			case Player_Hitted_State::PLAYER_HURT_HURTLF:
 				m_iState = CPlayer::STATE_HURT_LF;
@@ -754,6 +823,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(38)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(38)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 			case Player_Hitted_State::PLAYER_HURT_HURTMFL: // 31번 애니메이션 인덱스
 				m_iState = CPlayer::STATE_HurtMFR_L;  // 22		
@@ -769,6 +839,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(39)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(39)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
 
 				break;
 			case Player_Hitted_State::PLAYER_HURT_HURTSL:
@@ -777,7 +848,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(41)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(41)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 			case Player_Hitted_State::PLAYER_HURT_HURXXLF:
 				m_iState = CPlayer::STATE_HURT_HURXXLF;
@@ -793,7 +864,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(36)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(36)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 			case Player_Hitted_State::PLAYER_HURT_KNOCKDOWN:
 				m_iState = CPlayer::STATE_HURT_KNOCKDOWN;
@@ -801,14 +872,32 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pStateMgr->Get_VecState().at(37)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(37)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 
+			case Player_Hitted_State::PLAYER_HURT_REBOUND:
+				m_iState = CPlayer::STATE_REBOUND_R;  // 46					
+				/* 몬스터 공격 방향 */
+				m_pStateMgr->Get_VecState().at(46)->Set_MonsterLookDir(fMonsterLookDir);
+
+				m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
+				break;
+			case Player_Hitted_State::PLAYER_HURT_STUN:
+				m_iState = CPlayer::STATE_STUNNED_START;  // 47						
+				/* 몬스터 공격 방향 */
+				m_pStateMgr->Get_VecState().at(47)->Set_MonsterLookDir(fMonsterLookDir);
+
+				m_pStateMgr->Get_VecState().at(47)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				break;
 			default:
-				m_iState = CPlayer::STATE_HurtMFR_R;  // 22		
+				_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
+				m_iState = CPlayer::STATE_HurtMFR_R;  // 22			
 				/* 몬스터 공격 방향 */
 				m_pStateMgr->Get_VecState().at(22)->Set_MonsterLookDir(fMonsterLookDir);
 
 				m_pStateMgr->Get_VecState().at(22)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+				m_pModel->Set_Continuous_Ani(true);
 				break;
 			}
 
@@ -840,7 +929,8 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 		if ((m_pGameInstance->isKeyPressed(DIK_W) || m_pGameInstance->isKeyPressed(DIK_S)
 			|| m_pGameInstance->isKeyPressed(DIK_A) || m_pGameInstance->isKeyPressed(DIK_D))
 			&& !(m_iPhaseState & PHASE_LOCKON)
-			&& (m_iPhaseState & PHASE_IDLE))
+			&& (m_iPhaseState & PHASE_IDLE)
+			&& m_iState != STATE_NORMAL_EVADE_F)
 		{
 			Slide_Move(_pOther);
 		}
@@ -852,6 +942,42 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 		m_iMonster_Execution_Category = _pOther->Get_Monster_Execution_Category();
 		/* =========================== */
 	}
+
+	/* 의자와 충돌 했을 시. */
+	if (strncmp("P_Archive_Chain", _pOther->Get_Name(), 15))
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_E))
+		{
+			if (m_iState != STATE_ARCHIVE_SIT_LOOP)
+			{
+				_float4 fChairLookDir = {};
+				_float4 fChairPos = {};
+				const _float4x4* ChiarWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+				fChairLookDir = { ChiarWolrdMatrix->_31,ChiarWolrdMatrix->_32,ChiarWolrdMatrix->_33,0.f };
+				fChairPos = { ChiarWolrdMatrix->_41,ChiarWolrdMatrix->_42,ChiarWolrdMatrix->_43,1.f };
+
+				m_pStateMgr->Get_VecState().at(48)->Set_MonsterLookDir(fChairLookDir);
+				m_pStateMgr->Get_VecState().at(48)->Set_GetMonsterPos(fChairPos);
+				m_pStateMgr->Get_VecState().at(48)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+
+				m_iState = STATE_ARCHIVE_SIT_START;
+				m_iPhaseState |= PHASE_CHAIR;
+			}
+
+
+		}
+
+		if (m_iPhaseState & PHASE_CHAIR)
+		{
+			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+			{
+				m_iState = STATE_ARCHIVE_SIT_GETUP;
+
+			}
+		}
+
+	}
+
 }
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)

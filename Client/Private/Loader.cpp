@@ -70,6 +70,7 @@
 #include "RightWeapon.h"
 #include "ClawWeapon.h"
 #include "PlayerCamera.h"	
+#include "Camera_Debug.h"
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -951,6 +952,10 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera_Debug"),	
+		CCamera_Debug::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;
 #pragma endregion 
 

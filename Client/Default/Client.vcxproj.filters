@@ -613,6 +613,36 @@
     <Filter Include="02.GameObject\Object\BillBoardObject">
       <UniqueIdentifier>{bd8f6762-b7c6-4355-9eb0-e58ce34b3ec3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Camera\Camera_Debug">
+      <UniqueIdentifier>{eaf79f33-af84-4f55-9586-c97bac9561db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Sit">
+      <UniqueIdentifier>{b6be16e3-7440-434a-af1e-f1d2f652e4da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Sit\ArchiveGetUp">
+      <UniqueIdentifier>{5186872f-8bb3-4d47-a968-65d3d3b7bc44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitLight_Up">
+      <UniqueIdentifier>{50017a01-1fcd-4d04-a9ce-ebcd14c2851f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitLoop">
+      <UniqueIdentifier>{0e4b74db-6d0f-4f9c-8d04-fc732a549d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitStart">
+      <UniqueIdentifier>{8c80df3d-bc98-4785-b4dc-7d8720e6d780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\Rebound_R">
+      <UniqueIdentifier>{3974a09d-dc38-4668-9c2b-4fe84316b0a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\StunnedEnd">
+      <UniqueIdentifier>{41b6fc03-17ec-4456-89ca-4b93a6a9c539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\StunnedStart">
+      <UniqueIdentifier>{0d0546f0-47c4-4095-8061-1c83c67cc92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\StunnedLoop">
+      <UniqueIdentifier>{8456f9cb-2f34-4d67-9a23-5b1ce5846e8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1146,6 +1176,33 @@
     <ClInclude Include="..\Public\BillBoardObject.h">
       <Filter>02.GameObject\Object\BillBoardObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Camera_Debug.h">
+      <Filter>02.GameObject\Camera\Camera_Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ArchiveGetUp.h">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveGetUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ArchiveSitLight_Up.h">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLight_Up</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ArchiveSitLoop.h">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ArchiveSitStart.h">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rebound_R.h">
+      <Filter>02.GameObject\Player\State\Hurt\Rebound_R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StunnedLoop.h">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StunnedStart.h">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StunnedEnd.h">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedEnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1669,6 +1726,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\BillBoardObject.cpp">
       <Filter>02.GameObject\Object\BillBoardObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Debug.cpp">
+      <Filter>02.GameObject\Camera\Camera_Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ArchiveGetUp.cpp">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveGetUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ArchiveSitLight_Up.cpp">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLight_Up</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ArchiveSitLoop.cpp">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ArchiveSitStart.cpp">
+      <Filter>02.GameObject\Player\State\Sit\ArchiveSitStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rebound_R.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\Rebound_R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StunnedLoop.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StunnedStart.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StunnedEnd.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\StunnedEnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

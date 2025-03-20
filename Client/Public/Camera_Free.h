@@ -133,6 +133,9 @@ private:
 	map<wstring, vector<Camera_Event>>					m_mapCamera_Event;
 
 
+	/* 디버그 카메라를 위한 변수 */
+	_bool  m_bDebugCameraOnOff = { false };
+
 public:
 	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
