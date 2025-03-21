@@ -39,7 +39,7 @@ HRESULT CAisemy::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
 
     _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
@@ -122,7 +122,7 @@ HRESULT CAisemy::Ready_Components()
 
     Desc.iCurrentCellIndex = 0;
 
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
@@ -137,7 +137,7 @@ HRESULT CAisemy::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Aisemy"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_NPC_Aisemy_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Aisemy"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_NPC_Aisemy_Body"), &BodyDesc)))
         return E_FAIL;
 
     return S_OK;

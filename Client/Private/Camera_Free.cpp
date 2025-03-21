@@ -93,7 +93,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 		return E_FAIL;
 
 	map<const _wstring, class CLayer*>* mapLayer = m_pGameInstance->Get_Layers();
-	auto& LevelLayer = mapLayer[3];	/* 애가 LEVEL_GAMEPLAY의 Layer 집합 이고 */
+	auto& LevelLayer = mapLayer[3];	/* 애가 LEVEL_TUTORIAL의 Layer 집합 이고 */
 
 	CLayer* pLayer = LevelLayer.find(TEXT("Layer_Player"))->second;
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pLayer->Get_GameObject_List().front());

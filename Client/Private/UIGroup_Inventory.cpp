@@ -50,7 +50,7 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 	m_pItemTypePopUp = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_ItemType_PopUp");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
 	
 
 

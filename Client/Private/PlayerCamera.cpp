@@ -67,7 +67,7 @@ void CPlayerCamera::Priority_Update(_float fTimeDelta)
     m_fTimeDelta = fTimeDelta;
 
     if (m_pCamera == nullptr)
-        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), "Camera_Free"));
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
 void CPlayerCamera::Update(_float fTimeDelta)

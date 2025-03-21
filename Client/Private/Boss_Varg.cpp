@@ -41,7 +41,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
@@ -103,7 +103,7 @@ HRESULT CBoss_Varg::Ready_Components()
 
     Desc.iCurrentCellIndex = 11;
 
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
@@ -117,7 +117,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Varg"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Varg"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Varg_Body"), &BodyDesc)))
         return E_FAIL;
 
 
@@ -134,7 +134,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
     Varg_Knife_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -145,7 +145,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CUI_Boss_HP_Bar::UI_BOSS_HP_BAR_DESC pBoss_HP_Bar = {};
@@ -156,10 +156,10 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     pBoss_HP_Bar.bBossDead = &m_bDead;
     pBoss_HP_Bar.iPhase = &m_iPhase;
 
-    //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
+    //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
     //    return E_FAIL;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
         return E_FAIL;
 
 

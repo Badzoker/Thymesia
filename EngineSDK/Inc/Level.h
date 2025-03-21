@@ -25,7 +25,7 @@ protected:
 	class CGameInstance*		m_pGameInstance = { nullptr };
 protected:
 	_bool m_bNextLevelOpen = { false };
-
+	_uint m_iCurrentLevel = {};
 
 public:
 	virtual void Free() override;

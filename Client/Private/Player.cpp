@@ -629,7 +629,7 @@ HRESULT CPlayer::Ready_Components()
 	/* 초기 디버깅 플레이어가 서있는 셀의 인덱스 */
 	Desc.iCurrentCellIndex = 11;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
@@ -657,7 +657,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	//BodyDesc.fSpeedPerSec = 1.f;
 	BodyDesc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
 		return E_FAIL;
 
 	m_pModel = dynamic_cast<CModel*>(Find_PartObject_Component(TEXT("Part_Body"), TEXT("Com_Model")));
@@ -679,7 +679,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightWeaponDesc.fSpeedPerSec = 0.f;
 	RightWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
 		return E_FAIL;
 
 
@@ -694,7 +694,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	LeftWeaponDesc.fSpeedPerSec = 0.f;
 	LeftWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
 		return E_FAIL;
 
 
@@ -710,7 +710,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightClawWeaponDesc.fSpeedPerSec = 0.f;
 	RightClawWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
 		return E_FAIL;
 
 
@@ -726,7 +726,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	PlayerCameraDesd.fSpeedPerSec = 0.f;
 	PlayerCameraDesd.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
 		return E_FAIL;
 
 

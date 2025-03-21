@@ -42,7 +42,7 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
@@ -108,7 +108,7 @@ HRESULT CHArmorLV2::Ready_Components()
 
     Desc.iCurrentCellIndex = 0;
 
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
@@ -124,7 +124,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_HArmorLV2"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_HArmorLV2_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_HArmorLV2"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_HArmorLV2_Body"), &BodyDesc)))
         return E_FAIL;
 
     CWeapon_GreatSword::WEAPON_GreatSword_DESC		Weapon_GreatSword_Desc = {};
@@ -140,7 +140,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Weapon_GreatSword_Desc.fSpeedPerSec = 0.f;
     Weapon_GreatSword_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_GreatSword"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_GreatSword"), &Weapon_GreatSword_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_GreatSword"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Weapon_GreatSword"), &Weapon_GreatSword_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -151,7 +151,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -165,7 +165,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
         return E_FAIL;
 
     return S_OK;

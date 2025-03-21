@@ -14,7 +14,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	
+	m_iCurrentLevel = LEVEL_LOGO;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
@@ -38,17 +39,13 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	}
 	else
 	{
-
-		m_fRenderTime += fTimeDelta;
-		if (1	 < m_fRenderTime)
+		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
 		{
-			m_fRenderTime = 0;
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
 			m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 			m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.8f);
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY, 6, false));
-			
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TUTORIAL, 6, false));
 		}
 	}
 	

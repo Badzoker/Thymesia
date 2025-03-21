@@ -5,11 +5,11 @@
 
 BEGIN(Client)
 
-class CLevel_GamePlay final : public CLevel
+class CLevel_SeaOfTrees final : public CLevel
 {
 private:
-	CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual ~CLevel_GamePlay() = default;
+	CLevel_SeaOfTrees(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLevel_SeaOfTrees() = default;
 
 public:
 	typedef struct MonsterSpawnInfo
@@ -72,7 +72,7 @@ private:
 	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos;
 
 public:
-	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLevel_SeaOfTrees* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 };
 

@@ -45,19 +45,19 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
+	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
 	//	return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
+	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), pArg)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), pArg)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), pArg)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), pArg)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI_Boss_HP_Phase"), LEVEL_GAMEPLAY, TEXT("Layer_UIScene"), pArg)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Phase"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -117,17 +117,17 @@ HRESULT CUI_Boss_HP_Bar::Render()
 HRESULT CUI_Boss_HP_Bar::Ready_Components()
 {
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Boss_HP"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Boss_HP"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxPosTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

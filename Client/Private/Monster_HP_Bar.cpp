@@ -132,17 +132,17 @@ void CMonster_HP_Bar::Bill_Board()
 HRESULT CMonster_HP_Bar::Ready_Components()
 {
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Monster_HP"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Monster_HP"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxPosTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
@@ -159,7 +159,7 @@ HRESULT CMonster_HP_Bar::Ready_PartObjects(Monster_HP_Bar_DESC* pDesc)
 	MonsterHP_Gage_Desc.fMaxHP = pDesc->fMaxHP;
 	MonsterHP_Gage_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage"), &MonsterHP_Gage_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Gage"), &MonsterHP_Gage_Desc)))
 		return E_FAIL;
 
 	CMonster_HP_Gage_Effect::Monster_HP_Gage_Effect_DESC MonsterHP_Gage_Effect_Desc{};
@@ -169,7 +169,7 @@ HRESULT CMonster_HP_Bar::Ready_PartObjects(Monster_HP_Bar_DESC* pDesc)
 	MonsterHP_Gage_Effect_Desc.fMaxHP = pDesc->fMaxHP;
 	MonsterHP_Gage_Effect_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Gage_Effect"), &MonsterHP_Gage_Effect_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Gage_Effect"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Gage_Effect"), &MonsterHP_Gage_Effect_Desc)))
 		return E_FAIL;
 
 	CMonster_HP_Bar_Effect::Monster_HP_Bar_Effect_DESC MonsterHP_Bar_Effect_Desc{};
@@ -179,7 +179,7 @@ HRESULT CMonster_HP_Bar::Ready_PartObjects(Monster_HP_Bar_DESC* pDesc)
 	MonsterHP_Bar_Effect_Desc.fMaxHP = pDesc->fMaxHP;
 	MonsterHP_Bar_Effect_Desc.fShieldHP = pDesc->fShieldHP;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Bar_Effect"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"), &MonsterHP_Bar_Effect_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Monster_HP_Bar_Effect"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar_Effect"), &MonsterHP_Bar_Effect_Desc)))
 		return E_FAIL;
 
 	return S_OK;

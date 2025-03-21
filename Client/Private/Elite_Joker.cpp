@@ -42,7 +42,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
@@ -104,7 +104,7 @@ HRESULT CElite_Joker::Ready_Components()
 
     Desc.iCurrentCellIndex = 0;
 
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
         TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
         return E_FAIL;
 
@@ -121,7 +121,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Joker"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Joker"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_Joker_Body"), &BodyDesc)))
         return E_FAIL;
 
     CJoker_Weapon::JOKER_WEAPON_DESC		Joker_Weapon_Desc{};
@@ -138,7 +138,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Joker_Weapon_Desc.fSpeedPerSec = 0.f;
     Joker_Weapon_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Joker_Weapon"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker_Weapon"), &Joker_Weapon_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Joker_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_Joker_Weapon"), &Joker_Weapon_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -149,7 +149,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -163,7 +163,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_GAMEPLAY, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
         return E_FAIL;
 
     return S_OK;

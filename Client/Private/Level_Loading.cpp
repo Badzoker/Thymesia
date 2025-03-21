@@ -1,16 +1,22 @@
 #include "pch.h" 
-#include "..\Public\Level_Loading.h"
+#include "Level_Loading.h"
 
 #include "GameInstance.h"
+
 #include "Loader.h"
+
 #include "Level_Logo.h"
-#include "Level_GamePlay.h"
+#include "Level_Tutorial.h"
+#include "Level_SeaOfTrees.h"
+
+
 #include "UI_Scene.h"
 #include "UI_Image.h"
 #include "UI_Text.h"
 #include "UI_TextBox.h"
 #include "UI_LoadingScreen.h"
 #include "UI_LoadingIcon.h"
+
 #include "Blackscreen.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -40,7 +46,6 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
 		
 	}
-	//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.2f);
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
 	if (nullptr == m_pLoader)
@@ -76,10 +81,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 
 		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
-		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
-		{
-			m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.3f);
-		}
+		
 	}
 	
 	if (true == m_pLoader->isFinished())
@@ -93,7 +95,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		{
 			m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Logo::Create(m_pDevice, m_pContext));
 		}
-		if (m_eNextLevelID > LEVEL_LOGO)
+		if (m_eNextLevelID > LEVEL_LOGO) // 스테이지영역으로 가는 Loading이냐
 		{
 
 			CUI_Scene* pScene = m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading");
@@ -114,21 +116,36 @@ void CLevel_Loading::Update(_float fTimeDelta)
 					break;
 				}
 			}
-			if (m_pGameInstance->isAnyEnter())
+			if (m_pGameInstance->isAnyEnter() && m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN))
 			{
 				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.2f);
 
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOADING, TEXT("Layer_Loading"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), false);
 				switch (m_eNextLevelID)
 				{
-				case LEVEL_GAMEPLAY:
-					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+				case Client::LEVEL_TUTORIAL:
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Tutorial::Create(m_pDevice, m_pContext));
+					break;
 
-					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOADING, TEXT("Layer_Loading"), false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), false);
-					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_GamePlay::Create(m_pDevice, m_pContext));
+				case Client::LEVEL_SEAOFTREES:
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_SeaOfTrees::Create(m_pDevice, m_pContext));
+					break;
+
+				case Client::LEVEL_ROYALGARDEN:
+					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_RoyalGarden::Create(m_pDevice, m_pContext));
+					break;
+
+				case Client::LEVEL_FORTRESS:
+					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Fortress::Create(m_pDevice, m_pContext));
+					break;
+
+				case Client::LEVEL_HILL:
+					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Hill::Create(m_pDevice, m_pContext));
 					break;
 				}
-
 			}
 		}
 

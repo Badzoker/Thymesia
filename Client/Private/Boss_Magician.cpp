@@ -54,7 +54,7 @@ HRESULT CBoss_Magician::Initialize(void* pArg)
 
 
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
 	m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
 
 
@@ -133,7 +133,7 @@ HRESULT CBoss_Magician::Ready_Components()
 
 	Desc.iCurrentCellIndex = 11;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
@@ -147,7 +147,7 @@ HRESULT CBoss_Magician::Ready_PartObjects()
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Magician"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician_Body"), &BodyDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Magician"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Magician_Body"), &BodyDesc)))
 		return E_FAIL;
 
 
@@ -164,7 +164,7 @@ HRESULT CBoss_Magician::Ready_PartObjects()
 	Weapon_Desc.fSpeedPerSec = 0.f;
 	Weapon_Desc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Sword"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician_Sword"), &Weapon_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Sword"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Magician_Sword"), &Weapon_Desc)))
 		return E_FAIL;
 
 	CWeapon_Cane::MAGICIAN_CANE_DESC		Weapon2_Desc{};
@@ -176,7 +176,7 @@ HRESULT CBoss_Magician::Ready_PartObjects()
 	Weapon2_Desc.fSpeedPerSec = 0.f;
 	Weapon2_Desc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Cane"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician_Cane"), &Weapon2_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Cane"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Magician_Cane"), &Weapon2_Desc)))
 		return E_FAIL;
 
 	//CWeapon_Card::MAGICIAN_CARD_DESC		Weapon3_Desc{};
@@ -189,7 +189,7 @@ HRESULT CBoss_Magician::Ready_PartObjects()
 	//Weapon3_Desc.fSpeedPerSec = 0.f;
 	//Weapon3_Desc.fRotationPerSec = 0.f;
 
-	//if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Card"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Magician_Card"), &Weapon3_Desc)))
+	//if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Card"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Magician_Card"), &Weapon3_Desc)))
 	//	return E_FAIL;
 
 	CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -200,7 +200,7 @@ HRESULT CBoss_Magician::Ready_PartObjects()
 	Locked_On_Desc.fSpeedPerSec = 0.f;
 	Locked_On_Desc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
 		return E_FAIL;
 
 

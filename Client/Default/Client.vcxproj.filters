@@ -19,9 +19,6 @@
     <Filter Include="01.Level\01.Logo">
       <UniqueIdentifier>{2d052521-6517-45a3-80d6-5e40b91179ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Level\02.GamePlay">
-      <UniqueIdentifier>{4610ea0e-ebf7-4b2f-98d4-0cd37e3f1657}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Level\99.Loading\Loader">
       <UniqueIdentifier>{304efe14-efd3-4d8d-beef-d72cf2ca3c91}</UniqueIdentifier>
     </Filter>
@@ -643,6 +640,21 @@
     <Filter Include="02.GameObject\Player\State\Hurt\StunnedLoop">
       <UniqueIdentifier>{8456f9cb-2f34-4d67-9a23-5b1ce5846e8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Level\02.Tutorial">
+      <UniqueIdentifier>{856fee7a-be08-40ac-87b0-bd05ad8cb704}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\03.SeaOfTrees">
+      <UniqueIdentifier>{e9c1d37f-6864-48a5-afc1-205d351f2ab0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\04.RoyalGarden">
+      <UniqueIdentifier>{199c6789-e366-4357-a729-e7744ec2c8f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\05.Fortress">
+      <UniqueIdentifier>{300a955e-06be-400a-8ed0-5aa3d1217a28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\06.Philosophre%27s Hill">
+      <UniqueIdentifier>{29246cb2-d06f-4770-9dff-035920484e04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -665,9 +677,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Level\01.Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>01.Level\02.GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Level\99.Loading</Filter>
@@ -1203,6 +1212,12 @@
     <ClInclude Include="..\public\StunnedEnd.h">
       <Filter>02.GameObject\Player\State\Hurt\StunnedEnd</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial.h">
+      <Filter>01.Level\02.Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_SeaOfTrees.h">
+      <Filter>01.Level\03.SeaOfTrees</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1216,9 +1231,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Level\01.Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Level\02.GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Level\99.Loading</Filter>
@@ -1753,6 +1765,12 @@
     </ClCompile>
     <ClCompile Include="..\private\StunnedEnd.cpp">
       <Filter>02.GameObject\Player\State\Hurt\StunnedEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial.cpp">
+      <Filter>01.Level\02.Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_SeaOfTrees.cpp">
+      <Filter>01.Level\03.SeaOfTrees</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
