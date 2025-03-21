@@ -124,8 +124,6 @@ private:
 	/* ----------------  */
 
 
-
-	list<class CGameObject*>* m_plistMonster;
 	map<_float, CGameObject*>							m_maptMonsterDistance;
 
 	vector<Camera_Event>								m_vecCamera_Event;

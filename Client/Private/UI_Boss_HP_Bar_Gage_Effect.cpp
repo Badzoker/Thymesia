@@ -55,8 +55,6 @@ HRESULT CUI_Boss_HP_Bar_Gage_Effect::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Priority_Update(_float fTimeDelta)
 {
-    if (*m_bBossDead)
-        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
 
     if (!(*m_bBossActive))
         return;
@@ -93,6 +91,9 @@ void CUI_Boss_HP_Bar_Gage_Effect::Update(_float fTimeDelta)
 
 void CUI_Boss_HP_Bar_Gage_Effect::Late_Update(_float fTimeDelta)
 {
+    if (*m_bBossDead)
+        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
+
     if (!(*m_bBossActive))
         return;
     if (!m_bActive)

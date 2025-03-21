@@ -9,12 +9,12 @@
 #include "Locked_On.h"
 
 CElite_Joker::CElite_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CContainerObject(pDevice, pContext)
+    :CMonster(pDevice, pContext)
 {
 }
 
 CElite_Joker::CElite_Joker(const CElite_Joker& Prototype)
-    :CContainerObject(Prototype)
+    :CMonster(Prototype)
 {
 }
 
@@ -28,22 +28,12 @@ HRESULT CElite_Joker::Initialize_Prototype()
 
 HRESULT CElite_Joker::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "MONSTER");
 
-    m_fMonsterMaxHP = 100.f;
-    m_fMonsterCurHP = m_fMonsterMaxHP;
-    m_fShieldHP = m_fMonsterMaxHP;
-    m_fRotateSpeed = 180.f;
     m_fHP_Bar_Height = 800.f;
+    m_fRootDistance = 1.f;
+    m_fSpawn_Distance_Max = 15.f;
 
-    CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
-
-    Desc->fSpeedPerSec = 1.f;
-    Desc->fScaling = _float3{ 0.0025f,0.0025f,0.0025f };
-    Desc->fRotationPerSec = XMConvertToRadians(90.f);
-    XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
-
-    if (FAILED(__super::Initialize(Desc)))
+    if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
@@ -77,71 +67,19 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    /* 3월 9일 추가 */
-    m_pGameObjectModel = m_pModelCom;
-
     return S_OK;
 }
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
-    Culling();
-    if (m_bCulling)
-        return;
-
-    if (m_bDead)
-        m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
-
-    m_fTimeDelta = fTimeDelta;
-    CalCulate_Distance();
-
-    if (m_fDistance <= 15.f && !m_bActive)
-    {
-        m_pState_Manager->ChangeState(new CElite_Joker::Intro_State(), this);
-    }
-
-    if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
-    {
-        m_pState_Manager->ChangeState(new CElite_Joker::Return_To_SpawnPoint_State(), this);
-    }
-
-    if (m_fMonsterCurHP <= 0.f && !m_IsStun)
-    {
-        m_IsStun = true;
-        m_bPatternProgress = true;
-        m_fDelayTime = 0.f;
-        m_pState_Manager->ChangeState(new CElite_Joker::Stun_State(), this);
-    }
-    if (m_bHP_Bar_Active)
-    {
-        m_fHP_Bar_Active_Timer += fTimeDelta;
-        if (m_fHP_Bar_Active_Timer >= 15.f)
-        {
-            m_fHP_Bar_Active_Timer = 0.f;
-            m_bHP_Bar_Active = false;
-        }
-    }
-
-    if (!m_bPatternProgress)
-        RotateDegree_To_Player();
-
     __super::Priority_Update(fTimeDelta);
 }
 
 void CElite_Joker::Update(_float fTimeDelta)
 {
-    if (m_bCulling)
-        return;
-
-    PatternCreate();
-    RootAnimation();
+    __super::Update(fTimeDelta);
 
     m_pState_Manager->State_Update(fTimeDelta, this);
-
-    _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-
-    __super::Update(fTimeDelta);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
@@ -151,13 +89,6 @@ void CElite_Joker::Update(_float fTimeDelta)
 
 void CElite_Joker::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling)
-        return;
-
-    Recovery_HP();
-
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
     __super::Late_Update(fTimeDelta);
 }
 
@@ -238,55 +169,6 @@ HRESULT CElite_Joker::Ready_PartObjects()
     return S_OK;
 }
 
-void CElite_Joker::RootAnimation()
-{
-    /* 루트 모션 애니메션 코드 */
-    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector test = { 0.f,0.f,0.f,1.f };
-    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-    _uint iTest = m_pModelCom->Get_Current_Animation_Index();
-    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished()))
-    {
-        if (((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.5f) && !m_bNeedControl) || m_bCan_Move_Anim)
-            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
-
-        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-        {
-            _float4x4 test = {};
-            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
-            const _float4x4* test2 = const_cast<_float4x4*>(&test);
-            m_pTransformCom->Set_MulWorldMatrix(test2);
-        }
-    }
-}
-
-void CElite_Joker::CalCulate_Distance()
-{
-    //플레이어와의 거리 계산
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
-    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
-}
-
-
-void CElite_Joker::Culling()
-{
-    //절두체 안에있을때
-    if (!m_bActive)
-    {
-        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
-        {
-            m_bCulling = false;
-        }
-        //절두체 안에 없을때
-        else
-        {
-            m_bCulling = true;
-        }
-    }
-}
-
 void CElite_Joker::PatternCreate()
 {
     if (!m_bPatternProgress && m_bActive)
@@ -304,6 +186,24 @@ void CElite_Joker::PatternCreate()
         }
     }
 
+}
+
+void CElite_Joker::Active()
+{
+    m_pState_Manager->ChangeState(new CElite_Joker::Intro_State(), this);
+}
+
+void CElite_Joker::Return_To_Spawn()
+{
+    m_pState_Manager->ChangeState(new CElite_Joker::Return_To_SpawnPoint_State(), this);
+}
+
+void CElite_Joker::Stun()
+{
+    m_IsStun = true;
+    m_bPatternProgress = true;
+    m_fDelayTime = 0.f;
+    m_pState_Manager->ChangeState(new CElite_Joker::Stun_State(), this);
 }
 
 void CElite_Joker::Near_Pattern_Create()
@@ -355,70 +255,6 @@ void CElite_Joker::Far_Pattern_Create()
     case 1:
         m_pState_Manager->ChangeState(new CElite_Joker::Attack_Jump(), this);
         break;
-    }
-}
-
-void CElite_Joker::RotateDegree_To_Player()
-{
-    _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
-
-    vLook = XMVector3Normalize(vLook);
-    vLook2 = XMVector3Normalize(vLook2);
-
-    //회전해야 하는 각도
-    _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
-    fAngle = XMConvertToDegrees(fAngle);
-    _vector fCrossResult = XMVector3Cross(vLook, vLook2);
-
-    if (XMVectorGetY(fCrossResult) < 0)
-    {
-        fAngle *= -1;
-    }
-    m_fRotateDegree = fAngle;
-
-    if (fabs(m_fRotateDegree) > 1.f)
-        m_bNeed_Rotation = true;
-}
-
-void CElite_Joker::Rotation_To_Player()
-{
-    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
-    if (m_fRotateDegree < 0.f)
-        fRadians *= -1;
-
-    if (fabs(m_fRotateDegree) < fabs(fRadians))
-        fRadians = m_fRotateDegree;
-
-    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-
-    m_fRotateDegree -= fRadians;
-
-    if (fabs(m_fRotateDegree) <= 1.f)
-    {
-        m_fRotateDegree = 0.f;
-        m_bNeed_Rotation = false;
-    }
-}
-
-void CElite_Joker::Recovery_HP()
-{
-    if (m_fMonsterCurHP != m_fShieldHP)
-    {
-        m_fRecoveryTime += m_fTimeDelta;
-        if (m_fRecoveryTime >= 5.f)
-            m_bCanRecovery = true;
-    }
-    if (m_bCanRecovery)
-    {
-        m_fShieldHP += 0.1f;
-        if (m_fShieldHP >= m_fMonsterCurHP)
-        {
-            m_fShieldHP = m_fMonsterCurHP;
-            m_bCanRecovery = false;
-            m_fRecoveryTime = 0.f;
-        }
     }
 }
 
@@ -490,7 +326,6 @@ void CElite_Joker::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);
 }
 
@@ -536,7 +371,6 @@ void CElite_Joker::Intro_State::State_Update(_float fTimeDelta, CElite_Joker* pO
 void CElite_Joker::Intro_State::State_Exit(CElite_Joker* pObject)
 {
     pObject->m_bActive = true;
-    pObject->m_bPatternProgress = false;
 }
 
 #pragma endregion
@@ -682,7 +516,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
     if (m_iIndex == 13 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 12;
-        pObject->m_bNeedControl = true;
+        pObject->m_bCan_Move_Anim = true;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
@@ -690,7 +524,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
     if ((m_iIndex == 12 && pObject->m_fDistance <= 1.5f) || m_fTimer >= 3.f)
     {
         m_iIndex = 11;
-        pObject->m_bNeedControl = false;
+        pObject->m_bCan_Move_Anim = false;
         pObject->m_iMonster_State = STATE_ATTACK;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURXXLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -732,7 +566,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;
-        pObject->m_bNeedControl = true;
+        pObject->m_bCan_Move_Anim = true;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
@@ -740,7 +574,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
     if (m_iIndex == 35 && m_fTimer >= 4.f)
     {
         m_iIndex = (rand() % 2) + 33;
-        pObject->m_bNeedControl = false;
+        pObject->m_bCan_Move_Anim = false;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -925,15 +759,25 @@ void CElite_Joker::Return_To_SpawnPoint_State::State_Enter(CElite_Joker* pObject
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
 void CElite_Joker::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    pObject->m_pTransformCom->LookAt(XMLoadFloat4(&pObject->m_vSpawnPoint));
-    pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
+    pObject->m_pNavigationCom->Start_Astar(pObject->m_iSpawn_Cell_Index);
+    _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_bCheck), 0.f);
+    if (m_bCheck)
+    {
+        pObject->m_pTransformCom->LookAt_Astar(vDir);
+        pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta, pObject->m_pNavigationCom);
+    }
+    if (pObject->m_fDistance <= 1.f)
+    {
+        pObject->m_pState_Manager->ChangeState(new Idle_State, pObject);
+    }
 
-    if (pObject->m_fSpawn_Distance <= 1.f)
+    if (pObject->m_fSpawn_Distance <= 3.f)
     {
         pObject->m_pState_Manager->ChangeState(new Idle_State, pObject);
     }
@@ -941,4 +785,5 @@ void CElite_Joker::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, C
 
 void CElite_Joker::Return_To_SpawnPoint_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_bActive = false;
 }

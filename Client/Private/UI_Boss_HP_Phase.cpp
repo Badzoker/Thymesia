@@ -54,9 +54,6 @@ HRESULT CUI_Boss_HP_Phase::Initialize(void* pArg)
 
 void CUI_Boss_HP_Phase::Priority_Update(_float fTimeDelta)
 {
-    if (*m_bBossDead)
-        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
-
     if (!(*m_bBossActive))
         return;
     if (*m_iPhase == CBoss_Varg::PHASE_TWO)
@@ -72,6 +69,9 @@ void CUI_Boss_HP_Phase::Update(_float fTimeDelta)
 
 void CUI_Boss_HP_Phase::Late_Update(_float fTimeDelta)
 {
+    if (*m_bBossDead)
+        m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
+
     if (!(*m_bBossActive))
         return;
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);

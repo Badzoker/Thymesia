@@ -9,12 +9,12 @@
 #include "Player.h"
 
 CNormal_VillageM0::CNormal_VillageM0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CContainerObject(pDevice, pContext)
+    :CMonster(pDevice, pContext)
 {
 }
 
 CNormal_VillageM0::CNormal_VillageM0(const CNormal_VillageM0& Prototype)
-    :CContainerObject(Prototype)
+    :CMonster(Prototype)
 {
 }
 
@@ -28,21 +28,11 @@ HRESULT CNormal_VillageM0::Initialize_Prototype()
 
 HRESULT CNormal_VillageM0::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "MONSTER");
-
-    m_fMonsterMaxHP = 100.f;
-    m_fMonsterCurHP = m_fMonsterMaxHP;
-    m_fShieldHP = m_fMonsterMaxHP;
-    m_fRotateSpeed = 180.f;
     m_fHP_Bar_Height = 500.f;
+    m_fRootDistance = 1.f;
+    m_fSpawn_Distance_Max = 10.f;
 
-    CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
-    Desc->fSpeedPerSec = 1.f;
-    Desc->fScaling = _float3{ 0.0025f,0.0025f,0.0025f };
-    Desc->fRotationPerSec = XMConvertToRadians(90.f);
-    XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
-
-    if (FAILED(__super::Initialize(Desc)))
+    if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
@@ -72,78 +62,19 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-
-
-    /* 3월 9일 추가 */
-    m_pGameObjectModel = m_pModelCom;
-
     return S_OK;
 }
 
 void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
 {
-    Culling();
-    if (m_bCulling)
-        return;
-
-    if (m_bDead)
-        m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
-
-    m_fTimeDelta = fTimeDelta;
-    CalCulate_Distance();
-
-    if (m_pGameInstance->isKeyEnter(DIK_K))
-        m_fMonsterCurHP = 0.f;
-
-    //거리에따른 Active 활성화
-    if (m_fDistance <= 5.f && !m_bActive)
-    {
-        m_bActive = true;
-        if (!m_bFirst_Active)
-        {
-            m_bFirst_Active = true;
-            m_pState_Manager->ChangeState(new CNormal_VillageM0::Intro_State(), this);
-        }
-    }
-    if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
-    {
-        m_pState_Manager->ChangeState(new CNormal_VillageM0::Return_To_SpawnPoint_State(), this);
-    }
-
-
-    if (m_fMonsterCurHP <= 0.f && !m_IsStun)
-    {
-        m_IsStun = true;
-        m_bPatternProgress = true;
-        m_fDelayTime = 0.f;
-        m_pState_Manager->ChangeState(new CNormal_VillageM0::Stun_State(), this);
-    }
-
-    if (m_bHP_Bar_Active)
-    {
-        m_fHP_Bar_Active_Timer += fTimeDelta;
-        if (m_fHP_Bar_Active_Timer >= 15.f)
-        {
-            m_fHP_Bar_Active_Timer = 0.f;
-            m_bHP_Bar_Active = false;
-        }
-    }
     __super::Priority_Update(fTimeDelta);
 }
 
 void CNormal_VillageM0::Update(_float fTimeDelta)
 {
-    if (m_bCulling)
-        return;
-    PatternCreate();
-    RootAnimation();
-
-
-    _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-    m_pState_Manager->State_Update(fTimeDelta, this);
 
     __super::Update(fTimeDelta);
+    m_pState_Manager->State_Update(fTimeDelta, this);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
@@ -151,12 +82,6 @@ void CNormal_VillageM0::Update(_float fTimeDelta)
 
 void CNormal_VillageM0::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling || m_bDead)
-        return;
-    Recovery_HP();
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
-
     __super::Late_Update(fTimeDelta);
 }
 
@@ -236,54 +161,6 @@ HRESULT CNormal_VillageM0::Ready_PartObjects()
     return S_OK;
 }
 
-void CNormal_VillageM0::RootAnimation()
-{
-    /* 루트 모션 애니메션 코드 */
-    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector test = { 0.f,0.f,0.f,1.f };
-    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-    _uint iTest = m_pModelCom->Get_Current_Animation_Index();
-    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bMove))
-    {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.f) || m_bCan_Move_Anim)
-            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
-
-        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-        {
-            _float4x4 test = {};
-            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
-            const _float4x4* test2 = const_cast<_float4x4*>(&test);
-            m_pTransformCom->Set_MulWorldMatrix(test2);
-        }
-    }
-}
-
-void CNormal_VillageM0::CalCulate_Distance()
-{
-    //플레이어와의 거리 계산
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
-    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
-}
-
-void CNormal_VillageM0::Culling()
-{
-    //절두체 안에있을때
-    if (!m_bActive)
-    {
-        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
-        {
-            m_bCulling = false;
-        }
-        //절두체 안에 없을때
-        else
-        {
-            m_bCulling = true;
-        }
-    }
-}
-
 void CNormal_VillageM0::PatternCreate()
 {
     if (!m_bPatternProgress && m_bActive)
@@ -304,70 +181,6 @@ void CNormal_VillageM0::PatternCreate()
 
             m_fDelayTime = 0.f;
             m_bPatternProgress = true;
-        }
-    }
-}
-
-void CNormal_VillageM0::RotateDegree_To_Player()
-{
-    _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
-
-    vLook = XMVector3Normalize(vLook);
-    vLook2 = XMVector3Normalize(vLook2);
-
-    //회전해야 하는 각도
-    _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
-    fAngle = XMConvertToDegrees(fAngle);
-    _vector fCrossResult = XMVector3Cross(vLook, vLook2);
-
-    if (XMVectorGetY(fCrossResult) < 0)
-    {
-        fAngle *= -1;
-    }
-    m_fRotateDegree = fAngle;
-
-    if (fabs(m_fRotateDegree) > 1.f)
-        m_bNeed_Rotation = true;
-}
-
-void CNormal_VillageM0::Rotation_To_Player()
-{
-    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
-    if (m_fRotateDegree < 0.f)
-        fRadians *= -1;
-
-    if (fabs(m_fRotateDegree) < fabs(fRadians))
-        fRadians = m_fRotateDegree;
-
-    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-
-    m_fRotateDegree -= fRadians;
-
-    if (fabs(m_fRotateDegree) <= 1.f)
-    {
-        m_fRotateDegree = 0.f;
-        m_bNeed_Rotation = false;
-    }
-}
-
-void CNormal_VillageM0::Recovery_HP()
-{
-    if (m_fMonsterCurHP != m_fShieldHP)
-    {
-        m_fRecoveryTime += m_fTimeDelta;
-        if (m_fRecoveryTime >= 5.f)
-            m_bCanRecovery = true;
-    }
-    if (m_bCanRecovery)
-    {
-        m_fShieldHP += 0.1f;
-        if (m_fShieldHP >= m_fMonsterCurHP)
-        {
-            m_fShieldHP = m_fMonsterCurHP;
-            m_bCanRecovery = false;
-            m_fRecoveryTime = 0.f;
         }
     }
 }
@@ -397,10 +210,6 @@ void CNormal_VillageM0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
             m_pState_Manager->ChangeState(new CNormal_VillageM0::Hit_State(iRandom), this);
         }
     }
-
-
-
-
 }
 
 void CNormal_VillageM0::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -447,9 +256,30 @@ void CNormal_VillageM0::Free()
 {
     __super::Free();
 
-
-    Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);
+}
+
+void CNormal_VillageM0::Active()
+{
+    m_bActive = true;
+    if (!m_bFirstActive)
+    {
+        m_bFirstActive = true;
+        m_pState_Manager->ChangeState(new CNormal_VillageM0::Intro_State(), this);
+    }
+}
+
+void CNormal_VillageM0::Return_To_Spawn()
+{
+    m_pState_Manager->ChangeState(new Return_To_SpawnPoint_State(), this);
+}
+
+void CNormal_VillageM0::Stun()
+{
+    m_IsStun = true;
+    m_bPatternProgress = true;
+    m_fDelayTime = 0.f;
+    m_pState_Manager->ChangeState(new CNormal_VillageM0::Stun_State(), this);
 }
 
 #pragma region Idle_State

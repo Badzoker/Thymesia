@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "ContainerObject.h"
+#include "Monster.h"
 #include "State_Machine.h"
 
 
@@ -14,7 +14,7 @@ END
 
 BEGIN(Client)
 
-class CNormal_VillageF1 final : public CContainerObject
+class CNormal_VillageF1 final : public CMonster
 {
 
 private:
@@ -28,61 +28,18 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
+public:
+	void PatternCreate() override;
+	void Active() override;
+	void Return_To_Spawn() override;
+	void Stun() override;
 public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
-public:
-	void RootAnimation();
-	void CalCulate_Distance();
-	void Culling();
-public:
-	void PatternCreate();
-	void RotateDegree_To_Player();
-	void Rotation_To_Player();
-	void Recovery_HP();
+
 private:
-	//_vector                          m_vPlayerPos = {};
-	_float4                          m_vPlayerPos = {};
-	//_vector                          m_vSpawnPoint = {};
-	_float4                          m_vSpawnPoint = {};
-
-	_bool                            m_bActive = {};
-	_bool                            m_bFirst_Active = {};
-	_bool                            m_bNeed_Rotation = {};
-	_bool                            m_bPatternProgress = {};
-	_bool                            m_bCan_Move_Anim = {};
-	_bool                            m_IsStun = {};
-	_bool                            m_bHP_Bar_Active = {};
-	_bool							 m_bMove = true;
-	_bool                            m_bDead = {};
-	_bool                            m_bCulling = {};
-
-	_uint                            m_iHitNum = -1;
-	_uint                            m_iHitCount = {};
-	const _uint* m_Player_Attack = {};
-
-	_float                           m_fRotateDegree = {};
-	_float                           m_fRotateSpeed = {};
-	_float                           m_fDelayTime = {};
-	_float                           m_fSpawn_Distance = {};
-	_float                           m_fDistance = {};
-	_float                           m_fTimeDelta = {};
-	_float                           m_fHP_Bar_Active_Timer = {};
-	_float                           m_fHP_Bar_Height = {};
-
-	_float                           m_fMonsterMaxHP = {};
-	_float                           m_fMonsterCurHP = {};
-	_float                           m_fShieldHP = {};
-	_float                           m_fRecoveryTime = {};
-	_bool                            m_bCanRecovery = {};
-private:
-	const _float4x4* m_pRootMatrix = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CNormal_VillageF1>* m_pState_Manager = { nullptr };
-	class CGameObject* m_pPlayer = { nullptr };
+
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
@@ -237,6 +194,7 @@ public:
 		void State_Update(_float fTimeDelta, CNormal_VillageF1* pObject) override;
 		void State_Exit(CNormal_VillageF1* pObject) override;
 	};
+
 };
 
 END

@@ -112,9 +112,6 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, CameraPos);
 
-	m_plistMonster = m_pGameInstance->Get_LayerGameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-
-
 	/* 카메라 툴 내용 읽어오기  */
 	vector<Camera_Event> test;
 
@@ -448,8 +445,10 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 {
 	m_maptMonsterDistance.clear();
 	/* 여기서 가장 가까운 몬스터를 리턴 해 줘야한다.*/
-	for (auto& iter : *m_plistMonster)
+	for (auto& iter : m_pGameInstance->Get_Check_Monsters())
 	{
+		_uint iCheck = m_pGameInstance->Get_Check_Monsters().size();
+
 		// 절두체에 안에 있어야 하며, 그 중 가장 거리가 가까운놈을 가져와야함. 
 		_vector MonsterPosition = iter->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
@@ -463,8 +462,6 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 			if (Distance < 25.f)
 				m_maptMonsterDistance.insert(pair<_float, CGameObject*>(Distance, iter));
 		}
-
-
 	}
 
 	if (m_maptMonsterDistance.size() >= 1)

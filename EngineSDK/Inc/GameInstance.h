@@ -263,6 +263,12 @@ public:
 	_bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
 #pragma endregion
 
+#pragma region MONSTER_MANAGER
+	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
+	HRESULT Add_Delete_Monster(class CMonster* pMonster);
+	HRESULT Active_Monster();
+	deque<class CMonster*>& Get_Check_Monsters();
+#pragma endregion
 
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
@@ -287,7 +293,12 @@ private:
 	class CShadow*						m_pShadow             = { nullptr };
 	class CUI_Manager*					m_pUI_Manager		  = { nullptr };
 	class CPhysX_Manager*				m_pPhysX_Manager	  = { nullptr };	
-	class CTriggerManager*				m_pTrigger_Manager = { nullptr };
+	class CTriggerManager*				m_pTrigger_Manager	  = { nullptr };
+	class CMonster_Manager*				m_pMonster_Manager	  = { nullptr };
+	//범승 나중에 추가예정.(투사체 매니저)
+	//class CProjectile_Manager*		m_pProjectile_Manager = { nullptr };
+public:
+
 public:
 	void Release_Engine();
 	virtual void Free() override;

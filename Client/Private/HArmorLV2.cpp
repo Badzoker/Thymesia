@@ -9,12 +9,12 @@
 #include "Locked_On.h"
 
 CHArmorLV2::CHArmorLV2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CContainerObject(pDevice, pContext)
+    :CMonster(pDevice, pContext)
 {
 }
 
 CHArmorLV2::CHArmorLV2(const CHArmorLV2& Prototype)
-    :CContainerObject(Prototype)
+    :CMonster(Prototype)
 {
 }
 
@@ -28,22 +28,11 @@ HRESULT CHArmorLV2::Initialize_Prototype()
 
 HRESULT CHArmorLV2::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "MONSTER");
-
-    m_fMonsterMaxHP = 100.f;
-    m_fMonsterCurHP = m_fMonsterMaxHP;
-    m_fShieldHP = m_fMonsterMaxHP;
-    m_fRotateSpeed = 180.f;
     m_fHP_Bar_Height = 500.f;
+    m_fRootDistance = 1.f;
+    m_fSpawn_Distance_Max = 15.f;
 
-    CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
-
-    Desc->fSpeedPerSec = 1.f;
-    Desc->fScaling = _float3{ 0.0025f,0.0025f,0.0025f };
-    Desc->fRotationPerSec = XMConvertToRadians(90.f);
-    XMStoreFloat4(&m_vSpawnPoint, XMLoadFloat4(&Desc->fPosition));
-
-    if (FAILED(__super::Initialize(Desc)))
+    if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
@@ -78,93 +67,32 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    m_pGameObjectModel = m_pModelCom;
     return S_OK;
 }
 
 void CHArmorLV2::Priority_Update(_float fTimeDelta)
 {
-    Culling();
-    if (m_bCulling)
-        return;
-
-    if (m_bDead)
-        m_pGameInstance->Add_DeadObject(TEXT("Layer_Monster"), this);
-
-    m_fTimeDelta = fTimeDelta;
-    CalCulate_Distance();
-
-    //거리에따른 Active 활성화
-    if (m_fDistance <= 5.f && !m_bActive)
-    {
-        m_bActive = true;
-        if (m_bFirst_Active)
-        {
-            m_bFirst_Active = false;
-            m_bPatternProgress = true;
-            m_pState_Manager->ChangeState(new CHArmorLV2::Intro_State(), this);
-        }
-    }
     if (m_pGameInstance->isKeyEnter(DIK_N))
     {
         m_fMonsterCurHP -= 50.f;
     }
-
-    if (m_fSpawn_Distance >= 15.f && !m_bPatternProgress)
-    {
-        m_pState_Manager->ChangeState(new CHArmorLV2::Return_To_SpawnPoint_State(), this);
-    }
-
-    if (m_fMonsterCurHP <= 0.f && !m_IsStun)
-    {
-        m_IsStun = true;
-        m_bPatternProgress = true;
-        m_fDelayTime = 0.f;
-        m_pState_Manager->ChangeState(new CHArmorLV2::Stun_State(), this);
-    }
-    if (m_bHP_Bar_Active)
-    {
-        m_fHP_Bar_Active_Timer += fTimeDelta;
-        if (m_fHP_Bar_Active_Timer >= 10.f)
-        {
-            m_fHP_Bar_Active_Timer = 0.f;
-            m_bHP_Bar_Active = false;
-        }
-    }
-
     __super::Priority_Update(fTimeDelta);
 
 }
 
 void CHArmorLV2::Update(_float fTimeDelta)
 {
-    if (m_bCulling)
-        return;
-
-    PatternCreate();
-    RootAnimation();
-
-    _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+    __super::Update(fTimeDelta);
     m_pState_Manager->State_Update(fTimeDelta, this);
 
-    __super::Update(fTimeDelta);
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
         m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
-
-
 }
 
 void CHArmorLV2::Late_Update(_float fTimeDelta)
 {
-    if (m_bCulling || m_bDead)
-        return;
-    Recovery_HP();
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
-
     __super::Late_Update(fTimeDelta);
 }
 
@@ -243,54 +171,6 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     return S_OK;
 }
 
-void CHArmorLV2::CalCulate_Distance()
-{
-    //플레이어와의 거리 계산
-    XMStoreFloat4(&m_vPlayerPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    _vector pPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vPlayerPos) - pPosition));
-    m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
-}
-
-void CHArmorLV2::Culling()
-{
-    //절두체 안에있을때
-    if (!m_bActive)
-    {
-        if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.1f, FRUSTUM_TYPE::FRUSTUM_MONSTER) && !m_bDead)
-        {
-            m_bCulling = false;
-        }
-        //절두체 안에 없을때
-        else
-        {
-            m_bCulling = true;
-        }
-    }
-}
-
-void CHArmorLV2::RootAnimation()
-{
-    /* 루트 모션 애니메션 코드 */
-    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector test = { 0.f,0.f,0.f,1.f };
-    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
-    _uint iTest = m_pModelCom->Get_Current_Animation_Index();
-    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bMove))
-    {
-        if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > 1.f) || m_bCan_Move_Anim)
-            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
-
-        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
-        {
-            _float4x4 test = {};
-            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
-            const _float4x4* test2 = const_cast<_float4x4*>(&test);
-            m_pTransformCom->Set_MulWorldMatrix(test2);
-        }
-    }
-}
-
 void CHArmorLV2::PatternCreate()
 {
     if (!m_bPatternProgress && m_bActive)
@@ -307,6 +187,30 @@ void CHArmorLV2::PatternCreate()
             m_bPatternProgress = true;
         }
     }
+}
+
+void CHArmorLV2::Active()
+{
+    m_bActive = true;
+    if (!m_bFirstActive)
+    {
+        m_bFirstActive = true;
+        m_bPatternProgress = true;
+        m_pState_Manager->ChangeState(new CHArmorLV2::Intro_State(), this);
+    }
+}
+
+void CHArmorLV2::Return_To_Spawn()
+{
+    m_pState_Manager->ChangeState(new CHArmorLV2::Return_To_SpawnPoint_State(), this);
+}
+
+void CHArmorLV2::Stun()
+{
+    m_IsStun = true;
+    m_bPatternProgress = true;
+    m_fDelayTime = 0.f;
+    m_pState_Manager->ChangeState(new CHArmorLV2::Stun_State(), this);
 }
 
 void CHArmorLV2::Near_Pattern_Create()
@@ -351,30 +255,6 @@ void CHArmorLV2::Far_Pattern_Create()
     m_pState_Manager->ChangeState(new Attack_Pattern_05, this);
 }
 
-void CHArmorLV2::RotateDegree_To_Player()
-{
-    _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-    _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
-
-    vLook = XMVector3Normalize(vLook);
-    vLook2 = XMVector3Normalize(vLook2);
-
-    //회전해야 하는 각도
-    _float fAngle = acos(XMVectorGetX(XMVector3Dot(vLook, vLook2)));
-    fAngle = XMConvertToDegrees(fAngle);
-    _vector fCrossResult = XMVector3Cross(vLook, vLook2);
-
-    if (XMVectorGetY(fCrossResult) < 0)
-    {
-        fAngle *= -1;
-    }
-    m_fRotateDegree = fAngle;
-
-    if (fabs(m_fRotateDegree) > 1.f)
-        m_bNeed_Rotation = true;
-}
-
 _bool CHArmorLV2::Is_Need_Turn_Attack()
 {
     _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -393,46 +273,6 @@ _bool CHArmorLV2::Is_Need_Turn_Attack()
         return true;
     }
     return false;
-}
-
-void CHArmorLV2::Rotation_To_Player()
-{
-    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
-    if (m_fRotateDegree < 0.f)
-        fRadians *= -1;
-
-    if (fabs(m_fRotateDegree) < fabs(fRadians))
-        fRadians = m_fRotateDegree;
-
-    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-
-    m_fRotateDegree -= fRadians;
-
-    if (fabs(m_fRotateDegree) <= 1.f)
-    {
-        m_fRotateDegree = 0.f;
-        m_bNeed_Rotation = false;
-    }
-}
-
-void CHArmorLV2::Recovery_HP()
-{
-    if (m_fMonsterCurHP != m_fShieldHP)
-    {
-        m_fRecoveryTime += m_fTimeDelta;
-        if (m_fRecoveryTime >= 5.f)
-            m_bCanRecovery = true;
-    }
-    if (m_bCanRecovery)
-    {
-        m_fShieldHP += 0.1f;
-        if (m_fShieldHP >= m_fMonsterCurHP)
-        {
-            m_fShieldHP = m_fMonsterCurHP;
-            m_bCanRecovery = false;
-            m_fRecoveryTime = 0.f;
-        }
-    }
 }
 
 void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
@@ -477,12 +317,12 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
 
 void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_STUN && m_iMonster_State != STATE_EXECUTION))
+    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) && m_iMonster_State != STATE_STUN && m_iMonster_State != STATE_EXECUTION)
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
     }
-    if (!strcmp("PLAYER", _pOther->Get_Name()) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
+    if ((!strcmp("PLAYER", _pOther->Get_Name())) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
     {
         m_bExecution_Progress = true;
         m_pState_Manager->ChangeState(new Execution_State(), this);
@@ -524,7 +364,6 @@ void CHArmorLV2::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);
 }
 
@@ -713,10 +552,6 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
                pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);*/
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    //else if (m_iIndex == 23 && /*pObject->m_fDistance <= 1.5f &&*/ pObject->m_pGameInstance->isMouseEnter(DIM_LB))
-    //{
-    //    pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
-    //}
 
     if (m_iIndex == 22 && pObject->m_pModelCom->GetAniFinish())
     {
@@ -846,7 +681,7 @@ void CHArmorLV2::Attack_Pattern_03::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 3 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 36;
         pObject->RotateDegree_To_Player();
@@ -1056,6 +891,7 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     pObject->RotateDegree_To_Player();
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
 
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
@@ -1077,12 +913,12 @@ void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pO
     {
         pObject->m_iMonster_State = STATE_DEAD;
 
-//#pragma region UI상호작용
-//        // 몬스터 사망 시 아이템 드랍 추가하기
-//        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-//        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
-//        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
-//#pragma endregion
+        //#pragma region UI상호작용
+        //        // 몬스터 사망 시 아이템 드랍 추가하기
+        //        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        //        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
+        //        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
+        //#pragma endregion
     }
     //죽음 처리
 }
