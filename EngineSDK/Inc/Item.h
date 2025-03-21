@@ -35,7 +35,10 @@ public:
 
     _uint                       Get_DropItemCount() const { return m_iDropItemCount; }
 
-    _float4                      Bezier(_float4 _vStartPos, _float4 _vCurvePos, _float4 _vEndPos, _float _fTimeDelta);
+    _float4                     Bezier(_float4 _vStartPos, _float4 _vCurvePos, _float4 _vEndPos, _float _fTimeDelta);
+
+    virtual _float              Compute_LerpItemScale(_float _fStart, _float _fEnd, _float _fRatio);
+    virtual void                Reset_ItemState();
 
 protected:
     _uint                       m_iItemCount = {};
@@ -51,6 +54,15 @@ protected:
     _float4                     m_vLastPos = {};
     _float                      m_fElapsedTime = {};
 
+protected:
+    _float4                     m_fAlphaValue = {};
+    _float3                     m_vCurrentScale = {};
+    _float                      m_fAcquireEffectTime = 0.f;
+    _float                      m_fEnLargingTime = 0.f;
+    _bool                       m_bStartAcquireEffect = { false };
+    _bool                       m_bFinishAcquireEffect = { false };
+    _bool                       m_bEnLarging = false;
+    _bool                       m_bEnLargingDone = false;
 
 
 public:

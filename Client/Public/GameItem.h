@@ -60,7 +60,7 @@ private:
     PxRigidDynamic*             m_pActor = { nullptr };
     class CGameObject*          m_pInteractButton = { nullptr };
 
-    _float4                     m_fAlphaValue = {};
+    //_float4                     m_fAlphaValue = {};
 
     CGameObject*                m_pButtonGameObject = { nullptr };
     CButton*                    m_pButton = { nullptr };

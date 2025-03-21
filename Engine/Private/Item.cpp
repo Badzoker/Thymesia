@@ -29,16 +29,6 @@ void CItem::Priority_Update(_float _fTimeDelta)
 
 void CItem::Update(_float _fTimeDelta)
 {
-    if (m_bDropping)
-    {
-        Bezier(m_vInitialPos, m_vCurvePos, m_vEndPos, _fTimeDelta);
-        m_fElapsedTime += _fTimeDelta * 0.5f;
-
-        if (m_fElapsedTime >= 5.0f)
-        {
-            m_bDropping = false;
-        }
-    }
 }
 
 void CItem::Late_Update(_float fTimeDelta)
@@ -92,6 +82,25 @@ _float4 CItem::Bezier(_float4 _vStartPos, _float4 _vCurvePos, _float4 _vEndPos, 
     XMStoreFloat4(&vResult, ((1 - _fTimeDelta) * (1 - _fTimeDelta) * XMLoadFloat4(&_vStartPos) + 2 * (1 - _fTimeDelta) * _fTimeDelta * XMLoadFloat4(&_vCurvePos) + _fTimeDelta * _fTimeDelta * XMLoadFloat4(&_vEndPos)));
 
     return  vResult;
+}
+
+_float CItem::Compute_LerpItemScale(_float _fStart, _float _fEnd, _float _fRatio)
+{
+    return _fStart + (_fEnd - _fStart) * _fRatio;
+}
+
+void CItem::Reset_ItemState()
+{
+    m_bAcquired = false;
+    m_bStartAcquireEffect = false;
+    m_bFinishAcquireEffect = false;
+    m_fAcquireEffectTime = 0.f;
+    m_fAlphaValue.w = 1.0f;
+
+
+    m_fEnLargingTime = 0.0f;
+    m_bEnLargingDone = false;
+    m_bEnLargingDone = false;
 }
 
 void CItem::Free()
