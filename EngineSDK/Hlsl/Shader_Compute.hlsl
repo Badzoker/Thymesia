@@ -14,6 +14,11 @@ struct Point_Particle
 
 float g_fTime = 0.0167f; //1.f / 60.f //이거 안됨 상수버퍼로 던져야지 가능할듯 아직 안해봄
 
+cbuffer GlobalCamera : register(b0)
+{
+    float4 g_vCamPos;
+}
+
 StructuredBuffer<Point_Particle> g_tInput_Compute : register(t0);
 RWStructuredBuffer<Point_Particle> g_tOutput_Compute : register(u0);
 
@@ -163,6 +168,33 @@ void CSMain_Particle_Blood(int3 dispatchThreadID : SV_DispatchThreadID)
     GroupMemoryBarrierWithGroupSync();
 }
 
+[numthreads(128, 1, 1)]
+void CSMain_Particle_Dust(int3 dispatchThreadID : SV_DispatchThreadID)
+{
+    Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
+    g_tOutput_Compute[dispatchThreadID.x].vSpeed.xz = tInput.vSpeed.xz * 1.f;
+    g_tOutput_Compute[dispatchThreadID.x].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
+    g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x = tInput.vLifeTime.x * 1.f;
+    g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y += 0.0167f;
+    float fScale = tInput.vScale.x * (g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y / g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x);
+    
+    if (fScale < 0.1f)
+        fScale = 0.001f;
+    
+    g_tOutput_Compute[dispatchThreadID.x].vScale.x = fScale;
+    
+    float3 vDir = float3(normalize(tInput.vPivot - tInput.vTranslation.xyz));
+    vDir = vDir * g_tOutput_Compute[dispatchThreadID.x].vSpeed * 0.0167f;
+    g_tOutput_Compute[dispatchThreadID.x].vTranslation.xyz -= vDir;
+    g_tOutput_Compute[dispatchThreadID.x].vTranslation.w = 1.f;
+    
+    g_tOutput_Compute[dispatchThreadID.x].vLook = vector(normalize(g_vCamPos.xyz - g_tOutput_Compute[dispatchThreadID.x].vTranslation.xyz) * tInput.vScale.z, 0.f);
+    g_tOutput_Compute[dispatchThreadID.x].vRight = normalize(vector(cross(float3(0.f, 1.f, 0.f), g_tOutput_Compute[dispatchThreadID.x].vLook.xyz), 0.f)) * g_tOutput_Compute[dispatchThreadID.x].vScale.x;
+    g_tOutput_Compute[dispatchThreadID.x].vUp = normalize(vector(cross(g_tOutput_Compute[dispatchThreadID.x].vLook.xyz, g_tOutput_Compute[dispatchThreadID.x].vRight.xyz), 0.f)) * tInput.vScale.y;
+
+    GroupMemoryBarrierWithGroupSync();
+}
+
 technique11 DefaultTechnique
 {
     pass ParticleReset //0
@@ -205,5 +237,12 @@ technique11 DefaultTechnique
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Blood()));
+    }
+
+    pass ParticleDust //6
+    {
+        SetVertexShader(NULL);
+        SetPixelShader(NULL);
+        SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Dust()));
     }
 }

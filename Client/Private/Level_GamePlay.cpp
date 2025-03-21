@@ -1171,7 +1171,7 @@ HRESULT CLevel_GamePlay::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_5");
 			break;
 		case Engine::EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION:
-			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_PlayerAttack_5_Dust");
 			break;
 		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING:

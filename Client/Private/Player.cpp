@@ -902,13 +902,11 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			}
 
 
-#pragma region Effect 0317
+#pragma region Effect 0321¼öÁ¤
 			//Hit Effect
 			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
 			_vector vHitDir = { dir.x, dir.y, dir.z, 1.f };
-			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, vHitPosition, vHitDir);
-			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, vHitDir);
-			//m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, vHitDir);
+			m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING, vHitPosition, vHitDir);
 #pragma endregion
 		}
 	}

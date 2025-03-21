@@ -118,7 +118,7 @@ void CRightWeapon::Update(_float fTimeDelta)
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 
-#pragma region Effect0319수정
+#pragma region Effect0321수정
                     if (!strcmp(iter.szName, "LAttack1_Start"))
                         m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
                     else if (!strcmp(iter.szName, "LAttack2_Start"))
@@ -134,8 +134,9 @@ void CRightWeapon::Update(_float fTimeDelta)
                     else if (!strcmp(iter.szName, "LAttack5_Dust"))
                     {
                         _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
-                        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos);
-                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST, m_pParentWorldMatrix);
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos, vDir);
+                        //m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST, m_pParentWorldMatrix);
                     }
 #pragma endregion
 

@@ -40,9 +40,9 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.fPSize = length(In.TransformMatrix._11_12_13);
     Out.vLifeTime = In.vLifeTime;
  
-    Out.vRight = mul(In.TransformMatrix._11_12_13_14, g_WorldMatrix);
-    Out.vUp = mul(In.TransformMatrix._21_22_23_24, g_WorldMatrix);
-    Out.vLook = mul(In.TransformMatrix._31_32_33_34, g_WorldMatrix);
+    Out.vRight = mul(In.TransformMatrix._11_12_13_14, g_WorldMatrix).xyz;
+    Out.vUp = mul(In.TransformMatrix._21_22_23_24, g_WorldMatrix).xyz;
+    Out.vLook = mul(In.TransformMatrix._31_32_33_34, g_WorldMatrix).xyz;
     
     return Out;
 }
@@ -334,6 +334,29 @@ PS_OUT PS_MAIN_BLOOD(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_DUST(PS_IN_WEIGHT In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vector vResult = vDiffuse;
+    if (vResult.a < 0.01f)
+        discard;
+    
+    float3 vRGB = g_vRGB;
+    vResult *= vector(vRGB, 1.f);
+    
+    float x = (In.vProjPos.z / In.vProjPos.w);
+    float fWeight = saturate(max(1e-2, In.vProjPos.w / 70.f));
+    
+    //vResult.xyz /= clamp(vResult.a, 0.1f, 800.f);
+    vResult.xyz *= fWeight;
+    float fLifeTime = 1.f - (In.vLifeTime.y / In.vLifeTime.x);
+    vResult.a *= fLifeTime;
+    Out.vColor = vResult;
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -391,5 +414,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_MAIN_WEIGHT();
         PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
+    }
+
+    pass Dust // 5 ¹ø 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_WeightBlend, 0);
+        SetBlendState(BS_WeightBlend_Engine, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN_WEIGHT();
+        PixelShader = compile ps_5_0 PS_MAIN_DUST();
     }
 }

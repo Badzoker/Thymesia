@@ -89,6 +89,10 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
     case 4:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLOOM, this);
         break;
+
+    case 5:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this); //Dust
+        break;
     }
 }
 

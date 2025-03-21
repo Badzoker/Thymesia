@@ -18,7 +18,15 @@ public:
 		_bool		bReverse_XYZ[3] = { false, false, false };
 		_float3		vSpeed_Weight; //속도 가중치
 		_float3		vScale_Weight; //Scale 가중치
+
+		_uint		iParticle_Initialize_Type = { 0 }; // Particle 시작위치가 원점기준이냐(0), 중심기준 원모양이냐(1), 중심기준 구모양이냐(2)
 	};
+
+	struct CAMERA_FLOAT4
+	{
+		_float4     vCameraPos = {};
+	};
+
 private:
 	CVIBuffer_Point_Compute(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& _Prototype);
@@ -43,22 +51,20 @@ private:
 	COMPUTE_PARTICLE_INSTANCE*		m_pInstanceVertices = { nullptr };
 	ID3D11Buffer*					m_pVBInstance = { nullptr };
 
-
-	//_float* m_pSpeeds = { nullptr };
 	_bool							m_isLoop = { false };
 
 	ID3D11UnorderedAccessView*		m_pUAV = { nullptr };
 	ID3D11ShaderResourceView*		m_pSRV = { nullptr };
 
 	ID3D11Buffer*					m_pBuffer_UAV = { nullptr };
-	ID3D11Buffer*					m_pBuffer_SRV= { nullptr };
-	ID3D11Buffer*					m_pBuffer_Copy= { nullptr };
+	ID3D11Buffer*					m_pBuffer_SRV = { nullptr };
+	ID3D11Buffer*					m_pBuffer_Copy = { nullptr };
+	ID3D11Buffer*					m_pBuffer_Camera = { nullptr };
 
 	HRESULT CreateStructureBuffer();
 	HRESULT CreateBuffer_SRV_UAV();
+	HRESULT CreateBuffer_Constant();
 	HRESULT CreateAndCopyBuffer();
-
-	//_float m_fTest = {};
 
 public:
 	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile);
