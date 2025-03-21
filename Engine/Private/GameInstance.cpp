@@ -17,6 +17,7 @@
 #include "Frustum.h"
 #include "ItemMgr.h"
 #include "Shadow.h"
+#include "Monster_Manager.h"
 #include "UI_Manager.h"
 #include "GameObject.h"
 #include "PhysX_Manager.h"
@@ -109,6 +110,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pTrigger_Manager)
 		return E_FAIL;
 
+	m_pMonster_Manager = CMonster_Manager::Create();
+	if (nullptr == m_pMonster_Manager)
+		return E_FAIL;
 
 	m_pUI_Manager = CUI_Manager::Create(EngineDesc.iNumUIScenes);
 	if (nullptr == m_pUI_Manager)
@@ -136,6 +140,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pPipeLine->Priority_Update();	
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
+	m_pMonster_Manager->Priority_Update(fTimeDelta);
 	m_pEffect_Manager->Priority_Update(fTimeDelta);
 	m_pUI_Manager->Priority_Update(fTimeDelta);
 
@@ -145,10 +150,12 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pTrigger_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Update(fTimeDelta);
+	m_pMonster_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
 	m_pUI_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
+	m_pMonster_Manager->Late_Update(fTimeDelta);
 	m_pEffect_Manager->Late_Update(fTimeDelta);	
 	m_pUI_Manager->Late_Update(fTimeDelta);
 
@@ -827,6 +834,28 @@ _bool CGameInstance::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
 }
 #pragma endregion
 
+#pragma region MONSTER_MANAGER
+
+HRESULT CGameInstance::Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg)
+{
+	return m_pMonster_Manager->Add_Monster(_iPrototypeLevelIndex, _strPrototypeTag, _eCategory, _pArg);
+}
+
+HRESULT CGameInstance::Add_Delete_Monster(CMonster* pMonster)
+{
+	return m_pMonster_Manager->Add_Delete_Monster(pMonster);
+}
+
+HRESULT CGameInstance::Active_Monster()
+{
+	return m_pMonster_Manager->Active_Monster();
+}
+deque<class CMonster*>& CGameInstance::Get_Check_Monsters()
+{
+	return m_pMonster_Manager->Get_Check_Monsters();
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {
@@ -837,6 +866,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pMonster_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTarget_Manager);

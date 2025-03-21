@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "ContainerObject.h"
+#include "Monster.h"
 #include "State_Machine.h"
 
 
@@ -13,7 +13,7 @@ END
 
 BEGIN(Client)
 
-class CElite_Joker final : public CContainerObject
+class CElite_Joker final : public CMonster
 {
 private:
 	CElite_Joker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -26,70 +26,31 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+public:
+	void PatternCreate() override;
+	void Active() override;
+	void Return_To_Spawn() override;
+	void Stun() override;
 
 public:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
+
 public:
-	void RootAnimation();
-	void CalCulate_Distance();
-	void Culling();
-public:
-	void PatternCreate();
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
-	void RotateDegree_To_Player();
-	void Rotation_To_Player();
-	void Recovery_HP();
 private:
-	_float4                          m_vPlayerPos = {};
-	_float4                          m_vSpawnPoint = {};
-
-	_bool                            m_bActive = {};
-	_bool                            m_bMove = {};
 	_bool                            m_bExecution_Progress = {};
-	_bool                            m_bNeed_Rotation = {};
-	_bool                            m_bPatternProgress = {};
-	_bool                            m_bNeedControl = {};
-	_bool                            m_IsStun = {};
-	_bool                            m_bHP_Bar_Active = {};
-	_bool                            m_bDead = {};
-	_bool                            m_bCulling = {};
-	_bool                            m_bCan_Move_Anim = {};
-	_bool                            m_bCanRecovery = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iSpawn_Cell_Index = {};
-	const _uint* m_Player_Attack = {};
-	_uint* m_Player_State = {};
-
-
-	_float                           m_fRotateDegree = {};
-	_float                           m_fDelayTime = {};
-	_float                           m_fRotateSpeed = {};
-	_float                           m_fRotateCoolTime = {};
-	_float                           m_fDistance = {};
-	_float                           m_fSpawn_Distance = {};
-	_float                           m_fTimeDelta = {};
-	_float                           m_fHP_Bar_Active_Timer = {};
-	_float                           m_fHP_Bar_Height = {};
-
-
-	_float                           m_fMonsterMaxHP = {};
-	_float                           m_fMonsterCurHP = {};
-	_float                           m_fShieldHP = {};
-	_float                           m_fRecoveryTime = {};
 
 private:
-	const _float4x4* m_pRootMatrix = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CElite_Joker>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
 	PxRigidDynamic* m_pStunActor = { nullptr };
+
 private:
-	class CGameObject* m_pPlayer = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
@@ -171,7 +132,7 @@ public:
 		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
 		void State_Exit(CElite_Joker* pObject) override;
 	private:
-		_float   m_fTimer;
+		_float   m_fTimer = {};
 	};
 
 	class Attack_Wheel : public CStates<CElite_Joker>
@@ -184,7 +145,7 @@ public:
 		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
 		void State_Exit(CElite_Joker* pObject) override;
 	private:
-		_float   m_fTimer;
+		_float   m_fTimer = {};
 	};
 
 	class Attack_Shock : public CStates<CElite_Joker>
@@ -230,7 +191,7 @@ public:
 		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
 		void State_Exit(CElite_Joker* pObject) override;
 	private:
-		_float   m_fTimer;
+		_float   m_fTimer = {};
 	};
 
 	class Execution_State : public CStates<CElite_Joker>
@@ -253,8 +214,9 @@ public:
 		void State_Enter(CElite_Joker* pObject) override;
 		void State_Update(_float fTimeDelta, CElite_Joker* pObject) override;
 		void State_Exit(CElite_Joker* pObject) override;
+	private:
+		_bool m_bCheck = {};
 	};
-
 };
 
 END

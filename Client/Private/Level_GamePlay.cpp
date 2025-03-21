@@ -39,7 +39,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))	
+	if (FAILED(Ready_Layer_Monster()))	
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
@@ -351,7 +351,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_Monster()
 {
 
 	Load_MonsterIndex(3);
@@ -369,39 +369,40 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 		{
 		case BOSS_VARG:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
 				return E_FAIL;
+			break;
+		default:
 			break;
 		case ELITE_JOKER:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 		case ELITE_HARMORLV2:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_HArmorLV2"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 
 		case NORMAL_VILLAGE_M0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
-
 		case NORMAL_VILLAGE_M1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM1"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF0"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF1"), LEVEL_GAMEPLAY, pLayerTag, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		}

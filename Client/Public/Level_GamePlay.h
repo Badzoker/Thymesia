@@ -40,7 +40,7 @@ private:
 	HRESULT Ready_Layer_Structure(const _tchar* pLayerTag);	
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);	
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Monster();
 	HRESULT Ready_Layer_NPC(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Fade(const _tchar* pLayerTag);

@@ -268,6 +268,18 @@
     <Filter Include="01.Utility\04.Components\Shader\Shader_Compute_Deferred">
       <UniqueIdentifier>{054f64e6-f379-4ba8-a5e1-9035ea37b636}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.GameObject\Monster">
+      <UniqueIdentifier>{c4ceb72b-c777-40a8-8d1f-7f99281c92b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Monster\Manager">
+      <UniqueIdentifier>{2dae4abb-d6b3-4ddf-b05b-c1f2f88dfb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Projectile">
+      <UniqueIdentifier>{beb5e096-fc1a-4a65-a7cd-eba789490202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Projectile\Manager">
+      <UniqueIdentifier>{6eb7f0c3-61ab-411b-bf38-7a9b016ea1fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -522,6 +534,18 @@
     <ClInclude Include="..\Public\Light_Dynamic.h">
       <Filter>01.Utility\07.Lights\Dynamic_Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Manager.h">
+      <Filter>01.Utility\03.GameObject\Monster\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>01.Utility\03.GameObject\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Projectile.h">
+      <Filter>01.Utility\03.GameObject\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Projectile_Manager.h">
+      <Filter>01.Utility\03.GameObject\Projectile\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -760,6 +784,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Light_Dynamic.cpp">
       <Filter>01.Utility\07.Lights\Dynamic_Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Manager.cpp">
+      <Filter>01.Utility\03.GameObject\Monster\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>01.Utility\03.GameObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile.cpp">
+      <Filter>01.Utility\03.GameObject\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_Manager.cpp">
+      <Filter>01.Utility\03.GameObject\Projectile\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

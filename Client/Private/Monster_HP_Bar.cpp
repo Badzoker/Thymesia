@@ -52,8 +52,6 @@ HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 
 void CMonster_HP_Bar::Priority_Update(_float fTimeDelta)
 {
-	if (*m_bMonsterDead)
-		m_pGameInstance->Add_DeadObject(TEXT("Layer_MonsterHP"), this);
 
 	if (!*m_bHP_Bar_Active)
 		return;
@@ -71,6 +69,8 @@ void CMonster_HP_Bar::Update(_float fTimeDelta)
 
 void CMonster_HP_Bar::Late_Update(_float fTimeDelta)
 {
+	if (*m_bMonsterDead)
+		m_pGameInstance->Add_DeadObject(TEXT("Layer_MonsterHP"), this);
 	if (!*m_bHP_Bar_Active)
 		return;
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
