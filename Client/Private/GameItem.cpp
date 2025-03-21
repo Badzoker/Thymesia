@@ -79,6 +79,10 @@ void CGameItem::Priority_Update(_float _fTimeDelta)
 void CGameItem::Update(_float _fTimeDelta)
 {
     m_fTime += _fTimeDelta;
+    if (m_fTime >= 20.0f)
+    {
+        m_fTime = 0.0f;
+    }
 
     if (!m_bAcquired)
     {
@@ -99,38 +103,63 @@ void CGameItem::Update(_float _fTimeDelta)
         m_pTransformCom->LookAt(vItemPos + vDir);
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, vItemPos);
     }
+
+    if (!m_bStartAcquireEffect)
+    {
+        m_vCurrentScale = _float3(1.3f, 1.3f, 1.3f);
+    }
+    else if (m_bStartAcquireEffect && !m_bFinishAcquireEffect)
+    {
+        if (m_bEnLarging)
+        {
+            m_fEnLargingTime += _fTimeDelta;
+
+            _float fEnlargeDuration = 0.1f;
+            _float fRatio = min(m_fEnLargingTime / fEnlargeDuration, 1.0f);
+            _float fScale = Compute_LerpItemScale(1.3f, 2.5f, fRatio);
+            m_vCurrentScale = _float3(fScale, fScale, fScale);
+            m_fAlphaValue.w = 5.0f;
+
+            if (fRatio >= 1.0f)
+            {
+                m_bEnLarging = false;
+                m_bEnLargingDone = true;
+                m_fAcquireEffectTime = 0.f;
+            }
+        }
+        else if (m_bEnLargingDone)
+        {
+            m_fAcquireEffectTime += _fTimeDelta;
+
+            _float fShrinkDuration = 0.35f;
+            _float fRatio = min(m_fAcquireEffectTime / fShrinkDuration, 1.0f);
+            _float fScale = Compute_LerpItemScale(2.5f, 0.0f, fRatio);
+            m_vCurrentScale = _float3(fScale, fScale, fScale);
+
+            m_fAlphaValue.w = Compute_LerpItemScale(1.0f, 0.0f, fRatio);
+
+            if (fRatio >= 1.0f)
+            {
+                m_bFinishAcquireEffect = true;
+                m_bAcquired = true;
+                m_pGameInstance->Acquire_Item(m_eItemType);
+            }
+        }
+    }
 }
 
 void CGameItem::Late_Update(_float fTimeDelta)
 {
-    if (/*m_iDropItemCount > 0 && */!m_bAcquired)
+    if (!m_bAcquired || m_bStartAcquireEffect)
     {
         Setting_BillBoard();
+        m_pTransformCom->Scaling(m_vCurrentScale);
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
     }
 }
 
 HRESULT CGameItem::Render()
 {
-  /*  if (FAILED(Bind_ShaderResources()))
-        return E_FAIL;
-
-    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-    for (_uint i = 0; i < iNumMeshes; i++)
-    {
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
-
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
-            return E_FAIL;
-
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render(i);
-    }
-
-    return S_OK;*/
-
     return S_OK;
 }
 
@@ -216,7 +245,6 @@ void CGameItem::Setting_BillBoard()
     m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
     m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
     m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-    m_pTransformCom->Scaling(_float3(1.5f, 1.5f, 1.5f));
 }
 
 // 닿기 시작할 때 순간
@@ -247,9 +275,11 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_KEY2:
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
-        if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
-            { 
-                m_pGameInstance->Acquire_Item(m_eItemType);
+            if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+            {
+                m_bStartAcquireEffect = true;
+                m_bEnLarging = true;
+                m_fEnLargingTime = 0.f;
                 m_pButton->Activate_Button(false);
             }
             break;

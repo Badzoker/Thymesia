@@ -84,6 +84,7 @@ HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
 
     for (auto& pItems : *pVecItems)
     {
+        pItems->Reset_ItemState();
         pItems->Set_BeAcquired(true);
         iDropCount = pItems->Get_DropItemCount();
     }

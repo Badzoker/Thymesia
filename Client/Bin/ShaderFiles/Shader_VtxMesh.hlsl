@@ -598,7 +598,7 @@ PS_OUT_RIMLIGHT PS_MAIN_OBJECT_RIMLIGHT(PS_IN In)
     float fRim = (1 - saturate(dot(vDirection, In.vNormal.xyz)));
     fRim = pow(abs(fRim), g_RimPower);
     
-    float3 RimLight = fRim * g_RimPower * g_RimColor * g_fObjectAlpha;
+    float3 RimLight = fRim * g_RimPower * g_RimColor.rgb * g_fObjectAlpha;
     Out.vColor.rgb += RimLight;
 
     return Out;
