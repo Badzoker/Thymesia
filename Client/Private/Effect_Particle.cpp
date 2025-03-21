@@ -38,12 +38,12 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
 
 
     /* Com_Shader*/
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, pDesc->szShaderName,
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szShaderName,
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, pDesc->szBufferName,
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szBufferName,
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom))))
         return E_FAIL;
 
@@ -161,7 +161,7 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
 HRESULT CEffect_Particle::Ready_Components()
 {
     /* Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Particle_Image"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Particle_Image"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
