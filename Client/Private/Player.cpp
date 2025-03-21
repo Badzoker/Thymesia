@@ -942,7 +942,7 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 	}
 
 	/* 의자와 충돌 했을 시. */
-	if (strncmp("P_Archive_Chain", _pOther->Get_Name(), 15))
+	if (!strncmp("P_Archive_Chair", _pOther->Get_Name(), 15))
 	{
 		if (m_pGameInstance->isKeyEnter(DIK_E))
 		{
