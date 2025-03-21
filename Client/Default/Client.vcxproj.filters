@@ -655,6 +655,24 @@
     <Filter Include="01.Level\06.Philosophre%27s Hill">
       <UniqueIdentifier>{29246cb2-d06f-4770-9dff-035920484e04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\00.Static&amp;Logo">
+      <UniqueIdentifier>{fda5988b-15d4-4c87-81d8-793e991da371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\01.Tutorial">
+      <UniqueIdentifier>{994e17a6-2e25-4515-9f5a-d383aef1ce9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\02.SeaOfTrees">
+      <UniqueIdentifier>{024d5c95-0c91-46cf-80fe-a3f94b197df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\03.RoyalGarden">
+      <UniqueIdentifier>{75bf9035-c9a4-41dd-8034-5f5c58f9314f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\04.Fortress">
+      <UniqueIdentifier>{f02e4460-1311-4920-97b2-17b068e617e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\05.Hill">
+      <UniqueIdentifier>{eca1f72c-dd44-416b-b01e-873a0c9a5eda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1218,6 +1236,24 @@
     <ClInclude Include="..\Public\Level_SeaOfTrees.h">
       <Filter>01.Level\03.SeaOfTrees</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Loader_Static_Logo.h">
+      <Filter>01.Level\99.Loading\Loader\00.Static&amp;Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Tutorial.h">
+      <Filter>01.Level\99.Loading\Loader\01.Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_RoyalGarden.h">
+      <Filter>01.Level\99.Loading\Loader\03.RoyalGarden</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_SeaOfTrees.h">
+      <Filter>01.Level\99.Loading\Loader\02.SeaOfTrees</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Fortress.h">
+      <Filter>01.Level\99.Loading\Loader\04.Fortress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Hill.h">
+      <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1771,6 +1807,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_SeaOfTrees.cpp">
       <Filter>01.Level\03.SeaOfTrees</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Static_Logo.cpp">
+      <Filter>01.Level\99.Loading\Loader\00.Static&amp;Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Tutorial.cpp">
+      <Filter>01.Level\99.Loading\Loader\01.Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_RoyalGarden.cpp">
+      <Filter>01.Level\99.Loading\Loader\03.RoyalGarden</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_SeaOfTrees.cpp">
+      <Filter>01.Level\99.Loading\Loader\02.SeaOfTrees</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Fortress.cpp">
+      <Filter>01.Level\99.Loading\Loader\04.Fortress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Hill.cpp">
+      <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

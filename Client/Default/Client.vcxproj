@@ -212,6 +212,12 @@
     <ClInclude Include="..\public\HURT_FallDown_End.h" />
     <ClInclude Include="..\Public\Level_SeaOfTrees.h" />
     <ClInclude Include="..\Public\Level_Tutorial.h" />
+    <ClInclude Include="..\Public\Loader_Fortress.h" />
+    <ClInclude Include="..\Public\Loader_Hill.h" />
+    <ClInclude Include="..\Public\Loader_RoyalGarden.h" />
+    <ClInclude Include="..\Public\Loader_SeaOfTrees.h" />
+    <ClInclude Include="..\Public\Loader_Static_Logo.h" />
+    <ClInclude Include="..\Public\Loader_Tutorial.h" />
     <ClInclude Include="..\Public\Locked_On.h" />
     <ClInclude Include="..\public\LockOn_Evade_B.h" />
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
@@ -401,6 +407,12 @@
     <ClCompile Include="..\private\HURT_FallDown_End.cpp" />
     <ClCompile Include="..\Private\Level_SeaOfTrees.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial.cpp" />
+    <ClCompile Include="..\Private\Loader_Fortress.cpp" />
+    <ClCompile Include="..\Private\Loader_Hill.cpp" />
+    <ClCompile Include="..\Private\Loader_RoyalGarden.cpp" />
+    <ClCompile Include="..\Private\Loader_SeaOfTrees.cpp" />
+    <ClCompile Include="..\Private\Loader_Static_Logo.cpp" />
+    <ClCompile Include="..\Private\Loader_Tutorial.cpp" />
     <ClCompile Include="..\Private\Locked_On.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_B.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />

@@ -85,7 +85,7 @@ HRESULT CMainApp::Start_Level(LEVELID eStartLevelID)
 	if (LEVEL_LOADING == eStartLevelID)
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelID,0,false))))
+	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelID, 0, false))))
 		return E_FAIL;
 
 	return S_OK;

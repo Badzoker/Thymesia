@@ -26,9 +26,9 @@ public:
 	HRESULT Ready_Layer_Fade(const _tchar* pLayerTag);
 
 private:
-	LEVELID				m_eNextLevelID = { LEVEL_END };
-	class CLoader*		m_pLoader = { nullptr };
-	_uint				m_iLoadingeNum = {}; // 테스트 용도로 추가
+	LEVELID							m_eNextLevelID = { LEVEL_END };
+	class CLoader*					m_pLoader = { nullptr };
+	_uint							m_iLoadingeNum = {}; // 테스트 용도로 추가
 
 
 public:

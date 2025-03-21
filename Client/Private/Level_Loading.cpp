@@ -4,6 +4,12 @@
 #include "GameInstance.h"
 
 #include "Loader.h"
+#include "Loader_Static_Logo.h"
+#include "Loader_Tutorial.h"
+#include "Loader_SeaOfTrees.h"
+#include "Loader_RoyalGarden.h"
+#include "Loader_Fortress.h"
+#include "Loader_Hill.h"
 
 #include "Level_Logo.h"
 #include "Level_Tutorial.h"
@@ -47,9 +53,51 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		
 	}
 
-	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
-	if (nullptr == m_pLoader)
-		return E_FAIL;
+	switch (m_eNextLevelID)
+	{
+	case Client::LEVEL_STATIC:
+	case Client::LEVEL_LOGO:
+
+		m_pLoader = CLoader_Static_Logo::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+
+		break;
+	case Client::LEVEL_TUTORIAL:
+
+		m_pLoader = CLoader_Tutorial::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+		break;
+	case Client::LEVEL_SEAOFTREES:
+
+		m_pLoader = CLoader_SeaOfTrees::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+
+		break;
+	case Client::LEVEL_ROYALGARDEN:
+
+		m_pLoader = CLoader_RoyalGarden::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+
+		break;
+	case Client::LEVEL_FORTRESS:
+
+		m_pLoader = CLoader_Fortress::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+
+		break;
+	case Client::LEVEL_HILL:
+
+		m_pLoader = CLoader_Hill::Create(m_pDevice, m_pContext, eNextLevelID);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+
+		break;
+	}
 
 	return S_OK;
 }
@@ -83,21 +131,24 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
 		
 	}
-	
 	if (true == m_pLoader->isFinished())
 	{
 
 		if (m_eNextLevelID == LEVEL_STATIC)
 		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO,0, true));
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO, 0, true));
 		}
-		if (m_eNextLevelID == LEVEL_LOGO) 
+		if (m_eNextLevelID == LEVEL_LOGO)
 		{
 			m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Logo::Create(m_pDevice, m_pContext));
 		}
-		if (m_eNextLevelID > LEVEL_LOGO) // 스테이지영역으로 가는 Loading이냐
-		{
 
+	}
+
+	if (m_eNextLevelID > LEVEL_LOGO) // 스테이지영역으로 가는 Loading이냐 
+	{
+		if (true == m_pLoader->isFinished())
+		{
 			CUI_Scene* pScene = m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading");
 			for (auto& Image : pScene->Find_UI_Image())
 			{
@@ -116,7 +167,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 					break;
 				}
 			}
-			if (m_pGameInstance->isAnyEnter() && m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN))
+			if (m_pGameInstance->isAnyEnter())
 			{
 				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.2f);
 
@@ -148,7 +199,6 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				}
 			}
 		}
-
 	}
 }
 
@@ -202,5 +252,4 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
-
 }
