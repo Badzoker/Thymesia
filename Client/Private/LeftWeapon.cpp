@@ -39,6 +39,8 @@ HRESULT CLeftWeapon::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
+
 
     return S_OK;
 

@@ -230,9 +230,9 @@ HRESULT CGameInstance::Open_Level(_uint iNewLevelIndex, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iNewLevelIndex, pNewLevel);	
 }
 
-void CGameInstance::Set_NextLevel_Open(_bool bOpen)
+void CGameInstance::Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel) //0323 Level전환 임시로 추가함
 {
-	return m_pLevel_Manager->Set_NextLevel_Open(bOpen);
+	return m_pLevel_Manager->Set_NextLevel_Open(bOpen, _iNumberLevel);
 }
 
 #pragma endregion

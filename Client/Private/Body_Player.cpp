@@ -47,7 +47,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_pModelCom->SetUp_Animation(0, true);
 
-
+    m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
 
     return S_OK;
@@ -58,7 +58,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
     m_fTimeDelta = fTimeDelta;
 
     if (m_pCamera == nullptr)
-        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
 void CBody_Player::Update(_float fTimeDelta)

@@ -28,7 +28,7 @@ HRESULT CSky::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -64,22 +64,24 @@ HRESULT CSky::Render()
 	return S_OK;
 }
 
-HRESULT CSky::Ready_Components()
+HRESULT CSky::Ready_Components(void* _pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(_pArg);
 
+	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxCube"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Shader_VtxCube"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_VIBuffer_Cube"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Sky"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Texture_Sky"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

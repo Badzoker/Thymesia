@@ -52,7 +52,7 @@ public: /* For.Timer_Manager */
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Open_Level(_uint iNewLevelIndex, class CLevel* pNewLevel);
-	void Set_NextLevel_Open(_bool bOpen);
+	void Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel);
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

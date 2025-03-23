@@ -58,6 +58,9 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);*/
 
+    m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
+
+
     return S_OK;
 
 }
@@ -67,7 +70,7 @@ void CPlayerCamera::Priority_Update(_float fTimeDelta)
     m_fTimeDelta = fTimeDelta;
 
     if (m_pCamera == nullptr)
-        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+        m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
 void CPlayerCamera::Update(_float fTimeDelta)

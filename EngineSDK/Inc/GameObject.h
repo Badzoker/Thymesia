@@ -14,6 +14,7 @@ public:
 		_char* szName = {};
 		_float4x4 _ParentMatrix = {};
 		_float4  _fPosition = {};
+		_uint iCurLevel = {};
 	};
 
 protected:

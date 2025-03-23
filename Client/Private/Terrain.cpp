@@ -25,10 +25,13 @@ HRESULT CTerrain::Initialize_Prototype()
 
 HRESULT CTerrain::Initialize(void* pArg)
 {
+
+
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.0f, 0.0f, -150.0f, 1.0f));
@@ -76,37 +79,41 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
-HRESULT CTerrain::Ready_Components()
+HRESULT CTerrain::Ready_Components(void* _pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(_pArg);
+
+	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Texture_Terrain"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Terrain_Normal"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Texture_Terrain_Normal"),
 		TEXT("Com_NormalTexture"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Terrain_ORM"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Texture_Terrain_ORM"),
 		TEXT("Com_ORMTexture"), reinterpret_cast<CComponent**>(&m_pTextureORMCom))))
 		return E_FAIL;
 	
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_TerrainMask"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Texture_TerrainMask"),
 		TEXT("Com_TerrainMaskTexture"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxNorTex"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_VIBuffer_Terrain"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_VIBuffer_Terrain"),
 		TEXT("Com_VIBuffer_Terrain"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* Com_Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 

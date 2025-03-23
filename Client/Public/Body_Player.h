@@ -178,6 +178,8 @@ private:
 
 	_bool  m_bParryStopOnOff = { true };
 
+	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

@@ -57,6 +57,8 @@ private:
 	_bool			   m_bHitStopOnOff = { false };	
 	_bool              m_bCollisionOn = { false };	
 
+	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
+
 private:
 	const _uint* m_pParentState = { nullptr };
 

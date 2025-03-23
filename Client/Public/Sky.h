@@ -34,7 +34,7 @@ private:
 
 
 public:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* _pArg);
 	HRESULT Bind_ShaderResources();
 
 public:

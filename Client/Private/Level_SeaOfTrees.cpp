@@ -228,7 +228,12 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Terrain"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	CGameObject::GAMEOBJECT_DESC pDesc = {};
+
+	pDesc.iCurLevel = m_iCurrentLevel;
+
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Terrain"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)
@@ -237,7 +242,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	//		return E_FAIL;
 	//}
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 
@@ -253,9 +258,9 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 	// 
 	//Load_Objects(140); //Tutorial Map
 	//Load_Objects(142); //Tutorial Map
-	Load_Objects(145); //Tutorial Map
+	//Load_Objects(145); //Tutorial Map
 	//Load_Objects(301); //Circus Map
-	//Load_Objects(303); //Circus Map
+	Load_Objects(303); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
@@ -321,7 +326,13 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Player"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))	
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+
+	Desc.fSpeedPerSec = 45.f;
+	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
@@ -343,11 +354,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

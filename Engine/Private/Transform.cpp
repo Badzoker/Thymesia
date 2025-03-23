@@ -57,7 +57,7 @@ void CTransform::Go_Straight(_float fTimeDelta, class CNavigation* pNavigation)
 	if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
 	{
 		Set_State(STATE_POSITION, vPosition);
-		pNavigation->Set_First(true);
+		//pNavigation->Set_First(true);
 	}
 
 	else if (!pNavigation->isMove(vPosition))

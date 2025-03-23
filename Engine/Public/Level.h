@@ -16,7 +16,10 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void Set_NextLevel_Open(_bool bOpen) { m_bNextLevelOpen = bOpen; }
+	void Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel) { 
+		m_bNextLevelOpen = bOpen; 
+		m_iNextLevel = _iNumberLevel;
+	}
 
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
@@ -26,6 +29,7 @@ protected:
 protected:
 	_bool m_bNextLevelOpen = { false };
 	_uint m_iCurrentLevel = {};
+	_uint m_iNextLevel = {}; //임시로 추가
 
 public:
 	virtual void Free() override;

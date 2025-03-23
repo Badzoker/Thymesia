@@ -970,6 +970,27 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Loading"),
 		CUIGroup_Loading::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region UI 텍스쳐
+	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
+
+	//==================================================================================================================================== 월드 상호 작용 ui
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InteractionButton"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_InteractableIndicator.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"),
+		CButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	//====================================================================================================================================
+
+
+#pragma endregion
+
+
+
+
 #pragma endregion
 
 #pragma region Effect_Mesh

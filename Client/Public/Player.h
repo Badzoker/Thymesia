@@ -131,8 +131,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_Components(void* _pArg);
+	HRESULT Ready_PartObjects(void* _pArg);
 
 public:
 	void Mouse_section(_float fTimeDelta);

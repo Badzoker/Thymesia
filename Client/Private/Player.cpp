@@ -35,10 +35,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 {
 	strcpy_s(m_szName, "PLAYER");
 
-	CGameObject::GAMEOBJECT_DESC        Desc{};
-
-	Desc.fSpeedPerSec = 45.f;
-	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+	
 
 
 	m_pStateMgr = CStateMgr::Create();
@@ -54,13 +51,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
 
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_PartObjects()))
+	if (FAILED(Ready_PartObjects(pArg)))
 		return E_FAIL;
 
 
@@ -630,16 +627,14 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_Components()
+HRESULT CPlayer::Ready_Components(void* _pArg)
 {
-	/* Com_Navigation */
-	CNavigation::NAVIGATION_DESC   Desc{};
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(_pArg);
 
-	/* 초기 디버깅 플레이어가 서있는 셀의 인덱스 */
-	Desc.iCurrentCellIndex = 11;
+	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),		 // 이걸 나중에 Current Scene으로 바꿔야할듯 
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))		
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),		 // 이걸 나중에 Current Scene으로 바꿔야할듯 
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))		
 		return E_FAIL;
 
 
@@ -647,8 +642,10 @@ HRESULT CPlayer::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_PartObjects()
+HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(_pArg);
+
 	CBody_Player::BODY_PLAYER_DESC BodyDesc{};
 
 	BodyDesc.pParentActor = m_pActor;
@@ -665,6 +662,8 @@ HRESULT CPlayer::Ready_PartObjects()
 	BodyDesc.fSpeedPerSec = 0.f;
 	//BodyDesc.fSpeedPerSec = 1.f;
 	BodyDesc.fRotationPerSec = 0.f;
+
+	BodyDesc.iCurLevel = pDesc->iCurLevel;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_STATIC, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))	
 		return E_FAIL;
@@ -688,6 +687,8 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightWeaponDesc.fSpeedPerSec = 0.f;
 	RightWeaponDesc.fRotationPerSec = 10.f;
 
+	RightWeaponDesc.iCurLevel = pDesc->iCurLevel;
+
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
 		return E_FAIL;
 
@@ -702,6 +703,8 @@ HRESULT CPlayer::Ready_PartObjects()
 	LeftWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	LeftWeaponDesc.fSpeedPerSec = 0.f;
 	LeftWeaponDesc.fRotationPerSec = 10.f;
+
+	LeftWeaponDesc.iCurLevel = pDesc->iCurLevel;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
 		return E_FAIL;
@@ -719,6 +722,8 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightClawWeaponDesc.fSpeedPerSec = 0.f;
 	RightClawWeaponDesc.fRotationPerSec = 10.f;
 
+	RightClawWeaponDesc.iCurLevel = pDesc->iCurLevel;
+
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
 		return E_FAIL;
 
@@ -734,6 +739,8 @@ HRESULT CPlayer::Ready_PartObjects()
 	PlayerCameraDesd.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	PlayerCameraDesd.fSpeedPerSec = 0.f;
 	PlayerCameraDesd.fRotationPerSec = 10.f;
+
+	PlayerCameraDesd.iCurLevel = pDesc->iCurLevel;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
 		return E_FAIL;

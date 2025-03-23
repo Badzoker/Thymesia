@@ -54,6 +54,8 @@ private:
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };
 
+	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
+
 private:
 	const _uint* m_pParentState = { nullptr };
 	_uint		 m_iPreParentState = {};

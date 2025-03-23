@@ -79,30 +79,34 @@ void CUIGroup_GameIntro::Button_Check()
 	{
 		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 		{
-			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기
+			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기 
 			{
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
-				m_pGameInstance->Set_NextLevel_Open(true);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_TUTORIAL); //Tutorial로 가라
 			}
 
 			if (2 == Button->Get_UI_GroupID()) // 새게임
 			{
-
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_SEAOFTREES); //Tutorial로 가라
 			}
 
 			if (3 == Button->Get_UI_GroupID()) // 게임 불러오기
 			{
-
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL); //Tutorial로 가라
 			}
 
 			if (4 == Button->Get_UI_GroupID()) // 설정
 			{
-
+				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				//m_pGameInstance->Set_NextLevel_Open(true, LEVEL_ROYALGARDEN); //Tutorial로 가라
 			}
 
 			if (5 == Button->Get_UI_GroupID()) // 제작진
 			{
-
+				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				//m_pGameInstance->Set_NextLevel_Open(true, LEVEL_FORTRESS); //Tutorial로 가라
 			}
 
 			if (6 == Button->Get_UI_GroupID()) // 종료

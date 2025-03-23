@@ -230,7 +230,11 @@ HRESULT CLevel_Tutorial::Ready_Lights()
 
 HRESULT CLevel_Tutorial::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Terrain"), LEVEL_TUTORIAL, pLayerTag, nullptr)))
+	CGameObject::GAMEOBJECT_DESC pDesc = {};
+
+	pDesc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Terrain"), LEVEL_TUTORIAL, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)
@@ -239,7 +243,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	//		return E_FAIL;
 	//}
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Sky"), LEVEL_TUTORIAL, pLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Sky"), LEVEL_TUTORIAL, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 
@@ -324,9 +328,13 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
 {
 	/* 여기서 디스크립션으로 넘겨주기 */
-	
+	CGameObject::GAMEOBJECT_DESC        Desc{};
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), m_iCurrentLevel, pLayerTag, nullptr)))		
+	Desc.fSpeedPerSec = 45.f;
+	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
