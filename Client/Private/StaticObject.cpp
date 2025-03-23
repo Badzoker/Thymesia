@@ -223,7 +223,7 @@ HRESULT CStaticObject::Ready_Components()
 	MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, szComponentName,
+	if (FAILED(__super::Add_Component(m_eCurrentLevel, szComponentName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

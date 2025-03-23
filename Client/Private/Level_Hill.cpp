@@ -84,7 +84,7 @@ HRESULT CLevel_Hill::Initialize()
 
 
 	// 플레이어 화면 키기
-	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
@@ -104,18 +104,18 @@ void CLevel_Hill::Update(_float fTimeDelta)
 
 				m_bStopMenuOpen = false;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerInventory"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 			}
 			else
 			{
 				m_bStopMenuOpen = true;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerInventory"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 			}
 		}
@@ -127,48 +127,48 @@ void CLevel_Hill::Update(_float fTimeDelta)
 	//	m_iOpenSceneCount++;
 	//	if (1 == m_iOpenSceneCount) // 게임 인트로
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_GameIntro"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_GameIntro"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
 	//	}
 	//	if (2 == m_iOpenSceneCount) // 플레이어 메뉴
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_GameIntro"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerMenu"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_GameIntro"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerMenu"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 	//	}
 	//	if (3 == m_iOpenSceneCount) // 플레이어 레벨 업
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerMenu"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerLevelUP"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerMenu"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerLevelUP"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
 	//	}
 	//	if (4 == m_iOpenSceneCount) // 플레이어 특성
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerLevelUP"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerTalent"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerLevelUP"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerTalent"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), true);
 	//	}
 	//	if (5 == m_iOpenSceneCount) // 플레이어 화면
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerTalent"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerTalent"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 	//	}
 	//	if (6 == m_iOpenSceneCount) // 플레이어 화면
 	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), true);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerInventory"), true);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
 	//	}
 	//	if (7 == m_iOpenSceneCount) // 플레이어 화면
 	//	{
 	//		m_iOpenSceneCount = 0;
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), false);
+	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerInventory"), false);
 	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
 	//	}
 
@@ -188,7 +188,7 @@ HRESULT CLevel_Hill::Render()
 
 HRESULT CLevel_Hill::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_SEAOFTREES, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_HILL, TEXT("Layer_Camera"), TEXT("Com_Transform")));
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
@@ -198,7 +198,7 @@ HRESULT CLevel_Hill::Ready_Lights()
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
 
-	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_HILL, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
 
 	LIGHT_DESC LightDesc{};
 	/* 2월 8일 빛 */
@@ -232,16 +232,16 @@ HRESULT CLevel_Hill::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	pDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Terrain"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Terrain"), LEVEL_HILL, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)
 	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_ForkLift"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_ForkLift"), LEVEL_HILL, pLayerTag, nullptr)))
 	//		return E_FAIL;
 	//}
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Sky"), LEVEL_HILL, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 
@@ -257,7 +257,8 @@ HRESULT CLevel_Hill::Ready_Layer_Structure(const _tchar* pLayerTag)
 	// 
 	//Load_Objects(140); //Tutorial Map
 	//Load_Objects(142); //Tutorial Map
-	Load_Objects(145); //Tutorial Map
+	if (FAILED(Load_Objects(193)))
+		return E_FAIL;//HILL Map
 	//Load_Objects(301); //Circus Map
 	//Load_Objects(303); //Circus Map
 
@@ -291,7 +292,7 @@ HRESULT CLevel_Hill::Ready_Layer_Structure(const _tchar* pLayerTag)
 
 	//	/* 이제 TRANSFORM만 건들면 될듯함.*/
 	//	//int b = 4;
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, Translate_wchar, LEVEL_SEAOFTREES, Layer_Name)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, Translate_wchar, LEVEL_HILL, Layer_Name)))
 	//		return E_FAIL;
 
 	//	//CTransform* pTrasnform = dynamic_cast<CTransform*>(
@@ -331,7 +332,7 @@ HRESULT CLevel_Hill::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Player"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Player"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
@@ -353,11 +354,11 @@ HRESULT CLevel_Hill::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -372,7 +373,7 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 
 	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
 	//XMStoreFloat4(&pDesc.fPosition, vTestPosition);
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
+	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_HILL, pLayerTag, &pDesc)))
 	//	return E_FAIL;
 	
 	for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
@@ -381,40 +382,40 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 		{
 		case BOSS_VARG:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
 				return E_FAIL;
 			break;
 		default:
 			break;
 		case ELITE_JOKER:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 		case ELITE_HARMORLV2:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 
 		case NORMAL_VILLAGE_M0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_M1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		}
@@ -424,7 +425,7 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 
 HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;
@@ -433,96 +434,96 @@ HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 HRESULT CLevel_Hill::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
 	//Mesh Effect
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw2.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack1.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack2.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack3.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack3.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD3)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_1.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_2.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack5.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack5.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD5)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAttack5_Dust_Distortion.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAttack5_Dust_Distortion.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST)))
 		return E_FAIL;
 
 	//Particle Effect
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, 64)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, 64)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_2.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_3.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_3.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_1.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_2.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_5.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_5.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAttack5_Dust.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAttack5_Dust.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Player_Hit.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Player_Hit.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion.dat"), LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_EXPLOSION, 4)))
 		return E_FAIL;
 
@@ -533,7 +534,7 @@ HRESULT CLevel_Hill::Ready_Layer_Fade(const _tchar* pLayerTag)
 {
 	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_SEAOFTREES, pLayerTag, &BlackScreenDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_HILL, pLayerTag, &BlackScreenDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -547,7 +548,7 @@ HRESULT CLevel_Hill::Ready_Layer_Button(const _tchar* pLayerTag)
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_HILL, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
@@ -567,35 +568,35 @@ HRESULT CLevel_Hill::Ready_Layer_Item(const _tchar* pLayerTag)
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 
@@ -604,38 +605,38 @@ HRESULT CLevel_Hill::Ready_Layer_Item(const _tchar* pLayerTag)
 
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_HILL, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_HILL, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_HILL, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_HILL, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, nullptr, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_HILL, pLayerTag, nullptr, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_SEAOFTREES, pLayerTag, nullptr, "Inventory")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_HILL, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -682,17 +683,18 @@ HRESULT CLevel_Hill::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.iBillBoardMeshNum, sizeof(_uint), &dwByte, nullptr);
 
 		Desc.ObjectName = szLoadName;
+		Desc.eLevelID = static_cast<LEVELID>(m_iCurrentLevel);
 
 		CObject* pObject = nullptr;
 
 		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_HILL, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_HILL, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -760,7 +762,7 @@ HRESULT CLevel_Hill::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
 		Desc.ObjectName = szLoadName;
 
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_HILL, TEXT("Layer_GroundObject"), &Desc)))
 			return E_FAIL;
 	}*/
 
@@ -815,8 +817,9 @@ HRESULT CLevel_Hill::Load_Objects(_int iObject_Level)
 		Desc.vecInstanceScale = vecInstanceScale;
 		Desc.vecInstanceRotation = vecInstanceRotation;
 		Desc.vecBoxSize = vecBoxSize;
+		Desc.eLevelID = static_cast<LEVELID>(m_iCurrentLevel);
 
-		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc));
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_HILL, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_HILL, TEXT("Layer_GroundObject"), &Desc));
 
 		if (nullptr == pEnvironment)
 			return E_FAIL;
@@ -880,7 +883,7 @@ HRESULT CLevel_Hill::Load_TriggerObjects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScale, sizeof(_float3), &dwByte, nullptr);
 
-		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_SEAOFTREES, TEXT("Layer_TriggerObject"), &Desc));
+		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_HILL, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_HILL, TEXT("Layer_TriggerObject"), &Desc));
 
 		if (nullptr != pTriggerObject)
 			vecTriggerObject.push_back(pTriggerObject);

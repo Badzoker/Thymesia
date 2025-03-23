@@ -547,7 +547,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Button(const _tchar* pLayerTag)
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
