@@ -51,6 +51,9 @@ HRESULT CDeadBranch::Initialize(void* _pArg)
 
 void CDeadBranch::Priority_Update(_float _fTimeDelta)
 {
+    
+
+
 }
 
 void CDeadBranch::Update(_float _fTimeDelta)
