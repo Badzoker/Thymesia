@@ -531,19 +531,28 @@ void CCamera_Free::ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _
 
 void CCamera_Free::ResetZoomInCameraPos()
 {
-	if (m_fCamDistance > m_fCurCamDistance)
-		m_fCurCamDistance += m_fTimeDelta * 10.f;
+	const float fEpsilon = 0.1f; // 허용 오차 범위	
+
+
+	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
+	{
+		if (m_fCamDistance > m_fCurCamDistance)
+			m_fCurCamDistance += m_fTimeDelta * 10.f;
+	}
 }
 
 bool CCamera_Free::ResetZoomOutCameraPos()
 {
-	if (m_fCamDistance < m_fCurCamDistance)
-		m_fCurCamDistance -= m_fTimeDelta * 5.f;
+	const float fEpsilon = 0.1f; // 허용 오차 범위		
 
-	else
-		return true;
 
-	return false;
+	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
+	{
+		if (m_fCamDistance < m_fCurCamDistance)
+			m_fCurCamDistance -= m_fTimeDelta * 5.f;
+	}
+
+	return true;
 }
 
 _vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)

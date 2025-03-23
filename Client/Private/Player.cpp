@@ -192,11 +192,10 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	else if (m_pGameInstance->isMouseEnter(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
 	{
 		if (m_iState == STATE_ATTACK_LONG_CLAW_01
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 30.f
-				&& m_pModel->Get_CurrentAnmationTrackPosition() < 100.f))
+			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 45.f))
 		{
-			m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_LONG_CLAW_02;
+			m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);		
+			m_iState = STATE_ATTACK_LONG_CLAW_02;	
 		}
 
 		else if (m_iState != STATE_ATTACK_LONG_CLAW_01
@@ -577,9 +576,19 @@ void CPlayer::Update(_float fTimeDelta)
 		if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
 			_float4x4 test = {};
+			_vector Pretest = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 			XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
 			const _float4x4* test2 = const_cast<_float4x4*>(&test);
 			m_pTransformCom->Set_MulWorldMatrix(test2);
+
+			// Pretest 와 test2 의 변위량 구해서 넣어놓기
+			_vector Curtest = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+			_float MoveSpeed = XMVectorGetX(XMVector3Length(Pretest - Curtest));	
+
+			/* 루트 애니메이션의 이동량 만큼만 슬라이딩 할 수 있게 설정하기*/	
+			m_pTransformCom->Sliding_Root_Ani(fTimeDelta * 0.01f, m_pNavigationCom, MoveSpeed);	
 		}
 	}
 
@@ -629,8 +638,8 @@ HRESULT CPlayer::Ready_Components()
 	/* 초기 디버깅 플레이어가 서있는 셀의 인덱스 */
 	Desc.iCurrentCellIndex = 11;
 
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),		 // 이걸 나중에 Current Scene으로 바꿔야할듯 
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))		
 		return E_FAIL;
 
 
@@ -657,7 +666,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	//BodyDesc.fSpeedPerSec = 1.f;
 	BodyDesc.fRotationPerSec = 0.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_STATIC, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))	
 		return E_FAIL;
 
 	m_pModel = dynamic_cast<CModel*>(Find_PartObject_Component(TEXT("Part_Body"), TEXT("Com_Model")));
@@ -679,7 +688,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightWeaponDesc.fSpeedPerSec = 0.f;
 	RightWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
 		return E_FAIL;
 
 
@@ -694,7 +703,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	LeftWeaponDesc.fSpeedPerSec = 0.f;
 	LeftWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Left_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Left_Weapon"), &LeftWeaponDesc)))
 		return E_FAIL;
 
 
@@ -710,7 +719,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	RightClawWeaponDesc.fSpeedPerSec = 0.f;
 	RightClawWeaponDesc.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
 		return E_FAIL;
 
 
@@ -726,7 +735,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	PlayerCameraDesd.fSpeedPerSec = 0.f;
 	PlayerCameraDesd.fRotationPerSec = 10.f;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_PlayerCamera"), &PlayerCameraDesd)))
 		return E_FAIL;
 
 

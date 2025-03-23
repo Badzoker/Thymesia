@@ -183,6 +183,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\ContainerObject.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
+    <ClInclude Include="..\public\Edge_Cell.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\public\EffectMgr.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -247,6 +248,7 @@ call UpdateLib.bat</Command>
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Cell.h" />
     <ClInclude Include="..\public\VIBuffer_Cube.h" />
+    <ClInclude Include="..\public\VIBuffer_Edge_Cell.h" />
     <ClInclude Include="..\public\VIBuffer_Effect_Rect_Instancing.h" />
     <ClInclude Include="..\public\VIBuffer_Mesh_Instancing.h" />
     <ClInclude Include="..\public\VIBuffer_Particle_Instancing.h" />
@@ -273,6 +275,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\ContainerObject.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
+    <ClCompile Include="..\private\Edge_Cell.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\private\EffectMgr.cpp" />
     <ClCompile Include="..\private\Event.cpp" />
@@ -331,6 +334,7 @@ call UpdateLib.bat</Command>
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Cell.cpp" />
     <ClCompile Include="..\private\VIBuffer_Cube.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Edge_Cell.cpp" />
     <ClCompile Include="..\private\VIBuffer_Effect_Rect_Instancing.cpp" />
     <ClCompile Include="..\private\VIBuffer_Mesh_Instancing.cpp" />
     <ClCompile Include="..\private\VIBuffer_Particle_Instancing.cpp" />

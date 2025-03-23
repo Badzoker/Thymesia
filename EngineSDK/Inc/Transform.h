@@ -84,6 +84,7 @@ public:
 	void LookAt(_fvector vAt);
 	void LookAt_Astar(_fvector vAt);
 	void Sliding_Move(_float fTimeDelta, class CNavigation* pNavigation, _vector vTargetPos);
+	void Sliding_Root_Ani(_float fTimeDelta, class CNavigation* pNavigation, _float MoveSpeed);	
 	
 	void Turn(_fvector vAxis, _float fTimeDelta);/* 실시간 회전 : 매 프레임마다 현재 상태를 기준으로 정해진 속도로 추가로 회전해나간다. */
 	void Turn_Navi(_fvector vAxis, _float fTimeDelta, CNavigation* pNavigation);

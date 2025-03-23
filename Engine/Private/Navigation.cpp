@@ -1,5 +1,6 @@
 #include "Navigation.h"
 #include "Cell.h"   
+#include "Edge_Cell.h"
 
 
 #ifdef _DEBUG
@@ -21,6 +22,8 @@ CNavigation::CNavigation(const CNavigation& Prototype)
     , m_Cells(Prototype.m_Cells)
     , m_CellInfo{ Prototype.m_CellInfo }
     , m_CellAdj{ Prototype.m_CellAdj }
+    , m_EdgeCells(Prototype.m_EdgeCells)
+    , m_RenderEdgeLine(Prototype.m_RenderEdgeLine)
 #ifdef _DEBUG
     , m_pShader(Prototype.m_pShader)
 #endif // _DEBUG
@@ -30,6 +33,10 @@ CNavigation::CNavigation(const CNavigation& Prototype)
 #endif // _DEBUG
     for (auto& pCell : m_Cells)
         Safe_AddRef(pCell);
+
+    for (auto& pEdge_Render_Cell : m_RenderEdgeLine)
+        Safe_AddRef(pEdge_Render_Cell);
+
 }
 
 HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
@@ -71,8 +78,17 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 
     CloseHandle(hFile);
 
+
+
+
+
     XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
     XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixIdentity());
+
+
+
+
+
 
 #ifdef _DEBUG
     m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Cell.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements);
@@ -89,6 +105,105 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 
     for (auto pCell : m_Cells)
         pCell->Set_CellAdj(m_CellInfo, m_CellAdj);
+
+
+
+    /* 엣지 라인 네비 셀 만들기 */
+    for (auto& iter : m_Cells)
+    {
+        _uint index = {};
+        for (int i = 0; i < 3; i++)
+        {
+            if (iter->Get_NeighborIndex((CCell::LINE)(i)) == -1)  //    LINE_AB, LINE_BC, LINE_CA, LINE_END 
+            {
+                if (i == 0) // AB
+                {
+                    _float4 Line_AB = {};
+                    _vector AB_Line_Dir = XMVectorSetW(iter->Get_Point(CCell::POINT_B) - iter->Get_Point(CCell::POINT_A), 0.f);
+                    XMStoreFloat4(&Line_AB, AB_Line_Dir);
+                    m_Edge_Cell_Line.LINE_EDGE_1 = Line_AB;
+
+
+                    /* 디버그 렌더링 용 */
+                    _float3 A = { iter->Get_Point(CCell::POINT_A).m128_f32[0],iter->Get_Point(CCell::POINT_A).m128_f32[1],iter->Get_Point(CCell::POINT_A).m128_f32[2] };
+                    _float3 B = { iter->Get_Point(CCell::POINT_B).m128_f32[0],iter->Get_Point(CCell::POINT_B).m128_f32[1],iter->Get_Point(CCell::POINT_B).m128_f32[2] };
+
+                    _float3 test[2] = { A,B };
+
+                    CEdge_Cell* pEdge_Cell = CEdge_Cell::Create(m_pDevice, m_pContext, test);
+
+                    if (nullptr == pEdge_Cell)
+                        return E_FAIL;
+
+                    m_RenderEdgeLine.push_back(pEdge_Cell);
+
+
+                }
+
+                else if (i == 1)
+                {
+                    _float4 Line_BC = {};
+                    _vector BC_Line_Dir = XMVectorSetW(iter->Get_Point(CCell::POINT_C) - iter->Get_Point(CCell::POINT_B), 0.f);
+                    XMStoreFloat4(&Line_BC, BC_Line_Dir);
+                    m_Edge_Cell_Line.LINE_EDGE_2 = Line_BC;
+
+
+
+                    /* 디버그 렌더링 용 */
+                    _float3 B = { iter->Get_Point(CCell::POINT_B).m128_f32[0],iter->Get_Point(CCell::POINT_B).m128_f32[1],iter->Get_Point(CCell::POINT_B).m128_f32[2] };
+                    _float3 C = { iter->Get_Point(CCell::POINT_C).m128_f32[0],iter->Get_Point(CCell::POINT_C).m128_f32[1],iter->Get_Point(CCell::POINT_C).m128_f32[2] };
+
+                    _float3 test[2] = { B,C };
+
+                    CEdge_Cell* pEdge_Cell = CEdge_Cell::Create(m_pDevice, m_pContext, test);
+
+                    if (nullptr == pEdge_Cell)
+                        return E_FAIL;
+
+                    m_RenderEdgeLine.push_back(pEdge_Cell);
+
+
+
+                }
+
+                else if (i == 2)
+                {
+                    _float4 Line_CA = {};
+                    _vector CA_Line_Dir = XMVectorSetW(iter->Get_Point(CCell::POINT_A) - iter->Get_Point(CCell::POINT_C), 0.f);
+                    XMStoreFloat4(&Line_CA, CA_Line_Dir);
+                    m_Edge_Cell_Line.LINE_EDGE_3 = Line_CA;
+
+
+                    /* 디버그 렌더링 용 */
+                    _float3 C = { iter->Get_Point(CCell::POINT_C).m128_f32[0],iter->Get_Point(CCell::POINT_C).m128_f32[1],iter->Get_Point(CCell::POINT_C).m128_f32[2] };
+                    _float3 A = { iter->Get_Point(CCell::POINT_A).m128_f32[0],iter->Get_Point(CCell::POINT_A).m128_f32[1],iter->Get_Point(CCell::POINT_A).m128_f32[2] };
+
+                    _float3 test[2] = { C,A };
+
+                    CEdge_Cell* pEdge_Cell = CEdge_Cell::Create(m_pDevice, m_pContext, test);
+
+                    if (nullptr == pEdge_Cell)
+                        return E_FAIL;
+
+                    m_RenderEdgeLine.push_back(pEdge_Cell);
+                }
+
+            }
+
+        }
+        m_Edge_Cell_Line.NeighborIndex[0] = { iter->Get_NeighborIndex(CCell::LINE_AB) };
+        m_Edge_Cell_Line.NeighborIndex[1] = { iter->Get_NeighborIndex(CCell::LINE_BC) };
+        m_Edge_Cell_Line.NeighborIndex[2] = { iter->Get_NeighborIndex(CCell::LINE_CA) };
+
+
+
+        m_EdgeCells.push_back(m_Edge_Cell_Line);
+
+        ZeroMemory(&m_Edge_Cell_Line, sizeof(EDGE_CELL_LINE));
+
+        index++;
+    }
+
 
     return S_OK;
 }
@@ -223,7 +338,7 @@ _float CNavigation::Compute_Height(_fvector vWorldPos)
     return XMVectorGetY(vPosition);
 }
 
-_vector CNavigation::Setting_SlidingMove(_fvector _vWorldPos)
+_vector CNavigation::Setting_SlidingMove(_fvector _vWorldPos, _fvector _vLook)
 {
     if (m_iNeighborIndex == -1)
     {
@@ -231,28 +346,146 @@ _vector CNavigation::Setting_SlidingMove(_fvector _vWorldPos)
 
         for (_uint i = 0; i < CCell::LINE_END; ++i)
         {
-            // 방향 벡터 구하기 .
-            _vector vDir = (vPosition - m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i));
 
-            // 법선 벡터 구하기 위해서, 해당 라인.  삼각형의 01 라인인지, 12 라인인지, 20 라인인지.
-            _vector vLine = (m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)((i + 1) % 3)) - m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i));
-
-            // 법선 벡터 구하기 
-            _vector vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.0f, 0.0f, XMVectorGetX(vLine), 0.0f));
-
-            // 이제 방향벡터와 법선 벡터 내적을 해가지구, 깂이, 음수이면 안에있다.  양수이면 바깥에 있다.
-            if (0.0f < XMVectorGetX(XMVector3Dot(vDir, vNormal)))
+            if (i == 0)
             {
-                // 투영벡터 플레이어 위치에서 충돌할 선분으로 내려꽂아버릴, 방향벡터.
-                _vector vLineCollisionPoint = m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i) + XMVector3Dot(vDir, vLine) * vLine / XMVector3Dot(vLine, vLine);
-                _vector vSlideDir = XMVector3Normalize(vLineCollisionPoint - vPosition);
-                vSlideDir = XMVectorSetW(vSlideDir, 0.f);
-                return vPosition + (vSlideDir * 0.01f);
+                if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_1))) == 0.f)   // 없으면 다 0이니깐 이렇게 부여함 
+                {
+                    _float  Distance = 1000.f;    // 제일 뒤로 보내기 위해 높은 숫자로 설정     
+                    _vector  vNormal = { 0.f,0.f,0.f,0.f }; // 임시 노말 값 그냥 의미 x  
+
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
+
+                else
+                {
+                    // 방향 벡터 구하기 .  
+                    _vector vDir = XMVectorSetW(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_1) - vPosition, 0.f);
+                    // 해당 라인    
+                    _vector vLine = (XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_1));
+                    // 법선 벡터 구하기 
+                    _vector vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+
+                    /* 해당 물체와 직선 위의 한점 간의 거리 구하기  */
+
+                    _vector PA = _vWorldPos - m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i);
+                    _vector Cross = XMVector3Cross(vLine, PA);
+
+                    _float  Distance = XMVectorGetX(XMVector3Length(Cross) / XMVector3Length(vDir));
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
+            }
+
+            else if (i == 1)
+            {
+                if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_2))) == 0.f)   // 없으면 다 0이니깐 이렇게 부여함   
+                {
+                    _float  Distance = 1000.f;    // 제일 뒤로 보내기 위해 높은 숫자로 설정      
+                    _vector  vNormal = { 0.f,0.f,0.f,0.f }; // 임시 노말 값 그냥 의미 x     
+
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
+
+                else
+                {
+                    // 방향 벡터 구하기 .  
+                    _vector vDir = XMVectorSetW(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_2) - vPosition, 0.f);
+                    // 해당 라인    
+                    _vector vLine = (XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_2));
+                    // 법선 벡터 구하기 
+                    _vector vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+
+                    /* 해당 물체와 직선 위의 한점 간의 거리 구하기  */
+
+                    _vector PA = _vWorldPos - m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i);
+                    _vector Cross = XMVector3Cross(vLine, PA);
+
+                    _float  Distance = XMVectorGetX(XMVector3Length(Cross) / XMVector3Length(vDir));
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
+            }
+
+            else if (i == 2)
+            {
+                if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_3))) == 0.f)   // 없으면 다 0이니깐 이렇게 부여함   
+                {
+                    _float  Distance = 1000.f;    // 제일 뒤로 보내기 위해 높은 숫자로 설정      
+                    _vector  vNormal = { 0.f,0.f,0.f,0.f }; // 임시 노말 값 그냥 의미 x      
+
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
+
+                else
+                {
+                    // 방향 벡터 구하기 .  
+                    _vector vDir = XMVectorSetW(XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_3) - vPosition, 0.f);
+                    // 해당 라인    
+                    _vector vLine = (XMLoadFloat4(&m_EdgeCells[m_iCurrentCellIndex].LINE_EDGE_3));
+                    // 법선 벡터 구하기 
+                    _vector vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+
+                    /* 해당 물체와 직선 위의 한점 간의 거리 구하기  */
+
+                    _vector PA = _vWorldPos - m_Cells[m_iCurrentCellIndex]->Get_Point((CCell::POINT)i);
+                    _vector Cross = XMVector3Cross(vLine, PA);
+
+                    _float  Distance = XMVectorGetX(XMVector3Length(Cross) / XMVector3Length(vDir));
+
+                    _float4 vNormalVector = {};
+                    XMStoreFloat4(&vNormalVector, vNormal);
+
+                    m_mapSildeMap.emplace(Distance, vNormalVector);
+                }
             }
         }
+
+        // 여기까지가 이제 제일 가까운 직선 구하고 해당 직선의 법선 벡터 구한거고 
+        auto& iter = m_mapSildeMap.begin();
+
+        /* 이제 입사각 벡터만 구하면 된다리.*/
+        /* 아 플레이어의 look 이잔항;;*/
+
+        /* 물체의 직선 입사각 방향 벡터*/
+        _vector PlayerDir = XMVectorSetW(XMVector3Normalize(_vLook), 0.f);
+
+        /* 직선의 법선 벡터*/
+        _vector LineNormal = XMVector3Normalize(XMLoadFloat4(&iter->second));
+
+        // 입사 벡터에서 법선 방향 성분 제거 (슬라이딩 벡터 계산)
+        _vector ReflectAmount = XMVector3Dot(PlayerDir, LineNormal);
+        _vector SlideVector = PlayerDir - ReflectAmount * LineNormal;
+
+        // W값 명시적으로 0 설정
+        SlideVector = XMVectorSetW(SlideVector, 0.f);
+
+        m_mapSildeMap.clear();
+
+        return  SlideVector;
     }
 
-    return _vWorldPos;
+    _vector Example = {};
+
+    return Example;
 }
 
 _bool CNavigation::bIsOn_Line(_fvector _vWorldPos)
@@ -559,19 +792,22 @@ HRESULT CNavigation::Render()
         m_pShader->Begin(0);
         for (auto& pCell : m_Cells)
             pCell->Render();
+
+        //for (auto& pDebug_Edge_Cell : m_RenderEdgeLine)  //이거 키면 랜더링 슬라이드용 네비 
+        //    pDebug_Edge_Cell->Render();
     }
 
     else
     {
         _float4x4 WorldMatrix = m_WorldMatrix;
-
+        
         WorldMatrix.m[3][1] += 0.1f;  // 이거는 월드매트릭스에 직접 접근한거 3번째줄이 POSITION줄을 의미하고 거기에 1번은 Y값
-
+        
         if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix)))
             return E_FAIL;
-
+        
         m_pShader->Begin(0);
-
+        
         m_Cells[m_iCurrentCellIndex]->Render();
     }
 
@@ -599,6 +835,46 @@ HRESULT CNavigation::SetUp_Neighbors()
 
     return S_OK;
 }
+
+HRESULT CNavigation::SetUp_EDGE_Neighbors()
+{
+    for (auto& iter : m_EdgeCells)
+    {
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (i == 0)
+            {
+                if (iter.NeighborIndex[i] != -1)
+                {
+
+                    if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_1))) > 0.f)
+                    {
+                        iter.LINE_EDGE_NEIGHBOR[i] = m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_1;
+                    }
+
+                    if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_2))) > 0.f)
+                    {
+                        iter.LINE_EDGE_NEIGHBOR[i] = m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_2;
+                    }
+
+                    if (XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_3))) > 0.f)
+                    {
+                        iter.LINE_EDGE_NEIGHBOR[i] = m_EdgeCells[iter.NeighborIndex[i]].LINE_EDGE_3;
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+
+    return S_OK;
+}
+
+
 
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pNavigationDataFile)
 {
@@ -680,6 +956,10 @@ void CNavigation::Free()
     for (auto& pCell : m_Cells)
         Safe_Release(pCell);
 
+    for (auto& pEdge_Render_Cell : m_RenderEdgeLine)
+        Safe_Release(pEdge_Render_Cell);
+
+
     m_CellAdj.clear();
 
     if (!m_isCloned)
@@ -688,4 +968,6 @@ void CNavigation::Free()
     m_CellInfo.clear();
 
     m_Cells.clear();
+
+    m_EdgeCells.clear();
 }

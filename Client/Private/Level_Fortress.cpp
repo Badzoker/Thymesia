@@ -26,7 +26,7 @@ CLevel_Fortress::CLevel_Fortress(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 HRESULT CLevel_Fortress::Initialize()
 {
-	m_iCurrentLevel = LEVEL_SEAOFTREES;
+	m_iCurrentLevel = LEVEL_FORTRESS;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;

@@ -29,6 +29,20 @@ public:
 
 	}CELL;
 
+
+	struct EDGE_CELL_LINE
+	{
+		//직선 3개 넣기 
+		_float4  LINE_EDGE_1;
+		_float4  LINE_EDGE_2;
+		_float4  LINE_EDGE_3;
+
+		_float4  LINE_EDGE_NEIGHBOR[6]; // 최대 이웃이 6개일 수 밖에 없음. 		
+
+
+		_int     NeighborIndex[3];
+	};
+
 private:
 	CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CNavigation(const CNavigation& Prototype);
@@ -44,7 +58,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	void SetUp_WorldMatrix(_fmatrix WorldMatrix) 
+	void SetUp_WorldMatrix(_fmatrix WorldMatrix)
 	{
 		XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 		XMStoreFloat4x4(&m_WorldMatrixInverse, XMMatrixInverse(nullptr, WorldMatrix));
@@ -63,8 +77,8 @@ public:
 	vector<class CCell*>* Get_VecCells() { return &m_Cells; }
 	void                  Set_CurCellIndex(_uint _CellIndex) { m_iCurrentCellIndex = _CellIndex; }
 	_uint                 Get_CurCellIndex() { return m_iCurrentCellIndex; }
-	_uint                 Get_BestListSize() {return static_cast<_uint>(m_BestList.size()); }
-	_vector               Setting_SlidingMove(_fvector _vWorldPos);
+	_uint                 Get_BestListSize() { return static_cast<_uint>(m_BestList.size()); }
+	_vector               Setting_SlidingMove(_fvector _vWorldPos, _fvector _vLook);
 	_bool                 bIsOn_Line(_fvector _vWorldPos);
 
 public:
@@ -92,7 +106,9 @@ private:
 	/* 이 네비를 이용하는 객체가 현재 어떤 셀 안에 있는지? */
 	_int					m_iCurrentCellIndex = { -1 };
 	vector<class CCell*>	m_Cells;
-
+	vector<class CEdge_Cell*> m_RenderEdgeLine;
+	vector<EDGE_CELL_LINE>  m_EdgeCells;
+	EDGE_CELL_LINE			m_Edge_Cell_Line;
 
 	static _float4x4        m_WorldMatrix;
 	static _float4x4        m_WorldMatrixInverse;
@@ -103,6 +119,7 @@ private:
 #ifdef _DEBUG
 private:
 	class CShader* m_pShader = { nullptr };
+
 	_bool                   m_bFirstPick = { true };
 private:
 	_uint					m_iFloorNumber = {};
@@ -119,8 +136,21 @@ private:
 
 	vector<_float4>        m_Portal;
 
+	/* 슬라이딩 벡터 관련 함수와 변수 들 */
+private:
+	map<_float, _float4>  m_mapSildeMap;
+	_float4				  m_PreDir = {};
+	_float4				  m_PreSliderDir = {};
+	_bool				  m_bFirst = { true };
+
+
+public:
+	void Set_PreDir(_float4 _PreDir) { m_PreDir = _PreDir; }
+	void Set_First(_bool _First) { m_bFirst = _First; }
+	/* ========================= */
 private:
 	HRESULT SetUp_Neighbors();
+	HRESULT SetUp_EDGE_Neighbors();
 
 
 public:

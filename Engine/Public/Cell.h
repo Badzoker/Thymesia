@@ -26,6 +26,9 @@ public:
 		m_iNeighborIndices[eLine] = pNeighbor->m_iIndex;
 	}
 
+	_int Get_NeighborIndex(LINE eLine) { return m_iNeighborIndices[eLine]; }
+	_int Get_Index() { return m_iIndex; }
+
 	_float3	Get_Center();
 
 public:
