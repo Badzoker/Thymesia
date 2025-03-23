@@ -14,6 +14,9 @@
 #include "Level_Logo.h"
 #include "Level_Tutorial.h"
 #include "Level_SeaOfTrees.h"
+#include "Level_RoyalGarden.h"
+#include "Level_Fortress.h"
+#include "Level_Hill.h"
 
 
 #include "UI_Scene.h"
@@ -186,15 +189,15 @@ void CLevel_Loading::Update(_float fTimeDelta)
 					break;
 
 				case Client::LEVEL_ROYALGARDEN:
-					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_RoyalGarden::Create(m_pDevice, m_pContext));
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_RoyalGarden::Create(m_pDevice, m_pContext));
 					break;
 
 				case Client::LEVEL_FORTRESS:
-					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Fortress::Create(m_pDevice, m_pContext));
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Fortress::Create(m_pDevice, m_pContext));
 					break;
 
 				case Client::LEVEL_HILL:
-					//m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Hill::Create(m_pDevice, m_pContext));
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Hill::Create(m_pDevice, m_pContext));
 					break;
 				}
 			}

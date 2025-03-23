@@ -1254,6 +1254,15 @@
     <ClInclude Include="..\Public\Loader_Hill.h">
       <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_RoyalGarden.h">
+      <Filter>01.Level\04.RoyalGarden</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Hill.h">
+      <Filter>01.Level\06.Philosophre%27s Hill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Fortress.h">
+      <Filter>01.Level\05.Fortress</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1825,6 +1834,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Loader_Hill.cpp">
       <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_RoyalGarden.cpp">
+      <Filter>01.Level\04.RoyalGarden</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Hill.cpp">
+      <Filter>01.Level\06.Philosophre%27s Hill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Fortress.cpp">
+      <Filter>01.Level\05.Fortress</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -210,6 +210,9 @@
     <ClInclude Include="..\public\HURTXXLF.h" />
     <ClInclude Include="..\public\HURT_FallDown.h" />
     <ClInclude Include="..\public\HURT_FallDown_End.h" />
+    <ClInclude Include="..\Public\Level_Fortress.h" />
+    <ClInclude Include="..\Public\Level_Hill.h" />
+    <ClInclude Include="..\Public\Level_RoyalGarden.h" />
     <ClInclude Include="..\Public\Level_SeaOfTrees.h" />
     <ClInclude Include="..\Public\Level_Tutorial.h" />
     <ClInclude Include="..\Public\Loader_Fortress.h" />
@@ -405,6 +408,9 @@
     <ClCompile Include="..\private\HURTXXLF.cpp" />
     <ClCompile Include="..\private\HURT_FallDown.cpp" />
     <ClCompile Include="..\private\HURT_FallDown_End.cpp" />
+    <ClCompile Include="..\Private\Level_Fortress.cpp" />
+    <ClCompile Include="..\Private\Level_Hill.cpp" />
+    <ClCompile Include="..\Private\Level_RoyalGarden.cpp" />
     <ClCompile Include="..\Private\Level_SeaOfTrees.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial.cpp" />
     <ClCompile Include="..\Private\Loader_Fortress.cpp" />
