@@ -125,13 +125,14 @@ HRESULT CLoader_Fortress::Start_Loading()
 {
 	EnterCriticalSection(&m_CriticalSection);
 
-	CoInitializeEx(nullptr, 0);
+	if (FAILED(CoInitializeEx(nullptr, 0)))
+		return E_FAIL;
 
 	HRESULT			hr = {};
 
 	switch (m_eNextLevelID)
 	{
-	case LEVEL_TUTORIAL:
+	case LEVEL_FORTRESS: //혹시모르니 다시한번 검사하는 느낌
 		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.3f);
 		hr = Loading_For_Level_Fortress();
 		break;

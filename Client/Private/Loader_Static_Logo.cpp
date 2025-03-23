@@ -187,7 +187,8 @@ HRESULT CLoader_Static_Logo::Start_Loading()
 {
 	EnterCriticalSection(&m_CriticalSection);
 
-	CoInitializeEx(nullptr, 0);
+	if(FAILED(CoInitializeEx(nullptr, 0)))
+		return E_FAIL;
 
 	HRESULT			hr = {};
 
