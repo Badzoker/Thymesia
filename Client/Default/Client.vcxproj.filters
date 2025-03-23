@@ -673,6 +673,9 @@
     <Filter Include="01.Level\99.Loading\Loader\05.Hill">
       <UniqueIdentifier>{eca1f72c-dd44-416b-b01e-873a0c9a5eda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\InteractionObject\DeadBranch">
+      <UniqueIdentifier>{791858d7-689b-4770-8527-cf335078d923}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1263,6 +1266,9 @@
     <ClInclude Include="..\Public\Level_Fortress.h">
       <Filter>01.Level\05.Fortress</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DeadBranch.h">
+      <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1843,6 +1849,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Fortress.cpp">
       <Filter>01.Level\05.Fortress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DeadBranch.cpp">
+      <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

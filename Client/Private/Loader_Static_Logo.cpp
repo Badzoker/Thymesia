@@ -168,8 +168,12 @@
 #include "BlackScreen.h"
 #pragma endregion
 
-#include "GameItem.h"
-#include "Button.h"
+#pragma region 상호작용 오브젝트 
+#include "GameItem.h"			// 인게임 속,(드랍아이템) 게임오브젝트 
+#include "Button.h"				// 상호작용할 때 나올 UI 오브젝트(아이템 / 의자 / 사다리 etc..)
+#include "DeadBranch.h"			// 플레이어 사망 후, 해당 사망한 자리에서 나올 게임오브젝트.
+
+#pragma endregion
 
 CLoader_Static_Logo::CLoader_Static_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLoader{ pDevice, pContext }
@@ -227,7 +231,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region ITEM
+#pragma region ITEM / SOULBRANCH
 	lstrcpyW(m_szLoadingText, TEXT("ITEM 생성한다."));
 
 	/* For.Prototype_GameObject_GameItem */
@@ -244,6 +248,23 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Shader_VtxItem */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxItem"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxItemTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_DeadBranch */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), CDeadBranch::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_DeadBranch */
+	_matrix PreTransformBranchMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_DeadBranch"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Branch/Branch.fbx", CModel::MODEL_NONANIM, PreTransformBranchMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BranchDissolve */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BranchDissolve"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/SoulBranch/T_Disolve_Swirling.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 

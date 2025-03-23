@@ -23,6 +23,9 @@ float g_Time;
 
 float4x4 g_PreWorldMatrix, g_PreViewMatrix; 
 
+Texture2D g_DissolveTexture;
+float g_DissolveValue;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -252,6 +255,13 @@ struct PS_OUT_RIMLIGHT
 {
     float4 vColor : SV_TARGET0;
 };
+
+struct PS_OUT_BRANCH_GLOW
+{
+    float4 vColor : SV_TARGET0;
+    float4 vItemGlow : SV_TARGET1;
+};
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {
@@ -604,6 +614,42 @@ PS_OUT_RIMLIGHT PS_MAIN_OBJECT_RIMLIGHT(PS_IN In)
     return Out;
 }
 
+PS_OUT_BRANCH_GLOW PS_DEAD_BRANCH(PS_IN In)
+{
+    PS_OUT_BRANCH_GLOW Out = (PS_OUT_BRANCH_GLOW) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    if (vDiffuse.a < 0.1f)
+        discard;
+    
+    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (fDissolveValue < g_DissolveValue)
+    {
+        float fResult = smoothstep(0.0f, 1.0f, g_DissolveValue * 0.5f);
+        vDiffuse.rgb = lerp(float3(0.3f, 0.7f, 0.6f), vDiffuse.rgb, fResult);
+    }
+    
+    if (fDissolveValue < g_DissolveValue - 0.01f)
+    {
+        clip(-1);
+    }
+    
+    float fGlowFactor = g_fObjectAlpha;
+
+    float3 vTargetColor = float3(0.3f, 0.7f, 0.6f);
+    //float3 vTargetColor = float3(0.2f, 1.0f, 0.9f); 
+    float fMixValue = 0.7f;
+
+    float3 glowColor = lerp(vDiffuse.rgb, vTargetColor, fMixValue) * fGlowFactor * 0.5f;
+
+    Out.vColor.rgb = glowColor;
+    Out.vColor.a = 1.0f;
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -737,6 +783,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_OBJECT_RIMLIGHT();
+    }
+
+    pass DeadBranchPass // 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_DEAD_BRANCH();
     }
 
 }

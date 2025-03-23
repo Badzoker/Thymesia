@@ -159,6 +159,8 @@ namespace Engine
 		ITEM_MEMORY,
 		ITEM_FORGIVEN,
 		ITEM_SKILLPIECE,
+
+		ITEM_DEADBRANCH,
 		ITEM_END
 	};
 
