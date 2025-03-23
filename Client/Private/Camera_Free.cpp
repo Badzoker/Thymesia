@@ -447,7 +447,7 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 	/* 여기서 가장 가까운 몬스터를 리턴 해 줘야한다.*/
 	for (auto& iter : m_pGameInstance->Get_Check_Monsters())
 	{
-		_uint iCheck = m_pGameInstance->Get_Check_Monsters().size();
+		_uint iCheck = static_cast<_uint>(m_pGameInstance->Get_Check_Monsters().size());
 
 		// 절두체에 안에 있어야 하며, 그 중 가장 거리가 가까운놈을 가져와야함. 
 		_vector MonsterPosition = iter->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
