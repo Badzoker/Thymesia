@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
+    <ClInclude Include="..\Public\DeadBranch.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\GameItem.h" />
@@ -393,6 +394,7 @@
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
+    <ClCompile Include="..\Private\DeadBranch.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />

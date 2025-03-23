@@ -64,6 +64,8 @@ protected:
     _bool                       m_bEnLarging = false;
     _bool                       m_bEnLargingDone = false;
 
+protected:
+    _bool                       m_bDeActivate = { false };
 
 public:
     virtual CGameObject* Clone(void* _pArg) = 0;
