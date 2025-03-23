@@ -53,6 +53,8 @@ private:
 private:
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };
+	_bool			   m_bHitStopOnOff = { false };	
+	_bool              m_bCollisionOn = { false };	
 
 private:
 	const _uint* m_pParentState = { nullptr };
@@ -62,6 +64,7 @@ private:
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Hit_Slow();
 
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

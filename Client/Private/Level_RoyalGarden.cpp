@@ -26,7 +26,7 @@ CLevel_RoyalGarden::CLevel_RoyalGarden(ID3D11Device * pDevice, ID3D11DeviceConte
 
 HRESULT CLevel_RoyalGarden::Initialize()
 {
-	m_iCurrentLevel = LEVEL_SEAOFTREES;
+	m_iCurrentLevel = LEVEL_ROYALGARDEN;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;

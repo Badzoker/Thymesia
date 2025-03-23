@@ -280,6 +280,12 @@
     <Filter Include="01.Utility\03.GameObject\Projectile\Manager">
       <UniqueIdentifier>{6eb7f0c3-61ab-411b-bf38-7a9b016ea1fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\Navigation\Edge_Cell">
+      <UniqueIdentifier>{2f47a9eb-61b0-49db-89b6-8644f4a978d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\EdgeCell">
+      <UniqueIdentifier>{9f8079ec-a35b-4399-826a-bdce903704fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -546,6 +552,12 @@
     <ClInclude Include="..\Public\Projectile_Manager.h">
       <Filter>01.Utility\03.GameObject\Projectile\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Edge_Cell.h">
+      <Filter>01.Utility\04.Components\Navigation\Edge_Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Edge_Cell.h">
+      <Filter>01.Utility\04.Components\VIBuffer\EdgeCell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -796,6 +808,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Projectile_Manager.cpp">
       <Filter>01.Utility\03.GameObject\Projectile\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Edge_Cell.cpp">
+      <Filter>01.Utility\04.Components\Navigation\Edge_Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Edge_Cell.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\EdgeCell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

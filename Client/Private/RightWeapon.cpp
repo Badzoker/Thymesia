@@ -48,7 +48,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
@@ -99,14 +99,23 @@ void CRightWeapon::Update(_float fTimeDelta)
                 if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
                 {
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                        && m_bCollisionOn)
+                        m_pGameInstance->Add_Actor_Scene(m_pActor);  // 4타 때가 문제. 
+
+                    else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
+                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                        && !m_bCollisionOn)
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
                 }
 
                 else
                 {
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                     {
+                        if (*m_pParentState == CPlayer::STATE_ATTACK_L4)
+                            m_bCollisionOn = true;
+
                         m_pGameInstance->Sub_Actor_Scene(m_pActor);
                         iter.isPlay = true;
                         m_fHitStopTime = 0.f;
@@ -159,6 +168,12 @@ void CRightWeapon::Update(_float fTimeDelta)
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         m_fHitStopTime = 0.f;
+        m_bCollisionOn = true;
+    }
+
+    if (m_bHitStopOnOff)
+    {
+        Hit_Slow();
     }
 }
 
@@ -200,12 +215,12 @@ HRESULT CRightWeapon::Render()
 HRESULT CRightWeapon::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Corvus_Right_Weapon"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Right_Weapon"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -224,10 +239,31 @@ HRESULT CRightWeapon::Bind_ShaderResources()
     return S_OK;
 }
 
+HRESULT CRightWeapon::Hit_Slow()
+{
+    m_fHitStopTime += m_fTimeDelta;
+
+
+    if (m_fHitStopTime < 0.15f)
+    {
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+    }
+    else
+    {
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        m_bHitStopOnOff = false;
+    }
+    m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //     
+
+    return S_OK;
+}
+
 void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    //m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
     m_fHitStopTime = 0.f;
+    m_bHitStopOnOff = true;
+    m_bCollisionOn = false;
 
 #pragma region Effect0319
     if (!strcmp("MONSTER", _pOther->Get_Name()))
@@ -266,25 +302,12 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
 void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()))
-    {
-        if (m_fHitStopTime < 0.1f)
-        {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
-            m_pCamera->ShakeOn(300.f, 300.f, 3.f, 3.f);
-        }
-        else
-        {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        }
-        m_fHitStopTime += 1.f / 80.f;
-    }
+ 
 }
 
 void CRightWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    m_fHitStopTime = 0.f;
+
 }
 
 CRightWeapon* CRightWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -53,7 +53,9 @@ private:
 	_float			   m_fTimer_Effect1 = { 0.5f };
 	_float			   m_fTimer_Effect2 = { 0.5f };
 
-	_uint		     m_iPreParentState = {};
+	_uint		       m_iPreParentState = {};
+	_bool			   m_bHitStopOnOff = { false };	
+	_bool              m_bCollisionOn = { false };	
 
 private:
 	const _uint* m_pParentState = { nullptr };
@@ -62,6 +64,7 @@ private:
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Hit_Slow();
 
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

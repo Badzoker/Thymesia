@@ -54,9 +54,31 @@ void CTransform::Go_Straight(_float fTimeDelta, class CNavigation* pNavigation)
 
 	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
 
-	if(nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+	if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
 	{
 		Set_State(STATE_POSITION, vPosition);
+		pNavigation->Set_First(true);
+	}
+
+	else if (!pNavigation->isMove(vPosition))
+	{
+		/* 여기서 해당 방향으로 갈 수 있게 해주기  Dir 을 더해줘서 */
+
+		_vector		vDir = pNavigation->Setting_SlidingMove(vPosition, vLook);
+
+		vPosition -= XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
+		vPosition += XMVector3Normalize(vDir) * m_fSpeedPerSec * fTimeDelta;
+
+		if (pNavigation->isMove(vPosition))
+		{
+			Set_State(STATE_POSITION, vPosition);
+		}
+
+		else
+		{
+			Go_Backward(fTimeDelta * 0.1f);
+			//Set_State(STATE_POSITION, vPosition);
+		}
 	}
 }
 
@@ -206,6 +228,35 @@ void CTransform::Sliding_Move(_float fTimeDelta, CNavigation* pNavigation, _vect
 
 		Go_Backward_With_Navi(fTimeDelta * 0.075f, pNavigation);
 		Go_Dir(vSlider, pNavigation, fTimeDelta * 0.075f);
+	}
+}
+
+void CTransform::Sliding_Root_Ani(_float fTimeDelta, CNavigation* pNavigation, _float MoveSpeed)
+{
+	_vector		vPosition = Get_State(STATE_POSITION);
+	_vector		vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * MoveSpeed;
+
+	if (!pNavigation->isMove(vPosition))
+	{
+		/* 여기서 해당 방향으로 갈 수 있게 해주기  Dir 을 더해줘서 */
+
+		_vector		vDir = pNavigation->Setting_SlidingMove(vPosition, vLook);
+
+		vPosition -= XMVector3Normalize(vLook) * MoveSpeed;
+		vPosition += XMVector3Normalize(vDir) * MoveSpeed * 0.5f;
+
+		if (pNavigation->isMove(vPosition))
+		{
+			Set_State(STATE_POSITION, vPosition);
+		}
+
+		else
+		{
+			//Go_Backward(fTimeDelta * 0.1f);
+			//Set_State(STATE_POSITION, vPosition);
+		}
 	}
 }
 

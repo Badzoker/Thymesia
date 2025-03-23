@@ -26,7 +26,7 @@ CLevel_Hill::CLevel_Hill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLevel_Hill::Initialize()
 {
-	m_iCurrentLevel = LEVEL_SEAOFTREES;
+	m_iCurrentLevel = LEVEL_HILL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;

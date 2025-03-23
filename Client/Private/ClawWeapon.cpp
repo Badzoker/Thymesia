@@ -45,7 +45,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 30.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
@@ -97,7 +97,19 @@ void CClawWeapon::Update(_float fTimeDelta)
                         // 그 구간에서는 계속 진행  
                         if (!strcmp(iter.szName, "Attack_Collider_1"))
                         {
-                            m_pGameInstance->Add_Actor_Scene(m_pActor);
+                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
+                                && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                                && m_bCollisionOn)
+                            {
+                                m_pGameInstance->Add_Actor_Scene(m_pActor);
+                            }
+
+                            else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
+                                && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                                && !m_bCollisionOn)
+                            {
+                                m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                            }
                         }
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
@@ -199,6 +211,12 @@ void CClawWeapon::Update(_float fTimeDelta)
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         m_pGameInstance->Set_MotionBlur(false);
+        m_bCollisionOn = true;
+    }
+
+    if (m_bHitStopOnOff)
+    {
+        Hit_Slow();
     }
 
 }
@@ -226,31 +244,41 @@ HRESULT CClawWeapon::Bind_ShaderResources()
     return S_OK;
 }
 
+HRESULT CClawWeapon::Hit_Slow() 
+{
+    m_fHitStopTime += m_fTimeDelta; 
+
+
+    if (m_fHitStopTime < 0.1f)
+    {
+        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f); 
+    }
+    else
+    {
+        m_bHitStopOnOff = false;
+    }
+
+
+    return S_OK;
+}
+
 void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    m_fHitStopTime = 0.f;
+    m_fHitStopTime = 0.f;   
+    m_bHitStopOnOff = true; 
+    m_bCollisionOn = false; 
+
+    m_pGameInstance->Sub_Actor_Scene(m_pActor); 
 }
 
 void CClawWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()))
-    {
-        m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.175f)
-        {
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-            //m_pCamera->ShakeOn(500.f, 500.f, 5.f, 5.f);
-        }
-        else
-            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    }
+
 }
 
 void CClawWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    m_fHitStopTime = 0.f;
+
 }
 
 CClawWeapon* CClawWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

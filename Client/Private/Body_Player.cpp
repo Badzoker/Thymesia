@@ -320,7 +320,11 @@ void CBody_Player::Update(_float fTimeDelta)
 
                 else
                 {
-
+                    if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
+                    {
+                        // 카메라 포인터 가져오고 싶다. 
+                        m_pCamera->ResetZoomInCameraPos();
+                    }
                 }
 
                 if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
@@ -1245,6 +1249,8 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 {
     m_pModelCom->SetUp_Animation(1, false);
 
+    m_pModelCom->Get_VecAnimation().at(1)->Set_StartOffSetTrackPosition(16.f);  
+
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
@@ -1537,31 +1543,31 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     m_pModelCom->SetUp_Animation(56, false);
     m_iRenderState = STATE_NORMAL;
 
-    /* 패링 슬로우 모션  */
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
-        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
-    {
-        m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
-        {
-            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-        }
+    ///* 패링 슬로우 모션  */
+    //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
+    //    && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
+    //{
+    //    m_fHitStopTime += m_fTimeDelta;
+    //    if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
+    //    {
+    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
+    //    }
 
-        else
-        {
-            m_bParryStopOnOff = false;
-            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        }
-    }
+    //    else
+    //    {
+    //        m_bParryStopOnOff = false;
+    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    //    }
+    //}
 
-    else
-    {
-        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    //else
+    //{
+    //    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
 
 
-        m_fHitStopTime = 0.f;
-        m_bParryStopOnOff = true;
-    }
+    //    m_fHitStopTime = 0.f;
+    //    m_bParryStopOnOff = true;
+    //}
 
 
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
@@ -1579,31 +1585,31 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
     m_pModelCom->SetUp_Animation(54, false);
     m_iRenderState = STATE_NORMAL;
 
-    /* 패링 슬로우 모션  */
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
-        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
-    {
-        m_fHitStopTime += m_fTimeDelta;
-        if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
-        {
-            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
+    ///* 패링 슬로우 모션  */
+    //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
+    //    && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
+    //{
+    //    m_fHitStopTime += m_fTimeDelta;
+    //    if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
+    //    {
+    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
 
-        }
+    //    }
 
-        else
-        {
-            m_bParryStopOnOff = false;
-            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    //    else
+    //    {
+    //        m_bParryStopOnOff = false;
+    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
 
-        }
-    }
+    //    }
+    //}
 
-    else
-    {
-        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        m_fHitStopTime = 0.f;
-        m_bParryStopOnOff = true;
-    }
+    //else
+    //{
+    //    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+    //    m_fHitStopTime = 0.f;
+    //    m_bParryStopOnOff = true;
+    //}
 
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
@@ -2096,13 +2102,13 @@ void CBody_Player::STATE_HEAL_Method()
 HRESULT CBody_Player::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimMesh"), 
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Corner"),
-        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corner"),   
+        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))  
         return E_FAIL;
 
 
