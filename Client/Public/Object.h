@@ -34,6 +34,7 @@ public:
 		_uint		iPassIndex = { 0 };
 		_uint		iObjectType = { OBJECT_DEFAULT };
 		_uint		iBillBoardMeshNum = { 0 };
+		LEVELID		eLevelID = { LEVEL_TUTORIAL };
 
 	}OBJECT_DESC;
 
@@ -55,11 +56,11 @@ protected:
 	_float3		   m_fRotation	= { 0.f, 0.f, 0.f };
 	_float3		   m_fScale		= { 0.f, 0.f, 0.f };
 
-
-
 	_uint		   m_iPassIndex = { 0 };
 
 	_uint		   m_iObjectType = { OBJECT_DEFAULT };
+
+	LEVELID		   m_eCurrentLevel = { LEVEL_TUTORIAL };
 
 protected:
 	virtual HRESULT Ready_Components();

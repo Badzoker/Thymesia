@@ -548,7 +548,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Button(const _tchar* pLayerTag)
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
@@ -683,6 +683,7 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, &Desc.iBillBoardMeshNum, sizeof(_uint), &dwByte, nullptr);
 
 		Desc.ObjectName = szLoadName;
+		Desc.eLevelID = static_cast<LEVELID>(m_iCurrentLevel);
 
 		CObject* pObject = nullptr;
 
@@ -816,6 +817,7 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
 		Desc.vecInstanceScale = vecInstanceScale;
 		Desc.vecInstanceRotation = vecInstanceRotation;
 		Desc.vecBoxSize = vecBoxSize;
+		Desc.eLevelID = static_cast<LEVELID>(m_iCurrentLevel);
 
 		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc));
 

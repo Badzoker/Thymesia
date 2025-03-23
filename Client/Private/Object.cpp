@@ -19,6 +19,7 @@ HRESULT CObject::Initialize(void* pArg)
 
 	m_fFrustumRadius = pDesc->fFrustumRadius;
 	m_iPassIndex = pDesc->iPassIndex;
+	m_eCurrentLevel = pDesc->eLevelID;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -36,7 +37,7 @@ HRESULT CObject::Initialize(void* pArg)
 HRESULT CObject::Ready_Components()
 {
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxMesh"),
+	if (FAILED(__super::Add_Component(m_eCurrentLevel, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

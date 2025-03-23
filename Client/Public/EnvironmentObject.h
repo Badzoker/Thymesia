@@ -38,6 +38,8 @@ public:
         _bool                       isCullingObject = { false };
 
         _uint                       iPassIndex = { 0 };
+
+        LEVELID                     eLevelID = { LEVEL_TUTORIAL }; // 현재 레벨 확인용
     };
 
 public:
@@ -99,6 +101,7 @@ protected:
 
     _bool               m_bCullingObject = { false };
 
+    LEVELID		   m_eCurrentLevel = { LEVEL_TUTORIAL };
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;
     _uint m_iNumInstance = {};
