@@ -31,6 +31,8 @@ HRESULT CBoss_Magician::Initialize_Prototype()
 HRESULT CBoss_Magician::Initialize(void* pArg)
 {
 	m_fRotateSpeed = 180.f;
+	m_fRootDistance = 1.5f;
+	m_fActive_Distance = 15.f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +46,7 @@ HRESULT CBoss_Magician::Initialize(void* pArg)
 	m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
 	m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
 	m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
-
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 	m_pState_Manager = CState_Machine<CBoss_Magician>::Create();
 	if (m_pState_Manager == nullptr)

@@ -30,6 +30,7 @@ HRESULT CNormal_VillageF1::Initialize(void* pArg)
 {
 
     m_fHP_Bar_Height = 500.f;
+    m_fActive_Distance = 5.f;
 
 
     if (FAILED(__super::Initialize(pArg)))

@@ -31,6 +31,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_fRootDistance = 1.5f;
     m_fSpawn_Distance_Max = 15.f;
+    m_fActive_Distance = 15.f;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;

@@ -66,7 +66,7 @@ void CMonster::Priority_Update(_float fTimeDelta)
     m_fTimeDelta = fTimeDelta;
     CalCulate_Distance();
 
-    if (m_fDistance <= 5.f && !m_bActive)
+    if (m_fDistance <= m_fActive_Distance && !m_bActive)
     {
         Active();
     }

@@ -87,6 +87,7 @@ protected:
 	_float                           m_fRotateSpeed = {};
 	_float                           m_fDelayTime = {};
 	_float                           m_fDistance = {};
+	_float                           m_fActive_Distance = {};
 	//루트 모션을 진행할 플레이어와의 거리 제한? 
 	_float                           m_fRootDistance = {};
 	_float                           m_fSpawn_Distance_Max = {};

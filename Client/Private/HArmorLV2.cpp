@@ -31,6 +31,7 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
     m_fHP_Bar_Height = 500.f;
     m_fRootDistance = 1.f;
     m_fSpawn_Distance_Max = 15.f;
+    m_fActive_Distance = 5.f;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
