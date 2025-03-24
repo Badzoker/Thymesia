@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CNavigation;
+class CTexture; 
 END
 
 class CStateMgr;
@@ -21,8 +22,9 @@ class CBody_Player final : public CPartObject
 
 	enum RENDER_STATE
 	{
-		STATE_NORMAL,  /*  평상시 공격 상태       */
-		STATE_CLAW,    /*  발톱 공격시의 상태    */
+		STATE_NORMAL_RENDER,  /*   평상시 공격 상태       */
+		STATE_CLAW_RENDER,    /*   발톱 공격시의 상태     */
+		STATE_DEAD_RENDER,    /*   죽음 상태 일시         */
 
 	};
 
@@ -60,6 +62,7 @@ public:
 	/* 각 모션에 따른 렌더링 관련 */
 	HRESULT    STATE_NORMAL_Render();
 	HRESULT    STATE_ATTACK_LONG_CLAW_Render();
+	HRESULT    STATE_DEAD_Render();	
 	/* ============================ */
 
 public:
@@ -152,9 +155,21 @@ public:
 	/* 힐 관련 모션 */
 	void STATE_HEAL_Method();
 
+	/* 죽음 관련 모션 */
+	void STATE_DEAD_Method();	
+
+	/* 게임 시작 및 리스폰 시작 모션*/
+	void STATE_START_WALK_Method();	
+
+	/* 플레이어 우클릭 차지 공격 */
+	void STATE_CLAW_CHARGE_START_Method();	
+	void STATE_CLAW_CHARGE_LOOP_Method();	
+	void STATE_CLAW_CHARGE_FULL_ATTACK_Method();	
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };	
 	CCamera_Free* m_pCamera = { nullptr };
 	CGameObject* m_pParent = { nullptr };
 
@@ -177,6 +192,11 @@ private:
 
 
 	_bool  m_bParryStopOnOff = { true };
+
+	_float m_fDissolveAmount = {};	
+	_float m_fDeadTimer      = {};		
+	_float m_fFinishTime     = {};		
+	_float m_fDeadStartTimer = {};		
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 

@@ -72,22 +72,23 @@ _bool CInput_Device::isMouseEnter(_uint _iKey)
 
 }
 
-_bool CInput_Device::isMouseRelease()
+_bool CInput_Device::isMousePressed(_uint _iKey)
 {
-	bool isReleasedNow = !(Get_DIMouseState(DIM_LB) & 0x80); // 마우스에서 떼어졌을 때 눌리는	
-	
-	if (m_bPreMouseState == true && isReleasedNow == true) // true니깐 눌려있다는 상태		
-	{
-		m_bPreMouseState = false;
+	if ((m_tMouseState.rgbButtons[_iKey] & 0x80) && (m_tPreMouseState.rgbButtons[_iKey] & 0x80))
 		return true;
-	}
-	
-	m_bPreMouseState = !isReleasedNow;
-	
-		
-	return false;
+
+	else
+		return false;
 }
 
+_bool CInput_Device::isMouseRelease(_uint _iKey)
+{
+	if (!(m_tMouseState.rgbButtons[_iKey] & 0x80) && (m_tPreMouseState.rgbButtons[_iKey] & 0x80))
+		return true;
+
+	else
+		return false;
+}
 
 
 

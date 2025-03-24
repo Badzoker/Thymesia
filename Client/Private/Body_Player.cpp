@@ -57,8 +57,40 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
 
+    m_fDissolveAmount = 0.3f;   
+
     if (m_pCamera == nullptr)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
+
+    if (*m_pParentState == CPlayer::STATE_DEAD) 
+        m_fDeadStartTimer += fTimeDelta;    
+
+
+    if (*m_pParentState == CPlayer::STATE_DEAD && m_fDeadStartTimer > 1.f)
+    {
+        m_fDeadTimer += fTimeDelta * 0.5f;
+        m_fFinishTime += fTimeDelta * 0.5f;
+
+        if (m_fDeadTimer >= 4.0f)
+        {
+            *m_pParentState = CPlayer::STATE_START_WALK;
+            *m_pParentPhsaeState = CPlayer::PHASE_START;
+            *m_pPreParentState = CPlayer::STATE_DEAD;
+            //*m_pParentState = 0;    
+            //*m_pParentPhsaeState = 0;
+            *m_pParentNextStateCan = true;
+
+            m_fDeadTimer = 0.f;
+            m_fFinishTime = 0.f;
+            m_fDeadStartTimer = 0.f;
+
+            // 시작 위치 
+            m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _fvector{ 83.19f, 6.3f, -117.26f, 1.0f });
+            m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&m_pCamera->Get_FirstCamDir()));
+
+        }
+    }
+
 }
 
 void CBody_Player::Update(_float fTimeDelta)
@@ -94,9 +126,6 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_LOCK_ON_RUN_R:
         STATE_LOCK_ON_RUN_R_Method();
-        break;
-    case CPlayer::STATE_WALK:
-        STATE_WALK_Method();
         break;
     case CPlayer::STATE_ATTACK:
         STATE_ATTACK_Method();
@@ -248,6 +277,21 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_HEAL:
         STATE_HEAL_Method();
         break;
+    case CPlayer::STATE_DEAD:   
+        STATE_DEAD_Method();    
+        break;
+    case CPlayer::STATE_START_WALK:
+        STATE_START_WALK_Method();
+        break;
+    case CPlayer::STATE_CLAW_CHARGE_START:
+        STATE_CLAW_CHARGE_START_Method();
+        break;
+    case CPlayer::STATE_CLAW_CHARGE_LOOP:
+        STATE_CLAW_CHARGE_LOOP_Method();
+        break;
+    case CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK:
+        STATE_CLAW_CHARGE_FULL_ATTACK_Method();
+        break;
     default:
         break;
     }
@@ -323,7 +367,7 @@ void CBody_Player::Update(_float fTimeDelta)
                     if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
                         // 카메라 포인터 가져오고 싶다. 
-                        m_pCamera->ResetZoomInCameraPos();
+                        m_pCamera->ResetZoomInCameraPos(1.f);
                     }
                 }
 
@@ -337,17 +381,22 @@ void CBody_Player::Update(_float fTimeDelta)
 
             else
             {
-                m_pCamera->ResetZoomInCameraPos();
+                m_pCamera->ResetZoomInCameraPos(1.f);
             }
         }
     }
 
     else
     {
-        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION    
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START  
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP   
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK    
+            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01        
+            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)   
         {
-            m_pGameInstance->Add_Actor_Scene(m_pParentActor); // 이걸 빼줘야하는데 처형신에서는 ;;           
-            m_pCamera->ResetZoomInCameraPos();
+            m_pGameInstance->Add_Actor_Scene(m_pParentActor);                   
+            m_pCamera->ResetZoomInCameraPos(1.f);   
         }
     }
 
@@ -373,12 +422,15 @@ HRESULT CBody_Player::Render()
 
     switch (m_iRenderState)
     {
-    case STATE_NORMAL:
+    case STATE_NORMAL_RENDER:
         STATE_NORMAL_Render();
         break;
-    case STATE_CLAW:
+    case STATE_CLAW_RENDER:
         STATE_ATTACK_LONG_CLAW_Render();
         break;
+    case STATE_DEAD_RENDER: 
+        STATE_DEAD_Render();    
+        break;  
     default:
         break;
     }
@@ -481,16 +533,62 @@ HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
     return S_OK;
 }
 
+HRESULT CBody_Player::STATE_DEAD_Render()
+{
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+
+        /* 디졸브 텍스처 넣기 */
+        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+            return E_FAIL;
+
+        /* 디졸브 상수들 넣기 */
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+            return E_FAIL;
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeStart", &m_fDeadStartTimer, sizeof(_float))))
+            return E_FAIL;
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+            return E_FAIL;
+
+        /* 평상시 모드
+        (i == 11  깃털 ),
+        (i == 12(왼) , i == 5(오), 발톱, ),
+        (i == 10(왼) , i == 9(오),  팔목 장식)
+        (i == 4(왼) ,   i == 8(오),  어깨 장식)*/
+        if (i == 11
+            || i == 12
+            || i == 10
+            || i == 4)
+            continue;
+
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네 
+            return E_FAIL;
+
+        m_pShaderCom->Begin(6);
+        m_pModelCom->Render(i);
+    }
+    return S_OK;    
+}
+
 
 void CBody_Player::STATE_IDLE_Method()
 {
     m_pModelCom->SetUp_Animation(2, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_RUN_Method()
 {
     m_pModelCom->SetUp_Animation(9, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     /* 3월 8일 추가 */
     *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
@@ -623,7 +721,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 #pragma endregion 
 
 
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
     //*m_pParentNextStateCan = true;  
 }
 
@@ -747,7 +845,7 @@ void CBody_Player::STATE_ATTACK_L2_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
     //*m_pParentNextStateCan = true;
 }
 void CBody_Player::STATE_ATTACK_L3_Method()
@@ -869,7 +967,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;   
 
 }
 void CBody_Player::STATE_ATTACK_L4_Method()
@@ -991,7 +1089,7 @@ void CBody_Player::STATE_ATTACK_L4_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;   
 
 
 }
@@ -1115,7 +1213,7 @@ void CBody_Player::STATE_ATTACK_L5_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 }
 
@@ -1241,7 +1339,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_CLAW;
+    m_iRenderState = STATE_CLAW_RENDER;
     //*m_pParentNextStateCan = true;
 
 }
@@ -1367,7 +1465,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_CLAW;
+    m_iRenderState = STATE_CLAW_RENDER;
     //*m_pParentNextStateCan = true;
 
 }
@@ -1375,42 +1473,42 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
 {
     m_pModelCom->SetUp_Animation(6, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
 {
     m_pModelCom->SetUp_Animation(7, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
 {
     m_pModelCom->SetUp_Animation(8, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
 {
     m_pModelCom->SetUp_Animation(10, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
 {
     m_pModelCom->SetUp_Animation(11, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
 {
     m_pModelCom->SetUp_Animation(12, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
 {
     m_pModelCom->SetUp_Animation(13, true);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
 {
     m_pModelCom->SetUp_Animation(18, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(18)->isAniMationFinish())
     {
@@ -1424,7 +1522,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
 void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
 {
     m_pModelCom->SetUp_Animation(17, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(17)->isAniMationFinish())
@@ -1438,7 +1536,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
 {
 
     m_pModelCom->SetUp_Animation(19, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(19)->isAniMationFinish())
@@ -1451,7 +1549,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
 void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 {
     m_pModelCom->SetUp_Animation(20, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(20)->isAniMationFinish())
@@ -1464,7 +1562,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 void CBody_Player::STATE_PARRY_L_Method()
 {
     m_pModelCom->SetUp_Animation(15, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(15)->isAniMationFinish())
     {
@@ -1496,7 +1594,7 @@ void CBody_Player::STATE_PARRY_L_Method()
 void CBody_Player::STATE_PARRY_R_Method()
 {
     m_pModelCom->SetUp_Animation(16, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     m_pModelCom->Get_VecAnimation().at(16)->Set_StartOffSetTrackPosition(10.f);
 
@@ -1529,7 +1627,7 @@ void CBody_Player::STATE_PARRY_R_Method()
 void CBody_Player::STATE_PARRY_DEFLECT_LARGE_Method()
 {
     m_pModelCom->SetUp_Animation(55, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1541,7 +1639,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_LARGE_Method()
 void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
 {
     m_pModelCom->SetUp_Animation(56, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     ///* 패링 슬로우 모션  */
     //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
@@ -1583,7 +1681,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
 void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 {
     m_pModelCom->SetUp_Animation(54, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     ///* 패링 슬로우 모션  */
     //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
@@ -1621,7 +1719,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
 {
     m_pModelCom->SetUp_Animation(59, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
@@ -1633,7 +1731,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
 void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 {
     m_pModelCom->SetUp_Animation(58, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
@@ -1645,7 +1743,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 void CBody_Player::STATE_HurtMFR_L_Method()
 {
     m_pModelCom->SetUp_Animation(31, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
 
@@ -1661,7 +1759,7 @@ void CBody_Player::STATE_HurtMFR_L_Method()
 void CBody_Player::STATE_HurtMFR_R_Method()
 {
     m_pModelCom->SetUp_Animation(32, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(32)->isAniMationFinish())
@@ -1677,7 +1775,7 @@ void CBody_Player::STATE_HurtMFR_R_Method()
 void CBody_Player::STATE_HURT_LF_Method()
 {
     m_pModelCom->SetUp_Animation(30, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(30)->isAniMationFinish())
@@ -1694,7 +1792,7 @@ void CBody_Player::STATE_HURT_LF_Method()
 void CBody_Player::STATE_HURT_SF_Method()
 {
     m_pModelCom->SetUp_Animation(33, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1712,7 +1810,7 @@ void CBody_Player::STATE_HURT_SF_Method()
 void CBody_Player::STATE_HURT_SL_Method()
 {
     m_pModelCom->SetUp_Animation(34, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1730,7 +1828,7 @@ void CBody_Player::STATE_HURT_SL_Method()
 void CBody_Player::STATE_HURT_HURXXLF_Method()
 {
     m_pModelCom->SetUp_Animation(37, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(37)->isAniMationFinish())
@@ -1747,7 +1845,7 @@ void CBody_Player::STATE_HURT_HURXXLF_Method()
 void CBody_Player::STATE_HURT_KNOCKBACK_Method()
 {
     m_pModelCom->SetUp_Animation(38, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1766,7 +1864,7 @@ void CBody_Player::STATE_HURT_KNOCKBACK_Method()
 void CBody_Player::STATE_HURT_KNOCKDOWN_Method()
 {
     m_pModelCom->SetUp_Animation(29, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1780,7 +1878,7 @@ void CBody_Player::STATE_HURT_KNOCKDOWN_Method()
 void CBody_Player::STATE_HURT_FALLDOWN_Method()
 {
     m_pModelCom->SetUp_Animation(27, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 
@@ -1793,7 +1891,7 @@ void CBody_Player::STATE_HURT_FALLDOWN_Method()
 void CBody_Player::STATE_HURT_FALLDOWN_END_Method()
 {
     m_pModelCom->SetUp_Animation(28, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
     if (m_pModelCom->Get_VecAnimation().at(28)->isAniMationFinish())
@@ -1811,7 +1909,7 @@ void CBody_Player::STATE_HURT_FALLDOWN_END_Method()
 void CBody_Player::STATE_WEAK_GETUP_F_Method()
 {
     m_pModelCom->SetUp_Animation(282, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(282)->isAniMationFinish())
     {
@@ -1828,7 +1926,7 @@ void CBody_Player::STATE_REBOUND_R_Method()
 {
 
     m_pModelCom->SetUp_Animation(62, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(62)->isAniMationFinish())
     {
@@ -1844,7 +1942,7 @@ void CBody_Player::STATE_REBOUND_R_Method()
 void CBody_Player::STATE_STUNNED_START_Method()
 {
     m_pModelCom->SetUp_Animation(25, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(25)->isAniMationFinish())
     {
@@ -1855,7 +1953,7 @@ void CBody_Player::STATE_STUNNED_START_Method()
 void CBody_Player::STATE_STUNNED_LOOP_Method()
 {
     m_pModelCom->SetUp_Animation(24, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(24)->isAniMationFinish())
     {
@@ -1872,7 +1970,7 @@ void CBody_Player::STATE_STUNNED_LOOP_Method()
 void CBody_Player::STATE_NORMAL_EVADE_R_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1883,7 +1981,7 @@ void CBody_Player::STATE_NORMAL_EVADE_R_Method()
 void CBody_Player::STATE_NORMAL_EVADE_L_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1894,7 +1992,7 @@ void CBody_Player::STATE_NORMAL_EVADE_L_Method()
 void CBody_Player::STATE_NORMAL_EVADE_FR_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1906,7 +2004,7 @@ void CBody_Player::STATE_NORMAL_EVADE_FR_Method()
 void CBody_Player::STATE_NORMAL_EVADE_FL_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1918,7 +2016,7 @@ void CBody_Player::STATE_NORMAL_EVADE_FL_Method()
 void CBody_Player::STATE_NORMAL_EVADE_F_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1930,7 +2028,7 @@ void CBody_Player::STATE_NORMAL_EVADE_F_Method()
 void CBody_Player::STATE_NORMAL_EVADE_BR_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1942,7 +2040,7 @@ void CBody_Player::STATE_NORMAL_EVADE_BR_Method()
 void CBody_Player::STATE_NORMAL_EVADE_BL_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1954,7 +2052,7 @@ void CBody_Player::STATE_NORMAL_EVADE_BL_Method()
 void CBody_Player::STATE_NORMAL_EVADE_B_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -1965,7 +2063,7 @@ void CBody_Player::STATE_NORMAL_EVADE_B_Method()
 void CBody_Player::STATE_HARMOR_EXECUTION_Method()
 {
     m_pModelCom->SetUp_Animation(222, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(222)->isAniMationFinish())
     {
@@ -1978,7 +2076,7 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
 void CBody_Player::STATE_STUN_EXECUTE_Method()
 {
     m_pModelCom->SetUp_Animation(291, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
     {
@@ -2009,7 +2107,7 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
 void CBody_Player::STATE_LV1Villager_M_Execution_Method()
 {
     m_pModelCom->SetUp_Animation(52, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(52)->isAniMationFinish())
     {
@@ -2022,7 +2120,7 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
 void CBody_Player::STATE_Joker_Execution_Method()
 {
     m_pModelCom->SetUp_Animation(51, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(51)->isAniMationFinish())
     {
@@ -2035,7 +2133,7 @@ void CBody_Player::STATE_Joker_Execution_Method()
 void CBody_Player::STATE_Varg_Execution_Method()
 {
     m_pModelCom->SetUp_Animation(50, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(50)->isAniMationFinish())
     {
@@ -2048,7 +2146,7 @@ void CBody_Player::STATE_Varg_Execution_Method()
 void CBody_Player::STATE_ARCHIVE_SIT_START_Method()
 {
     m_pModelCom->SetUp_Animation(66, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(66)->isAniMationFinish())
     {
@@ -2060,7 +2158,7 @@ void CBody_Player::STATE_ARCHIVE_SIT_START_Method()
 void CBody_Player::STATE_ARCHIVE_SIT_LOOP_Method()
 {
     m_pModelCom->SetUp_Animation(65, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     m_pModelCom->Get_VecAnimation().at(65)->Set_AnimationSpeed(0.f);
     /* if (m_pModelCom->Get_VecAnimation().at(65)->isAniMationFinish())
@@ -2072,7 +2170,7 @@ void CBody_Player::STATE_ARCHIVE_SIT_LOOP_Method()
 void CBody_Player::STATE_ARCHIVE_SIT_GETUP_Method()
 {
     m_pModelCom->SetUp_Animation(63, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(63)->isAniMationFinish())
     {
@@ -2089,12 +2187,74 @@ void CBody_Player::STATE_ARCHIVE_SIT_LIGHT_UP_Method()
 void CBody_Player::STATE_HEAL_Method()
 {
     m_pModelCom->SetUp_Animation(237, false);
-    m_iRenderState = STATE_NORMAL;
+    m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(237)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HEAL;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
+    }
+}
+
+void CBody_Player::STATE_DEAD_Method()
+{
+    m_pModelCom->SetUp_Animation(266, false);
+    m_iRenderState = STATE_DEAD_RENDER;     
+
+    if (m_pModelCom->Get_VecAnimation().at(266)->isAniMationFinish())
+    {
+    }
+}
+
+void CBody_Player::STATE_START_WALK_Method()
+{
+    m_pModelCom->SetUp_Animation(184, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(184)->isAniMationFinish())
+    {
+
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
+    }
+}
+
+void CBody_Player::STATE_CLAW_CHARGE_START_Method()
+{
+    m_pModelCom->SetUp_Animation(144, false);
+    m_iRenderState = STATE_CLAW_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
+
+    }
+}
+
+void CBody_Player::STATE_CLAW_CHARGE_LOOP_Method()
+{
+    m_pModelCom->SetUp_Animation(142, false);
+    m_iRenderState = STATE_CLAW_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(142)->isAniMationFinish())
+    {
+        m_pModelCom->Set_Continuous_Ani(true);
+        *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
+
+    }
+}
+
+void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
+{
+    m_pModelCom->SetUp_Animation(145, false);   
+    m_iRenderState = STATE_CLAW_RENDER; 
+
+    m_pModelCom->Get_VecAnimation().at(145)->Set_StartOffSetTrackPosition(36.f);    
+
+    if (m_pModelCom->Get_VecAnimation().at(145)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+
     }
 }
 
@@ -2109,6 +2269,11 @@ HRESULT CBody_Player::Ready_Components()
     /* Com_Model */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corner"),   
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))  
+        return E_FAIL;
+
+    /* Com_Texture */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),  
+        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))    
         return E_FAIL;
 
 
@@ -2159,5 +2324,5 @@ void CBody_Player::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
-
+    Safe_Release(m_pTextureCom);
 }

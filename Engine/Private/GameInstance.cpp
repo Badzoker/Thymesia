@@ -425,10 +425,15 @@ void CGameInstance::Push_MouseState(MOUSEKEYSTATE eMouseKeyState)
 {
 	m_pInput_Device->Push_MouseState(eMouseKeyState);	
 }
-_bool CGameInstance::isMouseRelease()
+_bool CGameInstance::isMousePressed(_uint _iKey)
 {
-	return m_pInput_Device->isMouseRelease();	
+	return m_pInput_Device->isMousePressed(_iKey);	
 }
+_bool CGameInstance::isMouseRelease(_uint _iKey)
+{
+	return m_pInput_Device->isMouseRelease(_iKey);	
+}
+
 #pragma endregion
 
 #pragma region LIGHT_MANAGER

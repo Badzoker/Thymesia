@@ -682,6 +682,15 @@
     <Filter Include="02.GameObject\Monster\95. Projectile\Card">
       <UniqueIdentifier>{2e71b6b3-e05c-49a6-94a1-e447738c9d1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\ClawCommon_ChargeFull">
+      <UniqueIdentifier>{a7263564-eb91-4c37-bab5-f239c9fd2120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\ClawCommon_ChargeLoop">
+      <UniqueIdentifier>{a33e7ac5-3ed6-4fd6-a284-addac13d8361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Attack\ClawCommon_ChargeStart">
+      <UniqueIdentifier>{4b74af5d-cca8-4f48-9dab-84c0a4d73ba1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1278,6 +1287,15 @@
     <ClInclude Include="..\Public\Projectile_Card.h">
       <Filter>02.GameObject\Monster\95. Projectile\Card</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ClawCommon_ChargeFull.h">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeFull</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ClawCommon_ChargeLoop.h">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ClawCommon_ChargeStart.h">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeStart</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1864,6 +1882,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Projectile_Card.cpp">
       <Filter>02.GameObject\Monster\95. Projectile\Card</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ClawCommon_ChargeFull.cpp">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeFull</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ClawCommon_ChargeLoop.cpp">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp">
+      <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeStart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

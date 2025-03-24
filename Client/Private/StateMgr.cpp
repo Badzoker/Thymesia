@@ -87,6 +87,14 @@
 #pragma endregion 
 
 
+#pragma region 우클릭 차지 공격 
+
+#include "ClawCommon_ChargeStart.h"	
+#include "ClawCommon_ChargeLoop.h"	
+#include "ClawCommon_ChargeFull.h"	
+
+#pragma endregion 
+
 CStateMgr::CStateMgr()
 {
 
@@ -330,6 +338,23 @@ HRESULT CStateMgr::Initialize()
 	/* 51번 의자에 조명 불 키는 모션 */
 	CArchiveSitLight_Up* pArchiveSitLight_Up = CArchiveSitLight_Up::Create();
 	m_vecState.push_back(pArchiveSitLight_Up);
+
+#pragma endregion 
+
+#pragma region 우클릭 차지 공격 
+
+	/* 52번 우클릭 차지 시작 시작 */
+	CClawCommon_ChargeStart* pClawCommon_ChargeStart = CClawCommon_ChargeStart::Create();
+	m_vecState.push_back(pClawCommon_ChargeStart);
+
+	/* 53번 우클릭 차지 중인 모션 */
+	CClawCommon_ChargeLoop* pClawCommon_ChargeLoop = CClawCommon_ChargeLoop::Create();
+	m_vecState.push_back(pClawCommon_ChargeLoop);
+
+	/* 54번 우클릭 차지 공격 모션 */
+	CClawCommon_ChargeFull* pClawCommon_ChargeFull = CClawCommon_ChargeFull::Create();
+	m_vecState.push_back(pClawCommon_ChargeFull);
+
 
 #pragma endregion 
 
