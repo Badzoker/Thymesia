@@ -684,12 +684,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 }
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_TUTORIAL, pLayerTag)))
-		return E_FAIL;
-	return S_OK;
-}
-HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
-{
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
@@ -697,8 +691,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTa
 		return E_FAIL;
 	return S_OK;
 }
-HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
+HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
+	
+
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
@@ -706,13 +702,21 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTa
 		return E_FAIL;
 	return S_OK;
 }
-
-HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
+HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
+	
+
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_SEAOFTREES, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
