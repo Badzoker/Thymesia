@@ -259,7 +259,7 @@ struct PS_OUT_RIMLIGHT
 struct PS_OUT_BRANCH_GLOW
 {
     float4 vColor : SV_TARGET0;
-    float4 vItemGlow : SV_TARGET1;
+    //float4 vItemGlow : SV_TARGET1;
 };
 
 

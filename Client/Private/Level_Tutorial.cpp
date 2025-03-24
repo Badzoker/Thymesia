@@ -694,7 +694,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerT
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -705,7 +705,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -716,14 +716,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_TUTORIAL, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_SEAOFTREES, pLayerTag, nullptr, "Inventory")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_TUTORIAL, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
