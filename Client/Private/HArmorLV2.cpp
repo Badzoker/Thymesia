@@ -35,14 +35,13 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_PartObjects()))
+    if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
@@ -101,22 +100,26 @@ HRESULT CHArmorLV2::Render()
     return S_OK;
 }
 
-HRESULT CHArmorLV2::Ready_Components()
+HRESULT CHArmorLV2::Ready_Components(void* pArg)
 {
-    /* Com_Navigation */
-    CNavigation::NAVIGATION_DESC   Desc{};
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.iCurrentCellIndex = 0;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+    if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
         return E_FAIL;
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     return S_OK;
 }
 
-HRESULT CHArmorLV2::Ready_PartObjects()
+HRESULT CHArmorLV2::Ready_PartObjects(void* pArg)
 {
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
+
     CBody_HArmorLV2::BODY_HArmorLV2_DESC BodyDesc = {};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     BodyDesc.pParentState = &m_iMonster_State;
@@ -124,7 +127,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_HArmorLV2"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_HArmorLV2_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_HArmorLV2"), LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2_Body"), &BodyDesc)))
         return E_FAIL;
 
     CWeapon_GreatSword::WEAPON_GreatSword_DESC		Weapon_GreatSword_Desc = {};
@@ -140,7 +143,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Weapon_GreatSword_Desc.fSpeedPerSec = 0.f;
     Weapon_GreatSword_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_GreatSword"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Weapon_GreatSword"), &Weapon_GreatSword_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_GreatSword"), LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_GreatSword"), &Weapon_GreatSword_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -151,7 +154,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -165,7 +168,7 @@ HRESULT CHArmorLV2::Ready_PartObjects()
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_HP_Bar"), iLevel, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
         return E_FAIL;
 
     return S_OK;

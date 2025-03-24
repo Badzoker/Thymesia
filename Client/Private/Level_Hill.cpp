@@ -40,8 +40,8 @@ HRESULT CLevel_Hill::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	if (FAILED(Ready_Layer_Monster()))	
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Monster()))	
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
 		return E_FAIL;
@@ -425,7 +425,7 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 
 HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;

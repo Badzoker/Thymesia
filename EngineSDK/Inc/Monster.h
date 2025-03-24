@@ -25,6 +25,8 @@ public:
 	void Set_IsDelete(_bool bDelete) { m_IsDelete = bDelete; }
 public:
 	void Reset_Info();
+	void Cheat();
+
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -42,13 +44,14 @@ public:
 	void RootAnimation();
 	void CalCulate_Distance();
 public:
-	virtual void PatternCreate() = 0;
-	virtual void Active() = 0;
-	virtual void Return_To_Spawn() = 0;
-	virtual void Stun() = 0;
+	virtual void PatternCreate();
+	virtual void Active();
+	virtual void Return_To_Spawn();
+	virtual void Stun();
 
 	void RotateDegree_To_Player();
 	void Rotation_To_Player();
+	_bool Is_Player_Near();
 	void Recovery_HP();
 
 protected:

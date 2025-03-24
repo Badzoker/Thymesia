@@ -61,6 +61,11 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
 void CVargKnife::Priority_Update(_float fTimeDelta)
 {
+    if (m_iPreAnimIndex != m_pParentModelCom->Get_Current_Animation_Index())
+    {
+        m_bColliderOff = false;
+        m_iPreAnimIndex = m_pParentModelCom->Get_Current_Animation_Index();
+    }
 }
 
 void CVargKnife::Update(_float fTimeDelta)
@@ -83,7 +88,7 @@ void CVargKnife::Update(_float fTimeDelta)
 
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -151,12 +156,12 @@ HRESULT CVargKnife::Render()
 HRESULT CVargKnife::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Boss_Varg_Knife"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Varg_Knife"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -178,6 +183,10 @@ HRESULT CVargKnife::Bind_ShaderResources()
 
 void CVargKnife::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    if (!strcmp("PLAYER", _pOther->Get_Name()))
+    {
+        m_bColliderOff = true;
+    }
 }
 
 void CVargKnife::OnCollision(CGameObject* _pOther, PxContactPair _information)

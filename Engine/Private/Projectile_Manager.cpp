@@ -66,36 +66,64 @@ HRESULT CProjectile_Manager::Add_Projectile(_uint _iPrototypeLevelIndex, const _
 }
 
 
-HRESULT CProjectile_Manager::Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount)
+//2발 이상
+HRESULT CProjectile_Manager::Fire_Multi_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount, _bool bReverse)
 {
-	if (iCount <= 1)
+	if (m_pProjectiles[_eCategory].size() < iCount)
+		return E_FAIL;
+
+	_vector vDir = XMVector3Normalize(vEndPos - vStartPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vDir, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	_float fOffsetStep = 0.5f;
+	_float fBackWardStep = 2.f;
+
+	_uint iMidIndex = iCount / 2;
+
+
+	_uint iFiredCount = 0;
+
+	for (auto& iter : m_pProjectiles[_eCategory])
 	{
-		for (auto& iter : m_pProjectiles[_eCategory])
+		if (!iter->Get_IsFire())
 		{
-			//iCount에 따라 1발 쏠껀지 5발? 쏠건지 아마 카드만 5발일듯?
-			if (!iter->Get_IsFire())
-			{
-				iter->Set_IsFire(true);
-				iter->Set_Target(vStartPos, vEndPos);
-				m_pFireProjectiles.push_back(iter);
+			_vector vNewStart = vStartPos;
+
+			_int iOffsetIndex = iFiredCount - (iCount / 2);
+			vNewStart += vRight * (fOffsetStep * iOffsetIndex);
+
+			if (bReverse)
+				vNewStart += vDir * (fBackWardStep * iFiredCount);
+			else
+				vNewStart -= vDir * (fBackWardStep * iFiredCount);
+
+			iter->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vNewStart);
+			iter->Set_Target(vDir);
+			iter->Set_IsFire(true);
+			m_pFireProjectiles.push_back(iter);
+
+			if (++iFiredCount >= iCount)
 				break;
-			}
 		}
+
 	}
-	else
+
+	return S_OK;
+}
+
+//1발 무조건
+HRESULT CProjectile_Manager::Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos)
+{
+	_vector vDir = XMVector3Normalize(vEndPos - vStartPos);
+
+	for (auto& iter : m_pProjectiles[_eCategory])
 	{
-		_uint pCount = {};
-		for (auto& iter : m_pProjectiles[_eCategory])
+		if (!iter->Get_IsFire())
 		{
-			if (!iter->Get_IsFire())
-			{
-				iter->Set_IsMultiFire(true);
-				iter->Set_Target(vStartPos, vEndPos);
-				m_pFireProjectiles.push_back(iter);
-				pCount++;
-				if (pCount == iCount)
-					break;
-			}
+			iter->Set_IsFire(true);
+			iter->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, vStartPos);
+			iter->Set_Target(vDir);
+			m_pFireProjectiles.push_back(iter);
+			break;
 		}
 	}
 	return S_OK;

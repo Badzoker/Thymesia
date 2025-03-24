@@ -33,8 +33,8 @@ public:
 	void Stun() override;
 
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_PartObjects(void* pArg);
 
 private:
 	CState_Machine<CNormal_VillageM1>* m_pState_Manager = { nullptr };

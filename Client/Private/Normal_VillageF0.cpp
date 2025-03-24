@@ -34,13 +34,13 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_PartObjects()))
+    if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
+   
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
@@ -87,22 +87,26 @@ HRESULT CNormal_VillageF0::Render()
     return S_OK;
 }
 
-HRESULT CNormal_VillageF0::Ready_Components()
+HRESULT CNormal_VillageF0::Ready_Components(void* pArg)
 {
-    /* Com_Navigation */
-    CNavigation::NAVIGATION_DESC   Desc{};
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.iCurrentCellIndex = 0;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+    if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
         return E_FAIL;
+
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     return S_OK;
 }
 
-HRESULT CNormal_VillageF0::Ready_PartObjects()
+HRESULT CNormal_VillageF0::Ready_PartObjects(void* pArg)
 {
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
     CBody_VillageF0::BODY_VillageF0_DESC BodyDesc = {};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     BodyDesc.pParentState = &m_iMonster_State;
@@ -110,7 +114,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_VillageF0"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Normal_VillageF0_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_VillageF0"), LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF0_Body"), &BodyDesc)))
         return E_FAIL;
 
     CWeapon_Dagger::WEAPON_DAGGER_DESC		Weapon_Desc = {};
@@ -127,7 +131,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     Weapon_Desc.fSpeedPerSec = 0.f;
     Weapon_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Dagger"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Weapon_Dagger"), &Weapon_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Weapon_Dagger"), LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Dagger"), &Weapon_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -138,7 +142,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -152,7 +156,7 @@ HRESULT CNormal_VillageF0::Ready_PartObjects()
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_HP_Bar"), iLevel, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
         return E_FAIL;
 
     return S_OK;
@@ -236,7 +240,7 @@ void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
 void CNormal_VillageF0::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name()))
+    if ((!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_HIT)
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
@@ -448,6 +452,7 @@ void CNormal_VillageF0::Run_Attack::State_Enter(CNormal_VillageF0* pObject)
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_bCanHit = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(3.f);
 }
@@ -545,6 +550,8 @@ void CNormal_VillageF0::Hit_State::State_Enter(CNormal_VillageF0* pObject)
     }
     pObject->m_iMonster_State = STATE_HIT;
     pObject->RotateDegree_To_Player();
+    pObject->m_bMove = true;
+    pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -557,6 +564,7 @@ void CNormal_VillageF0::Hit_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageF0::Hit_State::State_Exit(CNormal_VillageF0* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
 }
 
 #pragma endregion
@@ -670,7 +678,7 @@ void CNormal_VillageF0::Return_To_SpawnPoint_State::State_Update(_float fTimeDel
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta, pObject->m_pNavigationCom);
     }
-    if (pObject->m_fDistance <= 1.f)
+    if (pObject->m_fDistance <= 3.f)
     {
         pObject->m_pState_Manager->ChangeState(new Idle_State, pObject);
     }

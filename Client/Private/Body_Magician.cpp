@@ -23,6 +23,9 @@ HRESULT CBody_Magician::Initialize(void* pArg)
 {
 	CBody_Magician::BODY_MAGICIAN_DESC* pDesc = static_cast<BODY_MAGICIAN_DESC*>(pArg);
 
+	m_IsDissolveOn = pDesc->IsDissolveOn;
+	m_IsDissolveOff = pDesc->IsDissolveOff;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -36,6 +39,33 @@ HRESULT CBody_Magician::Initialize(void* pArg)
 
 void CBody_Magician::Priority_Update(_float fTimeDelta)
 {
+	if (*m_IsDissolveOn)
+	{
+		m_fDissolveOn_Timer += fTimeDelta * 1.5f;
+		m_fDissolveOn_FinishTime += fTimeDelta * 1.5f;
+	}
+	else
+	{
+		m_fDissolveOn_Timer = 0.f;
+		m_fDissolveOn_FinishTime = 0.f;
+	}
+
+	if (*m_IsDissolveOff)
+	{
+		m_fDissolveOff_Timer -= fTimeDelta * 1.5f;
+		m_fDissolveOff_FinishTime -= fTimeDelta * 1.5f;
+		if (m_fDissolveOff_Timer <= 0.f)
+		{
+			m_fDissolveOff_Timer = 0.f;
+			m_fDissolveOff_FinishTime = 0.f;
+		}
+	}
+	else
+	{
+		m_fDissolveOff_Timer = 1.f;
+		m_fDissolveOff_FinishTime = 1.f;
+	}
+
 }
 
 void CBody_Magician::Update(_float fTimeDelta)
@@ -80,6 +110,35 @@ HRESULT CBody_Magician::Render()
 		if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네
 			return E_FAIL;
 
+		if (*m_IsDissolveOn)
+		{
+			m_iPassNum = 5;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOn_Timer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOn_FinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else if (*m_IsDissolveOff)
+		{
+			m_iPassNum = 5;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOff_Timer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOff_FinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else
+			m_iPassNum = 0;
+
+
+
 		m_pShaderCom->Begin(m_iPassNum);
 		m_pModelCom->Render(i);
 	}
@@ -95,13 +154,17 @@ HRESULT CBody_Magician::Render_Shadow()
 HRESULT CBody_Magician::Ready_Components()
 {
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Boss_Magician_Body"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Body"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
+		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -151,4 +214,5 @@ void CBody_Magician::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureCom);
 }

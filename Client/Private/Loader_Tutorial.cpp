@@ -293,10 +293,8 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 
 #pragma endregion 
 
-
-
 #pragma region Navigation 
-	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
+	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));
 
 	// 03.19 네비 Tutorial Map 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
@@ -307,11 +305,10 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
 	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation10.txt")))))
 	//	return E_FAIL;
-	
-
-
-
 #pragma endregion 
+
+
+
 
 #pragma region Collider
 	lstrcpyW(m_szLoadingText, TEXT("Collider 생성중"));

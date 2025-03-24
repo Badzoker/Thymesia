@@ -7,6 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
 END
 
 
@@ -20,6 +21,8 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_bool* IsDissolveOn = {};
+		_bool* IsDissolveOff = {};
 	};
 private:
 	CWeapon_Magician_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -38,13 +41,22 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
-	_float			   m_fTimeDelta = { 0.f };
+	_bool* m_IsDissolveOn = {};
+	_bool* m_IsDissolveOff = {};
 
+	_uint m_iPassNum = {};
+
+	_float			   m_fTimeDelta = { 0.f };
+	_float m_fDissolveOn_Timer = {};
+	_float m_fDissolveOff_Timer = {};
+	_float m_fDissolveOn_FinishTime = 1.f;
+	_float m_fDissolveOff_FinishTime = 1.f;
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

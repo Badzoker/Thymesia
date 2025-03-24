@@ -22,7 +22,8 @@ public:
 	HRESULT Add_Projectile(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, PROJECTILE_CATEGORY _eCategory, void* _pArg);
 
 public:
-	HRESULT Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount);
+	HRESULT Fire_Multi_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount, _bool bReverse);
+	HRESULT Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos);
 
 private:
 	map<PROJECTILE_CATEGORY, vector<class CProjectile*>> m_pProjectiles;

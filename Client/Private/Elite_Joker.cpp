@@ -36,13 +36,12 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_PartObjects()))
+    if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
@@ -97,22 +96,25 @@ HRESULT CElite_Joker::Render()
     return S_OK;
 }
 
-HRESULT CElite_Joker::Ready_Components()
+HRESULT CElite_Joker::Ready_Components(void* pArg)
 {
-    /* Com_Navigation */
-    CNavigation::NAVIGATION_DESC   Desc{};
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.iCurrentCellIndex = 0;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+    if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
         return E_FAIL;
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     return S_OK;
 }
 
-HRESULT CElite_Joker::Ready_PartObjects()
+HRESULT CElite_Joker::Ready_PartObjects(void* pArg)
 {
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
     CBody_Joker::BODY_JOKER_DESC BodyDesc{};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     BodyDesc.pParentState = &m_iMonster_State;
@@ -121,7 +123,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Joker"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_Joker_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Joker"), LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker_Body"), &BodyDesc)))
         return E_FAIL;
 
     CJoker_Weapon::JOKER_WEAPON_DESC		Joker_Weapon_Desc{};
@@ -138,7 +140,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Joker_Weapon_Desc.fSpeedPerSec = 0.f;
     Joker_Weapon_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Joker_Weapon"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Elite_Joker_Weapon"), &Joker_Weapon_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Joker_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker_Weapon"), &Joker_Weapon_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -149,7 +151,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CMonster_HP_Bar::Monster_HP_Bar_DESC Monster_HP_Bar_Desc = {};
@@ -163,7 +165,7 @@ HRESULT CElite_Joker::Ready_PartObjects()
     Monster_HP_Bar_Desc.fSpeedPerSec = 0.f;
     Monster_HP_Bar_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_HP_Bar"), iLevel, TEXT("Layer_MonsterHP"), &Monster_HP_Bar_Desc)))
         return E_FAIL;
 
     return S_OK;
@@ -342,6 +344,8 @@ void CElite_Joker::Idle_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Idle_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+    pObject->RotateDegree_To_Player();
+
     if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Walk_State(), pObject);
 }
@@ -400,12 +404,15 @@ void CElite_Joker::Walk_State::State_Enter(CElite_Joker* pObject)
             break;
         }
     }
+    pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
 void CElite_Joker::Walk_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+    pObject->RotateDegree_To_Player();
+
     if (m_iIndex == 30)
         pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
     else if (m_iIndex == 29)
@@ -429,6 +436,7 @@ void CElite_Joker::Attack_Combo_A::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 0;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     //rand() % 2
@@ -465,6 +473,7 @@ void CElite_Joker::Attack_Combo_B::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 2;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     _uint iRandom = 0;
@@ -566,7 +575,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;
-        pObject->m_bCan_Move_Anim = true;
+        pObject->m_bMove = false;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
@@ -574,7 +583,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
     if (m_iIndex == 35 && m_fTimer >= 4.f)
     {
         m_iIndex = (rand() % 2) + 33;
-        pObject->m_bCan_Move_Anim = false;
+        pObject->m_bMove = false;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -715,6 +724,7 @@ void CElite_Joker::Attack_Shock::State_Exit(CElite_Joker* pObject)
 void CElite_Joker::Attack_Strong::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 16;
+    pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

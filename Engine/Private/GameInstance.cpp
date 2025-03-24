@@ -18,6 +18,7 @@
 #include "ItemMgr.h"
 #include "Shadow.h"
 #include "Monster_Manager.h"
+#include "Projectile_Manager.h"
 #include "UI_Manager.h"
 #include "GameObject.h"
 #include "PhysX_Manager.h"
@@ -114,6 +115,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pMonster_Manager)
 		return E_FAIL;
 
+	m_pProjectile_Manager = CProjectile_Manager::Create();
+	if (nullptr == m_pProjectile_Manager)
+		return E_FAIL;
+
 	m_pUI_Manager = CUI_Manager::Create(EngineDesc.iNumUIScenes);
 	if (nullptr == m_pUI_Manager)
 		return E_FAIL;
@@ -141,6 +146,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pMonster_Manager->Priority_Update(fTimeDelta);
+	m_pProjectile_Manager->Priority_Update(fTimeDelta);
 	m_pEffect_Manager->Priority_Update(fTimeDelta);
 	m_pUI_Manager->Priority_Update(fTimeDelta);
 
@@ -151,11 +157,13 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pMonster_Manager->Update(fTimeDelta);
+	m_pProjectile_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
 	m_pUI_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pMonster_Manager->Late_Update(fTimeDelta);
+	m_pProjectile_Manager->Late_Update(fTimeDelta);
 	m_pEffect_Manager->Late_Update(fTimeDelta);	
 	m_pUI_Manager->Late_Update(fTimeDelta);
 
@@ -857,6 +865,24 @@ deque<class CMonster*>& CGameInstance::Get_Check_Monsters()
 
 #pragma endregion
 
+#pragma endregion
+
+#pragma region PROJECTILE_MANAGER
+HRESULT CGameInstance::Add_Projectile(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, PROJECTILE_CATEGORY _eCategory, void* _pArg)
+{
+	return m_pProjectile_Manager->Add_Projectile(_iPrototypeLevelIndex, _strPrototypeTag, _eCategory, _pArg);
+}
+HRESULT CGameInstance::Fire_Multi_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount, _bool bReverse)
+{
+	return m_pProjectile_Manager->Fire_Multi_Projectile(_eCategory, vStartPos, vEndPos, iCount, bReverse);
+}
+
+HRESULT CGameInstance::Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos)
+{
+	return m_pProjectile_Manager->Fire_Projectile(_eCategory, vStartPos, vEndPos);
+}
+
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pGraphic_Device);	
@@ -872,6 +898,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pEvent_Manager);	
 	Safe_Release(m_pEffect_Manager);
+	Safe_Release(m_pProjectile_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pItemMgr);	

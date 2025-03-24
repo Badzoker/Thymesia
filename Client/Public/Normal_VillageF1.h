@@ -34,8 +34,8 @@ public:
 	void Return_To_Spawn() override;
 	void Stun() override;
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_PartObjects(void* pArg);
 
 private:
 	CState_Machine<CNormal_VillageF1>* m_pState_Manager = { nullptr };
