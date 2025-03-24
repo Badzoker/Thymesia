@@ -534,7 +534,7 @@ void CCamera_Free::ResetZoomInCameraPos()
 	const float fEpsilon = 0.1f; // 허용 오차 범위	
 
 
-	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
+ 	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
 	{
 		if (m_fCamDistance > m_fCurCamDistance)
 			m_fCurCamDistance += m_fTimeDelta * 10.f;
