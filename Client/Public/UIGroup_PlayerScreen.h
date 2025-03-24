@@ -48,6 +48,8 @@ private:
 
 	_bool m_bNudgeUse[4] = { false,false,false,false };
 
+	LEVELID m_eLevelID = {};
+
 private:
 	_float m_fTimeCheck = {};
 	vector<UI_TextInfo> m_TextInfo = {};

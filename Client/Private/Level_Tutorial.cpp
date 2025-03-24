@@ -355,7 +355,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fMouseSensor = 0.05f;
 	Desc.fSpeedPerSec = 25.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
-
+	Desc.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
 		return E_FAIL;
@@ -690,20 +690,29 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerT
 }
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_TUTORIAL, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_TUTORIAL, pLayerTag, nullptr, "PlayerScreen")))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_TUTORIAL, pLayerTag, nullptr, "Inventory")))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }

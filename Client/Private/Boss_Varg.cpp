@@ -390,7 +390,7 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_bActive = true;
     pObject->m_bPatternProgress = true;
     pObject->m_iMonster_State = STATE_INTRO;
-    pObject->m_pModelCom->SetUp_Animation(17, false);
+    pObject->m_pModelCom->SetUp_Animation(26, false);
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)

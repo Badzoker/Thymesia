@@ -352,7 +352,7 @@ HRESULT CLevel_Hill::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fMouseSensor = 0.05f;
 	Desc.fSpeedPerSec = 25.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
-
+	Desc.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
@@ -371,10 +371,17 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
 
-	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
-	//XMStoreFloat4(&pDesc.fPosition, vTestPosition);
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Boss_Magician"), LEVEL_HILL, pLayerTag, &pDesc)))
-	//	return E_FAIL;
+	pDesc.iCurLevel = m_iCurrentLevel;
+
+	_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
+	XMStoreFloat4(&pDesc.fPosition, vTestPosition);
+	for (_uint i = 0; i < 20; i++)
+	{
+		if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Card"), PROJECTILE_CARD, &pDesc)))
+			return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
+		return E_FAIL;
 	
 	for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
 	{
@@ -425,7 +432,12 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 
 HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, nullptr)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	Desc.fSpeedPerSec = 1.f;
+	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -434,96 +446,96 @@ HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 HRESULT CLevel_Hill::Ready_Layer_Effect(const _tchar* pLayerTag)
 {
 	//Mesh Effect
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerClaw2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CLAW2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack3.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD3)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_1)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack4_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD4_2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack5.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerLAttack5.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_SWORD5)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAttack5_Dust_Distortion.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Mesh"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAttack5_Dust_Distortion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST)))
 		return E_FAIL;
 
 	//Particle Effect
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, 64)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, 64)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_3.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_1.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_2.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_4_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_5.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_5.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAttack5_Dust.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAttack5_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Player_Hit.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Player_Hit.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING, 4)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion.dat"), LEVEL_HILL, TEXT("Prototype_GameObject_Effect_Particle"),
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_EXPLOSION, 4)))
 		return E_FAIL;
 
@@ -617,19 +629,28 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_HILL, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_HILL, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_HILL, pLayerTag, nullptr, "PlayerScreen")))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }

@@ -306,14 +306,14 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
 
 	// 03.19 네비 Tutorial Map 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation9.txt")))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation9.txt")))))
+	//	return E_FAIL;
 
 	// 03.19 네비 Circus Map 
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation10.txt")))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation10.txt")))))
+		return E_FAIL;
 	
 
 

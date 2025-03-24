@@ -32,12 +32,16 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+
+	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
 	m_pItmeScreen = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItmeScreen, false);
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
-	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_PlayerInventory"), "Inventory");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
+	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
 	for (auto& Textbox : m_pMyScene->Find_UI_TextBox())
 	{
 		if (101 == Textbox->Get_UI_GroupID())

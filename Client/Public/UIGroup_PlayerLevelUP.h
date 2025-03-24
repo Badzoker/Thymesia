@@ -91,7 +91,7 @@ private:
 	_uint       m_iCurrentUnspent = {};
 	_uint       m_iNextUnspent = {};
 
-
+	LEVELID		m_eLevelID = {};
 
 public:
 	HRESULT Ready_UIObject();
