@@ -33,7 +33,6 @@ public:
 		STATE_LOCK_ON_EVADE_L,
 		STATE_LOCK_ON_EVADE_R,
 		/*---------------- */
-		STATE_WALK,
 		STATE_ATTACK,
 		STATE_ATTACK_L1,
 		STATE_ATTACK_L2,
@@ -98,6 +97,18 @@ public:
 
 		/*힐링 모션 관련 */
 		STATE_HEAL,
+
+		/*플레이어 죽음 모션 */
+		STATE_DEAD,
+
+		/*플레이어 걸어나오는 연출 WALK*/
+		STATE_START_WALK,
+
+
+		/* 플레이어 우클릭 차지 공격 */
+		STATE_CLAW_CHARGE_START,
+		STATE_CLAW_CHARGE_LOOP,
+		STATE_CLAW_CHARGE_FULL_ATTACK,
 	};
 
 
@@ -112,7 +123,8 @@ public:
 		PHASE_EXECUTION = 1 << 6,
 		PHASE_CHAIR = 1 << 7,
 		PHASE_HEAL = 1 << 8,
-
+		PHASE_DEAD = 1 << 9,	
+		PHASE_START = 1 << 10,	
 	};
 
 
@@ -139,6 +151,7 @@ public:
 	void Keyboard_section(_float fTimeDelta);
 
 public:
+	_uint Get_PhaseState() { return m_iPhaseState; }	
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	void Can_Move();
@@ -156,6 +169,8 @@ private:
 	_bool								m_bLockOn = { false };
 	_bool								m_bMove = { false };
 	_bool								m_bNextStateCanPlay = { true };
+
+	_float								m_fChrageTime = {};
 
 
 	CNavigation* m_pNavigationCom = { nullptr };

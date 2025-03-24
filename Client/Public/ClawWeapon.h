@@ -21,6 +21,7 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_uint* pParentPhaseState = { nullptr };
 	};
 private:
 	CClawWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -61,6 +62,7 @@ private:
 
 private:
 	const _uint* m_pParentState = { nullptr };
+	_uint* m_pParentPhsaeState = { nullptr };
 
 
 public:

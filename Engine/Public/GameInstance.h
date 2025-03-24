@@ -109,7 +109,8 @@ public:
 
 	_bool   isMouseEnter(_uint _iKey); 
 	void    Push_MouseState(MOUSEKEYSTATE eMouseKeyState);
-	_bool   isMouseRelease();
+	_bool   isMousePressed(_uint _iKey);	
+	_bool   isMouseRelease(_uint _iKey);	
 #pragma endregion
 
 #pragma region LIGHT_MANAGER

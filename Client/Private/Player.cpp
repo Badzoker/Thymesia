@@ -79,6 +79,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
 
+	m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));	
+
+	/* 여기다가 해당 신 별로 다르게 설정만 하면 됨 */	
+	m_iState = STATE_START_WALK;	
+	m_iPhaseState |= PHASE_START;	
+
+
 
 	return S_OK;
 }
@@ -88,7 +95,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 #pragma region Mouse_Input
 
-	if (!(m_iPhaseState & PHASE_CHAIR))
+	if (!(m_iPhaseState & PHASE_CHAIR) && !(m_iPhaseState & PHASE_START))
 	{	 // 의자 관련 
 		Mouse_section(fTimeDelta);
 #pragma endregion 
@@ -98,6 +105,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 #pragma endregion 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_iPreState == STATE::STATE_DEAD && m_iState != STATE::STATE_DEAD)	
+	{
+		//m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));		
+		_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일		
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치				
+		m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);	
+
+	}
+
 }
 
 void CPlayer::Mouse_section(_float fTimeDelta)
@@ -189,34 +206,79 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_iPhaseState &= ~PHASE_PARRY;
 	}
 
-	else if (m_pGameInstance->isMouseEnter(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+
+	// 우클릭을 1초이상 누르면 
+	else if (m_pGameInstance->isMousePressed(DIM_RB) && m_iState != STATE_CLAW_CHARGE_START && m_iState != STATE_CLAW_CHARGE_LOOP)
 	{
-		if (m_iState == STATE_ATTACK_LONG_CLAW_01
-			&& (m_pModel->Get_CurrentAnmationTrackPosition() > 45.f))
+		m_fChrageTime += fTimeDelta;
+
+		if (m_fChrageTime > 0.2f)
 		{
-			m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);		
-			m_iState = STATE_ATTACK_LONG_CLAW_02;	
+			if (m_iState != STATE_CLAW_CHARGE_START)
+			{
+				m_iState = STATE_CLAW_CHARGE_START;
+				m_pStateMgr->Get_VecState().at(52)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iPhaseState |= PHASE_FIGHT;
+			}
+
+		}
+	}
+
+
+	else if (m_pGameInstance->isMouseRelease(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+	{
+
+		if (m_iState != STATE_CLAW_CHARGE_START && m_iState != STATE_CLAW_CHARGE_LOOP && m_iState != STATE_CLAW_CHARGE_FULL_ATTACK)
+		{
+			if (m_iState == STATE_ATTACK_LONG_CLAW_01
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 45.f))
+			{
+				m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_LONG_CLAW_02;
+			}
+
+			else if (m_iState != STATE_ATTACK_LONG_CLAW_01
+				&& m_iState != STATE_ATTACK_LONG_CLAW_02)
+			{
+				m_pStateMgr->Get_VecState().at(5)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_ATTACK_LONG_CLAW_01;
+			}
+
+			m_iPhaseState |= PHASE_FIGHT;
+
+
+			/* 페이즈 상태 해제 */
+			m_iPhaseState &= ~PHASE_DASH;
+			m_iPhaseState &= ~PHASE_PARRY;
 		}
 
-		else if (m_iState != STATE_ATTACK_LONG_CLAW_01
-			&& m_iState != STATE_ATTACK_LONG_CLAW_02)
+		else
 		{
-			m_pStateMgr->Get_VecState().at(5)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_ATTACK_LONG_CLAW_01;
+			m_iState = STATE_CLAW_CHARGE_FULL_ATTACK;
+			m_fChrageTime = 0.f;
 		}
+	}
 
-		m_iPhaseState |= PHASE_FIGHT;
 
 
-		/* 페이즈 상태 해제 */
-		m_iPhaseState &= ~PHASE_DASH;
-		m_iPhaseState &= ~PHASE_PARRY;
+	if (m_iState == STATE_CLAW_CHARGE_LOOP)
+	{
+		m_pStateMgr->Get_VecState().at(53)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 	}
 
 }
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+#pragma region 죽음 
+	if (m_pGameInstance->isKeyEnter(DIK_K)	
+		&& m_iState != STATE_DEAD)	
+	{
+		m_iPhaseState |= CPlayer::PHASE_DEAD;	
+		m_iState = STATE_DEAD;	
+	}
+#pragma endregion 
+
 #pragma region 포션 힐 
 	if (m_pGameInstance->isKeyEnter(DIK_Q)
 		&& m_iState != STATE_HEAL)
@@ -233,7 +295,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& m_iState != STATE_ATTACK_LONG_CLAW_01
 		&& m_iState != STATE_ATTACK_LONG_CLAW_02
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))	
 	{
 		if ((m_iState == STATE_PARRY_L ||
 			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP))))
@@ -274,7 +337,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 		&& !(m_iPhaseState & PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))	
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -365,7 +429,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& (!(m_iPhaseState & CPlayer::PHASE_HITTED))
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL))
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
@@ -699,7 +764,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	/* 왼손 무기를 만든다. */
 	CLeftWeapon::WEAPON_DESC		LeftWeaponDesc{};
 
-	RightWeaponDesc.pParent = this;
+	LeftWeaponDesc.pParent = this;	
 	LeftWeaponDesc.pParentState = &m_iState;
 	LeftWeaponDesc.pParentPhaseState = &m_iPhaseState;
 	LeftWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
@@ -717,9 +782,10 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	/* 오른쪽 손톱 무기를 만든다. */
 	CClawWeapon::WEAPON_DESC		RightClawWeaponDesc{};
 
-	RightWeaponDesc.pParent = this;
+	RightClawWeaponDesc.pParent = this;	
 	RightClawWeaponDesc.pParentModel = m_pModel;
 	RightClawWeaponDesc.pParentState = &m_iState;
+	RightClawWeaponDesc.pParentPhaseState = &m_iPhaseState;	
 	RightClawWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
 	RightClawWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	RightClawWeaponDesc.fSpeedPerSec = 0.f;
@@ -817,6 +883,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			m_iPhaseState &= ~CPlayer::PHASE_IDLE;     // 3월 19일
 			m_iPhaseState &= ~CPlayer::PHASE_DASH;     // 3월 19일
 			m_iPhaseState &= ~CPlayer::PHASE_EXECUTION;	  // 3월 19일 
+			m_iPhaseState &= ~CPlayer::PHASE_HEAL;	
 
 
 			m_iPhaseState |= CPlayer::PHASE_HITTED;    // 3월 19일 

@@ -44,24 +44,29 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
 public:
 	CGameObject* Find_LockOnTarget();
 	void				LockOnCameraTurn(_float fTimeDelta);
 	void				ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _float _fXaxisMoveAmount, _float _fZaxisMoveAmount);
 	void				ZoomIn() { m_bZoomIn = true; }
-	void                ZoomSpeed() {}
 	void				ZoomOut() { m_bZoomOut = true; }
-	void				ResetZoomInCameraPos();
-	bool				ResetZoomOutCameraPos();
+	void				ResetZoomInCameraPos(_float _fZoomInSpeed);
+	void 				ResetZoomOutCameraPos(_float _fZoomOutSpeed);
+
+
 	_vector			    Camera_Shake(float deltaTime, XMVECTOR& cameraPosition);
 
 	bool                Camera_Cut_Scene_Activate(_wstring _CutSceneName);
 
 	void				Set_Camera_Cut_Scene_OnOff(bool _bOnOff) { m_bCamera_Cut_Scene_OnOff = _bOnOff; }
 	void				Set_Camera_GetBackCamPos(bool _bOnOff) { m_bGetBackCamPos = _bOnOff; }
-	void				Set_Camera_ZoomSpeed(_float _fSpeed) { m_fZoomSpeed = _fSpeed; }
+	void				Set_Camera_ZoomInSpeed(_float _fSpeed) { m_fZoomInSpeed = _fSpeed; }
+	void				Set_Camera_ZoomOutSpeed(_float _fSpeed) { m_fZoomOutSpeed = _fSpeed; }
+	void                Set_Camera_EventOnOff(_float _bEventOnOff) { m_bCameraEventOnOff = _bEventOnOff; }
+	void			    Set_Camera_LerpPlayerHeadPos(_vector _vPos) { XMStoreFloat4(&m_fLerpPlayerHeadPos, _vPos); }
 
-
+	_float4				Get_FirstCamDir() { return m_fCamFirstDir; }
 private:
 	_vector CatmullRom_Position_Lerp(vector<Camera_Event> CameraEvent, _float _fRatio);
 	void   CutSceneEndLerp(_matrix pWorldMatrix);
@@ -91,8 +96,8 @@ private:
 	CGameObject* m_pTargetMonster = { nullptr };
 
 
-	_vector				m_vPlayerHeadPos = {};
-	_vector			    m_vLerpPlayerHeadPos = {};
+	_float4				m_fPlayerHeadPos = {};
+	_float4			    m_fLerpPlayerHeadPos = {};
 
 
 	_bool				m_bStop = { false };
@@ -103,7 +108,9 @@ private:
 	_bool				m_bShakeOnOff = { false };
 	_bool				m_bZoomIn = { false };
 	_bool				m_bZoomOut = { false };
-	_float				m_fZoomSpeed = { 1.f };
+	_float				m_fZoomInSpeed = { 1.f };
+	_float				m_fZoomOutSpeed = { 1.f };
+	_bool				m_bCameraEventOnOff = { false };
 	/*  ---------------  */
 
 	/* 카메라 툴 이벤트 관련*/
@@ -123,7 +130,10 @@ private:
 
 	/* ----------------  */
 
+	_float4				m_fCamFirstDir = {};
 
+
+	list<class CGameObject*>* m_plistMonster;
 	map<_float, CGameObject*>							m_maptMonsterDistance;
 
 	vector<Camera_Event>								m_vecCamera_Event;

@@ -194,6 +194,9 @@
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
+    <ClInclude Include="..\public\ClawCommon_ChargeFull.h" />
+    <ClInclude Include="..\public\ClawCommon_ChargeLoop.h" />
+    <ClInclude Include="..\public\ClawCommon_ChargeStart.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
     <ClInclude Include="..\Public\DeadBranch.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
@@ -394,6 +397,9 @@
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />
+    <ClCompile Include="..\private\ClawCommon_ChargeFull.cpp" />
+    <ClCompile Include="..\private\ClawCommon_ChargeLoop.cpp" />
+    <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
     <ClCompile Include="..\Private\DeadBranch.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />

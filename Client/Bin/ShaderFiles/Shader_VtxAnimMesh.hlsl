@@ -18,6 +18,7 @@ float     g_DissolveAmount;
 float     g_EdgeWidth = 1.f; 
 float4    g_EdgeColor = { 0.f, 0.f, 1.f, 1.f };
 float     g_Time;
+float     g_TimeStart;
 
 matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
@@ -422,6 +423,61 @@ PS_OUT PS_MONSTER_DISSOLVE(PS_IN In)
 }
 
 
+
+PS_OUT PS_PLAYER_DISSOLVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 g_LineColor = float4(0.25f, 0.8f, 0.25f, 1.0f);
+    
+    //float threshold = 0.5f; // 0.0 ~ 1.0  
+    float border = 0.02f; // 테두리 두께  
+    
+    if (vMtrlDiffuse.a < 0.1f)  
+        discard;
+    
+    float2 noiseUV = In.vTexcoord;
+    
+    float noiseValue = g_NoiseTexture.Sample(LinearSampler_Clamp, noiseUV).r;
+  
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    
+   
+    if (noiseValue < g_DissolveAmount)
+    {
+        clip(-1);
+    }
+    
+
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    
+    if (g_TimeStart > 1.f)
+    {
+        if (noiseValue <= g_DissolveAmount + border)
+        {
+            float4 finalColor = g_LineColor;
+            Out.vDiffuse = finalColor;
+            Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+            Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+        
+            return Out;
+        }
+    }
+    
+    return Out;
+}
+
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass
@@ -491,5 +547,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MONSTER_DISSOLVE();
+    }
+
+    pass PLAYER_DISSOLVE // 6
+    {
+        SetRasterizerState(RS_Default); 
+        SetDepthStencilState(DSS_Default, 0);   
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);  
+
+        VertexShader = compile vs_5_0 VS_MAIN();    
+        GeometryShader = NULL;  
+        PixelShader = compile ps_5_0 PS_PLAYER_DISSOLVE();  
     }
 }

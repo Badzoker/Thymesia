@@ -80,10 +80,7 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
-
-
+ 
 #pragma region 이벤트 관련 작업
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1
@@ -164,9 +161,11 @@ void CRightWeapon::Update(_float fTimeDelta)
     }
 #pragma endregion  
 
+    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
+
     if (m_iPreParentState != *m_pParentState)
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        
         m_fHitStopTime = 0.f;
         m_bCollisionOn = true;
     }
@@ -175,16 +174,24 @@ void CRightWeapon::Update(_float fTimeDelta)
     {
         Hit_Slow();
     }
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
+
 }
 
 void CRightWeapon::Late_Update(_float fTimeDelta)
 {
 
-    if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
-        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02
-        && !(*m_pParentPhaseState & CPlayer::PHASE_CHAIR))
-    {
-        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01   
+        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02    
+        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START  
+        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP   
+        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK    
+        && !(*m_pParentPhaseState & CPlayer::PHASE_CHAIR)       
+        && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD))                   
+    {       
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);     
     }
 
     m_iPreParentState = *m_pParentState;
@@ -246,15 +253,15 @@ HRESULT CRightWeapon::Hit_Slow()
 
     if (m_fHitStopTime < 0.15f)
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
-        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);  
+        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f); 
     }
     else
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        m_bHitStopOnOff = false;
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
+        m_bHitStopOnOff = false;    
     }
-    m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //     
+    m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //         
 
     return S_OK;
 }

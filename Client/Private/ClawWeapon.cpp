@@ -34,6 +34,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
+    m_pParentPhsaeState = pDesc->pParentPhaseState; 
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -74,21 +75,17 @@ void CClawWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-    {
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
-    }
-
-
+ 
 #pragma region 이벤트 관련 작업
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01
-        || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
+        || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02
+        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_START
+        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_LOOP
+        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK)
     {
-        if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
-        {
-
+    
             for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
             {
                 if (iter.isPlay == false)
@@ -119,6 +116,11 @@ void CClawWeapon::Update(_float fTimeDelta)
                             m_pGameInstance->Set_MotionBlur(true);
                             m_pCamera->ZoomOut();
                         }
+
+                        if (!strcmp(iter.szName, "Camera_Zoom_In")) 
+                        {
+                            m_pCamera->ZoomIn();    
+                        }   
                     }
 
                     else
@@ -131,7 +133,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                         {
 
                             /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
-                            m_pCamera->ResetZoomOutCameraPos();
+                            m_pCamera->ResetZoomOutCameraPos(1.f);
                             m_pGameInstance->Set_MotionBlur(false);
 
                         }
@@ -197,15 +199,17 @@ void CClawWeapon::Update(_float fTimeDelta)
 #pragma endregion
                 }
             }
-        }
     }
 
-    else
-    {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pCamera->ResetZoomOutCameraPos();
-        //m_pCamera->ResetZoomOutCameraPos(); 
-    }
+    else if (*m_pParentState != CPlayer::STATE_PARRY_DEFLECT_L_UP  
+         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_L   
+         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R   
+         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R_UP     
+         && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)   
+         {
+             m_pGameInstance->Sub_Actor_Scene(m_pActor);
+             m_pCamera->ResetZoomOutCameraPos(1.f);
+         }
 #pragma endregion  
 
 
@@ -221,6 +225,11 @@ void CClawWeapon::Update(_float fTimeDelta)
         Hit_Slow();
     }
 
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    {
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
+    }
 }
 
 void CClawWeapon::Late_Update(_float fTimeDelta)

@@ -35,7 +35,10 @@ public:
 	_bool isKeyEnter(_int _iKey);	
 	_bool isAnyEnter();	// 아무 키를 눌렀을 때 반응
 	_bool isMouseEnter(_uint iKey);	
-	_bool isMouseRelease();	 
+	_bool isMousePressed(_uint _iKey);
+	_bool isMouseRelease(_uint _iKey);
+
+
 	
 private:
 	deque<MOUSEKEYSTATE> mouseBuffer;  // MouseEvent 타입을 저장하는 queue

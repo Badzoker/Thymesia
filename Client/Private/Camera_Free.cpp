@@ -92,9 +92,9 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	map<const _wstring, class CLayer*>* mapLayer = m_pGameInstance->Get_Layers();
-	
-	auto& LevelLayer = mapLayer[pDesc->iCurLevel];	/* 애가 LEVEL_TUTORIAL의 Layer 집합 이고 */
+	map<const _wstring, class CLayer*>* mapLayer = m_pGameInstance->Get_Layers();	
+	auto& LevelLayer = mapLayer[pDesc->iCurLevel];	/* 애가 LEVEL_TUTORIAL의 Layer 집합 이고 */	
+
 
 	CLayer* pLayer = LevelLayer.find(TEXT("Layer_Player"))->second;
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pLayer->Get_GameObject_List().front());
@@ -105,13 +105,24 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 	_fvector CameraPos =
 	{
-		 XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
-		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.5f, // 머리 높이 보정
-		 XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f,
+		 XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),	
+		 XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.5f, // 머리 높이 보정				
+		 XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 		 1.0f
 	};
 
+	_matrix RotationMatrix = XMMatrixRotationAxis(XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT)), XMConvertToRadians(30.f));
+	_vector CamDir = XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+	CamDir = XMVector3TransformNormal(CamDir, RotationMatrix);
+
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
+
+	/* 해당 CamDir 저장해 놓기  신 마다 */
+	XMStoreFloat4(&m_fCamFirstDir, CamDir);
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, CameraPos);
+
+	XMStoreFloat4(&m_fLerpPlayerHeadPos, CameraPos); // 이게 Look을 바꿔버리네 이걸 수정해야것다.	
 
 	/* 카메라 툴 내용 읽어오기  */
 	vector<Camera_Event> test;
@@ -162,7 +173,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_bDebugCameraOnOff = !m_bDebugCameraOnOff;
 	}
 
-	if (!m_bDebugCameraOnOff)
+	if (!m_bDebugCameraOnOff && !(m_pPlayer->Get_PhaseState() & CPlayer::PHASE_CHAIR))
 	{
 #pragma region 카메라 움직임 코드 
 
@@ -210,26 +221,27 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 			_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
 			// 플레이어의 충돌체를 기준으로할까.	
-			m_vPlayerHeadPos = XMVectorSet(
+
+			XMStoreFloat4(&m_fPlayerHeadPos, XMVectorSet(
 				XMVectorGetX(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 				XMVectorGetY(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)) + 1.f, // 머리 높이 보정	 // 3월 19일 수정
 				XMVectorGetZ(m_pPlayerTransformCom->Get_State(CTransform::STATE_POSITION)),
 				1.0f
-			);
+			));
 
 			//if(m_bCamera_Cut_Scene_OnOff == true)
 			if (m_bGetBackCamPos)
 			{
-				m_vLerpPlayerHeadPos = XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_vPlayerHeadPos, m_fLerpTime), 1.f);	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
+				XMStoreFloat4(&m_fLerpPlayerHeadPos, XMVectorSetW(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMLoadFloat4(&m_fPlayerHeadPos), m_fLerpTime), 1.f));	// 자기 자신을 보간하므로 계속해서 값이 증가하거나 감소해서 변함
 				m_bGetBackCamPos = false;
 			}
 			else
-				m_vLerpPlayerHeadPos = XMVectorLerp(m_vLerpPlayerHeadPos, m_vPlayerHeadPos, m_fLerpTime);
+				XMStoreFloat4(&m_fLerpPlayerHeadPos, XMVectorLerp(XMLoadFloat4(&m_fLerpPlayerHeadPos), XMLoadFloat4(&m_fPlayerHeadPos), m_fLerpTime));
 
 			// 카메라 이동 처리
 			_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			_vector vNewCamPos = m_vPlayerHeadPos - vCamDir * m_fCurCamDistance;
+			_vector vNewCamPos = XMLoadFloat4(&m_fPlayerHeadPos) - vCamDir * m_fCurCamDistance;
 
 			_vector vLerpCamPos = XMVectorLerp(vCamPosition, vNewCamPos, m_fLerpTime);
 
@@ -267,7 +279,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 						// X축(Y축 기준 회전)
 						if (MouseMoveX != 0)
 						{
-							m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+							m_pTransformCom->Orbit_Move(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMoveX * fTimeDelta * m_fMouseSensor, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 						}
 
 						// Y축(Right 축 기준 회전)
@@ -275,17 +287,17 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 						{
 
 							if (AngleDegrees > 40.f && OppositeAngleDegrees > 80.f)
-								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 
 
 							else if (AngleDegrees < 40.f && MouseMoveY < 0.f)
 							{
-								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 							}
 
 							else if (OppositeAngleDegrees < 80.f && MouseMoveY > 0.f)
 							{
-								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, m_vLerpPlayerHeadPos);
+								m_pTransformCom->Orbit_Move(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMoveY * fTimeDelta * m_fMouseSensor, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 							}
 						}
 					}
@@ -360,7 +372,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 			/* ===================================================================== */
 
 			// Look 벡터 갱신 (플레이어 머리 위치를 바라보도록 설정)
-			_vector CamDir = XMVectorSetW(XMVector3Normalize(m_vLerpPlayerHeadPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
+			_vector CamDir = XMVectorSetW(XMVector3Normalize(XMLoadFloat4(&m_fLerpPlayerHeadPos) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f);
 			//m_pTransformCom->Set_State(CTransform::STATE_LOOK, CamDir);
 
 			// Right 벡터 갱신 (Up × Look)
@@ -393,9 +405,9 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bZoomIn)
 		{
 			if (m_fCamCloseLimitDistance < m_fCurCamDistance)
-				m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomSpeed;
+				m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomInSpeed;
 
-			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+			_vector vNewCamPos = XMLoadFloat4(&m_fLerpPlayerHeadPos) - vCamDir * m_fCurCamDistance;
 
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
 
@@ -405,16 +417,18 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bZoomOut)
 		{
 			if (m_fCamFarLimitDistance > m_fCurCamDistance)
-				m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomSpeed;
+				m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomOutSpeed;
 
-			_vector vNewCamPos = m_vLerpPlayerHeadPos - vCamDir * m_fCurCamDistance;
+			_vector vNewCamPos = XMLoadFloat4(&m_fLerpPlayerHeadPos) - vCamDir * m_fCurCamDistance;
 
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCamPos);
 
 		}
 
 
-		m_fZoomSpeed = 1.f;
+
+		m_fZoomInSpeed = 1.f;
+		m_fZoomOutSpeed = 1.f;
 		m_bShakeOnOff = false;
 		m_bZoomIn = false;
 		m_bZoomOut = false;
@@ -473,15 +487,13 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 		return Pair.begin()->second;
 	}
 
-
-
 	else if (m_maptMonsterDistance.size() == 0)
 	{
 		m_pPlayer->Set_Lockon(false);
 		return nullptr;
 	}
 
-	return nullptr;
+	return nullptr;		
 }
 
 void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)
@@ -517,7 +529,7 @@ void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)
 		Radian = -Radian;
 	}
 
-	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 3.f, m_vLerpPlayerHeadPos);
+	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 3.f, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 
 }
 
@@ -530,19 +542,20 @@ void CCamera_Free::ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _
 	m_fZaxisShakeSpeed = _fZaxisMoveAmount;
 }
 
-void CCamera_Free::ResetZoomInCameraPos()
+void CCamera_Free::ResetZoomInCameraPos(_float _fZoomInSpeed)
 {
 	const float fEpsilon = 0.1f; // 허용 오차 범위	
 
 
- 	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
+	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
 	{
 		if (m_fCamDistance > m_fCurCamDistance)
-			m_fCurCamDistance += m_fTimeDelta * 10.f;
+			m_fCurCamDistance += m_fTimeDelta * 10.f * _fZoomInSpeed;
 	}
+
 }
 
-bool CCamera_Free::ResetZoomOutCameraPos()
+void CCamera_Free::ResetZoomOutCameraPos(_float _fZoomOutSpeed)
 {
 	const float fEpsilon = 0.1f; // 허용 오차 범위		
 
@@ -550,10 +563,8 @@ bool CCamera_Free::ResetZoomOutCameraPos()
 	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
 	{
 		if (m_fCamDistance < m_fCurCamDistance)
-			m_fCurCamDistance -= m_fTimeDelta * 5.f;
+			m_fCurCamDistance -= m_fTimeDelta * _fZoomOutSpeed;
 	}
-
-	return true;
 }
 
 _vector CCamera_Free::Camera_Shake(float deltaTime, XMVECTOR& cameraPosition)
