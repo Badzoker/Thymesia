@@ -71,7 +71,7 @@ HRESULT CSky::Ready_Components(void* _pArg)
 	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Shader_VtxCube"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxCube"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

@@ -47,7 +47,6 @@ struct PS_IN
 struct PS_OUT
 {
 	float4			vColor : SV_TARGET0;
-    float4          vGlow : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -77,7 +76,6 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vColor.rgb = FlareColor.rgb * vGreenColor * fDistortionStrength;
     Out.vColor.a = FlareColor.a * 0.5f;
 
-    Out.vGlow = g_fAlphaValue;
    
     return Out;
 }

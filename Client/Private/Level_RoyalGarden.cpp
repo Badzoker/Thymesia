@@ -331,6 +331,13 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
+	_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡  // 3¿ù 19ÀÏ	
+	//_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC ¿· À§Ä¡
+	//_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡	
+	//_float4 vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // ¼­Ä¿½º¸Ê ½ÃÀÛÀ§Ä¨
+
+	Desc._fPosition = vTestPosition;
+
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Player"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 		return E_FAIL;	
 
