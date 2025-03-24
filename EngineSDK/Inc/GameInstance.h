@@ -270,6 +270,12 @@ public:
 	deque<class CMonster*>& Get_Check_Monsters();
 #pragma endregion
 
+#pragma region PROJECTILE_MANAGER
+	HRESULT Add_Projectile(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, PROJECTILE_CATEGORY _eCategory, void* _pArg);
+	HRESULT Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos);
+	HRESULT Fire_Multi_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount, _bool bReverse = false);
+#pragma endregion
+
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
 
@@ -296,7 +302,7 @@ private:
 	class CTriggerManager*				m_pTrigger_Manager	  = { nullptr };
 	class CMonster_Manager*				m_pMonster_Manager	  = { nullptr };
 	//범승 나중에 추가예정.(투사체 매니저)
-	//class CProjectile_Manager*		m_pProjectile_Manager = { nullptr };
+	class CProjectile_Manager*			m_pProjectile_Manager = { nullptr };
 public:
 
 public:

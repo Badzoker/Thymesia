@@ -28,8 +28,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_PartObjects(void* pArg);
 public:
 	void PatternCreate() override;
 	void Active() override;

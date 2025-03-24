@@ -17,16 +17,20 @@ HRESULT CProjectile::Initialize_Prototype()
 
 HRESULT CProjectile::Initialize(void* pArg)
 {
+	strcpy_s(m_szName, "MONSTER");
+	m_fDamage = 33.f;
+	m_fSpeed = 45.f;
+	m_fDelete_Time = 5.f;
+
 	PROJECTILE_DESC* pDesc = static_cast<PROJECTILE_DESC*>(pArg);
 
-	m_fDamage = pDesc->fDamage;
-	m_fDelete_Time = pDesc->fDelete_Time;
-	m_fSpeed = pDesc->fSpeedPerSec;
+	pDesc->fSpeedPerSec = m_fSpeed;
+	pDesc->fScaling = _float3{ 0.01f,0.01f,0.01f };
+	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	m_pTransformCom->Rotation(90.f, 0.f, 90.f);
 
 	return S_OK;
 }
@@ -43,10 +47,8 @@ void CProjectile::Priority_Update(_float fTimeDelta)
 
 void CProjectile::Update(_float fTimeDelta)
 {
-	if (m_bIsFire)
-		Fire_OneShoot(XMLoadFloat4(&m_vStartPos), XMLoadFloat4(&m_vEndPos), fTimeDelta);
-	else if (m_bMultiFire)
-		Fire_MultiShoot(XMLoadFloat4(&m_vStartPos), XMLoadFloat4(&m_vEndPos), fTimeDelta);
+	m_pTransformCom->Go_Straight(fTimeDelta);
+
 }
 
 void CProjectile::Late_Update(_float fTimeDelta)
@@ -64,24 +66,9 @@ void CProjectile::Reset_Projectile()
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartPos));
 }
 
-void CProjectile::Set_Target(_fvector vStartPos, _fvector vEndPos)
+void CProjectile::Set_Target(_vector vDir)
 {
-	XMStoreFloat4(&m_vStartPos, vStartPos);
-	XMStoreFloat4(&m_vEndPos, vEndPos);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vStartPos);
-	_vector vLook = XMVector3Normalize(vEndPos - vStartPos);
-	m_pTransformCom->Look(vLook);
-
-}
-
-void CProjectile::Fire_OneShoot(_fvector vStartPos, _fvector vEndPos, _float _fTimeDelta)
-{
-	m_pTransformCom->Go_Straight_NoNavi(_fTimeDelta);
-}
-
-void CProjectile::Fire_MultiShoot(_fvector vStartPos, _fvector vEndPos, _float _fTimeDelta)
-{
+	m_pTransformCom->Look(vDir);
 }
 
 void CProjectile::Free()

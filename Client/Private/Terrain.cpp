@@ -26,8 +26,6 @@ HRESULT CTerrain::Initialize_Prototype()
 HRESULT CTerrain::Initialize(void* pArg)
 {
 
-
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -37,7 +35,7 @@ HRESULT CTerrain::Initialize(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.0f, 0.0f, -150.0f, 1.0f));
 
 	return S_OK;
-}
+}	
 
 void CTerrain::Priority_Update(_float fTimeDelta)
 {

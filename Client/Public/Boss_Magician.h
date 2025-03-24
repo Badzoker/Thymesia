@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "ContainerObject.h"
+#include "Monster.h"
 #include "State_Machine.h"
 
 
@@ -13,7 +13,7 @@ END
 
 BEGIN(Client)
 
-class CBoss_Magician final : public CContainerObject
+class CBoss_Magician final : public CMonster
 {
 public:
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
@@ -28,64 +28,33 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+public:
+	void PatternCreate() override;
+	void Active() override;
+	//void Return_To_Spawn() override;
+	void Stun() override;
+public:
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_PartObjects(void* pArg);
 
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
-public:
-	void RootAnimation();
-	void CalCulate_Distance();
-	void Culling();
-
-public:
-	void PatternCreate();
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();
-	void RotateDegree_To_Player();
-	void Rotation_To_Player();
-	void Recovery_HP();
 
 private:
-	_float4                          m_vPlayerPos = {};
-	_float4                          m_vSpawnPoint = {};
-
-	_bool                            m_bBossActive = {};
 	_bool                            m_bCardActive = {};
-	_bool                            m_bPatternProgress = {};
-	_bool                            m_bCan_Move_Anim = {};
-	_bool                            m_bNeed_Rotation = {};
-	_bool                            m_IsStun = false;
-	_bool                            m_bDead = {};
-	_bool                            m_bCulling = {};
+	_bool                            m_bExecution_Progress = {};
+	_bool                            m_IsDissolveOn = {};
+	_bool                            m_IsDissolveOff = {};
+	_bool                            m_bCanDissapear = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint                            m_iPhase = { PHASE_END };
 
-
-	_float                           m_fTimeDelta = {};
-	_float                           m_fDelayTime = {};
-	_float                           m_fCoolTime = {};
-	_float                           m_fSpecial_Skill_CoolTime = {};
-	_float                           m_fDistance = {};
-	_float                           m_fLookTime = {};
-	_float                           m_fRotateDegree = {};
-	_float                           m_fRotateSpeed = {};
-
-	_float                           m_fBossMaxHP = {};
-	_float                           m_fShieldHP = {};
-	_float                           m_fBossCurHP = {};
-	_float                           m_fRecoveryTime = {};
-	_bool                            m_bCanRecovery = {};
-
 private:
-	const _float4x4* m_pRootMatrix = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
 	CState_Machine<CBoss_Magician>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
-private:
-	class CGameObject* m_pPlayer = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
@@ -95,19 +64,6 @@ public:
 	static CBoss_Magician* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-
-
-	class Idle_State : public CStates<CBoss_Magician>
-	{
-	public:
-		Idle_State() = default;
-		virtual ~Idle_State() = default;
-	public:
-		// CBoss_State을(를) 통해 상속됨
-		void State_Enter(CBoss_Magician* pObject) override;
-		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
-		void State_Exit(CBoss_Magician* pObject) override;
-	};
 
 	class Intro_State : public CStates<CBoss_Magician>
 	{
@@ -121,11 +77,11 @@ public:
 		void State_Exit(CBoss_Magician* pObject) override;
 	};
 
-	class Shoot_State : public CStates<CBoss_Magician>
+	class Idle_State : public CStates<CBoss_Magician>
 	{
 	public:
-		Shoot_State() = default;
-		virtual ~Shoot_State() = default;
+		Idle_State() = default;
+		virtual ~Idle_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
 		void State_Enter(CBoss_Magician* pObject) override;
@@ -133,6 +89,145 @@ public:
 		void State_Exit(CBoss_Magician* pObject) override;
 	};
 
+	class Dissappear_Idle_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Dissappear_Idle_State() = default;
+		virtual ~Dissappear_Idle_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Move_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Move_State() = default;
+		virtual ~Move_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_uint iRandomMove = {};
+	};
+
+	class Dissappear_Move_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Dissappear_Move_State(_uint iDissappear_Index, _bool bShootCard = false);
+		virtual ~Dissappear_Move_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_bShootCard = {};
+		_uint m_iDissappear_Index = {};
+		_uint iRandomMove = {};
+	};
+
+	class Stun_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Stun_State() = default;
+		virtual ~Stun_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+
+	class Shoot_ComboA : public CStates<CBoss_Magician>
+	{
+	public:
+		Shoot_ComboA() = default;
+		virtual ~Shoot_ComboA() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Shoot_ComboB : public CStates<CBoss_Magician>
+	{
+	public:
+		Shoot_ComboB() = default;
+		virtual ~Shoot_ComboB() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool IsFired = {};
+	};
+
+
+	class Attack_ComboA : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_ComboA() = default;
+		virtual ~Attack_ComboA() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Attack_ComboB : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_ComboB() = default;
+		virtual ~Attack_ComboB() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Attack_ComboC : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_ComboC() = default;
+		virtual ~Attack_ComboC() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Hit_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Hit_State() = default;
+		virtual ~Hit_State() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class ExeCution_State : public CStates<CBoss_Magician>
+	{
+	public:
+		ExeCution_State() = default;
+		virtual ~ExeCution_State() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
 
 };
 

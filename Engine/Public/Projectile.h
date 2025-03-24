@@ -28,20 +28,12 @@ public:
 	virtual HRESULT Render() override;
 public:
 	_bool Get_IsFire() { return m_bIsFire; }
-	void Set_Info(_fvector vStartPos, _fvector vEndPos, _fvector vDir)
-	{
-		XMStoreFloat4(&m_vDir, vDir);
-		XMStoreFloat4(&m_vEndPos, vEndPos);
-		XMStoreFloat4(&m_vStartPos, vStartPos);
-	}
 	void Set_IsFire(_bool bCheck) { m_bIsFire = bCheck; }
 	void Set_IsMultiFire(_bool bCheck) { m_bMultiFire = bCheck; }
 
 	void Reset_Projectile();
 public:
-	void Set_Target(_fvector vStartPos, _fvector vEndPos);
-	void Fire_OneShoot(_fvector vStartPos, _fvector vEndPos, _float _fTimeDelta);
-	void Fire_MultiShoot(_fvector vStartPos, _fvector vEndPos, _float _fTimeDelta);
+	void Set_Target(_vector vDir);
 
 protected:
 	_bool m_bIsFire = { false };

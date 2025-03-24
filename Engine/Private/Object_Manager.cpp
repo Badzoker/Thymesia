@@ -81,7 +81,7 @@ HRESULT CObject_Manager::Add_GameObject_To_Layer(_uint iPrototypeLevelIndex, con
 		if (pName != nullptr)
 			pGameObject->Set_Name(pName);
 
-		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
+			m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
 	}
 	else /* 사본객체를 추가할 레이어가 이미 있었다. 그러니까 그 레이어에 그냥 넣으면 되지./ */
 	{

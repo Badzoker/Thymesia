@@ -381,40 +381,40 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 		{
 		case BOSS_VARG:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
 				return E_FAIL;
 			break;
 		default:
 			break;
 		case ELITE_JOKER:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 		case ELITE_HARMORLV2:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 
 		case NORMAL_VILLAGE_M0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_M1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		}
@@ -424,7 +424,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 
 HRESULT CLevel_RoyalGarden::Ready_Layer_NPC(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_ROYALGARDEN, pLayerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;

@@ -33,8 +33,8 @@ public:
 	void Stun() override;
 
 public:
-	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_PartObjects(void* pArg);
 
 public:
 	void Near_Pattern_Create();

@@ -676,6 +676,12 @@
     <Filter Include="02.GameObject\InteractionObject\DeadBranch">
       <UniqueIdentifier>{791858d7-689b-4770-8527-cf335078d923}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile">
+      <UniqueIdentifier>{b1dd54f4-ce4a-49bf-928b-6247f2e7489e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile\Card">
+      <UniqueIdentifier>{2e71b6b3-e05c-49a6-94a1-e447738c9d1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1269,6 +1275,9 @@
     <ClInclude Include="..\Public\DeadBranch.h">
       <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Projectile_Card.h">
+      <Filter>02.GameObject\Monster\95. Projectile\Card</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1852,6 +1861,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DeadBranch.cpp">
       <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_Card.cpp">
+      <Filter>02.GameObject\Monster\95. Projectile\Card</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

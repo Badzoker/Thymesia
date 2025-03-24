@@ -60,6 +60,12 @@ void CWeapon_Dagger::Priority_Update(_float fTimeDelta)
 		m_fDeadTimer += fTimeDelta * 0.5f;
 		m_fFinishTime += fTimeDelta * 0.5f;
 	}
+	if (m_iPreAnimIndex != m_pParentModelCom->Get_Current_Animation_Index())
+	{
+		m_bColliderOff = false;
+		m_iPreAnimIndex = m_pParentModelCom->Get_Current_Animation_Index();
+	}
+
 }
 
 void CWeapon_Dagger::Update(_float fTimeDelta)
@@ -73,7 +79,7 @@ void CWeapon_Dagger::Update(_float fTimeDelta)
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
-	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
 	{
 		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
@@ -139,16 +145,16 @@ HRESULT CWeapon_Dagger::Render()
 HRESULT CWeapon_Dagger::Ready_Components()
 {
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxMesh"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Weapon_Dagger"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Weapon_Dagger"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Texture_Monster_Noise"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
 		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -169,6 +175,10 @@ HRESULT CWeapon_Dagger::Bind_ShaderResources()
 
 void CWeapon_Dagger::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+	if (!strcmp("PLAYER", _pOther->Get_Name()))
+	{
+		m_bColliderOff = true;
+	}
 }
 
 void CWeapon_Dagger::OnCollision(CGameObject* _pOther, PxContactPair _information)

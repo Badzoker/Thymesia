@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects();
 public:
 	void CalCulate_Distance();

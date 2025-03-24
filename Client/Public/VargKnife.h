@@ -46,7 +46,8 @@ private:
 
 private:
 	_float			   m_fTimeDelta = { 0.f };
-
+	_bool              m_bColliderOff = {};
+	_uint			   m_iPreAnimIndex = -1;
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

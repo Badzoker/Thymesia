@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -15,6 +16,8 @@ class CBody_Magician final : public CPartObject
 public:
 	struct BODY_MAGICIAN_DESC : public CPartObject::PARTOBJECT_DESC
 	{
+		_bool* IsDissolveOn = {};
+		_bool* IsDissolveOff = {};
 	};
 
 private:
@@ -34,9 +37,17 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 private:
-	_uint   m_iPassNum = {};
-
+	_bool* m_IsDissolveOn = {};
+	_bool* m_IsDissolveOff = {};
+	_bool* m_bDead = {};
+private:
+	_uint m_iPassNum = {};
+	_float m_fDissolveOn_Timer = {};
+	_float m_fDissolveOff_Timer = {};
+	_float m_fDissolveOn_FinishTime = 1.f;
+	_float m_fDissolveOff_FinishTime = 1.f;
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

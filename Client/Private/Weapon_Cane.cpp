@@ -31,7 +31,8 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
-
+    m_IsDissolveOn = pDesc->IsDissolveOn;
+    m_IsDissolveOff = pDesc->IsDissolveOff;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -57,6 +58,32 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
 
 void CWeapon_Cane::Priority_Update(_float fTimeDelta)
 {
+    if (*m_IsDissolveOn)
+    {
+        m_fDissolveOn_Timer += fTimeDelta * 1.5f;
+        m_fDissolveOn_FinishTime += fTimeDelta * 1.5f;
+    }
+    else
+    {
+        m_fDissolveOn_Timer = 0.f;
+        m_fDissolveOn_FinishTime = 0.f;
+    }
+
+    if (*m_IsDissolveOff)
+    {
+        m_fDissolveOff_Timer -= fTimeDelta * 1.5f;
+        m_fDissolveOff_FinishTime -= fTimeDelta * 1.5f;
+        if (m_fDissolveOff_Timer <= 0.f)
+        {
+            m_fDissolveOff_Timer = 0.f;
+            m_fDissolveOff_FinishTime = 0.f;
+        }
+    }
+    else
+    {
+        m_fDissolveOff_Timer = 1.f;
+        m_fDissolveOff_FinishTime = 1.f;
+    }
 }
 
 void CWeapon_Cane::Update(_float fTimeDelta)
@@ -91,7 +118,35 @@ HRESULT CWeapon_Cane::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        if (*m_IsDissolveOn)
+        {
+            m_iPassNum = 9;
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOn_Timer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOn_FinishTime, sizeof(_float))))
+                return E_FAIL;
+        }
+        else if (*m_IsDissolveOff)
+        {
+            m_iPassNum = 9;
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOff_Timer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOff_FinishTime, sizeof(_float))))
+                return E_FAIL;
+        }
+        else
+            m_iPassNum = 0;
+
+
+        m_pShaderCom->Begin(m_iPassNum);
         m_pModelCom->Render(i);
     }
 
@@ -101,15 +156,18 @@ HRESULT CWeapon_Cane::Render()
 HRESULT CWeapon_Cane::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Boss_Magician_Cane"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Cane"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
+        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -171,4 +229,5 @@ void CWeapon_Cane::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pTextureCom);
 }

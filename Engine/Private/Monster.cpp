@@ -18,7 +18,11 @@ void CMonster::Reset_Info()
     m_bMove = true;
     m_bNeed_Rotation = false;
 }
-
+void CMonster::Cheat()
+{
+    m_fMonsterCurHP -= m_fMonsterMaxHP * 0.5f;
+    m_fShieldHP -= m_fMonsterMaxHP * 0.5f;
+}
 HRESULT CMonster::Initialize_Prototype()
 {
     return S_OK;
@@ -54,6 +58,11 @@ void CMonster::Priority_Update(_float fTimeDelta)
         return;
     }
 
+    if (m_pGameInstance->isKeyEnter(DIK_K))
+    {
+        Cheat();
+    }
+
     m_fTimeDelta = fTimeDelta;
     CalCulate_Distance();
 
@@ -61,7 +70,8 @@ void CMonster::Priority_Update(_float fTimeDelta)
     {
         Active();
     }
-    if (m_fSpawn_Distance >= m_fSpawn_Distance_Max && !m_bPatternProgress)
+    //스폰포인트로부터 거리가 멀고 패턴이 진행중이지않으며 돌아갈수있을떄 돌아가라
+    if (m_fSpawn_Distance >= m_fSpawn_Distance_Max && !m_bPatternProgress && !Is_Player_Near())
     {
         Return_To_Spawn();
     }
@@ -139,12 +149,30 @@ void CMonster::CalCulate_Distance()
     m_fSpawn_Distance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&m_vSpawnPoint) - pPosition));
 }
 
+void CMonster::PatternCreate()
+{
+}
+
+void CMonster::Active()
+{
+}
+
+void CMonster::Return_To_Spawn()
+{
+}
+
+void CMonster::Stun()
+{
+}
 
 void CMonster::RotateDegree_To_Player()
 {
     _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
     _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
+
+    vLook2 = XMVectorSet(XMVectorGetX(vLook2), 0.f, XMVectorGetZ(vLook2), 0.f);
+
 
     vLook = XMVector3Normalize(vLook);
     vLook2 = XMVector3Normalize(vLook2);
@@ -177,11 +205,21 @@ void CMonster::Rotation_To_Player()
 
     m_fRotateDegree -= fRadians;
 
-    if (fabs(m_fRotateDegree) <= 1.f)
+    if (fabs(m_fRotateDegree) <= 0.01f)
     {
         m_fRotateDegree = 0.f;
         m_bNeed_Rotation = false;
+        return;
     }
+
+    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
+
+    m_fRotateDegree -= fRadians;
+}
+
+_bool CMonster::Is_Player_Near()
+{
+    return m_fDistance < 3.f;
 }
 
 void CMonster::Recovery_HP()

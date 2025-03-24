@@ -35,13 +35,12 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_PartObjects()))
+    if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
@@ -96,28 +95,32 @@ HRESULT CBoss_Varg::Render()
     return S_OK;
 }
 
-HRESULT CBoss_Varg::Ready_Components()
+HRESULT CBoss_Varg::Ready_Components(void* pArg)
 {
-    /* Com_Navigation */
-    CNavigation::NAVIGATION_DESC   Desc{};
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.iCurrentCellIndex = 11;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+    if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
         return E_FAIL;
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     return S_OK;
 }
 
-HRESULT CBoss_Varg::Ready_PartObjects()
+HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
 {
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
+
     CBody_Varg::BODY_VARG_DESC BodyDesc{};
     BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Varg"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Varg_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Varg"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Body"), &BodyDesc)))
         return E_FAIL;
 
 
@@ -134,7 +137,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
     Varg_Knife_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Knife"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Knife"), &Varg_Knife_Desc)))
         return E_FAIL;
 
     CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
@@ -145,7 +148,7 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     Locked_On_Desc.fSpeedPerSec = 0.f;
     Locked_On_Desc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
         return E_FAIL;
 
     CUI_Boss_HP_Bar::UI_BOSS_HP_BAR_DESC pBoss_HP_Bar = {};
@@ -155,11 +158,11 @@ HRESULT CBoss_Varg::Ready_PartObjects()
     pBoss_HP_Bar.bBossActive = &m_bActive;
     pBoss_HP_Bar.bBossDead = &m_bDead;
     pBoss_HP_Bar.iPhase = &m_iPhase;
+    pBoss_HP_Bar.iCurLevel = iLevel;
 
     //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
     //    return E_FAIL;
-
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
         return E_FAIL;
 
 
@@ -419,6 +422,8 @@ void CBoss_Varg::Idle_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Idle_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    pObject->RotateDegree_To_Player();
+
     if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Walk_State(), pObject);
@@ -448,6 +453,7 @@ void CBoss_Varg::Avoid_State::State_Enter(CBoss_Varg* pObject)
         m_bBonusAttack = false;
         break;
     }
+    pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -501,6 +507,7 @@ void CBoss_Varg::Hit_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 
 void CBoss_Varg::Hit_State::State_Exit(CBoss_Varg* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
 
@@ -508,7 +515,6 @@ void CBoss_Varg::Hit_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
 {
     //나중에 플레이어 위치받아올듯
-    pObject->RotateDegree_To_Player();
     if (pObject->m_fDistance > 1.5f)
         m_iIndex = 47;
     else if (pObject->m_fDistance <= 1.5f)
@@ -536,6 +542,7 @@ void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    pObject->RotateDegree_To_Player();
     if (m_iIndex == 47)
     {
         pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
@@ -629,7 +636,7 @@ void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 11;
         pObject->m_iMonster_Attack_Power = 174;
@@ -671,7 +678,7 @@ void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 12;
         pObject->m_iMonster_Attack_Power = 174;
@@ -721,7 +728,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 12;
         pObject->m_iMonster_Attack_Power = 174;
@@ -763,15 +770,16 @@ void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 90.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 110.f)
     {
-        m_iIndex = 14;
+        m_iIndex = 9;
         pObject->m_iMonster_Attack_Power = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+        pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(10.f);
     }
-    if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 9 && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -828,6 +836,7 @@ void CBoss_Varg::Raid_Attack_01::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 21;
     pObject->m_iMonster_Attack_Power = 174;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -860,6 +869,7 @@ void CBoss_Varg::Raid_Attack_02::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 22;
     pObject->m_iMonster_Attack_Power = 174;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -961,6 +971,7 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
     }
 
     pObject->m_fSpecial_Skill_CoolTime = 0.f;
+    pObject->RotateDegree_To_Player();
     pObject->m_bPatternProgress = true;
     pObject->m_IsStun = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_STUN;

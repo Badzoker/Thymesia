@@ -25,21 +25,18 @@ HRESULT CAisemy::Initialize(void* pArg)
 {
     strcpy_s(m_szName, "NPC");
 
-    CGameObject::GAMEOBJECT_DESC        Desc{};
 
-    Desc.fSpeedPerSec = 1.f;
-    Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-    if (FAILED(__super::Initialize(&Desc)))
+    if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
+
 
     _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
@@ -115,16 +112,17 @@ HRESULT CAisemy::Render()
     return S_OK;
 }
 
-HRESULT CAisemy::Ready_Components()
+HRESULT CAisemy::Ready_Components(void* pArg)
 {
-    /* Com_Navigation */
-    CNavigation::NAVIGATION_DESC   Desc{};
+    CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-    Desc.iCurrentCellIndex = 0;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    if (FAILED(__super::Add_Component(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+    if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
         return E_FAIL;
+
+    m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     return S_OK;
 }
@@ -137,7 +135,7 @@ HRESULT CAisemy::Ready_PartObjects()
     BodyDesc.fSpeedPerSec = 0.f;
     BodyDesc.fRotationPerSec = 0.f;
 
-    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Aisemy"), LEVEL_TUTORIAL, TEXT("Prototype_GameObject_NPC_Aisemy_Body"), &BodyDesc)))
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Aisemy"), LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy_Body"), &BodyDesc)))
         return E_FAIL;
 
     return S_OK;

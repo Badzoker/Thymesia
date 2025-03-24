@@ -44,6 +44,9 @@ private:
 	PxRigidDynamic* m_pActor = { nullptr };
 
 private:
+	_bool              m_bColliderOff = {};
+	_uint              m_iPreAnimIndex = {};
+
 	_uint              m_iPassNum = {};
 	_float			   m_fTimeDelta = { 0.f };
 	_float             m_fDeadTimer = {};
