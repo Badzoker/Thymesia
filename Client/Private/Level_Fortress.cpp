@@ -84,7 +84,7 @@ HRESULT CLevel_Fortress::Initialize()
 
 
 	// 플레이어 화면 키기
-	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
@@ -104,18 +104,18 @@ void CLevel_Fortress::Update(_float fTimeDelta)
 
 				m_bStopMenuOpen = false;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerInventory"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 			}
 			else
 			{
 				m_bStopMenuOpen = true;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerInventory"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 			}
 		}
@@ -135,7 +135,7 @@ HRESULT CLevel_Fortress::Render()
 
 HRESULT CLevel_Fortress::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_SEAOFTREES, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_FORTRESS, TEXT("Layer_Camera"), TEXT("Com_Transform")));
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
@@ -145,7 +145,7 @@ HRESULT CLevel_Fortress::Ready_Lights()
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
 
-	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
 
 	LIGHT_DESC LightDesc{};
 	/* 2월 8일 빛 */
@@ -179,16 +179,16 @@ HRESULT CLevel_Fortress::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	pDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Terrain"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Terrain"), LEVEL_FORTRESS, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)
 	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_ForkLift"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_ForkLift"), LEVEL_FORTRESS, pLayerTag, nullptr)))
 	//		return E_FAIL;
 	//}
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Sky"), LEVEL_FORTRESS, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 
@@ -238,7 +238,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Structure(const _tchar* pLayerTag)
 
 	//	/* 이제 TRANSFORM만 건들면 될듯함.*/
 	//	//int b = 4;
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, Translate_wchar, LEVEL_SEAOFTREES, Layer_Name)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, Translate_wchar, LEVEL_FORTRESS, Layer_Name)))
 	//		return E_FAIL;
 
 	//	//CTransform* pTrasnform = dynamic_cast<CTransform*>(
@@ -285,7 +285,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Player(const _tchar* pLayerTag)
 
 	Desc._fPosition = vTestPosition;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Player"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))	
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_FORTRESS, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
@@ -307,11 +307,11 @@ HRESULT CLevel_Fortress::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_FORTRESS, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_FORTRESS, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -499,7 +499,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Fade(const _tchar* pLayerTag)
 {
 	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_SEAOFTREES, pLayerTag, &BlackScreenDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_FORTRESS, pLayerTag, &BlackScreenDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -513,7 +513,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Button(const _tchar* pLayerTag)
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_SEAOFTREES, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_FORTRESS, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
@@ -533,35 +533,35 @@ HRESULT CLevel_Fortress::Ready_Layer_Item(const _tchar* pLayerTag)
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_FORTRESS, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_FORTRESS, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_FORTRESS, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_FORTRESS, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_FORTRESS, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 
@@ -570,13 +570,13 @@ HRESULT CLevel_Fortress::Ready_Layer_Item(const _tchar* pLayerTag)
 
 HRESULT CLevel_Fortress::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_FORTRESS, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_SEAOFTREES, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_FORTRESS, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -585,7 +585,7 @@ HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerT
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_FORTRESS, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -594,7 +594,7 @@ HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_FORTRESS, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -603,14 +603,14 @@ HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_FORTRESS, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CLevel_Fortress::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_SEAOFTREES, pLayerTag, nullptr, "Inventory")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_FORTRESS, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -662,12 +662,12 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 
 		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_FORTRESS, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_FORTRESS, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -735,7 +735,7 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
 		Desc.ObjectName = szLoadName;
 
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_FORTRESS, TEXT("Layer_GroundObject"), &Desc)))
 			return E_FAIL;
 	}*/
 
@@ -791,7 +791,7 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 		Desc.vecInstanceRotation = vecInstanceRotation;
 		Desc.vecBoxSize = vecBoxSize;
 
-		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc));
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_FORTRESS, TEXT("Layer_GroundObject"), &Desc));
 
 		if (nullptr == pEnvironment)
 			return E_FAIL;
@@ -855,7 +855,7 @@ HRESULT CLevel_Fortress::Load_TriggerObjects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScale, sizeof(_float3), &dwByte, nullptr);
 
-		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_SEAOFTREES, TEXT("Layer_TriggerObject"), &Desc));
+		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_FORTRESS, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_FORTRESS, TEXT("Layer_TriggerObject"), &Desc));
 
 		if (nullptr != pTriggerObject)
 			vecTriggerObject.push_back(pTriggerObject);

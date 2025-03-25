@@ -41,9 +41,9 @@ void CLamp::Priority_Update(_float _fTimeDelta)
 
     _matrix OffsetMatrix = XMMatrixIdentity();
     OffsetMatrix *= XMMatrixRotationX(XMConvertToRadians(75.f));
-
+    
     OffsetMatrix *= XMMatrixRotationY(XMConvertToRadians(155.f));
-
+    
     SocketMatrix = XMMatrixMultiply(OffsetMatrix, SocketMatrix);
 
     for (size_t i = 0; i < 3; ++i)

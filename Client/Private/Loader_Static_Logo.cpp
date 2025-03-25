@@ -594,6 +594,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Lamp"), CLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//_matrix PreLampTransformMatrix = XMMatrixIdentity();
+	////PreLampTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationX(XMConvertToRadians(75.f)) * XMMatrixRotationY(XMConvertToRadians(155.f));
+	//PreLampTransformMatrix *= XMMatrixRotationX(XMConvertToRadians(90.f));
+
 	/* For.Prototype_Component_Model_Lamp */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Lamp"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Lamp/NPCLamp.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;

@@ -286,7 +286,7 @@ HRESULT CLevel_Hill::Ready_Layer_Player(const _tchar* pLayerTag)
 
 	Desc._fPosition = vTestPosition;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Player"), LEVEL_HILL, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
@@ -308,11 +308,11 @@ HRESULT CLevel_Hill::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_HILL, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_HILL, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -343,40 +343,40 @@ HRESULT CLevel_Hill::Ready_Layer_Monster()
 		{
 		case BOSS_VARG:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
 				return E_FAIL;
 			break;
 		default:
 			break;
 		case ELITE_JOKER:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 		case ELITE_HARMORLV2:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
 				return E_FAIL;
 			break;
 
 		case NORMAL_VILLAGE_M0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_M1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_HILL, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		}
@@ -586,7 +586,7 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -595,7 +595,7 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -604,7 +604,7 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_HILL, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
