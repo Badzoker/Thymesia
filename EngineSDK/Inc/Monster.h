@@ -76,6 +76,7 @@ protected:
 	_bool                            m_bHP_Bar_Active = {};
 	_bool                            m_bDead = {};
 	_bool                            m_IsDelete = {};
+	_bool                            m_Is_Player_Dead = {};
 
 	_uint							 m_iSpawn_Cell_Index = {};
 	_uint                            m_iHitCount = {};

@@ -21,6 +21,7 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_uint* iAttack = { nullptr };
 	};
 private:
 	CVargKnife(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -48,6 +49,7 @@ private:
 	_float			   m_fTimeDelta = { 0.f };
 	_bool              m_bColliderOff = {};
 	_uint			   m_iPreAnimIndex = -1;
+	_uint*			   m_iAttack = { nullptr };
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

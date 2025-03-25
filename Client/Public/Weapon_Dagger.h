@@ -21,6 +21,7 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_uint* iAttack = { nullptr };
 	};
 private:
 	CWeapon_Dagger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -47,6 +48,8 @@ private:
 	_uint              m_iPreAnimIndex = {};
 
 	_uint              m_iPassNum = {};
+	_uint*			   m_iAttack = { nullptr };
+
 	_float			   m_fTimeDelta = { 0.f };
 	_float             m_fDeadTimer = {};
 	_float             m_fFinishTime = {};

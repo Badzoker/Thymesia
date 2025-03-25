@@ -71,6 +71,9 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
+    if (*m_Player_State == CPlayer::PHASE_DEAD)
+        m_Is_Player_Dead = true;
+
     __super::Priority_Update(fTimeDelta);
 }
 

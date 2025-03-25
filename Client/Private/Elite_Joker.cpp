@@ -72,6 +72,9 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
+    if (*m_Player_State == CPlayer::PHASE_DEAD)
+        m_Is_Player_Dead = true;
+
     __super::Priority_Update(fTimeDelta);
 }
 
@@ -138,6 +141,7 @@ HRESULT CElite_Joker::Ready_PartObjects(void* pArg)
     Joker_Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Joker_Weapon_Desc.pParentModel = m_pModelCom;
     Joker_Weapon_Desc.pParentState = &m_iMonster_State;
+    Joker_Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
     Joker_Weapon_Desc.fSpeedPerSec = 0.f;
     Joker_Weapon_Desc.fRotationPerSec = 0.f;
 
@@ -438,6 +442,7 @@ void CElite_Joker::Attack_Combo_A::State_Enter(CElite_Joker* pObject)
     m_iIndex = 0;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 95;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     //rand() % 2
@@ -475,6 +480,7 @@ void CElite_Joker::Attack_Combo_B::State_Enter(CElite_Joker* pObject)
     m_iIndex = 2;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 95;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     _uint iRandom = 0;
@@ -535,6 +541,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
     {
         m_iIndex = 11;
         pObject->m_bCan_Move_Anim = false;
+        pObject->m_iMonster_Attack_Power = 48;
         pObject->m_iMonster_State = STATE_ATTACK;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURXXLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -542,6 +549,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
 
     if (m_iIndex == 11 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70)
     {
+        pObject->m_iMonster_Attack_Power = 114;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     }
 
@@ -560,6 +568,7 @@ void CElite_Joker::Attack_Wheel::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 36;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 48;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -585,6 +594,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
     {
         m_iIndex = (rand() % 2) + 33;
         pObject->m_bMove = false;
+        pObject->m_iMonster_Attack_Power = 114;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -702,6 +712,7 @@ void CElite_Joker::Attack_Shock::State_Enter(CElite_Joker* pObject)
 {
     m_iIndex = 14;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 128;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -727,6 +738,7 @@ void CElite_Joker::Attack_Strong::State_Enter(CElite_Joker* pObject)
     m_iIndex = 16;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 114;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -748,6 +760,7 @@ void CElite_Joker::Attack_Jump::State_Enter(CElite_Joker* pObject)
     m_iIndex = 10;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 114;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
