@@ -71,13 +71,14 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
         m_fDeadTimer += fTimeDelta * 0.5f;
         m_fFinishTime += fTimeDelta * 0.5f;
 
+        m_pCamera->Target_Reset();  
+
         if (m_fDeadTimer >= 4.0f)
         {
             *m_pParentState = CPlayer::STATE_START_WALK;
             *m_pParentPhsaeState = CPlayer::PHASE_START;
             *m_pPreParentState = CPlayer::STATE_DEAD;
-            //*m_pParentState = 0;    
-            //*m_pParentPhsaeState = 0;
+
             *m_pParentNextStateCan = true;
 
             m_fDeadTimer = 0.f;
@@ -292,6 +293,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK:
         STATE_CLAW_CHARGE_FULL_ATTACK_Method();
         break;
+    case CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2:  
+        STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();   
+        break;
     default:
         break;
     }
@@ -351,7 +355,7 @@ void CBody_Player::Update(_float fTimeDelta)
 
                     else if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
-                        // 카메라 포인터 가져오고 싶다.
+                        m_pCamera->Set_Camera_ZoomInSpeed(10.f);    
                         m_pCamera->ZoomIn();
                     }
 
@@ -367,7 +371,7 @@ void CBody_Player::Update(_float fTimeDelta)
                     if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
                         // 카메라 포인터 가져오고 싶다. 
-                        m_pCamera->ResetZoomInCameraPos(1.f);
+                        m_pCamera->ResetZoomInCameraPos(10.f);  
                     }
                 }
 
@@ -388,15 +392,17 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
-        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION    
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START  
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP   
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK    
-            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01        
-            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)   
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
+            m_pGameInstance->Add_Actor_Scene(m_pParentActor);
+
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP
+            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK
+            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
+            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
         {
-            m_pGameInstance->Add_Actor_Scene(m_pParentActor);                   
-            m_pCamera->ResetZoomInCameraPos(1.f);   
+            m_pCamera->ResetZoomInCameraPos(1.f);
         }
     }
 
@@ -602,6 +608,8 @@ void CBody_Player::STATE_ATTACK_Method()
 void CBody_Player::STATE_ATTACK_L1_Method()
 {
     m_pModelCom->SetUp_Animation(3, false);
+
+    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.f);    
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
@@ -1641,31 +1649,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     m_pModelCom->SetUp_Animation(56, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    ///* 패링 슬로우 모션  */
-    //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
-    //    && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
-    //{
-    //    m_fHitStopTime += m_fTimeDelta;
-    //    if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
-    //    {
-    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-    //    }
-
-    //    else
-    //    {
-    //        m_bParryStopOnOff = false;
-    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    //    }
-    //}
-
-    //else
-    //{
-    //    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-
-
-    //    m_fHitStopTime = 0.f;
-    //    m_bParryStopOnOff = true;
-    //}
 
 
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
@@ -1682,32 +1665,6 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 {
     m_pModelCom->SetUp_Animation(54, false);
     m_iRenderState = STATE_NORMAL_RENDER;
-
-    ///* 패링 슬로우 모션  */
-    //if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1.f
-    //    && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 20.f)
-    //{
-    //    m_fHitStopTime += m_fTimeDelta;
-    //    if (m_fHitStopTime < 0.1f && m_bParryStopOnOff)
-    //    {
-    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
-
-    //    }
-
-    //    else
-    //    {
-    //        m_bParryStopOnOff = false;
-    //        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-
-    //    }
-    //}
-
-    //else
-    //{
-    //    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-    //    m_fHitStopTime = 0.f;
-    //    m_bParryStopOnOff = true;
-    //}
 
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
@@ -2223,7 +2180,9 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
     m_pModelCom->SetUp_Animation(144, false);
     m_iRenderState = STATE_CLAW_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish())
+    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);  
+
+    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished()) 
     {
         *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
 
@@ -2232,15 +2191,8 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
 
 void CBody_Player::STATE_CLAW_CHARGE_LOOP_Method()
 {
-    m_pModelCom->SetUp_Animation(142, false);
+    m_pModelCom->SetUp_Animation(142, true);    
     m_iRenderState = STATE_CLAW_RENDER;
-
-    if (m_pModelCom->Get_VecAnimation().at(142)->isAniMationFinish())
-    {
-        m_pModelCom->Set_Continuous_Ani(true);
-        *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
-
-    }
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
@@ -2255,6 +2207,21 @@ void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
 
+    }
+}
+
+void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method() 
+{
+
+    m_pModelCom->SetUp_Animation(147, false);   
+    m_iRenderState = STATE_CLAW_RENDER;
+        
+    m_pModelCom->Get_VecAnimation().at(147)->Set_StartOffSetTrackPosition(3.f); 
+
+    if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())   
+    {
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
 }
 

@@ -363,7 +363,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 					/* 플레이어 방향 전환 */
 					//if (abs(Radian) > 0.1f)
-					m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 6.f);
+					m_pPlayerTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, Radian * fTimeDelta * 10.f);
 
 
 				}
@@ -405,7 +405,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bZoomIn)
 		{
 			if (m_fCamCloseLimitDistance < m_fCurCamDistance)
-				m_fCurCamDistance -= fTimeDelta * 10.f * m_fZoomInSpeed;
+				m_fCurCamDistance -= fTimeDelta * m_fZoomInSpeed;	
 
 			_vector vNewCamPos = XMLoadFloat4(&m_fLerpPlayerHeadPos) - vCamDir * m_fCurCamDistance;
 
@@ -417,7 +417,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bZoomOut)
 		{
 			if (m_fCamFarLimitDistance > m_fCurCamDistance)
-				m_fCurCamDistance += fTimeDelta * 5.f * m_fZoomOutSpeed;
+				m_fCurCamDistance += fTimeDelta * m_fZoomOutSpeed;	
 
 			_vector vNewCamPos = XMLoadFloat4(&m_fLerpPlayerHeadPos) - vCamDir * m_fCurCamDistance;
 
@@ -483,7 +483,8 @@ CGameObject* CCamera_Free::Find_LockOnTarget()
 	{
 		auto& Pair = m_maptMonsterDistance;
 
-		m_pPlayer->Set_Lockon(true);
+		m_pPlayer->Set_Lockon(true);	
+		m_pPlayer->Set_LockOnTargetMonsterPtr(Pair.begin()->second);	
 		return Pair.begin()->second;
 	}
 
@@ -529,7 +530,7 @@ void CCamera_Free::LockOnCameraTurn(_float fTimeDelta)
 		Radian = -Radian;
 	}
 
-	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 3.f, XMLoadFloat4(&m_fLerpPlayerHeadPos));
+	m_pTransformCom->Orbit_Move_Once(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian * fTimeDelta * 10.f, XMLoadFloat4(&m_fLerpPlayerHeadPos));
 
 }
 
@@ -550,7 +551,7 @@ void CCamera_Free::ResetZoomInCameraPos(_float _fZoomInSpeed)
 	if (fabs(m_fCamDistance - m_fCurCamDistance) > fEpsilon)
 	{
 		if (m_fCamDistance > m_fCurCamDistance)
-			m_fCurCamDistance += m_fTimeDelta * 10.f * _fZoomInSpeed;
+			m_fCurCamDistance += m_fTimeDelta * _fZoomInSpeed;
 	}
 
 }
@@ -698,6 +699,15 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 
 
 	return m_bCamera_Cut_Scene_OnOff;
+}
+
+void CCamera_Free::Target_Reset()	
+{
+	if (m_pTargetMonster != nullptr)	
+		m_pTargetMonster->Set_Locked_On(false);	
+
+	m_pTargetMonster = nullptr;	
+	m_bCamLockOnOff = false;	
 }
 
 _vector CCamera_Free::CatmullRom_Position_Lerp(vector<Camera_Event> CameraEvent, _float _fRatio)

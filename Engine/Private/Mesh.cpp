@@ -116,43 +116,11 @@ HRESULT CMesh::Render_Instance(ID3D11Buffer* pInstanceBuffer, _uint _iNumInstanc
 
 HRESULT CMesh::Bind_BoneMatrices(CShader* pShader, const _char* pContstantName, const vector<class CBone*>& Bones)
 {
-	D3D11_MAPPED_SUBRESOURCE mapped_StrBuffer_Resource;
-	ZeroMemory(&mapped_StrBuffer_Resource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	ZeroMemory(m_ColMajorBoneMatrices, sizeof(m_ColMajorBoneMatrices));		
-
-	/* 여기 D3D11_MAP_DISCARD로 교체해서 해보기 */
-	HRESULT hr = m_pContext->Map(m_pStrBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_StrBuffer_Resource);
-
-
 	for (size_t i = 0; i < m_iNumBones; i++)
 		XMStoreFloat4x4(&m_BoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix());
 
-	for (size_t i = 0; i < m_iNumBones; i++)
-		XMStoreFloat4x4(&m_ColMajorBoneMatrices[i], XMMatrixTranspose(XMLoadFloat4x4(&m_BoneMatrices[i])));
-
-
-	_float4x4* pBoneMatrices = reinterpret_cast<_float4x4*>(mapped_StrBuffer_Resource.pData);
-	memcpy(pBoneMatrices, m_ColMajorBoneMatrices, sizeof(_float4x4) * m_iNumBones);
-
-	m_pContext->Unmap(m_pStrBuffer, 0);
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	ZeroMemory(&srvDesc, sizeof(srvDesc));
-	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	//srvDesc.Buffer.FirstElement = 0;		
-	srvDesc.Buffer.NumElements = m_iNumBones;
-
-
-	ID3D11ShaderResourceView* pSRV;
-	m_pDevice->CreateShaderResourceView(m_pStrBuffer, &srvDesc, &pSRV);
-	if(FAILED(pShader->Bind_SRV(pContstantName, pSRV)))
-		return E_FAIL;
-	Safe_Release(pSRV);		
-	return 	S_OK; //이렇게하면 될거같은데	
+	return pShader->Bind_Matrices(pContstantName, m_BoneMatrices, m_iNumBones);
 	
-
 }
 
 //void CMesh::Compute_BoundingBox(_float3& _vMin, _float3& _vMax)

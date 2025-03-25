@@ -39,10 +39,6 @@ private:
 
 	_long			    m_MouseMoveAmount = {};
 
-	_vector				m_vCurCamPos = {};
-	_vector				m_vCurCamDir = {};
-
-
 	_bool				m_bStop = false;
 	_bool				m_bDebugCameraOnOff = { true };
 

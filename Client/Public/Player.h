@@ -109,6 +109,7 @@ public:
 		STATE_CLAW_CHARGE_START,
 		STATE_CLAW_CHARGE_LOOP,
 		STATE_CLAW_CHARGE_FULL_ATTACK,
+		STATE_CLAW_LONG_PLUNDER_ATTACK2,	
 	};
 
 
@@ -156,6 +157,7 @@ public:
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);
+	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }		
 
 private:
 	_uint								m_iState = { STATE_IDLE };
@@ -171,6 +173,8 @@ private:
 	_bool								m_bNextStateCanPlay = { true };
 
 	_float								m_fChrageTime = {};
+
+	CGameObject*						m_pTargetMonsterPtr = { nullptr };
 
 
 	CNavigation* m_pNavigationCom = { nullptr };
