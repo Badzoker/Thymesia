@@ -2,6 +2,7 @@
 #include "UIGroup_PlayerTalent.h"
 #include "UI_Scene.h"
 #include "GameInstance.h"
+#include "UI_Button.h"
 
 CUIGroup_PlayerTalent::CUIGroup_PlayerTalent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -26,50 +27,57 @@ HRESULT CUIGroup_PlayerTalent::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	m_pMySceneBase = m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0");
+	m_pSlot_LightAttack = m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_1");
+
+	Slot_Setting();
+
 	return S_OK;
 }
 
 void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
+	if (m_bRenderOpen)
+	{
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0")), true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_1")), true);
+	}
 }
 
 void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), true);
+		/*마우스 커서 위치에 따른 호버 이미지 이펙트 이미지 반응*/
+
+
+
+
+
+
+		Slot_Update_State();
 	}
 
 }
 
 void CUIGroup_PlayerTalent::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+	if (m_bRenderOpen)
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_PlayerTalent::Render()
 {
 	if (m_bRenderOpen)
 	{
-		vector<UI_TextInfo>::iterator it;
-		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
-		{
-			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
-
-		}
 	}
 	return S_OK;
 }
 
 HRESULT CUIGroup_PlayerTalent::Ready_UIObject()
 {
-
-	//m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_TALENT, L"UIScene_PlayerTalent");
-	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerTalent", m_TextInfo);
-	LoadData_UIObject(LEVEL_STATIC, UISCENE_TALENT, L"UIScene_PlayerTalent");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_TALENT, L"UIScene_PlayerTalent_0");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_TALENT, L"UIScene_PlayerTalent_1");
 
 	return S_OK;
 }
@@ -173,6 +181,100 @@ HRESULT CUIGroup_PlayerTalent::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
 	return S_OK;
 }
+
+void CUIGroup_PlayerTalent::Slot_Setting()
+{
+	/* 슬롯 정보를 따로 컨테이너에 저장한다*/
+	for (auto& Slot : m_pSlot_LightAttack->Find_UI_Button())
+	{
+		CUI_Frame* pSlot = dynamic_cast<CUI_Frame*>(Slot);
+
+
+		if (100 < Slot->Get_UI_GroupID() &&
+			200 > Slot->Get_UI_GroupID())
+		{
+			pSlot->Set_Slot_State(SLOT_OPEN_OFF);
+			pSlot->Set_TalentPoint(0);
+			m_mapSlot_LightAttack.emplace(Slot->Get_UI_GroupID(), make_pair(true, pSlot)); // 기본으로 주어지는 특성
+		}
+		else
+		{
+			pSlot->Set_Slot_State(SLOT_CLOSE_OFF);
+			pSlot->Set_TalentPoint((pSlot->Get_UI_GroupID() - (pSlot->Get_UI_GroupID() - 100)) / 100);
+			m_mapSlot_LightAttack.emplace(Slot->Get_UI_GroupID(), make_pair(false, pSlot)); // 특성 포인트가 필요한 특성
+		}
+	}
+
+}
+
+void CUIGroup_PlayerTalent::Slot_Update_State()
+{
+	/* map에 저장한 button의 정보에 따라 이미지를 반응 설정*/
+
+	for (auto& SlotEffect : m_mapSlot_LightAttack)
+	{
+		CUI_Frame* pSlot = dynamic_cast<CUI_Frame*>(SlotEffect.second.second);
+
+		Slot_Update_State_Value(pSlot->Get_Slot_State(), pSlot);
+
+		if (1 >= pSlot->Get_Slot_State())
+			SlotEffect.second.first = true;
+		else
+			SlotEffect.second.first = false;
+
+	}
+
+}
+
+void CUIGroup_PlayerTalent::Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Frame* pSlotUIObj)
+{
+	switch (eSteteNum)
+	{
+	case Client::SLOT_OPEN_ON:
+		pSlotUIObj->Set_TexSlot(3);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(1);
+		pSlotUIObj->Set_TexEffectOff(false);
+		pSlotUIObj->Set_TexEffect(1);
+		break;
+	case Client::SLOT_OPEN_OFF:
+		pSlotUIObj->Set_TexSlot(3);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(2);
+		pSlotUIObj->Set_TexEffectOff(false);
+		pSlotUIObj->Set_TexEffect(0);
+		break;
+	case Client::SLOT_CLOSE_ON:
+		pSlotUIObj->Set_TexSlot(2);
+		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(1);   // 이미지 랜더를 켜야 함
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(1); // 이미지 랜더를 꺼야 함
+		break;
+	case Client::SLOT_CLOSE_OFF:
+		pSlotUIObj->Set_TexSlot(2);
+		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexEdgeOff(true);
+		pSlotUIObj->Set_TexEdge(2);  // 이미지 랜더를 꺼야 함
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(1);// 이미지 랜더를 꺼야 함
+		break;
+	case Client::SLOT_CLOSE_CONDITION:
+		pSlotUIObj->Set_TexSlot(0);
+		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(1);  // 이미지 랜더를 켜야 함
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(1);// 이미지 랜더를 꺼야 함
+		break;
+	
+	}
+
+}
+
 
 CUIGroup_PlayerTalent* CUIGroup_PlayerTalent::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -44,7 +44,6 @@ HRESULT CUIGroup_Loading::Initialize(void* pArg)
 
 void CUIGroup_Loading::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
 
 	if (m_bRenderOpen)
 	{
@@ -62,7 +61,6 @@ void CUIGroup_Loading::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_Loading::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 
 	if (m_bRenderOpen)
 	{
@@ -72,11 +70,8 @@ void CUIGroup_Loading::Update(_float fTimeDelta)
 
 void CUIGroup_Loading::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
 	if (m_bRenderOpen)
-	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
-	}
 }
 
 HRESULT CUIGroup_Loading::Render()

@@ -41,7 +41,7 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
 	{
-		if (__super::On_Mouse_UI(g_hWnd))
+		if (__super::On_Mouse_UI(g_hWnd,3))
 		{
 			m_bImageOn = true;
 			Set_Change_TextColor(FONT_WHITE);

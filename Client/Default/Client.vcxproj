@@ -262,6 +262,7 @@
     <ClInclude Include="..\Public\TriggerObject.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_Inventory.h" />
+    <ClInclude Include="..\Public\UIGroup_Landing.h" />
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
@@ -328,10 +329,12 @@
     <ClInclude Include="..\Public\UI_HPBar1_Border.h" />
     <ClInclude Include="..\Public\UI_HPBar2_BG.h" />
     <ClInclude Include="..\Public\UI_HPBar3_MainBar.h" />
+    <ClInclude Include="..\Public\UI_HPBar5_Track.h" />
     <ClInclude Include="..\Public\UI_Indicator_Selected.h" />
     <ClInclude Include="..\Public\UI_ItemBackground.h" />
     <ClInclude Include="..\Public\UI_Item_Icon.h" />
     <ClInclude Include="..\Public\UI_KeyBox_Long.h" />
+    <ClInclude Include="..\Public\UI_LandingScreen.h" />
     <ClInclude Include="..\Public\UI_LeftBackground.h" />
     <ClInclude Include="..\Public\UI_LevelImage.h" />
     <ClInclude Include="..\Public\UI_LoadingIcon.h" />
@@ -353,6 +356,7 @@
     <ClInclude Include="..\Public\UI_SkillIcon.h" />
     <ClInclude Include="..\Public\UI_SquareFrame.h" />
     <ClInclude Include="..\Public\UI_SquareFrame_Hover.h" />
+    <ClInclude Include="..\Public\UI_Talent_Icon.h" />
     <ClInclude Include="..\Public\UI_TextBox.h" />
     <ClInclude Include="..\Public\UI_TitleBackgroundBar.h" />
     <ClInclude Include="..\Public\UI_UnderLine.h" />
@@ -466,6 +470,7 @@
     <ClCompile Include="..\Private\TriggerObject.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_Inventory.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Landing.cpp" />
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
@@ -530,10 +535,12 @@
     <ClCompile Include="..\Private\UI_HPBar1_Border.cpp" />
     <ClCompile Include="..\Private\UI_HPBar2_BG.cpp" />
     <ClCompile Include="..\Private\UI_HPBar3_MainBar.cpp" />
+    <ClCompile Include="..\Private\UI_HPBar5_Track.cpp" />
     <ClCompile Include="..\Private\UI_Indicator_Selected.cpp" />
     <ClCompile Include="..\Private\UI_ItemBackground.cpp" />
     <ClCompile Include="..\Private\UI_Item_Icon.cpp" />
     <ClCompile Include="..\Private\UI_KeyBox_Long.cpp" />
+    <ClCompile Include="..\Private\UI_LandingScreen.cpp" />
     <ClCompile Include="..\Private\UI_LeftBackground.cpp" />
     <ClCompile Include="..\Private\UI_LevelImage.cpp" />
     <ClCompile Include="..\Private\UI_LoadingIcon.cpp" />
@@ -555,6 +562,7 @@
     <ClCompile Include="..\Private\UI_SkillIcon.cpp" />
     <ClCompile Include="..\Private\UI_SquareFrame.cpp" />
     <ClCompile Include="..\Private\UI_SquareFrame_Hover.cpp" />
+    <ClCompile Include="..\Private\UI_Talent_Icon.cpp" />
     <ClCompile Include="..\Private\UI_TextBox.cpp" />
     <ClCompile Include="..\Private\UI_TitleBackgroundBar.cpp" />
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />

@@ -55,11 +55,13 @@ HRESULT CUI_Effect_SlotFrame::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bCoolTime, sizeof(_bool))))
+		return E_FAIL;
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
+	m_iShaderPassNum = 8;
 	m_pShaderCom->Begin(m_iShaderPassNum);
 
 	m_pVIBufferCom->Bind_InputAssembler();

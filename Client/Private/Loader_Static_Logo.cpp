@@ -104,6 +104,7 @@
 #include "UIGroup_PlayerScreen.h"
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Loading.h"
+#include "UIGroup_Landing.h"
 
 #include "UI_MouseCursor.h"
 
@@ -147,6 +148,7 @@
 #include "UI_HPBar1_Border.h"
 #include "UI_HPBar2_BG.h"
 #include "UI_HPBar3_MainBar.h"
+#include "UI_HPBar5_Track.h"
 #include "UI_MemoryShardsIcon.h"
 #include "UI_MPBar1_Border.h"
 #include "UI_MPBar2_BG.h"
@@ -159,6 +161,8 @@
 #include "UI_LoadingScreen.h"
 #include "UI_LoadingIcon.h"
 #include "UI_LootNotifyBackground.h"
+#include "UI_Talent_Icon.h"
+#include "UI_LandingScreen.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -1040,6 +1044,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_HPBar3_MainBar"),
 		CUI_HPBar3_MainBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+		/* For.Prototype_Component_Texture_UI_HPBar5_Track*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_HPBar5_Track"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_HPBar5_Track.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_HPBar5_Track */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_HPBar5_Track"),
+		CUI_HPBar5_Track::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_UI_TitleBackgroundBar*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MemoryShardsIcon"),
@@ -1095,6 +1107,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_Potion_DefaultType::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_UI_LandingScreen*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LandingScreen"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Message/UI_LandingScreen_%d.dds"), 11))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_LandingScreen */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LandingScreen"),
+		CUI_LandingScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	//====================================================================================================================================== 인벤토리
 
@@ -1199,6 +1219,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_LootNotifyBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	
+	/* For.Prototype_Component_Texture_UI_Talent_Icon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Talent_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/TalentIcon/UI_Talent_Icon_%d.dds"), 39))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Talent_Icon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Talent_Icon"),
+		CUI_Talent_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 
 	//====================================================================================================================================
@@ -1240,7 +1270,12 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Loading"),
 		CUIGroup_Loading::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	
+	/* For.Prototype_GameObject_UIGroup_Landing */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"),
+		CUIGroup_Landing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 #pragma region UI 텍스쳐
 	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
 

@@ -24,6 +24,7 @@ public:
 
 public:
 	void MenuButton_Check();
+	void ChangePopButton_Check();
 
 
 public:
@@ -33,6 +34,9 @@ public:
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
 	CUI_Scene* m_pMyScene = {};
+	CUI_Scene* m_pSceneChangePop = {};
+
+	_bool m_bChangePopOpen = { false };
 
 public:
 	static CUIGroup_PlayerMenu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

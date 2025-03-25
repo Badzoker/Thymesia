@@ -1,5 +1,6 @@
 #include "pch.h" 
 #include "Level_Tutorial.h"
+#include "Level_Loading.h"
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "Layer.h"	
@@ -75,6 +76,9 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_UIGroup_LandingMessage(TEXT("Layer_Landing"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
 		return E_FAIL;
 
@@ -123,60 +127,16 @@ void CLevel_Tutorial::Update(_float fTimeDelta)
 		}
 		
 	}
-	//}
-	//if (m_pGameInstance->isKeyEnter(DIK_E))
-	//{
-	//	m_iOpenSceneCount++;
-	//	if (1 == m_iOpenSceneCount) // 게임 인트로
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_GameIntro"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
-	//	}
-	//	if (2 == m_iOpenSceneCount) // 플레이어 메뉴
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_GameIntro"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
-	//	}
-	//	if (3 == m_iOpenSceneCount) // 플레이어 레벨 업
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerLevelUP"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
-	//	}
-	//	if (4 == m_iOpenSceneCount) // 플레이어 특성
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerLevelUP"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), true);
-	//	}
-	//	if (5 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-	//	}
-	//	if (6 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerInventory"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
-	//	}
-	//	if (7 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_iOpenSceneCount = 0;
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerInventory"), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
-	//	}
 
+	if (m_pGameInstance->isKeyEnter(DIK_B))
+	{
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+	}
+	if (m_bNextLevelOpen)
+	{
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
+	}
 
-
-	//}
 }
 
 HRESULT CLevel_Tutorial::Render() 
@@ -726,6 +686,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_TUTORIAL, pLayerTag, nullptr, "Inventory")))
 		return E_FAIL;
 	return S_OK;
+}
+
+HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_TUTORIAL, pLayerTag)))
+		return E_FAIL;
+	return S_OK;
+
 }
 
 HRESULT CLevel_Tutorial::Load_Objects(_int iObject_Level)

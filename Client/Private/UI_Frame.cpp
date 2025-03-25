@@ -38,14 +38,45 @@ void CUI_Frame::Priority_Update(_float fTimeDelta)
 
 void CUI_Frame::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (__super::On_Mouse_UI(g_hWnd, 3))
+		{
+			if (m_eSlotState == SLOT_OPEN_OFF)
+				m_eSlotState = SLOT_OPEN_ON;
+			if (m_eSlotState == SLOT_CLOSE_OFF)
+				m_eSlotState = SLOT_CLOSE_ON;
+		}
+		else
+		{
+			if (m_eSlotState == SLOT_OPEN_ON)
+				m_eSlotState = SLOT_OPEN_OFF;
+			if (m_eSlotState == SLOT_CLOSE_ON)
+				m_eSlotState = SLOT_CLOSE_OFF;
+		}
+
+		if (__super::Mouse_Select(g_hWnd, DIM_LB,3))
+		{
+			if (m_eSlotState == SLOT_OPEN_ON)
+				m_eSlotState = SLOT_CLOSE_ON;
+			else if (m_eSlotState == SLOT_CLOSE_ON)
+				m_eSlotState = SLOT_OPEN_ON;
+			
+		}
+
+		m_fCurrentTime += fTimeDelta;
+
+		if (1 <= m_fCurrentTime)
+		{
+			m_fCurrentTime *= -1;
+		}
+	}
 }
 
 void CUI_Frame::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
-	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
-	}
 }
 
 HRESULT CUI_Frame::Render()
@@ -57,9 +88,23 @@ HRESULT CUI_Frame::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
+	if (FAILED(m_pTextureCom[TEX_SLOT]->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexSlot)))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom[TEX_ICON]->Bind_ShaderResource(m_pShaderCom, "g_TexIcon", m_iTexNumber)))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom[TEX_EDGE]->Bind_ShaderResource(m_pShaderCom, "g_TexEdge", m_iTexEdge)))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom[TEX_EFFECT]->Bind_ShaderResource(m_pShaderCom, "g_TexEffect", m_iTexEffect)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexIconOff", &m_bTexIconOff, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexEdgeOff", &m_bTexEdgeOff, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexEffectOff", &m_bTexEffectOff, sizeof(_bool))))
+		return E_FAIL;
 
 	m_pShaderCom->Begin(m_iShaderPassNum);
 
@@ -72,10 +117,24 @@ HRESULT CUI_Frame::Render()
 
 HRESULT CUI_Frame::Ready_Components()
 {
+
 	/* Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Frame"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_SLOT]))))
 		return E_FAIL;
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Talent_Icon"),
+		TEXT("Com_TexIcon"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_ICON]))))
+		return E_FAIL;
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Effect_Frame"),
+		TEXT("Com_TexEdge"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_EDGE]))))
+		return E_FAIL;
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Attribute_Slot_Active"),
+		TEXT("Com_TexEffect"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_EFFECT]))))
+		return E_FAIL;
+
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
@@ -123,5 +182,6 @@ void CUI_Frame::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTextureCom);
+	for (auto& Tex : m_pTextureCom)
+		Safe_Release(Tex);
 }

@@ -8,6 +8,9 @@
 #include "Player.h"
 #include "UI_ItemBackground.h"
 #include "UIGroup_Inventory.h"
+#include "UI_PlunderSlotFrame.h"
+#include "UI_HPBar3_MainBar.h"
+#include "UI_HPBar5_Track.h"
 
 CUIGroup_PlayerScreen::CUIGroup_PlayerScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -32,6 +35,7 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
 	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
@@ -50,6 +54,10 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 			m_pMonsterText = Textbox;
 		}
 	}
+
+	Ready_Skill_Slot();
+	Ready_Player_GageBar();
+
 
 	return S_OK;
 }
@@ -71,10 +79,10 @@ void CUIGroup_PlayerScreen::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
+	Button_Skill();
 
 	Player_Info_GageBar();
-	
+	UI_Direction_HPBar();
 	if (m_pMonsterText->Get_OnOff())
 	{
 		m_fMonsterTextOnTime += fTimeDelta;
@@ -167,7 +175,6 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 
 void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
 	if (m_bRenderOpen)
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
@@ -213,7 +220,7 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 			wsprintf(ChangeText, CountTextDouble, 3, 3);
 			TextBox->Set_Content(ChangeText);
 		}
-		if (22 == TextBox->Get_UI_GroupID()) // 
+		if (22 == TextBox->Get_UI_GroupID()) // mp 플러스 되는 수치 인 것 같음
 		{
 			TextBox->Set_OnOff(false);
 		}
@@ -229,6 +236,32 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 		}
 
 	}
+}
+
+void CUIGroup_PlayerScreen::UI_Direction_HPBar()
+{
+
+	dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Set_PlayerHP_Info((_float)dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp(), (_float)dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp());
+
+	if (dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp() == dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp())
+	{
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(false);
+	}
+	else
+	{
+		_float fX = dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION).x + 129;
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(fX);
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(true);
+	}
+
+
+
+
+
+
+
+
+
 }
 
 void CUIGroup_PlayerScreen::Item_Save_Info(ITEM_TYPE eItemType)
@@ -362,6 +395,22 @@ void CUIGroup_PlayerScreen::Item_In_Out_Pop()
 
 }
 
+void CUIGroup_PlayerScreen::Button_Skill()
+{
+
+	if (m_pGameInstance->isKeyEnter(DIK_K))
+	{
+		/* 고정 스킬*/
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pFixSkill_1)->Set_SkillOn(true);
+	}
+	if (m_pGameInstance->isKeyEnter(DIK_L))
+	{
+		/* 약탈 스킬*/
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_SkillOn(true);
+	}
+	
+}
+
 void CUIGroup_PlayerScreen::UI_Direction_Monster_MemoryGet()
 {
 }
@@ -380,14 +429,41 @@ void CUIGroup_PlayerScreen::UI_Direction_Item_Nudge()
 
 HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
 {
-	/*m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
- 	m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");*/
-
-
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
 
 	return S_OK;
+}
+
+void CUIGroup_PlayerScreen::Ready_Skill_Slot()
+{
+	/*스킬 사용 연출을 위해 미리 멤버 변수로 설정하기*/
+	for (auto& Slot : m_pMyScene->Find_UI_Image())
+	{
+		if (50 == Slot->Get_UI_GroupID())
+		{
+			m_pFixSkill_1 = Slot;
+		}
+		if (60 == Slot->Get_UI_GroupID())
+		{
+			m_pPlunderSkill = Slot;
+		}
+	}
+
+}
+
+void CUIGroup_PlayerScreen::Ready_Player_GageBar()
+{
+	/*HP,MP 연출을 위해 미리 멤버 변수로 설정하기*/
+	for (auto& Gage : m_pMyScene->Find_UI_Image())
+	{
+		if (10 == Gage->Get_UI_GroupID())
+			m_pHPGageBar = Gage;
+		if (11 == Gage->Get_UI_GroupID())
+			m_pHPGageTrack = Gage;
+	}
+
+
 }
 
 HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
