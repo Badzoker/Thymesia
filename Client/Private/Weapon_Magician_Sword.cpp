@@ -28,11 +28,14 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
 
     MAGICIAN_SWORD_DESC* pDesc = static_cast<MAGICIAN_SWORD_DESC*>(pArg);
 
-    m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
+    m_iMonster_Attack = pDesc->iAttack;
+    m_Is_Change_Sword_Bone = pDesc->Is_Change_Sword_Bone;
+    m_pSocket_Right_Matrix = pDesc->pSocketMatrix;
+    m_pSocket_Left_Matrix = m_pParentModelCom->Get_BoneMatrix("weapon_l_Sword");
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -59,8 +62,8 @@ void CWeapon_Magician_Sword::Priority_Update(_float fTimeDelta)
 {
     if (*m_IsDissolveOn)
     {
-        m_fDissolveOn_Timer += fTimeDelta * 1.5f;
-        m_fDissolveOn_FinishTime += fTimeDelta * 1.5f;
+        m_fDissolveOn_Timer += fTimeDelta * 3.f;
+        m_fDissolveOn_FinishTime += fTimeDelta * 3.f;
     }
     else
     {
@@ -70,8 +73,8 @@ void CWeapon_Magician_Sword::Priority_Update(_float fTimeDelta)
 
     if (*m_IsDissolveOff)
     {
-        m_fDissolveOff_Timer -= fTimeDelta * 1.5f;
-        m_fDissolveOff_FinishTime -= fTimeDelta * 1.5f;
+        m_fDissolveOff_Timer -= fTimeDelta * 3.f;
+        m_fDissolveOff_FinishTime -= fTimeDelta * 3.f;
         if (m_fDissolveOff_Timer <= 0.f)
         {
             m_fDissolveOff_Timer = 0.f;
@@ -87,7 +90,12 @@ void CWeapon_Magician_Sword::Priority_Update(_float fTimeDelta)
 
 void CWeapon_Magician_Sword::Update(_float fTimeDelta)
 {
-    _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+    _matrix			SocketMatrix = {};
+
+    if (!(*m_Is_Change_Sword_Bone))
+        SocketMatrix = XMLoadFloat4x4(m_pSocket_Right_Matrix);
+    else
+        SocketMatrix = XMLoadFloat4x4(m_pSocket_Left_Matrix);
 
     XMStoreFloat4x4(&m_CombinedWorldMatrix,
         XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *    /* 월드 영역 */

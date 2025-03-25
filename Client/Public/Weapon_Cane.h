@@ -21,8 +21,9 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
-		_bool* IsDissolveOn = {};
-		_bool* IsDissolveOff = {};
+		_bool* IsDissolveOn = {nullptr};
+		_bool* IsDissolveOff = {nullptr};
+		_uint* iAttack = {nullptr};
 	};
 private:
 	CWeapon_Cane(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -46,8 +47,9 @@ private:
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
-	_bool* m_IsDissolveOn = {};
-	_bool* m_IsDissolveOff = {};
+	_bool* m_IsDissolveOn = {nullptr};
+	_bool* m_IsDissolveOff = {nullptr};
+	_bool  m_bColliderOff = {};
 
 	_uint m_iPassNum = {};
 

@@ -49,7 +49,6 @@ private:
 	_uint              m_iPreAnimIndex = {};
 
 	_uint              m_iPassNum = {};
-	_uint*              m_iAttack = {nullptr};
 
 	_float			   m_fTimeDelta = { 0.f };
 	_float             m_fDeadTimer = {};

@@ -32,7 +32,7 @@ HRESULT CJoker_Weapon::Initialize(void* pArg)
 	m_pSocketMatrix = pDesc->pSocketMatrix;
 	m_pParentState = pDesc->pParentState;
 	m_pParentModelCom = pDesc->pParentModel;
-	m_iAttack = pDesc->iAttack;
+	m_iMonster_Attack = pDesc->iAttack;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
