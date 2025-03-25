@@ -29,43 +29,39 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu");
+	m_pSceneChangePop = m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop");
+
 
 	return S_OK;
 }
 
 void CUIGroup_PlayerMenu::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
-	if (m_bRenderOpen)
-	{
-	}
-
 }
 
 void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 	if (m_bRenderOpen)	
 	{
-		MenuButton_Check();
+		if (!m_bChangePopOpen)
+		{
+			MenuButton_Check();
+		}
+		else
+		{
+			ChangePopButton_Check();
+		}
 	}
 }
 
 void CUIGroup_PlayerMenu::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
 	if (m_bRenderOpen)
-	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
-	}
 }
 
 HRESULT CUIGroup_PlayerMenu::Render()
 {
-	if (m_bRenderOpen)
-	{
-		
-	}
 	return S_OK;
 }
 
@@ -86,6 +82,11 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			}
 			if (101 == Button->Get_UI_GroupID()) // 특성 해제
 			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0")), true);
 			}
 			if (102 == Button->Get_UI_GroupID()) // 역병무기
 			{
@@ -98,6 +99,9 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			}
 			if (105 == Button->Get_UI_GroupID()) //기억 되살리기 중단	
 			{
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), true);
+				m_bChangePopOpen = true;
+
 			}
 			if (106 == Button->Get_UI_GroupID()) //게임 재개
 			{
@@ -124,11 +128,34 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 	}
 }
 
+void CUIGroup_PlayerMenu::ChangePopButton_Check()
+{
+	for (auto& Button : m_pSceneChangePop->Find_UI_Button())
+	{
+		if (Button->Get_Mouse_Select_OnOff())
+		{
+			if (1 == Button->Get_UI_GroupID()) // 철학자의 집으로 이동
+			{
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL); //철학자의 집 이동
+			}
+			if (2 == Button->Get_UI_GroupID()) // 팝업 종료
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), false);
+				m_bChangePopOpen = false;
+				break;
+			}
+
+		}
+	}
+}
+
 HRESULT CUIGroup_PlayerMenu::Ready_UIObject()
 {
-	//m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_MENU, L"UIScene_PlayerMenu");
-	//m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_PlayerMenu", m_TextInfo);
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_MENU, L"UIScene_PlayerMenu");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop");
 	return S_OK;
 }
 

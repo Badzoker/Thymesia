@@ -7,6 +7,29 @@ class CUIObject;
 
 class  CUI_Manager final : public CBase
 {
+public:
+	struct PLAYER_SAVE_STATE
+	{
+		_uint iLevel; // 레벨
+		_uint iFullHP; // 최대 체력 
+		_uint iFullMP; // 최대 에너지
+		_uint iAttackPower; // 공격 대미지
+		_uint iClawAttackPower; // 발톱 공격 대미지
+		_uint iMemoryFragment; // 보유 기억의 파편 개수                                                                               
+	};
+
+	struct PLAYER_SAVE_TALENT
+	{
+
+
+
+
+
+
+
+	};
+
+
 private:
 	CUI_Manager();
 	virtual ~CUI_Manager() = default;

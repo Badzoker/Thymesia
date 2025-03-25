@@ -121,60 +121,7 @@ void CLevel_Fortress::Update(_float fTimeDelta)
 		}
 		
 	}
-	//}
-	//if (m_pGameInstance->isKeyEnter(DIK_E))
-	//{
-	//	m_iOpenSceneCount++;
-	//	if (1 == m_iOpenSceneCount) // 게임 인트로
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_GameIntro"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
-	//	}
-	//	if (2 == m_iOpenSceneCount) // 플레이어 메뉴
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_GameIntro"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerMenu"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
-	//	}
-	//	if (3 == m_iOpenSceneCount) // 플레이어 레벨 업
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerMenu"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerLevelUP"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
-	//	}
-	//	if (4 == m_iOpenSceneCount) // 플레이어 특성
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerLevelUP"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerTalent"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), true);
-	//	}
-	//	if (5 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerTalent"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-	//	}
-	//	if (6 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), true);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
-	//	}
-	//	if (7 == m_iOpenSceneCount) // 플레이어 화면
-	//	{
-	//		m_iOpenSceneCount = 0;
-	//		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerInventory"), false);
-	//		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
-	//	}
-
-
-
-	//}
+	
 }
 
 HRESULT CLevel_Fortress::Render() 

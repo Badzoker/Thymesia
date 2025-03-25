@@ -29,6 +29,13 @@ private:
 	CTexture*				m_pTextureCom = { nullptr };
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 
+public:
+	void Set_PlayerHP_Info(_float fMax, _float fCurrent) { m_fMaxHP = fMax, m_fCurentHP = fCurrent; }
+
+private:
+	_float m_fMaxHP = {};
+	_float m_fCurentHP = {};
+
 
 
 public:

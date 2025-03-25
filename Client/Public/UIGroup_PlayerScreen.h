@@ -26,6 +26,13 @@ public:
 
 public:
 	void Player_Info_GageBar();
+	void UI_Direction_HPBar();
+
+private:
+	CUIObject* m_pHPGageBar = { nullptr };
+	CUIObject* m_pHPGageTrack = { nullptr };
+
+public:
 	void Item_Save_Info(ITEM_TYPE eItemType); // 아이템 획득 시 출력되는 알림
 	void Item_Drop_Info(ITEM_TYPE eItemType); // 아이템 버릴 시 출력되는 알림
 	
@@ -37,7 +44,17 @@ public:
 
 public:
 	HRESULT Ready_UIObject();
+	void Ready_Skill_Slot();
+	void Ready_Player_GageBar();
 	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+
+public:
+	void Button_Skill(); // 스킬 버튼 입력 시 연출(임시?)
+
+private:
+	CUIObject* m_pPlunderSkill = { nullptr };
+	CUIObject* m_pFixSkill_1 = { nullptr };
+
 
 private:
 	CUI_Scene* m_pMyScene = {}; //플레이어 화면

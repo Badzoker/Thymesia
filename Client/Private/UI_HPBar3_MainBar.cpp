@@ -56,11 +56,18 @@ HRESULT CUI_HPBar3_MainBar::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+	float a = m_fCurentHP / m_fMaxHP;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHPBar_Current", &m_fCurentHP, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHPBar_Max", &m_fMaxHP, sizeof(_float))))
+		return E_FAIL;
+
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(9);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 

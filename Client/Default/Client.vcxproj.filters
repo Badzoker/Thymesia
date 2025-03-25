@@ -691,6 +691,18 @@
     <Filter Include="02.GameObject\Player\State\Attack\ClawCommon_ChargeStart">
       <UniqueIdentifier>{4b74af5d-cca8-4f48-9dab-84c0a4d73ba1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_Talent_Icon">
+      <UniqueIdentifier>{2ac67d3d-9287-4232-abdb-919731e52fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_HPBar5_Track">
+      <UniqueIdentifier>{b248c142-2f80-4ead-b80a-6c64034512df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_LandingScreen">
+      <UniqueIdentifier>{54cb8ceb-54ea-467e-ad2e-49c60c5a5792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\8.LandingMessages">
+      <UniqueIdentifier>{ae3f58ba-b5d2-4f60-ab75-de6635f530ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1296,6 +1308,18 @@
     <ClInclude Include="..\public\ClawCommon_ChargeStart.h">
       <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeStart</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Talent_Icon.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_Talent_Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_HPBar5_Track.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_HPBar5_Track</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LandingScreen.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_LandingScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Landing.h">
+      <Filter>03.UIObject\2.UIObjGroup\8.LandingMessages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1891,6 +1915,18 @@
     </ClCompile>
     <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp">
       <Filter>02.GameObject\Player\State\Attack\ClawCommon_ChargeStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Talent_Icon.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_Talent_Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_HPBar5_Track.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_HPBar5_Track</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LandingScreen.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_LandingScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Landing.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\8.LandingMessages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

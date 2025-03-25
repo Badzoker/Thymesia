@@ -37,6 +37,16 @@ void CUI_PlunderSlotFrame::Priority_Update(_float fTimeDelta)
 
 void CUI_PlunderSlotFrame::Update(_float fTimeDelta)
 {
+	if (m_bSkillOn)
+	{
+		m_fSkill_CoolTime += fTimeDelta;
+		if (m_fSkill_CoolTime > 5)
+		{
+			m_fSkill_CoolTime = 0.0f;
+			m_bSkillOn = false;
+		}
+	}
+
 }
 
 void CUI_PlunderSlotFrame::Late_Update(_float fTimeDelta)
@@ -56,7 +66,17 @@ HRESULT CUI_PlunderSlotFrame::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIconOn", &m_bItemIconOn, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bSkillOn", &m_bSkillOn, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_SlotNum", &m_iTexNumber, sizeof(_uint))))
+		return E_FAIL;
+
+	
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
+		return E_FAIL;
+	if (FAILED(m_pTexIconCom->Bind_ShaderResource(m_pShaderCom, "g_TexIcon", m_iTexicon)))
 		return E_FAIL;
 
 
@@ -74,6 +94,11 @@ HRESULT CUI_PlunderSlotFrame::Ready_Components()
 	/* Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PlunderSlotFrame"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_SkillIcon"),
+		TEXT("Com_TexIcon"), reinterpret_cast<CComponent**>(&m_pTexIconCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
@@ -123,4 +148,5 @@ void CUI_PlunderSlotFrame::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTexIconCom);
 }

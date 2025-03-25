@@ -62,7 +62,6 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 
 void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
 
 	// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
 	if (m_pMyBaseScene->Get_Scene_Render_State())
@@ -85,7 +84,6 @@ void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_Inventory::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 
 	Change_UI_Item_Tab(); // 아이템 탭안의 아이템 종류 탭을 변경 시 마다 슬롯 정보 변경
 
@@ -129,7 +127,6 @@ void CUIGroup_Inventory::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		__super::Late_Update(fTimeDelta);
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }

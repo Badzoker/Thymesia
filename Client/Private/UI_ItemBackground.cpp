@@ -37,7 +37,7 @@ void CUI_ItemBackground::Priority_Update(_float fTimeDelta)
 
 void CUI_ItemBackground::Update(_float fTimeDelta)
 {
-	if (__super::On_Mouse_UI(g_hWnd))
+	if (__super::On_Mouse_UI(g_hWnd,2))
 		m_bMouseOn = true;
 	else
 		m_bMouseOn = false;
