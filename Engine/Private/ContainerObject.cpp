@@ -80,6 +80,16 @@ CComponent* CContainerObject::Find_PartObject_Component(const _wstring& strPartT
     return (iter->second)->Find_Component(strComponentTag); 
 }
 
+CPartObject* CContainerObject::Find_PartObject(const _wstring& _strPartTag)
+{
+    auto iter = m_PartObjects.find(_strPartTag);
+
+    if (iter != m_PartObjects.end())
+        return iter->second;;
+
+    return nullptr;
+}
+
 void CContainerObject::Free()
 {
     __super::Free();
