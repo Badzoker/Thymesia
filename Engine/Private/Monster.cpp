@@ -95,7 +95,12 @@ void CMonster::Priority_Update(_float fTimeDelta)
 
 void CMonster::Update(_float fTimeDelta)
 {
-    PatternCreate();
+    if (!m_Is_Player_Dead)
+        PatternCreate();
+    else
+        Return_To_Spawn();
+
+
     RootAnimation();
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));

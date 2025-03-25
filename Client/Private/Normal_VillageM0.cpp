@@ -45,7 +45,7 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
-
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
 
     m_pState_Manager = CState_Machine<CNormal_VillageM0>::Create();
     if (m_pState_Manager == nullptr)
@@ -66,6 +66,9 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 
 void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
 {
+    if (*m_Player_State == CPlayer::PHASE_DEAD)
+        m_Is_Player_Dead = true;
+
     __super::Priority_Update(fTimeDelta);
 }
 
@@ -129,6 +132,7 @@ HRESULT CNormal_VillageM0::Ready_PartObjects(void* pArg)
     Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon_Desc.pParentModel = m_pModelCom;
     Weapon_Desc.pParentState = &m_iMonster_State;
+    Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
     Weapon_Desc.fSpeedPerSec = 0.f;
     Weapon_Desc.fRotationPerSec = 0.f;
 
@@ -482,6 +486,7 @@ void CNormal_VillageM0::Attack_01_State::State_Enter(CNormal_VillageM0* pObject)
     m_iIndex = 4;
     pObject->m_bCanHit = false;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 60;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -506,6 +511,7 @@ void CNormal_VillageM0::Attack_02_State::State_Enter(CNormal_VillageM0* pObject)
     m_iIndex = 5;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 60;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -516,6 +522,7 @@ void CNormal_VillageM0::Attack_02_State::State_Update(_float fTimeDelta, CNormal
     {
         m_iIndex = 6;
         pObject->RotateDegree_To_Player();
+        pObject->m_iMonster_Attack_Power = 45;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 

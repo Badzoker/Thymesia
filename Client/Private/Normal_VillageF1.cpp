@@ -47,6 +47,7 @@ HRESULT CNormal_VillageF1::Initialize(void* pArg)
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
 
     m_pState_Manager = CState_Machine<CNormal_VillageF1>::Create();
     if (m_pState_Manager == nullptr)
@@ -67,6 +68,9 @@ HRESULT CNormal_VillageF1::Initialize(void* pArg)
 
 void CNormal_VillageF1::Priority_Update(_float fTimeDelta)
 {
+    if (*m_Player_State == CPlayer::PHASE_DEAD)
+        m_Is_Player_Dead = true;
+
     __super::Priority_Update(fTimeDelta);
 }
 
@@ -129,6 +133,7 @@ HRESULT CNormal_VillageF1::Ready_PartObjects(void* pArg)
     Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon_Desc.pParentModel = m_pModelCom;
     Weapon_Desc.pParentState = &m_iMonster_State;
+    Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
     Weapon_Desc.fSpeedPerSec = 0.f;
     Weapon_Desc.fRotationPerSec = 0.f;
 
@@ -417,6 +422,7 @@ void CNormal_VillageF1::Run_Attack::State_Enter(CNormal_VillageF1* pObject)
     m_iIndex = 6;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_iMonster_Attack_Power = 66;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(3.f);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -441,6 +447,7 @@ void CNormal_VillageF1::Attack_01::State_Enter(CNormal_VillageF1* pObject)
 {
     m_iIndex = 2;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 60;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -476,6 +483,7 @@ void CNormal_VillageF1::Attack_02::State_Enter(CNormal_VillageF1* pObject)
 {
     m_iIndex = 3;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 60;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -485,6 +493,7 @@ void CNormal_VillageF1::Attack_02::State_Update(_float fTimeDelta, CNormal_Villa
     if (m_iIndex == 3 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 21.f)
     {
         m_iIndex = 4;
+        pObject->m_iMonster_Attack_Power = 72;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -504,6 +513,7 @@ void CNormal_VillageF1::Attack_03::State_Enter(CNormal_VillageF1* pObject)
 {
     m_iIndex = 5;
     pObject->m_iMonster_State = STATE_ATTACK;
+    pObject->m_iMonster_Attack_Power = 81;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

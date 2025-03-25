@@ -72,10 +72,9 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
 
 void CHArmorLV2::Priority_Update(_float fTimeDelta)
 {
-    if (m_pGameInstance->isKeyEnter(DIK_N))
-    {
-        m_fMonsterCurHP -= 50.f;
-    }
+    if (*m_Player_State == CPlayer::PHASE_DEAD)
+        m_Is_Player_Dead = true;
+
     __super::Priority_Update(fTimeDelta);
 
 }
@@ -141,6 +140,7 @@ HRESULT CHArmorLV2::Ready_PartObjects(void* pArg)
     Weapon_GreatSword_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon_GreatSword_Desc.pParentModel = m_pModelCom;
     Weapon_GreatSword_Desc.pParentState = &m_iMonster_State;
+    Weapon_GreatSword_Desc.iAttack = &m_iMonster_Attack_Power;
     Weapon_GreatSword_Desc.fSpeedPerSec = 0.f;
     Weapon_GreatSword_Desc.fRotationPerSec = 0.f;
 
@@ -579,6 +579,7 @@ void CHArmorLV2::Attack_Pattern_01::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 4;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -596,6 +597,7 @@ void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 7;
         pObject->RotateDegree_To_Player();
+        pObject->m_iMonster_Attack_Power = 88;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
         pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(8.f);
@@ -633,6 +635,7 @@ void CHArmorLV2::Attack_Pattern_02::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 5;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -643,6 +646,7 @@ void CHArmorLV2::Attack_Pattern_02::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 0;
         pObject->RotateDegree_To_Player();
+        pObject->m_iMonster_Attack_Power = 88;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -679,6 +683,7 @@ void CHArmorLV2::Attack_Pattern_03::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 3;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -728,6 +733,7 @@ void CHArmorLV2::Attack_Pattern_04::State_Enter(CHArmorLV2* pObject)
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    pObject->m_iMonster_Attack_Power = 88;
     XMStoreFloat4(&m_vOriginalLook, pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
     XMStoreFloat4(&m_vChangeLook, XMLoadFloat4(&m_vOriginalLook) * -1);
 
@@ -755,6 +761,7 @@ void CHArmorLV2::Attack_Pattern_05::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 32;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 88;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -802,6 +809,7 @@ void CHArmorLV2::Attack_Pattern_06::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 1;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -812,6 +820,7 @@ void CHArmorLV2::Attack_Pattern_06::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 4;
         pObject->RotateDegree_To_Player();
+        pObject->m_iMonster_Attack_Power = 70;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -848,6 +857,7 @@ void CHArmorLV2::Attack_Pattern_07::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 1;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -858,6 +868,7 @@ void CHArmorLV2::Attack_Pattern_07::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 0;
         pObject->RotateDegree_To_Player();
+        pObject->m_iMonster_Attack_Power = 88;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -1061,6 +1072,7 @@ void CHArmorLV2::Parry_Attack_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 6;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY_ATTACK;
+    pObject->m_iMonster_Attack_Power = 70;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
