@@ -164,7 +164,8 @@ public:
 	/* 플레이어 우클릭 차지 공격 */
 	void STATE_CLAW_CHARGE_START_Method();	
 	void STATE_CLAW_CHARGE_LOOP_Method();	
-	void STATE_CLAW_CHARGE_FULL_ATTACK_Method();	
+	void STATE_CLAW_CHARGE_FULL_ATTACK_Method();
+	void STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();	
 
 private:
 	CShader* m_pShaderCom = { nullptr };

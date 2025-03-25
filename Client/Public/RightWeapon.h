@@ -21,7 +21,7 @@ public:
 	struct WEAPON_DESC : public CPartObject::PARTOBJECT_DESC
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
-		const _uint* pParentState = { nullptr };
+		_uint* pParentState = { nullptr };	
 		const _uint* pParentPhaseState = { nullptr };
 		CModel* pParentModel = { nullptr };
 
@@ -59,9 +59,9 @@ private:
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
 private:
-	const _uint* m_pParentState = { nullptr };
+	_uint*				 m_pParentState = { nullptr };
 	_uint				 m_iPreParentState = {};
-	const _uint* m_pParentPhaseState = { nullptr };
+	const _uint*         m_pParentPhaseState = { nullptr };
 
 public:
 	HRESULT Ready_Components();

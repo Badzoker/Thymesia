@@ -46,7 +46,8 @@ public:
 
 
 public:
-	CGameObject* Find_LockOnTarget();
+	CGameObject*        Find_LockOnTarget();	
+	CGameObject*        Get_TargetMonsterPtr() { return m_pTargetMonster; }	
 	void				LockOnCameraTurn(_float fTimeDelta);
 	void				ShakeOn(_float _fXaxisShakeSpeed, _float _fZaxisShakeSpeed, _float _fXaxisMoveAmount, _float _fZaxisMoveAmount);
 	void				ZoomIn() { m_bZoomIn = true; }
@@ -65,6 +66,8 @@ public:
 	void				Set_Camera_ZoomOutSpeed(_float _fSpeed) { m_fZoomOutSpeed = _fSpeed; }
 	void                Set_Camera_EventOnOff(_float _bEventOnOff) { m_bCameraEventOnOff = _bEventOnOff; }
 	void			    Set_Camera_LerpPlayerHeadPos(_vector _vPos) { XMStoreFloat4(&m_fLerpPlayerHeadPos, _vPos); }
+	void				Target_Reset(); 
+
 
 	_float4				Get_FirstCamDir() { return m_fCamFirstDir; }
 private:
@@ -73,7 +76,7 @@ private:
 	void   FirstLerpFinish();
 
 private:
-	_float* m_fPlayerPosition = { nullptr };
+	_float*             m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
 	_float				m_fLerpTime = { 0.06f };
 	_float				m_fCamCloseLimitDistance = { 2.5f };
@@ -133,7 +136,6 @@ private:
 	_float4				m_fCamFirstDir = {};
 
 
-	list<class CGameObject*>* m_plistMonster;
 	map<_float, CGameObject*>							m_maptMonsterDistance;
 
 	vector<Camera_Event>								m_vecCamera_Event;

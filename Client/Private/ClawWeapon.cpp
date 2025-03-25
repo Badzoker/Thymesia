@@ -114,11 +114,13 @@ void CClawWeapon::Update(_float fTimeDelta)
                         {
                             // 카메라 포인터 가져오고 싶다.
                             m_pGameInstance->Set_MotionBlur(true);
+                            m_pCamera->Set_Camera_ZoomOutSpeed(5.f);    
                             m_pCamera->ZoomOut();
                         }
 
                         if (!strcmp(iter.szName, "Camera_Zoom_In")) 
                         {
+                            m_pCamera->Set_Camera_ZoomInSpeed(1.5f);    
                             m_pCamera->ZoomIn();    
                         }   
                     }
@@ -131,11 +133,13 @@ void CClawWeapon::Update(_float fTimeDelta)
                         }
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
-
                             /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
                             m_pCamera->ResetZoomOutCameraPos(1.f);
                             m_pGameInstance->Set_MotionBlur(false);
-
+                        }
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out_No_Blur"))    
+                        {
+                            m_pCamera->ResetZoomInCameraPos(10.f);  
                         }
                     }
 
@@ -278,6 +282,11 @@ void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
     m_fHitStopTime = 0.f;   
     m_bHitStopOnOff = true; 
     m_bCollisionOn = false; 
+
+    if (*m_pParentState == CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK)  
+    {
+        *m_pParentState = CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2; 
+    }   
 
     m_pGameInstance->Sub_Actor_Scene(m_pActor); 
 }

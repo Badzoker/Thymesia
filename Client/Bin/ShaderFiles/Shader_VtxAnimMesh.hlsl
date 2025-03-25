@@ -5,9 +5,9 @@ float4x4		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 /* 이 메시(정점들에)에 영향을 주는 뼈 행렬들 (즉 총 뼈의 개수라고 생각하면 됨) 나는 여기서 그냥 256개로한다 */
 /* 너무 많은 뼈의 개수 배열을 선언하면 셰이더는 메모리를 큰 구조가 아니기 때문에 안된다.*/
-//float4x4		g_BoneMatrices[900];
+float4x4		g_BoneMatrices[256];    
 
-StructuredBuffer<float4x4> g_BoneMatrices;	
+//StructuredBuffer<float4x4> g_BoneMatrices;	
 Texture2D g_DiffuseTexture;	
 Texture2D g_NormalTexture;	
 Texture2D g_AOTexture;
