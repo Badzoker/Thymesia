@@ -21,8 +21,10 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
-		_bool* IsDissolveOn = {};
-		_bool* IsDissolveOff = {};
+		_bool* IsDissolveOn = {nullptr};
+		_bool* IsDissolveOff = {nullptr};
+		_bool* Is_Change_Sword_Bone = { nullptr };
+		_uint* iAttack = { nullptr };
 	};
 private:
 	CWeapon_Magician_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -44,11 +46,13 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
 
-	const _float4x4* m_pSocketMatrix = { nullptr };
+	const _float4x4* m_pSocket_Right_Matrix = { nullptr };
+	const _float4x4* m_pSocket_Left_Matrix = { nullptr };
 
 private:
-	_bool* m_IsDissolveOn = {};
-	_bool* m_IsDissolveOff = {};
+	_bool* m_IsDissolveOn = { nullptr };
+	_bool* m_IsDissolveOff = { nullptr };
+	_bool* m_Is_Change_Sword_Bone = { nullptr };
 
 	_uint m_iPassNum = {};
 

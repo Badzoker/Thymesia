@@ -97,9 +97,6 @@ void CMonster::Update(_float fTimeDelta)
 {
     if (!m_Is_Player_Dead)
         PatternCreate();
-    else
-        Return_To_Spawn();
-
 
     RootAnimation();
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

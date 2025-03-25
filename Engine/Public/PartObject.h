@@ -17,6 +17,8 @@ protected:
 	CPartObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPartObject(const CPartObject& Prototype);
 	virtual ~CPartObject() = default; 
+public:
+	_uint* Get_Monster_Attack_Ptr()const { return m_iMonster_Attack; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -34,16 +36,11 @@ protected:
 	_float4x4						m_CombinedWorldMatrix;
 	/* 루트 모션 때매 추가 */
 	_float4x4*						m_MotionWorldMatrix = { nullptr };
-
+	_uint*                          m_iMonster_Attack = {};
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0; 
 	virtual void Free() override;
-
-
-
-
-
 };
 
 END

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Weapon_Cane.h"
+#include "Animation.h"
 #include "GameInstance.h"
 #include "Boss_Magician.h"
 
@@ -33,6 +34,7 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
+    m_iMonster_Attack = pDesc->iAttack;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -60,8 +62,8 @@ void CWeapon_Cane::Priority_Update(_float fTimeDelta)
 {
     if (*m_IsDissolveOn)
     {
-        m_fDissolveOn_Timer += fTimeDelta * 1.5f;
-        m_fDissolveOn_FinishTime += fTimeDelta * 1.5f;
+        m_fDissolveOn_Timer += fTimeDelta * 3.f;
+        m_fDissolveOn_FinishTime += fTimeDelta * 3.f;
     }
     else
     {
@@ -71,8 +73,8 @@ void CWeapon_Cane::Priority_Update(_float fTimeDelta)
 
     if (*m_IsDissolveOff)
     {
-        m_fDissolveOff_Timer -= fTimeDelta * 1.5f;
-        m_fDissolveOff_FinishTime -= fTimeDelta * 1.5f;
+        m_fDissolveOff_Timer -= fTimeDelta * 3.f;
+        m_fDissolveOff_FinishTime -= fTimeDelta * 3.f;
         if (m_fDissolveOff_Timer <= 0.f)
         {
             m_fDissolveOff_Timer = 0.f;
@@ -99,6 +101,43 @@ void CWeapon_Cane::Update(_float fTimeDelta)
     {
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
     }
+
+
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+    {
+        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                //내가 넣은 콜라이더 시간에 진입했을때
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
+                {
+                    m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    iter.isPlay = true;
+                }
+            }
+            else
+            {
+                //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
+                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+                {
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    m_bColliderOff = false;
+                    if (!iter.isEventActivate)
+                    {
+                        iter.isPlay = false;
+                    }
+                }
+            }
+            //문제 iter가 2개니까 첫 iter는 add를 했는데 다음 iter가 자기 프레임 타이밍이 아니니 Sub를 해버린다.
+            //다단히트 해결하기 = 충돌나면 bool 값이 ColliderOff-> true가 되는데 이때 sub하면되는디 다시 추가되는느낌?
+        }
+    }
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    }
+
 }
 
 void CWeapon_Cane::Late_Update(_float fTimeDelta)
@@ -186,6 +225,10 @@ HRESULT CWeapon_Cane::Bind_ShaderResources()
 
 void CWeapon_Cane::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    if (!strcmp("PLAYER", _pOther->Get_Name()))
+    {
+        m_bColliderOff = true;
+    }
 }
 
 void CWeapon_Cane::OnCollision(CGameObject* _pOther, PxContactPair _information)

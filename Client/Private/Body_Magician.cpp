@@ -41,8 +41,8 @@ void CBody_Magician::Priority_Update(_float fTimeDelta)
 {
 	if (*m_IsDissolveOn)
 	{
-		m_fDissolveOn_Timer += fTimeDelta * 1.5f;
-		m_fDissolveOn_FinishTime += fTimeDelta * 1.5f;
+		m_fDissolveOn_Timer += fTimeDelta * 3.f;
+		m_fDissolveOn_FinishTime += fTimeDelta * 3.f;
 	}
 	else
 	{
@@ -52,8 +52,8 @@ void CBody_Magician::Priority_Update(_float fTimeDelta)
 
 	if (*m_IsDissolveOff)
 	{
-		m_fDissolveOff_Timer -= fTimeDelta * 1.5f;
-		m_fDissolveOff_FinishTime -= fTimeDelta * 1.5f;
+		m_fDissolveOff_Timer -= fTimeDelta * 3.f;
+		m_fDissolveOff_FinishTime -= fTimeDelta * 3.f;
 		if (m_fDissolveOff_Timer <= 0.f)
 		{
 			m_fDissolveOff_Timer = 0.f;

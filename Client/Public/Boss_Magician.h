@@ -31,8 +31,10 @@ public:
 public:
 	void PatternCreate() override;
 	void Active() override;
-	//void Return_To_Spawn() override;
 	void Stun() override;
+public:
+	_vector Bezier_Move(_vector _vStartPos, _vector vCurvePos, _vector vEndPos, _float fTime);
+
 public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
@@ -46,7 +48,13 @@ private:
 	_bool                            m_bExecution_Progress = {};
 	_bool                            m_IsDissolveOn = {};
 	_bool                            m_IsDissolveOff = {};
+	_bool                            Is_Change_Sword_Bone = {};
 	_bool                            m_bCanDissapear = {};
+	_bool                            m_bCatch_Special_Attack = {};
+
+	_float                           m_fSpecial_Skill_CoolTime = {};
+	_float                           m_fSlash_Skill_CoolTime = {};
+
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
@@ -200,6 +208,60 @@ public:
 	public:
 		Attack_ComboC() = default;
 		virtual ~Attack_ComboC() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Attack_ComboD : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_ComboD() = default;
+		virtual ~Attack_ComboD() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_bFirst = {};
+		_float4 m_vStartPos = {};
+		_float4 m_vCurvePos = {};
+		_float4 m_vEndPos = {};
+		_float m_fLinearTime = {};
+	};
+
+	class Attack_Slash : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_Slash() = default;
+		virtual ~Attack_Slash() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Attack_Special : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_Special() = default;
+		virtual ~Attack_Special() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Attack_Special_Catch : public CStates<CBoss_Magician>
+	{
+	public:
+		Attack_Special_Catch() = default;
+		virtual ~Attack_Special_Catch() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
 		void State_Enter(CBoss_Magician* pObject) override;
