@@ -382,12 +382,6 @@
     <Filter Include="02.GameObject\Player\State\Hurt\HurtKnockDown\WeakGetUp_F">
       <UniqueIdentifier>{f1e54435-ded0-4add-a093-3d83d43079c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\NPC">
-      <UniqueIdentifier>{87bbd46f-85e5-424d-a601-817de0477e07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\NPC\Body">
-      <UniqueIdentifier>{eb067c61-87c1-4176-b70d-03a038c0d1c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\BackGround\BlackScreen">
       <UniqueIdentifier>{ab2fc7e3-4a97-4275-bd1c-a52b55bdf5e3}</UniqueIdentifier>
     </Filter>
@@ -702,6 +696,24 @@
     </Filter>
     <Filter Include="03.UIObject\2.UIObjGroup\8.LandingMessages">
       <UniqueIdentifier>{ae3f58ba-b5d2-4f60-ab75-de6635f530ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs">
+      <UniqueIdentifier>{7e052f1e-0136-498e-b756-a68f1142641a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs\NPC">
+      <UniqueIdentifier>{87bbd46f-85e5-424d-a601-817de0477e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs\NPC\Body">
+      <UniqueIdentifier>{eb067c61-87c1-4176-b70d-03a038c0d1c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs\GhostNPC">
+      <UniqueIdentifier>{06f8db8a-5894-404a-9c7b-045eee5d2631}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs\GhostNPC\GhostBody">
+      <UniqueIdentifier>{1bc2ef6c-9c75-4d0b-b81b-0822c5dc6b5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\NPCs\GhostNPC\Lamp">
+      <UniqueIdentifier>{b6283636-afab-43fe-82d2-428cda60aea1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1111,10 +1123,10 @@
       <Filter>02.GameObject\Monster\01. Elite\HArmorLV2</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Aisemy.h">
-      <Filter>02.GameObject\NPC</Filter>
+      <Filter>02.GameObject\NPCs\NPC</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_Aisemy.h">
-      <Filter>02.GameObject\NPC\Body</Filter>
+      <Filter>02.GameObject\NPCs\NPC\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BlackScreen.h">
       <Filter>02.GameObject\BackGround\BlackScreen</Filter>
@@ -1319,6 +1331,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_Landing.h">
       <Filter>03.UIObject\2.UIObjGroup\8.LandingMessages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GhostAisemy.h">
+      <Filter>02.GameObject\NPCs\GhostNPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_GhostSemy.h">
+      <Filter>02.GameObject\NPCs\GhostNPC\GhostBody</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Lamp.h">
+      <Filter>02.GameObject\NPCs\GhostNPC\Lamp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1722,10 +1743,10 @@
       <Filter>02.GameObject\Monster\01. Elite\HArmorLV2</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Aisemy.cpp">
-      <Filter>02.GameObject\NPC</Filter>
+      <Filter>02.GameObject\NPCs\NPC</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_Aisemy.cpp">
-      <Filter>02.GameObject\NPC\Body</Filter>
+      <Filter>02.GameObject\NPCs\NPC\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BlackScreen.cpp">
       <Filter>02.GameObject\BackGround\BlackScreen</Filter>
@@ -1927,6 +1948,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Landing.cpp">
       <Filter>03.UIObject\2.UIObjGroup\8.LandingMessages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GhostAisemy.cpp">
+      <Filter>02.GameObject\NPCs\GhostNPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_GhostSemy.cpp">
+      <Filter>02.GameObject\NPCs\GhostNPC\GhostBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lamp.cpp">
+      <Filter>02.GameObject\NPCs\GhostNPC\Lamp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

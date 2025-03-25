@@ -63,6 +63,11 @@
 #include "Aisemy.h"
 #include "Body_Aisemy.h"
 
+#include "GhostAisemy.h"
+#include "Body_GhostSemy.h"
+#include "Lamp.h"
+
+
 #pragma endregion
 
 #pragma region 플레이어 관련 
@@ -555,7 +560,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region NPC
+#pragma region NPC / 고세미
 	lstrcpyW(m_szLoadingText, TEXT("NPC 모델을 생성한다."));
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_NPC_Aisemy_Body"),
@@ -570,6 +575,28 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBody_Aisemy::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	lstrcpyW(m_szLoadingText, TEXT("귀신 버젼 NPC 생성한다."));
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_GhoSemy_Body"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GhoSemy/ghostsemy.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), CGhostAisemy::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GhoSemy_Body"), CBody_GhostSemy::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_GhostSemyNoise"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/GhostSemy/T_TilingNoise16.png"), 1))))
+		return E_FAIL;
+
+	lstrcpyW(m_szLoadingText, TEXT("고세미 램프 생성한다."));
+	/* For.Prototype_GameObject_Lamp */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Lamp"), CLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Lamp */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Lamp"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Item/Lamp/NPCLamp.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
 #pragma endregion
 
 

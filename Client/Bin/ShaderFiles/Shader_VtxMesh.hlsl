@@ -259,7 +259,11 @@ struct PS_OUT_RIMLIGHT
 struct PS_OUT_BRANCH_GLOW
 {
     float4 vColor : SV_TARGET0;
-    //float4 vItemGlow : SV_TARGET1;
+};
+
+struct PS_OUT_LAMP
+{
+    float4 vLampGlow : SV_TARGET0;
 };
 
 
@@ -650,6 +654,26 @@ PS_OUT_BRANCH_GLOW PS_DEAD_BRANCH(PS_IN In)
     return Out;
 }
 
+PS_OUT_LAMP PS_LAMP(PS_IN In)
+{
+    PS_OUT_LAMP Out = (PS_OUT_LAMP) 0;
+
+    float2 vTexCoord = In.vTexcoord;
+    
+    float2 vLampCenter = float2(0.25f, 1.0f);
+    float fRadius = 0.24f;
+    float fDist = distance(vTexCoord, vLampCenter);
+    float fGlowValue = smoothstep(fRadius, fRadius - 0.02f, fDist);
+
+    float3 vGlowColor = float3(1.0f, 0.9f, 0.6f);
+    float fGlowPower = fGlowValue * g_fObjectAlpha * 3.0f;
+
+    Out.vLampGlow.rgb = vGlowColor * fGlowPower;
+    Out.vLampGlow.a = fGlowValue;
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -794,6 +818,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_DEAD_BRANCH();
+    }
+
+    pass LampPass // 13
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_LAMP();
     }
 
 }

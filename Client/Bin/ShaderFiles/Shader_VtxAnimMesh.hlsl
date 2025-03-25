@@ -23,6 +23,11 @@ float     g_TimeStart;
 matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
 
+/* °í¼¼¹ÌÂ» */
+Texture2D       g_GhostNoiseTexture;
+float4          g_GhostColor;
+float           g_DissolveValue;
+
 struct VS_IN
 {
 	float3			vPosition :   POSITION;	
@@ -476,7 +481,33 @@ PS_OUT PS_PLAYER_DISSOLVE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_GHOSEMY(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
 
+    float noise = g_GhostNoiseTexture.Sample(LinearSampler, In.vTexcoord).r;
+    float dissolve = saturate(g_DissolveValue - noise);
+
+    if (dissolve > 0.3f)
+        clip(-1);
+
+    float4 vDiffuseColor = g_GhostColor;
+    float4 vBlueColor = float4(0.6f, 1.0f, 0.9f, 1.0f);
+    float4 vResultColor = lerp(vDiffuseColor, vBlueColor, dissolve);
+    vResultColor.a = saturate(1.0f - dissolve);
+
+    Out.vDiffuse = vResultColor;
+
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;
+    float3x3 matWorld = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, matWorld));
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+
+    Out.vDepth = float4(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -558,5 +589,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();    
         GeometryShader = NULL;  
         PixelShader = compile ps_5_0 PS_PLAYER_DISSOLVE();  
+    }
+
+    pass GHOSEMY // 7
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_GHOSEMY();
     }
 }

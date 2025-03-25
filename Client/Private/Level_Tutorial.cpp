@@ -410,6 +410,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_NPC(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
