@@ -50,12 +50,27 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 	{
 		/*마우스 커서 위치에 따른 호버 이미지 이펙트 이미지 반응*/
 
-
-
-
-
-
 		Slot_Update_State();
+
+
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (Button->Get_Mouse_Select_OnOff())
+			{
+				if (40 == Button->Get_UI_GroupID())
+				{
+					Button->Set_Mouse_Select_OnOff(false);
+					
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0")), false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_1")), false);
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), true);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+				}
+			}
+		}
+
+
 	}
 
 }

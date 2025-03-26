@@ -3,6 +3,7 @@
 #include "PipeLine.h"
 #include "Renderer.h"
 #include "Prototype_Manager.h"
+#include "UI_Manager.h"
 
 /* 0. 엔진에서 클라이언트 프로젝트에 직접 보여주는 클래스 : CGameInstance, 부모클래스(CBase, CLevel, CGameObject, CComponent..) */
 /* 1. 클라이언트 프로젝트에서 엔진프로젝트에 있는 기능을 호출하고자한다라면 무조건 GameInstance를 통해서 호출할 수 있도록 하겠다.  */
@@ -237,6 +238,14 @@ public:
 	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
 	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기
 	void Clear_ALL(); // UI 모든 씬 지우기
+
+	const CUI_Manager::PLAYER_SAVE_STATE& Get_Player_State_SaveData();// const { return m_PlayerStat; }
+	void Set_Player_State_SaveData(const CUI_Manager::PLAYER_SAVE_STATE& PlayerData);// { m_PlayerStat = PlayerData; }
+
+	const CUI_Manager::PLAYER_SAVE_TALENT& Get_Player_Talent_SaveData();// const { return m_PlayerTalent; }
+	void Set_Player_Talent_SaveData(const CUI_Manager::PLAYER_SAVE_TALENT& PlayerData);// { m_PlayerTalent = PlayerData; }
+
+
 
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut);
