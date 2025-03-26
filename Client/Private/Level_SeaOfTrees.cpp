@@ -13,6 +13,8 @@
 
 #include "Button.h"
 #include "GameItem.h"
+#include "DeadBranch.h"
+
 #include "Effect_Mesh.h"
 #include "Effect_Particle.h"
 
@@ -527,43 +529,56 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
 {
 	char* m_strObjectNames[256] =
 	{
-		"Sphere"
+		"DeadBranch"
 	};
 
 	CGameItem::GAMEITEM_DESC ItemDesc = {};
-	ItemDesc.GameItemName = m_strObjectNames[0];
+
+	ItemDesc.iCurLevel = m_iCurrentLevel;
+
+	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	ItemDesc.GameItemName = m_strObjectNames[0];
+	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	ItemDesc.GameItemName = m_strObjectNames[0];
+	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	ItemDesc.GameItemName = m_strObjectNames[0];
+	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	ItemDesc.GameItemName = m_strObjectNames[0];
+	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_SEAOFTREES, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
+	//============================================================================================
+
+	CDeadBranch::DEADBRANCH_DESC BranchDesc = {};
+	BranchDesc.GameItemName = m_strObjectNames[0];
+	BranchDesc.eItemType = ITEM_TYPE::ITEM_DEADBRANCH;
+	BranchDesc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
 		return E_FAIL;
 
 

@@ -4,7 +4,6 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "BackGround.h"
-#include "LobTrap.h"
 
 #pragma region º¸½º 
 #include "Boss_Magician.h"

@@ -58,9 +58,6 @@
     <Filter Include="02.GameObject\0.Ladder">
       <UniqueIdentifier>{8d0f4be0-587b-4a21-8752-52f739d79161}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\LobTrap">
-      <UniqueIdentifier>{a04912fe-774e-47db-acec-0001369a83bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State">
       <UniqueIdentifier>{8356e62b-b30a-448f-a67b-7aeb368b9d32}</UniqueIdentifier>
     </Filter>
@@ -789,9 +786,6 @@
     <ClInclude Include="..\Public\Ladder.h">
       <Filter>02.GameObject\0.Ladder</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LobTrap.h">
-      <Filter>02.GameObject\LobTrap</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Varg.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Body</Filter>
     </ClInclude>
@@ -1417,9 +1411,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Ladder.cpp">
       <Filter>02.GameObject\0.Ladder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LobTrap.cpp">
-      <Filter>02.GameObject\LobTrap</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Boss_Varg.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg</Filter>

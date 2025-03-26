@@ -4,7 +4,6 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "BackGround.h"
-#include "LobTrap.h"
 
 #pragma region 보스 
 #include "Boss_Magician.h"
@@ -233,12 +232,6 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 
 #pragma region Objects
 	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));
-
-	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));
-	//LobTrap
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_LobTrap"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/LobTrap/LobTrap.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
 
 	//SM_Wall_Shelf
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_SM_Wall_Shelf"),

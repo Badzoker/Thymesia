@@ -28,8 +28,8 @@ HRESULT CDeadBranch::Initialize(void* _pArg)
         return E_FAIL;
 
     strcpy_s(m_szName, pDesc->GameItemName.c_str());
-
-    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Button"), "BUTTON");
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Button"), "BUTTON");
     m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
     if (FAILED(Ready_Components()))

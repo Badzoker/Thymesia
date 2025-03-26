@@ -293,7 +293,6 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
-    <ClInclude Include="..\Public\LobTrap.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Rock_On_Run_B.h" />
     <ClInclude Include="..\public\Rock_On_Run_BL.h" />
@@ -510,7 +509,6 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
-    <ClCompile Include="..\Private\LobTrap.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_B.cpp" />
     <ClCompile Include="..\private\Rock_On_Run_BL.cpp" />

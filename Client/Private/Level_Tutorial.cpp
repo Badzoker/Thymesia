@@ -598,6 +598,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	};
 
 	CGameItem::GAMEITEM_DESC ItemDesc = {};
+	
+	ItemDesc.iCurLevel = m_iCurrentLevel;
+
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
@@ -638,6 +641,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	CDeadBranch::DEADBRANCH_DESC BranchDesc = {};
 	BranchDesc.GameItemName = m_strObjectNames[0];
 	BranchDesc.eItemType = ITEM_TYPE::ITEM_DEADBRANCH;
+	BranchDesc.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
 		return E_FAIL;

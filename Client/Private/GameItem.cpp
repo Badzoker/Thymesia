@@ -33,8 +33,9 @@ HRESULT CGameItem::Initialize(void* _pArg)
     strcpy_s(m_GameItemName, pDesc->GameItemName.c_str());
 
     m_eItemType = pDesc->eItemType;
+    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Button"), "BUTTON");
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Button"), "BUTTON");
     m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
     if (FAILED(Ready_Components()))
@@ -50,7 +51,7 @@ HRESULT CGameItem::Initialize(void* _pArg)
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_PlayerInventory"), "Inventory");
+    m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_PlayerInventory"), "Inventory");
 
     switch (m_eItemType)
     {
