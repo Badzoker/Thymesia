@@ -736,6 +736,9 @@
     <Filter Include="03.UIObject\2.UIObjGroup\9.MapChange">
       <UniqueIdentifier>{b5d3d3be-b43e-4577-941f-9a89462027df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\SpecificObject">
+      <UniqueIdentifier>{480b9a3c-e2d5-4d05-9f66-b0d91896c326}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1374,6 +1377,9 @@
     <ClInclude Include="..\Public\UI_Map_Save_Image.h">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_Map_Save_Image</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SpecificObject.h">
+      <Filter>02.GameObject\SpecificObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2002,6 +2008,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Map_Save_Image.cpp">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_Map_Save_Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpecificObject.cpp">
+      <Filter>02.GameObject\SpecificObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

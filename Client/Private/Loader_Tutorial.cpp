@@ -438,14 +438,6 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Brick_Floor/brickFloor.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_P_Archive_Chair01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Archive_Chair01/P_Archive_Chair01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_Ladder"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_SM_BaseWall_01_Corner"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Woods/SM_BaseWall_01_Corner.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -1265,23 +1257,6 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_SM_WoodStair03"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodStairs/SM_WoodStair03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
-
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Model_candle01_fire"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/candle/candle01_fire.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

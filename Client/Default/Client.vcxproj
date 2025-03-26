@@ -259,6 +259,7 @@
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
+    <ClInclude Include="..\Public\SpecificObject.h" />
     <ClInclude Include="..\public\StunnedEnd.h" />
     <ClInclude Include="..\public\StunnedLoop.h" />
     <ClInclude Include="..\public\StunnedStart.h" />
@@ -476,6 +477,7 @@
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
+    <ClCompile Include="..\Private\SpecificObject.cpp" />
     <ClCompile Include="..\private\StunnedEnd.cpp" />
     <ClCompile Include="..\private\StunnedLoop.cpp" />
     <ClCompile Include="..\private\StunnedStart.cpp" />

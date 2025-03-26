@@ -19,27 +19,20 @@ private:
 	virtual ~CStaticObject() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Priority_Update(_float fTimeDelta) override;
-	virtual void Update(_float fTimeDelta) override;
-	virtual void Late_Update(_float fTimeDelta) override;
-	virtual HRESULT Render() override;
-	virtual HRESULT Render_Glow() override;
+	virtual HRESULT				Initialize_Prototype() override;
+	virtual HRESULT				Initialize(void* pArg) override;
+	virtual void				Priority_Update(_float fTimeDelta) override;
+	virtual void				Update(_float fTimeDelta) override;
+	virtual void				Late_Update(_float fTimeDelta) override;
+	virtual HRESULT				Render() override;
 
-	HRESULT Render_Shadow() override;
-	virtual HRESULT Render_Motion_Blur() override;	
-
-public:
-	virtual void                OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
-	virtual void                OnCollision(CGameObject* _pOther, PxContactPair _information);
-	virtual void                OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+	HRESULT						Render_Shadow() override;
+	virtual HRESULT				Render_Motion_Blur() override;	
 
 private:
-	virtual HRESULT Ready_Components() override;
-	virtual HRESULT Bind_ShaderResources() override;
-	virtual HRESULT Bind_Motion_Blur_ShaderResources();
-
+	virtual HRESULT				Ready_Components() override;
+	virtual HRESULT				Bind_ShaderResources() override;
+	virtual HRESULT				Bind_Motion_Blur_ShaderResources();
 
 private:
 	PxRigidDynamic*				m_pActor = { nullptr };
@@ -56,7 +49,6 @@ public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 END
