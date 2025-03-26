@@ -136,7 +136,6 @@
 #include "UI_TitleBackgroundBar.h"
 
 
-#include "UI_EmptyItemBox.h"
 #include "UI_ItemBackground.h"
 #include "UI_SquareFrame.h"
 #include "UI_SquareFrame_Hover.h"

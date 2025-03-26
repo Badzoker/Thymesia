@@ -324,8 +324,9 @@
     <ClInclude Include="..\Public\UI_DiamondIcon.h" />
     <ClInclude Include="..\Public\UI_Effect_Frame.h" />
     <ClInclude Include="..\Public\UI_Effect_SlotFrame.h" />
-    <ClInclude Include="..\Public\UI_EmptyItemBox.h" />
-    <ClInclude Include="..\Public\UI_Feather_Icon.h" />
+    <ClInclude Include="..\Public\UI_Feather_Icon.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\UI_Frame.h" />
     <ClInclude Include="..\Public\UI_GameLogoImage.h" />
     <ClInclude Include="..\Public\UI_HightlightBar.h" />
@@ -344,6 +345,9 @@
     <ClInclude Include="..\Public\UI_LoadingScreen.h" />
     <ClInclude Include="..\Public\UI_LockedIcon.h" />
     <ClInclude Include="..\Public\UI_LootNotifyBackground.h" />
+    <ClInclude Include="..\Public\UI_MapEntryFrame.h" />
+    <ClInclude Include="..\Public\UI_Map_Save_Image.h" />
+    <ClInclude Include="..\Public\UI_MediaFrame.h" />
     <ClInclude Include="..\Public\UI_MemoryShardsIcon.h" />
     <ClInclude Include="..\Public\UI_MouseCursor.h" />
     <ClInclude Include="..\Public\UI_MPBar1_Border.h" />
@@ -535,8 +539,9 @@
     <ClCompile Include="..\Private\UI_DiamondIcon.cpp" />
     <ClCompile Include="..\Private\UI_Effect_Frame.cpp" />
     <ClCompile Include="..\Private\UI_Effect_SlotFrame.cpp" />
-    <ClCompile Include="..\Private\UI_EmptyItemBox.cpp" />
-    <ClCompile Include="..\Private\UI_Feather_Icon.cpp" />
+    <ClCompile Include="..\Private\UI_Feather_Icon.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\UI_Frame.cpp" />
     <ClCompile Include="..\Private\UI_GameLogoImage.cpp" />
     <ClCompile Include="..\Private\UI_HightlightBar.cpp" />
@@ -555,6 +560,9 @@
     <ClCompile Include="..\Private\UI_LoadingScreen.cpp" />
     <ClCompile Include="..\Private\UI_LockedIcon.cpp" />
     <ClCompile Include="..\Private\UI_LootNotifyBackground.cpp" />
+    <ClCompile Include="..\Private\UI_MapEntryFrame.cpp" />
+    <ClCompile Include="..\Private\UI_Map_Save_Image.cpp" />
+    <ClCompile Include="..\Private\UI_MediaFrame.cpp" />
     <ClCompile Include="..\Private\UI_MemoryShardsIcon.cpp" />
     <ClCompile Include="..\Private\UI_MouseCursor.cpp" />
     <ClCompile Include="..\Private\UI_MPBar1_Border.cpp" />

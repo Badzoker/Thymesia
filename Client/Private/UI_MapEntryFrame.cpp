@@ -1,18 +1,18 @@
 #include "pch.h" 
-#include "UI_EmptyItemBox.h"
+#include "UI_MapEntryFrame.h"
 #include "GameInstance.h"
 
-CUI_EmptyItemBox::CUI_EmptyItemBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_MapEntryFrame::CUI_MapEntryFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Button{ pDevice, pContext }
 {
 }
 
-CUI_EmptyItemBox::CUI_EmptyItemBox(const CUI_EmptyItemBox& Prototype)
+CUI_MapEntryFrame::CUI_MapEntryFrame(const CUI_MapEntryFrame& Prototype)
 	: CUI_Button(Prototype)
 {
 }
 
-HRESULT CUI_EmptyItemBox::Initialize_Prototype()
+HRESULT CUI_MapEntryFrame::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -20,7 +20,7 @@ HRESULT CUI_EmptyItemBox::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUI_EmptyItemBox::Initialize(void* pArg)
+HRESULT CUI_MapEntryFrame::Initialize(void* pArg)
 {
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -32,30 +32,15 @@ HRESULT CUI_EmptyItemBox::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_EmptyItemBox::Priority_Update(_float fTimeDelta)
+void CUI_MapEntryFrame::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUI_EmptyItemBox::Update(_float fTimeDelta)
+void CUI_MapEntryFrame::Update(_float fTimeDelta)
 {
-	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
-	{
-		if (__super::On_Mouse_UI(g_hWnd,3))
-			m_bImageOn = true;
-		else
-			m_bImageOn = false;
-
-		if (m_bImageOn)
-		{
-			if (__super::Mouse_Select(g_hWnd,DIM_LB,3))
-			{
-				m_bMouseSelected = true; // 최초에 마우스 클릭이 있는지 체크
-			}
-		}
-	}
 }
 
-void CUI_EmptyItemBox::Late_Update(_float fTimeDelta)
+void CUI_MapEntryFrame::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
@@ -63,7 +48,7 @@ void CUI_EmptyItemBox::Late_Update(_float fTimeDelta)
 	}
 }
 
-HRESULT CUI_EmptyItemBox::Render()
+HRESULT CUI_MapEntryFrame::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -71,14 +56,13 @@ HRESULT CUI_EmptyItemBox::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
-		return E_FAIL;
+
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(1);
+	m_pShaderCom->Begin(m_iShaderPassNum);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -87,10 +71,10 @@ HRESULT CUI_EmptyItemBox::Render()
 	return S_OK;
 }
 
-HRESULT CUI_EmptyItemBox::Ready_Components()
+HRESULT CUI_MapEntryFrame::Ready_Components()
 {
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EmptyItemBox"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MapEntryFrame"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -108,33 +92,33 @@ HRESULT CUI_EmptyItemBox::Ready_Components()
 	return S_OK;
 }
 
-CUI_EmptyItemBox* CUI_EmptyItemBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_MapEntryFrame* CUI_MapEntryFrame::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_EmptyItemBox* pInstance = new CUI_EmptyItemBox(pDevice, pContext);
+	CUI_MapEntryFrame* pInstance = new CUI_MapEntryFrame(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_EmptyItemBox");
+		MSG_BOX("Failed To Created : CUI_MapEntryFrame");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_EmptyItemBox::Clone(void* pArg)
+CGameObject* CUI_MapEntryFrame::Clone(void* pArg)
 {
-	CUI_EmptyItemBox* pInstance = new CUI_EmptyItemBox(*this);
+	CUI_MapEntryFrame* pInstance = new CUI_MapEntryFrame(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_EmptyItemBox");
+		MSG_BOX("Failed To Cloned : CUI_MapEntryFrame");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_EmptyItemBox::Free()
+void CUI_MapEntryFrame::Free()
 {
 	__super::Free();
 
