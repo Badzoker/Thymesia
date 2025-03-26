@@ -63,7 +63,7 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
             ReadFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
 
             for (_uint i = 0; i < CCell::POINT_END; i++)
-                vPoints[i].y -= 0.1f;
+                vPoints[i].y -= 0.05f;
 
             // 루프 탈출문 조건
             if (0 == dwByte)

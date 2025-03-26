@@ -152,7 +152,7 @@ HRESULT CLoader::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformM
 
 		_tchar		szPrototypeName[MAX_PATH] = {};
 
-		MultiByteToWideChar(CP_ACP, 0, strPrototypeName.c_str(), strlen(strPrototypeName.c_str()), szPrototypeName, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, strPrototypeName.c_str(), static_cast<_int>(strlen(strPrototypeName.c_str())), szPrototypeName, MAX_PATH);
 
 		string strFBXPath = pFilePath + FBXName + ".fbx";
 
