@@ -113,6 +113,57 @@ _uint APIENTRY Thread_Main_SeaOfTrees(void* pArg)
 	return 0;
 }
 
+
+vector<string> GetFBXFileNames(const std::string& folderPath)
+{
+	vector<string> fbxFiles;
+
+	string searchPath = folderPath + "\\*.fbx";
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findData);
+
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			string filename = findData.cFileName;
+			size_t dot = filename.find_last_of('.');
+			if (dot != string::npos)
+				filename = filename.substr(0, dot);
+
+			fbxFiles.push_back(filename);
+		} while (FindNextFileA(hFind, &findData) != 0);
+
+		FindClose(hFind);
+	}
+
+	return fbxFiles;
+}
+
+HRESULT CLoader::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
+{
+	vector<string> strFBXNames;
+
+	strFBXNames = GetFBXFileNames(pFilePath);
+
+	for (auto& FBXName : strFBXNames)
+	{
+		string strPrototypeName = "Prototype_Component_Model_" + FBXName;
+
+		_tchar		szPrototypeName[MAX_PATH] = {};
+
+		MultiByteToWideChar(CP_ACP, 0, strPrototypeName.c_str(), strlen(strPrototypeName.c_str()), szPrototypeName, MAX_PATH);
+
+		string strFBXPath = pFilePath + FBXName + ".fbx";
+
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, szPrototypeName,
+			CModel::Create(m_pDevice, m_pContext, strFBXPath.c_str(), CModel::MODEL_NONANIM, PreTransformMatrix))))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 HRESULT CLoader_SeaOfTrees::Initialize(LEVELID eNextLevelID)
 {
 	__super::Initialize(eNextLevelID);
@@ -399,22 +450,13 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_12.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_Ladder_1_a"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/SM_Ladder_1_a.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodFence01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/SM_WoodFence01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodStairs03."),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/SM_WoodStairs03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 
-
-
-
+	if(FAILED(Load_BinaryModels("../Bin/Resources/Models/Objects/Circus_08/", PreTransformMatrix)))
+		return E_FAIL;
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"),

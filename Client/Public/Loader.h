@@ -24,6 +24,8 @@ public:
 	}
 
 
+	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix);
+
 #ifdef _DEBUG
 public:
 	void SetUp_WindowText();
