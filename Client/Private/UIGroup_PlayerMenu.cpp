@@ -51,6 +51,15 @@ void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 		{
 			ChangePopButton_Check();
 		}
+
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+		{
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+		}
 	}
 }
 
@@ -103,7 +112,7 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 				m_bChangePopOpen = true;
 
 			}
-			if (106 == Button->Get_UI_GroupID()) //게임 재개
+			if (106 == Button->Get_UI_GroupID()) // 게임 재개하기
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
@@ -113,7 +122,7 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 
 			}
-			if (120 == Button->Get_UI_GroupID()) //게임 재개
+			if (120 == Button->Get_UI_GroupID()) // 키보드 esc 버튼
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기

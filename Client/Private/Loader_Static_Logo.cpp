@@ -145,7 +145,7 @@
 #include "UI_TitleBackgroundBar.h"
 
 
-#include "UI_EmptyItemBox.h"
+//#include "UI_EmptyItemBox.h"
 #include "UI_ItemBackground.h"
 #include "UI_SquareFrame.h"
 #include "UI_SquareFrame_Hover.h"
@@ -170,6 +170,10 @@
 #include "UI_LootNotifyBackground.h"
 #include "UI_Talent_Icon.h"
 #include "UI_LandingScreen.h"
+
+#include "UI_MapEntryFrame.h"
+#include "UI_Map_Save_Image.h"
+#include "UI_MediaFrame.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -763,11 +767,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma region UI 텍스쳐
 	lstrcpyW(m_szLoadingText, TEXT("UI 생성한다."));
 
-	///* For.Prototype_Component_Shader_VtxPosTex_UI */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
-	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex_UI.hlsl"), VTXPOSTEX_UI::Elements, VTXPOSTEX_UI::iNumElements))))
-	//	return E_FAIL;
-
 	//====================================================================================================================================== 게임 인트로
 	/* For.Prototype_Component_Texture_UI_GameLogoImage*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_GameLogoImage"),
@@ -838,17 +837,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_TextBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
-	//====================================================================================================================================== 공용 꾸밈 텍스처
-	///* For.Prototype_Component_Texture_UI_ButtonHighlight*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ButtonHighlight"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_ButtonHighlight_0%d.dds"), 2))))
-	//	return E_FAIL;
-
-	///* For.Prototype_GameObject_UI_KeyBox_Long */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_ButtonHighlight"),
-	//	CUI_ButtonHighlight::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 	//====================================================================================================================================== 공용 꾸밈 텍스처
 	/* For.Prototype_Component_Texture_UI_DecorationLine*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_DecorationLine"),
@@ -925,7 +913,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_UI_LevelImage*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LevelImage"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_LevelImage_Circus.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_LevelImage_%d.dds"), 4))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_LevelImage */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LevelImage"),
@@ -1180,24 +1168,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	//====================================================================================================================================== 인벤토리
 
-	/* For.Prototype_Component_Texture_UI_EmptyItemBox*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EmptyItemBox"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_EmptyItemBox.dds"), 1))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_UI_EmptyItemBox */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_EmptyItemBox"),
-		CUI_EmptyItemBox::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	///* For.Prototype_Component_Texture_UI_ForgottenFeatherIcon*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ForgottenFeatherIcon"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_ForgottenFeatherIcon.dds"), 1))))
-	//	return E_FAIL;
-	///* For.Prototype_GameObject_UI_ForgottenFeatherIcon */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_ForgottenFeatherIcon"),
-	//	CUI_ForgottenFeatherIcon::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
 	/* For.Prototype_Component_Texture_UI_ItemBackground*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ItemBackground"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_ItemBackground.dds"), 1))))
@@ -1224,15 +1194,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_SquareFrame_Hover"),
 		CUI_SquareFrame_Hover::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-	///* For.Prototype_Component_Texture_UI_MemoryCollectionIcon*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MemoryCollectionIcon"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_MemoryCollectionIcon.dds"), 1))))
-	//	return E_FAIL;
-	///* For.Prototype_GameObject_UI_MemoryCollectionIcon */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_MemoryCollectionIcon"),
-	//	CUI_MemoryCollectionIcon::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
 	/* For.Prototype_Component_Texture_UI_Item_Icon*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Item_Icon"),
@@ -1289,6 +1250,36 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UI_Talent_Icon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Talent_Icon"),
 		CUI_Talent_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	//====================================================================================================================================== 맵?
+
+	/* For.Prototype_Component_Texture_UI_MapEntryFrame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MapEntryFrame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/MapChange/UI_MapEntryFrame_%d.dds"), 2))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_MapEntryFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_MapEntryFrame"),
+		CUI_MapEntryFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Map_Save_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Map_Save_Image"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/MapChange/UI_MapTabImage_%d.dds"), 4))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_MapEntryFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Map_Save_Image"),
+		CUI_Map_Save_Image::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_MediaFrame*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MediaFrame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/MapChange/UI_MediaFrame.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_MediaFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_MediaFrame"),
+		CUI_MediaFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

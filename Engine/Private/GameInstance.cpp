@@ -19,7 +19,6 @@
 #include "Shadow.h"
 #include "Monster_Manager.h"
 #include "Projectile_Manager.h"
-#include "UI_Manager.h"
 #include "GameObject.h"
 #include "PhysX_Manager.h"
 #include "TriggerManager.h"
@@ -771,6 +770,26 @@ void CGameInstance::Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring
 void CGameInstance::Clear_ALL()
 {
 	return m_pUI_Manager->Clear_ALL();
+}
+
+const CUI_Manager::PLAYER_SAVE_STATE& CGameInstance::Get_Player_State_SaveData()
+{
+	return m_pUI_Manager->Get_Player_State_SaveData();
+}
+
+void CGameInstance::Set_Player_State_SaveData(const CUI_Manager::PLAYER_SAVE_STATE& PlayerData)
+{
+	return m_pUI_Manager->Set_Player_State_SaveData(PlayerData);
+}
+
+const CUI_Manager::PLAYER_SAVE_TALENT& CGameInstance::Get_Player_Talent_SaveData()
+{
+	return m_pUI_Manager->Get_Player_Talent_SaveData();
+}
+
+void CGameInstance::Set_Player_Talent_SaveData(const CUI_Manager::PLAYER_SAVE_TALENT& PlayerData)
+{
+	return m_pUI_Manager->Set_Player_Talent_SaveData(PlayerData);
 }
 
 HRESULT CGameInstance::LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
