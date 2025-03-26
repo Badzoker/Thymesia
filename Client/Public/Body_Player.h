@@ -167,6 +167,11 @@ public:
 	void STATE_CLAW_CHARGE_FULL_ATTACK_Method();
 	void STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();	
 
+
+	/* 스킬 관련 */
+	void STATE_HALBERDS_B_Method();	
+	void STATE_SCYTHE_B_Method();	
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

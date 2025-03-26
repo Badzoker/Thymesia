@@ -369,7 +369,9 @@
     <ClInclude Include="..\Public\Weapon_Dagger.h" />
     <ClInclude Include="..\Public\Weapon_Axe.h" />
     <ClInclude Include="..\Public\Weapon_GreatSword.h" />
+    <ClInclude Include="..\public\Weapon_Halberd.h" />
     <ClInclude Include="..\Public\Weapon_Magician_Sword.h" />
+    <ClInclude Include="..\public\Weapon_Scythe.h" />
     <ClInclude Include="..\Public\Weapon_Shield.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -578,7 +580,9 @@
     <ClCompile Include="..\Private\Weapon_Dagger.cpp" />
     <ClCompile Include="..\Private\Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Weapon_GreatSword.cpp" />
+    <ClCompile Include="..\private\Weapon_Halberd.cpp" />
     <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp" />
+    <ClCompile Include="..\private\Weapon_Scythe.cpp" />
     <ClCompile Include="..\Private\Weapon_Shield.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

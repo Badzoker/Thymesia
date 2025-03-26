@@ -17,10 +17,15 @@ float g_fObjectAlpha;
 
 /*  Dissolve 관련 상수 버퍼들 */
 Texture2D g_NoiseTexture;
+Texture2D g_DissolveNoiseTexture;
+
 float g_DissolveAmount;
+float g_ReverseDissolveTime;    
 float g_EdgeWidth = 1.f;
 float4 g_EdgeColor = { 0.f, 0.f, 1.f, 1.f };
 float g_Time;
+bool g_Dead;
+bool g_Appear;
 
 float4x4 g_PreWorldMatrix, g_PreViewMatrix; 
 
@@ -675,6 +680,59 @@ PS_OUT_LAMP PS_LAMP(PS_IN In)
     return Out;
 }
 
+
+PS_OUT_GLOW PS_WEAPON_GLOW(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+    
+    
+    if (g_Appear)
+    {
+        In.vTexcoord.x += g_Time * 5.f;
+        //In.vTexcoord.y += g_Time * 10.f;      
+    
+        float3 Color = float3(0.3f, 1.f, 0.7f);
+        Out.vGlow.rgb = Color;
+        Out.vGlow.a = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord).r / 3.f;
+
+        float2 noiseUV = In.vTexcoord;
+    
+        float noiseValue = g_DissolveNoiseTexture.Sample(LinearSampler_Clamp, noiseUV).r;
+  
+        if ((1.0 - noiseValue) > g_ReverseDissolveTime)
+        {
+            clip(-1);
+        }
+    }
+    
+    
+    //if (!g_Dead && !g_Appear)
+    //{
+    
+    //    In.vTexcoord.x += g_Time * 5.f;
+    ////In.vTexcoord.y += g_Time * 10.f;      
+    
+    //    float3 Color = float3(0.3f, 1.f, 0.7f);
+    //    Out.vGlow.rgb = Color;
+    //    Out.vGlow.a = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord).r / 3.f;
+    //}
+    
+    if (g_Dead)
+    {
+
+        float2 noiseUV = In.vTexcoord;
+    
+        float noiseValue = g_DissolveNoiseTexture.Sample(LinearSampler_Clamp, noiseUV).r;
+  
+        if (noiseValue < g_DissolveAmount)
+        {
+            clip(-1);
+        }
+    }
+   
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -830,6 +888,19 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_LAMP();
+    }
+
+
+
+    pass WeaponGlowPass // 14  Weapon 무기용 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_WEAPON_GLOW();
     }
 
 }

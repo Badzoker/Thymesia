@@ -78,6 +78,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
             *m_pParentState = CPlayer::STATE_START_WALK;
             *m_pParentPhsaeState = CPlayer::PHASE_START;
             *m_pPreParentState = CPlayer::STATE_DEAD;
+            dynamic_cast<CPlayer*>(m_pParent)->Increase_PlayerHp(dynamic_cast<CPlayer*>(m_pParent)->Get_FullHp());  
 
             *m_pParentNextStateCan = true;
 
@@ -295,6 +296,12 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2:  
         STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();   
+        break;
+    case CPlayer::STATE_HALBERDS_B: 
+        STATE_HALBERDS_B_Method();  
+        break;
+    case CPlayer::STATE_SCYTHE_B:   
+        STATE_SCYTHE_B_Method();    
         break;
     default:
         break;
@@ -2221,6 +2228,30 @@ void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
     if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())   
     {
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+    }
+}
+
+void CBody_Player::STATE_HALBERDS_B_Method()
+{
+    m_pModelCom->SetUp_Animation(107, false);
+    m_iRenderState = STATE_NORMAL_RENDER;       
+
+    if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())   
+    {   
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+    }
+}
+
+void CBody_Player::STATE_SCYTHE_B_Method()
+{
+    m_pModelCom->SetUp_Animation(122, false);   
+    m_iRenderState = STATE_NORMAL_RENDER;   
+
+    if (m_pModelCom->Get_VecAnimation().at(122)->isAniMationFinish())   
+    {
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
 }
