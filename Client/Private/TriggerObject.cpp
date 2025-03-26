@@ -28,7 +28,6 @@ HRESULT CTriggerObject::Initialize(void* _pArg)
     m_tagInfoTempCollider.fRotation = pDesc->fRotation;
     m_tagInfoTempCollider.fScale = pDesc->fScale;
 
-    //m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ m_tagInfoTempCollider.fScale.y, m_tagInfoTempCollider.fScale.x, m_tagInfoTempCollider.fScale.z }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
     _uint settingColliderGroup = GROUP_TYPE::PLAYER;

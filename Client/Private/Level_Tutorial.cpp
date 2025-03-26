@@ -5,9 +5,10 @@
 #include "Camera_Free.h"
 #include "Layer.h"	
 
-#include "Object.h"
-#include "EnvironmentObject.h"
-#include "TriggerObject.h"
+#include "Object.h"					// 일반 오브젝트라고 생각하세요ㅋ (깨작깨작한 사물 오브젝트)
+#include "EnvironmentObject.h"		// 인스턴싱용 환경용 오브젝트ㅋㅋ
+#include "TriggerObject.h"			// 말그대로 트리거 오브젝트ㅋㅋ(피직스 콜라이더 렌더링 담아줄 오브젝트)
+#include "SpecificObject.h"			// 맵 어디서나 다 쓰일 오브젝트ㅋㅋ (사다리 or 의자 같은 거)
 #include "BlackScreen.h"
 
 #include "UI_LeftBackground.h"
@@ -219,7 +220,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 	// 
 	//Load_Objects(140); //Tutorial Map
 	//Load_Objects(142); //Tutorial Map
-	if (FAILED(Load_Objects(145)))
+	//if (FAILED(Load_Objects(145)))
+	if (FAILED(Load_Objects(151)))
 		return E_FAIL;//Tutorial Map
 	//Load_Objects(301); //Circus Map
 	//Load_Objects(303); //Circus Map
@@ -228,6 +230,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
 	Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
+
+
+	Load_SpecificObjects(2);
 
 	//_ulong dwByte = {}; 
 	////HANDLE hFile = CreateFile(TEXT("../Map_File/real76.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -940,6 +945,7 @@ HRESULT CLevel_Tutorial::Load_TriggerObjects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScale, sizeof(_float3), &dwByte, nullptr);
+		Desc.iCurLevel = m_iCurrentLevel;
 
 		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_TUTORIAL, TEXT("Layer_TriggerObject"), &Desc));
 
@@ -952,11 +958,36 @@ HRESULT CLevel_Tutorial::Load_TriggerObjects(_int iObject_Level)
 	return S_OK;
 }
 
-HRESULT CLevel_Tutorial::Load_InstancingObjects(_int iObject_Level)
-{
-	_ulong dwByte = {};
+//HRESULT CLevel_Tutorial::Load_InstancingObjects(_int iObject_Level)
+//{
+//	_ulong dwByte = {};
+//
+//	string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+//
+//	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+//
+//	_tchar		szLastPath[MAX_PATH] = {};
+//
+//	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+//
+//	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+//
+//	if (hFile == INVALID_HANDLE_VALUE)
+//	{
+//		MSG_BOX("Failed To Load ObjectData File!");
+//		return E_FAIL;
+//	}
+//
+//	_uint iSize = 0;
+//
+//	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+//
+//	return S_OK;
+//}
 
-	string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
+{
+	string strDataPath = "../Bin/DataFiles/SpecificObjectData/SpecificObjectData";
 
 	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 
@@ -972,9 +1003,33 @@ HRESULT CLevel_Tutorial::Load_InstancingObjects(_int iObject_Level)
 		return E_FAIL;
 	}
 
-	_uint iSize = 0;
+	DWORD dwByte = 0;
 
+	_uint iSize = 0;
 	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CSpecificObject::SpecificObject_Desc Desc{};
+
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+		Desc.ObjectName = szLoadName;
+		Desc.iCurLevel = m_iCurrentLevel;
+
+		CSpecificObject* pObject = nullptr;
+		if (pObject == nullptr)
+		{
+			pObject = reinterpret_cast<CSpecificObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
+		}
+	}
+
 
 	return S_OK;
 }

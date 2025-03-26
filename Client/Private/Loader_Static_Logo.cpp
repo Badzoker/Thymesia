@@ -182,6 +182,7 @@
 #include "GroundObject.h"		// 인스턴싱용 게임오브젝트
 #include "TriggerObject.h"		// 트리거용 게임오브젝트
 #include "BlackScreen.h"
+#include "SpecificObject.h"		//	맵 어디서든 다 쓰일 오브젝트 얘가 진짜 사다리 의자 이런거 관리함 ㅋ
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -756,8 +757,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex_UI.hlsl"), VTXPOSTEX_UI::Elements, VTXPOSTEX_UI::iNumElements))))
 		return E_FAIL;
-
-
 
 
 #pragma endregion 
@@ -1559,8 +1558,27 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		CEffect_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 #pragma endregion
+
+
+#pragma region 항상 있는 오브젝트(의자나 사다리 램프 같은거)
+	_matrix SpecificPreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_P_Archive_Chair01"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Archive_Chair01/P_Archive_Chair01.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_NPCLamp"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Lamp/NPCLamp.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_SM_Woods"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), CSpecificObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 	/* 로딩이 완료되었습니다.*/
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));
