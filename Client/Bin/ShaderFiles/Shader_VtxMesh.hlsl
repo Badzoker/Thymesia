@@ -9,8 +9,9 @@ matrix g_LightViewMatrix[3];
 matrix g_LightProjMatrix[3];
 
 float4 g_fAlphaValue;
-float g_RimPower = 7.0f;
-float4 g_RimColor = { 0.8f, 0.8f, 0.8f, 1.0f };
+float g_RimPower = 0.5f;
+float4 g_RimColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+float fRimStrength = 0.5f;
 float g_fObjectAlpha;
 
 
@@ -608,12 +609,12 @@ PS_OUT_RIMLIGHT PS_MAIN_OBJECT_RIMLIGHT(PS_IN In)
     PS_OUT_RIMLIGHT Out = (PS_OUT_RIMLIGHT) 0;
 
     float3 vDirection = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
-
-    float fRim = (1 - saturate(dot(vDirection, In.vNormal.xyz)));
+    
+    float fRim = (1 - dot(vDirection, In.vNormal.xyz));
     fRim = pow(abs(fRim), g_RimPower);
     
-    float3 RimLight = fRim * g_RimPower * g_RimColor.rgb * g_fObjectAlpha;
-    Out.vColor.rgb += RimLight;
+    float4 vRimLight = fRim * fRimStrength * g_RimColor * g_fObjectAlpha;
+    Out.vColor += vRimLight;
 
     return Out;
 }
