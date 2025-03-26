@@ -110,6 +110,10 @@ public:
 		STATE_CLAW_CHARGE_LOOP,
 		STATE_CLAW_CHARGE_FULL_ATTACK,
 		STATE_CLAW_LONG_PLUNDER_ATTACK2,	
+
+		/* 플레이어 스킬 */
+		STATE_HALBERDS_B,	
+		STATE_SCYTHE_B,	
 	};
 
 
@@ -194,22 +198,22 @@ private:
 #pragma region UI 관련 함수 
 private:
 	/* UI 관련 맴버 변수들 선언 */
-	_uint								m_iLevel = { 1 };
+	_int								m_iLevel = { 1 };
 
-	_uint								m_iFullHp = { 300 };
-	_uint								m_iCurrentHp = { 300 };
+	_int								m_iFullHp = { 300 };
+	_int								m_iCurrentHp = { 300 };
 
-	_uint								m_iFullMp = { 150 };
-	_uint								m_iCurrentMp = { 150 };
+	_int								m_iFullMp = { 150 };
+	_int								m_iCurrentMp = { 150 };
 
 
 	_uint								m_iAttackPower = { 25 };
-	_uint								m_iClawAttackPower = { 200 };
+	_int								m_iClawAttackPower = { 200 };
 
-	_uint								m_iPotionCount = { 3 };
-	_uint								m_iFeathers = { 3 };
+	_int								m_iPotionCount = { 3 };
+	_int								m_iFeathers = { 3 };
 
-	_uint								m_iMemoryFragment = { 0 };
+	_int								m_iMemoryFragment = { 0 };
 
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
@@ -229,24 +233,24 @@ public:
 	void     Set_Potion_Number(_uint _iPotionCount) { m_iPotionCount = _iPotionCount; }
 	void     Increase_PotionNumber(_uint _iCount) { m_iPotionCount += _iCount; }
 
-	_uint    Get_Level() { return m_iLevel; }
+	_int    Get_Level() { return m_iLevel; }
 
-	_uint    Get_FullHp() { return m_iFullHp; }
-	_uint    Get_CurrentHp() { return m_iCurrentHp; }
+	_int    Get_FullHp() { return m_iFullHp; }
+	_int    Get_CurrentHp() { return m_iCurrentHp; }	
 
-	_uint    Get_FullMp() { return m_iFullMp; }
-	_uint    Get_CurrentMp() { return m_iCurrentMp; }
+	_int    Get_FullMp() { return m_iFullMp; }	
+	_int    Get_CurrentMp() { return m_iCurrentMp; }	
 
-	_uint    Get_AttackPower() { return m_iAttackPower; }
+	_int    Get_AttackPower() { return m_iAttackPower; }
 
-	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
-	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }
+	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }	
+	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }	
 
-	_uint    Get_ClawAttacPower() { return m_iClawAttackPower; }
+	_int    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
-	_uint    Get_MemoryFragment() { return m_iMemoryFragment; }
+	_int    Get_MemoryFragment() { return m_iMemoryFragment; }
 
-	_uint    Get_Potion_Count() { return m_iPotionCount; }
+	_int    Get_Potion_Count() { return m_iPotionCount; }
 	/* ============================== */
 #pragma endregion 
 

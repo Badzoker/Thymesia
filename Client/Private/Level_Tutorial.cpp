@@ -176,7 +176,7 @@ HRESULT CLevel_Tutorial::Ready_Lights()
 	ZeroMemory(&LightDesc, sizeof(LightDesc));
 
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);

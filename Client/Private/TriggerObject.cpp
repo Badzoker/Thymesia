@@ -58,10 +58,10 @@ void CTriggerObject::Update(_float _fTimeDelta)
 
 void CTriggerObject::Late_Update(_float _fTimeDelta)
 {
-    if (m_pGameInstance->Get_DIKeyState(DIK_1) & 0x80)
+   /* if (m_pGameInstance->Get_DIKeyState(DIK_1) & 0x80)
     {
         m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.5f);
-    }
+    }*/
 }
 
 HRESULT CTriggerObject::Render()

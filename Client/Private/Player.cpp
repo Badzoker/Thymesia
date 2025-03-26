@@ -8,6 +8,8 @@
 #include "Animation.h"
 #include "ClawWeapon.h"
 #include "PlayerCamera.h"
+#include "Weapon_Halberd.h"	
+#include "Weapon_Scythe.h"	
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -61,14 +63,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	// 시작 지점의 플레이어 위치 1_23일 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, _fvector{ 111.7f, 15.3f, 51.5f, 1.0f });
-
-
-	//_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
-	//_vector vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-	//_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
-	//_vector vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // 서커스맵 시작위칩
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
@@ -282,6 +276,37 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+
+#pragma region 스킬공격 낫
+	if ((m_pGameInstance->isKeyEnter(DIK_2))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_SCYTHE_B;
+	}
+#pragma endregion 
+
+
+
+#pragma region 스킬공격 할버드 
+	if ((m_pGameInstance->isKeyEnter(DIK_1))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_HALBERDS_B;
+	}
+#pragma endregion 
+
 #pragma region 죽음 
 	if ( (m_pGameInstance->isKeyEnter(DIK_T) || m_iCurrentHp <= 0)
 		&& m_iState != STATE_DEAD)	
@@ -795,6 +820,47 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 		return E_FAIL;
 
 
+	/* 할버드 무기를 만든다. */
+	CWeapon_Halberd::WEAPON_DESC		Weapon_HalberdDesc{};
+
+
+	Weapon_HalberdDesc.pParent = this;
+	Weapon_HalberdDesc.pParentModel = m_pModel;
+	Weapon_HalberdDesc.pParentState = &m_iState;
+	Weapon_HalberdDesc.pPreParentState = &m_iPreState;
+	Weapon_HalberdDesc.pParentPhaseState = &m_iPhaseState;
+	Weapon_HalberdDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	Weapon_HalberdDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_HalberdDesc.fSpeedPerSec = 0.f;
+	Weapon_HalberdDesc.fRotationPerSec = 10.f;
+
+	Weapon_HalberdDesc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Halberd"), LEVEL_STATIC, TEXT("Prototype_GameObject_Halberd"), &Weapon_HalberdDesc)))
+		return E_FAIL;
+
+
+
+
+	/*낫 무기를 만든다. */
+	CWeapon_Scythe::WEAPON_DESC		Weapon_ScytheDesc{};
+
+	Weapon_ScytheDesc.pParent = this;
+	Weapon_ScytheDesc.pParentModel = m_pModel;
+	Weapon_ScytheDesc.pParentState = &m_iState;
+	Weapon_ScytheDesc.pPreParentState = &m_iPreState;
+	Weapon_ScytheDesc.pParentPhaseState = &m_iPhaseState;
+	Weapon_ScytheDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	Weapon_ScytheDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_ScytheDesc.fSpeedPerSec = 0.f;
+	Weapon_ScytheDesc.fRotationPerSec = 10.f;
+
+	Weapon_ScytheDesc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Scythe"), LEVEL_STATIC, TEXT("Prototype_GameObject_Scythe"), &Weapon_ScytheDesc)))
+		return E_FAIL;
+
+
 	/* 왼손 무기를 만든다. */
 	CLeftWeapon::WEAPON_DESC		LeftWeaponDesc{};
 
@@ -928,6 +994,12 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				const _float4x4* ParentMatrix = dynamic_cast<CPartObject*>(_pOther)->Get_ParentWorldMatrix();
 				fMonsterLookDir = { ParentMatrix->_31,ParentMatrix->_32,ParentMatrix->_33,0.f };
 
+				
+				m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
+				if (m_iCurrentHp <= 0)
+					m_iCurrentHp = 0;
+
+				
 
 				switch (dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State())
 				{

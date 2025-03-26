@@ -77,6 +77,8 @@
 #include "ClawWeapon.h"
 #include "PlayerCamera.h"	
 #include "Camera_Debug.h"
+#include "Weapon_Halberd.h"	
+#include "Weapon_Scythe.h"	
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -295,6 +297,35 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	///* For.Prototype_GameObject_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"),
 		CClawWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+#pragma region 티메시아 할버드 무기 
+	PreTransformMatrix = XMMatrixIdentity();
+
+	lstrcpyW(m_szLoadingText, TEXT("주인공 할버드 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Halberd"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Halberd/Halberd.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Halberd"),
+		CWeapon_Halberd::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+
+#pragma region 티메시아 낫 무기	
+	PreTransformMatrix = XMMatrixIdentity();
+
+	lstrcpyW(m_szLoadingText, TEXT("주인공 낫 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Scythe"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Scythe/Scythe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Weapon_Scythe */	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Scythe"),
+		CWeapon_Scythe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 
@@ -1347,7 +1378,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 32))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 33))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Mask*/
