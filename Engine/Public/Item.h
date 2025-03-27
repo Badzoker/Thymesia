@@ -9,6 +9,7 @@ public:
     {
         ITEM_TYPE           eITemType = ITEM_TYPE::ITEM_END;
         _vector             vItemPos;
+        _bool               bTaken = { false };
     };
 
 public:

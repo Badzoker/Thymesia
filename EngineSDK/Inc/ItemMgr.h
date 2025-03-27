@@ -18,13 +18,15 @@ public:
 	HRESULT Initialize();
 	void	Update(_float _fTimeDelta);
 
-	HRESULT Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject);
+	HRESULT Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject, _bool _bTaken);
 	HRESULT Sub_Item(ITEM_TYPE _eItemType, const _wstring& _ItemName);
 
 	void	Set_ItemPos(_fvector _vItemWorldPos);
 	HRESULT Acquire_Item(ITEM_TYPE _eItemType);
 	HRESULT	Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _GameObject, _uint _iDropItemCount = 1);
 	HRESULT	Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, class CGameObject* _GameObject);
+
+	void Clear_ItemInfo();
 
 	_uint Get_Item_Count(ITEM_TYPE _eItemType) { return m_mapItems[_eItemType].first; }
 	
@@ -40,6 +42,7 @@ private:
 
 private:
 	map<ITEM_TYPE, pair<_uint, vector<CItem*>>>		m_mapItems;
+	map<ITEM_TYPE, pair<_uint, vector<CItem*>>>		m_mapTakenItems;
 	list<ITEM_TYPE>									m_lSaveItem;
 	list<ITEM_TYPE>									m_lDropItem;
 	ITEM_TYPE										m_eItemType = { ITEM_TYPE::ITEM_END };

@@ -16,21 +16,46 @@ void CItemMgr::Update(_float _fTimeDelta)
 
 }
 
-HRESULT CItemMgr::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject)
+HRESULT CItemMgr::Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, CItem* _pGameObject, _bool _bTaken)
 {
     if (nullptr == _pGameObject)
         return E_FAIL;
 
-    m_eItemType = _eItemType;
+    if (_bTaken)
+    {
+        // map<ITEM_TYPE, pair<_uint, vector<CItem*>>>
+        auto iter = m_mapTakenItems.find(_eItemType);
+        if (iter == m_mapTakenItems.end())
+            return S_OK;
 
-    m_eItemCount[(_uint)_eItemType] = _iItemCount;
+        ITEM_TYPE eItemType = iter->first;
+        _uint iTakenItemCount = iter->second.first;
 
-    m_mapItems[_eItemType].first = m_eItemCount[(_uint)_eItemType];
-    m_mapItems[_eItemType].second.push_back(_pGameObject);
+        // m_mapTakenItems[eItemType].first = iItemCount;
 
-    for (auto& pItems : m_mapItems[_eItemType].second)
-        pItems->Set_ItemCount(_iItemCount);
 
+        if (_pGameObject)
+        {
+            m_mapItems[_eItemType].second.push_back(_pGameObject);
+            _pGameObject->Set_ItemCount(iTakenItemCount);
+        }
+
+        m_mapItems[_eItemType].first = iTakenItemCount;
+    }
+    else
+    {
+        m_eItemType = _eItemType;
+
+        m_eItemCount[(_uint)_eItemType] = _iItemCount;
+
+        m_mapItems[_eItemType].first = m_eItemCount[(_uint)_eItemType];
+        m_mapItems[_eItemType].second.push_back(_pGameObject);
+
+        for (auto& pItems : m_mapItems[_eItemType].second)
+            pItems->Set_ItemCount(_iItemCount);
+    }
+
+   
     return S_OK;
 }
 
@@ -93,6 +118,27 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
     }
 
     return S_OK;
+}
+
+void CItemMgr::Clear_ItemInfo()
+{
+    m_mapTakenItems.clear();
+
+    // map<ITEM_TYPE, pair<_uint, vector<CItem*>>>
+    // map 의 second 가 pair 가 되고... pair의 first 가 갯수 자나 얘도 초기화.. 0개로. Pair 가 m_mapItems. 걍시발눈엣가시용임이거는 ㅇㅇ
+    // map 으 second 의 second 가 pair 의 second 니까. vector<CItem> 이니까.. 얘 클리어 해서 비워벌힘;;
+    for (auto& Pair : m_mapItems)
+    {
+        ITEM_TYPE eItemType = Pair.first;
+        _uint iItemCount = Pair.second.first;
+
+        m_mapTakenItems[eItemType].first = iItemCount;
+
+        Pair.second.second.clear();
+        Pair.second.first = 0;
+    }
+
+    m_mapItems.clear();
 }
 
 HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
