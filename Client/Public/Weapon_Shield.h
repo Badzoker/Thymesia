@@ -21,6 +21,7 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_uint* iAttack = { nullptr };
 	};
 private:
 	CWeapon_Shield(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

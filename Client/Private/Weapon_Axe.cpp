@@ -122,7 +122,10 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 		}
 	}
 	else
+	{
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+		m_pGameInstance->Sub_Actor_Scene(m_pKickActor);
+	}
 }
 
 void CWeapon_Axe::Late_Update(_float fTimeDelta)

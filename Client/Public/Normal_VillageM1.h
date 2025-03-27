@@ -38,6 +38,7 @@ public:
 
 private:
 	CState_Machine<CNormal_VillageM1>* m_pState_Manager = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 private:
 _bool m_bCanHit = {}; public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);

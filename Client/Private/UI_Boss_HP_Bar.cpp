@@ -38,6 +38,7 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 
 	m_bBossActive = pDesc->bBossActive;
 	m_bBossDead = pDesc->bBossDead;
+	m_sBossName = pDesc->sBossName;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -109,7 +110,7 @@ HRESULT CUI_Boss_HP_Bar::Render()
 
 	_float3 vpos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
 
-	m_pGameInstance->Render_Font(TEXT("Font_NotoSansKR18"), TEXT("¹Ù±×"), { vpos.x - 330.f, vpos.y + 5.f},{ 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, vpos.z);
+	m_pGameInstance->Render_Font(TEXT("Font_NotoSansKR18"), m_sBossName.c_str(), { vpos.x - 330.f, vpos.y + 5.f},{ 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, vpos.z);
 
 	return S_OK;
 }

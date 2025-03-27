@@ -1495,6 +1495,6 @@ CLevel_Tutorial * CLevel_Tutorial::Create(ID3D11Device * pDevice, ID3D11DeviceCo
 void CLevel_Tutorial::Free()
 {
 	__super::Free();
-
+	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 }

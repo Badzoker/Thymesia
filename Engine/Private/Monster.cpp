@@ -259,6 +259,6 @@ void CMonster::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 void CMonster::Free()
 {
     __super::Free();
-
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
     Safe_Release(m_pNavigationCom);
 }

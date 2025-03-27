@@ -40,6 +40,7 @@ public:
 	void Far_Pattern_Create();
 private:
 	_bool                            m_bExecution_Progress = {};
+	_bool                            m_Is_Catch = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;

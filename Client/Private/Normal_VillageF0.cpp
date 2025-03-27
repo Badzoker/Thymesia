@@ -66,8 +66,10 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
 
 void CNormal_VillageF0::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
         
     __super::Priority_Update(fTimeDelta);
 }
@@ -586,6 +588,7 @@ void CNormal_VillageF0::Stun_State::State_Enter(CNormal_VillageF0* pObject)
     m_iIndex = 31;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

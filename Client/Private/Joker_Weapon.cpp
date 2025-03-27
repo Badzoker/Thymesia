@@ -79,20 +79,27 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 	);
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,0.f,1.f });
-	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
 	{
 		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
 			if (iter.isPlay == false)
 			{
-				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
+				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
+				{
 					m_pGameInstance->Add_Actor_Scene(m_pActor);
-				else
+					iter.isPlay = true;
+				}
+			}
+			else
+			{
+				if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true)
+				{
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
-				if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-				{
-					iter.isPlay = true;
+					m_bColliderOff = false;
+					if (!iter.isEventActivate)
+						iter.isPlay = false;
 				}
 			}
 		}

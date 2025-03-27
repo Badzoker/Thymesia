@@ -71,8 +71,50 @@ HRESULT CMonster_Manager::Add_Monster(_uint _iPrototypeLevelIndex, const _wstrin
 		Safe_Release(pMonster);
 		return E_FAIL;
 	}
-
 	m_pMonsters[_eCategory].push_back(pMonster);
+
+	if (_eCategory == CATEGORY_NORMAL)
+	{
+		MONSTER_INFO pInfo = {};
+		pInfo._iPrototypeLevelIndex = _iPrototypeLevelIndex;
+		pInfo._strPrototypeTag = _strPrototypeTag;
+		pInfo._eCategory = _eCategory;
+		pInfo.pArg.fPosition = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->fPosition;
+		pInfo.pArg.iCurLevel = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->iCurLevel;
+		m_MonsterInfos.push_back(pInfo);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMonster_Manager::Respawn_Monster()
+{
+	m_pCheck_Monsters.clear();
+	for (auto& iter : m_pMonsters[CATEGORY_NORMAL])
+	{
+		Safe_Release(iter);
+	}
+	m_pMonsters[CATEGORY_NORMAL].clear();
+
+	for (_uint i = 0; i < m_MonsterInfos.size(); i++)
+	{
+		CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+			m_MonsterInfos[i]._iPrototypeLevelIndex,
+			m_MonsterInfos[i]._strPrototypeTag,
+			&m_MonsterInfos[i].pArg));
+
+		if (nullptr == pGameObject)
+			return E_FAIL;
+
+		CMonster* pMonster = dynamic_cast<CMonster*>(pGameObject);
+
+		if (pMonster == nullptr)
+		{
+			Safe_Release(pMonster);
+			return E_FAIL;
+		}
+		m_pMonsters[m_MonsterInfos[i]._eCategory].push_back(pMonster);
+	}
 
 	return S_OK;
 }
@@ -152,6 +194,23 @@ HRESULT CMonster_Manager::Delete_Monster()
 	return S_OK;
 }
 
+HRESULT CMonster_Manager::Delete_All_Monster()
+{
+	m_pCheck_Monsters.clear();
+
+	for (auto& Pair : m_pMonsters)
+	{
+		for (auto& iter : Pair.second)
+		{
+			Safe_Release(iter);
+		}
+		Pair.second.clear();
+	}
+
+	m_pMonsters.clear();
+
+	return S_OK;
+}
 
 CMonster_Manager* CMonster_Manager::Create()
 {

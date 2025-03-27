@@ -1232,6 +1232,6 @@ CLevel_SeaOfTrees * CLevel_SeaOfTrees::Create(ID3D11Device * pDevice, ID3D11Devi
 void CLevel_SeaOfTrees::Free()
 {
 	__super::Free();
-
+	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 }

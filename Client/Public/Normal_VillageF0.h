@@ -39,7 +39,7 @@ private:
 	CState_Machine<CNormal_VillageF0>* m_pState_Manager = { nullptr };
 
 private:
-	_bool m_bCanHit = {};
+	_bool m_bCanHit = true;
 	_bool m_bFirstActive = {};
 	_uint m_iHit_Motion_Index = -1;
 

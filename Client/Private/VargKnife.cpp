@@ -7,11 +7,19 @@
 CVargKnife::CVargKnife(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
 {
+    for (_uint i = COLLIDER_SWORD; i < COLLIDER_END; i++)
+    {
+        ZeroMemory(&m_pActor[i], sizeof(PxRigidDynamic));
+    }
 }
 
 CVargKnife::CVargKnife(const CVargKnife& Prototype)
     :CPartObject(Prototype)
 {
+    for (_uint i = COLLIDER_SWORD; i < COLLIDER_END; i++)
+    {
+        ZeroMemory(&m_pActor[i], sizeof(PxRigidDynamic));
+    }
 }
 
 HRESULT CVargKnife::Initialize_Prototype()
@@ -33,6 +41,7 @@ HRESULT CVargKnife::Initialize(void* pArg)
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
     m_iMonster_Attack = pDesc->iAttack;
+    m_Is_Catch = pDesc->Is_Catch;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -40,21 +49,22 @@ HRESULT CVargKnife::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pTransformCom->Scaling(_float3{ 0.4f, 0.4f, 0.4f });
 
+    m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
+    m_pActor[COLLIDER_STUN] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,5.f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
-    m_pTransformCom->Scaling(_float3{ 0.5f, 0.5f, 0.5f });
-
-
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
-    m_pStunActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,5.f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-
-    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
-    m_pGameInstance->Set_GlobalPos(m_pStunActor, _fvector{ 0.f,0.f,101.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SWORD], _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND], _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_STUN], _fvector{ 0.f,0.f,101.f,1.f });
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_SWORD], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    settingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_HAND], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_STUN], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
-    m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
     return S_OK;
 }
@@ -77,13 +87,17 @@ void CVargKnife::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
     {
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
     }
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND])))
     {
-        m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 0.f,0,1.f });
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f,500.f,1.f });
+    }
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_STUN])))
+    {
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_STUN], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
     }
 
 
@@ -99,14 +113,15 @@ void CVargKnife::Update(_float fTimeDelta)
                     // 그 구간에서는 계속 진행 
 
                     if (*m_pParentState == STATE_SPECIAL_ATTACK)
-                    {
-                        m_pGameInstance->Add_Actor_Scene(m_pStunActor);
-                    }
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_STUN]);
+
+                    else if (*m_pParentState == STATE_SPECIAL_ATTACK2)
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_HAND]);
+
                     else
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_SWORD]);
 
-
-                    iter.isPlay = true;      
+                    iter.isPlay = true;
                 }
                 
             }
@@ -114,11 +129,12 @@ void CVargKnife::Update(_float fTimeDelta)
             {
                 if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true) // EVENT_COLLIDER 부분      
                 {
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                    m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SWORD]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_STUN]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_HAND]);
 
                     m_bColliderOff = false;
-                    if (false == iter.isEventActivate)
+                    if (!iter.isEventActivate)
                         iter.isPlay = false;
 
                 }
@@ -201,8 +217,9 @@ void CVargKnife::Update(_float fTimeDelta)
     }
     else
     {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pGameInstance->Sub_Actor_Scene(m_pStunActor);   
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SWORD]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_STUN]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_HAND]);
     }
 #pragma endregion  
 
@@ -267,6 +284,10 @@ void CVargKnife::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bColliderOff = true;
+        if (*m_pParentState == STATE_SPECIAL_ATTACK2)
+        {
+            *m_Is_Catch = true;
+        }
     }
 }
 

@@ -53,22 +53,28 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
         return E_FAIL;
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
-
+    m_pStunActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,0.f,1.f }, 0.f, this);
+    
     _uint setting_Body_ColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
-
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, setting_Body_ColliderGroup);
+    setting_Body_ColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER, setting_Body_ColliderGroup);
+
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pStunActor, _fvector{ 0.f,22.f,0.f,1.f });
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
-
+  
     return S_OK;
 }
 
 void CNormal_VillageM1::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
 
     __super::Priority_Update(fTimeDelta);
 }
@@ -81,6 +87,9 @@ void CNormal_VillageM1::Update(_float fTimeDelta)
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pStunActor)))
+        m_pGameInstance->Update_Collider(m_pStunActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 }
 
 void CNormal_VillageM1::Late_Update(_float fTimeDelta)
@@ -147,6 +156,7 @@ HRESULT CNormal_VillageM1::Ready_PartObjects(void* pArg)
     Weapon2_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Weapon2_Desc.pParentModel = m_pModelCom;
     Weapon2_Desc.pParentState = &m_iMonster_State;
+    Weapon2_Desc.iAttack = &m_iMonster_Attack_Power;
     Weapon2_Desc.fSpeedPerSec = 0.f;
     Weapon2_Desc.fRotationPerSec = 0.f;
 
@@ -425,13 +435,15 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 29;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
-
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
 }
 
 void CNormal_VillageM1::Stun_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
@@ -601,6 +613,8 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -646,6 +660,7 @@ void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 48;
     pObject->m_bCanHit = false;
+    pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = STATE_PARRY;
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->Set_Continuous_Ani(true);

@@ -45,12 +45,15 @@ public:
 
 private:
 	_bool                            m_bCardActive = {};
+	_bool						     m_bCan_Hit_Motion = {};
 	_bool                            m_bExecution_Progress = {};
+	_bool                            m_bSpecial_Skill_Progress = {};
 	_bool                            m_IsDissolveOn = {};
 	_bool                            m_IsDissolveOff = {};
 	_bool                            Is_Change_Sword_Bone = {};
 	_bool                            m_bCanDissapear = {};
 	_bool                            m_bCatch_Special_Attack = {};
+	_bool                            m_bCane_Collider_On = {};
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fSlash_Skill_CoolTime = {};
@@ -58,7 +61,9 @@ private:
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
+	_uint							 m_iHit_Motion_Index = -1;
 	_uint                            m_iPhase = { PHASE_END };
+
 
 private:
 	CState_Machine<CBoss_Magician>* m_pState_Manager = { nullptr };
@@ -272,12 +277,14 @@ public:
 	class Hit_State : public CStates<CBoss_Magician>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint iHit_Index);
 		virtual ~Hit_State() = default;
 	public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_uint m_iHit_Index = {};
 	};
 
 	class ExeCution_State : public CStates<CBoss_Magician>
@@ -285,6 +292,39 @@ public:
 	public:
 		ExeCution_State() = default;
 		virtual ~ExeCution_State() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Parry_Attack_A : public CStates<CBoss_Magician>
+	{
+	public:
+		Parry_Attack_A() = default;
+		virtual ~Parry_Attack_A() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Parry_Attack_B : public CStates<CBoss_Magician>
+	{
+	public:
+		Parry_Attack_B() = default;
+		virtual ~Parry_Attack_B() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Parry_Attack_C : public CStates<CBoss_Magician>
+	{
+	public:
+		Parry_Attack_C() = default;
+		virtual ~Parry_Attack_C() = default;
 	public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
