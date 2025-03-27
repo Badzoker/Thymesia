@@ -15,6 +15,15 @@ BEGIN(Client)
 
 class CWeapon_Magician_Sword final : public CPartObject
 {
+	enum COLLIDER_CATEGORY
+	{
+		COLLIDER_SWORD,
+		COLLIDER_KICK,
+		COLLIDER_SLASH,
+		COLLIDER_SPECIAL,
+		COLLIDER_PARRY,
+		COLLIDER_END
+	};
 public:
 	struct MAGICIAN_SWORD_DESC : public CPartObject::PARTOBJECT_DESC
 	{
@@ -24,6 +33,9 @@ public:
 		_bool* IsDissolveOn = {nullptr};
 		_bool* IsDissolveOff = {nullptr};
 		_bool* Is_Change_Sword_Bone = { nullptr };
+		_bool* bCane_Collider_On = { nullptr };
+		_bool* bSpecial_Skill_Progress = { nullptr };
+		_bool* bCatch_Special_Attack = { nullptr };
 		_uint* iAttack = { nullptr };
 	};
 private:
@@ -44,19 +56,23 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pActor[COLLIDER_END];
 
 	const _float4x4* m_pSocket_Right_Matrix = { nullptr };
 	const _float4x4* m_pSocket_Left_Matrix = { nullptr };
+	const _float4x4* m_pSocket_Leg_Matrix = { nullptr };
 
 private:
 	_bool* m_IsDissolveOn = { nullptr };
 	_bool* m_IsDissolveOff = { nullptr };
 	_bool* m_Is_Change_Sword_Bone = { nullptr };
+	_bool* m_bCane_Collider_On = { nullptr };
+	_bool* m_bSpecial_Skill_Progress = { nullptr };
+	_bool* m_bCatch_Special_Attack = { nullptr };
+	_bool  m_bColliderOff = {};
+	_uint  m_iPassNum = {};
 
-	_uint m_iPassNum = {};
-
-	_float			   m_fTimeDelta = { 0.f };
+	_float m_fTimeDelta = { 0.f };
 	_float m_fDissolveOn_Timer = {};
 	_float m_fDissolveOff_Timer = {};
 	_float m_fDissolveOn_FinishTime = 1.f;

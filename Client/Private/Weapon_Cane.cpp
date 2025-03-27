@@ -34,6 +34,7 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
+    m_bCane_Collider_On = pDesc->bCane_Collider_On;
     m_iMonster_Attack = pDesc->iAttack;
 
     if (FAILED(__super::Initialize(pArg)))
@@ -47,7 +48,7 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
     m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
 
@@ -99,11 +100,11 @@ void CWeapon_Cane::Update(_float fTimeDelta)
     );
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
     {
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
     }
 
 
-    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCane_Collider_On)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {

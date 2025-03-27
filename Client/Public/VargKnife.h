@@ -15,12 +15,22 @@ BEGIN(Client)
 
 class CVargKnife final : public CPartObject
 {
+	enum COLLIDER_CATEGORY
+	{
+		COLLIDER_SWORD,
+		COLLIDER_HAND,
+		COLLIDER_STUN,
+		COLLIDER_END
+	};
+
+
 public:
 	struct VARGKNIFE_DESC : public CPartObject::PARTOBJECT_DESC
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
+		_bool* Is_Catch = { nullptr };
 		_uint* iAttack = { nullptr };
 	};
 private:
@@ -40,14 +50,14 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
-	PxRigidDynamic* m_pStunActor = { nullptr };
+	PxRigidDynamic* m_pActor[COLLIDER_END];
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
-	_float			   m_fTimeDelta = { 0.f };
+	_bool*			   m_Is_Catch = { nullptr };
 	_bool              m_bColliderOff = {};
+	_float			   m_fTimeDelta = { 0.f };
 	_uint			   m_iPreAnimIndex = -1;
 
 private:

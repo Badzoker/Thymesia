@@ -23,6 +23,7 @@ public:
 		CModel* pParentModel = { nullptr };
 		_bool* IsDissolveOn = {nullptr};
 		_bool* IsDissolveOff = {nullptr};
+		_bool* bCane_Collider_On = { nullptr };
 		_uint* iAttack = {nullptr};
 	};
 private:
@@ -49,6 +50,7 @@ private:
 private:
 	_bool* m_IsDissolveOn = {nullptr};
 	_bool* m_IsDissolveOff = {nullptr};
+	_bool* m_bCane_Collider_On = { nullptr };
 	_bool  m_bColliderOff = {};
 
 	_uint m_iPassNum = {};

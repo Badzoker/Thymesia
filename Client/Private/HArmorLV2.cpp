@@ -72,8 +72,10 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
 
 void CHArmorLV2::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
 
     __super::Priority_Update(fTimeDelta);
 
@@ -321,7 +323,10 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
 
 void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) && m_iMonster_State != STATE_STUN && m_iMonster_State != STATE_EXECUTION)
+    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) &&
+        m_iMonster_State != STATE_STUN &&
+        m_iMonster_State != STATE_EXECUTION &&
+        m_fMonsterCurHP > 0.f)
     {
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
@@ -521,6 +526,7 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 24;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -915,6 +921,7 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
 
 
     _vector vResultPos = vPlayerPos + vPlayerLook;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -1051,6 +1058,7 @@ void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 29;
     pObject->RotateDegree_To_Player();
+    pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

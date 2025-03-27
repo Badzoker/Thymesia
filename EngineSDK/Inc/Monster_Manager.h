@@ -9,6 +9,15 @@ BEGIN(Engine)
 class ENGINE_DLL CMonster_Manager : public CBase
 {
 private:
+	struct MONSTER_INFO
+	{
+		_uint _iPrototypeLevelIndex = {};
+		_wstring _strPrototypeTag = {};
+		MONSTER_CATEGORY _eCategory = {};
+		CGameObject::GAMEOBJECT_DESC pArg = {};
+	};
+
+private:
 	CMonster_Manager();
 	virtual ~CMonster_Manager() = default;
 
@@ -20,16 +29,19 @@ public:
 
 public:
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
+	HRESULT Respawn_Monster();
 	deque<class CMonster*>& Get_Check_Monsters() { return m_pCheck_Monsters; }
 
 public:
 	HRESULT Active_Monster();
 	HRESULT Add_Delete_Monster(class CMonster* pMonster);
 	HRESULT Delete_Monster();
+	HRESULT Delete_All_Monster();
 private:
 	map<MONSTER_CATEGORY, vector<class CMonster*>> m_pMonsters;
 	deque<class CMonster*> m_pCheck_Monsters;
 	deque<class CMonster*> m_pDelete_Monsters;
+	vector<MONSTER_INFO> m_MonsterInfos;
 	class CGameInstance* m_pGameInstance = { nullptr };
 public:
 	static CMonster_Manager* Create();

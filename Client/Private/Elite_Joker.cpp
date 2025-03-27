@@ -72,8 +72,10 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
 
     __super::Priority_Update(fTimeDelta);
 }
@@ -618,6 +620,7 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
     m_iIndex = 19;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -668,6 +671,7 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
     m_iIndex = 22;
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_EXECUTION;
 

@@ -281,7 +281,9 @@ public:
 #pragma region MONSTER_MANAGER
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
 	HRESULT Add_Delete_Monster(class CMonster* pMonster);
+	HRESULT Delete_All_Monster();
 	HRESULT Active_Monster();
+	HRESULT Respawn_Monster();
 	deque<class CMonster*>& Get_Check_Monsters();
 #pragma endregion
 

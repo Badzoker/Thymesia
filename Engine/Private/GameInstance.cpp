@@ -901,9 +901,18 @@ HRESULT CGameInstance::Add_Delete_Monster(CMonster* pMonster)
 	return m_pMonster_Manager->Add_Delete_Monster(pMonster);
 }
 
+HRESULT CGameInstance::Delete_All_Monster()
+{
+	return m_pMonster_Manager->Delete_All_Monster();
+}
+
 HRESULT CGameInstance::Active_Monster()
 {
 	return m_pMonster_Manager->Active_Monster();
+}
+HRESULT CGameInstance::Respawn_Monster()
+{
+	return m_pMonster_Manager->Respawn_Monster();
 }
 deque<class CMonster*>& CGameInstance::Get_Check_Monsters()
 {

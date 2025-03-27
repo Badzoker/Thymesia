@@ -22,7 +22,7 @@ public:
 		_float* fCurHP = {};
 		_float* fShieldHP = {};
 		_uint* iPhase = {};
-		string sBossName = {};
+		wstring sBossName = {};
 	};
 private:
 	CUI_Boss_HP_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -40,6 +40,7 @@ private:
 	_float* m_fBoss_Max_HP = {};
 	_bool* m_bBossActive = {};
 	_bool* m_bBossDead = {};
+	wstring m_sBossName = {};
 
 	_float m_fSizeX = {};
 	_float m_fSizeY = {};

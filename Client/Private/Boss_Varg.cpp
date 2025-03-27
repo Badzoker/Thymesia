@@ -71,8 +71,11 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
+
 
     __super::Priority_Update(fTimeDelta);
 }
@@ -138,6 +141,7 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
     Varg_Knife_Desc.pParentState = &m_iMonster_State;
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Varg_Knife_Desc.pParentModel = m_pModelCom;
+    Varg_Knife_Desc.Is_Catch = &m_Is_Catch;
     Varg_Knife_Desc.iAttack = &m_iMonster_Attack_Power;
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
     Varg_Knife_Desc.fRotationPerSec = 0.f;
@@ -164,6 +168,7 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
     pBoss_HP_Bar.bBossDead = &m_bDead;
     pBoss_HP_Bar.iPhase = &m_iPhase;
     pBoss_HP_Bar.iCurLevel = iLevel;
+    pBoss_HP_Bar.sBossName = TEXT("바그");
 
     //if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, &pBoss_HP_Bar)))
     //    return E_FAIL;
@@ -1045,6 +1050,7 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
 void CBoss_Varg::Roar_State::State_Exit(CBoss_Varg* pObject)
 {
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 }
 
 #pragma endregion
@@ -1055,7 +1061,7 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 30;
     //pObject->m_bCan_Move_Anim = true;
     m_bCanCatch = true;
-    pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
+    pObject->m_iMonster_State = STATE_SPECIAL_ATTACK2;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1076,11 +1082,12 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(20.f);
     }
-    //항상 거리가 짧으면 바로 잡히는 애니메이션 실행
-    if (pObject->m_fDistance <= 1.5f && m_bCanCatch)
+    //항상 거리가 짧으면 바로 잡히는 애니메이션 실행 -> 콜라이더로 검사해야할듯
+    if (pObject->m_Is_Catch)
     {
         m_iIndex = 28;
         pObject->m_iMonster_Attack_Power = 281;
+        pObject->m_iMonster_State = STATE_ATTACK;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //안부딪혀서 끝까지 진행된 경우
@@ -1093,7 +1100,7 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 void CBoss_Varg::Catch_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
-
+    pObject->m_Is_Catch = false;
 }
 
 #pragma endregion

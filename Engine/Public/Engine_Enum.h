@@ -114,6 +114,8 @@ namespace Engine
 		STATE_DEAD,	
 		STATE_INTRO,
 		STATE_SPECIAL_ATTACK,
+		STATE_SPECIAL_ATTACK2,
+		STATE_KICK_ATTACK, //나중에 킥이 아닌 무기가 아닌 걸로 공격한걸로 의미하는걸로 바꿔야할듯
 		STATE_END	
 	};
 

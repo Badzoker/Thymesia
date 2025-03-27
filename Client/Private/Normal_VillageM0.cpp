@@ -66,8 +66,10 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 
 void CNormal_VillageM0::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State == CPlayer::PHASE_DEAD)
+    if (*m_Player_State & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
+    else
+        m_Is_Player_Dead = false;
 
     __super::Priority_Update(fTimeDelta);
 }
