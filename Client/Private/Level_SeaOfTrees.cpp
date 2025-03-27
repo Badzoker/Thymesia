@@ -540,6 +540,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
+	ItemDesc.bTaken = true;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -578,6 +579,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
 	BranchDesc.GameItemName = m_strObjectNames[0];
 	BranchDesc.eItemType = ITEM_TYPE::ITEM_DEADBRANCH;
 	BranchDesc.iCurLevel = m_iCurrentLevel;
+	BranchDesc.bTaken = true;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
 		return E_FAIL;

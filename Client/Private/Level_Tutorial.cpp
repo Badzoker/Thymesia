@@ -681,7 +681,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
-	ItemDesc.bTaken = false;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -689,7 +688,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
-	ItemDesc.bTaken = false;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -697,7 +695,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
-	ItemDesc.bTaken = false;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -705,7 +702,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
-	ItemDesc.bTaken = false;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -716,7 +712,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 	BranchDesc.GameItemName = m_strObjectNames[0];
 	BranchDesc.eItemType = ITEM_TYPE::ITEM_DEADBRANCH;
 	BranchDesc.bTaken = false;
-
 	BranchDesc.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
