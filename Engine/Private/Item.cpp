@@ -103,6 +103,14 @@ void CItem::Reset_ItemState()
     m_bEnLargingDone = false;
 }
 
+void CItem::Reset_ItemActivate()
+{
+    m_fDissolveTime = 0.0f;
+    m_bActivate = false;
+    m_bDissolving = false;
+}
+
+
 void CItem::Free()
 {
     __super::Free();

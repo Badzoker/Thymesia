@@ -17,6 +17,7 @@ public:
     {
         string                  GameItemName = {};
         ITEM_TYPE               eItemType = { ITEM_TYPE::ITEM_END };
+        _uint                   iItemCount = {};
     };
 
 private:
@@ -43,24 +44,20 @@ public:
     virtual void                OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 private:
-    CShader* m_pShaderCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
-    PxRigidDynamic* m_pActor = { nullptr };
-    CTexture* m_pTextureCom = { nullptr };
+    CShader*                    m_pShaderCom = { nullptr };
+    CModel*                     m_pModelCom = { nullptr };
+    PxRigidDynamic*             m_pActor = { nullptr };
+    CTexture*                   m_pTextureCom = { nullptr };
 
 private:
-    CGameObject* m_pButtonGameObject = { nullptr };
-    CButton* m_pButton = { nullptr };
+    CGameObject*                m_pButtonGameObject = { nullptr };
+    CButton*                    m_pButton = { nullptr };
 
 private:
     _float                      m_fBranchAlpha = {};
-private:
-    _bool                       m_bDissolving = { false };
-    _float                      m_fDissolveTime = {};
-
 public:
-    static CDeadBranch* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-    virtual CGameObject* Clone(void* _pArg);
+    static CDeadBranch*         Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+    virtual CGameObject*        Clone(void* _pArg);
     virtual void                Free() override;
 };
 END

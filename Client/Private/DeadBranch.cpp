@@ -37,31 +37,27 @@ HRESULT CDeadBranch::Initialize(void* _pArg)
 
     m_pTransformCom->Scaling(_float3(0.01f, 0.01f, 0.01f));
 
+    m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this);
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    _vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f };
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition);
-
     return S_OK;
 }
 
 void CDeadBranch::Priority_Update(_float _fTimeDelta)
 {
-    
-
 
 }
 
 void CDeadBranch::Update(_float _fTimeDelta)
 {
-    if (m_bDeActivate)
+    if (!m_bActivate)
         return;
 
-    if (!m_bDeActivate)
+    if (m_bActivate)
     {
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
             m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
@@ -75,12 +71,12 @@ void CDeadBranch::Update(_float _fTimeDelta)
     if (m_bDissolving)
     {
         m_fDissolveTime += _fTimeDelta * 0.4f;
-        //m_fDissolveTime = min(m_fDissolveTime, 1.0f);
 
         if (m_fDissolveTime >= 1.0f)
         {
             m_fDissolveTime = 1.0f;
-            m_bDeActivate = true;
+
+            m_pGameInstance->Acquire_Item(ITEM_TYPE::ITEM_DEADBRANCH);
         }
     }
 
@@ -88,14 +84,13 @@ void CDeadBranch::Update(_float _fTimeDelta)
 
 void CDeadBranch::Late_Update(_float fTimeDelta)
 {
-    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND,this);
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
 HRESULT CDeadBranch::Render()
 {
-    //if (m_bDeActivate)
-    //    return S_OK;
+    if (!m_bActivate)
+        return S_OK;
 
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -119,7 +114,7 @@ HRESULT CDeadBranch::Render()
 
 HRESULT CDeadBranch::Render_Glow()
 {
-    if (m_bDeActivate)
+    if (!m_bActivate)
         return S_OK;
 
     if (FAILED(Bind_ShaderResources()))
@@ -186,7 +181,7 @@ HRESULT CDeadBranch::Bind_ShaderResources()
 
 void CDeadBranch::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (m_bDeActivate || m_bDissolving)
+    if (!m_bActivate || m_bDissolving)
         return;
 
     _vector vBranchPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -202,20 +197,19 @@ void CDeadBranch::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
 
 void CDeadBranch::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (m_bDeActivate)
+    if (!m_bActivate)
         return;
 
     if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
     {
         m_bDissolving = true;
-        m_fDissolveTime = 0.0f;
         m_pButton->Activate_Button(false);
     }
 }
 
 void CDeadBranch::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    if (m_bDeActivate)
+    if (!m_bActivate)
         return;
 
     m_pButton->Activate_Button(false);

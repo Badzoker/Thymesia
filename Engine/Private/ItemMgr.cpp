@@ -74,6 +74,27 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
     return S_OK;
 }
 
+HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _GameObject)
+{
+    vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
+
+    if (nullptr == pVecItems)
+        return E_FAIL;
+
+    for (auto& pItems : *pVecItems)
+    {
+        if (nullptr != pItems)
+        {
+            pItems->Set_BeActivated(true);
+            pItems->Set_Position(_vPopPosition);
+
+            break;
+        }
+    }
+
+    return S_OK;
+}
+
 HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
 {
     vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
@@ -84,14 +105,21 @@ HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
 
     for (auto& pItems : *pVecItems)
     {
-        pItems->Reset_ItemState();
+        if (_eItemType == ITEM_TYPE::ITEM_DEADBRANCH)
+        {
+            pItems->Reset_ItemActivate();
+            return S_OK;
+        }
+        else
+            pItems->Reset_ItemState();
+
         pItems->Set_BeAcquired(true);
         iDropCount = pItems->Get_DropItemCount();
     }
 
     m_lSaveItem.push_back(_eItemType);// 알림용 획득 아이템 저장 
     m_mapItems[_eItemType].first += iDropCount;
-    
+
 
     return S_OK;
 }

@@ -666,6 +666,10 @@ HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, 
 {
 	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject, _iDropItemCount);
 }
+HRESULT CGameInstance::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _pGameObject)
+{
+	return m_pItemMgr->Pop_Item(_eItemType, _vPopPosition, _pGameObject);
+}
 HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {
 	return m_pItemMgr->Acquire_Item(_eItemType);
