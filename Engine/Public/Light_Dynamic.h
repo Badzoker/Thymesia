@@ -18,6 +18,7 @@ public:
 public:
 	HRESULT Initialize(const LIGHT_DESC& LightDesc, class CTransform* pTransform);
 	void Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+	_bool Delete_Light(class CTransform* pTransform);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

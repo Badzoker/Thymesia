@@ -210,7 +210,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(145); //Tutorial Map
 	//Load_Objects(301); //Circus Map
 	//Load_Objects(303); //Circus Map 오두르 보스
-	Load_Objects(304); //Circus Map
+	Load_Objects(111); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일

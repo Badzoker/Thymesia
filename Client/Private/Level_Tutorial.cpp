@@ -21,6 +21,7 @@
 #include "Effect_Sword.h"
 #include "Effect_Particle.h"
 
+#include "Terrain.h"
 
 
 CLevel_Tutorial::CLevel_Tutorial(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -187,6 +188,19 @@ HRESULT CLevel_Tutorial::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
 		return E_FAIL;
 
+
+	ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+	LightDesc.fRange = 5.f;
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -196,7 +210,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	pDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Terrain"), LEVEL_TUTORIAL, pLayerTag, &pDesc)))
+	CTerrain::TERRAININFO pTerrainInfo = {};
+	pTerrainInfo.vTerrainPos = _float4(30.0f, 0.0f, -150.0f, 1.0f);
+	pTerrainInfo.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Terrain"), LEVEL_TUTORIAL, pLayerTag, &pTerrainInfo)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)

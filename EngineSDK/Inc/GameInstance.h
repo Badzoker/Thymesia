@@ -118,6 +118,7 @@ public:
 	const LIGHT_DESC* Get_LightDesc(_uint iIndex) const;
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform = nullptr);
 	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);	
+	HRESULT Delete_Dynamic_Light(class CTransform* pTransform);
 #pragma endregion
 
 #pragma region TARGET_MANAGER

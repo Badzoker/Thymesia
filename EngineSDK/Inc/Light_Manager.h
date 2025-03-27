@@ -17,6 +17,7 @@ public:
 	HRESULT Initialize();
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform);
 	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);		
+	HRESULT Delete_Dynamic_Light(class CTransform* pTransform);
 
 private:
 	ID3D11Device*					m_pDevice = {};

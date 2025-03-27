@@ -447,6 +447,10 @@ void CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	return m_pLight_Manager->Render_Lights(pShader, pVIBuffer);
 }
+HRESULT CGameInstance::Delete_Dynamic_Light(CTransform* pTransform)
+{
+	return m_pLight_Manager->Delete_Dynamic_Light(pTransform);
+}
 #pragma endregion
 
 
