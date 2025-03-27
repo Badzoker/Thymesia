@@ -205,6 +205,7 @@ public:
 #pragma region ItemMgr 
 	HRESULT		Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, class CItem* _pGameObject);
 	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject, _uint _iDropItemCount = 1);
+	HRESULT		Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, class CGameObject* _pGameObject);
 	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
 
 

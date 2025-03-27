@@ -25,6 +25,7 @@ public:
     virtual HRESULT             Render()override;
     _bool                       Get_BeAcquired() const { return m_bAcquired; }
     void                        Set_BeAcquired(_bool _bAcquired) { m_bAcquired = _bAcquired; }
+    void                        Set_BeActivated(_bool _bActivated) { m_bActivate = _bActivated; }
     _bool                       Get_BeDropping() const { return m_bDropping; }
     void                        Set_BeDropping(_bool _bDropping) { m_bDropping = _bDropping; }
 public:
@@ -39,6 +40,7 @@ public:
 
     virtual _float              Compute_LerpItemScale(_float _fStart, _float _fEnd, _float _fRatio);
     virtual void                Reset_ItemState();
+    virtual void                Reset_ItemActivate();
 
 protected:
     _uint                       m_iItemCount = {};
@@ -65,7 +67,9 @@ protected:
     _bool                       m_bEnLargingDone = false;
 
 protected:
-    _bool                       m_bDeActivate = { false };
+    _bool                       m_bActivate = { false };
+    _bool                       m_bDissolving = { false };
+    _float                      m_fDissolveTime = {};
 
 public:
     virtual CGameObject* Clone(void* _pArg) = 0;

@@ -24,6 +24,7 @@ public:
 	void	Set_ItemPos(_fvector _vItemWorldPos);
 	HRESULT Acquire_Item(ITEM_TYPE _eItemType);
 	HRESULT	Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _GameObject, _uint _iDropItemCount = 1);
+	HRESULT	Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, class CGameObject* _GameObject);
 
 	_uint Get_Item_Count(ITEM_TYPE _eItemType) { return m_mapItems[_eItemType].first; }
 	
