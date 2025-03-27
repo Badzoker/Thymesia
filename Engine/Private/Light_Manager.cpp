@@ -67,7 +67,11 @@ HRESULT CLight_Manager::Delete_Dynamic_Light(CTransform* pTransform)
 	for (list<CLight_Dynamic*>::iterator pLight = m_LightDynamics.begin(); pLight != m_LightDynamics.end();)
 	{
 		if ((*pLight)->Delete_Light(pTransform))
+		{
+			Safe_Release((*pLight));
+
 			pLight = m_LightDynamics.erase(pLight);
+		}
 		else
 			pLight++;
 	}
