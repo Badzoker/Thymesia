@@ -1493,4 +1493,5 @@ void CLevel_Tutorial::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Reset_Effect();
 }

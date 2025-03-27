@@ -593,6 +593,11 @@ HRESULT CGameInstance::Stop_Effect(EFFECT_NAME _eEffectName)
 	return m_pEffect_Manager->Stop_Effect(_eEffectName);
 }
 
+HRESULT CGameInstance::Reset_Effect()
+{
+	return m_pEffect_Manager->Reset_Effect();
+}
+
 #pragma endregion 
 
 #pragma region Sound Manager 
