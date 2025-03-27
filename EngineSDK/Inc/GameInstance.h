@@ -205,10 +205,11 @@ public:
 
 
 #pragma region ItemMgr 
-	HRESULT		Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, class CItem* _pGameObject);
+	HRESULT		Add_Item(ITEM_TYPE _eItemType, _uint _iItemCount, class CItem* _pGameObject, _bool _bTaken);
 	HRESULT		Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class CGameObject* _pGameObject, _uint _iDropItemCount = 1);
 	HRESULT		Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, class CGameObject* _pGameObject);
 	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
+	void		Clear_ItemInfo();
 
 
 	list<ITEM_TYPE>& Get_Item_Save_Info(); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도

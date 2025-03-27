@@ -44,7 +44,7 @@ HRESULT CGameItem::Initialize(void* _pArg)
     _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); ;
     XMStoreFloat4(&m_vInitialPos, vItemPos);
 
-    m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this);
+    m_pGameInstance->Add_Item(pDesc->eItemType, pDesc->iItemCount, this, pDesc->bTaken);
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
