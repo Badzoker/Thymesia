@@ -15,6 +15,10 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	HRESULT Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vDir, const _float& _fLength);
+	HRESULT Set_Trail_Reset();
+
+public:
 	static CSwordTrail_Buffer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

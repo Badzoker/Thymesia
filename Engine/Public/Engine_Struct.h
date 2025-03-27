@@ -233,6 +233,14 @@ namespace Engine
 		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	};
 
+	typedef struct ENGINE_DLL VtxSwordTrail
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vTexcoord;
+
+		const static unsigned int					iNumElements = 2;
+		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXST;
 }
 
 

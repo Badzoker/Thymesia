@@ -84,10 +84,10 @@ void CSMain_Particle_Explosion(int3 dispatchThreadID : SV_DispatchThreadID)
 void CSMain_Particle_Spark(int3 dispatchThreadID : SV_DispatchThreadID)
 {
     Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
-    g_tOutput_Compute[dispatchThreadID.x].vSpeed.xz = tInput.vSpeed.xz * 1.f;
-    g_tOutput_Compute[dispatchThreadID.x].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
     g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x = tInput.vLifeTime.x * 1.f;
     g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y += 0.0167f;
+    g_tOutput_Compute[dispatchThreadID.x].vSpeed.xz = tInput.vSpeed.xz * 1.f;
+    g_tOutput_Compute[dispatchThreadID.x].vSpeed.y -= tInput.vSpeed.y * 0.0167f * (1.f - ((g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y / g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x)));
     float fScale = tInput.vScale.x - tInput.vScale.x * (g_tOutput_Compute[dispatchThreadID.x].vLifeTime.y / g_tOutput_Compute[dispatchThreadID.x].vLifeTime.x);
     fScale = (abs(fScale - 0.5f) * -2.f) + 1.01f;
     
@@ -101,11 +101,11 @@ void CSMain_Particle_Spark(int3 dispatchThreadID : SV_DispatchThreadID)
     g_tOutput_Compute[dispatchThreadID.x].vTranslation.xyz -= vDir;
     g_tOutput_Compute[dispatchThreadID.x].vTranslation.w = 1.f;
     
-    g_tOutput_Compute[dispatchThreadID.x].vRight = float4(normalize(vDir), 0.f) * g_tOutput_Compute[dispatchThreadID.x].vScale.x;
+    g_tOutput_Compute[dispatchThreadID.x].vRight = float4(normalize(vDir), 0.f) * fScale;
     float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
-    g_tOutput_Compute[dispatchThreadID.x].vUp = vUp * tInput.vScale.y;
+    g_tOutput_Compute[dispatchThreadID.x].vUp = vUp * fScale;
     float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
-    g_tOutput_Compute[dispatchThreadID.x].vLook = vLook * tInput.vScale.z;
+    g_tOutput_Compute[dispatchThreadID.x].vLook = vLook * fScale;
 
     GroupMemoryBarrierWithGroupSync();
 }

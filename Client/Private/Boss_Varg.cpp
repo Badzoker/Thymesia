@@ -138,6 +138,7 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
     Varg_Knife_Desc.pParentState = &m_iMonster_State;
     Varg_Knife_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
     Varg_Knife_Desc.pParentModel = m_pModelCom;
+    Varg_Knife_Desc.iAttack = &m_iMonster_Attack_Power;
     Varg_Knife_Desc.fSpeedPerSec = 0.f;
     Varg_Knife_Desc.fRotationPerSec = 0.f;
 
@@ -934,6 +935,55 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
     }
+
+#pragma region Effect_CutScene
+
+    if (m_iIndex == 40) //Execution3
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+            {
+                if (!strcmp(iter.szName, "Execution_3")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                {
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION3, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION3, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+    if (m_iIndex == 41) //Execution1 & Execution2
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+            {
+                if (!strcmp(iter.szName, "Execution_1")) //Execution 첫번째 
+                {
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION1, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION2, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION_1_2, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    iter.isPlay = true;
+                }
+                if (!strcmp(iter.szName, "Execution_2")) //Execution 두번째 
+                {
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION1, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION2, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION_1_2, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    iter.isPlay = true;
+                }
+                if (!strcmp(iter.szName, "Execution_3")) //Execution 세번째 
+                {
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION3, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION3, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+
+#pragma endregion
 
     if (m_iIndex == 40 && pObject->m_pModelCom->GetAniFinish())
     {

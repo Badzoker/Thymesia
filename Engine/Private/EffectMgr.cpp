@@ -172,6 +172,19 @@ HRESULT CEffectMgr::Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _floa
     return S_OK;
 }
 
+HRESULT CEffectMgr::Stop_Effect(EFFECT_NAME _eEffectName)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (true == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(false);
+            break;
+        }
+    }
+    return S_OK;
+}
+
 
 CEffectMgr* CEffectMgr::Create()
 {

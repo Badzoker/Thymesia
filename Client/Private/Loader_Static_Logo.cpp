@@ -88,6 +88,7 @@
 #pragma region Effect
 
 #include "Effect_Mesh.h"
+#include "Effect_Sword.h"
 #include "Effect_Particle.h"
 
 #pragma endregion
@@ -1493,15 +1494,15 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right_Buffer.dat")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green"),
-		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_Green_Buffer.dat")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White"),
-		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_White_Buffer.dat")))))
-		return E_FAIL;
+	///* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green"),
+	//	CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_Green_Buffer.dat")))))
+	//	return E_FAIL;
+	//
+	///* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White"),
+	//	CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_White_Buffer.dat")))))
+	//	return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_1 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1"),
@@ -1548,6 +1549,66 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion_Buffer.dat")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Vertical_Dust*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Vertical_Dust"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Vertical_Dust_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Horizon_Dust_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Dust_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Horizon_Dust_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Left_Dust_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Left_Dust_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Left_Dust_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Narrow_Dust_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Dust_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Narrow_Dust_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Right_Dust_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Right_Dust_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Right_Dust_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Narrow_Spark_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Spark_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Narrow_Spark_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Horizon_Spark_Varg */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Spark_Varg"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Horizon_Varg_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution_1_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution_1_2"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Varg_Execution_1_2_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Varg_Execution3_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution1"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution1_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution2"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution2_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution3"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution3_Buffer.dat")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Particle_Image*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Particle_Image"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Particle_Image/texParticle%d.dds"), 21))))
@@ -1557,6 +1618,30 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		CEffect_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+#pragma endregion
+
+#pragma region Sword
+
+	/* For.Prototype_Component_Shader_Effect_Sword */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Sword"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect_Sword.hlsl"), VTXST::Elements, VTXST::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Sword_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sword_Image"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Sword_Image/texSword%d.dds"), 9))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Sword */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Sword"),
+		CSwordTrail_Buffer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Effect_Sword*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+		CEffect_Sword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 

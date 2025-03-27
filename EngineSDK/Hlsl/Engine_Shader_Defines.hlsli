@@ -136,3 +136,21 @@ BlendState BS_WeightBlend_Engine
     SrcBlendAlpha[0] = INV_SRC_ALPHA;
     DestBlendAlpha[0] = SRC_ALPHA;
 };
+
+BlendState BS_WeightBlend_Dust
+{
+    BlendEnable[0] = TRUE;
+    SrcBlendAlpha[0] = ZERO;
+    DestBlendAlpha[0] = INV_SRC_ALPHA;
+    BlendOpAlpha[0] = Add;
+};
+
+BlendState BS_Blend_Inv
+{
+    BlendEnable[0] = TRUE;
+    BlendOp[0] = Add;
+    SrcBlend[0] = DEST_COLOR;
+    DestBlend[0] = ZERO;
+    SrcBlendAlpha[0] = INV_SRC_ALPHA;
+    DestBlendAlpha[0] = SRC_ALPHA;
+};

@@ -88,7 +88,7 @@ void CVargKnife::Update(_float fTimeDelta)
 
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -104,16 +104,97 @@ void CVargKnife::Update(_float fTimeDelta)
                     }
                     else
                         m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+
+                    iter.isPlay = true;      
                 }
-                else
+                
+            }
+            else
+            {
+                if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true) // EVENT_COLLIDER 부분      
                 {
                     m_pGameInstance->Sub_Actor_Scene(m_pActor);
                     m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
-                }
 
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                    m_bColliderOff = false;
+                    if (false == iter.isEventActivate)
+                        iter.isPlay = false;
+
+                }
+                
+            }
+
+
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+            {
+                if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_VARG, &m_CombinedWorldMatrix);
+                    }
+                }
+                else if (!strcmp(iter.szName, "Weapon_Effect_Vertical_Dust"))
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST, vPos, vDir);
+                    }
+                }
+                else if (!strcmp(iter.szName, "Weapon_Effect_Narrow_Dust"))
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_NARROW_DUST_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_NARROW_SPARK_VARG, vPos, vDir);
+                    }
+                }
+                else if (!strcmp(iter.szName, "Weapon_Effect_Horizon_Dust"))
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HORIZON_DUST_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HORIZON_SPARK_VARG, vPos, vDir);
+                    }
+                }
+                else if (!strcmp(iter.szName, "Weapon_Effect_Left_Dust"))
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_LEFT_DUST_VARG, vPos, vDir);
+                    }
+                }
+                else if (!strcmp(iter.szName, "Weapon_Effect_Right_Dust"))
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_RIGHT_DUST_VARG, vPos, vDir);
+                    }
+                }
+            }
+            else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+            {
+                if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_VARG);
+                    iter.isPlay = false;
                 }
             }
         }

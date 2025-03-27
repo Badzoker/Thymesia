@@ -142,7 +142,6 @@ void CRightWeapon::Update(_float fTimeDelta)
                         _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
                         _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos, vDir);
-                        //m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_ATTACK5_DUST, m_pParentWorldMatrix);
                     }
 #pragma endregion
 

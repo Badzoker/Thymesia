@@ -583,6 +583,11 @@ HRESULT CGameInstance::Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _f
 	return m_pEffect_Manager->Play_Effect_Matrix_Dir(_eEffectName, _pMatrix, _vDir);
 }
 
+HRESULT CGameInstance::Stop_Effect(EFFECT_NAME _eEffectName)
+{
+	return m_pEffect_Manager->Stop_Effect(_eEffectName);
+}
+
 #pragma endregion 
 
 #pragma region Sound Manager 

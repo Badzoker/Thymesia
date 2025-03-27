@@ -31,6 +31,8 @@ public:
 	HRESULT Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir);
 	HRESULT Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir);
 
+	HRESULT Stop_Effect(EFFECT_NAME _eEffectName);
+
 private:
 	vector<vector<CEffect*>>	m_vecEffect; //Effect 저장용 누가누가 안쓰고있나 Check 용도
 	deque<CEffect*>				m_dequePlayingEffect; //Effect를 진짜 출력해야할놈은 여기로 넣어서 Update 돌리는 녀석 알아서 빠져나갈것임

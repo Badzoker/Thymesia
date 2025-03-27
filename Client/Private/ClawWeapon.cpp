@@ -170,38 +170,32 @@ void CClawWeapon::Update(_float fTimeDelta)
                         }
                         else if (!strcmp(iter.szName, "Claw1_Effect"))
                         {
-                            m_fTimer_Effect1 += fTimeDelta;
-                            if (0.03f < m_fTimer_Effect1)
-                            {
-                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
-                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
-                                m_fTimer_Effect1 = 0.f;
-                            }
-                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
-                            {
-                                iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                                m_fTimer_Effect1 = 0.5f;
-                            }
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_1, &m_CombinedWorldMatrix);
+                            iter.isPlay = true;
+
                         }
                         else if (!strcmp(iter.szName, "Claw2_Effect"))
                         {
 
-                            m_fTimer_Effect2 += fTimeDelta;
-                            if (0.03f < m_fTimer_Effect2)
-                            {
-                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
-                                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, _vector{ m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 ,m_CombinedWorldMatrix._43 ,1.f });
-                                m_fTimer_Effect2 = 0.f;
-                            }
-                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
-                            {
-                                iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                                m_fTimer_Effect2 = 0.5f;
-                            }
+                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_2, &m_CombinedWorldMatrix);
+                            iter.isPlay = true;      // 한 번만 재생 되어야 하므로
                         }
                     }
-#pragma endregion
                 }
+                else if ((iter.eType == EVENT_EFFECT) && iter.isEventActivate == false && iter.isPlay == true)
+                {
+                    if (!strcmp(iter.szName, "Claw1_Effect"))
+                    {
+                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_1);
+                        iter.isPlay = false;      // 약간 Logic을 뒤틀어서 꺼져야할때를 구분함
+                    }
+                    else if (!strcmp(iter.szName, "Claw2_Effect"))
+                    {
+                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_2);
+                        iter.isPlay = false; 
+                    }
+                }
+#pragma endregion
             }
     }
 

@@ -18,6 +18,7 @@
 #include "DeadBranch.h"
 
 #include "Effect_Mesh.h"
+#include "Effect_Sword.h"
 #include "Effect_Particle.h"
 
 
@@ -300,9 +301,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡  // 3¿ù 19ÀÏ	
+	//_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡  // 3¿ù 19ÀÏ	
 	//_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC ¿· À§Ä¡
-	//_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡	
+	_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡	
 	//_float4 vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // ¼­Ä¿½º¸Ê ½ÃÀÛÀ§Ä¨
 
 	Desc._fPosition = vTestPosition;
@@ -473,13 +474,13 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, 2)))
 		return E_FAIL;
 
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, 64)))
-		return E_FAIL;
-
-	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, 64)))
-		return E_FAIL;
+	//if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_Green.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+	//	EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING, 64)))
+	//	return E_FAIL;
+	//
+	//if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_CalwEffect_White.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+	//	EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING, 64)))
+	//	return E_FAIL;
 
 	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, 4)))
@@ -515,6 +516,68 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
 	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
 		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_EXPLOSION, 4)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Vertical_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Horizon_Dust_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HORIZON_DUST_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Left_Dust_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_LEFT_DUST_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Narrow_Dust_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_NARROW_DUST_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Right_Dust_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_RIGHT_DUST_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Narrow_Spark_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_NARROW_SPARK_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Horizon_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HORIZON_SPARK_VARG, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Varg_Execution_1_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION_1_2, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Varg_Execution3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION3, 1)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION1, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION2, 2)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+		EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION3, 1)))
+		return E_FAIL;
+
+	//Sword Effect
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+		EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_VARG)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Claw_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+		EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_CLAW_1)))
+		return E_FAIL;
+
+	if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Claw_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+		EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_CLAW_2)))
 		return E_FAIL;
 
 	return S_OK;
@@ -1224,7 +1287,7 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 
 		
 	}
-	else
+	else if(EFFECT_TYPE::EFFECT_TYPE_PARTICLE == _eEffectType)
 	{
 		//Particle ¿ëµµ
 		DWORD dwByte = 0;
@@ -1271,14 +1334,14 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
 			break;
-		case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING:
-			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
-			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green");
-			break;
-		case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING:
-			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
-			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White");
-			break;
+		//case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_GREEN_HOLDING:
+		//	pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
+		//	pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green");
+		//	break;
+		//case Engine::EFFECT_NAME::EFFECT_PARTICLE_CLAW_WHITE_HOLDING:
+		//	pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
+		//	pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White");
+		//	break;
 		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING:
 			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1");
@@ -1315,6 +1378,54 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
 			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Explosion");
 			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Vertical_Dust");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_HORIZON_DUST_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Dust_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_LEFT_DUST_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Left_Dust_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_NARROW_DUST_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Dust_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_RIGHT_DUST_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Right_Dust_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_NARROW_SPARK_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Spark_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_HORIZON_SPARK_VARG:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Spark_Varg");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION_1_2:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution_1_2");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION3:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION1:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution1");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION2:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution2");
+			break;
+		case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION3:
+			pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+			pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3");
+			break;
 		}
 #pragma endregion
 
@@ -1323,6 +1434,34 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 			if (FAILED(m_pGameInstance->Add_Effect(_iPrototypeLevelIndex, _pEffectPrototypeName, _eEffectName, &pDesc)))
 				return E_FAIL;
 		}
+
+	}
+	else //Sword
+	{
+#pragma region SwordEffect
+
+		DWORD dwByte = 0;
+
+		CEffect_Sword::EFFECT_SWORD_DESC pDesc = {};
+
+		ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.iShaderPass, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fLength, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.fParent_Look, sizeof(_float), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.vRGB, sizeof(_float3), &dwByte, nullptr);
+
+		ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
+
+
+		for (_uint i = 0; i < _iEffectCount; i++)
+		{
+			if (FAILED(m_pGameInstance->Add_Effect(_iPrototypeLevelIndex, _pEffectPrototypeName, _eEffectName, &pDesc)))
+				return E_FAIL;
+		}
+#pragma endregion
 
 	}
 

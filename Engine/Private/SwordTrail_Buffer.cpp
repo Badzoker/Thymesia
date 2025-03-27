@@ -14,39 +14,65 @@ CSwordTrail_Buffer::CSwordTrail_Buffer(const CSwordTrail_Buffer& Prototype)
 
 HRESULT CSwordTrail_Buffer::Initialize_Prototype()
 {
-	m_iNumVertices = 4;
-	m_iVertexStride = sizeof(VTXPOSTEXAGE);			
-	m_iNumIndices = 6;
+	return S_OK;
+}
+
+HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
+{
+	m_iNumVertices = (2 * 64) + 2; // 네모가 128개가 필요한 vtx -> 시작점때문에 2개를 더해준다.
+	m_iNumIndices = 6 * 64; // 세모는 2개 이므로 6개의 인덱스, 네모가 128개이다.
+	m_iVertexStride = sizeof(VTXST);
 	m_iIndexStride = 4;
-	m_iNumVertexBuffers = 1;	
+	m_iNumVertexBuffers = 1;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-#pragma region VERTEX_BUFFER
+#pragma region INDEX_BUFFER
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride * 10000;	
-	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;		
-	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;	
-	m_BufferDesc.StructureByteStride = m_iVertexStride;	
-	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	
+	m_BufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_BufferDesc.StructureByteStride = m_iIndexStride;
+	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_BufferDesc.MiscFlags = 0;
 
-	VTXPOSTEXAGE* pVertices = new VTXPOSTEXAGE[m_iNumVertices * 10000];
-	ZeroMemory(pVertices, sizeof(VTXPOSTEXAGE) * m_iNumVertices * 10000);
+	_uint* pIndices = new _uint[m_iNumIndices];
+	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
 
-	/*pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-	pVertices[0].vTexcoord = _float2(0.f, 0.f);
+	for (_uint i = 0; i < 64; i++)
+	{
+		pIndices[(6 * i)] = 2 * i + 3;
+		pIndices[(6 * i) + 1] = 2 * i + 1;
+		pIndices[(6 * i) + 2] = 2 * i;
 
-	pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-	pVertices[1].vTexcoord = _float2(1.f, 0.f);
+		pIndices[(6 * i) + 3] = 2 * i + 2;
+		pIndices[(6 * i) + 4] = 2 * i + 3;
+		pIndices[(6 * i) + 5] = 2 * i;
+	}
 
-	pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-	pVertices[2].vTexcoord = _float2(1.f, 1.f);
 
-	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-	pVertices[3].vTexcoord = _float2(0.f, 1.f);*/
 
-	ZeroMemory(&m_InitialData, sizeof m_InitialData);
+	ZeroMemory(&m_InitialData, sizeof(m_InitialData));
+	m_InitialData.pSysMem = pIndices;
+
+	if (FAILED(__super::Create_Buffer(&m_pIB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pIndices);
+#pragma endregion
+#pragma region VERTEX_BUFFER
+	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
+	m_BufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_BufferDesc.StructureByteStride = m_iVertexStride;
+	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_BufferDesc.MiscFlags = 0;
+
+	VTXST* pVertices = new VTXST[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXST) * m_iNumVertices);
+
+
+	ZeroMemory(&m_InitialData, sizeof(m_InitialData));
 	m_InitialData.pSysMem = pVertices;
 
 	if (FAILED(__super::Create_Buffer(&m_pVB)))
@@ -55,41 +81,75 @@ HRESULT CSwordTrail_Buffer::Initialize_Prototype()
 	Safe_Delete_Array(pVertices);
 #pragma endregion
 
+	return S_OK;
+}
 
-#pragma region INDEX_BUFFER
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride * 10000;
-	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;	
-	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_BufferDesc.StructureByteStride = m_iIndexStride;
-	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	
-	m_BufferDesc.MiscFlags = 0;
+HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vDir, const _float& _fLength)
+{
+	D3D11_MAPPED_SUBRESOURCE SubSource{};
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubSource);
 
-	_uint* pIndices = new _uint[m_iNumIndices * 10000];	
-	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices * 10000);
+	VTXST* pVertices = static_cast<VTXST*>(SubSource.pData);
 
-	//pIndices[0] = 0;
-	//pIndices[1] = 1;
-	//pIndices[2] = 2;
+	_float3 vPos = {};
+	_vector vDir{}, vStartPos{}, vEndPos{};
+	_float fTexcoordX = {};
 
-	//pIndices[3] = 0;
-	//pIndices[4] = 2;
-	//pIndices[5] = 3;
+	for (_uint i = 0; i < 64; i++)
+	{
+		if (i < _idequeCount)
+		{
+			vDir = XMVector3Normalize(XMLoadFloat3(&_vDir));
+			vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir * _fLength);
 
-	ZeroMemory(&m_InitialData, sizeof m_InitialData);
-	m_InitialData.pSysMem = pIndices;
+			XMStoreFloat3(&vPos, vStartPos);
+			pVertices[2 * i].vPosition = vPos; // 시작점
 
-	if (FAILED(__super::Create_Buffer(&m_pIB)))
-		return E_FAIL;
+			vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir * _fLength);
 
-	Safe_Delete_Array(pIndices);
-#pragma endregion
+			XMStoreFloat3(&vPos, vEndPos);
+			pVertices[(2 * i) + 1].vPosition = vPos; // 끝점
+
+			fTexcoordX = 1.f - static_cast<_float>(i) / (_idequeCount - 1);
+
+			pVertices[2 * i].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[(2 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+
+		}
+		else
+		{
+			pVertices[2 * i].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[(2 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);;
+		}
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
 
 	return S_OK;
 }
 
-HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
+HRESULT CSwordTrail_Buffer::Set_Trail_Reset()
 {
+	D3D11_MAPPED_SUBRESOURCE SubSource{};
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubSource);
+
+	VTXST* pVertices = static_cast<VTXST*>(SubSource.pData);
+
+	_float fTexcoordX = {};
+
+	_float3 vPos_Start = pVertices[0].vPosition;
+	_float3 vPos_End = pVertices[1].vPosition;
+	for (_uint i = 0; i < 65; i++)
+	{
+		pVertices[2 * i].vPosition = vPos_Start; // 시작점
+		pVertices[(2 * i) + 1].vPosition = vPos_End; // 끝점
+
+		pVertices[2 * i].vTexcoord = _float2(0.f, 0.f); // 시작점
+		pVertices[(2 * i) + 1].vTexcoord = _float2(0.f, 0.f); // 끝점
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+
 	return S_OK;
 }
 

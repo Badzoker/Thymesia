@@ -736,6 +736,9 @@
     <Filter Include="02.GameObject\SpecificObject">
       <UniqueIdentifier>{480b9a3c-e2d5-4d05-9f66-b0d91896c326}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Sword">
+      <UniqueIdentifier>{cac4cd58-c520-4ad9-a54a-a51da7d628ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1374,6 +1377,9 @@
     <ClInclude Include="..\Public\SpecificObject.h">
       <Filter>02.GameObject\SpecificObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Sword.h">
+      <Filter>02.GameObject\Effect\Sword</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2003,6 +2009,9 @@
     <ClCompile Include="..\Private\SpecificObject.cpp">
       <Filter>02.GameObject\SpecificObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Sword.cpp">
+      <Filter>02.GameObject\Effect\Sword</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2072,6 +2081,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxItemTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Sword.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
