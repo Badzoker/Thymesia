@@ -70,7 +70,7 @@ public:
 	CComponent* Find_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentName);
 	map<const _wstring, class CLayer*>* Get_Layers();	
 	_uint	Get_NumLevel();
-	_char* Get_ColliderName(CGameObject* pGameObejct);
+
 
 	HRESULT UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
 	_bool UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag);

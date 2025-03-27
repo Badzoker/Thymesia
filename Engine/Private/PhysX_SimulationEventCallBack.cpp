@@ -13,7 +13,7 @@ CPhysX_SimulationEventCallBack::CPhysX_SimulationEventCallBack()
 
 CPhysX_SimulationEventCallBack::~CPhysX_SimulationEventCallBack()
 {
-    Safe_Release(m_pGameInstance);
+
 }
 
 void CPhysX_SimulationEventCallBack::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)

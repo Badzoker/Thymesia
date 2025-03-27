@@ -19,9 +19,6 @@
 
 #include "Navigation.h"
 
-#include "Collider.h"
-#include "Bounding_AABB.h"
-#include "Bounding_Sphere.h"
 #include "Monster.h"
 
 

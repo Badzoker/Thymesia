@@ -303,10 +303,7 @@ HRESULT CGameInstance::UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& s
 	return m_pObject_Manager->UIGroup_Render_OnOff(iLevelIndex, strLayerTag, bCheck);
 }
 
-_char* CGameInstance::Get_ColliderName(CGameObject* pGameObejct)
-{
-	return dynamic_cast<CCollider*>(pGameObejct->Get_Components()->find(TEXT("Com_Collider"))->second)->Get_CollierName();
-}
+
 
 _bool CGameInstance::UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag)
 {
@@ -500,6 +497,7 @@ HRESULT CGameInstance::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, 
 	return m_pTarget_Manager->RTV_Compute_Fog(strRenderTargetTagDepth, pNoiseSRV, strRenderTargetTagGodRay, strRenderTargetTagFinal, strRenderTargetTagFog, pCompute_Shader, _iThreadCountX, _iThreadCountY, _iThreadCountZ, pArg);
 }
 
+#ifdef _DEBUG
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	return m_pTarget_Manager->Ready_RT_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);
@@ -507,8 +505,11 @@ HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float
 
 HRESULT CGameInstance::Render_RT_Debug(const _wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	return m_pTarget_Manager->Render_RT_Debug(strMRTTag, pShader, pVIBuffer);	
+	return m_pTarget_Manager->Render_RT_Debug(strMRTTag, pShader, pVIBuffer);
 }
+
+#endif // _DEBUG
+
 
 
 

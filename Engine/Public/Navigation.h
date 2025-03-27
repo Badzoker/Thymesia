@@ -48,9 +48,6 @@ private:
 	CNavigation(const CNavigation& Prototype);
 	virtual ~CNavigation() = default;
 
-public:
-	bool Get_FirstPick() const { return m_bFirstPick; }
-	void Set_FirstPick(bool bFirstPick) { m_bFirstPick = bFirstPick; }
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pNavigationDataFile);
@@ -116,15 +113,15 @@ private:
 
 	_uint					m_iBeslist_Count = {};
 
-#ifdef _DEBUG
-private:
-	class CShader* m_pShader = { nullptr };
 
-	_bool                   m_bFirstPick = { true };
+private:
+	class CShader*			m_pShader = { nullptr };
+
+	
 private:
 	_uint					m_iFloorNumber = {};
 
-#endif
+
 private:
 	_int                   m_iStartIndex = {};
 	list<_int>             m_CloseList;
