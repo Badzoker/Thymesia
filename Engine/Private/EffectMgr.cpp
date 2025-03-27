@@ -185,6 +185,25 @@ HRESULT CEffectMgr::Stop_Effect(EFFECT_NAME _eEffectName)
     return S_OK;
 }
 
+HRESULT CEffectMgr::Reset_Effect()
+{
+    for (_uint i = 0; i < static_cast<_uint>(EFFECT_NAME::EFFECT_NAME_END); i++)
+    {
+        for (auto& iter : m_vecEffect[i])
+        {
+
+            if (true == iter->Get_IsPlaying())
+            {
+                iter->Set_IsPlaying(false);
+            }
+        }
+    }
+    
+    m_dequePlayingEffect.clear();
+
+    return S_OK;
+}
+
 
 CEffectMgr* CEffectMgr::Create()
 {

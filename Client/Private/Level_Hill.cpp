@@ -1222,4 +1222,5 @@ void CLevel_Hill::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Reset_Effect();
 }

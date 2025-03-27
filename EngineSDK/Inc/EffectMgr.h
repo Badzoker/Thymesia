@@ -33,6 +33,8 @@ public:
 
 	HRESULT Stop_Effect(EFFECT_NAME _eEffectName);
 
+	HRESULT Reset_Effect();
+
 private:
 	vector<vector<CEffect*>>	m_vecEffect; //Effect 저장용 누가누가 안쓰고있나 Check 용도
 	deque<CEffect*>				m_dequePlayingEffect; //Effect를 진짜 출력해야할놈은 여기로 넣어서 Update 돌리는 녀석 알아서 빠져나갈것임
