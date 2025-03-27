@@ -1205,6 +1205,9 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
+
+	m_pGameInstance->Delete_Dynamic_Light(m_pTransformCom);
+
 	__super::Free();
 
 	m_pGameInstance->Sub_Actor_Scene(m_pActor);

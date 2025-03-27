@@ -21,6 +21,7 @@ HRESULT CLight_Dynamic::Initialize(const LIGHT_DESC& LightDesc, CTransform* pTra
 		return E_FAIL;
 
 	m_pTransform = pTransform;
+	Safe_AddRef(m_pTransform);
 
 	return S_OK;
 }
@@ -74,6 +75,14 @@ void CLight_Dynamic::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 }
 
+_bool CLight_Dynamic::Delete_Light(CTransform* pTransform)
+{
+	if (pTransform == m_pTransform)
+		return true;
+
+	return false;
+}
+
 CLight_Dynamic* CLight_Dynamic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc, CTransform* pTransform)
 {
 	CLight_Dynamic* pInstance = new CLight_Dynamic(pDevice, pContext);
@@ -94,4 +103,5 @@ void CLight_Dynamic::Free()
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	Safe_Release(m_pTransform);
 }

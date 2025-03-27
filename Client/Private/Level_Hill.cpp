@@ -17,7 +17,7 @@
 #include "Effect_Mesh.h"
 #include "Effect_Particle.h"
 
-
+#include "Terrain.h"
 
 CLevel_Hill::CLevel_Hill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -74,8 +74,8 @@ HRESULT CLevel_Hill::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Lights()))	
 		return E_FAIL;	
@@ -180,7 +180,11 @@ HRESULT CLevel_Hill::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	pDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Terrain"), LEVEL_HILL, pLayerTag, &pDesc)))
+	CTerrain::TERRAININFO pTerrainInfo = {};
+	pTerrainInfo.vTerrainPos = _float4(-50.0f, 0.0f, -100.0f, 1.0f);
+	pTerrainInfo.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_HILL, TEXT("Prototype_GameObject_Terrain"), LEVEL_HILL, pLayerTag, &pTerrainInfo)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)

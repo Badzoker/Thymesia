@@ -15,6 +15,11 @@ BEGIN(Client)
 
 class CTerrain final : public CGameObject
 {
+public:
+	typedef struct TerrainInfo : public CGameObject::GAMEOBJECT_DESC
+	{
+		_float4 vTerrainPos = { 30.0f, 0.0f, -150.0f, 1.0f };
+	}TERRAININFO;
 private:
 	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTerrain(const CTerrain& Prototype);
