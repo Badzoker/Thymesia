@@ -32,8 +32,8 @@ void CLight_Dynamic::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	if (LIGHT_DESC::TYPE_POINT == m_LightDesc.eType)
 	{
 		iPassIndex = 2;
-
-		XMStoreFloat4(&m_LightDesc.vPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
+		if (nullptr != m_pTransform)
+			XMStoreFloat4(&m_LightDesc.vPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
 
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
 			return;

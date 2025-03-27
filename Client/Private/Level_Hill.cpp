@@ -280,10 +280,7 @@ HRESULT CLevel_Hill::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
-	//_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-	//_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
-	//_float4 vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // 서커스맵 시작위칩
+	_float4 vTestPosition = { 8.f, 1.05f, -32.f, 1.f }; //의자 옆 위치  // 3월 27일	
 
 	Desc._fPosition = vTestPosition;
 
@@ -538,35 +535,35 @@ HRESULT CLevel_Hill::Ready_Layer_Item(const _tchar* pLayerTag)
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
 	//============================================================================================
@@ -576,7 +573,7 @@ HRESULT CLevel_Hill::Ready_Layer_Item(const _tchar* pLayerTag)
 	BranchDesc.eItemType = ITEM_TYPE::ITEM_DEADBRANCH;
 	BranchDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_HILL, pLayerTag, &BranchDesc)))
 		return E_FAIL;
 
 
