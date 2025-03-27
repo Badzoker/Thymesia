@@ -191,11 +191,8 @@ HRESULT CEffectMgr::Reset_Effect()
     {
         for (auto& iter : m_vecEffect[i])
         {
-
             if (true == iter->Get_IsPlaying())
-            {
                 iter->Set_IsPlaying(false);
-            }
         }
     }
     
