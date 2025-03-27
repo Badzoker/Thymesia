@@ -1341,7 +1341,7 @@ HRESULT CRenderer::Bind_NoiseTexture(CShader* pShader, const _char* pConstantNam
 {
 	return pShader->Bind_SRV(pConstantName, m_pNoiseSRV);
 }
-
+#ifdef _DEBUG
 HRESULT CRenderer::Render_Debug()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1394,6 +1394,7 @@ HRESULT CRenderer::Render_Debug()
 
 	return S_OK;
 }
+#endif
 
 CRenderer * CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

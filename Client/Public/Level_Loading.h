@@ -18,7 +18,9 @@ private:
 public:
 	virtual HRESULT Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _bool bCheck);
 	virtual void Update(_float fTimeDelta) override;
+#ifdef _DEBUG
 	virtual HRESULT Render() override;
+#endif
 
 public:
 	HRESULT Ready_Layer_UIGroup_Loading(const _tchar* pLayerTag);

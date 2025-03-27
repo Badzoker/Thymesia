@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "GameObject.h"
+#include "DebugDraw.h"
 
 #pragma region CollisionFilter 
 PxFilterFlags CollisionFilterShader(
@@ -383,6 +384,7 @@ HRESULT CPhysX_Manager::Set_GlobalPos(PxRigidDynamic* Actor, _vector _fPosition)
     return S_OK;
 }
 
+#ifdef _DEBUG   
 HRESULT CPhysX_Manager::Render_PhysXDebugger()
 {
     m_pContext->GSSetShader(nullptr, nullptr, 0);
@@ -422,6 +424,8 @@ HRESULT CPhysX_Manager::Render_PhysXDebugger()
     m_pBatch->End();
     return S_OK;
 }
+#endif // _DEBUG
+
 
 HRESULT CPhysX_Manager::Update(_float fTimeDelta)
 {

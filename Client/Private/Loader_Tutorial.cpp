@@ -217,18 +217,7 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 
 
 
-#pragma region Collider
-	lstrcpyW(m_szLoadingText, TEXT("Collider 생성중"));
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Collider_AABB"),
-		CCollider::Create(m_pDevice, m_pContext,CCollider::TYPE_AABB))))	
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Collider_SPHERE"),
-		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))	
-		return E_FAIL;
-
-#pragma endregion
 
 #pragma region Objects
 	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));

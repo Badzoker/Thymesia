@@ -1,4 +1,4 @@
-#include "pch.h" 
+#include "pch.h"	 
 #include "Loader_RoyalGarden.h"
 #include "Body_Player.h"
 #include "GameInstance.h"
@@ -225,22 +225,9 @@ HRESULT CLoader_RoyalGarden::Loading_For_Level_RoyalGarden()
 	
 	
 
-
-
 #pragma endregion 
 
-#pragma region Collider
-	lstrcpyW(m_szLoadingText, TEXT("Collider »ý¼ºÁß"));
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_Collider_AABB"),
-		CCollider::Create(m_pDevice, m_pContext,CCollider::TYPE_AABB))))	
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_Collider_SPHERE"),
-		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))	
-		return E_FAIL;
-
-#pragma endregion
 
 
 

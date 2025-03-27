@@ -231,12 +231,12 @@ HRESULT CLoader::Start_Loading()
 
 	return S_OK;
 }
-
-void CLoader::SetUp_WindowText()
+#ifdef _DEBUG	
+void CLoader::SetUp_WindowText()	
 {
 	SetWindowText(g_hWnd, m_szLoadingText);
 }
-
+#endif
 
 
 //CLoader * CLoader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevelID)

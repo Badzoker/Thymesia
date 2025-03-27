@@ -186,6 +186,7 @@ HRESULT CTarget_Manager::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth
     return pCompute_Shader->Compute_Shader_Fog(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetDepth->Get_SRV(), pNoiseSRV, pRenderTargetGodRay->Get_SRV(), pRenderTargetFinal->Get_SRV(), pRenderTargetFog->Get_UAV(), pArg);
 }
 
+#ifdef _DEBUG
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
     CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);
@@ -211,6 +212,7 @@ HRESULT CTarget_Manager::Render_RT_Debug(const _wstring& strMRTTag, CShader* pSh
 
     return S_OK; 
 }
+#endif
 
 CRenderTarget* CTarget_Manager::Find_RenderTarget(const _wstring& strRenderTargetTag)
 {

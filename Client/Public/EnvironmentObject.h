@@ -95,7 +95,7 @@ protected:
     _bool               m_bModeSelected = { false };
     vector<_int>        m_vecBoxSize = {};
 
-    vector<CCollider*>      m_vecColliderCom;
+
 
     _uint               m_iPassIndex = { 0 };
 

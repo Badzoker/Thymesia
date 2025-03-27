@@ -205,12 +205,14 @@ void CLevel_Loading::Update(_float fTimeDelta)
 	}
 }
 
+#ifdef _DEBUG
 HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->SetUp_WindowText();
 
 	return S_OK;
 }
+#endif // _DEBUG
 
 HRESULT CLevel_Loading::Ready_Layer_UIGroup_Loading(const _tchar* pLayerTag)
 {
