@@ -37,6 +37,10 @@ void CUI_LandingScreen::Priority_Update(_float fTimeDelta)
 
 void CUI_LandingScreen::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+
+	}
 }
 
 void CUI_LandingScreen::Late_Update(_float fTimeDelta)
@@ -45,6 +49,7 @@ void CUI_LandingScreen::Late_Update(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
+	
 }
 
 HRESULT CUI_LandingScreen::Render()

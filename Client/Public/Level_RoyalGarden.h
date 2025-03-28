@@ -54,6 +54,7 @@ private:
 	HRESULT Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag);
 
 
 	// 테스트용 사다리 레이어 추가

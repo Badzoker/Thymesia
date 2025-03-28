@@ -324,4 +324,5 @@ CGameObject* CUIGroup_Loading::Clone(void* pArg)
 void CUIGroup_Loading::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_LOADING);
 }

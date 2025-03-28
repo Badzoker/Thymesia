@@ -257,4 +257,5 @@ CGameObject* CUIGroup_GameIntro::Clone(void* pArg)
 void CUIGroup_GameIntro::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_INTRO);
 }

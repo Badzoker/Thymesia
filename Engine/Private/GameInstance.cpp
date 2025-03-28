@@ -783,20 +783,9 @@ void CGameInstance::Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount)
 	return m_pUI_Manager->Find_TextBox_Monster_Memory(pScene, iCount);
 }
 
-
-void CGameInstance::Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, CUIObject* pUIObj)
+void CGameInstance::UIScene_Clear(_uint iScenelIndex)
 {
-	return m_pUI_Manager->Clear_Choice(iUIType, iScenelIndex, strSceneTag, pUIObj);
-}
-
-void CGameInstance::Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag)
-{
-	return m_pUI_Manager->Clear_Last(iUIType, iScenelIndex, strSceneTag);
-}
-
-void CGameInstance::Clear_ALL()
-{
-	return m_pUI_Manager->Clear_ALL();
+	return m_pUI_Manager->Clear(iScenelIndex);
 }
 
 const CUI_Manager::PLAYER_SAVE_STATE& CGameInstance::Get_Player_State_SaveData()

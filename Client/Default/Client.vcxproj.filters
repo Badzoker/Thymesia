@@ -1401,6 +1401,9 @@
     <ClInclude Include="..\Public\Body_Magician2.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_MapChange.h">
+      <Filter>03.UIObject\2.UIObjGroup\9.MapChange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2041,6 +2044,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Magician2.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_MapChange.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\9.MapChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -95,6 +95,7 @@ private:
 	CUI_Scene* m_pItemTypePopUp = {}; // 1 ¹ø ÆË¾÷
 	CUI_Scene* m_pItemUsePopUp = {}; // 2 ¹ø ÆË¾÷
 	class CGameObject* m_pPlayer = { nullptr };
+	LEVELID m_eLevelID = {};
 
 public:
 	static CUIGroup_Inventory* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

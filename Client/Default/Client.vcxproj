@@ -273,6 +273,7 @@
     <ClInclude Include="..\Public\UIGroup_Inventory.h" />
     <ClInclude Include="..\Public\UIGroup_Landing.h" />
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
+    <ClInclude Include="..\Public\UIGroup_MapChange.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerLevelUP.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerScreen.h" />
@@ -494,6 +495,7 @@
     <ClCompile Include="..\Private\UIGroup_Inventory.cpp" />
     <ClCompile Include="..\Private\UIGroup_Landing.cpp" />
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
+    <ClCompile Include="..\Private\UIGroup_MapChange.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerLevelUP.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerScreen.cpp" />

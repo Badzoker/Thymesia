@@ -298,4 +298,5 @@ CGameObject* CUIGroup_PlayerMenu::Clone(void* pArg)
 void CUIGroup_PlayerMenu::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_MENU);
 }

@@ -8,12 +8,12 @@ END
 
 BEGIN(Client)
 
-class CUIGroup_Loading final : public CUIObject
+class CUIGroup_MapChange final : public CUIObject
 {
 private:
-	CUIGroup_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUIGroup_Loading(const CUIGroup_Loading& Prototype);
-	virtual ~CUIGroup_Loading() = default;
+	CUIGroup_MapChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUIGroup_MapChange(const CUIGroup_MapChange& Prototype);
+	virtual ~CUIGroup_MapChange() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -24,7 +24,6 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Texture_Num_Check();
 
 
 public:
@@ -33,11 +32,18 @@ public:
 	HRESULT LoadData_UIText_Info(const _tchar* szSceneName);
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
-	CUI_Scene* m_pMyScene = {};
-	LEVELID m_eLevelID = {};
 
+	CUI_Scene* m_pMyScene = {};
+	CUI_Scene* m_pMapChangePop = {};
+	_bool m_bPopOpen = { false };
+	_tchar* m_pPoptitle = {};
+
+	LEVELID m_eNextLevel = {};
+
+
+	LEVELID m_eMyLevel = {};
 public:
-	static CUIGroup_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUIGroup_MapChange* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

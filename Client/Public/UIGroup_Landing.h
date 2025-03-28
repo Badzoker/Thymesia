@@ -24,7 +24,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-
+	void Map_Name();
 
 public:
 	HRESULT Ready_UIObject();
@@ -40,6 +40,7 @@ private:
 	CUI_Scene* m_pMessage_MapName = {};
 
 	_float m_fRandingTime = {};
+	LEVELID m_eLevelID = {};
 
 public:
 	static CUIGroup_Landing* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

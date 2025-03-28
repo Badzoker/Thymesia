@@ -241,9 +241,7 @@ public:
 
 	void Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
 
-	void Clear_Choice(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag, class CUIObject* pUIObj); // 선택 obj 지우기
-	void Clear_Last(_uint iUIType, _uint iScenelIndex, const _wstring& strSceneTag);; // 마지막꺼 지우기
-	void Clear_ALL(); // UI 모든 씬 지우기
+	void UIScene_Clear(_uint iScenelIndex); // UI 모든 씬 지우기
 
 	const CUI_Manager::PLAYER_SAVE_STATE& Get_Player_State_SaveData();// const { return m_PlayerStat; }
 	void Set_Player_State_SaveData(const CUI_Manager::PLAYER_SAVE_STATE& PlayerData);// { m_PlayerStat = PlayerData; }

@@ -320,4 +320,5 @@ CGameObject* CUIGroup_PlayerTalent::Clone(void* pArg)
 void CUIGroup_PlayerTalent::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_TALENT);
 }
