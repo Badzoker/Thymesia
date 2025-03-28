@@ -20,6 +20,8 @@ public:
     _bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
     _bool   IsFading() { return m_bFading; }
 
+    void   Setting_NULL_BlackScreen();
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };

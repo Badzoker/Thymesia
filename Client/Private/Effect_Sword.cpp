@@ -154,7 +154,7 @@ void CEffect_Sword::Calculate_Trail(_float _fTimeDelta)
     {
         Delete_Trail();
     }
-    else if (m_fTimerX < 0.75f && m_dequeCenterPos.size() < 64)
+    else if (m_fTimerX < 1.25f && m_dequeCenterPos.size() < 64)
     {
         m_dequeCenterPos.push_front(vLook_Sword);
         

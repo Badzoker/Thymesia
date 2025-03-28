@@ -29,6 +29,8 @@ void CLevel::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Setting_NULL_BlackScreen();
+
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

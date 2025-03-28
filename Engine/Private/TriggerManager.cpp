@@ -120,6 +120,19 @@ _bool CTriggerManager::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
     return true;
 }
 
+void CTriggerManager::Setting_NULL_BlackScreen()
+{
+    for (auto& Pair : m_mapTriggers)
+    {
+        for (auto& pTrigger : Pair.second)
+            Safe_Release(pTrigger);
+
+        Pair.second.clear();
+    }
+
+    m_pBlackScreen = nullptr;
+}
+
 HRESULT CTriggerManager::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _fDuration)
 {
     if (nullptr == m_pBlackScreen)

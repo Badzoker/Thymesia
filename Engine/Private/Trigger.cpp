@@ -11,7 +11,7 @@ HRESULT CTrigger::Initialize()
 
 void CTrigger::Execute()
 {
-    if (m_bFadeActivated)
+    if (true == m_bFadeActivated)
         return;
     m_bFadeActivated = true;
 
@@ -30,10 +30,10 @@ void CTrigger::Execute()
 
 void CTrigger::Update(_float _fTimeDelta)
 {
-    if (!m_pTarget || !m_bFadeActivated)
+    if (nullptr == m_pTarget || false == m_bFadeActivated)
         return;
 
-    if (m_bFadeOutCompleted || m_bFadeInCompleted)
+    if (true == m_bFadeOutCompleted || true == m_bFadeInCompleted)
         return;
 
     if (m_eTriggerType == TRIGGER_TYPE::TT_FADE_IN)

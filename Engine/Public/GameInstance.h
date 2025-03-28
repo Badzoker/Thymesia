@@ -280,6 +280,7 @@ public:
 	HRESULT Add_Trigger(TRIGGER_TYPE _eTriggerType, class CGameObject* _pTarget = nullptr);
 	HRESULT Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration);
 	_bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
+	void   Setting_NULL_BlackScreen();
 #pragma endregion
 
 #pragma region MONSTER_MANAGER

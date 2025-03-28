@@ -900,6 +900,10 @@ _bool CGameInstance::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
 {
 	return m_pTrigger_Manager->Is_Fade_Complete(_eTriggerType);
 }
+void CGameInstance::Setting_NULL_BlackScreen()
+{
+	m_pTrigger_Manager->Setting_NULL_BlackScreen();
+}
 #pragma endregion
 
 #pragma region MONSTER_MANAGER
