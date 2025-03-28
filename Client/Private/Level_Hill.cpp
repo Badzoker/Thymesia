@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "Layer.h"	
+#include "Level_Loading.h"
 
 #include "Object.h"
 #include "EnvironmentObject.h"
@@ -73,6 +74,12 @@ HRESULT CLevel_Hill::Initialize()
 
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
+	
+	if (FAILED(Ready_Layer_UIGroup_MapChange(TEXT("Layer_MapChange"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_UIGroup_LandingMessage(TEXT("Layer_Landing"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
 		return E_FAIL;
@@ -90,6 +97,11 @@ HRESULT CLevel_Hill::Initialize()
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 	m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.8f);
+
+	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_Landing"), true);
+	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
+
 
 	return S_OK;
 }
@@ -122,7 +134,26 @@ void CLevel_Hill::Update(_float fTimeDelta)
 		}
 		
 	}
-	
+
+	if (m_bNextLevelOpen)
+	{
+		_int iLoadingImage = {};
+		m_pGameInstance->Clear_ItemInfo();
+		switch (m_iNextLevel)
+		{
+		case LEVEL_SEAOFTREES:
+			iLoadingImage = 1;
+			break;
+		case LEVEL_ROYALGARDEN:
+			iLoadingImage = 3;
+			break;
+		case LEVEL_FORTRESS:
+			iLoadingImage = 4;
+			break;
+		}
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), iLoadingImage, false));
+	}
+
 }
 
 HRESULT CLevel_Hill::Render() 
@@ -631,7 +662,25 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_HILL, pLayerTag, nullptr, "Inventory")))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_HILL, pLayerTag, &Desc, "Inventory")))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Hill::Ready_Layer_UIGroup_MapChange(const _tchar* pLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_MapChange"), LEVEL_HILL, pLayerTag)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Hill::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }

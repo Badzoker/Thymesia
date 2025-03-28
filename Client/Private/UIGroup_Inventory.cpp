@@ -40,6 +40,11 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+
+	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+
 	m_pMyBaseScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase");
 	m_pItemScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_Inven_ItemUse");
 
@@ -50,7 +55,7 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 	m_pItemTypePopUp = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_ItemType_PopUp");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
 	
 
 
@@ -1173,6 +1178,8 @@ CGameObject* CUIGroup_Inventory::Clone(void* pArg)
 void CUIGroup_Inventory::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_INVEN);
+
 }
 
 void CUIGroup_Inventory::Set_Item_Default_Info()

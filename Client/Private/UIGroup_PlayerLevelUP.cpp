@@ -929,4 +929,5 @@ CGameObject* CUIGroup_PlayerLevelUP::Clone(void* pArg)
 void CUIGroup_PlayerLevelUP::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_LEVELUP);
 }

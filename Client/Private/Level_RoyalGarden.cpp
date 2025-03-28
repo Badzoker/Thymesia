@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "Layer.h"	
+#include "Level_Loading.h"
 
 #include "Object.h"
 #include "EnvironmentObject.h"
@@ -74,6 +75,9 @@ HRESULT CLevel_RoyalGarden::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_UIGroup_LandingMessage(TEXT("Layer_Landing"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
 		return E_FAIL;
 
@@ -90,6 +94,10 @@ HRESULT CLevel_RoyalGarden::Initialize()
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 	m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.8f);
+
+	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);
+	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 
 	return S_OK;
 }
@@ -122,7 +130,11 @@ void CLevel_RoyalGarden::Update(_float fTimeDelta)
 		}
 		
 	}
-	
+	if (m_bNextLevelOpen)
+	{
+		m_pGameInstance->Clear_ItemInfo();
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
+	}
 }
 
 HRESULT CLevel_RoyalGarden::Render() 
@@ -626,7 +638,20 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLaye
 
 HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_ROYALGARDEN, pLayerTag, nullptr, "Inventory")))
+
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_ROYALGARDEN, pLayerTag, &Desc, "Inventory")))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }

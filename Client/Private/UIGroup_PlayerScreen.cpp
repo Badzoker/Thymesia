@@ -595,4 +595,5 @@ CGameObject* CUIGroup_PlayerScreen::Clone(void* pArg)
 void CUIGroup_PlayerScreen::Free()
 {
 	__super::Free();
+	m_pGameInstance->UIScene_Clear(UISCENE_PLAYERSCREEN);
 }

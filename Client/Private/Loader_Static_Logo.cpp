@@ -115,6 +115,7 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Loading.h"
 #include "UIGroup_Landing.h"
+#include "UIGroup_MapChange.h"
 
 #include "UI_MouseCursor.h"
 
@@ -1235,7 +1236,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	//====================================================================================================================================로딩창
 	/* For.Prototype_Component_Texture_UI_LoadingScreen */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LoadingScreen"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 8))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 7))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_LoadingScreen */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LoadingScreen"),
@@ -1347,6 +1348,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UIGroup_Landing */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"),
 		CUIGroup_Landing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	/* For.Prototype_GameObject_UIGroup_Landing */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_MapChange"),
+		CUIGroup_MapChange::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 #pragma region UI 텍스쳐
@@ -1699,7 +1705,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 	lstrcpyW(m_szLoadingText, TEXT("텍스쳐 원형을 생성한다."));
 	/* For.Prototype_Component_Texture_BackGround */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 8))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 7))))
 		return E_FAIL;
 
 	lstrcpyW(m_szLoadingText, TEXT("셰이더 원형을 생성한다."));
