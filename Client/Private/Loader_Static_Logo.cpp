@@ -6,15 +6,18 @@
 #include "BackGround.h"
 
 #pragma region º¸½º 
-#include "Boss_Magician.h"
 #include "Boss_Varg.h"
+#include "Boss_Magician.h"
+#include "Boss_Magician2.h"
 
 #include "Body_Varg.h"
 #include "Body_Magician.h"
+#include "Body_Magician2.h"
 
 #include "VargKnife.h"
 #include "Weapon_Cane.h"
 #include "Weapon_Magician_Sword.h"
+#include "Weapon_Magician2_Sword.h"
 #include "Projectile_Card.h"
 
 #include "UI_Boss_HP_Bar.h"
@@ -347,7 +350,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
-
+	
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Sword"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Sword/Magician_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
@@ -382,6 +385,24 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"),
 		CBoss_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician2_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician2/Boss_Magician2.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2_Body"),
+		CBody_Magician2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2_Sword"),
+		CWeapon_Magician2_Sword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"),
+		CBoss_Magician2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Varg_Body"),

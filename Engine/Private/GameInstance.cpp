@@ -910,9 +910,9 @@ HRESULT CGameInstance::Active_Monster()
 {
 	return m_pMonster_Manager->Active_Monster();
 }
-HRESULT CGameInstance::Respawn_Monster()
+HRESULT CGameInstance::Respawn_Monster(MONSTER_CATEGORY _eCategory)
 {
-	return m_pMonster_Manager->Respawn_Monster();
+	return m_pMonster_Manager->Respawn_Monster(_eCategory);
 }
 deque<class CMonster*>& CGameInstance::Get_Check_Monsters()
 {

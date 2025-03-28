@@ -340,7 +340,10 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 	}
 	if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
 		return E_FAIL;
-	
+
+	if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+		return E_FAIL;
+
 	/*for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
 	{
 		switch (m_MonsterSpawnInfos[i].iMonsterIndex)
@@ -395,9 +398,9 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_NPC(const _tchar* pLayerTag)
 	Desc.fSpeedPerSec = 1.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
-		return E_FAIL;
-
+	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+	//	return E_FAIL;
+	
 	return S_OK;
 }
 

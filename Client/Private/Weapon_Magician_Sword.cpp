@@ -40,12 +40,13 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
-    m_Is_Change_Sword_Bone = pDesc->Is_Change_Sword_Bone;
     m_iMonster_Attack = pDesc->iAttack;
     m_bCane_Collider_On = pDesc->bCane_Collider_On;
+    m_Is_Change_Sword_Bone = pDesc->Is_Change_Sword_Bone;
     m_bSpecial_Skill_Progress = pDesc->bSpecial_Skill_Progress;
-    m_bCatch_Special_Attack = pDesc->bCatch_Special_Attack;
     m_pSocket_Right_Matrix = pDesc->pSocketMatrix;
+    m_bCatch_Special_Attack = pDesc->bCatch_Special_Attack;
+
     m_pSocket_Left_Matrix = m_pParentModelCom->Get_BoneMatrix("weapon_l_Sword");
     m_pSocket_Leg_Matrix = m_pParentModelCom->Get_BoneMatrix("calf_r");
 
@@ -56,6 +57,9 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pTransformCom->Scaling(_float3{ 0.5f, 0.5f, 0.5f });
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
 
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_KICK] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);

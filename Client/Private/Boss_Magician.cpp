@@ -1182,10 +1182,8 @@ void CBoss_Magician::Dissappear_Move_State::State_Update(_float fTimeDelta, CBos
 	{
 		pObject->m_IsDissolveOn = false;
 		pObject->m_IsDissolveOff = true;
-		if (!m_bShootCard)
+		//if (!m_bShootCard)
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Dissappear_Idle_State(), pObject);
-		else
-			pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Shoot_ComboA(), pObject);
 	}
 
 	//По

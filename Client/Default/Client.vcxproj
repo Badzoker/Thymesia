@@ -189,12 +189,14 @@
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\Public\Body_Magician.h" />
+    <ClInclude Include="..\Public\Body_Magician2.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Body_VillageF0.h" />
     <ClInclude Include="..\Public\Body_VillageF1.h" />
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
+    <ClInclude Include="..\Public\Boss_Magician2.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeFull.h" />
@@ -377,6 +379,7 @@
     <ClInclude Include="..\Public\Weapon_Axe.h" />
     <ClInclude Include="..\Public\Weapon_GreatSword.h" />
     <ClInclude Include="..\public\Weapon_Halberd.h" />
+    <ClInclude Include="..\Public\Weapon_Magician2_Sword.h" />
     <ClInclude Include="..\Public\Weapon_Magician_Sword.h" />
     <ClInclude Include="..\public\Weapon_Scythe.h" />
     <ClInclude Include="..\Public\Weapon_Shield.h" />
@@ -406,12 +409,14 @@
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\Private\Body_Magician.cpp" />
+    <ClCompile Include="..\Private\Body_Magician2.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Body_VillageF0.cpp" />
     <ClCompile Include="..\Private\Body_VillageF1.cpp" />
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
+    <ClCompile Include="..\Private\Boss_Magician2.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeFull.cpp" />
@@ -593,6 +598,7 @@
     <ClCompile Include="..\Private\Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Weapon_GreatSword.cpp" />
     <ClCompile Include="..\private\Weapon_Halberd.cpp" />
+    <ClCompile Include="..\Private\Weapon_Magician2_Sword.cpp" />
     <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp" />
     <ClCompile Include="..\private\Weapon_Scythe.cpp" />
     <ClCompile Include="..\Private\Weapon_Shield.cpp" />

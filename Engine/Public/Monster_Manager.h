@@ -29,7 +29,7 @@ public:
 
 public:
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
-	HRESULT Respawn_Monster();
+	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters() { return m_pCheck_Monsters; }
 
 public:
@@ -39,9 +39,9 @@ public:
 	HRESULT Delete_All_Monster();
 private:
 	map<MONSTER_CATEGORY, vector<class CMonster*>> m_pMonsters;
+	map<MONSTER_CATEGORY, vector<CMonster_Manager::MONSTER_INFO>> m_MonsterInfos;
 	deque<class CMonster*> m_pCheck_Monsters;
 	deque<class CMonster*> m_pDelete_Monsters;
-	vector<MONSTER_INFO> m_MonsterInfos;
 	class CGameInstance* m_pGameInstance = { nullptr };
 public:
 	static CMonster_Manager* Create();

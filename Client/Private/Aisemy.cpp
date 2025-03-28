@@ -38,10 +38,8 @@ HRESULT CAisemy::Initialize(void* pArg)
 
 
 
-    _vector vFirst_Pos = { 70.7f, 1.3f, -110.5f, 1.0f };
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFirst_Pos);
-    m_pNavigationCom->Set_CurrentNaviIndex(vFirst_Pos);
-    m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
+    m_pNavigationCom->Set_CurrentNaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    //m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
 
 
     m_pState_Manager = CState_Machine<CAisemy>::Create();
@@ -91,7 +89,7 @@ void CAisemy::Update(_float fTimeDelta)
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ -150.f, 250.f,200.f,1.f });
 
     __super::Update(fTimeDelta);
 }
@@ -167,6 +165,27 @@ void CAisemy::Culling()
 
 void CAisemy::RootAnimation()
 {
+    //루트애니메이션이 1도없음 NPC는 
+
+    _vector      vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector test = { 0.f,0.f,0.f,1.f };
+    /* 루트 모션 애니메션 코드 */
+    m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
+
+    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bActive))
+    {
+        if ((m_pNavigationCom->isMove(vCurPosition)))
+            m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);
+
+        /* 2월 19일 추가 코드 */
+        if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+        {
+            _float4x4 test = {};
+            XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+            const _float4x4* test2 = const_cast<_float4x4*>(&test);
+            m_pTransformCom->Set_MulWorldMatrix(test2);
+        }
+    }
 }
 
 void CAisemy::RotateDegree_To_Player()

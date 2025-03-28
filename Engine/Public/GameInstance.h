@@ -283,7 +283,7 @@ public:
 	HRESULT Add_Delete_Monster(class CMonster* pMonster);
 	HRESULT Delete_All_Monster();
 	HRESULT Active_Monster();
-	HRESULT Respawn_Monster();
+	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters();
 #pragma endregion
 
