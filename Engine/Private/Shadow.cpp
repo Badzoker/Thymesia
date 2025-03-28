@@ -6,7 +6,7 @@
 #include "Transform.h"
 
 CShadow::CShadow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:m_pDevice{ pDevice }
+	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
 	, m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -314,5 +314,5 @@ void CShadow::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pPlayerTransform);
+	//Safe_Release(m_pPlayerTransform);
 }
