@@ -1043,6 +1043,31 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+#pragma region Effect_Roar
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Roar_Effect")) //Roar_Line
+            {
+                for (_uint i = 0; i < 5; i++)
+                {
+                    pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_ROAR, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                }
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Roar_Blink_Effect")) // Roar_Blink
+            {
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_ROAR_BLINK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
 
     if (pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Catch_State(), pObject);
@@ -1121,6 +1146,24 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+#pragma region Effect_Dead
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Dead_Effect")) //Roar_Line
+            {
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_DEAD_BLINK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 39;

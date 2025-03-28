@@ -1395,12 +1395,12 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 33))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 39))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Mask*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 41))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 45))))
 		return E_FAIL;
 
 
@@ -1521,16 +1521,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Right_Buffer.dat")))))
 		return E_FAIL;
 
-	///* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_Green"),
-	//	CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_Green_Buffer.dat")))))
-	//	return E_FAIL;
-	//
-	///* For.Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_ClawEffect_White"),
-	//	CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_ClawEffect_White_Buffer.dat")))))
-	//	return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_1 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1"),
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_1_Buffer.dat")))))
@@ -1634,6 +1624,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution3 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution3"),
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Varg_Execution3_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Varg_Dead */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Varg_Dead"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Varg_Dead_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Dead */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Dead"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Varg_Dead_Buffer.dat")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Particle_Image*/

@@ -61,7 +61,7 @@ void CEffect_Particle::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Particle::Update(_float _fTimeDelta)
 {
-    m_pBufferCom->Compute_Shader(m_pShaderCom, 2, 1, 1);
+    m_pBufferCom->Compute_Shader(m_pShaderCom, 1, 1, 1);
 
     __super::Update(_fTimeDelta);
 }
@@ -122,6 +122,12 @@ HRESULT CEffect_Particle::Render_WeightBlend()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
     
+    if (5 == m_iShaderPass) //DUST
+    {
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+            return E_FAIL;
+    }
+
     m_pShaderCom->Begin(m_iShaderPass); //WeightBlend
 
     m_pBufferCom->Bind_InputAssembler();
@@ -154,7 +160,7 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
         m_fTimerY = 0.f;
         m_fDissolve = 0.f;
         m_fTimer_Timelag = 0.f;
-        m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 2, 1, 1);
+        m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 1, 1, 1);
     }
 }
 

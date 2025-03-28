@@ -31,6 +31,8 @@ bool g_bTexcoordY;
 float g_fTexcoordLerpX;
 float g_fTexcoordLerpY;
 
+float g_fMaxTimer;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -365,8 +367,6 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
     float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
     
-
-    
     vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
     float fMask = vMask.r;
     
@@ -374,7 +374,6 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     
     float2 vTexcoord = 0;
     
-    //vTexcoord = float2(In.vTexcoord.x * g_TimeX + g_StartTexcoordX, In.vTexcoord.y * g_TimeY + g_StartTexcoordY);
     vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
     
     if (true == g_bUsing_Noise)
@@ -385,8 +384,6 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     float fWeightX = vNoise.r * g_fWeightX;
     float fWeightY = vNoise.r * g_fWeightY;
     
-    //vTexcoord = float2(In.vTexcoord.x * fWeightX, In.vTexcoord.y * fWeightY);
-    //vTexcoord = float2((In.vTexcoord.x * g_TimeX + g_StartTexcoordX) * fWeightX, (In.vTexcoord.y * g_TimeY + g_StartTexcoordY) * fWeightY);
     vTexcoord = float2((g_TimeX + g_StartTexcoordX) * fWeightX, (g_TimeY + g_StartTexcoordY) * fWeightY);
     
     if (true == g_bTexcoordX)
@@ -399,19 +396,10 @@ PS_OUT_GLOW PS_MAIN_GLOW(PS_IN In)
     if (vMtrlDiffuse.a < 0.1f)
         discard;
     
-    //float3 vRGB = float3(g_fRGB_R, g_fRGB_G, g_fRGB_B);
+    float3 vRGB = float3(g_vRGB);
 	
-    Out.vGlow = vMtrlDiffuse * vector(g_vRGB, 1.f);
+    Out.vGlow = vMtrlDiffuse * vector(vRGB, 1.f);
     
-    //vector vLook = normalize(In.vWorldPos - g_vCamPosition);
-    //
-    //
-    //
-    //float fDegree_Look_Normal = dot(vLook, In.vNormal);
-    //    
-    //if (-0.4f < fDegree_Look_Normal && 0.4f > fDegree_Look_Normal)
-    //    Out.vGlow.rgba = 1.f;
-	
     return Out;
 }
 
@@ -493,6 +481,55 @@ PS_OUT_DISTORTION PS_MAIN_ROUND(PS_IN In)
     return Out;
 }
 
+PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    vector vNoise = 0.f;
+    
+    float2 vTexcoord = 0;
+    
+    vTexcoord = float2(In.vTexcoord.x * g_TimeX + g_StartTexcoordX, In.vTexcoord.y * g_TimeY + g_StartTexcoordY);
+    
+    float fTimerX = (g_TimeX / g_fMaxTimer);
+    
+    float fTimerY = (g_TimeY / g_fMaxTimer);
+    
+    if (vMaskTexcoord.x < fTimerX)
+        discard;
+    
+    if (vMaskTexcoord.y > fTimerY)
+        discard;
+    
+    if (true == g_bUsing_Noise)
+        vNoise = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord);
+    else
+        vNoise = g_DiffuseTexture.Sample(LinearSampler_Clamp, 1.f - vTexcoord);
+    
+    float fWeightX = vNoise.r * g_fWeightX;
+    float fWeightY = vNoise.r * g_fWeightY;
+    
+    vTexcoord = float2((g_TimeX + g_StartTexcoordX) * fWeightX, (g_TimeY + g_StartTexcoordY) * fWeightY);
+    
+    if (true == g_bTexcoordX)
+        vTexcoord.x = lerp(0.5f, vTexcoord.x, (1.f - vTexcoord.y) * g_fTexcoordLerpX);
+    if (true == g_bTexcoordY)
+        vTexcoord.y = lerp(0.5f, vTexcoord.y, (1.f - vTexcoord.x) * g_fTexcoordLerpY);
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler_Clamp, vTexcoord) * fMask;
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+    
+    Out.vGlow = vMtrlDiffuse * vector(g_vRGB, 1.f);
+	
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -560,5 +597,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_ROUND();
+    }
+
+    pass Varg_Roar //6 앞으로 왠지 응축되는 이펙트들 기반이 될듯
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ROAR();
     }
 }

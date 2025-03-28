@@ -35,7 +35,6 @@ HRESULT CEffect_Sword::Initialize(void* _Arg)
 
     
 
-    //m_pTransformCom->Scaling(_float3(pDesc->vScale.x * 100000.f, pDesc->vScale.y * 100000.f, pDesc->vScale.z * 100000.f));
     m_pTransformCom->Scaling(pDesc->vScale);
     m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z * -1.f)); //이부분은 Tool이랑 뭔가 이상함
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vTranslation), 1.f));
@@ -60,8 +59,8 @@ void CEffect_Sword::Update(_float _fTimeDelta)
 
         _uint iCount_Trail = static_cast<_uint>(m_dequeCenterPos.size());
         _float3 vUp = {};
-        XMStoreFloat3(&vUp, _vector{ m_matCombined._31, m_matCombined._32, m_matCombined._33, 0.f });
-        m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp, m_fLength);
+        XMStoreFloat3(&vUp, m_fLength * XMVector3Normalize(XMVector3Cross(_vector{ 0.f, 1.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
+        m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp);
     }
     
 }

@@ -240,75 +240,75 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
 
 #pragma region Sphere
 
-    case 2: //Sphere
-        for (_uint i = 0; i < m_iNumInstance; i++)
-        {
-            m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
-            m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
-            m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
-            m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
-            m_pInstanceVertices[i].vPivot = pDesc.vPivot;
-
-            _float4         vTranslation = {};
-
-            _float fRandom = {};
-            if (true == pDesc.bReverse_XYZ[0]) //x반전이냐
-            {
-                fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-                if (fRandom < 0.f)
-                    m_pInstanceVertices[i].vPivot.x *= -1.f;
-
-                vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
-            }
-            else
-            {
-                vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
-            }
-            if (true == pDesc.bReverse_XYZ[2]) //z반전이냐
-            {
-                fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-                if (fRandom < 0.f)
-                    m_pInstanceVertices[i].vPivot.z *= -1.f;
-
-                vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z - pDesc.vRange.z * 0.5f, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
-            }
-            else
-            {
-                vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
-            }
-            if (true == pDesc.bReverse_XYZ[1]) //y반전이냐 <- 서순을 조금 바꿈
-            {
-                vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
-                fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-                if (fRandom < 0.f)
-                    vTranslation.y *= -1.f;
-
-            }
-            else
-            {
-                vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
-            }
-
-            vTranslation.w = 1;
-            m_pInstanceVertices[i].vPivot = pDesc.vCenter;
-            //m_pSpeeds[i] = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y);
-
-            m_pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
-            m_pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
-            m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
-            m_pInstanceVertices[i].vTranslation = vTranslation;
-
-            _float3 vScale = { m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.x,
-                               m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.y,
-                               m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.z };
-
-            XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * vScale.x);
-            XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * vScale.y);
-            XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
-
-            m_pInstanceVertices[i].vScale = vScale;
-        }
-        break;
+    //case 2: //Sphere
+    //    for (_uint i = 0; i < m_iNumInstance; i++)
+    //    {
+    //        m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
+    //        m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
+    //        m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
+    //        m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
+    //        m_pInstanceVertices[i].vPivot = pDesc.vPivot;
+    //
+    //        _float4         vTranslation = {};
+    //
+    //        _float fRandom = {};
+    //        if (true == pDesc.bReverse_XYZ[0]) //x반전이냐
+    //        {
+    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+    //            if (fRandom < 0.f)
+    //                m_pInstanceVertices[i].vPivot.x *= -1.f;
+    //
+    //            vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
+    //        }
+    //        else
+    //        {
+    //            vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
+    //        }
+    //        if (true == pDesc.bReverse_XYZ[2]) //z반전이냐
+    //        {
+    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+    //            if (fRandom < 0.f)
+    //                m_pInstanceVertices[i].vPivot.z *= -1.f;
+    //
+    //            vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z - pDesc.vRange.z * 0.5f, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
+    //        }
+    //        else
+    //        {
+    //            vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
+    //        }
+    //        if (true == pDesc.bReverse_XYZ[1]) //y반전이냐 <- 서순을 조금 바꿈
+    //        {
+    //            vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
+    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+    //            if (fRandom < 0.f)
+    //                vTranslation.y *= -1.f;
+    //
+    //        }
+    //        else
+    //        {
+    //            vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
+    //        }
+    //
+    //        vTranslation.w = 1;
+    //        m_pInstanceVertices[i].vPivot = pDesc.vCenter;
+    //        //m_pSpeeds[i] = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y);
+    //
+    //        m_pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+    //        m_pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+    //        m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+    //        m_pInstanceVertices[i].vTranslation = vTranslation;
+    //
+    //        _float3 vScale = { m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.x,
+    //                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.y,
+    //                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.z };
+    //
+    //        XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * vScale.x);
+    //        XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * vScale.y);
+    //        XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
+    //
+    //        m_pInstanceVertices[i].vScale = vScale;
+    //    }
+    //    break;
 
 #pragma endregion
 
@@ -509,8 +509,8 @@ HRESULT CVIBuffer_Point_Compute::Initialize(void* _pArg)
     if (FAILED(CreateBuffer_SRV_UAV()))
         return E_FAIL;
 
-    if (FAILED(CreateBuffer_Constant()))
-        return E_FAIL;
+    //if (FAILED(CreateBuffer_Constant()))
+    //    return E_FAIL;
 
 	return S_OK;
 }
@@ -565,7 +565,7 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader(CShader_Compute* _pComputeShader
     
     m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, (_uint*)&m_pUAV);
 
-    m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_Camera);
+    //m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_Camera);
 
     m_pContext->Dispatch(_iThreadCountX, _iThreadCountY, _iThreadCountZ);
 
@@ -578,7 +578,7 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader(CShader_Compute* _pComputeShader
     m_pContext->CSSetShader(nullptr, nullptr, 0);
     m_pContext->CSSetUnorderedAccessViews(0, 1, ppUAVnull, (_uint*)(&ppUAVnull));
     m_pContext->CSSetShaderResources(0, 2, ppSRVnull);
-    m_pContext->CSSetConstantBuffers(0, 1, ppCBnull);
+    //m_pContext->CSSetConstantBuffers(0, 1, ppCBnull);
 
     if (FAILED(CreateAndCopyBuffer()))
         return E_FAIL;
@@ -595,7 +595,7 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader_Reset(CShader_Compute* _pCompute
 
     m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, (_uint*)&m_pUAV);
 
-    m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_Camera);
+    //m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_Camera);
 
     m_pContext->Dispatch(_iThreadCountX, _iThreadCountY, _iThreadCountZ);
 
@@ -608,7 +608,7 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader_Reset(CShader_Compute* _pCompute
     m_pContext->CSSetShader(nullptr, nullptr, 0);
     m_pContext->CSSetUnorderedAccessViews(0, 1, ppUAVnull, (_uint*)(&ppUAVnull));
     m_pContext->CSSetShaderResources(0, 2, ppSRVnull);
-    m_pContext->CSSetConstantBuffers(0, 1, ppCBnull);
+    //m_pContext->CSSetConstantBuffers(0, 1, ppCBnull);
 
     if (FAILED(CreateAndCopyBuffer()))
         return E_FAIL;
@@ -709,13 +709,13 @@ HRESULT CVIBuffer_Point_Compute::CreateBuffer_Constant()
 
 HRESULT CVIBuffer_Point_Compute::CreateAndCopyBuffer()
 {
-    D3D11_MAPPED_SUBRESOURCE subCamera;
-
-    m_pContext->Map(m_pBuffer_Camera, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subCamera);
-    XMFLOAT4* pCamera = {};
-    pCamera = static_cast<XMFLOAT4*>(subCamera.pData);
-    pCamera[0] = m_pGameInstance->Get_CamPosition();
-    m_pContext->Unmap(m_pBuffer_Camera, 0);
+    //D3D11_MAPPED_SUBRESOURCE subCamera;
+    //
+    //m_pContext->Map(m_pBuffer_Camera, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subCamera);
+    //XMFLOAT4* pCamera = {};
+    //pCamera = static_cast<XMFLOAT4*>(subCamera.pData);
+    //pCamera[0] = m_pGameInstance->Get_CamPosition();
+    //m_pContext->Unmap(m_pBuffer_Camera, 0);
 
     m_pContext->CopyResource(m_pBuffer_Copy, m_pBuffer_UAV);
 

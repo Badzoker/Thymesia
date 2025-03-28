@@ -103,6 +103,12 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 5: //Round
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_DISTORTION, this);
 		break;
+	case 6: //Roar
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		break;
+	case 7: //Blink
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLOOM, this);
+		break;
 	}
 }
 
@@ -129,9 +135,10 @@ HRESULT CEffect_Mesh::Render_Glow()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
+		return E_FAIL;
+
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
-	
-	
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{

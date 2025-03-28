@@ -84,7 +84,7 @@ HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vDir, const _float& _fLength)
+HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vDir)
 {
 	D3D11_MAPPED_SUBRESOURCE SubSource{};
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubSource);
@@ -99,13 +99,13 @@ HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _ui
 	{
 		if (i < _idequeCount)
 		{
-			vDir = XMVector3Normalize(XMLoadFloat3(&_vDir));
-			vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir * _fLength);
+			vDir = XMLoadFloat3(&_vDir);
+			vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir);
 
 			XMStoreFloat3(&vPos, vStartPos);
 			pVertices[2 * i].vPosition = vPos; // 시작점
 
-			vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir * _fLength);
+			vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir);
 
 			XMStoreFloat3(&vPos, vEndPos);
 			pVertices[(2 * i) + 1].vPosition = vPos; // 끝점
