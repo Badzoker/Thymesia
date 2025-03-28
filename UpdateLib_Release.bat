@@ -8,4 +8,4 @@ xcopy			/y				.\Engine\Bin\Release\Engine_R.lib					 .\EngineSDK\Lib\
 
 xcopy			/y				.\Engine\ThirdPartyLib\*.lib						 .\EngineSDK\Lib\
 
-xcopy			/y				.\Engine\Bin\Release\ShaderFiles\*.*				 .\EngineSDK\Hlsl\
+xcopy			/y				.\Engine\Bin\ShaderFiles\*.*						 .\Engine\Bin\Release\ShaderFiles\

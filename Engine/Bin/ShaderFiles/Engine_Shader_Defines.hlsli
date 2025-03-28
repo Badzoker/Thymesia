@@ -78,7 +78,7 @@ DepthStencilState DSS_WeightBlend
 
 BlendState BS_Default
 {
-    BlendEnable[0] = FALSE; /* 여기서 0은 렌더타겟의 넘버 */
+    BlendEnable[0] = FALSE; /* 여기서 0은 RenderTarget의 넘버 */
 };
 
 BlendState BS_AlphaBlend
