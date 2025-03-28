@@ -855,6 +855,8 @@ CGameObject* CCamera_Free::Clone(void* pArg)
 
 void CCamera_Free::Free()
 {
+    m_pGameInstance->Delete_Shadow(m_pTransformCom);
+
 	__super::Free();
 
 	Safe_Release(m_pPlayerTransformCom);

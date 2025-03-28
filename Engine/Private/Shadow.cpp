@@ -83,6 +83,7 @@ HRESULT CShadow::Initialize()
 HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform)
 {
 	m_pPlayerTransform = pTransform;
+	Safe_AddRef(m_pPlayerTransform);
 
 	XMStoreFloat4(&m_LightPos, vEye);
 
@@ -269,6 +270,16 @@ HRESULT CShadow::Bind_ProjMatrix(CShader* pShader, const _char* pConstantName)
 	return S_OK;
 }
 
+HRESULT CShadow::Delete_Shadow(CTransform* pTransform)
+{
+	if (m_pPlayerTransform == pTransform)
+	{
+		Safe_Release(m_pPlayerTransform);
+	}
+			
+	return S_OK;
+}
+
 HRESULT CShadow::Bind_LightZ(CShader* pShader)
 {
 	if (FAILED(pShader->Bind_RawValue("g_LightEndClipSpaceZ1", &m_CascadeEndCliSpaceZ[0], sizeof(_float))))
@@ -303,4 +314,5 @@ void CShadow::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pPlayerTransform);
 }
