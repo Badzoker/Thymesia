@@ -56,6 +56,10 @@ public:
 		return m_vCamPosition;
 	}
 
+	/* Zoom 블러를 위한 캐릭터 uv 포지션 저장 */
+	void  Set_Zoom_Blur_Center(_float2 _fPos) { m_fZoomBlurCenter = _fPos; }	
+	_float2 Get_Zoom_Blur_Center() { return m_fZoomBlurCenter; }	
+
 public:
 	void Set_Transform(D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrices[eState], TransformMatrix);
@@ -80,6 +84,8 @@ private:
 	_float4x4				m_PreTransformationInverseMatrices[D3DTS_END] = {};
 
 	_float4					m_vCamPosition = {};
+
+	_float2					m_fZoomBlurCenter = {};
 
 public:
 	static CPipeLine* Create();

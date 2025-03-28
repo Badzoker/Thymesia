@@ -151,6 +151,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
+	/* Target_Final_Last */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final_Last"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+
 	/* MRT_GameObjects */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))	
 		return E_FAIL;	
@@ -224,6 +228,11 @@ HRESULT CRenderer::Initialize()
 	/* MRT_BloomY */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BloomY"), TEXT("Target_BloomY"))))
 		return E_FAIL;
+
+	/* 진짜 최종 final */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Final_Last"), TEXT("Target_Final_Last"))))
+		return E_FAIL;
+
 
     m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../../EngineSDK/Hlsl/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
 	if (nullptr == m_pShader)
@@ -388,6 +397,9 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_Final()))
 		return E_FAIL;
 
+	if (FAILED(Render_Zoom_Blur()))	
+		return E_FAIL;	
+
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
 
@@ -406,6 +418,13 @@ HRESULT CRenderer::Render()
 #endif
 
 	return S_OK;
+}
+
+void CRenderer::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)
+{
+	m_bZoomBlurOnOff = _bOnOff;		
+	m_fZoomBlurStrength = _fStrength;	
+
 }
 
 HRESULT CRenderer::Render_Priority()
@@ -922,6 +941,9 @@ HRESULT CRenderer::Render_HighLightY()
 
 HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 {
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final_Last"))))	
+		return E_FAIL;	
+
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))	
 		return E_FAIL;	
 
@@ -947,36 +969,6 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 		return E_FAIL;
 
 
-	//_float3 FogFactor = _float3(0.2f, 0.f, 5.f);
-	//_float2 NoiseFactor = _float2(0.01f, 0.2f);
-	//_float2 HeightNoiseFactor = _float2(0.f, 5.f);
-
-	//m_fTime += 0.001f;
-
-	//_float	fFogRange = 0.03f;
-
-	//if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Bind_RawValue("g_FogRange", &fFogRange, sizeof(_float))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Bind_RawValue("fFogFactor", &FogFactor, sizeof(_float3))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Bind_RawValue("fHeightNoiseFactor", &HeightNoiseFactor, sizeof(_float2))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Bind_RawValue("fNoiseFactor", &NoiseFactor, sizeof(_float2))))
-	//	return E_FAIL;
-
-	//if (FAILED(Bind_NoiseTexture(m_pShader, "g_NoiseTexture")))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Bind_RawValue("g_fTime", &m_fTime, sizeof(_float))))
-	//	return E_FAIL;
-
-
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -988,8 +980,43 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 	m_pVIBuffer->Bind_InputAssembler();
 	m_pVIBuffer->Render();
 
+
+	if (FAILED(m_pGameInstance->End_MRT()))	
+		return E_FAIL;	
+
 	return S_OK;	
 }
+
+HRESULT CRenderer::Render_Zoom_Blur()	
+{
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final_Last"), m_pShader, "g_Final_Last_Texture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_ZoomBlurCenter", &m_pGameInstance->Get_Zoom_Blur_Center(), sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_bZoomBlurOnOff", &m_bZoomBlurOnOff, sizeof(_bool))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_bZoomBlurStrength", &m_fZoomBlurStrength, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	m_pShader->Begin(16);
+
+	m_pVIBuffer->Bind_InputAssembler();
+	m_pVIBuffer->Render();
+
+
+	return S_OK;
+}
+
 
 HRESULT CRenderer::Render_Blend()
 {
@@ -1126,6 +1153,7 @@ HRESULT CRenderer::Render_BloomY()
 
 	return S_OK;
 }
+
 
 HRESULT CRenderer::Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut)
 {

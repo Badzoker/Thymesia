@@ -25,6 +25,7 @@ public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	HRESULT Render();
 	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
+	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
@@ -45,6 +46,9 @@ private:
 	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};		
 
 	_bool					m_bMotionBlurOnOff = { false };	
+	_bool					m_bZoomBlurOnOff = { false };	
+
+	_float					m_fZoomBlurStrength = {0.f};		
 
 	vector<unsigned char>							noiseData;
 
@@ -88,6 +92,8 @@ private:
 	HRESULT	Render_BloomBegin();
 	HRESULT	Render_BloomX();
 	HRESULT	Render_BloomY();
+
+	HRESULT Render_Zoom_Blur();	
 
 
 private:
