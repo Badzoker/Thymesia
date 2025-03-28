@@ -79,6 +79,7 @@ public:
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	void    Set_MotionBlur(_bool _bOnOff);	
+	void	Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);	
 #pragma endregion
 
 #pragma region PIPELINE
@@ -94,6 +95,9 @@ public:
 	_matrix Get_PreTransform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const;
 	_float4x4 Get_PreTransform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const;
 	_matrix Get_PreTransform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState)const;
+
+	void    Set_Zoom_Blur_Center(_float2 _fPos);	
+	_float2 Get_Zoom_Blur_Center();	
 #pragma endregion
 
 

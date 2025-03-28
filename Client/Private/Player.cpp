@@ -109,6 +109,30 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	}
 
+
+#pragma region 캐릭터 화면상 uv 좌표 계산		
+	_vector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+	_vector vViewPos = XMVector4Transform(vWorldPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
+	_vector vClipPos = XMVector4Transform(vViewPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ));
+
+
+	// 클립 공간 → NDC (정규화 디바이스 좌표)
+	vClipPos /= vClipPos.m128_f32[3];
+
+
+
+	//NDC → 화면 좌표(0~1 UV)
+	_float2 playerUV;	
+	playerUV.x = vClipPos.m128_f32[0] * 0.5f + 0.5f;	
+	playerUV.y = -vClipPos.m128_f32[1] * 0.5f + 0.5f - 0.2f;	
+
+	m_pGameInstance->Set_Zoom_Blur_Center(playerUV);	
+	// 이걸 넘겨줘야함 
+
+#pragma endregion 
+
 }
 
 void CPlayer::Mouse_section(_float fTimeDelta)

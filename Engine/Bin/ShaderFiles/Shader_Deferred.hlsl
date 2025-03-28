@@ -120,6 +120,12 @@ float g_fTime;
 //    return saturate(vColor * g_LightShaftValue.w);
 //}
 
+/* 줌 블러 관련  */
+Texture2D g_Final_Last_Texture;
+bool g_bZoomBlurOnOff;  
+float2 g_ZoomBlurCenter;
+float g_bZoomBlurStrength;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -715,6 +721,81 @@ PS_OUT PS_BLOOM_Y(PS_IN In)
     return Out;
 }
 
+
+
+//sampler2D gTexSampler : register(s0);
+//float2 gCenter; // 중심점 (보통 float2(0.5, 0.5))
+//float gStrength; // 블러 강도 (샘플 간 거리)
+//int gSampleCount; // 샘플 개수
+
+PS_OUT PS_MAIN_ZOOM_BLUR(PS_IN In)
+{
+    
+    PS_OUT Out = (PS_OUT) 0;
+
+    
+    int gSampleCount = 23;
+
+    float2 Center = g_ZoomBlurCenter; // 명시( 반드시 float 쓸 것 )    
+    
+    float2 dir = Center - In.vTexcoord; /*float2(In.vTexcoord.x - Center.x, abs(Center.y - In.vTexcoord.y));*/ // 중심점에서 현재 픽셀까지의 방향       
+    //dir.y += 0.25f;
+    
+    
+    
+    float dist = length(dir);
+    
+    
+    //float strength = saturate(1.0 - dist); // 거리 멀수록 약하게
+    
+    
+    if (g_bZoomBlurOnOff)
+    {
+    
+        for (int i = 1; i < gSampleCount; ++i)
+        {
+            
+            float strength = dist + 1.f; //saturate(1.0 - dist);
+            float scale = i / (float) gSampleCount;
+            float2 sampleUV = In.vTexcoord + dir * scale * strength * g_bZoomBlurStrength; //0.1f; // 0.1f 이 강도를 점점 쌔게 주면 될거같음  fTimeDelta로 줄까.
+       
+
+            Out.vColor += g_Final_Last_Texture.Sample(LinearSampler_Clamp, sampleUV);
+        }
+        
+        
+        Out.vColor /= gSampleCount;
+        
+        //if (dist >= 0.15f)
+        //{
+        //    for (int i = 1; i < gSampleCount; ++i)
+        //    {
+        //        float scale = i / (float) gSampleCount;
+        //        float2 sampleUV = In.vTexcoord + dir * scale * g_bZoomBlurStrength; //0.1f; // 0.1f 이 강도를 점점 쌔게 주면 될거같음  fTimeDelta로 줄까.
+       
+
+        //        Out.vColor += g_Final_Last_Texture.Sample(LinearSampler_Clamp, sampleUV);
+        //    }
+
+        //    Out.vColor /= gSampleCount;
+        //}
+        //else
+        //{
+        //    Out.vColor = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord);
+        //}
+    }
+    else
+    {
+        Out.vColor = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord);
+    }
+       
+    return Out;
+}
+
+
+
+
+
 technique11 DefaultTechnique
 {
     pass Debug //0 
@@ -878,5 +959,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_BLOOM_Y();
+    }
+
+
+    pass Zoom_Blur // 16
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ZOOM_BLUR();
     }
 }

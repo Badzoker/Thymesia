@@ -324,6 +324,11 @@ void CGameInstance::Set_MotionBlur(_bool _bOnOff)
 	return m_pRenderer->Set_MotionBlur(_bOnOff);
 }
 
+void CGameInstance::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)
+{
+	return m_pRenderer->Set_ZoomBlur_Option(_bOnOff, _fStrength);	
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);
@@ -372,6 +377,16 @@ _float4x4 CGameInstance::Get_PreTransform_Float4x4_Inverse(CPipeLine::D3DTRANSFO
 _matrix CGameInstance::Get_PreTransform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_PreTransform_Matrix_Inverse(eState);
+}
+
+void CGameInstance::Set_Zoom_Blur_Center(_float2 _fPos)
+{
+	return m_pPipeLine->Set_Zoom_Blur_Center(_fPos);	
+}
+
+_float2 CGameInstance::Get_Zoom_Blur_Center()
+{
+	return  m_pPipeLine->Get_Zoom_Blur_Center();	
 }
 
 #pragma endregion
