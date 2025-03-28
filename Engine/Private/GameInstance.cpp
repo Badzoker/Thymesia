@@ -740,6 +740,10 @@ _float2 CGameInstance::Get_LightPos()
 {
 	return m_pShadow->Get_LightPos();
 }
+HRESULT CGameInstance::Delete_Shadow(CTransform* pTransform)
+{
+	return m_pShadow->Delete_Shadow(pTransform);
+}
 #pragma endregion
 
 #pragma region UI_Manager

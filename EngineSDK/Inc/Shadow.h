@@ -28,6 +28,7 @@ public:
 	HRESULT SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAngle, _float fAspect, _float fNear, _float fFar, _matrix matInvCam, _fvector vCamInfo, CTransform* pTransform); // 여기서 플레이어 위치 포인터로 넘겨주자
 	HRESULT Bind_ViewMatrix(class CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_ProjMatrix(class CShader* pShader, const _char* pConstantName);
+	HRESULT Delete_Shadow(class CTransform* pTransform);
 
 	HRESULT Bind_LightZ(CShader* pShader);
 	void    Update();

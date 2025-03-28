@@ -227,6 +227,7 @@ public:
 	HRESULT Bind_LightDir(CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_LightProjDir(CShader* pShader, const _char* pConstantName);
 	_float2 Get_LightPos();
+	HRESULT Delete_Shadow(class CTransform* pTransform);
 #pragma endregion
 
 #pragma region UI_Manager
