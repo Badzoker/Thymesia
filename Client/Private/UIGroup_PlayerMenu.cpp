@@ -66,8 +66,6 @@ void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 
 void CUIGroup_PlayerMenu::Late_Update(_float fTimeDelta)
 {
-	if (m_bRenderOpen)
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_PlayerMenu::Render()

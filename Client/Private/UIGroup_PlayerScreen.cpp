@@ -176,7 +176,8 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	{
+	}
 }
 
 HRESULT CUIGroup_PlayerScreen::Render()

@@ -30,7 +30,7 @@ HRESULT CBackGround::Initialize(void * pArg)
 	pDesc->fSizeY = g_iWinSizeY;
 	pDesc->fX = g_iWinSizeX * 0.5f;
 	pDesc->fY = g_iWinSizeY * 0.5f;
-	pDesc->fZ = 0.1f;
+	pDesc->fZ = 0.2f;
 	pDesc->fNear = 0.f;
 	pDesc->fFar = 1.f;
 

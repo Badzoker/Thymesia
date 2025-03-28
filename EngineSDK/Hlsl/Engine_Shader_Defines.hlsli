@@ -63,10 +63,12 @@ DepthStencilState DSS_SKip_Z
 
 DepthStencilState DSS_Thymasia_UI
 {
-    DepthEnable = TRUE;
-    DepthWriteMask = ALL;
-    DepthFunc = LESS_EQUAL;
-    StencilEnable = FALSE;
+    //DepthEnable = TRUE;
+    //DepthWriteMask = ALL;
+    //DepthFunc = LESS_EQUAL;
+    //StencilEnable = FALSE;
+    DepthEnable = FALSE;
+    DepthWriteMask = ZERO;
 };
 
 DepthStencilState DSS_WeightBlend
