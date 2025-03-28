@@ -62,7 +62,6 @@ void CUIGroup_GameIntro::Update(_float fTimeDelta)
 void CUIGroup_GameIntro::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 }
 
 HRESULT CUIGroup_GameIntro::Render()

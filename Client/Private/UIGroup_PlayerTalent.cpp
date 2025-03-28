@@ -78,7 +78,9 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 void CUIGroup_PlayerTalent::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	{
+
+	}
 }
 
 HRESULT CUIGroup_PlayerTalent::Render()

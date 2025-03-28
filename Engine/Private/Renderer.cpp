@@ -1057,6 +1057,16 @@ HRESULT CRenderer::Render_WeightBlend()
 
 HRESULT CRenderer::Render_UI()
 {
+	if (!m_RenderObjects[RG_UI].empty())
+	{
+		m_RenderObjects[RG_UI].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+			{
+				return static_cast<CGameObject*>(pSour)->Get_Transfrom()->Get_State_UIObj(CTransform::STATE_POSITION).z > static_cast<CGameObject*>(pDest)->Get_Transfrom()->Get_State_UIObj(CTransform::STATE_POSITION).z;
+			});
+
+	}
+
+
 	for (auto& pRenderObject : m_RenderObjects[RG_UI])
 	{
 		if (FAILED(pRenderObject->Render()))

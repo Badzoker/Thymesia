@@ -13,6 +13,7 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
     m_pBatch = new SpriteBatch(m_pContext);
 
+    /*폰트 깊이 버퍼 활성화 용도였는데 필요 없어서 사용X*/
     m_Desc.DepthEnable = TRUE;
     m_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     m_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
@@ -28,12 +29,10 @@ HRESULT CCustomFont::Render(const _tchar* pText, const _float2& vPosition, _floa
         nullptr == m_pBatch)
         return E_FAIL;
 
-    m_pBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr, m_pDepthStencil);
 
-    /* 뷰포트 상의 직교투영의 형태로 그려낸다. */
-    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 1.f,vPosition.y + 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
-    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 1.f,vPosition.y - 1.f }, Colors::Black, fRotation, vOrigin, fScale, effects, layerDepth);
-    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pBatch->Begin(SpriteSortMode_Deferred);
+
+     m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, 0.0f);
 
     m_pBatch->End();
 
