@@ -121,7 +121,8 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 void CUIGroup_MapChange::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	{
+	}
 }
 
 HRESULT CUIGroup_MapChange::Render()

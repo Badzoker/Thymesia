@@ -71,7 +71,9 @@ void CUIGroup_Loading::Update(_float fTimeDelta)
 void CUIGroup_Loading::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+	{
+
+	}
 }
 
 HRESULT CUIGroup_Loading::Render()

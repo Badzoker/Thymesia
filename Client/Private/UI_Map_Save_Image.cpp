@@ -43,7 +43,7 @@ void CUI_Map_Save_Image::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_FONT, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 

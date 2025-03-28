@@ -106,7 +106,6 @@ void CUIGroup_PlayerLevelUP::Late_Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		__super::Late_Update(fTimeDelta);
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 
