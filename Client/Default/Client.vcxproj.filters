@@ -739,6 +739,18 @@
     <Filter Include="02.GameObject\Effect\Sword">
       <UniqueIdentifier>{cac4cd58-c520-4ad9-a54a-a51da7d628ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician2">
+      <UniqueIdentifier>{a44f9b97-4293-4f4e-ab09-74310330d6ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician">
+      <UniqueIdentifier>{b1c340a0-2c11-408e-911f-39aeb65fceca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2">
+      <UniqueIdentifier>{bacd41f5-6387-47df-b0bd-85ea4a41b6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2\Body">
+      <UniqueIdentifier>{b7407eb0-91a2-49b8-9c82-346617f09adb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1248,9 +1260,6 @@
     <ClInclude Include="..\Public\Body_Magician.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Weapon_Magician_Sword.h">
-      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Weapon_Cane.h">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Cane</Filter>
     </ClInclude>
@@ -1379,6 +1388,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Sword.h">
       <Filter>02.GameObject\Effect\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Magician_Sword.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Magician2_Sword.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Magician2.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Magician2.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1880,9 +1901,6 @@
     <ClCompile Include="..\Private\Body_Magician.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp">
-      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Weapon_Cane.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Cane</Filter>
     </ClCompile>
@@ -2011,6 +2029,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Sword.cpp">
       <Filter>02.GameObject\Effect\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Magician2_Sword.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Magician\Sword\Magician2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Magician2.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Magician2.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

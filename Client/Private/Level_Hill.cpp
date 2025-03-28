@@ -392,6 +392,8 @@ HRESULT CLevel_Hill::Ready_Layer_NPC(const _tchar* pLayerTag)
 	Desc.iCurLevel = m_iCurrentLevel;
 	Desc.fSpeedPerSec = 1.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+	Desc.fPosition = _float4{ -1.6f, 1.1f, -10.9f, 1.f };
+	Desc.fScaling = _float3{ 0.0025f, 0.0025f, 0.0025f };
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;

@@ -30,6 +30,8 @@ HRESULT CBody_Aisemy::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pModelCom->SetUp_Animation(1, true);
+
     return S_OK;
 }
 

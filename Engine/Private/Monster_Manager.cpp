@@ -73,35 +73,33 @@ HRESULT CMonster_Manager::Add_Monster(_uint _iPrototypeLevelIndex, const _wstrin
 	}
 	m_pMonsters[_eCategory].push_back(pMonster);
 
-	if (_eCategory == CATEGORY_NORMAL)
-	{
-		MONSTER_INFO pInfo = {};
-		pInfo._iPrototypeLevelIndex = _iPrototypeLevelIndex;
-		pInfo._strPrototypeTag = _strPrototypeTag;
-		pInfo._eCategory = _eCategory;
-		pInfo.pArg.fPosition = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->fPosition;
-		pInfo.pArg.iCurLevel = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->iCurLevel;
-		m_MonsterInfos.push_back(pInfo);
-	}
+	MONSTER_INFO pInfo = {};
+	pInfo._iPrototypeLevelIndex = _iPrototypeLevelIndex;
+	pInfo._strPrototypeTag = _strPrototypeTag;
+	pInfo._eCategory = _eCategory;
+	pInfo.pArg.fPosition = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->fPosition;
+	pInfo.pArg.iCurLevel = static_cast<CGameObject::GAMEOBJECT_DESC*>(_pArg)->iCurLevel;
+
+	m_MonsterInfos[_eCategory].push_back(pInfo);
 
 	return S_OK;
 }
 
-HRESULT CMonster_Manager::Respawn_Monster()
+HRESULT CMonster_Manager::Respawn_Monster(MONSTER_CATEGORY _eCategory)
 {
 	m_pCheck_Monsters.clear();
-	for (auto& iter : m_pMonsters[CATEGORY_NORMAL])
+	for (auto& iter : m_pMonsters[_eCategory])
 	{
 		Safe_Release(iter);
 	}
-	m_pMonsters[CATEGORY_NORMAL].clear();
+	m_pMonsters[_eCategory].clear();
 
-	for (_uint i = 0; i < m_MonsterInfos.size(); i++)
+	for (_uint i = 0; i < m_MonsterInfos[_eCategory].size(); i++)
 	{
 		CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
-			m_MonsterInfos[i]._iPrototypeLevelIndex,
-			m_MonsterInfos[i]._strPrototypeTag,
-			&m_MonsterInfos[i].pArg));
+			m_MonsterInfos[_eCategory][i]._iPrototypeLevelIndex,
+			m_MonsterInfos[_eCategory][i]._strPrototypeTag,
+			&m_MonsterInfos[_eCategory][i].pArg));
 
 		if (nullptr == pGameObject)
 			return E_FAIL;
@@ -113,7 +111,7 @@ HRESULT CMonster_Manager::Respawn_Monster()
 			Safe_Release(pMonster);
 			return E_FAIL;
 		}
-		m_pMonsters[m_MonsterInfos[i]._eCategory].push_back(pMonster);
+		m_pMonsters[_eCategory].push_back(pMonster);
 	}
 
 	return S_OK;
