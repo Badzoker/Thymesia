@@ -557,6 +557,11 @@ HRESULT CGameInstance::Add_DeadEffect(CGameObject* pGameObject)
 	return m_pEvent_Manager->Add_DeadEffect(pGameObject);	
 }
 
+void CGameInstance::Set_Level_ForEventManager(_uint _iCurLevel)
+{
+	m_pEvent_Manager->Set_Level(_iCurLevel);
+}
+
 #pragma endregion
 
 #pragma region Effect Manager

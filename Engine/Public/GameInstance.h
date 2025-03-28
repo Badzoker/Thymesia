@@ -152,6 +152,7 @@ public:
 	HRESULT  Sub_EventObject(_wstring _EventName, CGameObject* pGaemObject);	
 	HRESULT  Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject);	
 	HRESULT  Add_DeadEffect(CGameObject* pGameObject);	
+	void  Set_Level_ForEventManager(_uint _iCurLevel);
 #pragma endregion 
 
 

@@ -16,6 +16,8 @@ HRESULT CLevel_Logo::Initialize()
 {
 	m_iCurrentLevel = LEVEL_LOGO;
 
+	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))

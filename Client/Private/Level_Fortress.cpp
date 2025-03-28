@@ -30,6 +30,8 @@ HRESULT CLevel_Fortress::Initialize()
 {
 	m_iCurrentLevel = LEVEL_FORTRESS;
 
+	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 

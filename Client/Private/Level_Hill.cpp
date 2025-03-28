@@ -30,6 +30,8 @@ HRESULT CLevel_Hill::Initialize()
 {
 	m_iCurrentLevel = LEVEL_HILL;
 
+	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 

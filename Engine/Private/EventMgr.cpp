@@ -117,7 +117,7 @@ HRESULT CEventMgr::Update()
 	{	
 		for (auto& iterator = m_mapDeadObejct.begin(); iterator != m_mapDeadObejct.end(); iterator++)
 		{
-			m_pGameInstance->Sub_GameObject_To_Layer(3, (*iterator).first, (*iterator).second);
+			m_pGameInstance->Sub_GameObject_To_Layer(m_iCurrent_Level, (*iterator).first, (*iterator).second);
 			m_mapDeadObejct.erase(iterator);	
 
 			if (m_mapDeadObejct.size() == 0)
