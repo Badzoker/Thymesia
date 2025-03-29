@@ -17,6 +17,8 @@ CMainApp::CMainApp()
 
 HRESULT CMainApp::Initialize()
 {
+	srand((unsigned int)time(NULL));
+
 	ENGINE_DESC		EngineDesc{};
 
 	EngineDesc.hInstance = g_hInst;
