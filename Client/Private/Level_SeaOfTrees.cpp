@@ -225,7 +225,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(145); //Tutorial Map
 	//Load_Objects(301); //Circus Map
 	//Load_Objects(303); //Circus Map 오두르 보스
-	Load_Objects(316); //Circus Map 오두르 보스
+	Load_Objects(314); //Circus Map 오두르 보스
 	//Load_Objects(312); //Circus Map 오두르 보스
 	//Load_Objects(313); //Circus Map 오두르 보스
 	//Load_Objects(314); //Circus Map 오두르 보스

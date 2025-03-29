@@ -275,6 +275,7 @@ HRESULT CShadow::Delete_Shadow(CTransform* pTransform)
 	if (m_pPlayerTransform == pTransform)
 	{
 		Safe_Release(m_pPlayerTransform);
+		m_pPlayerTransform = nullptr;
 	}
 			
 	return S_OK;
