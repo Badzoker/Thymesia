@@ -58,9 +58,10 @@ void CEffect_Sword::Update(_float _fTimeDelta)
         Calculate_Trail(_fTimeDelta);
 
         _uint iCount_Trail = static_cast<_uint>(m_dequeCenterPos.size());
-        _float3 vUp = {};
+        _float3 vUp{}, vRight{};
         XMStoreFloat3(&vUp, m_fLength * XMVector3Normalize(XMVector3Cross(_vector{ 0.f, 1.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
-        m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp);
+        XMStoreFloat3(&vRight, m_fLength * XMVector3Normalize(XMVector3Cross(_vector{ 1.f, 0.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
+        m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp, vRight);
     }
     
 }

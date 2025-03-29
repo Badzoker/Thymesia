@@ -15,7 +15,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vDir);
+	HRESULT Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vRight, const _float3& _vUp);
 	HRESULT Set_Trail_Reset();
 
 public:
