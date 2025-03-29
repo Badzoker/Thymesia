@@ -53,7 +53,6 @@ private:
 	_uint                            m_iPhase = {};
 private:
 	CState_Machine<CBoss_Magician2>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pStunActor = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

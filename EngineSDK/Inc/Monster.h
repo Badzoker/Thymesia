@@ -58,6 +58,7 @@ protected:
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pStunActor = { nullptr };
 	const _float4x4* m_pRootMatrix = { nullptr };
 protected:
 	class CGameObject* m_pPlayer = { nullptr };

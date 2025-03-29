@@ -197,13 +197,12 @@ void CHArmorLV2::PatternCreate()
 
 void CHArmorLV2::Active()
 {
-    m_bActive = true;
     if (!m_bFirstActive)
     {
-        m_bFirstActive = true;
-        m_bPatternProgress = true;
         m_pState_Manager->ChangeState(new CHArmorLV2::Intro_State(), this);
     }
+    else
+        m_pState_Manager->ChangeState(new CHArmorLV2::NotActive_Idle(), this);
 }
 
 void CHArmorLV2::Return_To_Spawn()
@@ -331,10 +330,9 @@ void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
         m_bMove = false;
         m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
     }
-    if ((!strcmp("PLAYER", _pOther->Get_Name())) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
+    if ((!strcmp("PLAYER", _pOther->Get_Name())) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Start && !m_bExecution_Progress)
     {
-        m_bExecution_Progress = true;
-        m_pState_Manager->ChangeState(new Execution_State(), this);
+        m_bExecution_Start = true;
     }
 }
 
@@ -381,14 +379,20 @@ void CHArmorLV2::Free()
 void CHArmorLV2::Intro_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 34;
+
+    pObject->m_bActive = true;
+    pObject->m_bFirstActive = true;
+    pObject->m_bPatternProgress = true;
+
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CHArmorLV2::Intro_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
         vLook *= -1;
@@ -417,7 +421,7 @@ void CHArmorLV2::Idle_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Idle_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
 }
 
@@ -525,8 +529,9 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 24;
     pObject->m_iMonster_State = STATE_STUN;
-    pObject->m_bCan_Move_Anim = true;
     pObject->m_bMove = true;
+    pObject->m_bCan_Move_Anim = true;
+
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -539,35 +544,35 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 23)
+    if (m_iIndex == 23 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
         m_fTime += fTimeDelta;
 
 
-    if (m_iIndex == 24 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 24 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 23;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
-    if (m_iIndex == 23 && pObject->m_pModelCom->GetAniFinish())
-    {
-        m_iIndex = 23;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
-    }
-
-    if (m_iIndex == 23 && m_fTime >= 5.f)
+    if (m_iIndex == 23 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_fTime >= 5.f)
     {
         m_iIndex = 22;
-        /*       pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
-               pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);*/
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
+    if (m_iIndex == 23 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_bExecution_Start)
+    {
+        pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Execution_State(), pObject);
+    }
 
-    if (m_iIndex == 22 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 22 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_IsStun = false;
+
+        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+        pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
+
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
     }
 }
@@ -592,14 +597,14 @@ void CHArmorLV2::Attack_Pattern_01::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 4 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 61.f)
+    if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 61.f)
     {
         m_iIndex = 8;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 8 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
+    if (m_iIndex == 8 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
     {
         m_iIndex = 7;
         pObject->RotateDegree_To_Player();
@@ -609,7 +614,7 @@ void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(8.f);
     }
 
-    if (m_iIndex == 7 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -648,7 +653,7 @@ void CHArmorLV2::Attack_Pattern_02::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_02::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 5 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 57.f)
+    if (m_iIndex == 5 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 57.f)
     {
         m_iIndex = 0;
         pObject->RotateDegree_To_Player();
@@ -657,7 +662,7 @@ void CHArmorLV2::Attack_Pattern_02::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -696,7 +701,7 @@ void CHArmorLV2::Attack_Pattern_03::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 3 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 3 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 36;
         pObject->RotateDegree_To_Player();
@@ -705,7 +710,7 @@ void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 36 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -748,7 +753,7 @@ void CHArmorLV2::Attack_Pattern_04::State_Enter(CHArmorLV2* pObject)
 void CHArmorLV2::Attack_Pattern_04::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
 
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pTransformCom->Look(XMLoadFloat4(&m_vChangeLook));
         pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Move_State(), pObject);
@@ -774,7 +779,7 @@ void CHArmorLV2::Attack_Pattern_05::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_05::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 32 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
+    if (m_iIndex == 32 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
     {
         m_iIndex = 0;
         pObject->RotateDegree_To_Player();
@@ -782,7 +787,7 @@ void CHArmorLV2::Attack_Pattern_05::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -822,7 +827,7 @@ void CHArmorLV2::Attack_Pattern_06::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_06::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 1 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 49.f)
+    if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 49.f)
     {
         m_iIndex = 4;
         pObject->RotateDegree_To_Player();
@@ -831,7 +836,7 @@ void CHArmorLV2::Attack_Pattern_06::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 4 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -870,7 +875,7 @@ void CHArmorLV2::Attack_Pattern_07::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_07::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 1 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
+    if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
     {
         m_iIndex = 0;
         pObject->RotateDegree_To_Player();
@@ -879,7 +884,7 @@ void CHArmorLV2::Attack_Pattern_07::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (pObject->Is_Need_Turn_Attack())
         {
@@ -910,28 +915,31 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     m_iIndex = 53;
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->RotateDegree_To_Player();
-    pObject->m_bHP_Bar_Active = false;
-    pObject->m_bCan_Move_Anim = true;
     pObject->m_bMove = true;
+    pObject->m_bCan_Move_Anim = true;
+    pObject->m_bHP_Bar_Active = false;
+    pObject->m_bExecution_Start = false;
 
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
     vPlayerLook = XMVector3Normalize(vPlayerLook);
     vPlayerLook *= 1.4f;
-
-
     _vector vResultPos = vPlayerPos + vPlayerLook;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
+
+
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
 }
 
 void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_iMonster_State = STATE_DEAD;
 
@@ -1028,6 +1036,8 @@ void CHArmorLV2::Return_To_SpawnPoint_State::State_Exit(CHArmorLV2* pObject)
 void CHArmorLV2::NotActive_Idle::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 27;
+
+    pObject->m_bActive = true;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bPatternProgress = false;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
@@ -1035,13 +1045,13 @@ void CHArmorLV2::NotActive_Idle::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::NotActive_Idle::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_fDistance <= 5.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_fDistance <= 5.f)
     {
         m_iIndex = 28;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 28 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 28 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CHArmorLV2::Idle_State(), pObject);
     }
@@ -1066,7 +1076,7 @@ void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Parry_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
     {
         pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
     }
@@ -1088,7 +1098,7 @@ void CHArmorLV2::Parry_Attack_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Parry_Attack_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (m_iIndex == 6 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 6 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)

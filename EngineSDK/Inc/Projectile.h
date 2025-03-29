@@ -34,7 +34,8 @@ public:
 	void Reset_Projectile();
 public:
 	void Set_Target(_vector vDir);
-
+protected:
+	PxRigidDynamic* m_pActor = { nullptr };
 protected:
 	_bool m_bIsFire = { false };
 	_bool m_bMultiFire = { false };
@@ -48,6 +49,10 @@ protected:
 	_float4 m_vStartPos = {};
 	_float4 m_vEndPos = {};
 	_float4 m_vDir = {};
+public:
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

@@ -98,11 +98,6 @@ void CWeapon_Cane::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-    {
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
-    }
-
 
     if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCane_Collider_On)
     {
@@ -138,6 +133,12 @@ void CWeapon_Cane::Update(_float fTimeDelta)
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    {
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
+    }
+
 
 }
 

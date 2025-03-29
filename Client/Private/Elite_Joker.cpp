@@ -346,6 +346,7 @@ void CElite_Joker::Idle_State::State_Enter(CElite_Joker* pObject)
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -353,7 +354,7 @@ void CElite_Joker::Idle_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
 {
     pObject->RotateDegree_To_Player();
 
-    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Walk_State(), pObject);
 }
 
@@ -367,21 +368,22 @@ void CElite_Joker::Idle_State::State_Exit(CElite_Joker* pObject)
 
 void CElite_Joker::Intro_State::State_Enter(CElite_Joker* pObject)
 {
+    m_iIndex = 15;
+    pObject->m_bActive = true;
     pObject->m_bPatternProgress = true;
     pObject->m_iMonster_State = STATE_INTRO;
-    m_iIndex = 15;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CElite_Joker::Intro_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
 void CElite_Joker::Intro_State::State_Exit(CElite_Joker* pObject)
 {
-    pObject->m_bActive = true;
 }
 
 #pragma endregion
@@ -458,14 +460,14 @@ void CElite_Joker::Attack_Combo_A::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Combo_A::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 0 && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
+    if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
     {
         m_iIndex++;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
@@ -494,7 +496,7 @@ void CElite_Joker::Attack_Combo_B::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Combo_B::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 2 && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
+    if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
     {
         m_iIndex++;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
@@ -502,7 +504,7 @@ void CElite_Joker::Attack_Combo_B::State_Update(_float fTimeDelta, CElite_Joker*
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
     }
@@ -531,7 +533,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
         m_fTimer += 1.f * fTimeDelta;
         pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), pObject->m_pNavigationCom, fTimeDelta * 3.f);
     }
-    if (m_iIndex == 13 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 13 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 12;
         pObject->m_bCan_Move_Anim = true;
@@ -539,7 +541,7 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
-    if ((m_iIndex == 12 && pObject->m_fDistance <= 1.5f) || m_fTimer >= 3.f)
+    if ((m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_fDistance <= 1.5f) || m_fTimer >= 3.f)
     {
         m_iIndex = 11;
         pObject->m_bCan_Move_Anim = false;
@@ -549,13 +551,13 @@ void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 11 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70)
+    if (m_iIndex == 11 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70)
     {
         pObject->m_iMonster_Attack_Power = 114;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     }
 
-    if (m_iIndex == 11 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 11 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
@@ -576,15 +578,15 @@ void CElite_Joker::Attack_Wheel::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 35)
+    if (m_iIndex == 35 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
         m_fTimer += 1.f * fTimeDelta;
 
-    if (m_iIndex == 35 && pObject->m_fDistance > 1.f)
+    if (m_iIndex == 35 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_fDistance > 1.f)
     {
         pObject->RotateDegree_To_Player();
         pObject->m_pTransformCom->Go_Dir(pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK), pObject->m_pNavigationCom, fTimeDelta * 2.f);
     }
-    if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 36 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;
         pObject->m_bMove = false;
@@ -592,7 +594,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
-    if (m_iIndex == 35 && m_fTimer >= 4.f)
+    if (m_iIndex == 35 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_fTimer >= 4.f)
     {
         m_iIndex = (rand() % 2) + 33;
         pObject->m_bMove = false;
@@ -601,7 +603,7 @@ void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* p
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if ((m_iIndex == 33 || m_iIndex == 34) && pObject->m_pModelCom->GetAniFinish())
+    if ((m_iIndex == 33 || m_iIndex == 34) && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
     }
@@ -633,26 +635,30 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 18)
+    if (m_iIndex == 18 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
         m_fTimer += 1.f * fTimeDelta;
 
-    if (m_iIndex == 19 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 19 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 18;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
     //기절상태 유지가 어느정도 됐을시
-    if (m_iIndex == 18 && m_fTimer >= 5.f)
+    if (m_iIndex == 18 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_fTimer >= 5.f)
     {
         m_iIndex = 17;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 17 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 17 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_IsStun = false;
+
+        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+        pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
+
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
     }
 }
@@ -689,7 +695,8 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
 {
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
-    if (m_iIndex == 22 && pObject->m_pModelCom->GetAniFinish())
+
+    if (m_iIndex == 22 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 21;
         pObject->m_iMonster_State = STATE_DEAD;
@@ -727,7 +734,7 @@ void CElite_Joker::Attack_Shock::State_Update(_float fTimeDelta, CElite_Joker* p
     if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 70.f)
         pObject->RotateDegree_To_Player();
 
-    if (m_iIndex == 14 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 14 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
@@ -749,7 +756,7 @@ void CElite_Joker::Attack_Strong::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Strong::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 16 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 16 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
@@ -771,7 +778,7 @@ void CElite_Joker::Attack_Jump::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Jump::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
 
