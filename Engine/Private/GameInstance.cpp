@@ -329,6 +329,11 @@ void CGameInstance::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)
 	return m_pRenderer->Set_ZoomBlur_Option(_bOnOff, _fStrength);	
 }
 
+void CGameInstance::Set_FogColor(_float4 vFogColor)
+{
+	return m_pRenderer->Set_FogColor(vFogColor);
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);

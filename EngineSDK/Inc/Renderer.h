@@ -26,6 +26,7 @@ public:
 	HRESULT Render();
 	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
 	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
+	void Set_FogColor(_float4 vFogColor);
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };

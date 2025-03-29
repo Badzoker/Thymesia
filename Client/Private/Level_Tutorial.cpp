@@ -156,7 +156,11 @@ HRESULT CLevel_Tutorial::Render()
 
 HRESULT CLevel_Tutorial::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_TUTORIAL, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+
+	//CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_SEAOFTREES, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+
+	CTransform* pCamTransform = (m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"))->Get_Transfrom();
+
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };

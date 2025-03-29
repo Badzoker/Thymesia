@@ -152,7 +152,11 @@ HRESULT CLevel_SeaOfTrees::Render()
 
 HRESULT CLevel_SeaOfTrees::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_SEAOFTREES, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+
+	//CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_SEAOFTREES, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+
+	CTransform* pCamTransform = (m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"))->Get_Transfrom();
+
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
@@ -209,7 +213,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
 		return E_FAIL;
 
-
+	m_pGameInstance->Set_FogColor(_float4(0.8f, 0.5f, 0.f, 1.f));
 
 	return S_OK;
 }
