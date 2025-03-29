@@ -427,6 +427,11 @@ void CRenderer::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)
 
 }
 
+void CRenderer::Set_FogColor(_float4 vFogColor)
+{
+	m_vFogColor = vFogColor;
+}
+
 HRESULT CRenderer::Render_Priority()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final"))))

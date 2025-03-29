@@ -80,6 +80,7 @@ public:
 	HRESULT Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	void    Set_MotionBlur(_bool _bOnOff);	
 	void	Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);	
+	void	Set_FogColor(_float4 vFogColor);
 #pragma endregion
 
 #pragma region PIPELINE
