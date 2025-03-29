@@ -220,16 +220,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
 	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
 	// 
-	//Load_Objects(140); //Tutorial Map
-	//Load_Objects(142); //Tutorial Map
-	//Load_Objects(145); //Tutorial Map
-	//Load_Objects(301); //Circus Map
-	//Load_Objects(303); //Circus Map 오두르 보스
-	Load_Objects(314); //Circus Map 오두르 보스
-	//Load_Objects(312); //Circus Map 오두르 보스
-	//Load_Objects(313); //Circus Map 오두르 보스
-	//Load_Objects(314); //Circus Map 오두르 보스
-	//Load_Objects(111); //Circus Map
+	//Load_Objects(303); //Circus Map 오두르 보스(변이)
+	//Load_Objects(312); //Circus Map 엘레베이터 복도(보스전까지)
+	//Load_Objects(313); //Circus Map 조커 방
+	Load_Objects(314);   //Circus Map 오두르 보스
+	//Load_Objects(315); //Circus Map 엘레베이터 전까지 일반몹 구간
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일

@@ -231,6 +231,48 @@ void CSMain_Particle_Dust(int3 dispatchThreadID : SV_DispatchThreadID, uint grou
     g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
 }
 
+[numthreads(256, 1, 1)]
+void CSMain_Particle_Dust_Delay(int3 dispatchThreadID : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex)
+{
+    Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
+    
+    sharedParticles[groupIndex] = g_tOutput_Compute[dispatchThreadID.x];
+    GroupMemoryBarrierWithGroupSync();
+    
+    sharedParticles[groupIndex].vSpeed.xz = tInput.vSpeed.xz * 1.f;
+    sharedParticles[groupIndex].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
+    
+    
+    sharedParticles[groupIndex].fDelayTime += 0.0167f;
+    sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
+    
+    float3 vDir = float3(normalize(tInput.vPivot - tInput.vTranslation.xyz));
+    if (tInput.fDelayTime > sharedParticles[groupIndex].fDelayTime)
+    {
+        sharedParticles[groupIndex].vLifeTime.x = 0.001f;
+        sharedParticles[groupIndex].vLifeTime.y = 0.f;
+        sharedParticles[groupIndex].vScale = 0.f;
+    }
+    else
+    {
+        sharedParticles[groupIndex].vScale = tInput.vScale;
+        sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
+        vDir = vDir * sharedParticles[groupIndex].vSpeed * 0.0167f;
+        sharedParticles[groupIndex].vTranslation.xyz -= vDir;
+        sharedParticles[groupIndex].vTranslation.w = 1.f;
+    }
+    
+    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * tInput.vScale.x;
+    float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
+    sharedParticles[groupIndex].vUp = vUp * tInput.vScale.y;
+    float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
+    sharedParticles[groupIndex].vLook = vLook * tInput.vScale.z;
+    
+    GroupMemoryBarrierWithGroupSync();
+    
+    g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
+}
+
 technique11 DefaultTechnique
 {
     pass ParticleReset //0
@@ -280,5 +322,12 @@ technique11 DefaultTechnique
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Dust()));
+    }
+
+    pass ParticleDust_Delay //7
+    {
+        SetVertexShader(NULL);
+        SetPixelShader(NULL);
+        SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Dust_Delay()));
     }
 }

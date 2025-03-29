@@ -367,6 +367,19 @@ void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Intro_Effect")) //Intro Effect
+			{
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);

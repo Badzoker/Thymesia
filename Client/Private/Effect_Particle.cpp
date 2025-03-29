@@ -29,6 +29,7 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_fMaxTimer = pDesc->fMaxTimer;
     m_vRGB = pDesc->vRGB;
     m_iShaderPass = pDesc->iShaderPass;
+    m_fAlpha_Amount = pDesc->fAlpha_Amount;
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
@@ -125,6 +126,9 @@ HRESULT CEffect_Particle::Render_WeightBlend()
     if (5 == m_iShaderPass) //DUST
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+            return E_FAIL;
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlpha_Amount", &m_fAlpha_Amount, sizeof(_float))))
             return E_FAIL;
     }
 
