@@ -50,7 +50,6 @@ private:
 
 private:
 	CState_Machine<CBoss_Varg>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pStunActor = { nullptr };
 
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);

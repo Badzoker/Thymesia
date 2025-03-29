@@ -733,6 +733,18 @@ PS_OUT_GLOW PS_WEAPON_GLOW(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_Card(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    Out.vDiffuse.a = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord).r;
+    
+    Out.vDiffuse.rgb = float3(0.78f, 0.5f, 0.2f);
+ 
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -901,6 +913,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_WEAPON_GLOW();
+    }
+
+    pass Projectile_Card // 15  Projectile 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Card();
     }
 
 }

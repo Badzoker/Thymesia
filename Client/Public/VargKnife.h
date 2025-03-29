@@ -53,6 +53,7 @@ private:
 	PxRigidDynamic* m_pActor[COLLIDER_END];
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
+	const _float4x4* m_pSocket_Hand_Matrix = { nullptr };
 
 private:
 	_bool*			   m_Is_Catch = { nullptr };

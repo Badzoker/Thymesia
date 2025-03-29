@@ -83,11 +83,6 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 		XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
 	);
 
-	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
-
-	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pKickActor)))
-		m_pGameInstance->Update_Collider(m_pKickActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 200.f,0.f,1.f });
 
 	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
 	{
@@ -126,6 +121,12 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
 		m_pGameInstance->Sub_Actor_Scene(m_pKickActor);
 	}
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pKickActor)))
+		m_pGameInstance->Update_Collider(m_pKickActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 200.f,0.f,1.f });
 }
 
 void CWeapon_Axe::Late_Update(_float fTimeDelta)

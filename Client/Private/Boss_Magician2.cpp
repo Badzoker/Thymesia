@@ -106,7 +106,6 @@ void CBoss_Magician2::PatternCreate()
 	{
 		m_fDelayTime += 1 * m_fTimeDelta;
 		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
-		//m_fSlash_Skill_CoolTime += m_fTimeDelta;
 		if (m_fDelayTime >= m_fCoolTime)
 		{
 			if (m_fSpecial_Skill_CoolTime >= 30.f)
@@ -177,6 +176,7 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	Weapon_Desc.pParentModel = m_pModelCom;
 	Weapon_Desc.bSpecial_Skill_Progress = &m_bSpecial_Skill_Progress;
 	Weapon_Desc.bCatch_Special_Attack = &m_bCatch_Special_Attack;
+
 	Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
 	Weapon_Desc.fSpeedPerSec = 0.f;
 	Weapon_Desc.fRotationPerSec = 0.f;
@@ -242,18 +242,15 @@ void CBoss_Magician2::Near_Pattern_Create()
 		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboC(), this);
 		break;
 	case 3:
-		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboD(), this);
-		break;
-	case 4:
 		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboE(), this);
 		break;
-	case 5:
+	case 4:
 		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboG(), this);
 		break;
-	case 6:
+	case 5:
 		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboH(), this);
 		break;
-	case 7:
+	case 6:
 		m_pState_Manager->ChangeState(new CBoss_Magician2::Attack_ComboI(), this);
 		break;
 	}
@@ -364,12 +361,13 @@ void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 	m_iIndex = 18;
 	pObject->m_bActive = true;
 	pObject->m_bPatternProgress = true;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -377,7 +375,6 @@ void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magicia
 
 void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 {
-	pObject->m_bPatternProgress = false;
 }
 
 void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
@@ -391,7 +388,7 @@ void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Idle_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (m_iIndex == 14 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+	if (m_iIndex == 14 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
 	}
@@ -421,7 +418,7 @@ void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 23;
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
@@ -454,7 +451,7 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (m_iIndex == 0 && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 		pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
@@ -480,22 +477,21 @@ void CBoss_Magician2::Run_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Run_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (m_iIndex == 15)
-		pObject->RotateDegree_To_Player();
+	pObject->RotateDegree_To_Player();
 
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 17 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 15;
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 	}
 
-	if (m_iIndex == 15 && pObject->m_fDistance <= 2.f)
+	if (m_iIndex == 15 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_fDistance <= 2.f)
 	{
 		m_iIndex = 16;
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 	}
 
-	if (m_iIndex == 16 && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 16 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -504,6 +500,7 @@ void CBoss_Magician2::Run_State::State_Update(_float fTimeDelta, CBoss_Magician2
 
 void CBoss_Magician2::Run_State::State_Exit(CBoss_Magician2* pObject)
 {
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CBoss_Magician2::Attack_ComboA::State_Enter(CBoss_Magician2* pObject)
@@ -518,12 +515,12 @@ void CBoss_Magician2::Attack_ComboA::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 55.f)
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 55.f)
 	{
 		pObject->m_iPlayer_Hitted_State = PLAYER_HURT_KnockBackF;
 		pObject->m_iMonster_Attack_Power = 114;
 	}
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -546,7 +543,7 @@ void CBoss_Magician2::Attack_ComboB::State_Enter(CBoss_Magician2* pObject)
 void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
 	pObject->RotateDegree_To_Player();
-	if (m_iIndex == 2 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 113.f && !m_Is_Random_Active)
+	if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 113.f && !m_Is_Random_Active)
 	{
 		m_Is_Random_Active = true;
 		_uint iRandom = rand() % 2;
@@ -557,18 +554,18 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 		}
 	}
 
-	if (m_iIndex == 2 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 130.f)
+	if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 130.f)
 	{
 		pObject->m_iMonster_Attack_Power = 95;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	}
-	else if (m_iIndex == 3)
+	else if (m_iIndex == 3 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		pObject->m_iMonster_Attack_Power = 114;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
 	}
 
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -591,13 +588,13 @@ void CBoss_Magician2::Attack_ComboC::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboC::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 65.f)
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 65.f)
 	{
 		pObject->m_iMonster_Attack_Power = 95;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	}
 
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -621,13 +618,13 @@ void CBoss_Magician2::Attack_ComboD::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboD::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 79.f)
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 79.f)
 	{
 		pObject->m_iMonster_Attack_Power = 95;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	}
 
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -650,7 +647,7 @@ void CBoss_Magician2::Attack_ComboE::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboE::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -672,7 +669,7 @@ void CBoss_Magician2::Attack_ComboF::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboF::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -694,7 +691,7 @@ void CBoss_Magician2::Attack_ComboG::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboG::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -716,7 +713,7 @@ void CBoss_Magician2::Attack_ComboH::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboH::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -738,7 +735,7 @@ void CBoss_Magician2::Attack_ComboI::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboI::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -760,7 +757,7 @@ void CBoss_Magician2::Attack_ComboJ::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboJ::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}
@@ -783,7 +780,7 @@ void CBoss_Magician2::Attack_Special::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_bCatch_Special_Attack)
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_bCatch_Special_Attack)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 	}

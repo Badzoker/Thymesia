@@ -43,6 +43,9 @@ HRESULT CVargKnife::Initialize(void* pArg)
     m_iMonster_Attack = pDesc->iAttack;
     m_Is_Catch = pDesc->Is_Catch;
 
+    m_pSocket_Hand_Matrix = m_pParentModelCom->Get_BoneMatrix("Bip001-L-Hand");
+
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -53,10 +56,10 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
     m_pActor[COLLIDER_STUN] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,5.f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.15f,0.15f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SWORD], _fvector{ 0.f,0.f,100.f,1.f });
-    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND], _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND], _fvector{ 0.f,0.f,102.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_STUN], _fvector{ 0.f,0.f,101.f,1.f });
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
@@ -87,18 +90,6 @@ void CVargKnife::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
-    {
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
-    }
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND])))
-    {
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f,500.f,1.f });
-    }
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_STUN])))
-    {
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_STUN], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
-    }
 
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
@@ -223,6 +214,18 @@ void CVargKnife::Update(_float fTimeDelta)
     }
 #pragma endregion  
 
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
+    {
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,-350.f,1.f });
+    }
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND])))
+    {
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f,500.f,1.f });
+    }
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_STUN])))
+    {
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_STUN], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 0.f,0.f,1.f });
+    }
 
 }
 

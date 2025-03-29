@@ -67,7 +67,6 @@ private:
 
 private:
 	CState_Machine<CBoss_Magician>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pStunActor = { nullptr };
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
@@ -181,8 +180,9 @@ public:
 		void State_Exit(CBoss_Magician* pObject) override;
 	private:
 		_bool IsFired = {};
+		_float4 m_vPos = {};
+		_float4 m_vPlayerPos = {};
 	};
-
 
 	class Attack_ComboA : public CStates<CBoss_Magician>
 	{
@@ -329,6 +329,19 @@ public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
+	};
+
+	class Dissappear_Jump_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Dissappear_Jump_State() = default;
+		virtual ~Dissappear_Jump_State() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_Is_Spawn = {};
 	};
 
 };

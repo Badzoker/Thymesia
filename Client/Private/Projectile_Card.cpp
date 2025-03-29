@@ -22,11 +22,22 @@ HRESULT CProjectile_Card::Initialize_Prototype()
 
 HRESULT CProjectile_Card::Initialize(void* pArg)
 {
+    strcpy_s(m_szName, "MONSTER_PROJECTILE");
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
         return E_FAIL;
+
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.3f,0.3f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
+
+    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+
+    m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     return S_OK;
 }
@@ -39,14 +50,17 @@ void CProjectile_Card::Priority_Update(_float fTimeDelta)
 void CProjectile_Card::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });
 }
 
 void CProjectile_Card::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
-HRESULT CProjectile_Card::Render()
+HRESULT CProjectile_Card::Render_Glow()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -58,12 +72,31 @@ HRESULT CProjectile_Card::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(15);
         m_pModelCom->Render(i);
     }
 
     return S_OK;
 }
+
+//HRESULT CProjectile_Card::Render()
+//{
+//    if (FAILED(Bind_ShaderResources()))
+//        return E_FAIL;
+//
+//    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+//
+//    for (_uint i = 0; i < iNumMeshes; i++)
+//    {
+//        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+//            return E_FAIL;
+//
+//        m_pShaderCom->Begin(0);
+//        m_pModelCom->Render(i);
+//    }
+//
+//    return S_OK;
+//}
 
 HRESULT CProjectile_Card::Ready_Components()
 {

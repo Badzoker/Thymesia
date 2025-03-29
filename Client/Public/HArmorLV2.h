@@ -42,6 +42,7 @@ public:
 
 private:
 	_bool                            m_bExecution_Progress = {};
+	_bool                            m_bExecution_Start = {};
 	_bool                            m_bFirstActive = {};
 
 	_uint                            m_iNearPatternIndex = {};
@@ -49,7 +50,6 @@ private:
 	_uint							 m_iHit_Motion_Index = {};
 
 private:
-	PxRigidDynamic* m_pStunActor = { nullptr };
 	CState_Machine<CHArmorLV2>* m_pState_Manager = { nullptr };
 
 public:

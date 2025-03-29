@@ -260,5 +260,6 @@ void CMonster::Free()
 {
     __super::Free();
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    m_pGameInstance->Sub_Actor_Scene(m_pStunActor);
     Safe_Release(m_pNavigationCom);
 }

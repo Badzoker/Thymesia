@@ -128,20 +128,6 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
         SocketMatrix *  /* 로컬 스페이스 영역 */
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ -100.f, 0.f, 0.f,1.f });
-
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_KICK])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_KICK], XMLoadFloat4x4(m_pSocket_Leg_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
-
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SLASH])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SLASH], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 4000.f,1.f });
-
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SPECIAL])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SPECIAL], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 0.f,1.f });
-
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_PARRY])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_PARRY], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 1000.f, 0.f,1.f });
 
     if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !*m_bCane_Collider_On)
     {
@@ -197,6 +183,20 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_PARRY]);
     }
 
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ -100.f, 0.f, 0.f,1.f });
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_KICK])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_KICK], XMLoadFloat4x4(m_pSocket_Leg_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SLASH])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SLASH], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 4000.f,1.f });
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SPECIAL])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SPECIAL], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 0.f,1.f });
+
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_PARRY])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_PARRY], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 1000.f, 0.f,1.f });
 }
 
 void CWeapon_Magician_Sword::Late_Update(_float fTimeDelta)

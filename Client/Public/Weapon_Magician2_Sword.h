@@ -21,6 +21,8 @@ class CWeapon_Magician2_Sword final : public CPartObject
 		COLLIDER_HAND,
 		COLLIDER_MUTATION,
 		COLLIDER_SPECIAL,
+		COLLIDER_BURST,
+		COLLIDER_SLASH,
 		COLLIDER_END
 	};
 
@@ -57,12 +59,11 @@ private:
 
 	const _float4x4* m_pSocket_Matrix = { nullptr };
 	const _float4x4* m_pSocket_Hand_Matrix = { nullptr };
+	const _float4x4* m_pSocket_Mutation_Matrix = { nullptr };
 private:
 	_bool* m_bSpecial_Skill_Progress = { nullptr };
 	_bool* m_bCatch_Special_Attack = { nullptr };
-	_bool* m_bHandColliderOn = { nullptr };
-	_bool* m_bMutationColliderOn = { nullptr };
-	_bool* m_bSwordColliderOn = { nullptr };
+
 	_bool  m_bColliderOff = {};
 
 	_float m_fTimeDelta = { 0.f };

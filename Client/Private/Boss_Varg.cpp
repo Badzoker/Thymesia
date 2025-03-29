@@ -72,7 +72,9 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
     if (*m_Player_State & CPlayer::PHASE_DEAD)
+    {
         m_Is_Player_Dead = true;
+    }
     else
         m_Is_Player_Dead = false;
 
@@ -369,6 +371,7 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 36;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bMove = true;
     pObject->m_iMonster_State = STATE_STUN;
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
@@ -397,15 +400,17 @@ void CBoss_Varg::Stun_State::State_Exit(CBoss_Varg* pObject)
 #pragma region Intro_State
 void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 {
+    m_iIndex = 26;
     pObject->m_bActive = true;
     pObject->m_bPatternProgress = true;
     pObject->m_iMonster_State = STATE_INTRO;
-    pObject->m_pModelCom->SetUp_Animation(26, false);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State(), pObject);
     }
@@ -413,7 +418,6 @@ void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 
 void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_bPatternProgress = false;
 }
 
 #pragma endregion
@@ -434,7 +438,7 @@ void CBoss_Varg::Idle_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 {
     pObject->RotateDegree_To_Player();
 
-    if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Walk_State(), pObject);
     }
@@ -471,7 +475,7 @@ void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 {
     //if (pObject->m_fDistance <= 1.5)
     //    pObject->m_bMove = false;
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (m_bBonusAttack)
         {
@@ -509,7 +513,7 @@ void CBoss_Varg::Hit_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Hit_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State(), pObject);
     }
@@ -595,7 +599,7 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
 void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     //2단
-    if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
         m_iIndex += 1;
         pObject->m_iMonster_Attack_Power = 145;
@@ -604,7 +608,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //3단
-    if (m_iIndex == 8 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_iIndex == 8 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
         m_iIndex += 1;
         pObject->m_iMonster_Attack_Power = 174;
@@ -613,7 +617,7 @@ void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //끝
-    if (m_iIndex == 9 && pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_iIndex == 9 && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -646,7 +650,7 @@ void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 11;
         pObject->m_iMonster_Attack_Power = 174;
@@ -655,7 +659,7 @@ void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 11 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 11 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -688,7 +692,7 @@ void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 12;
         pObject->m_iMonster_Attack_Power = 174;
@@ -697,7 +701,7 @@ void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 12 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -730,7 +734,7 @@ void CBoss_Varg::Attack_Combo_D::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 50.f)
+    if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 50.f)
     {
         m_iIndex = 10;
         pObject->m_iMonster_Attack_Power = 145;
@@ -738,7 +742,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 12;
         pObject->m_iMonster_Attack_Power = 174;
@@ -747,7 +751,7 @@ void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 12 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -780,7 +784,7 @@ void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (m_iIndex == 10 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 110.f)
+    if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 110.f)
     {
         m_iIndex = 9;
         pObject->m_iMonster_Attack_Power = 174;
@@ -789,7 +793,7 @@ void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pOb
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(10.f);
     }
-    if (m_iIndex == 9 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -824,7 +828,7 @@ void CBoss_Varg::Run_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 
     pObject->m_pTransformCom->LookAt(XMLoadFloat4(&pObject->m_vPlayerPos));
 
-    if (m_iIndex == 25 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 25 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 24;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
@@ -853,7 +857,7 @@ void CBoss_Varg::Raid_Attack_01::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Raid_Attack_01::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -885,7 +889,7 @@ void CBoss_Varg::Raid_Attack_02::State_Enter(CBoss_Varg* pObject)
 }
 void CBoss_Varg::Raid_Attack_02::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -929,21 +933,21 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 {
     //나중에 페이즈 구분 해줘야할듯
       //1페이즈이고 애님 끝났으면 변환시키기
-    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f)
+    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f)
     {
         m_iIndex = 40;
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
         pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
-    if (m_iIndex == 41 && pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
     }
 
 #pragma region Effect_CutScene
 
-    if (m_iIndex == 40) //Execution3
+    if (m_iIndex == 40 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex) //Execution3
     {
         for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -958,7 +962,7 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
             }
         }
     }
-    if (m_iIndex == 41) //Execution1 & Execution2
+    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex) //Execution1 & Execution2
     {
         for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -990,7 +994,7 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 
 #pragma endregion
 
-    if (m_iIndex == 40 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 40 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
     }
@@ -1032,12 +1036,11 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_fSpecial_Skill_CoolTime = 0.f;
     pObject->RotateDegree_To_Player();
     pObject->m_bPatternProgress = true;
+    pObject->m_iMonster_Attack_Power = 0;
     pObject->m_IsStun = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_STUN;
     pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-
-
 
 }
 
@@ -1069,7 +1072,7 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 #pragma endregion
 
 
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Catch_State(), pObject);
 }
 
@@ -1086,7 +1089,9 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 30;
     //pObject->m_bCan_Move_Anim = true;
     m_bCanCatch = true;
+    pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = STATE_SPECIAL_ATTACK2;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_CATCH;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1094,14 +1099,14 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 {
     pObject->RotateDegree_To_Player();
     //첫번째 잡을려하는 모션 끝내고 달려가는거 넣기
-    if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f && m_bFirst)
+    if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f && m_bFirst)
     {
         m_bFirst = false;
         m_iIndex = 33;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //달려가는거 1초?가량 지나면 잡을려하는 모션 취함
-    if (m_iIndex == 33 && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 33 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 30;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1116,7 +1121,7 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
     //안부딪혀서 끝까지 진행된 경우
-    if ((m_iIndex == 30 || m_iIndex == 28) && pObject->m_pModelCom->GetAniFinish())
+    if ((m_iIndex == 30 || m_iIndex == 28) && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State(), pObject);
     }
@@ -1126,6 +1131,7 @@ void CBoss_Varg::Catch_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
     pObject->m_Is_Catch = false;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 }
 
 #pragma endregion
@@ -1161,10 +1167,9 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
             }
         }
     }
-
 #pragma endregion
 
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 39;
         pObject->m_bDead = true;

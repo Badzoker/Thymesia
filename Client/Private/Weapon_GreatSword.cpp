@@ -77,8 +77,6 @@ void CWeapon_GreatSword::Update(_float fTimeDelta)
 		SocketMatrix *  /* 로컬 스페이스 영역 */
 		XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
 	);
-	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
 	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
 	{
 		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
@@ -106,6 +104,10 @@ void CWeapon_GreatSword::Update(_float fTimeDelta)
 	}
 	else
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
 }
 
 void CWeapon_GreatSword::Late_Update(_float fTimeDelta)

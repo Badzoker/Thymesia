@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "GameInstance.h"
 
 CProjectile::CProjectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -17,9 +18,8 @@ HRESULT CProjectile::Initialize_Prototype()
 
 HRESULT CProjectile::Initialize(void* pArg)
 {
-	strcpy_s(m_szName, "MONSTER");
 	m_fDamage = 33.f;
-	m_fSpeed = 45.f;
+	m_fSpeed = 40.f;
 	m_fDelete_Time = 5.f;
 
 	PROJECTILE_DESC* pDesc = static_cast<PROJECTILE_DESC*>(pArg);
@@ -71,7 +71,20 @@ void CProjectile::Set_Target(_vector vDir)
 	m_pTransformCom->Look(vDir);
 }
 
+void CProjectile::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+void CProjectile::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+void CProjectile::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
 void CProjectile::Free()
 {
 	__super::Free();
+	m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }

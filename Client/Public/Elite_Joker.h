@@ -48,7 +48,6 @@ private:
 
 private:
 	CState_Machine<CElite_Joker>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pStunActor = { nullptr };
 
 private:
 public:
