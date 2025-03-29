@@ -225,7 +225,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_Objects(145); //Tutorial Map
 	//Load_Objects(301); //Circus Map
 	//Load_Objects(303); //Circus Map 오두르 보스
-	Load_Objects(111); //Circus Map
+	Load_Objects(316); //Circus Map 오두르 보스
+	//Load_Objects(312); //Circus Map 오두르 보스
+	//Load_Objects(313); //Circus Map 오두르 보스
+	//Load_Objects(314); //Circus Map 오두르 보스
+	//Load_Objects(111); //Circus Map
 
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
@@ -300,7 +304,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
 	//_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
 	//_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
 	//_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
-	_float4 vTestPosition = { -43.58f, 101.9835f, -147.30f, 1.f }; // 서커스맵 시작위칩
+	_float4 vTestPosition = { -48.64215f, 48.0257f, -123.5272f, 1.00000f }; // 서커스맵 시작위칩
 
 	Desc._fPosition = vTestPosition;
 

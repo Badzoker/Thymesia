@@ -324,7 +324,7 @@ HRESULT CModel::Update_InstanceBuffer(_uint _iNumInstances, const VTX_MODEL_INST
 	if (nullptr == m_pInstanceBuffer || nullptr == _TagInstanceData)
 		return E_FAIL;
 
-	if (_iNumInstances == 0 || _iNumInstances > 500)
+	if (_iNumInstances == 0 || _iNumInstances > 3000)
 		return E_FAIL;
 
 	D3D11_MAPPED_SUBRESOURCE tagSubResource = {};
