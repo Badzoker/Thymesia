@@ -56,7 +56,7 @@ HRESULT CVargKnife::Initialize(void* pArg)
 
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
     m_pActor[COLLIDER_STUN] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,5.f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.15f,0.15f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.6f,0.5f,0.5f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SWORD], _fvector{ 0.f,0.f,100.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND], _fvector{ 0.f,0.f,102.f,1.f });
@@ -220,7 +220,7 @@ void CVargKnife::Update(_float fTimeDelta)
     }
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND])))
     {
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f,500.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pSocket_Hand_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{0.f, 0.f,0.f,1.f});
     }
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_STUN])))
     {

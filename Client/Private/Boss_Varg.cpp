@@ -7,6 +7,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Locked_On.h"
+#include "Boss_Varg_Camera.h"
 
 CBoss_Varg::CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster(pDevice, pContext)
@@ -176,6 +177,23 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
     //    return E_FAIL;
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
         return E_FAIL;
+
+
+    CBoss_Varg_Camera::CAMERA_DESC Varg_CameraDesc = {};
+
+    Varg_CameraDesc.pParent = this;
+    Varg_CameraDesc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("camera");
+    Varg_CameraDesc.pParentState = &m_iMonster_State;
+    Varg_CameraDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    Varg_CameraDesc.pParentModel = m_pModelCom;
+    Varg_CameraDesc.fSpeedPerSec = 0.f;
+    Varg_CameraDesc.fRotationPerSec = 0.f;
+    Varg_CameraDesc.iCurLevel = pDesc->iCurLevel;
+    Varg_CameraDesc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+    if (FAILED(__super::Add_PartObject(TEXT("Part_Varg_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"), &Varg_CameraDesc)))
+        return E_FAIL;
+
 
 
     return S_OK;

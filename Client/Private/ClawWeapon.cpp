@@ -113,7 +113,8 @@ void CClawWeapon::Update(_float fTimeDelta)
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
                             // 카메라 포인터 가져오고 싶다.
-                            m_pGameInstance->Set_MotionBlur(true);
+                            m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta); 
+                            m_fAccTimeDelta += fTimeDelta;
                             m_pCamera->Set_Camera_ZoomOutSpeed(5.f);    
                             m_pCamera->ZoomOut();
                         }
@@ -123,6 +124,12 @@ void CClawWeapon::Update(_float fTimeDelta)
                             m_pCamera->Set_Camera_ZoomInSpeed(1.5f);    
                             m_pCamera->ZoomIn();    
                         }   
+
+                        if (!strcmp(iter.szName, "Camera_Zoom_Blur"))   
+                        {
+                            m_fAccTimeDelta += fTimeDelta;  
+                            m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
+                        }
                     }
 
                     else
@@ -135,12 +142,19 @@ void CClawWeapon::Update(_float fTimeDelta)
                         {
                             /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
                             m_pCamera->ResetZoomOutCameraPos(1.f);
-                            m_pGameInstance->Set_MotionBlur(false);
+                            m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
+                            m_fAccTimeDelta = 0.f;  
                         }
                         if (!strcmp(iter.szName, "Camera_Zoom_Out_No_Blur"))    
                         {
                             m_pCamera->ResetZoomInCameraPos(10.f);  
                         }
+                        if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
+                        {
+                            m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                            m_fAccTimeDelta = 0.f;
+                        }
+
                     }
 
                     if ((iter.eType == EVENT_SOUND)
@@ -214,7 +228,8 @@ void CClawWeapon::Update(_float fTimeDelta)
     if (m_iPreParentState != *m_pParentState)
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
-        m_pGameInstance->Set_MotionBlur(false);
+        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
+        m_fAccTimeDelta = 0.f;  
         m_bCollisionOn = true;
     }
 

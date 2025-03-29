@@ -114,6 +114,12 @@ public:
 		/* 플레이어 스킬 */
 		STATE_HALBERDS_B,	
 		STATE_SCYTHE_B,	
+
+		/* 플레이어 잡히는 모션 */
+		STATE_CATCHED,
+
+		/* 플레이어 잡히고 나서 다시 일어서는 모션 */
+		STATE_GET_UP,
 	};
 
 
@@ -130,6 +136,7 @@ public:
 		PHASE_HEAL = 1 << 8,
 		PHASE_DEAD = 1 << 9,	
 		PHASE_START = 1 << 10,	
+		PHASE_BOSS_INTRO = 1 << 11,	
 	};
 
 
@@ -158,6 +165,7 @@ public:
 public:
 	_uint Get_PhaseState() { return m_iPhaseState; }	
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
+	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }		
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);

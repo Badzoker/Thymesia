@@ -66,6 +66,8 @@ public:
 	void				Set_Camera_ZoomOutSpeed(_float _fSpeed) { m_fZoomOutSpeed = _fSpeed; }
 	void                Set_Camera_EventOnOff(_float _bEventOnOff) { m_bCameraEventOnOff = _bEventOnOff; }
 	void			    Set_Camera_LerpPlayerHeadPos(_vector _vPos) { XMStoreFloat4(&m_fLerpPlayerHeadPos, _vPos); }
+	void				Set_Execute_CamereScene(_uint _iScene) { m_iExectueCameraScene = _iScene; }	
+	_uint				Get_Execute_CamereScene() { return  m_iExectueCameraScene; }	
 	void				Target_Reset(); 
 
 
@@ -98,6 +100,8 @@ private:
 	CCollider* m_pPlayerColliderTransformCom = { false };
 	CGameObject* m_pTargetMonster = { nullptr };
 
+	_uint				m_iExectueCameraScene = {};	
+
 
 	_float4				m_fPlayerHeadPos = {};
 	_float4			    m_fLerpPlayerHeadPos = {};
@@ -122,7 +126,7 @@ private:
 	_bool				m_bCutSceneFristLerpEnd = { false };
 	_bool				m_bGetBackCamPos = { false };
 
-	_uint				m_iPlayCamera_Index = { 1 };
+	_uint				m_iPlayCamera_Index = { 0 };	
 
 	_float				m_fCutScene_CurTime = {};
 	_float				m_fRadian = {};

@@ -130,8 +130,8 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	_ulong dwByte = {};
 
 	//m_mapCamera_Event.emplace("Camera_Test", m_vec)
-	HANDLE hFile = CreateFile(TEXT("../Camera_Bin/real4.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	while (true)
+	HANDLE hFile = CreateFile(TEXT("../Camera_Bin/newExecute3.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);	
+	while (true)	
 	{
 		Camera_Event pEventDesc{};
 
@@ -160,7 +160,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	}
 	CloseHandle(hFile);
 
-	m_mapCamera_Event.emplace(TEXT("Test"), test);
+	m_mapCamera_Event.emplace(TEXT("VillageM1_Execute"), test);	
 
 	return S_OK;
 }
@@ -208,10 +208,19 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		}
 
 
-		/* ======================================= */
+		/* ============== 카메라 툴에서 만든 컷신 ========================= */
 
-		// 현재 카메라가 갑자기 멀리가는 경향이 있음 이거 보간해야함 
-
+		if (m_bCamera_Cut_Scene_OnOff)
+		{
+			switch (m_iExectueCameraScene)
+			{
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1:
+				Camera_Cut_Scene_Activate(TEXT("VillageM1_Execute"));
+				break;
+			default:
+				break;
+			}
+		}
 		/* ======================================= */
 
 
@@ -630,8 +639,8 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 	/* 여기서 현재 카메라와 카메라컷신의 Cam_1의 보간이 끝나고 진행되어야함 */
 #pragma region 카메라 첫번째 보간
 
-	if (m_bCutSceneFristLerpEnd)
-	{
+	//if (m_bCutSceneFristLerpEnd)
+	//{
 #pragma endregion 
 		/* ===============================================================  */
 
@@ -685,17 +694,19 @@ bool CCamera_Free::Camera_Cut_Scene_Activate(_wstring _CutSceneName)
 
 			else
 			{
-				m_bCamera_Cut_Scene_OnOff = false;
+				m_bCutSceneFirst = true;	
+				m_bCamera_Cut_Scene_OnOff = false;	
+				m_bGetBackCamPos = true;	
 				m_fCutScene_CurTime = 0.f;
 				m_iPlayCamera_Index = 0;
 			}
 		}
-	}
-
-	else
-	{
-		FirstLerpFinish();
-	}
+	//}
+	//
+	//else
+	//{
+	//	FirstLerpFinish();
+	//}
 
 
 	return m_bCamera_Cut_Scene_OnOff;

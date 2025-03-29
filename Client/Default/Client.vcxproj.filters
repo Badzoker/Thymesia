@@ -751,6 +751,12 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2\Body">
       <UniqueIdentifier>{b7407eb0-91a2-49b8-9c82-346617f09adb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\Varg_Catched">
+      <UniqueIdentifier>{d6bc0007-0b5e-4858-8103-053a1f5267de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera">
+      <UniqueIdentifier>{360c0e16-a0f8-4cf6-8f4e-462860449364}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1404,6 +1410,12 @@
     <ClInclude Include="..\Public\UIGroup_MapChange.h">
       <Filter>03.UIObject\2.UIObjGroup\9.MapChange</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Varg_Catched.h">
+      <Filter>02.GameObject\Player\State\Hurt\Varg_Catched</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Varg_Camera.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2047,6 +2059,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_MapChange.cpp">
       <Filter>03.UIObject\2.UIObjGroup\9.MapChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Varg_Catched.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\Varg_Catched</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Varg_Camera.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

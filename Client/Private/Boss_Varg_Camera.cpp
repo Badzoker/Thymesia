@@ -1,21 +1,23 @@
 #include "pch.h" 
-#include "PlayerCamera.h"
+#include "Boss_Varg_Camera.h"
 #include "GameInstance.h"
 #include "Player.h"
 #include "Animation.h"
 #include "Camera_Free.h"
+#include "Player.h"
 
-CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+
+CBoss_Varg_Camera::CBoss_Varg_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
 {
 }
 
-CPlayerCamera::CPlayerCamera(const CPlayerCamera& Prototype)
+CBoss_Varg_Camera::CBoss_Varg_Camera(const CBoss_Varg_Camera& Prototype)
     :CPartObject(Prototype)
 {
 }
 
-HRESULT CPlayerCamera::Initialize_Prototype()
+HRESULT CBoss_Varg_Camera::Initialize_Prototype()
 {
     if (FAILED(__super::Initialize_Prototype()))
         return E_FAIL;
@@ -24,17 +26,18 @@ HRESULT CPlayerCamera::Initialize_Prototype()
     return S_OK;
 }
 
-HRESULT CPlayerCamera::Initialize(void* pArg)
+HRESULT CBoss_Varg_Camera::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_CAMERA");
+    strcpy_s(m_szName, "BOSS_VARG_CAMERA");
 
-    WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
+    CAMERA_DESC* pDesc = static_cast<CAMERA_DESC*>(pArg);
 
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
-    m_pParentActor = pDesc->pParentActor;
+    //m_pParentActor = pDesc->pParentActor;     
+    m_pPlayer = pDesc->pPlayer;
 
 
     if (FAILED(__super::Initialize(pArg)))
@@ -46,14 +49,14 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 
-    m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
+    m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에   
 
 
     return S_OK;
 
 }
 
-void CPlayerCamera::Priority_Update(_float fTimeDelta)
+void CBoss_Varg_Camera::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
 
@@ -61,7 +64,7 @@ void CPlayerCamera::Priority_Update(_float fTimeDelta)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
-void CPlayerCamera::Update(_float fTimeDelta)
+void CBoss_Varg_Camera::Update(_float fTimeDelta)
 {
     _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
@@ -81,14 +84,10 @@ void CPlayerCamera::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
+
 #pragma region 이벤트 관련 작업
-       /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState == CPlayer::STATE_HARMOR_EXECUTION
-        || *m_pParentState == CPlayer::STATE_LV1Villager_M_Execution
-        || *m_pParentState == CPlayer::STATE_Joker_Execution
-        || *m_pParentState == CPlayer::STATE_Varg_Execution
-        || *m_pParentState == CPlayer::STATE_STUN_EXECUTE    // 이게 처형 시작 모션 
-        || *m_pParentState == CPlayer::STATE_CATCHED)   
+    /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
+    if (*m_pParentState == STATE_INTRO)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -96,7 +95,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE 부분           
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime     
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime
                         && m_pParentModelCom->Get_CurrentAnmationTrackPosition() < iter.fEndTime)
 
                     {
@@ -132,7 +131,10 @@ void CPlayerCamera::Update(_float fTimeDelta)
                         m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
                         m_pCamera->Set_Camera_GetBackCamPos(true);
 
-                        m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+                        //m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+
+                        //여기다가 플레이어는 못움직이게 세팅해야함
+                        m_pPlayer->Set_ParentPhaseState(CPlayer::PHASE_BOSS_INTRO);
 
                     }
                 }
@@ -141,10 +143,27 @@ void CPlayerCamera::Update(_float fTimeDelta)
                 {
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                     {
-                        if (m_pCamera->Get_Execute_CamereScene() == 0)  
-                            m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
+                        //if (m_pCamera->Get_Execute_CamereScene() == 0 
+                        m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
+                        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 1.5f); 
+                        //여기다가 플레이어로 카메라 위치 변동시켜야할듯.
+                        _vector PlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+                        _vector PlayerLook = XMVectorSetW(XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)), 0.f);
+                        _vector PlayerBackLook = PlayerLook * -1.f;
+                        _vector PlayerRight = XMVectorSetW(XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT)), 0.f);
 
-                        m_pGameInstance->Add_Actor_Scene(m_pParentActor);   
+                        _matrix RotationMatrix = XMMatrixRotationAxis(PlayerRight, XMConvertToRadians(30.f));
+
+                        _vector FinalDir = XMVector3TransformNormal(PlayerBackLook, RotationMatrix);
+
+                        _vector FinalCamPos = PlayerPos + FinalDir * 4.f;
+
+
+                        m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, FinalCamPos);
+
+                        m_pPlayer->Sub_PhaseState(CPlayer::PHASE_BOSS_INTRO);
+
+                    
                     }
 
                 }
@@ -159,50 +178,50 @@ void CPlayerCamera::Update(_float fTimeDelta)
 
 }
 
-void CPlayerCamera::Late_Update(_float fTimeDelta)
+void CBoss_Varg_Camera::Late_Update(_float fTimeDelta)
 {
 
     m_iPreParentState = *m_pParentState;
 }
 
-HRESULT CPlayerCamera::Render()
+HRESULT CBoss_Varg_Camera::Render()
 {
 
 
     return S_OK;
 }
 
-HRESULT CPlayerCamera::Ready_Components()
+HRESULT CBoss_Varg_Camera::Ready_Components()
 {
 
 
     return S_OK;
 }
 
-HRESULT CPlayerCamera::Bind_ShaderResources()
+HRESULT CBoss_Varg_Camera::Bind_ShaderResources()
 {
 
     return S_OK;
 }
 
-void CPlayerCamera::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+void CBoss_Varg_Camera::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CPlayerCamera::OnCollision(CGameObject* _pOther, PxContactPair _information)
+void CBoss_Varg_Camera::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CPlayerCamera::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+void CBoss_Varg_Camera::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-CPlayerCamera* CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CBoss_Varg_Camera* CBoss_Varg_Camera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CPlayerCamera* pInstance = new CPlayerCamera(pDevice, pContext);
+    CBoss_Varg_Camera* pInstance = new CBoss_Varg_Camera(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
@@ -213,20 +232,20 @@ CPlayerCamera* CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
     return pInstance;
 }
 
-CGameObject* CPlayerCamera::Clone(void* pArg)
+CGameObject* CBoss_Varg_Camera::Clone(void* pArg)
 {
-    CPlayerCamera* pInstance = new CPlayerCamera(*this);
+    CBoss_Varg_Camera* pInstance = new CBoss_Varg_Camera(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : CPlayerCamera");
+        MSG_BOX("Failed To Cloned : CBoss_Varg_Camera");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-void CPlayerCamera::Free()
+void CBoss_Varg_Camera::Free()
 {
     __super::Free();
 

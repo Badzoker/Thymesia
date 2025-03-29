@@ -172,6 +172,12 @@ public:
 	void STATE_HALBERDS_B_Method();	
 	void STATE_SCYTHE_B_Method();	
 
+	/* 플레이어 잡히는 모션 */
+	void STATE_CATCHED_Method();	
+
+	/* 플레이어 잡히고 일어서는 모션*/
+	void STATE_GET_UP_Method();	
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -180,7 +186,8 @@ private:
 	CGameObject* m_pParent = { nullptr };
 
 	_float							m_fAnimSpeed = 1.f;
-	_float						    m_fTimeDelta = {};
+	_float						    m_fTimeDelta = {};	
+	_float							m_fZoomBlurDeltaTime = {};	
 
 	_float							m_fHitStopTime = {};
 private:
