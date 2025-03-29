@@ -10,6 +10,7 @@ struct Point_Particle
     float3 vSpeed;
     float3 vPivot;
     float3 vScale;
+    float fDelayTime;
 };
 
 float g_fTime = 0.0167f; //1.f / 60.f //이거 안됨 상수버퍼로 던져야지 가능할듯 아직 안해봄
@@ -36,6 +37,7 @@ void CSMain_Particle_Reset(int3 dispatchThreadID : SV_DispatchThreadID, uint gro
     sharedParticles[groupIndex].vTranslation.y = tInput.vTranslation.y * 1.f;
     sharedParticles[groupIndex].vTranslation.w = 1.f;
     sharedParticles[groupIndex].vLifeTime.y = 0.f;
+    sharedParticles[groupIndex].fDelayTime = 0.f;
     GroupMemoryBarrierWithGroupSync();
     
     g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];

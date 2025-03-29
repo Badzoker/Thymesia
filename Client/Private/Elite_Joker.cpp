@@ -213,6 +213,9 @@ void CElite_Joker::Stun()
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
     m_pState_Manager->ChangeState(new CElite_Joker::Stun_State(), this);
+#pragma region Effect_Stun
+    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
 }
 
 void CElite_Joker::Near_Pattern_Create()

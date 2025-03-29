@@ -73,6 +73,8 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
 
     ReadFile(hFile, &pDesc.iParticle_Initialize_Type, sizeof(_uint), &dwByte, nullptr);
 
+    ReadFile(hFile, &pDesc.vDelayTime, sizeof(_float2), &dwByte, nullptr);
+
     CloseHandle(hFile);
 
 	m_iNumInstance = pDesc.iNumInstance;
@@ -168,6 +170,7 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
             XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
 
             m_pInstanceVertices[i].vScale = vScale;
+            m_pInstanceVertices[i].fDelayTime = m_pGameInstance->Compute_Random(pDesc.vDelayTime.x, pDesc.vDelayTime.y);
         }
         break;
 #pragma endregion
@@ -234,82 +237,76 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
             XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
 
             m_pInstanceVertices[i].vScale = vScale;
+            m_pInstanceVertices[i].fDelayTime = m_pGameInstance->Compute_Random(pDesc.vDelayTime.x, pDesc.vDelayTime.y);
         }
         break;
 #pragma endregion
 
-#pragma region Sphere
+#pragma region Circle_Z
 
-    //case 2: //Sphere
-    //    for (_uint i = 0; i < m_iNumInstance; i++)
-    //    {
-    //        m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
-    //        m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
-    //        m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
-    //        m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
-    //        m_pInstanceVertices[i].vPivot = pDesc.vPivot;
-    //
-    //        _float4         vTranslation = {};
-    //
-    //        _float fRandom = {};
-    //        if (true == pDesc.bReverse_XYZ[0]) //x반전이냐
-    //        {
-    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-    //            if (fRandom < 0.f)
-    //                m_pInstanceVertices[i].vPivot.x *= -1.f;
-    //
-    //            vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
-    //        }
-    //        else
-    //        {
-    //            vTranslation.x = m_pGameInstance->Compute_Random(pDesc.vCenter.x, pDesc.vCenter.x + pDesc.vRange.x * 0.5f);
-    //        }
-    //        if (true == pDesc.bReverse_XYZ[2]) //z반전이냐
-    //        {
-    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-    //            if (fRandom < 0.f)
-    //                m_pInstanceVertices[i].vPivot.z *= -1.f;
-    //
-    //            vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z - pDesc.vRange.z * 0.5f, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
-    //        }
-    //        else
-    //        {
-    //            vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
-    //        }
-    //        if (true == pDesc.bReverse_XYZ[1]) //y반전이냐 <- 서순을 조금 바꿈
-    //        {
-    //            vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
-    //            fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
-    //            if (fRandom < 0.f)
-    //                vTranslation.y *= -1.f;
-    //
-    //        }
-    //        else
-    //        {
-    //            vTranslation.y = sqrtf((pDesc.vRange.y * pDesc.vRange.y * 0.25f) - (vTranslation.z * vTranslation.z) - (vTranslation.x * vTranslation.x));
-    //        }
-    //
-    //        vTranslation.w = 1;
-    //        m_pInstanceVertices[i].vPivot = pDesc.vCenter;
-    //        //m_pSpeeds[i] = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y);
-    //
-    //        m_pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
-    //        m_pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
-    //        m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
-    //        m_pInstanceVertices[i].vTranslation = vTranslation;
-    //
-    //        _float3 vScale = { m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.x,
-    //                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.y,
-    //                           m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.z };
-    //
-    //        XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * vScale.x);
-    //        XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * vScale.y);
-    //        XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
-    //
-    //        m_pInstanceVertices[i].vScale = vScale;
-    //    }
-    //    break;
+    case 2: //Circle_Z
+        for (_uint i = 0; i < m_iNumInstance; i++)
+        {
+            m_pInstanceVertices[i].vLifeTime.x = m_pGameInstance->Compute_Random(pDesc.vLifeTime.x, pDesc.vLifeTime.y);
+            m_pInstanceVertices[i].vSpeed.x = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.x;
+            m_pInstanceVertices[i].vSpeed.y = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.y;
+            m_pInstanceVertices[i].vSpeed.z = m_pGameInstance->Compute_Random(pDesc.vSpeed.x, pDesc.vSpeed.y) * pDesc.vSpeed_Weight.z;
 
+            m_pInstanceVertices[i].vPivot = pDesc.vPivot;
+            _float4         vTranslation = {};
+
+            _float fRandom = {};
+            if (true == pDesc.bReverse_XYZ[2]) //z반전이냐
+                vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z - pDesc.vRange.z * 0.5f, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
+            else
+                vTranslation.z = m_pGameInstance->Compute_Random(pDesc.vCenter.z, pDesc.vCenter.z + pDesc.vRange.z * 0.5f);
+            if (true == pDesc.bReverse_XYZ[1]) //y반전이냐
+                vTranslation.y = m_pGameInstance->Compute_Random(pDesc.vCenter.y - pDesc.vRange.y * 0.5f, pDesc.vCenter.y + pDesc.vRange.y * 0.5f);
+            else
+                vTranslation.y = m_pGameInstance->Compute_Random(pDesc.vCenter.y, pDesc.vCenter.y + pDesc.vRange.y * 0.5f);
+            if (true == pDesc.bReverse_XYZ[0]) //x반전이냐
+            {
+                _float x = { pow(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, 2.f) - pow(vTranslation.z, 2.f) };
+                if (0 < x)
+                    vTranslation.x = sqrtf(x);
+                else
+                    vTranslation.x = sqrtf(x * -1.f);
+
+                fRandom = m_pGameInstance->Compute_Random(-1.f, 1.f);
+                if (fRandom < 0.f)
+                    vTranslation.x *= -1.f;
+
+            }
+            else
+            {
+                _float x = { pow(pDesc.vCenter.x - pDesc.vRange.x * 0.5f, 2.f) - pow(vTranslation.z, 2.f) };
+                if (0 < x)
+                    vTranslation.x = sqrtf(x);
+                else
+                    vTranslation.x = sqrtf(x * -1.f);
+            }
+
+            vTranslation.w = 1;
+
+            m_pInstanceVertices[i].vPivot = pDesc.vCenter;
+
+            m_pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+            m_pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+            m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+            m_pInstanceVertices[i].vTranslation = vTranslation;
+
+            _float3 vScale = { m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.x,
+                               m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.y,
+                               m_pGameInstance->Compute_Random(pDesc.vSize.x, pDesc.vSize.y) * pDesc.vScale_Weight.z };
+
+            XMStoreFloat4(&m_pInstanceVertices[i].vRight, XMLoadFloat4(&m_pInstanceVertices[i].vRight) * vScale.x);
+            XMStoreFloat4(&m_pInstanceVertices[i].vUp, XMLoadFloat4(&m_pInstanceVertices[i].vUp) * vScale.y);
+            XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
+
+            m_pInstanceVertices[i].vScale = vScale;
+            m_pInstanceVertices[i].fDelayTime = m_pGameInstance->Compute_Random(pDesc.vDelayTime.x, pDesc.vDelayTime.y);
+        }
+        break;
 #pragma endregion
 
 #pragma region FloorSpark
@@ -375,6 +372,7 @@ HRESULT CVIBuffer_Point_Compute::Initialize_Prototype(const _tchar* _pParticleDa
             XMStoreFloat4(&m_pInstanceVertices[i].vLook, XMLoadFloat4(&m_pInstanceVertices[i].vLook) * vScale.z);
 
             m_pInstanceVertices[i].vScale = vScale;
+            m_pInstanceVertices[i].fDelayTime = m_pGameInstance->Compute_Random(pDesc.vDelayTime.x, pDesc.vDelayTime.y);
         }
         break;
 

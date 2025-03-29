@@ -20,6 +20,7 @@ public:
 		_float3		vScale_Weight; //Scale 가중치
 
 		_uint		iParticle_Initialize_Type = { 0 }; // Particle 시작위치가 원점기준이냐(0), 중심기준 원모양이냐(1), 중심기준 구모양이냐(2)
+		_float2		vDelayTime = _float2(0.f, 0.f); // Particle 시작위치가 원점기준이냐(0), 중심기준 원모양이냐(1), 중심기준 구모양이냐(2)
 	};
 
 	struct CAMERA_FLOAT4

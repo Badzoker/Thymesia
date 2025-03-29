@@ -192,6 +192,7 @@ namespace Engine
 		XMFLOAT3	   vSpeed;
 		XMFLOAT3	   vPivot;
 		XMFLOAT3	   vScale;
+		float		   fDelayTime;
 	};
 
 	struct ENGINE_DLL ANIMEVENT	
