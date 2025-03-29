@@ -303,6 +303,12 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_SCYTHE_B:   
         STATE_SCYTHE_B_Method();    
         break;
+    case CPlayer::STATE_CATCHED:
+        STATE_CATCHED_Method();
+        break;
+    case CPlayer::STATE_GET_UP:
+        STATE_GET_UP_Method();
+        break;
     default:
         break;
     }
@@ -360,10 +366,16 @@ void CBody_Player::Update(_float fTimeDelta)
                         m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
                     }
 
-                    else if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
+                    if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
                         m_pCamera->Set_Camera_ZoomInSpeed(10.f);    
                         m_pCamera->ZoomIn();
+                    }
+
+                    if (!strcmp(iter.szName, "Zoom_In_Blur"))
+                    {
+                        m_fZoomBlurDeltaTime += fTimeDelta;
+                        m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
                     }
 
                     if (!strcmp(iter.szName, "Evade"))
@@ -379,6 +391,12 @@ void CBody_Player::Update(_float fTimeDelta)
                     {
                         // 카메라 포인터 가져오고 싶다. 
                         m_pCamera->ResetZoomInCameraPos(10.f);  
+                    }
+
+                    if (!strcmp(iter.szName, "Zoom_In_Blur"))
+                    {
+                        m_fZoomBlurDeltaTime = 0.f;
+                        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
                     }
                 }
 
@@ -410,6 +428,7 @@ void CBody_Player::Update(_float fTimeDelta)
             && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
+            m_fZoomBlurDeltaTime = 0.f; 
         }
     }
 
@@ -2055,6 +2074,11 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
         case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
             *m_pParentState = CPlayer::STATE_Varg_Execution;
             break;
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1: 
+            *m_pParentState = CPlayer::STATE_LV1Villager_M_Execution;   
+            m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1);  
+            m_pCamera->Set_Camera_Cut_Scene_OnOff(true);    
+            break;
         default:
             break;
         }
@@ -2077,6 +2101,7 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_START);  
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
 }
@@ -2255,6 +2280,34 @@ void CBody_Player::STATE_SCYTHE_B_Method()
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
 }
+
+void CBody_Player::STATE_CATCHED_Method()
+{
+    m_pModelCom->SetUp_Animation(233, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(233)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE::STATE_GET_UP;
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+    }
+}
+
+void CBody_Player::STATE_GET_UP_Method()
+{
+    m_pModelCom->SetUp_Animation(273, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+
+
+    if (m_pModelCom->Get_VecAnimation().at(273)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HITTED;
+    }
+}
+
+
 
 
 HRESULT CBody_Player::Ready_Components()

@@ -56,6 +56,7 @@
 #include "HURT_FallDown_End.h"	
 #include "Rebound_R.h"	
 #include "StunnedStart.h"
+#include "Varg_Catched.h"	
 #pragma endregion 
 
 
@@ -94,6 +95,8 @@
 #include "ClawCommon_ChargeFull.h"	
 
 #pragma endregion 
+
+
 
 CStateMgr::CStateMgr()
 {
@@ -355,6 +358,15 @@ HRESULT CStateMgr::Initialize()
 	CClawCommon_ChargeFull* pClawCommon_ChargeFull = CClawCommon_ChargeFull::Create();
 	m_vecState.push_back(pClawCommon_ChargeFull);
 
+
+#pragma endregion 
+
+
+#pragma region 바그한테 잡히는 모션 
+
+	/* 55번 우클릭 차지 공격 모션 */
+	CVarg_Catched* pVarg_Catched = CVarg_Catched::Create();
+	m_vecState.push_back(pVarg_Catched);
 
 #pragma endregion 
 

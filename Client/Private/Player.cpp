@@ -86,10 +86,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-
 #pragma region Mouse_Input
 
-	if (!(m_iPhaseState & PHASE_CHAIR) && !(m_iPhaseState & PHASE_START))
+	if (!(m_iPhaseState & PHASE_CHAIR) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))	
 	{	 // 의자 관련 
 		Mouse_section(fTimeDelta);
 #pragma endregion 
@@ -163,8 +162,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		)
 	{
 		/* 처형 관련 작업 */
-		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
-			&& m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1)
+		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL))
 		{
 
 			m_iState = STATE_STUN_EXECUTE;
@@ -1019,10 +1017,10 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				fMonsterLookDir = { ParentMatrix->_31,ParentMatrix->_32,ParentMatrix->_33,0.f };
 
 				
-				m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
-				if (m_iCurrentHp <= 0)
-					m_iCurrentHp = 0;
-
+				/* 데미지 안받기 위해 */
+				//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
+				//if (m_iCurrentHp <= 0)
+				//	m_iCurrentHp = 0;
 				
 
 				switch (dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State())
@@ -1106,6 +1104,13 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					m_pStateMgr->Get_VecState().at(47)->Set_MonsterLookDir(fMonsterLookDir);
 
 					m_pStateMgr->Get_VecState().at(47)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+					break;
+				case Player_Hitted_State::PLAYER_HURT_CATCH:	
+					m_iState = CPlayer::STATE_CATCHED;  // 55									
+					/* 몬스터 공격 방향 */
+					m_pStateMgr->Get_VecState().at(55)->Set_MonsterLookDir(fMonsterLookDir);	
+
+					m_pStateMgr->Get_VecState().at(55)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);	
 					break;
 				default:
 					_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
