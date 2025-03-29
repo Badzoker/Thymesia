@@ -282,169 +282,174 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 
 #pragma region Objects
 	lstrcpyW(m_szLoadingText, TEXT("오브젝트들"));
+	_matrix ObjectPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_Planks"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Planks.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Planks.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_Railing"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Railing.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Railing.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_Tower"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Tower.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Wood Railings/SM_Tower.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_chandelier04"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/chandelier04/chandelier04.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/chandelier04/chandelier04.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_CircusBalloon01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusBalloon01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusBalloon01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_CircusBalloon02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusBalloon02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusBalloon02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_CircusballoonDamage01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusballoonDamage01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusballoonDamage01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_CircusballoonDamage02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusballoonDamage02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_CircusballoonDamage02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_VariationBranch01_01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch01_01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch01_01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_VariationBranch02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_VariationBranch03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBalloon/P_VariationBranch03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_HORSE_P_WoodenStand02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/HORSE_P_WoodenStand02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/HORSE_P_WoodenStand02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_BloodTent02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_BloodTent02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_BloodTent02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_BloodWoodChair01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_BloodWoodChair01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_BloodWoodChair01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Boss_Floor01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_Boss_Floor01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_Boss_Floor01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Boss_Floor02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_Boss_Floor02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_Boss_Floor02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_WoodenChair01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_WoodenChair01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_WoodenChair01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_Cross"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Cross/Cross.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Cross/Cross.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang01_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang01_03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01_03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang01_03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang02_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang02_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang02_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Hang03_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang03_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_Hang03_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_HempRope"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_HempRope.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Hang/P_HempRope.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree01_01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree01_01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree01_01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree01_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree01_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree01_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree02_01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree02_01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree02_01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree02_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree02_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree02_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree03_01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree03_01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree03_01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_tree03_02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree03_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/tree03_02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_Greenhouse_Elevator01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Greenhouse_Elevator/Greenhouse_Elevator01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Greenhouse_Elevator/Greenhouse_Elevator01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodStair03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodStairs/SM_WoodStair03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodStairs/SM_WoodStair03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodFence04"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodFence04/SM_WoodFence04.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodFence04/SM_WoodFence04.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodFence03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodFence03/SM_WoodFence03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_WoodFence03/SM_WoodFence03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth01"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth02"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth02.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth03"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth04"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth04.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth04.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth05"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth05.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth05.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth06"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth06.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth06.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth07"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth07.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth07.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_Cloth08"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth08.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Clothes/P_Cloth08.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_fence_12"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_12.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_12.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_fence_19"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_19.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_SM_WoodStairs03."),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/SM_WoodStairs03.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/SM_WoodStairs03.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
 
-	if(FAILED(Load_BinaryModels("../Bin/Resources/Models/Objects/Circus_08/", PreTransformMatrix)))
+	if(FAILED(Load_BinaryModels("../Bin/Resources/Models/Objects/Circus_08/", ObjectPreTransformMatrix)))
 		return E_FAIL;
 
 
