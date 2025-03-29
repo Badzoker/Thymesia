@@ -390,7 +390,7 @@ CGameObject* CGroundObject::Clone(void* pArg)
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : CGroundObject");
+       // MSG_BOX("Failed To Cloned : CGroundObject");
         Safe_Release(pInstance);
     }
 

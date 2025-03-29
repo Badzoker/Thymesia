@@ -156,9 +156,10 @@ HRESULT CLoader::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformM
 
 		string strFBXPath = pFilePath + FBXName + ".fbx";
 
+
 		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, szPrototypeName,
 			CModel::Create(m_pDevice, m_pContext, strFBXPath.c_str(), CModel::MODEL_NONANIM, PreTransformMatrix))))
-			return E_FAIL;
+			return E_FAIL;	
 	}
 
 	return S_OK;
@@ -270,7 +271,7 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 
 	// 03.19 ³×ºñ Circus Map 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation10.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation48.txt")))))
 		return E_FAIL;
 	
 
@@ -319,7 +320,7 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_HORSE_P_WoodenStand02"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/HORSE_P_WoodenStand02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
-		return E_FAIL;;
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Model_P_BloodTent02"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/CircusBossRoom/P_BloodTent02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;;

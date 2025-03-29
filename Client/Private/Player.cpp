@@ -69,7 +69,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	_vector vTestPosition = XMVectorSetW(XMLoadFloat4(&pDesc->_fPosition), 1.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC ¿· À§Ä¡	
-	m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
+	//m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
+
+	m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
 
