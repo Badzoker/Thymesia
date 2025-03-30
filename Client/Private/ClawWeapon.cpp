@@ -303,6 +303,8 @@ void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
     if (*m_pParentState == CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK)  
     {
         *m_pParentState = CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2; 
+
+        dynamic_cast<CPlayer*>(m_pParent)->Set_Player_Take_Away_Skill(dynamic_cast<CMonster*>(_pOther)->Get_MonsterSkill());    
     }   
 
     m_pGameInstance->Sub_Actor_Scene(m_pActor); 

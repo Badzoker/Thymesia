@@ -763,6 +763,9 @@
     <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Skill_Slot">
       <UniqueIdentifier>{48f445ad-aaf5-4b4c-8784-afa2190dbfd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\Axe">
+      <UniqueIdentifier>{6f855e84-d6aa-45ef-9cbd-12d45f80009e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1428,6 +1431,9 @@
     <ClInclude Include="..\Public\UI_Skill_Slot.h">
       <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_Weapon_Axe.h">
+      <Filter>02.GameObject\Player\Weapon\Axe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2083,6 +2089,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Skill_Slot.cpp">
       <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Weapon_Axe.cpp">
+      <Filter>02.GameObject\Player\Weapon\Axe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

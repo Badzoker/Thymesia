@@ -82,6 +82,7 @@
 #include "Camera_Debug.h"
 #include "Weapon_Halberd.h"	
 #include "Weapon_Scythe.h"	
+#include "Player_Weapon_Axe.h"
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -341,6 +342,21 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CWeapon_Scythe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
+
+#pragma region 티메시아 도끼 무기	
+	PreTransformMatrix = XMMatrixIdentity();
+
+	lstrcpyW(m_szLoadingText, TEXT("주인공 도끼 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Axe"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Axe/Weapon_Axe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Weapon_Scythe */	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Axe"),
+		CPlayer_Weapon_Axe::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
 
 #pragma region 티메시아 카메라 
 	///* For.Prototype_GameObject_Weapon */

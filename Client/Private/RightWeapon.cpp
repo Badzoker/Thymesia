@@ -189,6 +189,7 @@ void CRightWeapon::Late_Update(_float fTimeDelta)
         && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK    
         && *m_pParentState != CPlayer::STATE_HALBERDS_B
         && *m_pParentState != CPlayer::STATE_SCYTHE_B
+        && *m_pParentState != CPlayer::STATE_AXE    
         && !(*m_pParentPhaseState & CPlayer::PHASE_CHAIR)       
         && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD))                   
     {       

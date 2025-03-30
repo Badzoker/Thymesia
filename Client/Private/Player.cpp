@@ -10,6 +10,7 @@
 #include "PlayerCamera.h"
 #include "Weapon_Halberd.h"	
 #include "Weapon_Scythe.h"	
+#include "Player_Weapon_Axe.h"	
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -307,6 +308,20 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+
+#pragma region 스킬공격 도끼		
+	if ((m_pGameInstance->isKeyEnter(DIK_3))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_AXE;	
+	}
+#pragma endregion 
 
 #pragma region 스킬공격 낫
 	if ((m_pGameInstance->isKeyEnter(DIK_2))
@@ -702,7 +717,8 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_Varg_Execution
 		|| m_iState == STATE_REBOUND_R
 		|| m_iState == STATE_CLAW_LONG_PLUNDER_ATTACK2
-		|| m_iState == STATE_CATCHED)
+		|| m_iState == STATE_CATCHED
+		|| m_iState == STATE_VARG_RUN_EXECUTION)	
 	{
 		m_bMove = true;
 	}
@@ -852,6 +868,25 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	RightWeaponDesc.iCurLevel = pDesc->iCurLevel;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
+		return E_FAIL;
+
+	/* 도끼 무기를 만든다. */
+	CPlayer_Weapon_Axe::WEAPON_DESC		Weapon_Axe_Desc{};
+
+
+	Weapon_Axe_Desc.pParent = this;
+	Weapon_Axe_Desc.pParentModel = m_pModel;
+	Weapon_Axe_Desc.pParentState = &m_iState;
+	Weapon_Axe_Desc.pPreParentState = &m_iPreState;
+	Weapon_Axe_Desc.pParentPhaseState = &m_iPhaseState;
+	Weapon_Axe_Desc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
+	Weapon_Axe_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_Axe_Desc.fSpeedPerSec = 0.f;
+	Weapon_Axe_Desc.fRotationPerSec = 10.f;
+
+	Weapon_Axe_Desc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Axe"), LEVEL_STATIC, TEXT("Prototype_GameObject_Axe"), &Weapon_Axe_Desc)))
 		return E_FAIL;
 
 

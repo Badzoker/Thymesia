@@ -16,7 +16,7 @@ BEGIN(Client)
 class CCamera_Free;
 
 
-class CWeapon_Scythe final : public CPartObject
+class CPlayer_Weapon_Axe final : public CPartObject
 {
 public:
 	struct WEAPON_DESC : public CPartObject::PARTOBJECT_DESC
@@ -29,9 +29,9 @@ public:
 
 	};
 private:
-	CWeapon_Scythe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CWeapon_Scythe(const CWeapon_Scythe& Prototype);
-	virtual ~CWeapon_Scythe() = default;
+	CPlayer_Weapon_Axe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayer_Weapon_Axe(const CPlayer_Weapon_Axe& Prototype);
+	virtual ~CPlayer_Weapon_Axe() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -90,7 +90,7 @@ public:
 	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
-	static  CWeapon_Scythe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static  CPlayer_Weapon_Axe* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
