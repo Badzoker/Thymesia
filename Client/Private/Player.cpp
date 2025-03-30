@@ -88,6 +88,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Get_DIKeyState(DIK_M) & 0x80)
+	{
+		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_AUTO, 2.0f, 0.5f);
+	}
+
 #pragma region Mouse_Input
 
 	if (!(m_iPhaseState & PHASE_CHAIR) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))	

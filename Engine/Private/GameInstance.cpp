@@ -897,9 +897,9 @@ HRESULT CGameInstance::Add_Trigger(TRIGGER_TYPE _eTriggerType, CGameObject* _pTa
 {
 	return m_pTrigger_Manager->Add_Trigger(_eTriggerType, _pTarget);
 }
-HRESULT CGameInstance::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration)
+HRESULT CGameInstance::Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration, _float _fDurationSecond)
 {
-	return m_pTrigger_Manager->Activate_Fade(_eTriggerType, _Duration);
+	return m_pTrigger_Manager->Activate_Fade(_eTriggerType, _Duration, _fDurationSecond);
 }
 _bool CGameInstance::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
 {
@@ -908,6 +908,10 @@ _bool CGameInstance::Is_Fade_Complete(TRIGGER_TYPE _eTriggerType)
 void CGameInstance::Setting_NULL_BlackScreen()
 {
 	m_pTrigger_Manager->Setting_NULL_BlackScreen();
+}
+void CGameInstance::Clear_Trigger()
+{
+	m_pTrigger_Manager->Trigger_Clear();
 }
 #pragma endregion
 

@@ -53,6 +53,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
+		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_AUTO);
 		
 	}
 

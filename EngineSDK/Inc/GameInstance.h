@@ -279,9 +279,10 @@ public:
 #pragma region TRIGGER
 	HRESULT Set_BlackScreen(class CUIObject* _pBlackScreen);
 	HRESULT Add_Trigger(TRIGGER_TYPE _eTriggerType, class CGameObject* _pTarget = nullptr);
-	HRESULT Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration);
+	HRESULT Activate_Fade(TRIGGER_TYPE _eTriggerType, _float _Duration, _float _fDurationSecond = 0.0f);
 	_bool   Is_Fade_Complete(TRIGGER_TYPE _eTriggerType);
 	void   Setting_NULL_BlackScreen();
+	void Clear_Trigger();
 #pragma endregion
 
 #pragma region MONSTER_MANAGER

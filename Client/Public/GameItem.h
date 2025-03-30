@@ -57,7 +57,7 @@ private:
     ITEM_TYPE                   m_eItemType = { ITEM_TYPE::ITEM_END };
     _char		                m_GameItemName[MAX_PATH] = {};
 
-    PxRigidDynamic*             m_pActor = { nullptr };
+    //PxRigidDynamic*             m_pActor = { nullptr };
     class CGameObject*          m_pInteractButton = { nullptr };
 
     //_float4                     m_fAlphaValue = {};

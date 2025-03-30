@@ -43,6 +43,8 @@ public:
     virtual void                Reset_ItemState();
     virtual void                Reset_ItemActivate();
 
+    void                        Set_ColliderRender(_bool _bRender);
+
 protected:
     _uint                       m_iItemCount = {};
     _uint                       m_iDropItemCount = { };
@@ -71,6 +73,7 @@ protected:
     _bool                       m_bActivate = { false };
     _bool                       m_bDissolving = { false };
     _float                      m_fDissolveTime = {};
+    PxRigidDynamic*             m_pActor = { nullptr };
 
 public:
     virtual CGameObject* Clone(void* _pArg) = 0;
