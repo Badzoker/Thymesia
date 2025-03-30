@@ -757,6 +757,12 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera">
       <UniqueIdentifier>{360c0e16-a0f8-4cf6-8f4e-462860449364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\10.Skill">
+      <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Skill_Slot">
+      <UniqueIdentifier>{48f445ad-aaf5-4b4c-8784-afa2190dbfd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1416,6 +1422,12 @@
     <ClInclude Include="..\public\Boss_Varg_Camera.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Skill.h">
+      <Filter>03.UIObject\2.UIObjGroup\10.Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Skill_Slot.h">
+      <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2065,6 +2077,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Boss_Varg_Camera.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Skill.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\10.Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Skill_Slot.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

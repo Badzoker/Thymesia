@@ -117,6 +117,7 @@
 #include "UIGroup_Loading.h"
 #include "UIGroup_Landing.h"
 #include "UIGroup_MapChange.h"
+#include "UIGroup_Skill.h"
 
 #include "UI_MouseCursor.h"
 
@@ -179,6 +180,8 @@
 #include "UI_MapEntryFrame.h"
 #include "UI_Map_Save_Image.h"
 #include "UI_MediaFrame.h"
+
+#include "UI_Skill_Slot.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -1309,6 +1312,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_MediaFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//====================================================================================================================================== 스킬
+		/* For.Prototype_GameObject_UI_Skill_Slot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Skill_Slot"),
+		CUI_Skill_Slot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	//====================================================================================================================================
@@ -1359,6 +1367,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UIGroup_Landing */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_MapChange"),
 		CUIGroup_MapChange::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	/* For.Prototype_GameObject_UIGroup_Skill */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Skill"),
+		CUIGroup_Skill::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 #pragma region UI 텍스쳐

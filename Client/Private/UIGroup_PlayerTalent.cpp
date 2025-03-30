@@ -249,7 +249,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Fra
 	{
 	case Client::SLOT_OPEN_ON:
 		pSlotUIObj->Set_TexSlot(3);
-		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexIconOff(false);
 		pSlotUIObj->Set_TexEdgeOff(false);
 		pSlotUIObj->Set_TexEdge(1);
 		pSlotUIObj->Set_TexEffectOff(false);
@@ -257,7 +257,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Fra
 		break;
 	case Client::SLOT_OPEN_OFF:
 		pSlotUIObj->Set_TexSlot(3);
-		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexIconOff(false);
 		pSlotUIObj->Set_TexEdgeOff(false);
 		pSlotUIObj->Set_TexEdge(2);
 		pSlotUIObj->Set_TexEffectOff(false);

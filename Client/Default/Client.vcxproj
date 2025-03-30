@@ -279,6 +279,7 @@
     <ClInclude Include="..\Public\UIGroup_PlayerMenu.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerScreen.h" />
     <ClInclude Include="..\Public\UIGroup_PlayerTalent.h" />
+    <ClInclude Include="..\Public\UIGroup_Skill.h" />
     <ClInclude Include="..\Public\UI_Arrow.h" />
     <ClInclude Include="..\Public\UI_Arrow_Long.h" />
     <ClInclude Include="..\Public\UI_Attribute_Slot_Active.h" />
@@ -368,6 +369,7 @@
     <ClInclude Include="..\Public\UI_SceneBackground.h" />
     <ClInclude Include="..\Public\UI_SceneUnderBackground.h" />
     <ClInclude Include="..\Public\UI_SkillIcon.h" />
+    <ClInclude Include="..\Public\UI_Skill_Slot.h" />
     <ClInclude Include="..\Public\UI_SquareFrame.h" />
     <ClInclude Include="..\Public\UI_SquareFrame_Hover.h" />
     <ClInclude Include="..\Public\UI_Talent_Icon.h" />
@@ -503,6 +505,7 @@
     <ClCompile Include="..\Private\UIGroup_PlayerMenu.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerScreen.cpp" />
     <ClCompile Include="..\Private\UIGroup_PlayerTalent.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Skill.cpp" />
     <ClCompile Include="..\Private\UI_Arrow.cpp" />
     <ClCompile Include="..\Private\UI_Arrow_Long.cpp" />
     <ClCompile Include="..\Private\UI_Attribute_Slot_Active.cpp" />
@@ -590,6 +593,7 @@
     <ClCompile Include="..\Private\UI_SceneBackground.cpp" />
     <ClCompile Include="..\Private\UI_SceneUnderBackground.cpp" />
     <ClCompile Include="..\Private\UI_SkillIcon.cpp" />
+    <ClCompile Include="..\Private\UI_Skill_Slot.cpp" />
     <ClCompile Include="..\Private\UI_SquareFrame.cpp" />
     <ClCompile Include="..\Private\UI_SquareFrame_Hover.cpp" />
     <ClCompile Include="..\Private\UI_Talent_Icon.cpp" />

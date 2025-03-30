@@ -80,6 +80,8 @@ private:
     _bool                           m_bFadingIn = { false };
     _bool                           m_bFadingOut = { false };
 
+private:
+    _bool                           m_bFirstTouch = { false }; // 의자 최초 터치 시 beacon found 알림 팝업 열기 용도 - 유빈
 public:
     static CSpecificObject*         Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject*            Clone(void* pArg) override;
