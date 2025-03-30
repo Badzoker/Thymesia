@@ -151,6 +151,7 @@ namespace Engine
 	{
 		TT_FADE_IN,
 		TT_FADE_OUT,
+		TT_FADE_AUTO,
 		TT_INTERACTION,
 		TT_END
 	};

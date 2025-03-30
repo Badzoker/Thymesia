@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "GameInstance.h"
 
 CItem::CItem(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
     :CGameObject{ _pDevice, _pContext }
@@ -49,13 +50,15 @@ void CItem::Set_Position(_fvector _vWorldPos)
 
 void CItem::Set_BezierPosition(const _float4& _vStartPos, CGameObject* _pGameObject)
 {
+    m_bActivate = true;
+
     m_vInitialPos = _vStartPos;
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&_vStartPos));
 
     m_fElapsedTime = 0.0f;
 
     _vector vTargetPos = _pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-    const _float fRadius = 2.0f;
+    const _float fRadius = 1.0f;
     _float fRandomX = (rand() % 100 / 100.f - 0.5f) * 2.0f * fRadius;
     _float fRandomZ = (rand() % 100 / 100.f - 0.5f) * 2.0f * fRadius;
     vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vTargetPos) + fRandomX);
@@ -101,6 +104,7 @@ void CItem::Reset_ItemState()
     m_fEnLargingTime = 0.0f;
     m_bEnLargingDone = false;
     m_bEnLargingDone = false;
+    m_bActivate = false;
 }
 
 void CItem::Reset_ItemActivate()
@@ -108,6 +112,14 @@ void CItem::Reset_ItemActivate()
     m_fDissolveTime = 0.0f;
     m_bActivate = false;
     m_bDissolving = false;
+}
+
+void CItem::Set_ColliderRender(_bool _bRender)
+{
+    if (_bRender)
+        m_pGameInstance->Add_Actor_Scene(m_pActor);
+    else
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
 
 

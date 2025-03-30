@@ -49,7 +49,7 @@ HRESULT CGameItem::Initialize(void* _pArg)
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
-    m_pGameInstance->Add_Actor_Scene(m_pActor);
+    //m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_PlayerInventory"), "Inventory");
 
@@ -166,6 +166,9 @@ HRESULT CGameItem::Render()
 
 HRESULT CGameItem::Render_Glow()
 {
+    if (!m_bActivate)
+        return S_OK;
+
     if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
         return E_FAIL;
 

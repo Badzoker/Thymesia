@@ -83,6 +83,7 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
             pItems->Set_DropItemCount(_iDropItemCount);
             pItems->Set_BeAcquired(false);
             pItems->Set_BeDropping(true);
+            pItems->Set_ColliderRender(true);
 
             _float4 vDropPosition;
             XMStoreFloat4(&vDropPosition, _vDropPosition);
@@ -157,7 +158,10 @@ HRESULT CItemMgr::Acquire_Item(ITEM_TYPE _eItemType)
             return S_OK;
         }
         else
+        {
+            pItems->Set_ColliderRender(false);
             pItems->Reset_ItemState();
+        }
 
         pItems->Set_BeAcquired(true);
         iDropCount = pItems->Get_DropItemCount();
