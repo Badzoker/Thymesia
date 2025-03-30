@@ -705,9 +705,9 @@ HRESULT CGameInstance::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, 
 {
 	return m_pItemMgr->Drop_Item(_eItemType, _vDropPosition, _pGameObject, _iDropItemCount);
 }
-HRESULT CGameInstance::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _pGameObject)
+HRESULT CGameInstance::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _pGameObject, _uint _iPopItemCount)
 {
-	return m_pItemMgr->Pop_Item(_eItemType, _vPopPosition, _pGameObject);
+	return m_pItemMgr->Pop_Item(_eItemType, _vPopPosition, _pGameObject, _iPopItemCount);
 }
 HRESULT CGameInstance::Acquire_Item(ITEM_TYPE _eItemType)
 {

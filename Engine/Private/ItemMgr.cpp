@@ -100,7 +100,7 @@ HRESULT CItemMgr::Drop_Item(ITEM_TYPE _eItemType, _fvector _vDropPosition, class
     return S_OK;
 }
 
-HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _GameObject)
+HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameObject* _GameObject, _uint _iPopItemCount)
 {
     vector<CItem*>* pVecItems = Find_ItemVector(_eItemType);
 
@@ -111,6 +111,7 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
     {
         if (nullptr != pItems)
         {
+            pItems->Set_DropItemCount(_iPopItemCount);
             pItems->Set_BeActivated(true);
             pItems->Set_Position(_vPopPosition);
 

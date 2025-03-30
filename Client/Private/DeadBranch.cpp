@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DeadBranch.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CDeadBranch::CDeadBranch(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
     :CItem{ _pDevice, _pContext }
@@ -26,6 +27,8 @@ HRESULT CDeadBranch::Initialize(void* _pArg)
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
+
+    m_pMyLevel = pDesc->iCurLevel;
 
     strcpy_s(m_szName, pDesc->GameItemName.c_str());
     LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
@@ -200,8 +203,15 @@ void CDeadBranch::OnCollision(CGameObject* _pOther, PxContactPair _information)
     if (!m_bActivate)
         return;
 
-    if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+    if (m_pGameInstance->isKeyEnter(DIK_E))
     {
+        /* 플레이어 기억 회수 알림*/
+        m_pGameInstance->UIGroup_Render_OnOff(m_pMyLevel, TEXT("Layer_Landing"), true);
+        m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), true);
+
+        dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_pMyLevel, TEXT("Layer_Player"), "PLAYER"))->Increase_MemoryFragment(m_iDropItemCount);
+
+
         m_bDissolving = true;
         m_pButton->Activate_Button(false);
     }

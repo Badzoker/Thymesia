@@ -279,7 +279,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_KEY2:
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
-            if (m_pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+            if (m_pGameInstance->isKeyEnter(DIK_E))
             {
                 m_bStartAcquireEffect = true;
                 m_bEnLarging = true;

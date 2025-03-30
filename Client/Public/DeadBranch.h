@@ -55,6 +55,8 @@ private:
 
 private:
     _float                      m_fBranchAlpha = {};
+private:
+    _uint                       m_pMyLevel = {}; // 어디 레벨에서 생성된건지 저장
 public:
     static CDeadBranch*         Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
     virtual CGameObject*        Clone(void* _pArg);

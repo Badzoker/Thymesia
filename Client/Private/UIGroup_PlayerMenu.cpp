@@ -98,6 +98,11 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			}
 			if (102 == Button->Get_UI_GroupID()) // 역병무기
 			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerSkill"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill")), true);
 			}
 			if (103 == Button->Get_UI_GroupID()) // 물약
 			{

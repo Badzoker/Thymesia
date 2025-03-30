@@ -66,19 +66,32 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
         m_fDeadStartTimer += fTimeDelta;    
 
 
+
     if (*m_pParentState == CPlayer::STATE_DEAD && m_fDeadStartTimer > 1.f)
     {
+        /* 플레이어 죽음 알림*/
+        if (0 == m_fDeadTimer)
+        {
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+            m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), true);
+        }
+
         m_fDeadTimer += fTimeDelta * 0.5f;
         m_fFinishTime += fTimeDelta * 0.5f;
 
-        m_pCamera->Target_Reset();  
+
+        m_pCamera->Target_Reset();
 
         if (m_fDeadTimer >= 4.0f)
         {
+            m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_DEADBRANCH, m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), this, dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment());
+            dynamic_cast<CPlayer*>(m_pParent)->Increase_MemoryFragment(-(dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment()));
+
+
             *m_pParentState = CPlayer::STATE_START_WALK;
             *m_pParentPhsaeState = CPlayer::PHASE_START;
             *m_pPreParentState = CPlayer::STATE_DEAD;
-            dynamic_cast<CPlayer*>(m_pParent)->Increase_PlayerHp(dynamic_cast<CPlayer*>(m_pParent)->Get_FullHp());  
+            dynamic_cast<CPlayer*>(m_pParent)->Increase_PlayerHp(dynamic_cast<CPlayer*>(m_pParent)->Get_FullHp());
 
             *m_pParentNextStateCan = true;
 

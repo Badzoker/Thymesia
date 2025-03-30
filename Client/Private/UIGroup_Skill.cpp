@@ -1,25 +1,22 @@
 #include "pch.h"
-#include "UIGroup_Loading.h"
 #include "GameInstance.h"
-#include "Level_Loading.h"
-
 #include "UI_Scene.h"
-#include "UI_Image.h"
+#include "UIGroup_Skill.h"
 
+#include "UI_Button.h"
+#include "UI_TextBox.h"
 
-#include "UIGroup_Landing.h"
-
-CUIGroup_Landing::CUIGroup_Landing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUIGroup_Skill::CUIGroup_Skill(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
 }
 
-CUIGroup_Landing::CUIGroup_Landing(const CUIGroup_Landing& Prototype)
+CUIGroup_Skill::CUIGroup_Skill(const CUIGroup_Skill& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIGroup_Landing::Initialize_Prototype()
+HRESULT CUIGroup_Skill::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,116 +24,106 @@ HRESULT CUIGroup_Landing::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::Initialize(void* pArg)
+HRESULT CUIGroup_Skill::Initialize(void* pArg)
 {
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
-	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+	m_pBaseScene = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill");
+	m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	m_pEquipCondition = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
 
-	m_pMessage_Dead = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_1Dead");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Dead, false);
 
-	m_pMessage_Beacon = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_2Beacon");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Beacon, false);
-
-	m_pMessage_Recall = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_3Recall");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Recall, false);
-
-	m_pMessage_Memories = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_4Memories");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Memories, false);
-	
-	m_pMessage_MapName = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_5MapName");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-
-	
 	return S_OK;
 }
 
-void CUIGroup_Landing::Priority_Update(_float fTimeDelta)
+void CUIGroup_Skill::Priority_Update(_float fTimeDelta)
+{
+	if (m_bRenderOpen)
+	{
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipCondition, true);
+
+		//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, true);
+	}
+}
+
+void CUIGroup_Skill::Update(_float fTimeDelta)
+{
+}
+
+void CUIGroup_Skill::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
 	}
 }
 
-void CUIGroup_Landing::Update(_float fTimeDelta)
-{
-	if (m_bRenderOpen)
-	{
-		Map_Name();
-		m_fRandingTime += fTimeDelta;
-		if (m_fRandingTime > 4)
-		{
-			
-			m_fRandingTime = 0;
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Landing"), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), false);
-
-			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-			//m_bRenderOpen = false;
-		}
-	
-	}
-
-
-
-}
-
-void CUIGroup_Landing::Late_Update(_float fTimeDelta)
-{
-	if (m_bRenderOpen)
-	{
-
-	}
-}
-
-HRESULT CUIGroup_Landing::Render()
+HRESULT CUIGroup_Skill::Render()
 {
 
 	return S_OK;
 }
 
-void CUIGroup_Landing::Map_Name()
+void CUIGroup_Skill::Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skill_Slot* pSlotUIObj)
 {
-
-	for (auto& Image : m_pMessage_MapName->Find_UI_Image())
+	switch (eSteteNum)
 	{
-		switch (m_eLevelID)
-		{
-		case LEVEL_HILL:
-			Image->Set_TexNumber(6);
-			break;
-		case LEVEL_SEAOFTREES:
-			Image->Set_TexNumber(7);
-			break;
-		case LEVEL_ROYALGARDEN:
-			Image->Set_TexNumber(8);
-			break;
-		case LEVEL_FORTRESS:
-			Image->Set_TexNumber(9);
-			break;
-		}
+	case Client::SKILL_OPEN_ON:
+		pSlotUIObj->Set_TexIconOff(false); 
+		pSlotUIObj->Set_TexSlot(2);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(1);
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(2);
+		break;
+	case Client::SKILL_OPEN_OFF:
+		pSlotUIObj->Set_TexIconOff(true);
+		pSlotUIObj->Set_TexSlot(2);
+		pSlotUIObj->Set_TexEdgeOff(true);
+		pSlotUIObj->Set_TexEdge(1);
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(0);
+		break;
+	case Client::SKILL_CLOSE_ON:
+		pSlotUIObj->Set_TexIconOff(false); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexSlot(0);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(1);   // 이미지 랜더를 켜야 함
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(1); // 이미지 랜더를 꺼야 함
+		break;
+	case Client::SKILL_CLOSE_OFF:
+		pSlotUIObj->Set_TexSlot(2);
+		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexEdgeOff(true);
+		pSlotUIObj->Set_TexEdge(1);  // 이미지 랜더를 꺼야 함
+		pSlotUIObj->Set_TexEffectOff(true);
+		pSlotUIObj->Set_TexEffect(1);// 이미지 랜더를 꺼야 함
+		break;
+	case Client::SKILL_OPEN_IDLE:
+		pSlotUIObj->Set_TexIconOff(false); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexSlot(0);
+		pSlotUIObj->Set_TexEdgeOff(false);
+		pSlotUIObj->Set_TexEdge(2);  // 이미지 랜더를 켜야 함
+		pSlotUIObj->Set_TexEffectOff(false);
+		pSlotUIObj->Set_TexEffect(2);// 이미지 랜더를 꺼야 함
+		break;
+
 	}
+
 
 }
 
-HRESULT CUIGroup_Landing::Ready_UIObject()
+HRESULT CUIGroup_Skill::Ready_UIObject()
 {
-	
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_1Dead");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_2Beacon");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_3Recall");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_4Memories");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_5MapName");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
+HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
 	_char   szFileName[MAX_PATH] = "";
@@ -236,7 +223,7 @@ HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::LoadData_UIText_Info(const _tchar* szSceneName)
+HRESULT CUIGroup_Skill::LoadData_UIText_Info(const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
 	_char   szFileName[MAX_PATH] = "";
@@ -299,34 +286,34 @@ HRESULT CUIGroup_Landing::LoadData_UIText_Info(const _tchar* szSceneName)
 	return S_OK;
 }
 
-CUIGroup_Landing* CUIGroup_Landing::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUIGroup_Skill* CUIGroup_Skill::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUIGroup_Landing* pInstance = new CUIGroup_Landing(pDevice, pContext);
+	CUIGroup_Skill* pInstance = new CUIGroup_Skill(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUIGroup_Landing");
+		MSG_BOX("Failed To Created : CUIGroup_Skill");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUIGroup_Landing::Clone(void* pArg)
+CGameObject* CUIGroup_Skill::Clone(void* pArg)
 {
-	CUIGroup_Landing* pInstance = new CUIGroup_Landing(*this);
+	CUIGroup_Skill* pInstance = new CUIGroup_Skill(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUIGroup_Landing");
+		MSG_BOX("Failed To Cloned : CUIGroup_Skill");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIGroup_Landing::Free()
+void CUIGroup_Skill::Free()
 {
 	__super::Free();
-	m_pGameInstance->UIScene_Clear(UISCNEN_MESSAGE);
+	m_pGameInstance->UIScene_Clear(UISCENE_MAP);
 }
