@@ -62,6 +62,8 @@ public:
 	_uint Get_Monster_Execution_Category() const { return m_iMonster_Execution_Category; }
 	void Set_Locked_On(_bool pLocked_On) { m_bLocked_On = pLocked_On; }
 	CModel* Get_GameObject_Model() { return m_pGameObjectModel; }
+	void Set_Object_UV_Pos(_float2 UvPos) { m_fObject_UV_Pos = UvPos; }
+	_float2 Get_Object_UV_Pos() { return m_fObject_UV_Pos; }	
 
 protected:
 	_char				        m_szName[MAX_PATH] = {};
@@ -74,6 +76,8 @@ protected:
 	_uint                       m_iPlayer_Hitted_State = { Player_Hitted_State::PLAYER_HURT_END };
 	_uint                       m_iMonster_Execution_Category = { MONSTER_EXECUTION_CATEGORY::MONSTER_START };
 	_uint                       m_iMonster_State = { MONSTER_STATE::STATE_END };	
+
+	_float2					    m_fObject_UV_Pos = {};	
 	_bool						m_bLocked_On = { false };	
 
 protected:

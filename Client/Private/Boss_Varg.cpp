@@ -8,6 +8,8 @@
 #include "Animation.h"
 #include "Locked_On.h"
 #include "Boss_Varg_Camera.h"
+#include "GameInstance.h"   
+#include "Camera_Free.h"
 
 CBoss_Varg::CBoss_Varg(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster(pDevice, pContext)
@@ -67,6 +69,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    m_pGameObjectModel = m_pModelCom;   
+
     return S_OK;
 }
 
@@ -81,6 +85,30 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
 
 
     __super::Priority_Update(fTimeDelta);
+
+
+#pragma region 바그 화면상 uv 좌표 계산		    
+    _vector vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+    _vector vViewPos = XMVector4Transform(vWorldPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
+    _vector vClipPos = XMVector4Transform(vViewPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ));
+
+
+    // 클립 공간 → NDC (정규화 디바이스 좌표)
+    vClipPos /= vClipPos.m128_f32[3];
+
+
+
+    //NDC → 화면 좌표(0~1 UV)
+
+    m_fObject_UV_Pos.x = vClipPos.m128_f32[0] * 0.5f + 0.5f;
+    m_fObject_UV_Pos.y = -vClipPos.m128_f32[1] * 0.5f + 0.5f - 0.3f;
+
+    //m_pGameInstance->Set_Zoom_Blur_Center(m_fPlayerUV_Pos);	
+    // 이걸 넘겨줘야함 
+
+#pragma endregion 
 }
 
 void CBoss_Varg::Update(_float fTimeDelta)
@@ -1060,14 +1088,17 @@ void CBoss_Varg::Roar_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
+    if (m_pCamera == nullptr)
+        m_pCamera = dynamic_cast<CCamera_Free*>(pObject->m_pGameInstance->Get_GameObject_To_Layer(pObject->m_pGameInstance->Get_Current_Level_Index(), TEXT("Layer_Camera"), "Camera_Free"));
+
 }
 
 void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-#pragma region Effect_Roar
 
     for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
     {
+#pragma region Effect_Roar
         if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
         {
             if (!strcmp(iter.szName, "Roar_Effect")) //Roar_Line
@@ -1085,9 +1116,46 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
                 iter.isPlay = true;
             }
         }
+#pragma endregion
+#pragma region 카메라 액션 
+        if (iter.eType == EVENT_STATE && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Zoom_Blur"))
+            {
+                m_fRoarBlurStrength += fTimeDelta;
+                pObject->Set_Object_UV_Pos(pObject->Get_Object_UV_Pos());
+                pObject->m_pGameInstance->Set_Zoom_Blur_Center(pObject->Get_Object_UV_Pos());
+                pObject->m_pGameInstance->Set_ZoomBlur_Option(true, m_fRoarBlurStrength * 0.2f);
+
+                m_pCamera->ShakeOn(400.f, 400.f, 5.f, 5.f);
+            }
+
+        }
+
+        else if (iter.eType == EVENT_STATE && iter.isEventActivate == false && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Zoom_Blur"))
+            {
+                m_fRoarBlurStrength -= fTimeDelta;
+
+                if (m_fRoarBlurStrength <= 0.f)
+                {
+                    m_fRoarBlurStrength = 0.f;
+                }
+
+                else
+                    m_pCamera->ShakeOn(400.f, 400.f, 5.f, 5.f);
+
+                pObject->Set_Object_UV_Pos(pObject->Get_Object_UV_Pos());
+                pObject->m_pGameInstance->Set_Zoom_Blur_Center(pObject->Get_Object_UV_Pos());
+                pObject->m_pGameInstance->Set_ZoomBlur_Option(true, m_fRoarBlurStrength * 0.2f);
+            }
+        }
+#pragma endregion 
     }
 
-#pragma endregion
+
+
 
 
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
@@ -1097,6 +1165,8 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 void CBoss_Varg::Roar_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+    pObject->m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);  
+    m_fRoarBlurStrength = 0.f;  
 }
 
 #pragma endregion

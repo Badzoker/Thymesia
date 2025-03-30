@@ -242,6 +242,11 @@ void CGameInstance::Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel) //0323 
 	return m_pLevel_Manager->Set_NextLevel_Open(bOpen, _iNumberLevel);
 }
 
+_uint CGameInstance::Get_Current_Level_Index()
+{
+	return m_pLevel_Manager->Get_Current_Level_Index();
+}
+
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

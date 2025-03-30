@@ -116,6 +116,7 @@ void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& Current
     m_isFinished = false;
     m_fCurrentTrackPosition = 0.f;
     m_bFirst = true;
+    m_LerpTime = m_SaveLerpTime;
 
     _uint  iChannelIndex = { 0 };
     for (auto& pChannel : m_Channels)
@@ -274,6 +275,8 @@ HRESULT CAnimation::Load_Anim(istream& is, vector<_uint>& CurrentKeyFrameIndices
 
         m_vecAnimFrameEvent.push_back(Event);
     }
+
+    m_SaveLerpTime = m_LerpTime;    
 
     return S_OK;
 }

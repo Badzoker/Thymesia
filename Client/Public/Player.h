@@ -120,6 +120,12 @@ public:
 
 		/* 플레이어 잡히고 나서 다시 일어서는 모션 */
 		STATE_GET_UP,
+
+
+		/* 바그 처형 달려가기전 모션 */
+		STATE_VARG_STUN_EXECUTE_START_R, // 291번 모션		
+		/* 바그에게 달려가면서  처형 모션 */
+		STATE_VARG_RUN_EXECUTION, // 297번 애니메이션	
 	};
 
 

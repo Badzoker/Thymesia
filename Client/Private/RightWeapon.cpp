@@ -253,7 +253,9 @@ HRESULT CRightWeapon::Hit_Slow()
     {
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);  
         m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f); 
-        //m_pGameInstance->Set_ZoomBlur(true);
+        
+        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+
         switch (*m_pParentState)
         {
         case CPlayer::STATE_ATTACK_L1:

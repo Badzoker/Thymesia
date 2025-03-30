@@ -88,7 +88,8 @@ void CPlayerCamera::Update(_float fTimeDelta)
         || *m_pParentState == CPlayer::STATE_Joker_Execution
         || *m_pParentState == CPlayer::STATE_Varg_Execution
         || *m_pParentState == CPlayer::STATE_STUN_EXECUTE    // 이게 처형 시작 모션 
-        || *m_pParentState == CPlayer::STATE_CATCHED)   
+        || *m_pParentState == CPlayer::STATE_CATCHED
+        || *m_pParentState == CPlayer::STATE_VARG_RUN_EXECUTION)    
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {

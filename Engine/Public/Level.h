@@ -14,6 +14,7 @@ public:
 	virtual HRESULT Initialize();
 	virtual void Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	_uint  Get_Current_Level_Index() { return m_iCurrentLevel; }
 
 public:
 	void Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel) { 

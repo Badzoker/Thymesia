@@ -52,6 +52,7 @@ private:
 	_float					   m_fAnimationSpeed = { 1.f };
 	_float					   m_fSetStartOffSetTrackPosition = {};
 	_float					   m_LerpTime = 0.2f;
+	_float					   m_SaveLerpTime = {};	
 	_float					   m_LerpTimeAcc = 0.f;
 	_float					   m_fHitStopTime = 1.f;
 	_float					   m_fSpeed_Final = {}; //3.16 종한 추가

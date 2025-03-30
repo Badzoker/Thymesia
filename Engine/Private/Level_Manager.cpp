@@ -29,6 +29,15 @@ void CLevel_Manager::Set_NextLevel_Open(_bool bOpen, _uint _iNumberLevel)
 	m_pCurrentLevel->Set_NextLevel_Open(bOpen, _iNumberLevel);
 }
 
+_uint CLevel_Manager::Get_Current_Level_Index()	
+{
+	if (nullptr == m_pCurrentLevel)
+		return  0;
+
+	return m_pCurrentLevel->Get_Current_Level_Index();	
+}
+
+
 void CLevel_Manager::Update(_float fTimeDelta)
 {
 	if(nullptr != m_pCurrentLevel)
