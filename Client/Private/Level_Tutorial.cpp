@@ -30,6 +30,9 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device * pDevice, ID3D11DeviceContext * p
 	
 }
 
+
+
+
 HRESULT CLevel_Tutorial::Initialize()
 {
 	m_iCurrentLevel = LEVEL_TUTORIAL;
@@ -323,6 +326,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
 	
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;	
+
+
+	
+
 
 	return S_OK;
 }

@@ -88,10 +88,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_M) & 0x80)
-	{
-		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_AUTO, 2.0f, 0.5f);
-	}
+	//if (m_pGameInstance->Get_DIKeyState(DIK_M) & 0x80) //선환이 참고하라고 남겨둔 FadeInOut Auto로 
+	//{
+	//	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_AUTO, 2.0f, 0.5f);
+	//}
 
 #pragma region Mouse_Input
 
