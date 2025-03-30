@@ -178,6 +178,12 @@ public:
 	/* 플레이어 잡히고 일어서는 모션*/
 	void STATE_GET_UP_Method();	
 
+	/* 바그에게 뛰어가기 전 모션 */	
+	void STATE_VARG_STUN_EXECUTE_START_R_Method();	
+
+	/* 바그에게 뛰어가서 처형하는 모션 */	
+	void STATE_VARG_RUN_EXECUTION_Method();	
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

@@ -130,11 +130,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 
 	//NDC → 화면 좌표(0~1 UV)
-	_float2 playerUV;	
-	playerUV.x = vClipPos.m128_f32[0] * 0.5f + 0.5f;	
-	playerUV.y = -vClipPos.m128_f32[1] * 0.5f + 0.5f - 0.2f;	
+	m_fObject_UV_Pos.x = vClipPos.m128_f32[0] * 0.5f + 0.5f;
+	m_fObject_UV_Pos.y = -vClipPos.m128_f32[1] * 0.5f + 0.5f - 0.2f;
 
-	m_pGameInstance->Set_Zoom_Blur_Center(playerUV);	
 	// 이걸 넘겨줘야함 
 
 #pragma endregion 
@@ -172,7 +170,11 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL))
 		{
 
-			m_iState = STATE_STUN_EXECUTE;
+			if (m_iMonster_Execution_Category == MONSTER_EXECUTION_CATEGORY::MONSTER_VARG)
+				m_iState = STATE_VARG_RUN_EXECUTION;
+
+			else
+				m_iState = STATE_STUN_EXECUTE;
 
 			m_iPhaseState = 0;
 			m_iPhaseState |= PHASE_EXECUTION;
@@ -409,7 +411,9 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION))
 		&& !(m_iPhaseState & PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))	
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
+		&& m_iState != STATE_PARRY_L
+		&& m_iState != STATE_PARRY_R)
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -501,7 +505,9 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)	
 		&& !(m_iPhaseState & PHASE_PARRY)	
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
+		&& m_iState != STATE_PARRY_L
+		&& m_iState != STATE_PARRY_R)
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
@@ -696,7 +702,7 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_Varg_Execution
 		|| m_iState == STATE_REBOUND_R
 		|| m_iState == STATE_CLAW_LONG_PLUNDER_ATTACK2
-		)
+		|| m_iState == STATE_CATCHED)
 	{
 		m_bMove = true;
 	}

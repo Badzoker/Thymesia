@@ -309,6 +309,12 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_GET_UP:
         STATE_GET_UP_Method();
         break;
+    case CPlayer::STATE_VARG_RUN_EXECUTION: 
+        STATE_VARG_RUN_EXECUTION_Method();  
+        break;
+    case CPlayer::STATE_VARG_STUN_EXECUTE_START_R:  
+        STATE_VARG_STUN_EXECUTE_START_R_Method();   
+        break;
     default:
         break;
     }
@@ -375,6 +381,8 @@ void CBody_Player::Update(_float fTimeDelta)
                     if (!strcmp(iter.szName, "Zoom_In_Blur"))
                     {
                         m_fZoomBlurDeltaTime += fTimeDelta;
+                        m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f); 
+                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
                         m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
                     }
 
@@ -633,9 +641,9 @@ void CBody_Player::STATE_ATTACK_Method()
 }
 void CBody_Player::STATE_ATTACK_L1_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);
     m_pModelCom->SetUp_Animation(3, false);
-
-    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.f);    
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
@@ -1595,7 +1603,11 @@ void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 }
 void CBody_Player::STATE_PARRY_L_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);    
+
     m_pModelCom->SetUp_Animation(15, false);
+
     m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(15)->isAniMationFinish())
@@ -1646,7 +1658,7 @@ void CBody_Player::STATE_PARRY_R_Method()
 
     /* 패링 조건 */
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 0.5f
-        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 40.f)
+        && m_pModelCom->Get_CurrentAnmationTrackPosition() <= 50.f)
     {
 
         *m_pParentPhsaeState |= CPlayer::PHASE_PARRY;
@@ -2071,9 +2083,6 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
         case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:
             *m_pParentState = CPlayer::STATE_Joker_Execution;
             break;
-        case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
-            *m_pParentState = CPlayer::STATE_Varg_Execution;
-            break;
         case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1: 
             *m_pParentState = CPlayer::STATE_LV1Villager_M_Execution;   
             m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1);  
@@ -2091,6 +2100,8 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
     }*/
 }
+
+
 
 void CBody_Player::STATE_LV1Villager_M_Execution_Method()
 {
@@ -2129,6 +2140,30 @@ void CBody_Player::STATE_Varg_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
+void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
+{
+    m_pModelCom->SetUp_Animation(292, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 68.f)
+    {
+        m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(68.f);
+        *m_pParentState = CPlayer::STATE_VARG_RUN_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
+{
+    m_pModelCom->SetUp_Animation(298, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(298)->isAniMationFinish())
+    {
+        //m_pModelCom->Get_VecAnimation().at(50)->Set_StartOffSetTrackPosition(15.f);
+        *m_pParentState = CPlayer::STATE_Varg_Execution;
     }
 }
 
@@ -2306,6 +2341,7 @@ void CBody_Player::STATE_GET_UP_Method()
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HITTED;
     }
 }
+
 
 
 

@@ -5,6 +5,8 @@
 
 BEGIN(Client)
 
+class CCamera_Free;
+
 template <typename T>
 class CStates abstract : public CBase
 {
@@ -18,6 +20,7 @@ public:
 	virtual void State_Exit(T* pObject) = 0;
 protected:
 	_uint m_iIndex = {};
+	CCamera_Free* m_pCamera = { nullptr };	
 public:
 	virtual void Free()
 	{

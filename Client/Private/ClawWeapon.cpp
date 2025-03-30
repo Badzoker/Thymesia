@@ -113,7 +113,9 @@ void CClawWeapon::Update(_float fTimeDelta)
                         if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                         {
                             // 카메라 포인터 가져오고 싶다.
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
                             m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta); 
+
                             m_fAccTimeDelta += fTimeDelta;
                             m_pCamera->Set_Camera_ZoomOutSpeed(5.f);    
                             m_pCamera->ZoomOut();
@@ -128,6 +130,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                         if (!strcmp(iter.szName, "Camera_Zoom_Blur"))   
                         {
                             m_fAccTimeDelta += fTimeDelta;  
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
                             m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
                         }
                     }
@@ -151,8 +154,12 @@ void CClawWeapon::Update(_float fTimeDelta)
                         }
                         if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
                         {
-                            m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
-                            m_fAccTimeDelta = 0.f;
+                            m_fAccTimeDelta -= fTimeDelta;
+
+                            if (m_fAccTimeDelta <= 0.f)
+                                m_fAccTimeDelta = 0.f;
+
+                            m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
                         }
 
                     }
@@ -221,6 +228,7 @@ void CClawWeapon::Update(_float fTimeDelta)
          {
              m_pGameInstance->Sub_Actor_Scene(m_pActor);
              m_pCamera->ResetZoomOutCameraPos(1.f);
+             m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
          }
 #pragma endregion  
 
