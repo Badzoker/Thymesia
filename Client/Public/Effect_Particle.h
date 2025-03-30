@@ -23,7 +23,7 @@ public:
 		_float3 vScale = {};
 		_float3 vRot = {};
 		_float3 vTranslation = {};
-		_float fAlpha_Amount = { 0.01f };
+		_float fAlpha_Amount = { 0.1f };
 	};
 
 private:
@@ -56,7 +56,7 @@ private:
 
 	_float3 m_vRGB = {};
 
-	_float m_fAlpha_Amount = { 0.01f };
+	_float m_fAlpha_Amount = { 0.1f };
 
 public:
 	HRESULT Ready_Components();
