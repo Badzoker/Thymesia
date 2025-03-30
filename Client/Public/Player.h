@@ -114,6 +114,7 @@ public:
 		/* 플레이어 스킬 */
 		STATE_HALBERDS_B,	
 		STATE_SCYTHE_B,	
+		STATE_AXE,	
 
 		/* 플레이어 잡히는 모션 */
 		STATE_CATCHED,
@@ -175,7 +176,9 @@ public:
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);
-	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }		
+	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }	
+	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
+	_bool Get_MonsterEvent() { m_bMonsterEvent; }
 
 private:
 	_uint								m_iState = { STATE_IDLE };
@@ -189,6 +192,8 @@ private:
 	_bool								m_bLockOn = { false };
 	_bool								m_bMove = { false };
 	_bool								m_bNextStateCanPlay = { true };
+	_bool								m_bMonsterEvent = { false };
+
 
 	_float								m_fChrageTime = {};
 
@@ -229,6 +234,13 @@ private:
 
 	_int								m_iMemoryFragment = { 0 };
 
+	/* 플레이어 장착할 스킬 2칸 */
+	_uint								m_iSkill_Eqip_1st = {};
+	_uint								m_iSkill_Eqip_2st = {};
+
+	/*플레이어가 약탈한 스킬 */
+	_uint								m_iTake_Away_Skill = { 100 };
+
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
 
@@ -246,6 +258,15 @@ public:
 
 	void     Set_Potion_Number(_uint _iPotionCount) { m_iPotionCount = _iPotionCount; }
 	void     Increase_PotionNumber(_uint _iCount) { m_iPotionCount += _iCount; }
+		
+	void     Set_Player_Skill_1st(_uint _iSkill) { m_iSkill_Eqip_1st = _iSkill; }	
+	void     Set_Player_Skill_2st(_uint _iSkill) { m_iSkill_Eqip_2st = _iSkill; }	
+
+	void     Set_Player_Take_Away_Skill(_uint _iSkill) { m_iTake_Away_Skill = _iSkill; }	
+
+	_uint    Get_Player_Skill_1st() { return m_iSkill_Eqip_1st; }	
+	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }	
+	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }	
 
 	_int    Get_Level() { return m_iLevel; }
 

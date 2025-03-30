@@ -263,6 +263,7 @@
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\public\Player_Weapon_Axe.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
     <ClInclude Include="..\Public\SpecificObject.h" />
@@ -489,6 +490,7 @@
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\Player_Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
     <ClCompile Include="..\Private\SpecificObject.cpp" />

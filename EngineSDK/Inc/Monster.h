@@ -54,6 +54,8 @@ public:
 	_bool Is_Player_Near();
 	void Recovery_HP();
 
+	_uint Get_MonsterSkill() { return m_iMonsterSkill; }	
+
 protected:
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
@@ -104,6 +106,9 @@ protected:
 	_float                           m_fMonsterCurHP = {};
 	_float                           m_fShieldHP = {};
 	_float                           m_fRecoveryTime = {};
+
+	/* 몬스터 약탈 스킬 */
+	_uint							 m_iMonsterSkill = {};	
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

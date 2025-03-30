@@ -69,7 +69,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
     if (*m_pParentState == CPlayer::STATE_DEAD && m_fDeadStartTimer > 1.f)
     {
-        /* 플레이어 죽음 알림*/
+        /* 플레이어 죽음 알림(유빈)*/  
         if (0 == m_fDeadTimer)
         {
             m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
@@ -328,6 +328,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_VARG_STUN_EXECUTE_START_R:  
         STATE_VARG_STUN_EXECUTE_START_R_Method();   
         break;
+    case CPlayer::STATE_AXE:    
+        STATE_AXE_Method(); 
+        break;  
     default:
         break;
     }
@@ -2173,6 +2176,12 @@ void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
     m_pModelCom->SetUp_Animation(298, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    if (m_pModelCom->Get_VecAnimation().at(298)->Get_Current_TrackPoisition() >= 45.f)  
+    {
+        // 이때 바그가 밀치기 당할 수 있게 추가하기 
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);  
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(298)->isAniMationFinish())
     {
         //m_pModelCom->Get_VecAnimation().at(50)->Set_StartOffSetTrackPosition(15.f);
@@ -2326,6 +2335,18 @@ void CBody_Player::STATE_SCYTHE_B_Method()
     {
         *m_pParentState = CPlayer::STATE::STATE_IDLE;   
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+    }
+}
+
+void CBody_Player::STATE_AXE_Method()
+{
+    m_pModelCom->SetUp_Animation(69, false);    
+    m_iRenderState = STATE_NORMAL_RENDER;   
+
+    if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())    
+    {   
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;    
     }
 }
 

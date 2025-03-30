@@ -76,7 +76,8 @@ void CLeftWeapon::Late_Update(_float fTimeDelta)
         && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP
         && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK
         && *m_pParentState != CPlayer::STATE_HALBERDS_B
-        && *m_pParentState != CPlayer::STATE_SCYTHE_B)
+        && *m_pParentState != CPlayer::STATE_SCYTHE_B
+        && *m_pParentState != CPlayer::STATE_AXE)
     {
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }

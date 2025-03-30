@@ -66,6 +66,10 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    /* 선환 추가 3.30 */
+    m_iMonsterSkill = PLAYER_SKIL::PLAYER_SKILL_AXE;    
+
+
     return S_OK;
 }
 

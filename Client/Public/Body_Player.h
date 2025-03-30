@@ -171,6 +171,7 @@ public:
 	/* 스킬 관련 */
 	void STATE_HALBERDS_B_Method();	
 	void STATE_SCYTHE_B_Method();	
+	void STATE_AXE_Method();	
 
 	/* 플레이어 잡히는 모션 */
 	void STATE_CATCHED_Method();	

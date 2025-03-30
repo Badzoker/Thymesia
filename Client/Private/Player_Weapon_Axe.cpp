@@ -1,23 +1,21 @@
 #include "pch.h" 
-#include "Weapon_Scythe.h"  
-#include "GameInstance.h"   
-#include "Player.h" 
-#include "Animation.h"  
-#include "Camera_Free.h"    
+#include "Player_Weapon_Axe.h"
+#include "GameInstance.h"
+#include "Player.h"
+#include "Animation.h"
+#include "Camera_Free.h"
 
-CWeapon_Scythe::CWeapon_Scythe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CPlayer_Weapon_Axe::CPlayer_Weapon_Axe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
 {
-
 }
 
-CWeapon_Scythe::CWeapon_Scythe(const CWeapon_Scythe& Prototype)
+CPlayer_Weapon_Axe::CPlayer_Weapon_Axe(const CPlayer_Weapon_Axe& Prototype)
     :CPartObject(Prototype)
 {
-
 }
 
-HRESULT CWeapon_Scythe::Initialize_Prototype()
+HRESULT CPlayer_Weapon_Axe::Initialize_Prototype()
 {
     if (FAILED(__super::Initialize_Prototype()))
         return E_FAIL;
@@ -26,7 +24,7 @@ HRESULT CWeapon_Scythe::Initialize_Prototype()
     return S_OK;
 }
 
-HRESULT CWeapon_Scythe::Initialize(void* pArg)
+HRESULT CPlayer_Weapon_Axe::Initialize(void* pArg)
 {
 
     strcpy_s(m_szName, "PLAYER_WEAPON");
@@ -47,7 +45,7 @@ HRESULT CWeapon_Scythe::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.06f,0.6f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.25f,0.25f,0.25f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -58,11 +56,13 @@ HRESULT CWeapon_Scythe::Initialize(void* pArg)
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
 
+    m_fDissolveAmount = 0.3f;
+
     return S_OK;
 
 }
 
-void CWeapon_Scythe::Priority_Update(_float fTimeDelta)
+void CPlayer_Weapon_Axe::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
     m_fTime += fTimeDelta;
@@ -71,7 +71,7 @@ void CWeapon_Scythe::Priority_Update(_float fTimeDelta)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
-void CWeapon_Scythe::Update(_float fTimeDelta)
+void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
 {
 
     _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
@@ -84,8 +84,7 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
     );
 
 
-
-    if (*m_pParentState == CPlayer::STATE_SCYTHE_B)
+    if (*m_pParentState == CPlayer::STATE_AXE)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -132,8 +131,7 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
     }
 
     if (m_bDeadOn)
-        m_fFinishTime += fTimeDelta * 7.f;
-
+        m_fFinishTime += fTimeDelta * 4.f;
 
     if (m_bAppear)
         m_fAppearTimer += fTimeDelta * 8.f;
@@ -149,23 +147,23 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
 
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 85.f, 0.f,0.f,1.f });
 
 }
 
-void CWeapon_Scythe::Late_Update(_float fTimeDelta)
+void CPlayer_Weapon_Axe::Late_Update(_float fTimeDelta)
 {
 
-    if (*m_pParentState == CPlayer::STATE_SCYTHE_B)
+    if (*m_pParentState == CPlayer::STATE_AXE)
     {
-
+        //m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);     
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
     }
 
     //m_iPreParentState = *m_pParentState;
 }
 
-HRESULT CWeapon_Scythe::Render()
+HRESULT CPlayer_Weapon_Axe::Render()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -187,7 +185,7 @@ HRESULT CWeapon_Scythe::Render()
     return S_OK;
 }
 
-HRESULT CWeapon_Scythe::Render_Glow()
+HRESULT CPlayer_Weapon_Axe::Render_Glow()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -206,7 +204,7 @@ HRESULT CWeapon_Scythe::Render_Glow()
         if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 9)))
             return E_FAIL;
 
-        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveNoiseTexture", 7)))
+        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveNoiseTexture", 32)))
             return E_FAIL;
 
         if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fTime, sizeof(_float))))
@@ -231,7 +229,7 @@ HRESULT CWeapon_Scythe::Render_Glow()
     return S_OK;
 }
 
-HRESULT CWeapon_Scythe::Ready_Components()
+HRESULT CPlayer_Weapon_Axe::Ready_Components()
 {
     /* Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
@@ -239,7 +237,7 @@ HRESULT CWeapon_Scythe::Ready_Components()
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Scythe"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Axe"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -252,7 +250,7 @@ HRESULT CWeapon_Scythe::Ready_Components()
     return S_OK;
 }
 
-HRESULT CWeapon_Scythe::Bind_ShaderResources()
+HRESULT CPlayer_Weapon_Axe::Bind_ShaderResources()
 {
     if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
         return E_FAIL;
@@ -264,7 +262,7 @@ HRESULT CWeapon_Scythe::Bind_ShaderResources()
     return S_OK;
 }
 
-HRESULT CWeapon_Scythe::Hit_Slow()
+HRESULT CPlayer_Weapon_Axe::Hit_Slow()
 {
     m_fHitStopTime += m_fTimeDelta;
 
@@ -284,48 +282,48 @@ HRESULT CWeapon_Scythe::Hit_Slow()
     return S_OK;
 }
 
-void CWeapon_Scythe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+void CPlayer_Weapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CWeapon_Scythe::OnCollision(CGameObject* _pOther, PxContactPair _information)
+void CPlayer_Weapon_Axe::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CWeapon_Scythe::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+void CPlayer_Weapon_Axe::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-CWeapon_Scythe* CWeapon_Scythe::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CPlayer_Weapon_Axe* CPlayer_Weapon_Axe::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CWeapon_Scythe* pInstance = new CWeapon_Scythe(pDevice, pContext);
+    CPlayer_Weapon_Axe* pInstance = new CPlayer_Weapon_Axe(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed To Created : CWeapon_Scythe");
+        MSG_BOX("Failed To Created : CPlayer_Weapon_Axe");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-CGameObject* CWeapon_Scythe::Clone(void* pArg)
+CGameObject* CPlayer_Weapon_Axe::Clone(void* pArg)
 {
-    CWeapon_Scythe* pInstance = new CWeapon_Scythe(*this);
+    CPlayer_Weapon_Axe* pInstance = new CPlayer_Weapon_Axe(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : CWeapon_Scythe");
+        MSG_BOX("Failed To Cloned : CPlayer_Weapon_Axe");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-void CWeapon_Scythe::Free()
+void CPlayer_Weapon_Axe::Free()
 {
     __super::Free();
 
