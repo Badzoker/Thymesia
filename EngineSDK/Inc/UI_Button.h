@@ -25,6 +25,8 @@ public:
 
 	void Set_Mouse_Select_OnOff(_bool bOn) { m_bMouseSelectOn = bOn; }
 	_bool Get_Mouse_Select_OnOff() { return m_bMouseSelectOn; }
+	
+	_bool Get_Mouse_OnOff() { return m_bImageOn; }
 
 public:
 	void Set_Change_TextColor(_float4 fColor) { m_fTextColor = { fColor.x / 255.f, fColor.y / 255.f,fColor.z / 255.f,fColor.w / 255.f }; }

@@ -242,10 +242,14 @@ void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
     if (m_pGameInstance->isKeyEnter(DIK_E))
     {
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_MapChange"), true);
-        m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MAP, L"UIScene_MapChange")), true);
+        if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy"))
+            && !m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop")))
+        {
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
 
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_Dialogue"), true);
+            m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy")), true);
+        }
     }
 }
 

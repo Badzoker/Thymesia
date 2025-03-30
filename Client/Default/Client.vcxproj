@@ -271,6 +271,7 @@
     <ClInclude Include="..\public\StunnedLoop.h" />
     <ClInclude Include="..\public\StunnedStart.h" />
     <ClInclude Include="..\Public\TriggerObject.h" />
+    <ClInclude Include="..\Public\UIGroup_Dialogue.h" />
     <ClInclude Include="..\Public\UIGroup_GameIntro.h" />
     <ClInclude Include="..\Public\UIGroup_Inventory.h" />
     <ClInclude Include="..\Public\UIGroup_Landing.h" />
@@ -330,6 +331,8 @@
     <ClInclude Include="..\Public\UI_DecorationLine.h" />
     <ClInclude Include="..\Public\UI_DescBackground.h" />
     <ClInclude Include="..\Public\UI_DialogBackground.h" />
+    <ClInclude Include="..\Public\UI_DialogueTalkBackground.h" />
+    <ClInclude Include="..\Public\UI_DialogueWindowBackground.h" />
     <ClInclude Include="..\Public\UI_DiamondIcon.h" />
     <ClInclude Include="..\Public\UI_Effect_Frame.h" />
     <ClInclude Include="..\Public\UI_Effect_SlotFrame.h" />
@@ -363,6 +366,7 @@
     <ClInclude Include="..\Public\UI_MPBar2_BG.h" />
     <ClInclude Include="..\Public\UI_MPBar3_MainBar.h" />
     <ClInclude Include="..\Public\UI_NewHint.h" />
+    <ClInclude Include="..\Public\UI_NextLineHint.h" />
     <ClInclude Include="..\Public\UI_PlunderSlotFrame.h" />
     <ClInclude Include="..\Public\UI_Potion_DefaultType.h" />
     <ClInclude Include="..\Public\UI_RightBackground.h" />
@@ -498,6 +502,7 @@
     <ClCompile Include="..\private\StunnedLoop.cpp" />
     <ClCompile Include="..\private\StunnedStart.cpp" />
     <ClCompile Include="..\Private\TriggerObject.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Dialogue.cpp" />
     <ClCompile Include="..\Private\UIGroup_GameIntro.cpp" />
     <ClCompile Include="..\Private\UIGroup_Inventory.cpp" />
     <ClCompile Include="..\Private\UIGroup_Landing.cpp" />
@@ -555,6 +560,8 @@
     <ClCompile Include="..\Private\UI_DecorationLine.cpp" />
     <ClCompile Include="..\Private\UI_DescBackground.cpp" />
     <ClCompile Include="..\Private\UI_DialogBackground.cpp" />
+    <ClCompile Include="..\Private\UI_DialogueTalkBackground.cpp" />
+    <ClCompile Include="..\Private\UI_DialogueWindowBackground.cpp" />
     <ClCompile Include="..\Private\UI_DiamondIcon.cpp" />
     <ClCompile Include="..\Private\UI_Effect_Frame.cpp" />
     <ClCompile Include="..\Private\UI_Effect_SlotFrame.cpp" />
@@ -588,6 +595,7 @@
     <ClCompile Include="..\Private\UI_MPBar2_BG.cpp" />
     <ClCompile Include="..\Private\UI_MPBar3_MainBar.cpp" />
     <ClCompile Include="..\Private\UI_NewHint.cpp" />
+    <ClCompile Include="..\Private\UI_NextLineHint.cpp" />
     <ClCompile Include="..\Private\UI_PlunderSlotFrame.cpp" />
     <ClCompile Include="..\Private\UI_Potion_DefaultType.cpp" />
     <ClCompile Include="..\Private\UI_RightBackground.cpp" />

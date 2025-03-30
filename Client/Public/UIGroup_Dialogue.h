@@ -1,19 +1,18 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
-
 BEGIN(Engine)
 class CUI_Scene;
 END
 
 BEGIN(Client)
 
-class CUIGroup_MapChange final : public CUIObject
+class CUIGroup_Dialogue final : public CUIObject
 {
 private:
-	CUIGroup_MapChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUIGroup_MapChange(const CUIGroup_MapChange& Prototype);
-	virtual ~CUIGroup_MapChange() = default;
+	CUIGroup_Dialogue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUIGroup_Dialogue(const CUIGroup_Dialogue& Prototype);
+	virtual ~CUIGroup_Dialogue() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -24,8 +23,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Map_Obj_Setting();
-	void Map_Tab_Mouse_On();
+	void AIsemy_Pop_Button();
+
 public:
 	HRESULT Ready_UIObject();
 	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
@@ -33,29 +32,14 @@ public:
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
 
-	CUI_Scene* m_pMyScene = {};
-	CUI_Scene* m_pMapChangePop = {};
-	_bool m_bPopOpen = { false };
-	_tchar* m_pPoptitle = {};
-
-
+	CUI_Scene* m_pTalkScene = {};
+	CUI_Scene* m_pPopScene = {};
 private:
-	CUIObject* m_pMapName = {nullptr};
-	CUIObject* m_pMapDesc = { nullptr };
-	CUIObject* m_pMapImage = { nullptr };
-	CUIObject* m_pMapImageFrame = { nullptr };
-	CUIObject* m_pMapImageDiamond = { nullptr };
-
-private:
-
-	LEVELID m_eNextLevel = {};
-
-
 	LEVELID m_eMyLevel = {};
-
+	_float m_fDelayTime = {};
 
 public:
-	static CUIGroup_MapChange* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUIGroup_Dialogue* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

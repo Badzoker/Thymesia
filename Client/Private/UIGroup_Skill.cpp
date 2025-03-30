@@ -315,5 +315,5 @@ CGameObject* CUIGroup_Skill::Clone(void* pArg)
 void CUIGroup_Skill::Free()
 {
 	__super::Free();
-	m_pGameInstance->UIScene_Clear(UISCENE_MAP);
+	m_pGameInstance->UIScene_Clear(UISCENE_SKILL);
 }
