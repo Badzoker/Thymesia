@@ -41,9 +41,9 @@ void CLamp::Priority_Update(_float _fTimeDelta)
 
     _matrix OffsetMatrix = XMMatrixIdentity();
     OffsetMatrix *= XMMatrixRotationX(XMConvertToRadians(75.f));
-    
+
     OffsetMatrix *= XMMatrixRotationY(XMConvertToRadians(155.f));
-    
+
     SocketMatrix = XMMatrixMultiply(OffsetMatrix, SocketMatrix);
 
     for (size_t i = 0; i < 3; ++i)
@@ -56,20 +56,24 @@ void CLamp::Priority_Update(_float _fTimeDelta)
 
 void CLamp::Update(_float _fTimeDelta)
 {
-    if (m_bActivate)
+    //if (m_bActivate)
+    if (m_bLightOn)
         m_fAlphaValue += _fTimeDelta;
 }
 
 void CLamp::Late_Update(_float _fTimeDelta)
-{  
+{
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 
-    if (m_bActivate)
+    if (m_bLightOn)
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
 HRESULT CLamp::Render()
 {
+    if (!m_bLightOn)
+        return S_OK;
+
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
@@ -92,8 +96,8 @@ HRESULT CLamp::Render()
 
 HRESULT CLamp::Render_Glow()
 {
-    if (!m_bActivate)
-        return E_FAIL;
+    if (!m_bLightOn)
+        return S_OK;
 
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;

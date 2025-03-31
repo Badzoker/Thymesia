@@ -26,6 +26,8 @@ HRESULT CChairLamp::Initialize(void* pArg)
 
     string LampName = "NPCLamp_" + to_string(pDesc->iPairNum);
 
+    m_iCurrentLevel = pDesc->iCurLevel;
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -38,6 +40,8 @@ HRESULT CChairLamp::Initialize(void* pArg)
     string ChairName = "P_Archive_Chair01_" + to_string(pDesc->iPairNum);
 
     m_pChair = dynamic_cast<CChair*>(m_pGameInstance->Get_GameObject_To_Layer(pDesc->iCurLevel, TEXT("Layer_SpecificObject"), const_cast<_char*>(ChairName.c_str())));
+
+
 
     return S_OK;
 }
@@ -59,6 +63,9 @@ void CChairLamp::Late_Update(_float fTimeDelta)
 
 HRESULT CChairLamp::Render()
 {
+    if (m_bFirstTouch)
+        return S_OK;
+
     if (FAILED(__super::Render()))
         return E_FAIL;
 
@@ -67,6 +74,9 @@ HRESULT CChairLamp::Render()
 
 HRESULT CChairLamp::Render_Glow()
 {
+    if (m_bFirstTouch)
+        return S_OK;
+
     if (FAILED(__super::Render_Glow()))
         return E_FAIL;
 
@@ -110,8 +120,16 @@ void CChairLamp::OnCollision(CGameObject* _pOther, PxContactPair _information)
             m_bColliderOn = false;
             m_bFadingOut = true;
 
+            m_pGosemy = dynamic_cast<CGhostAisemy*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_NPC"), "GHOSEMY"));
+            m_pLamp = m_pGosemy->Get_SemyLamp();
+
+
             if (nullptr != m_pChair)
+            {
                 m_pChair->Set_ColliderRender(true);
+            }
+
+            m_pLamp->LightUp_Lamp(true);
         }
     }
 }

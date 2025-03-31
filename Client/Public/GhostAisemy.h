@@ -32,6 +32,9 @@ public:
 	virtual void					Late_Update(_float _fTimeDelta) override;
 	virtual HRESULT					Render() override;
 
+	void							Spawn_Gosemy(_float4 _vPos);
+
+
 public:
 	HRESULT							Ready_Components();
 	HRESULT							Ready_PartObjects();
@@ -39,6 +42,9 @@ public:
 	void							Culling();
 public:
 	void							Setting_Approach(_float _fTimeDelta);
+
+	CLamp* Get_SemyLamp()const { return m_pLamp; }
+	CBody_GhostSemy* Get_SemyBody() const { return m_pBody_GhoSemy; }
 
 
 private:
@@ -63,16 +69,16 @@ private:
 	_float							m_fIdleTime = {};
 	_float							m_fApproachTime = {};
 
-	CBody_GhostSemy*				m_pBody_GhoSemy = { nullptr };
-	CLamp*							m_pLamp = { nullptr };
+	CBody_GhostSemy* m_pBody_GhoSemy = { nullptr };
+	CLamp* m_pLamp = { nullptr };
 private:
-	const _float4x4*				m_pRootMatrix = { nullptr };
-	CModel*							m_pModelCom = { nullptr };
-	CNavigation*					m_pNavigationCom = { nullptr };
+	const _float4x4* m_pRootMatrix = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
 
 public:
-	static CGhostAisemy*			Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CGameObject*			Clone(void* pArg) override;
+	static CGhostAisemy* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void					Free() override;
 
 };

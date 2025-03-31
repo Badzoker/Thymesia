@@ -1,6 +1,8 @@
 #pragma once
 #include "Client_Defines.h"
 #include "SpecificObject.h"
+#include "GhostAisemy.h"
+#include "Body_GhostSemy.h"
 
 BEGIN(Engine)
 class CModel;
@@ -38,6 +40,11 @@ public:
 public:
     virtual HRESULT                 Ready_Components();
     virtual HRESULT                 Bind_ShaderResources();
+
+private:
+    CGhostAisemy* m_pGosemy = { nullptr };
+    CBody_GhostSemy* m_pBodyGosemy = { nullptr };
+
 
 public:
     static                          CChair* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

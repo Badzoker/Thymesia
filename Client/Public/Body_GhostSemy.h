@@ -33,21 +33,22 @@ public:
 	virtual HRESULT				Render_Shadow() override;
 
 	_bool						Get_AnimationStop() { return m_bStopAnimation; }
+	void						Activate_SemyBody(_bool _bActivate);
 
 private:
-	CShader*					m_pShaderCom = { nullptr };
-	CModel*						m_pModelCom = { nullptr };
-	CTexture*					m_pNoiseTextureCom = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pNoiseTextureCom = { nullptr };
 
 private:
-	const _uint*				m_pParentState = { nullptr };
+	const _uint* m_pParentState = { nullptr };
 	_uint                       m_iPreAnimationState = {};
 
 private:
 	_uint						m_iPassNum = {};
 	_bool						m_bStopAnimation = { false };
 	_bool						m_bReverse = { false };
-	_bool						m_bActivate = { true };
+	_bool						m_bActivate = { false };
 	_float4						m_vGhostColor = _float4(0.2f, 0.8f, 1.0f, 1.0f);
 	_float						m_fDissolveAmount = {};
 
@@ -56,8 +57,8 @@ public:
 	HRESULT						Bind_ShaderResources();
 
 public:
-	static CBody_GhostSemy*		Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CGameObject*		Clone(void* _pArg) override;
+	static CBody_GhostSemy* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	virtual CGameObject* Clone(void* _pArg) override;
 	virtual void				Free() override;
 };
 END

@@ -43,6 +43,8 @@ HRESULT CGhostAisemy::Initialize(void* pArg)
     _vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f };
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition);
 
+    //m_pTransformCom->Get_State(CTransform::StatE_rota)
+
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
     m_fApproachTime = 2.0f;
@@ -70,6 +72,7 @@ void CGhostAisemy::Update(_float _fTimeDelta)
         break;
     }
 
+
     __super::Update(_fTimeDelta);
 }
 
@@ -84,6 +87,11 @@ void CGhostAisemy::Late_Update(_float _fTimeDelta)
 HRESULT CGhostAisemy::Render()
 {
     return S_OK;
+}
+
+void CGhostAisemy::Spawn_Gosemy(_float4 _vPos)
+{
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&_vPos));
 }
 
 HRESULT CGhostAisemy::Ready_Components()
@@ -149,10 +157,10 @@ void CGhostAisemy::Setting_Approach(_float _fTimeDelta)
     {
         m_fApproachTime = 2.0f;
 
-        if (m_pBody_GhoSemy->Get_AnimationStop())
-        {
-            m_pLamp->Activate_Lamp(true);
-        }
+        /* if (m_pBody_GhoSemy->Get_AnimationStop())
+         {
+             m_pLamp->Activate_Lamp(true);
+         }*/
     }
 }
 
