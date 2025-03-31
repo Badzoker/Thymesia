@@ -1,25 +1,21 @@
 #include "pch.h"
-#include "UIGroup_Loading.h"
 #include "GameInstance.h"
-#include "Level_Loading.h"
-
 #include "UI_Scene.h"
-#include "UI_Image.h"
+#include "UIGroup_Dialogue.h"
 
+#include "UI_Button.h"
 
-#include "UIGroup_Landing.h"
-
-CUIGroup_Landing::CUIGroup_Landing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUIGroup_Dialogue::CUIGroup_Dialogue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
 }
 
-CUIGroup_Landing::CUIGroup_Landing(const CUIGroup_Landing& Prototype)
+CUIGroup_Dialogue::CUIGroup_Dialogue(const CUIGroup_Dialogue& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIGroup_Landing::Initialize_Prototype()
+HRESULT CUIGroup_Dialogue::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +23,7 @@ HRESULT CUIGroup_Landing::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::Initialize(void* pArg)
+HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 {
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
@@ -35,108 +31,102 @@ HRESULT CUIGroup_Landing::Initialize(void* pArg)
 
 	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
-	m_pMessage_Dead = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_1Dead");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Dead, false);
+	m_pTalkScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy");
+	m_pPopScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop");
 
-	m_pMessage_Beacon = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_2Beacon");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Beacon, false);
 
-	m_pMessage_Recall = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_3Recall");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Recall, false);
-
-	m_pMessage_Memories = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_4Memories");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Memories, false);
-	
-	m_pMessage_MapName = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_5MapName");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-
-	
 	return S_OK;
 }
 
-void CUIGroup_Landing::Priority_Update(_float fTimeDelta)
+void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-	}
-}
-
-void CUIGroup_Landing::Update(_float fTimeDelta)
-{
-	if (m_bRenderOpen)
-	{
-		Map_Name();
-		m_fRandingTime += fTimeDelta;
-		if (m_fRandingTime > 4)
+		if (m_pGameInstance->Get_Scene_Render_State(m_pTalkScene))
 		{
-			
-			m_fRandingTime = 0;
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Landing"), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), false);
+			m_fDelayTime += fTimeDelta;
 
-			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-			//m_bRenderOpen = false;
+			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
+			{
+				m_fDelayTime = 0;
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pTalkScene, false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, true);
+
+			}
 		}
-	
+
+		if (m_pGameInstance->Get_Scene_Render_State(m_pPopScene))
+		{
+			AIsemy_Pop_Button();
+		}
+		//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, true);
 	}
-
-
-
 }
 
-void CUIGroup_Landing::Late_Update(_float fTimeDelta)
+void CUIGroup_Dialogue::Update(_float fTimeDelta)
+{
+}
+
+void CUIGroup_Dialogue::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-
 	}
 }
 
-HRESULT CUIGroup_Landing::Render()
+HRESULT CUIGroup_Dialogue::Render()
 {
 
 	return S_OK;
 }
 
-void CUIGroup_Landing::Map_Name()
+void CUIGroup_Dialogue::AIsemy_Pop_Button()
 {
-
-	for (auto& Image : m_pMessage_MapName->Find_UI_Image())
+	for (auto& Button : m_pPopScene->Find_UI_Button())
 	{
-		switch (m_eMyLevel)
+		if (Button->Get_Mouse_Select_OnOff())
 		{
-		case LEVEL_HILL:
-			Image->Set_TexNumber(6);
-			break;
-		case LEVEL_SEAOFTREES:
-			Image->Set_TexNumber(7);
-			break;
-		case LEVEL_ROYALGARDEN:
-			Image->Set_TexNumber(8);
-			break;
-		case LEVEL_FORTRESS:
-			Image->Set_TexNumber(9);
-			break;
+			if (1 == Button->Get_UI_GroupID())
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, false);
+
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_MapChange"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MAP, L"UIScene_MapChange")), true);
+
+			}
+			if (2 == Button->Get_UI_GroupID())
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerMenu"), true);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+			}
+			if (3 == Button->Get_UI_GroupID())
+			{
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, false);
+
+			}
 		}
 	}
-
 }
 
-HRESULT CUIGroup_Landing::Ready_UIObject()
+HRESULT CUIGroup_Dialogue::Ready_UIObject()
 {
-	
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_1Dead");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_2Beacon");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_3Recall");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_4Memories");
-	LoadData_UIObject(LEVEL_STATIC, UISCNEN_MESSAGE, L"UIScene_Landing_5MapName");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemy");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyPop");
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
+HRESULT CUIGroup_Dialogue::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
 	_char   szFileName[MAX_PATH] = "";
@@ -236,7 +226,7 @@ HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 	return S_OK;
 }
 
-HRESULT CUIGroup_Landing::LoadData_UIText_Info(const _tchar* szSceneName)
+HRESULT CUIGroup_Dialogue::LoadData_UIText_Info(const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";
 	_char   szFileName[MAX_PATH] = "";
@@ -299,34 +289,34 @@ HRESULT CUIGroup_Landing::LoadData_UIText_Info(const _tchar* szSceneName)
 	return S_OK;
 }
 
-CUIGroup_Landing* CUIGroup_Landing::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUIGroup_Dialogue* CUIGroup_Dialogue::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUIGroup_Landing* pInstance = new CUIGroup_Landing(pDevice, pContext);
+	CUIGroup_Dialogue* pInstance = new CUIGroup_Dialogue(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUIGroup_Landing");
+		MSG_BOX("Failed To Created : CUIGroup_Dialogue");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUIGroup_Landing::Clone(void* pArg)
+CGameObject* CUIGroup_Dialogue::Clone(void* pArg)
 {
-	CUIGroup_Landing* pInstance = new CUIGroup_Landing(*this);
+	CUIGroup_Dialogue* pInstance = new CUIGroup_Dialogue(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUIGroup_Landing");
+		MSG_BOX("Failed To Cloned : CUIGroup_Dialogue");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIGroup_Landing::Free()
+void CUIGroup_Dialogue::Free()
 {
 	__super::Free();
-	m_pGameInstance->UIScene_Clear(UISCNEN_MESSAGE);
+	m_pGameInstance->UIScene_Clear(UISCENE_DIALOGUE);
 }

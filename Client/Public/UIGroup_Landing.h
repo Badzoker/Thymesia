@@ -40,7 +40,7 @@ private:
 	CUI_Scene* m_pMessage_MapName = {};
 
 	_float m_fRandingTime = {};
-	LEVELID m_eLevelID = {};
+	LEVELID m_eMyLevel = {};
 
 public:
 	static CUIGroup_Landing* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

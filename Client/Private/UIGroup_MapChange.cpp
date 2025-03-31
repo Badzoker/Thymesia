@@ -4,6 +4,7 @@
 #include "UIGroup_MapChange.h"
 
 #include "UI_Button.h"
+#include "UI_Image.h"
 #include "UI_TextBox.h"
 
 CUIGroup_MapChange::CUIGroup_MapChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -29,9 +30,11 @@ HRESULT CUIGroup_MapChange::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_MAP, L"UIScene_MapChange");
 	m_pMapChangePop = m_pGameInstance->Find_UIScene(UISCENE_MAP, L"UIScene_MapChange_1Pop");
 
+	Map_Obj_Setting();
 
 	return S_OK;
 }
@@ -48,11 +51,19 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 {
 	const _tchar* CountText = L"%s";
 
-
 	if (m_bRenderOpen)
 	{
-		if (!m_bPopOpen)
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
 		{
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel,TEXT("Layer_MapChange"),false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
+		}
+
+		if (!m_bPopOpen && m_bRenderOpen)
+		{
+			Map_Tab_Mouse_On();
+
 			for (auto& Button : m_pMyScene->Find_UI_Button())
 			{
 				if (Button->Get_Mouse_Select_OnOff())
@@ -127,14 +138,84 @@ void CUIGroup_MapChange::Late_Update(_float fTimeDelta)
 
 HRESULT CUIGroup_MapChange::Render()
 {
-
 	return S_OK;
+}
+
+void CUIGroup_MapChange::Map_Obj_Setting()
+{
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (1 == TextBox->Get_UI_GroupID())
+		{
+			m_pMapName = TextBox;
+			m_pMapName->Set_OnOff(false);
+		}
+		if (2 == TextBox->Get_UI_GroupID())
+		{
+			m_pMapDesc = TextBox;
+			m_pMapDesc->Set_OnOff(false);
+		}
+	}
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (1 == Image->Get_UI_GroupID())
+		{
+			m_pMapImageFrame = Image;
+			m_pMapImageFrame->Set_OnOff(false);
+		}
+		if (2 == Image->Get_UI_GroupID())
+		{
+			m_pMapImage = Image;
+			m_pMapImage->Set_OnOff(false);
+		}
+		if (3 == Image->Get_UI_GroupID())
+		{
+			m_pMapImageDiamond = Image;
+			m_pMapImageDiamond->Set_OnOff(false);
+		}
+		
+	}
+
+}
+
+void CUIGroup_MapChange::Map_Tab_Mouse_On()
+{
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (Button->Get_Mouse_OnOff())
+		{
+			m_pMapImageFrame->Set_OnOff(true);
+			m_pMapImageDiamond->Set_OnOff(true);
+
+			m_pMapImage->Set_OnOff(true);
+			m_pMapImage->Set_TexNumber(Button->Get_UI_GroupID() - 1);
+
+			for (auto& Text : m_TextInfo)
+			{
+				if (Button->Get_UI_GroupID() == Text.iTextID)
+				{
+					m_pMapName->Set_OnOff(true);
+					m_pMapName->Set_FontName(Text.strFontName.c_str());
+					m_pMapName->Set_Content(Text.srtTextContent.c_str());
+				}
+				if (Button->Get_UI_GroupID() + 10 == Text.iTextID)
+				{
+					m_pMapDesc->Set_OnOff(true);
+					m_pMapDesc->Set_FontName(Text.strFontName.c_str());
+					m_pMapDesc->Set_Content(Text.srtTextContent.c_str());
+					break;
+				}
+			}
+
+		}
+	}
 }
 
 HRESULT CUIGroup_MapChange::Ready_UIObject()
 {
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_MAP, L"UIScene_MapChange");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_MAP, L"UIScene_MapChange_1Pop");
+	LoadData_UIText_Info(L"UIScene_MapChange");
 	return S_OK;
 }
 

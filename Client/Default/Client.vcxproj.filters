@@ -766,6 +766,18 @@
     <Filter Include="02.GameObject\Player\Weapon\Axe">
       <UniqueIdentifier>{6f855e84-d6aa-45ef-9cbd-12d45f80009e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueTalkBackground">
+      <UniqueIdentifier>{7b962ed5-aba0-4de0-ab66-4a00ada19eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueWindowBackground">
+      <UniqueIdentifier>{3dee33b9-a643-492b-92f2-27d06e06459f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_NextLineHint">
+      <UniqueIdentifier>{fff60fbc-3255-45ce-9696-535c5baf1405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue">
+      <UniqueIdentifier>{5e4044ac-6e39-4750-bf54-689260a2359f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1434,6 +1446,18 @@
     <ClInclude Include="..\public\Player_Weapon_Axe.h">
       <Filter>02.GameObject\Player\Weapon\Axe</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_DialogueTalkBackground.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_DialogueTalkBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_DialogueWindowBackground.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_DialogueWindowBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_NextLineHint.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_NextLineHint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Dialogue.h">
+      <Filter>03.UIObject\2.UIObjGroup\11.Dialogue</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2092,6 +2116,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Player_Weapon_Axe.cpp">
       <Filter>02.GameObject\Player\Weapon\Axe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_DialogueTalkBackground.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_DialogueTalkBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_DialogueWindowBackground.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_DialogueWindowBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_NextLineHint.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_NextLineHint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Dialogue.cpp">
+      <Filter>03.UIObject\2.UIObjGroup\11.Dialogue</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

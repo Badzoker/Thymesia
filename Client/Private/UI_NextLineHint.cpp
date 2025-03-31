@@ -1,18 +1,18 @@
 #include "pch.h" 
-#include "UI_MapEntryFrame.h"
+#include "UI_NextLineHint.h"
 #include "GameInstance.h"
 
-CUI_MapEntryFrame::CUI_MapEntryFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CUI_Button{ pDevice, pContext }
+CUI_NextLineHint::CUI_NextLineHint(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI_Image{ pDevice, pContext }
 {
 }
 
-CUI_MapEntryFrame::CUI_MapEntryFrame(const CUI_MapEntryFrame& Prototype)
-	: CUI_Button(Prototype)
+CUI_NextLineHint::CUI_NextLineHint(const CUI_NextLineHint& Prototype)
+	: CUI_Image(Prototype)
 {
 }
 
-HRESULT CUI_MapEntryFrame::Initialize_Prototype()
+HRESULT CUI_NextLineHint::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -20,7 +20,7 @@ HRESULT CUI_MapEntryFrame::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUI_MapEntryFrame::Initialize(void* pArg)
+HRESULT CUI_NextLineHint::Initialize(void* pArg)
 {
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -32,42 +32,15 @@ HRESULT CUI_MapEntryFrame::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_MapEntryFrame::Priority_Update(_float fTimeDelta)
+void CUI_NextLineHint::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUI_MapEntryFrame::Update(_float fTimeDelta)
+void CUI_NextLineHint::Update(_float fTimeDelta)
 {
-	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
-	{
-		if (__super::On_Mouse_UI(g_hWnd, 3))
-		{
-			m_bImageOn = true;
-			m_iTexNumber = 1;
-		}
-		else
-		{
-			m_bImageOn = false;
-			m_iTexNumber = 0;
-		}
-
-		if (m_bImageOn)
-		{
-			if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
-			{
-				m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
-			}
-			else
-			{
-				m_bMouseSelectOn = false; // 
-
-			}
-		}
-	}
-
 }
 
-void CUI_MapEntryFrame::Late_Update(_float fTimeDelta)
+void CUI_NextLineHint::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
@@ -75,7 +48,7 @@ void CUI_MapEntryFrame::Late_Update(_float fTimeDelta)
 	}
 }
 
-HRESULT CUI_MapEntryFrame::Render()
+HRESULT CUI_NextLineHint::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -83,7 +56,6 @@ HRESULT CUI_MapEntryFrame::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
@@ -98,10 +70,10 @@ HRESULT CUI_MapEntryFrame::Render()
 	return S_OK;
 }
 
-HRESULT CUI_MapEntryFrame::Ready_Components()
+HRESULT CUI_NextLineHint::Ready_Components()
 {
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MapEntryFrame"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_NextLineHint"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -119,33 +91,33 @@ HRESULT CUI_MapEntryFrame::Ready_Components()
 	return S_OK;
 }
 
-CUI_MapEntryFrame* CUI_MapEntryFrame::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_NextLineHint* CUI_NextLineHint::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_MapEntryFrame* pInstance = new CUI_MapEntryFrame(pDevice, pContext);
+	CUI_NextLineHint* pInstance = new CUI_NextLineHint(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_MapEntryFrame");
+		MSG_BOX("Failed To Created : CUI_NextLineHint");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_MapEntryFrame::Clone(void* pArg)
+CGameObject* CUI_NextLineHint::Clone(void* pArg)
 {
-	CUI_MapEntryFrame* pInstance = new CUI_MapEntryFrame(*this);
+	CUI_NextLineHint* pInstance = new CUI_NextLineHint(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_MapEntryFrame");
+		MSG_BOX("Failed To Cloned : CUI_NextLineHint");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_MapEntryFrame::Free()
+void CUI_NextLineHint::Free()
 {
 	__super::Free();
 

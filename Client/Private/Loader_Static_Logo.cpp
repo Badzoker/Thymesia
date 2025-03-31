@@ -119,6 +119,7 @@
 #include "UIGroup_Landing.h"
 #include "UIGroup_MapChange.h"
 #include "UIGroup_Skill.h"
+#include "UIGroup_Dialogue.h"
 
 #include "UI_MouseCursor.h"
 
@@ -183,6 +184,10 @@
 #include "UI_MediaFrame.h"
 
 #include "UI_Skill_Slot.h"
+
+#include "UI_DialogueTalkBackground.h"
+#include "UI_DialogueWindowBackground.h"
+#include "UI_NextLineHint.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -1334,6 +1339,39 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_Skill_Slot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//====================================================================================================================================== 아이세미 대화
+
+
+	/* For.Prototype_Component_Texture_UI_DialogueTalkBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_DialogueTalkBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Dialogue/UI_DialogueTalkBackground.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_DialogueTalkBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DialogueTalkBackground"),
+		CUI_DialogueTalkBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_UI_DialogueWindowBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_DialogueWindowBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Dialogue/UI_DialogueWindowBackground.dds"), 1))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_DialogueWindowBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DialogueWindowBackground"),
+		CUI_DialogueWindowBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_UI_NextLineHint*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_NextLineHint"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Dialogue/UI_NextLineHint_%d.dds"), 2))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_NextLineHint */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_NextLineHint"),
+		CUI_NextLineHint::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/
@@ -1388,6 +1426,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UIGroup_Skill */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Skill"),
 		CUIGroup_Skill::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Dialogue */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Dialogue"),
+		CUIGroup_Dialogue::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 #pragma region UI 텍스쳐
