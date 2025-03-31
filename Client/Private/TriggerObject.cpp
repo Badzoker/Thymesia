@@ -82,7 +82,7 @@ void CTriggerObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
     //}
 
 
-    m_pGameInstance->Delete_GameObject_From_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Normal_Map"));
+    //m_pGameInstance->Delete_GameObject_From_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Normal_Map"));
 }
 
 void CTriggerObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
