@@ -221,6 +221,18 @@ list<class CGameObject*>* CObject_Manager::Get_LayerGameObject(_uint iLevelIndex
 	return &pLayer->Get_GameObject_List();
 }
 
+HRESULT CObject_Manager::Delete_GameObject_From_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr != pLayer)
+	{
+		pLayer->Delete_GameObjects(strLayerTag, iLevelIndex);
+	}
+
+	return S_OK;
+}
+
 CLayer * CObject_Manager::Find_Layer(_uint iLevelIndex, const _wstring & strLayerTag)
 {
 	auto	iter = m_pLayers[iLevelIndex].find(strLayerTag);

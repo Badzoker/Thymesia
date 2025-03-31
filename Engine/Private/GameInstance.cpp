@@ -315,6 +315,10 @@ _bool CGameInstance::UIGroup_Render_State(_uint iLevelIndex, const _wstring& str
 	return m_pObject_Manager->UIGroup_Render_State(iLevelIndex, strLayerTag);
 }
 
+HRESULT CGameInstance::Delete_GameObject_From_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Delete_GameObject_From_Layer(iLevelIndex, strLayerTag);
+}
 #pragma endregion
 
 
@@ -560,6 +564,11 @@ HRESULT CGameInstance::Sub_EventObject(_wstring _EventName, CGameObject* pGaemOb
 HRESULT CGameInstance::Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject)	
 {
 	return m_pEvent_Manager->Add_DeadObject(_LayerName, pGaemObject);
+}
+
+HRESULT CGameInstance::Add_DeadObjects(_wstring _LayerName, CGameObject* pGaemObject, _uint iCurrentLevel)
+{
+	return m_pEvent_Manager->Add_DeadObjects(_LayerName, pGaemObject, iCurrentLevel);
 }
 
 HRESULT CGameInstance::Add_DeadEffect(CGameObject* pGameObject)

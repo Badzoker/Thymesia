@@ -37,7 +37,8 @@ public:
 private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Structure(const _tchar* pLayerTag);	
+	HRESULT Ready_Layer_Structure(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Structure_Boss(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);	
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Monster();
@@ -61,7 +62,7 @@ private:
 	//HRESULT	Ready_Layer_Ladder(const _tchar* pLayerTag);
 
 private:
-	HRESULT Load_Objects(_int iObject_Level);
+	HRESULT Load_Objects(_int iObject_Level, const _tchar* pLayerTag);
 	HRESULT Load_TriggerObjects(_int iObject_Level);
 	HRESULT Load_InstancingObjects(_int iObject_Level);
 	HRESULT Load_Height(_int iObject_Level);

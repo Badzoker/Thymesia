@@ -2,10 +2,14 @@
 #include "UIObject.h"
 #include "GameObject.h"
 #include "Component.h"
+#include "GameInstance.h"
 
 CLayer::CLayer()
+	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
+	Safe_AddRef(m_pGameInstance);
 }
+
 
 void CLayer::Priority_Update(_float fTimeDelta)
 {
@@ -51,6 +55,15 @@ _bool CLayer::UIGroup_Render_State()
 	return dynamic_cast<CUIObject*>(*m_GameObjects.begin())->Get_Render_State();
 }
 
+HRESULT CLayer::Delete_GameObjects(const wstring& pLayerTag, _uint iCurrentLevel)
+{
+	for (auto& pObject : m_GameObjects)
+	{
+		m_pGameInstance->Add_DeadObjects(pLayerTag, pObject, iCurrentLevel);
+	}
+
+	return S_OK;
+}
 CLayer * CLayer::Create()
 {
 	return new CLayer();
@@ -64,4 +77,6 @@ void CLayer::Free()
 		Safe_Release(pGameObject);
 
 	m_GameObjects.clear();
+
+	Safe_Release(m_pGameInstance);
 }

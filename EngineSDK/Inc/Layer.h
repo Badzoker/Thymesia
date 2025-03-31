@@ -32,12 +32,14 @@ public:
 	HRESULT UIGroup_Render_OnOff(_bool bCheck);
 	_bool UIGroup_Render_State();
 
+	HRESULT Delete_GameObjects(const wstring& pLayerTag, _uint iCurrentLevel);
 
 public:
 	list<CGameObject*>& Get_GameObject_List() { return m_GameObjects; }	
 
 private:
 	list<class CGameObject*>			m_GameObjects;
+	class CGameInstance*				m_pGameInstance = { nullptr };
 
 public:
 	static CLayer* Create();

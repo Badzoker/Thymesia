@@ -80,6 +80,9 @@ void CTriggerObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
     //    m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 2.0f);
     //    m_bFade = true;
     //}
+
+
+    //m_pGameInstance->Delete_GameObject_From_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Normal_Map"));
 }
 
 void CTriggerObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
