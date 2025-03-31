@@ -200,6 +200,8 @@
     <ClInclude Include="..\public\Boss_Varg_Camera.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
+    <ClInclude Include="..\Public\Chair.h" />
+    <ClInclude Include="..\Public\ChairLamp.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeFull.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeLoop.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeStart.h" />
@@ -430,6 +432,8 @@
     <ClCompile Include="..\private\Boss_Varg_Camera.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />
+    <ClCompile Include="..\Private\Chair.cpp" />
+    <ClCompile Include="..\Private\ChairLamp.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeFull.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeLoop.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp" />

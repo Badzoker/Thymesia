@@ -2,7 +2,7 @@
 #include "SpecificObject.h"
 #include "GameInstance.h"
 
-_bool CSpecificObject::m_bChairOn = false;
+//_bool CSpecificObject::m_bChairOn = false;
 CSpecificObject::CSpecificObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{ pDevice, pContext }
 {
@@ -41,15 +41,6 @@ HRESULT CSpecificObject::Initialize(void* pArg)
     m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(pDesc->iCurLevel, TEXT("Layer_Button"), "BUTTON");
     m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
-    _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
-    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::OBJECT, iSettingColliderGroup);
-    //m_pGameInstance->Add_Actor_Scene(m_pActor);
-
-    if (!strcmp(m_szName, ("NPCLamp")) || !strcmp(m_szName, ("Ladder")))
-        m_pGameInstance->Add_Actor_Scene(m_pActor);
-
     return S_OK;
 }
 
@@ -59,30 +50,16 @@ void CSpecificObject::Priority_Update(_float fTimeDelta)
 
 void CSpecificObject::Update(_float fTimeDelta)
 {
-    /*if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });*/
-
-
-    if (!m_bChairOn && !strcmp(m_szName, ("NPCLamp")))
-    {
-        if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
-    }
-    else if (m_bChairOn && !strcmp(m_szName, ("NPCLamp")))
-    {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-    }
-
-    if (m_bChairOn && !strcmp(m_szName, ("P_Archive_Chair01")) && !m_bChairCollision)
+    if (m_bColliderOn)
     {
         m_pGameInstance->Add_Actor_Scene(m_pActor);
-        m_bChairCollision = true;
-    }
 
-    if (m_bChairOn && !strcmp(m_szName, ("P_Archive_Chair01")))
-    {
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
             m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+    }
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 }
 
@@ -160,88 +137,22 @@ HRESULT CSpecificObject::Render_Glow()
     return S_OK;
 }
 
-void CSpecificObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
-{
-    if (!strcmp(m_szName, ("NPCLamp")) && !m_bChairOn)
-    {
-        _vector vChairPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-        vChairPos = XMVectorSetY(vChairPos, XMVectorGetY(vChairPos) + 1.0f);
-
-        _float4 vChairPosition;
-        XMStoreFloat4(&vChairPosition, vChairPos);
-
-        m_pButton->Set_WorldPosition(vChairPosition);
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("서나나어서어루만져줘"));
-        m_pButton->Activate_Button(true);
-        m_bInteractOn = true;
-        m_bFadingIn = true;
-        m_bFadingOut = false;
-    }
-
-    if (!strcmp(m_szName, ("P_Archive_Chair01")) && m_bChairOn)
-    {
-        _vector vChairPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-        vChairPos = XMVectorSetY(vChairPos, XMVectorGetY(vChairPos) + 1.0f);
-
-        _float4 vChairPosition;
-        XMStoreFloat4(&vChairPosition, vChairPos);
-
-        m_pButton->Set_WorldPosition(vChairPosition);
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("앉기"));
-        m_pButton->Activate_Button(true);
-        m_bInteractOn = true;
-        m_bFadingIn = true;
-        m_bFadingOut = false;
-    }
-}
-
-void CSpecificObject::OnCollision(CGameObject* _pOther, PxContactPair _information)
-{
-    if (m_pGameInstance->isKeyEnter(DIK_E) && !strcmp(m_szName, ("NPCLamp")))
-    {
-        m_bChairOn = true;
-        m_pButton->Activate_Button(false);
-
-        if (!m_bFirstTouch)
-        {
-            /* 신호기 발견 알림*/
-            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
-            m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
-            m_bFirstTouch = true;
-        }
-    }
-    if (m_pGameInstance->isKeyEnter(DIK_E) && !strcmp(m_szName, ("P_Archive_Chair01")))
-    {
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), false);
-        m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), true);
-        m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
-        m_pButton->Activate_Button(false);
-    }
-}
-
-void CSpecificObject::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
-{
-    m_pButton->Activate_Button(false);
-    m_bInteractOn = false;
-    m_bFadingIn = false;
-    m_bFadingOut = true;
-}
-
 HRESULT CSpecificObject::Ready_Components()
 {
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
-        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
-    string strComponentName = "Prototype_Component_Model_";
-    strComponentName += m_szName;
-    _tchar		szComponentName[MAX_PATH] = {};
+    string strModelBaseName = m_szName;
+    size_t pos = strModelBaseName.find_last_of('_');
 
-    MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);
+    if (pos != string::npos)
+        strModelBaseName = strModelBaseName.substr(0, pos);
 
-    /* Com_Model */
+    string strComponentName = "Prototype_Component_Model_" + strModelBaseName;
+
+    _tchar szComponentName[MAX_PATH] = {};
+    MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<_int>(strComponentName.length()), szComponentName, MAX_PATH);
+
     if (FAILED(__super::Add_Component(LEVEL_STATIC, szComponentName, TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -260,37 +171,9 @@ HRESULT CSpecificObject::Bind_ShaderResources()
     return S_OK;
 }
 
-CSpecificObject* CSpecificObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-    CSpecificObject* pInstance = new CSpecificObject(pDevice, pContext);
-
-    if (FAILED(pInstance->Initialize_Prototype()))
-    {
-        MSG_BOX("Failed To Created : CSpecificObject");
-        Safe_Release(pInstance);
-    }
-
-    return pInstance;
-}
-
-CGameObject* CSpecificObject::Clone(void* pArg)
-{
-    CSpecificObject* pInstance = new CSpecificObject(*this);
-
-    if (FAILED(pInstance->Initialize(pArg)))
-    {
-        MSG_BOX("Failed To Created : CSpecificObject");
-        Safe_Release(pInstance);
-    }
-
-    return pInstance;
-}
-
 void CSpecificObject::Free()
 {
     __super::Free();
-
-    m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);

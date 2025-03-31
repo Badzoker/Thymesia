@@ -778,6 +778,15 @@
     <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue">
       <UniqueIdentifier>{5e4044ac-6e39-4750-bf54-689260a2359f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\SpecificObject\Chair">
+      <UniqueIdentifier>{78eaaeee-a940-4f8e-ab06-dc1375452a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\SpecificObject\ChairLamp">
+      <UniqueIdentifier>{dbe4bf5e-a56a-4e29-9b00-0fd5539ea320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\SpecificObject\Ladder">
+      <UniqueIdentifier>{f9f84bb9-31ff-493d-b57a-021b0d8a680b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1458,6 +1467,12 @@
     <ClInclude Include="..\Public\UIGroup_Dialogue.h">
       <Filter>03.UIObject\2.UIObjGroup\11.Dialogue</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Chair.h">
+      <Filter>02.GameObject\SpecificObject\Chair</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ChairLamp.h">
+      <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2128,6 +2143,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Dialogue.cpp">
       <Filter>03.UIObject\2.UIObjGroup\11.Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chair.cpp">
+      <Filter>02.GameObject\SpecificObject\Chair</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ChairLamp.cpp">
+      <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
