@@ -31,6 +31,8 @@ HRESULT CEffect::Initialize(void* _pArg)
 	if (FAILED(__super::Initialize(_pArg)))
 		return E_FAIL;
 
+	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
+
     return S_OK;
 }
 
@@ -47,7 +49,7 @@ void CEffect::Update(_float _fTimeDelta)
 	}
 	else// socket이 아니다
 	{
-		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&m_matParentWorld));
 	}
 	if (true == m_bIsPlaying)
 		Timer_Check(_fTimeDelta);
@@ -81,11 +83,18 @@ void CEffect::Clear_Setting()
 		m_pSettingMatrix = nullptr;
 	if (nullptr != m_pAnimation_Speed)
 		m_pAnimation_Speed = nullptr;
+
+	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 }
 
 void CEffect::Set_Direction(_fvector _vDir)
 {
 	m_pTransformCom->Look(_vDir);
+}
+
+void CEffect::Set_Pos_With_Matrix(_float4x4 _matWorld)
+{
+	XMStoreFloat4x4(&m_matParentWorld, XMLoadFloat4x4(&_matWorld));
 }
 
 void CEffect::Set_Animation_Speed(const _float* _pAnimation_Speed)

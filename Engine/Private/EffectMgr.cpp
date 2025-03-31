@@ -172,6 +172,21 @@ HRESULT CEffectMgr::Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _floa
     return S_OK;
 }
 
+HRESULT CEffectMgr::Play_Effect_Matrix_OneMoment(EFFECT_NAME _eEffectName, _float4x4 _matMatrix)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (false == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(true);
+            iter->Set_Pos_With_Matrix(_matMatrix);
+            m_dequePlayingEffect.push_back(iter);
+            break;
+        }
+    }
+    return S_OK;
+}
+
 HRESULT CEffectMgr::Stop_Effect(EFFECT_NAME _eEffectName)
 {
     for (auto& iter : m_vecEffect[(_uint)_eEffectName])

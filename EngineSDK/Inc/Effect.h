@@ -35,6 +35,7 @@ public:
 	void Set_SettingMatrix(const _float4x4* _pSettingMatrix) { m_pSettingMatrix = _pSettingMatrix; }
 	void Clear_Setting();
 	void Set_Direction(_fvector _vDir);
+	void Set_Pos_With_Matrix(_float4x4 _matWorld);
 
 	void Set_Animation_Speed(const _float* _pAnimation_Speed);
 
@@ -44,6 +45,7 @@ protected:
 	const _float* m_pAnimation_Speed = { nullptr };
 
 	_float4x4 m_matCombined = {};
+	_float4x4 m_matParentWorld = {};
 
 	_bool m_bIsPlaying = { false };
 

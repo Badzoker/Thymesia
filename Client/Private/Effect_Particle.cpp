@@ -164,6 +164,7 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
         m_fTimerY = 0.f;
         m_fDissolve = 0.f;
         m_fTimer_Timelag = 0.f;
+        XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
         m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 1, 1, 1);
     }
 }

@@ -530,6 +530,98 @@ PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
     return Out;
 }
 
+PS_OUT_GLOW PS_MAIN_GLOW_DISAPPEAR(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    vector vNoise = 0.f;
+    
+    float2 vTexcoord = 0;
+    
+    vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
+    
+    if (true == g_bUsing_Noise)
+        vNoise = g_NoiseTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    else
+        vNoise = g_DiffuseTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    
+    float fWeightX = vNoise.r * g_fWeightX;
+    float fWeightY = vNoise.r * g_fWeightY;
+    
+    vTexcoord = float2((g_TimeX + g_StartTexcoordX) * fWeightX, (g_TimeY + g_StartTexcoordY) * fWeightY);
+    
+    if (true == g_bTexcoordX)
+        vTexcoord.x = lerp(0.5f, vTexcoord.x, (1.f - vTexcoord.y) * g_fTexcoordLerpX);
+    if (true == g_bTexcoordY)
+        vTexcoord.y = lerp(0.5f, vTexcoord.y, (1.f - vTexcoord.x) * g_fTexcoordLerpY);
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler_Clamp, vTexcoord) * fMask;
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+    
+    float3 vRGB = float3(g_vRGB);
+	
+    vMtrlDiffuse *= vector(vRGB, 1.f - saturate(g_TimeX / g_fMaxTimer));
+    
+    if (vMtrlDiffuse.a < 0.01f)
+        discard;
+    
+    Out.vGlow = vMtrlDiffuse;
+    
+    return Out;
+}
+
+PS_OUT_GLOW PS_MAIN_REVERSE(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    vector vNoise = 0.f;
+    
+    float2 vTexcoord = 0;
+    
+    vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
+    
+    if (true == g_bUsing_Noise)
+        vNoise = g_NoiseTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    else
+        vNoise = g_DiffuseTexture.Sample(LinearSampler_Clamp, vTexcoord);
+    
+    float fWeightX = vNoise.r * g_fWeightX;
+    float fWeightY = vNoise.r * g_fWeightY;
+    
+    vTexcoord = float2((g_TimeX + g_StartTexcoordX) * fWeightX, (g_TimeY + g_StartTexcoordY) * fWeightY);
+    
+    if (true == g_bTexcoordX)
+        vTexcoord.x = lerp(0.5f, vTexcoord.x, (1.f - vTexcoord.y) * g_fTexcoordLerpX);
+    if (true == g_bTexcoordY)
+        vTexcoord.y = lerp(0.5f, vTexcoord.y, (1.f - vTexcoord.x) * g_fTexcoordLerpY);
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler_Clamp, vTexcoord) * fMask;
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+    
+    float3 vRGB = float3(g_vRGB);
+	
+    vMtrlDiffuse *= vector(vRGB, 1.f - saturate(g_TimeX / g_fMaxTimer));
+    
+    if (vMtrlDiffuse.a < 0.01f)
+        discard;
+    
+    Out.vGlow = vMtrlDiffuse;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -608,5 +700,38 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_ROAR();
+    }
+
+    pass Glow_Disapper //7 Glow 이지만 점점 사라지게끔 & Depth 비교함
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GLOW_DISAPPEAR();
+    }
+
+    pass Reverse //8 Reverse
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_REVERSE();
+    }
+
+    pass Glow_Disapper_Weapon //9 Glow_Weapon 이지만 점점 사라지게끔 & Depth 비교x
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GLOW_DISAPPEAR();
     }
 }

@@ -174,6 +174,7 @@ public:
 	HRESULT Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir);
 	HRESULT Stop_Effect(EFFECT_NAME _eEffectName);
 	HRESULT Reset_Effect();
+	HRESULT Play_Effect_Matrix_OneMoment(EFFECT_NAME _eEffectName, _float4x4 _matMatrix);
 
 #pragma endregion
 

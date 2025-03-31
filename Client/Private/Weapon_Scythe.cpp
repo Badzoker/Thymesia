@@ -120,7 +120,18 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
 
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로       
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+#pragma region Effect
+                    if (!strcmp(iter.szName, "Effect1_Start"))
+                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SCYTHE_1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                    else if (!strcmp(iter.szName, "Effect2_Start"))
+                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SCYTHE_2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                    else if (!strcmp(iter.szName, "Particle1_Start"))
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_PLAYER_SCYTHE_1, *m_pParentWorldMatrix);
+                    else if (!strcmp(iter.szName, "Particle2_Start"))
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_PLAYER_SCYTHE_2, *m_pParentWorldMatrix);
+#pragma endregion
                 }
             }
         }

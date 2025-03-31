@@ -637,6 +637,11 @@ HRESULT CGameInstance::Reset_Effect()
 	return m_pEffect_Manager->Reset_Effect();
 }
 
+HRESULT CGameInstance::Play_Effect_Matrix_OneMoment(EFFECT_NAME _eEffectName, _float4x4 _matMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix_OneMoment(_eEffectName, _matMatrix);
+}
+
 #pragma endregion 
 
 #pragma region Sound Manager 

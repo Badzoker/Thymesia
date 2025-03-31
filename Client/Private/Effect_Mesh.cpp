@@ -106,8 +106,14 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 6: //Roar
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
-	case 7: //Blink
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLOOM, this);
+	case 7: //Disappear
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		break;
+	case 8: //Reverse
+		//	m_pGameInstance->Add_RenderGroup(CRenderer::RG_REVERSE, this);
+		break;
+	case 9: //WeaponDisappear
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
 	}
 }
