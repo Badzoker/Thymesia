@@ -483,12 +483,40 @@ PS_OUT PS_PLAYER_DISSOLVE(PS_IN In)
 
 PS_OUT PS_GHOSEMY(PS_IN In)
 {
+    //PS_OUT Out = (PS_OUT) 0;
+
+    //float noise = g_GhostNoiseTexture.Sample(LinearSampler, In.vTexcoord).r;
+    //float dissolve = saturate(g_DissolveValue - noise);
+
+    //if (dissolve > 0.3f)
+    //    clip(-1);
+
+    //float4 vDiffuseColor = g_GhostColor;
+    //float4 vBlueColor = float4(0.6f, 1.0f, 0.9f, 1.0f);
+    //float4 vResultColor = lerp(vDiffuseColor, vBlueColor, dissolve);
+    //vResultColor.a = saturate(1.0f - dissolve);
+
+    //Out.vDiffuse = vResultColor;
+
+    //float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    //float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;
+    //float3x3 matWorld = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    //vNormal = normalize(mul(vNormal, matWorld));
+    //Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+
+    //Out.vDepth = float4(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    //return Out;
+    
     PS_OUT Out = (PS_OUT) 0;
 
     float noise = g_GhostNoiseTexture.Sample(LinearSampler, In.vTexcoord).r;
     float dissolve = saturate(g_DissolveValue - noise);
 
-    if (dissolve > 0.3f)
+    //if (dissolve > 0.3f)
+    //    clip(-1);
+    
+    if (dissolve <= 0.01f)
         clip(-1);
 
     float4 vDiffuseColor = g_GhostColor;

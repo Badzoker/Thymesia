@@ -8,7 +8,6 @@
 BEGIN(Engine)
 class CModel;
 class CShader;
-//class CCollider;
 END
 
 BEGIN(Client)
@@ -81,7 +80,7 @@ protected:
     _bool                           m_bColliderOn = { false };
 
     PxRigidDynamic* m_pActor = { nullptr };
-
+    _uint                           m_iCurrentLevel = {};
 private:
     // 램프 녀석 어루만져줄 때 쓰는 변수들 모음.
     _bool                           m_bFirstTouch = { false }; // 의자 최초 터치 시 beacon found 알림 팝업 열기 용도 - 유빈

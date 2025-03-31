@@ -26,10 +26,13 @@ HRESULT CChair::Initialize(void* pArg)
 
     string chairName = "P_Archive_Chair01_" + to_string(pDesc->iPairNum);
 
+    m_iCurrentLevel = pDesc->iCurLevel;
+    //m_vRotation = pDesc->fRotation;
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.6f, 0.6f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::OBJECT, iSettingColliderGroup);
@@ -85,6 +88,29 @@ void CChair::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
         m_bInteractOn = true;
         m_bFadingIn = true;
         m_bFadingOut = false;
+
+        m_pGosemy = dynamic_cast<CGhostAisemy*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_NPC"), "GHOSEMY"));
+        m_pBodyGosemy = m_pGosemy->Get_SemyBody();
+
+        //m_pBodyGosemy->Set_AnimationStop(false);
+        if (nullptr != m_pBodyGosemy)
+            m_pBodyGosemy->Activate_SemyBody(true);
+
+        _float4 vGosemyPos = {};
+        _float fY = XMVectorGetY(vChairPos);
+        vChairPos = XMVectorSetY(vChairPos, fY - 1.0f);
+        XMStoreFloat4(&vGosemyPos, vChairPos);
+        m_pGosemy->Spawn_Gosemy(vGosemyPos);
+
+        _vector vChairLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+        _vector vChairUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+        _vector vChairRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+        m_pGosemy->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, vChairLook);
+        m_pGosemy->Get_Transfrom()->Set_State(CTransform::STATE_UP, vChairUp);
+        m_pGosemy->Get_Transfrom()->Set_State(CTransform::STATE_RIGHT, vChairRight);
+
+        m_pGosemy->Get_Transfrom()->Scaling(_float3(0.002f, 0.002f, 0.002f));
     }
 }
 

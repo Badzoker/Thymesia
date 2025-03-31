@@ -54,19 +54,29 @@ void CBody_GhostSemy::Priority_Update(_float _fTimeDelta)
 }
 
 void CBody_GhostSemy::Update(_float _fTimeDelta)
-{  
-    m_fDissolveAmount += m_bReverse ? -_fTimeDelta * 0.25f : _fTimeDelta * 0.25f;
+{
+    if (!m_bActivate)
+        return;
 
-    if (m_fDissolveAmount >= 1.0f)
+    if (m_fDissolveAmount < 1.0f)
     {
-        m_fDissolveAmount = 1.0f;
-        m_bReverse = true;
+        m_fDissolveAmount += _fTimeDelta * 0.5f;
+        if (m_fDissolveAmount > 1.0f)
+            m_fDissolveAmount = 1.0f;
     }
-    else if (m_fDissolveAmount <= 0.0f)
-    {
-        m_fDissolveAmount = 0.0f;
-        m_bReverse = false;
-    }
+
+    //m_fDissolveAmount += m_bReverse ? -_fTimeDelta * 0.25f : _fTimeDelta * 0.25f;
+    //
+    //if (m_fDissolveAmount >= 1.0f)
+    //{
+    //    m_fDissolveAmount = 1.0f;
+    //    m_bReverse = true;
+    //}
+    //else if (m_fDissolveAmount <= 0.0f)
+    //{
+    //    m_fDissolveAmount = 0.0f;
+    //    m_bReverse = false;
+    //}
 }
 
 void CBody_GhostSemy::Late_Update(_float _fTimeDelta)
@@ -111,6 +121,13 @@ HRESULT CBody_GhostSemy::Render()
 HRESULT CBody_GhostSemy::Render_Shadow()
 {
     return S_OK;
+}
+
+void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate)
+{
+    m_bActivate = _bActivate;
+
+    m_fDissolveAmount = 0.0f;
 }
 
 HRESULT CBody_GhostSemy::Ready_Components()

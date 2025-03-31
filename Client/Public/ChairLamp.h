@@ -2,6 +2,8 @@
 #include "Client_Defines.h"
 #include "SpecificObject.h"
 #include "Chair.h"
+#include "Lamp.h"
+#include "GhostAisemy.h"
 
 BEGIN(Engine)
 class CModel;
@@ -46,6 +48,9 @@ public:
 private:
     _bool                           m_bFirstTouch = { false };
     CChair* m_pChair = { nullptr };
+    CLamp* m_pLamp = { nullptr };
+    CGhostAisemy* m_pGosemy = { nullptr };
+
 
 public:
     static                          CChairLamp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
