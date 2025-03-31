@@ -24,7 +24,9 @@ public:
 	HRESULT  Event_Activate(_wstring _EventName);	
 
 	/* 객체의 삭제와 생성과 관련된 함수들 */
-	HRESULT  Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject);	
+	HRESULT  Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject);
+	HRESULT  Add_DeadObjects(_wstring _LayerName, CGameObject* pGaemObject, _uint iCurrenteLevel);
+
 	HRESULT  Add_DeadEffect(CGameObject* pGameObject);	
 
 	HRESULT  Update();
@@ -36,9 +38,10 @@ private:
 	CGameInstance*       m_pGameInstance = { nullptr };
 
 private:
-	map<_wstring, CEvent*>		   m_mapEvent; 
-	map<_wstring, CGameObject*>    m_mapDeadObejct; 
-	vector<CGameObject*>		   m_vecDeadEffect; 
+	map<_wstring, CEvent*>				m_mapEvent; 
+	map<_wstring, CGameObject*>			m_mapDeadObejct;
+	multimap<_wstring, CGameObject*>	m_mapDeadObejcts;
+	vector<CGameObject*>				m_vecDeadEffect; 
 
 private:
 	_uint m_iCurrent_Level = {};

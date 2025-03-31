@@ -42,8 +42,11 @@ HRESULT CLevel_SeaOfTrees::Initialize()
 	if (FAILED(Ready_Layer_Button(TEXT("Layer_Button"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
-		return E_FAIL;		
+	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Normal_Map"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster()))	
 		return E_FAIL;
@@ -219,79 +222,27 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-	//현재 몬스터와 기본맵이 있는 Prototype용 맵							-> Load_Objects(16);
-	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
-	//튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
-	// 
-	//Load_Objects(303); //Circus Map 오두르 보스(변이)
-	Load_Objects(312); //Circus Map 엘레베이터 복도(보스전까지)
-	Load_Objects(313); //Circus Map 조커 방
-	//Load_Objects(314);   //Circus Map 오두르 보스
-	Load_Objects(315); //Circus Map 엘레베이터 전까지 일반몹 구간
+	Load_Objects(313, pLayerTag); //Circus Map 조커 방
+	Load_Objects(315, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
 
+	Load_TriggerObjects(2);
 
-	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
-	Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
-	/* 여기서 맵 파일 하나하나 다 읽어와야함 */
-
-	//_ulong dwByte = {}; 
-	////HANDLE hFile = CreateFile(TEXT("../Map_File/real76.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	//HANDLE hFile = CreateFile(TEXT("../Map_File/real143.bin"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	//while (true)
-	//{
-	//	_tchar Layer_Name[MAX_PATH] = {}; //레이어 이름										
-	//	ReadFile(hFile, Layer_Name, MAX_PATH, &dwByte, nullptr);
-
-	//	if (dwByte == 0)
-	//		break;
-	//	/* 이름 작업 */
-	//	_char   Prototype_Name[MAX_PATH] = {};
-
-	//	ReadFile(hFile, Prototype_Name, MAX_PATH, &dwByte, nullptr);
-
-
-	//	_float4x4 WorldMatrix = {};
-	//	ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
-	//	//int a = 4;
-
-	//	_tchar Translate_wchar[MAX_PATH] = {};
-	//	MultiByteToWideChar(CP_ACP, 0, Prototype_Name, static_cast<_int>(strlen(Prototype_Name)), Translate_wchar, MAX_PATH);
-
-	//	/* 이제 TRANSFORM만 건들면 될듯함.*/
-	//	//int b = 4;
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, Translate_wchar, LEVEL_SEAOFTREES, Layer_Name)))
-	//		return E_FAIL;
-
-	//	//CTransform* pTrasnform = dynamic_cast<CTransform*>(
-	//	//* Find GaemObject 만들어야 할듯
-	//	// 구분할 수 있는 방법을 생각해봐야할듯.
-	//	map<const _wstring, class CLayer*>* Level_Layers = m_pGameInstance->Get_Layers();		
-
-	//	auto& Level_SeaOfTrees = Level_Layers[3];
-
-	//	for (auto& Layers : Level_SeaOfTrees)
-	//	{
-	//		//auto& iter = find(Level_SeaOfTrees.begin(), Level_SeaOfTrees.end(), Layer_Name);	
-	//		auto iter = Level_SeaOfTrees.find(Layer_Name);
-
-	//		if (iter == Level_SeaOfTrees.end())
-	//			return E_FAIL;
-
-	//		else
-	//		{
-	//			CTransform* pTranform = dynamic_cast<CTransform*>(
-	//				iter->second->Get_GameObject_List().back()->Find_Component(TEXT("Com_Transform")));	
-
-	//			pTranform->Set_WorldMatrix(WorldMatrix);	
-	//		}
-	//	}
-	//}
-	//CloseHandle(hFile);
-	
 	return S_OK;
 }
+
+HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Boss(const _tchar* pLayerTag)
+{
+	Load_Objects(312, pLayerTag); //Circus Map 엘레베이터 복도(보스전까지)
+	Load_Objects(314, pLayerTag);   //Circus Map 오두르 보스
+
+	//Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
 {
@@ -669,7 +620,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLay
 	return S_OK;
 }
 
-HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
+HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level, const _tchar* pLayerTag)
 {
 	_ulong dwByte = {};
 	_ulong dwByte2 = {};
@@ -717,12 +668,12 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
 
 		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_SEAOFTREES, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -847,7 +798,7 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
 		Desc.vecBoxSize = vecBoxSize;
 		Desc.eLevelID = static_cast<LEVELID>(m_iCurrentLevel);
 
-		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, TEXT("Layer_GroundObject"), &Desc));
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_SEAOFTREES, pLayerTag, &Desc));
 
 		if (nullptr == pEnvironment)
 			return E_FAIL;
@@ -875,6 +826,7 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level)
 
 	return S_OK;
 }
+
 
 HRESULT CLevel_SeaOfTrees::Load_TriggerObjects(_int iObject_Level)
 {

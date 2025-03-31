@@ -75,6 +75,9 @@ public:
 
 	HRESULT UIGroup_Render_OnOff(_uint iLevelIndex, const _wstring& strLayerTag, _bool bCheck);
 	_bool UIGroup_Render_State(_uint iLevelIndex, const _wstring& strLayerTag);
+
+
+	HRESULT Delete_GameObject_From_Layer(_uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -153,6 +156,7 @@ public:
 	HRESULT  Add_EventObject(_wstring _EventName, CGameObject* pGaemObject);		
 	HRESULT  Sub_EventObject(_wstring _EventName, CGameObject* pGaemObject);	
 	HRESULT  Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject);	
+	HRESULT  Add_DeadObjects(_wstring _LayerName, CGameObject* pGaemObject, _uint iCurrentLevel);
 	HRESULT  Add_DeadEffect(CGameObject* pGameObject);	
 	void  Set_Level_ForEventManager(_uint _iCurLevel);
 #pragma endregion 

@@ -42,6 +42,8 @@ public:
 	map<const _wstring, class CLayer*>* Get_Layers()   { return m_pLayers; }	
 	_uint								Get_NumLevel() { return m_iNumLevels; }	
 
+	HRESULT Delete_GameObject_From_Layer(_uint iLevelIndex, const _wstring& strLayerTag);
+
 private:
 	map<const _wstring, class CLayer*>*			m_pLayers = { nullptr };
 	_uint										m_iNumLevels = {};

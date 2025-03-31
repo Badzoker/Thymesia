@@ -98,6 +98,18 @@ HRESULT CEventMgr::Add_DeadObject(_wstring _LayerName, CGameObject* pGaemObject)
 	return S_OK;	
 }
 
+HRESULT CEventMgr::Add_DeadObjects(_wstring _LayerName, CGameObject* pGaemObject, _uint iCurrenteLevel)
+{
+	if (pGaemObject == nullptr)
+		return E_FAIL;
+
+	m_mapDeadObejcts.emplace(_LayerName, pGaemObject);
+
+	m_iCurrent_Level = iCurrenteLevel;
+
+	return S_OK;
+}
+
 HRESULT CEventMgr::Add_DeadEffect(CGameObject* pGameObject)
 {
 	if (pGameObject == nullptr)
@@ -122,6 +134,18 @@ HRESULT CEventMgr::Update()
 
 			if (m_mapDeadObejct.size() == 0)
 				break;	
+		}
+	}
+
+	if (m_mapDeadObejcts.size() > 0)
+	{
+		for (auto& iterator = m_mapDeadObejcts.begin(); iterator != m_mapDeadObejcts.end();)
+		{
+			m_pGameInstance->Sub_GameObject_To_Layer(m_iCurrent_Level, (*iterator).first, (*iterator).second);
+			iterator = m_mapDeadObejcts.erase(iterator);
+
+			if (m_mapDeadObejcts.size() == 0)
+				break;
 		}
 	}
 
