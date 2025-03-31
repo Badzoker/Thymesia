@@ -255,7 +255,6 @@ void CSMain_Particle_Dust_Delay(int3 dispatchThreadID : SV_DispatchThreadID, uin
     }
     else
     {
-        sharedParticles[groupIndex].vScale = tInput.vScale;
         sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
         vDir = vDir * sharedParticles[groupIndex].vSpeed * 0.0167f;
         sharedParticles[groupIndex].vTranslation.xyz -= vDir;
@@ -312,11 +311,13 @@ void CSMain_Particle_Hurricane(int3 dispatchThreadID : SV_DispatchThreadID, uint
         sharedParticles[groupIndex].vTranslation.w = 1.f;
     }
     
-    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f);
+    float3 vScale = tInput.vScale * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
+    
+    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * vScale.x;
     float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
-    sharedParticles[groupIndex].vUp = vUp;
+    sharedParticles[groupIndex].vUp = vUp * vScale.y;
     float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
-    sharedParticles[groupIndex].vLook = vLook;
+    sharedParticles[groupIndex].vLook = vLook * vScale.z;
     
     GroupMemoryBarrierWithGroupSync();
     
@@ -352,7 +353,6 @@ void CSMain_Particle_Scythe(int3 dispatchThreadID : SV_DispatchThreadID, uint gr
         sharedParticles[groupIndex].vTranslation.w = 1.f;
     }
     float3 vScale = tInput.vScale * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
-    
     
     sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * vScale.x;
     float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));

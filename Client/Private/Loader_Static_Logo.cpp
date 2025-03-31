@@ -1761,6 +1761,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerHalberd_2_Buffer.dat")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Hurricane_Heal */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Heal"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Heal_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_Buffer.dat")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Particle_Image*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Particle_Image"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Particle_Image/texParticle%d.dds"), 25))))

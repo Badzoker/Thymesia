@@ -271,7 +271,7 @@ void CGameItem::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 // ´ê´Â Áß.
 void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!m_bAcquired)
+    if (!m_bAcquired && false == m_bStartAcquireEffect)
     {
         switch (m_eItemType)
         {
@@ -285,6 +285,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
                 m_bEnLarging = true;
                 m_fEnLargingTime = 0.f;
                 m_pButton->Activate_Button(false);
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
             }
             break;
         }
