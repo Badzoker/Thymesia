@@ -197,6 +197,9 @@
 #include "TriggerObject.h"		// 트리거용 게임오브젝트
 #include "BlackScreen.h"
 #include "SpecificObject.h"		//	맵 어디서든 다 쓰일 오브젝트 얘가 진짜 사다리 의자 이런거 관리함 ㅋ
+
+#include "Chair.h"
+#include "ChairLamp.h"
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -1778,7 +1781,13 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), CSpecificObject::Create(m_pDevice, m_pContext))))
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), CSpecificObject::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Chair"), CChair::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), CChairLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

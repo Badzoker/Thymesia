@@ -1,0 +1,174 @@
+#include "pch.h"
+#include "ChairLamp.h"
+#include "GameInstance.h"
+
+CChairLamp::CChairLamp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    :CSpecificObject{ pDevice, pContext }
+{
+}
+
+CChairLamp::CChairLamp(const CChairLamp& Prototype)
+    :CSpecificObject(Prototype)
+{
+}
+
+HRESULT CChairLamp::Initialize_Prototype()
+{
+    if (FAILED(__super::Initialize_Prototype()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CChairLamp::Initialize(void* pArg)
+{
+    CHAIRLAMP_DESC* pDesc = static_cast<CHAIRLAMP_DESC*>(pArg);
+
+    string LampName = "NPCLamp_" + to_string(pDesc->iPairNum);
+
+    if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
+
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f, 0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::OBJECT, iSettingColliderGroup);
+    m_bColliderOn = true;
+
+    string ChairName = "P_Archive_Chair01_" + to_string(pDesc->iPairNum);
+
+    m_pChair = dynamic_cast<CChair*>(m_pGameInstance->Get_GameObject_To_Layer(pDesc->iCurLevel, TEXT("Layer_SpecificObject"), const_cast<_char*>(ChairName.c_str())));
+
+    return S_OK;
+}
+
+void CChairLamp::Priority_Update(_float fTimeDelta)
+{
+    __super::Priority_Update(fTimeDelta);
+}
+
+void CChairLamp::Update(_float fTimeDelta)
+{
+    __super::Update(fTimeDelta);
+}
+
+void CChairLamp::Late_Update(_float fTimeDelta)
+{
+    __super::Late_Update(fTimeDelta);
+}
+
+HRESULT CChairLamp::Render()
+{
+    if (FAILED(__super::Render()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CChairLamp::Render_Glow()
+{
+    if (FAILED(__super::Render_Glow()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CChairLamp::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+    //if (!strcmp(m_szName, ("NPCLamp")))
+    if (!strncmp(m_szName, "NPCLamp", 7))
+    {
+        _vector vLampPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+        vLampPos = XMVectorSetY(vLampPos, XMVectorGetY(vLampPos) + 1.0f);
+
+        _float4 vLampPosition;
+        XMStoreFloat4(&vLampPosition, vLampPos);
+
+        m_pButton->Set_WorldPosition(vLampPosition);
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("서나나만져줘"));
+        m_pButton->Activate_Button(true);
+        m_bInteractOn = true;
+        m_bFadingIn = true;
+        m_bFadingOut = false;
+    }
+}
+
+void CChairLamp::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+    if (m_pGameInstance->isKeyEnter(DIK_E) && !strncmp(m_szName, "NPCLamp", 7))
+    {
+        m_pButton->Activate_Button(false);
+
+        if (!m_bFirstTouch)
+        {
+            /* 신호기 발견 알림*/
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+            m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
+            m_bFirstTouch = true;
+
+
+            m_bColliderOn = false;
+            m_bFadingOut = true;
+
+            if (nullptr != m_pChair)
+                m_pChair->Set_ColliderRender(true);
+        }
+    }
+}
+
+void CChairLamp::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+    m_pButton->Activate_Button(false);
+    m_bInteractOn = false;
+    m_bFadingIn = false;
+    m_bFadingOut = true;
+}
+
+HRESULT CChairLamp::Ready_Components()
+{
+    if (FAILED(__super::Ready_Components()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CChairLamp::Bind_ShaderResources()
+{
+    if (FAILED(__super::Bind_ShaderResources()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+CChairLamp* CChairLamp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+    CChairLamp* pInstance = new CChairLamp(pDevice, pContext);
+
+    if (FAILED(pInstance->Initialize_Prototype()))
+    {
+        MSG_BOX("Failed To Created : CChairLamp");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+CGameObject* CChairLamp::Clone(void* pArg)
+{
+    CChairLamp* pInstance = new CChairLamp(*this);
+
+    if (FAILED(pInstance->Initialize(pArg)))
+    {
+        MSG_BOX("Failed To Created : CChairLamp");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+void CChairLamp::Free()
+{
+    __super::Free();
+
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+}

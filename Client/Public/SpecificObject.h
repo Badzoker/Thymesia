@@ -12,7 +12,7 @@ class CShader;
 END
 
 BEGIN(Client)
-class CSpecificObject final : public CGameObject
+class CSpecificObject abstract : public CGameObject
 {
 public:
     struct SpecificObject_Desc : public CGameObject::GAMEOBJECT_DESC
@@ -22,6 +22,7 @@ public:
         _float3     fScale = {};
         string		ObjectName = {};
         _uint		iPassNum = { 0 };
+        _uint       iPairNum = {};
     };
 
     struct SpecificObject_Info
@@ -34,7 +35,7 @@ public:
         _uint	iPassNum;
     };
 
-private:
+protected:
     CSpecificObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CSpecificObject(const CSpecificObject& Prototype);
     virtual ~CSpecificObject() = default;
@@ -48,14 +49,12 @@ public:
     virtual HRESULT                 Render() override;
     virtual HRESULT                 Render_Glow() override;
 
-public:
-    virtual void                    OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
-    virtual void                    OnCollision(CGameObject* _pOther, PxContactPair _information);
-    virtual void                    OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+    _bool                           Get_ColliderRender() { return m_bColliderOn; }
+    void                            Set_ColliderRender(_bool _bRendering) { m_bColliderOn = _bRendering; }
 
 private:
-    CShader*                        m_pShaderCom = { nullptr };
-    CModel*                         m_pModelCom = { nullptr };
+    CShader* m_pShaderCom = { nullptr };
+    CModel* m_pModelCom = { nullptr };
     _float		                    m_fFrustumRadius = { 0.f };
     _float4		                    m_fRotation = { 0.f, 0.f, 0.f , 0.0f };
     _float3		                    m_fScale = { 0.f, 0.f, 0.f };
@@ -66,27 +65,29 @@ private:
     SpecificObject_Info             m_tagSpecificInfo = {};
     SpecificObject_Desc             m_tagDesc = {};
 
-    PxRigidDynamic*                 m_pActor = { nullptr };
-private:
+
+protected:
     virtual HRESULT                 Ready_Components();
     virtual HRESULT                 Bind_ShaderResources();
 
-private:
-    CGameObject*                    m_pButtonGameObject = { nullptr };
-    CButton*                        m_pButton = { nullptr };
+protected:
+    CGameObject* m_pButtonGameObject = { nullptr };
+    CButton* m_pButton = { nullptr };
     _bool						    m_bInteractOn = { false };
     _float						    m_fAlphaValue = {};
     _bool                           m_bFadingIn = { false };
     _bool                           m_bFadingOut = { false };
 
+    _bool                           m_bColliderOn = { false };
+
+    PxRigidDynamic* m_pActor = { nullptr };
+
 private:
     // 램프 녀석 어루만져줄 때 쓰는 변수들 모음.
     _bool                           m_bFirstTouch = { false }; // 의자 최초 터치 시 beacon found 알림 팝업 열기 용도 - 유빈
-    static _bool                    m_bChairOn;
-    _bool                           m_bChairCollision = { false };
+
 public:
-    static CSpecificObject*         Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual CGameObject*            Clone(void* pArg) override;
+    virtual CGameObject* Clone(void* pArg) = 0;
     virtual void                    Free() override;
 };
 END
