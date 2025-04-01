@@ -70,7 +70,7 @@ void CLeftWeapon::Update(_float fTimeDelta)
 
 void CLeftWeapon::Late_Update(_float fTimeDelta)
 {
-    if (!(*m_pParentPhaseState & CPlayer::PHASE_CHAIR)
+    if (!(*m_pParentPhaseState & CPlayer::PHASE_INTERACTION)
         && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD)
         && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START
         && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP

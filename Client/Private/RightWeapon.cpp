@@ -1,7 +1,6 @@
 #include "pch.h" 
 #include "RightWeapon.h"
 #include "GameInstance.h"
-#include "Player.h"
 #include "Animation.h"
 #include "Camera_Free.h"
 
@@ -54,6 +53,15 @@ HRESULT CRightWeapon::Initialize(void* pArg)
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
+
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+
     return S_OK;
 
 }
@@ -80,14 +88,11 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
  
 #pragma region 이벤트 관련 작업
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState == CPlayer::STATE_ATTACK_L1
-        || *m_pParentState == CPlayer::STATE_ATTACK_L2
-        || *m_pParentState == CPlayer::STATE_ATTACK_L3
-        || *m_pParentState == CPlayer::STATE_ATTACK_L4
-        || *m_pParentState == CPlayer::STATE_ATTACK_L5)
+    if (m_pSet_Right_Weapon_States->count(curState))
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -181,16 +186,13 @@ void CRightWeapon::Update(_float fTimeDelta)
 
 void CRightWeapon::Late_Update(_float fTimeDelta)
 {
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
 
-    if (*m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01   
-        && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02    
-        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START  
-        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP   
-        && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK    
-        && *m_pParentState != CPlayer::STATE_HALBERDS_B
-        && *m_pParentState != CPlayer::STATE_SCYTHE_B
-        && *m_pParentState != CPlayer::STATE_AXE    
-        && !(*m_pParentPhaseState & CPlayer::PHASE_CHAIR)       
+    if (!m_pSet_Claw_Weapon_States->count(curState)
+        && !m_pSet_Halberd_Weapon_States->count(curState)
+        && !m_pSet_Scythe_Weapon_States->count(curState)
+        && !m_pSet_Axe_Weapon_States->count(curState)
+        && !(*m_pParentPhaseState & CPlayer::PHASE_INTERACTION)
         && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD))                   
     {       
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);     

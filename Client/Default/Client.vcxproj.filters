@@ -454,21 +454,6 @@
     <Filter Include="02.GameObject\Camera\Camera_Debug">
       <UniqueIdentifier>{eaf79f33-af84-4f55-9586-c97bac9561db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Player\State\Sit">
-      <UniqueIdentifier>{b6be16e3-7440-434a-af1e-f1d2f652e4da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Player\State\Sit\ArchiveGetUp">
-      <UniqueIdentifier>{5186872f-8bb3-4d47-a968-65d3d3b7bc44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitLight_Up">
-      <UniqueIdentifier>{50017a01-1fcd-4d04-a9ce-ebcd14c2851f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitLoop">
-      <UniqueIdentifier>{0e4b74db-6d0f-4f9c-8d04-fc732a549d03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Player\State\Sit\ArchiveSitStart">
-      <UniqueIdentifier>{8c80df3d-bc98-4785-b4dc-7d8720e6d780}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State\Hurt\Rebound_R">
       <UniqueIdentifier>{3974a09d-dc38-4668-9c2b-4fe84316b0a2}</UniqueIdentifier>
     </Filter>
@@ -789,6 +774,24 @@
     </Filter>
     <Filter Include="02.GameObject\Object\LadderObject">
       <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction">
+      <UniqueIdentifier>{b6be16e3-7440-434a-af1e-f1d2f652e4da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction\Chair">
+      <UniqueIdentifier>{3d4177e6-4869-4144-9ebc-bf4e8f2a0908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction\Chair\ArchiveGetUp">
+      <UniqueIdentifier>{5186872f-8bb3-4d47-a968-65d3d3b7bc44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction\Chair\ArchiveSitLight_Up">
+      <UniqueIdentifier>{50017a01-1fcd-4d04-a9ce-ebcd14c2851f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction\Chair\ArchiveSitLoop">
+      <UniqueIdentifier>{0e4b74db-6d0f-4f9c-8d04-fc732a549d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\InterAction\Chair\ArchiveSitStart">
+      <UniqueIdentifier>{8c80df3d-bc98-4785-b4dc-7d8720e6d780}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1315,16 +1318,16 @@
       <Filter>02.GameObject\Camera\Camera_Debug</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ArchiveGetUp.h">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveGetUp</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveGetUp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ArchiveSitLight_Up.h">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLight_Up</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitLight_Up</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ArchiveSitLoop.h">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLoop</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitLoop</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ArchiveSitStart.h">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitStart</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitStart</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Rebound_R.h">
       <Filter>02.GameObject\Player\State\Hurt\Rebound_R</Filter>
@@ -1995,16 +1998,16 @@
       <Filter>02.GameObject\Camera\Camera_Debug</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ArchiveGetUp.cpp">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveGetUp</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveGetUp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ArchiveSitLight_Up.cpp">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLight_Up</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitLight_Up</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ArchiveSitLoop.cpp">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitLoop</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ArchiveSitStart.cpp">
-      <Filter>02.GameObject\Player\State\Sit\ArchiveSitStart</Filter>
+      <Filter>02.GameObject\Player\State\InterAction\Chair\ArchiveSitStart</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Rebound_R.cpp">
       <Filter>02.GameObject\Player\State\Hurt\Rebound_R</Filter>

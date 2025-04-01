@@ -88,6 +88,8 @@ public:
 		STATE_LV1Villager_M_Execution,
 		STATE_Joker_Execution,
 		STATE_Varg_Execution,
+		STATE_LIGHT_EXECUTION_L,	
+		STATE_LIGHT_EXECUTION_R,	
 
 		/*앉기 및 의자 상호작용 */
 		STATE_ARCHIVE_SIT_START,
@@ -139,7 +141,7 @@ public:
 		PHASE_PARRY = 1 << 4,
 		PHASE_DASH = 1 << 5,
 		PHASE_EXECUTION = 1 << 6,
-		PHASE_CHAIR = 1 << 7,
+		PHASE_INTERACTION = 1 << 7,
 		PHASE_HEAL = 1 << 8,
 		PHASE_DEAD = 1 << 9,	
 		PHASE_START = 1 << 10,	
@@ -180,6 +182,18 @@ public:
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
 	_bool Get_MonsterEvent() { m_bMonsterEvent; }
 
+	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }	
+	unordered_set<STATE>* Get_Claw_Weapon_State() { return &m_set_Claw_Weapon_States; }	
+	unordered_set<STATE>* Get_Right_Weapon_State() { return &m_set_Right_Weapon_States; }
+	unordered_set<STATE>* Get_Player_Camera_State() { return &m_set_Player_Camera_States; }	
+	unordered_set<STATE>* Get_Halberd_State() { return &m_set_Halberd_Weapon_States; }
+	unordered_set<STATE>* Get_Scythe_State() { return &m_set_Scythe_Weapon_States; }
+	unordered_set<STATE>* Get_Axe_State() { return &m_set_Axe_Weapon_States; }
+
+private:
+	void Player_Interaction(CGameObject* _pOther);
+	void Player_Setting_PartAni();
+
 private:
 	_uint								m_iState = { STATE_IDLE };
 	_uint								m_iPreState = { STATE_IDLE };
@@ -188,6 +202,8 @@ private:
 	_uint								m_iPrePhaseState = { PHASE_IDLE };
 
 	_uint								m_iMonsterExectue = {};		 //  몬스터  처형 상태		
+
+	_uint								m_iNormalExecute_Motion = {};
 
 	_bool								m_bLockOn = { false };
 	_bool								m_bMove = { false };
@@ -208,6 +224,13 @@ private:
 
 	PxRigidDynamic* m_pActor = { nullptr };
 
+	unordered_set<STATE> m_set_Body_States = {};	
+	unordered_set<STATE> m_set_Claw_Weapon_States = {};	
+	unordered_set<STATE> m_set_Halberd_Weapon_States = {};	
+	unordered_set<STATE> m_set_Right_Weapon_States = {};	
+	unordered_set<STATE> m_set_Scythe_Weapon_States = {};	
+	unordered_set<STATE> m_set_Axe_Weapon_States = {};	
+	unordered_set<STATE> m_set_Player_Camera_States = {};	
 
 private:
 	_float								m_fTimeDelta = { 0.f };

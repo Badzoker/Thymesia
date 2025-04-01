@@ -1,5 +1,4 @@
 #include "pch.h" 
-#include "Player.h"
 #include "Body_Player.h" 
 #include "GameInstance.h"
 #include "Animation.h"
@@ -49,6 +48,13 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
 
     return S_OK;
 }
@@ -331,6 +337,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_AXE:    
         STATE_AXE_Method(); 
         break;  
+    case CPlayer::STATE_LIGHT_EXECUTION_R:  
+        STATE_LIGHT_EXECUTION_R_Method();   
+        break;  
     default:
         break;
     }
@@ -341,37 +350,11 @@ void CBody_Player::Update(_float fTimeDelta)
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
 
-
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
 
 #pragma region 이벤트 관련 작업
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState == CPlayer::STATE_PARRY_DEFLECT_L
-        || *m_pParentState == CPlayer::STATE_PARRY_L
-        || *m_pParentState == CPlayer::STATE_PARRY_R
-        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_L_UP
-        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_R
-        || *m_pParentState == CPlayer::STATE_PARRY_DEFLECT_R_UP
-        || *m_pParentState == CPlayer::STATE_HurtMFR_L
-        || *m_pParentState == CPlayer::STATE_HurtMFR_R
-        || *m_pParentState == CPlayer::STATE_HURT_FALLDOWN
-        || *m_pParentState == CPlayer::STATE_HURT_HURXXLF
-        || *m_pParentState == CPlayer::STATE_HURT_KNOCKBACK
-        || *m_pParentState == CPlayer::STATE_HURT_KNOCKDOWN
-        || *m_pParentState == CPlayer::STATE_HURT_LF
-        || *m_pParentState == CPlayer::STATE_HURT_SF
-        || *m_pParentState == CPlayer::STATE_HURT_SL
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_B
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_BL
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_BR
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_F
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_FL
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_FR
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_L
-        || *m_pParentState == CPlayer::STATE_NORMAL_EVADE_R
-        || *m_pParentState == CPlayer::STATE_LOCK_ON_EVADE_B
-        || *m_pParentState == CPlayer::STATE_LOCK_ON_EVADE_F
-        || *m_pParentState == CPlayer::STATE_LOCK_ON_EVADE_R
-        || *m_pParentState == CPlayer::STATE_LOCK_ON_EVADE_L)
+    if (m_pSet_Body_States->count(curState))
     {
         for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -445,14 +428,14 @@ void CBody_Player::Update(_float fTimeDelta)
             m_pGameInstance->Add_Actor_Scene(m_pParentActor);
 
         if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_START
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_LOOP
-            && *m_pParentState != CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK
-            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_01
-            && *m_pParentState != CPlayer::STATE_ATTACK_LONG_CLAW_02)
+            && !(m_pSet_Claw_Weapon_States->count(curState))
+            && !(m_pSet_Halberd_Weapon_States->count(curState))
+            && !(m_pSet_Right_Weapon_States->count(curState))
+            && !(m_pSet_Scythe_Weapon_States->count(curState))
+            && !(m_pSet_Axe_Weapon_States->count(curState)))    
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
-            m_fZoomBlurDeltaTime = 0.f; 
+            m_fZoomBlurDeltaTime = 0.f;
         }
     }
 
@@ -2189,6 +2172,19 @@ void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
     }
 }
 
+void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
+{
+    m_pModelCom->SetUp_Animation(210, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(210)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
 void CBody_Player::STATE_ARCHIVE_SIT_START_Method()
 {
     m_pModelCom->SetUp_Animation(66, false);
@@ -2207,10 +2203,7 @@ void CBody_Player::STATE_ARCHIVE_SIT_LOOP_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
     m_pModelCom->Get_VecAnimation().at(65)->Set_AnimationSpeed(0.f);
-    /* if (m_pModelCom->Get_VecAnimation().at(65)->isAniMationFinish())
-     {
-         m_pModelCom->
-     }*/
+
 }
 
 void CBody_Player::STATE_ARCHIVE_SIT_GETUP_Method()
@@ -2220,7 +2213,7 @@ void CBody_Player::STATE_ARCHIVE_SIT_GETUP_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(63)->isAniMationFinish())
     {
-        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_CHAIR;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_INTERACTION;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
     }
 }
@@ -2228,6 +2221,14 @@ void CBody_Player::STATE_ARCHIVE_SIT_GETUP_Method()
 void CBody_Player::STATE_ARCHIVE_SIT_LIGHT_UP_Method()
 {
     /* 의자 불켜기 관련 */
+    m_pModelCom->SetUp_Animation(64, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(64)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_INTERACTION;
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+    }
 }
 
 void CBody_Player::STATE_HEAL_Method()

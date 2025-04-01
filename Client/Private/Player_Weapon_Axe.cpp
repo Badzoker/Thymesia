@@ -1,7 +1,6 @@
 #include "pch.h" 
 #include "Player_Weapon_Axe.h"
 #include "GameInstance.h"
-#include "Player.h"
 #include "Animation.h"
 #include "Camera_Free.h"
 
@@ -58,6 +57,15 @@ HRESULT CPlayer_Weapon_Axe::Initialize(void* pArg)
 
     m_fDissolveAmount = 0.3f;
 
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+
+
     return S_OK;
 
 }
@@ -83,8 +91,9 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
 
-    if (*m_pParentState == CPlayer::STATE_AXE)
+    if (m_pSet_Axe_Weapon_States->count(curState))  
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -144,6 +153,16 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+        if (*m_pParentPhaseState != CPlayer::PHASE_EXECUTION    
+            && !(m_pSet_Claw_Weapon_States->count(curState))    
+            && !(m_pSet_Halberd_Weapon_States->count(curState)) 
+            && !(m_pSet_Right_Weapon_States->count(curState))   
+            && !(m_pSet_Scythe_Weapon_States->count(curState))  
+            && !(m_pSet_Body_States->count(curState)))  
+        {
+
+        }
     }
 
     if (m_bDeadOn)

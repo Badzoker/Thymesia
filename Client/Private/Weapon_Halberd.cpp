@@ -1,7 +1,6 @@
 #include "pch.h" 
 #include "Weapon_Halberd.h"
 #include "GameInstance.h"
-#include "Player.h"
 #include "Animation.h"
 #include "Camera_Free.h"
 
@@ -45,7 +44,7 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.06f,0.6f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,1.5f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -57,6 +56,14 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
 
 
     m_fDissolveAmount = 0.3f;
+
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
 
     return S_OK;
 
@@ -84,7 +91,9 @@ void CWeapon_Halberd::Update(_float fTimeDelta)
     );
 
 
-    if (*m_pParentState == CPlayer::STATE_HALBERDS_B)
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
+
+    if (m_pSet_Halberd_Weapon_States->count(curState))
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -99,7 +108,11 @@ void CWeapon_Halberd::Update(_float fTimeDelta)
 
                 else if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == false)
                 {
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)  
+                    {
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor); 
+                        iter.isPlay = true;
+                    }
                 }
 
 
@@ -137,6 +150,16 @@ void CWeapon_Halberd::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+        if (*m_pParentPhaseState != CPlayer::PHASE_EXECUTION    
+            && !(m_pSet_Claw_Weapon_States->count(curState))
+            && !(m_pSet_Axe_Weapon_States->count(curState))     
+            && !(m_pSet_Right_Weapon_States->count(curState))
+            && !(m_pSet_Scythe_Weapon_States->count(curState))  
+            && !(m_pSet_Body_States->count(curState)))  
+        {
+            /* 카메라 관련 */
+        }
     }
 
     if (m_bDeadOn)

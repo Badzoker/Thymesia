@@ -173,7 +173,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_bDebugCameraOnOff = !m_bDebugCameraOnOff;
 	}
 
-	if (!m_bDebugCameraOnOff && !(m_pPlayer->Get_PhaseState() & CPlayer::PHASE_CHAIR))
+	if (!m_bDebugCameraOnOff && !(m_pPlayer->Get_PhaseState() & CPlayer::PHASE_INTERACTION))
 	{
 #pragma region 카메라 움직임 코드 
 

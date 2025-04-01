@@ -11,6 +11,7 @@
 #include "Weapon_Halberd.h"	
 #include "Weapon_Scythe.h"	
 #include "Player_Weapon_Axe.h"	
+#include "ChairLamp.h"	
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -82,7 +83,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_iState = STATE_START_WALK;	
 	m_iPhaseState |= PHASE_START;	
 
-
+	/* 플레이어 파츠별 사용하는 애니메이션 분류 */	
+	Player_Setting_PartAni();	
 
 	return S_OK;
 }
@@ -96,7 +98,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 #pragma region Mouse_Input
 
-	if (!(m_iPhaseState & PHASE_CHAIR) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))	
+	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))		
 	{	 // 의자 관련 
 		Mouse_section(fTimeDelta);
 #pragma endregion 
@@ -168,14 +170,19 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		)
 	{
 		/* 처형 관련 작업 */
-		if ((m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START) && (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL))
+		if (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START)	
 		{
 
 			if (m_iMonster_Execution_Category == MONSTER_EXECUTION_CATEGORY::MONSTER_VARG)
 				m_iState = STATE_VARG_RUN_EXECUTION;
 
+			else if (m_iMonster_Execution_Category == MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
+			{
+				m_iState = STATE_LIGHT_EXECUTION_R;	
+			}
+
 			else
-				m_iState = STATE_STUN_EXECUTE;
+				m_iState = STATE_STUN_EXECUTE;	
 
 			m_iPhaseState = 0;
 			m_iPhaseState |= PHASE_EXECUTION;
@@ -1212,40 +1219,7 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 		/* =========================== */
 	}
 
-	/* 의자와 충돌 했을 시. */
-	if (!strncmp("P_Archive_Chair", _pOther->Get_Name(), 15))
-	{
-		if (m_pGameInstance->isKeyEnter(DIK_E))
-		{
-			if (m_iState != STATE_ARCHIVE_SIT_LOOP)
-			{
-				_float4 fChairLookDir = {};
-				_float4 fChairPos = {};
-				const _float4x4* ChiarWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
-				fChairLookDir = { ChiarWolrdMatrix->_31,ChiarWolrdMatrix->_32,ChiarWolrdMatrix->_33,0.f };
-				fChairPos = { ChiarWolrdMatrix->_41,ChiarWolrdMatrix->_42,ChiarWolrdMatrix->_43,1.f };
-
-				m_pStateMgr->Get_VecState().at(48)->Set_MonsterLookDir(fChairLookDir);
-				m_pStateMgr->Get_VecState().at(48)->Set_GetMonsterPos(fChairPos);
-				m_pStateMgr->Get_VecState().at(48)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-
-				m_iState = STATE_ARCHIVE_SIT_START;
-				m_iPhaseState |= PHASE_CHAIR;
-			}
-
-
-		}
-
-		if (m_iPhaseState & PHASE_CHAIR)
-		{
-			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
-			{
-				m_iState = STATE_ARCHIVE_SIT_GETUP;
-
-			}
-		}
-
-	}
+	Player_Interaction(_pOther);
 
 }
 
@@ -1280,19 +1254,6 @@ CGameObject* CPlayer::Clone(void* pArg)
 	return pInstance;
 }
 
-void CPlayer::Free()
-{
-
-	m_pGameInstance->Delete_Dynamic_Light(m_pTransformCom);
-
-	__super::Free();
-
-	m_pGameInstance->Sub_Actor_Scene(m_pActor);
-
-	Safe_Release(m_pStateMgr);
-	Safe_Release(m_pNavigationCom);
-}
-
 
 void CPlayer::Slide_Move(CGameObject* pGameObject)
 {
@@ -1316,4 +1277,167 @@ void CPlayer::Slide_Move(CGameObject* pGameObject)
 
 		m_pTransformCom->Go_Dir(vSlider, m_pNavigationCom, m_fTimeDelta * 0.075f);
 	}
+}
+
+void CPlayer::Player_Interaction(CGameObject* _pOther)
+{
+	if (!strncmp("NPCLamp", _pOther->Get_Name(), 7))
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_E))
+		{
+			if (m_iState != STATE_ARCHIVE_SIT_LIGHT_UP)
+			{
+				_float4 fChairLookDir = {};
+				_float4 fChairPos = {};
+				const _float4x4* ChiarWolrdMatrix = dynamic_cast<CChairLamp*>(_pOther)->Get_Chair_GameObj()->Get_Transfrom()->Get_WorldMatrix_Ptr();
+				fChairLookDir = { ChiarWolrdMatrix->_31,ChiarWolrdMatrix->_32,ChiarWolrdMatrix->_33,0.f };
+				fChairPos = { ChiarWolrdMatrix->_41,ChiarWolrdMatrix->_42,ChiarWolrdMatrix->_43,1.f };
+
+				m_pStateMgr->Get_VecState().at(51)->Set_MonsterLookDir(fChairLookDir);
+				m_pStateMgr->Get_VecState().at(51)->Set_GetMonsterPos(fChairPos);
+				m_pStateMgr->Get_VecState().at(51)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+
+				m_iState = STATE_ARCHIVE_SIT_LIGHT_UP;
+				m_iPhaseState |= PHASE_INTERACTION;
+			}
+		}
+	}
+
+
+	/* 의자와 충돌 했을 시. */
+	else if (!strncmp("P_Archive_Chair", _pOther->Get_Name(), 15))  // 상호작용은 1프레임에 1번만 할거니깐 else if로 변경 
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_E))
+		{
+			if (m_iState != STATE_ARCHIVE_SIT_LOOP)
+			{
+				_float4 fChairLookDir = {};
+				_float4 fChairPos = {};
+				const _float4x4* ChiarWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+				fChairLookDir = { ChiarWolrdMatrix->_31,ChiarWolrdMatrix->_32,ChiarWolrdMatrix->_33,0.f };
+				fChairPos = { ChiarWolrdMatrix->_41,ChiarWolrdMatrix->_42,ChiarWolrdMatrix->_43,1.f };
+
+				m_pStateMgr->Get_VecState().at(48)->Set_MonsterLookDir(fChairLookDir);
+				m_pStateMgr->Get_VecState().at(48)->Set_GetMonsterPos(fChairPos);
+				m_pStateMgr->Get_VecState().at(48)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+
+				m_iState = STATE_ARCHIVE_SIT_START;
+				m_iPhaseState |= PHASE_INTERACTION;
+			}
+
+
+		}
+
+		if (m_iPhaseState & PHASE_INTERACTION)
+		{
+			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+			{
+				m_iState = STATE_ARCHIVE_SIT_GETUP;
+
+			}
+		}
+	}
+}
+
+void CPlayer::Player_Setting_PartAni()
+{
+#pragma region body State 
+	m_set_Body_States =
+	{
+		STATE_PARRY_DEFLECT_L,
+		STATE_PARRY_L,
+		STATE_PARRY_R,
+		STATE_PARRY_DEFLECT_L_UP,
+		STATE_PARRY_DEFLECT_R,
+		STATE_PARRY_DEFLECT_R_UP,
+		STATE_HurtMFR_L,
+		STATE_HurtMFR_R,
+		STATE_HURT_FALLDOWN,
+		STATE_HURT_HURXXLF,
+		STATE_HURT_KNOCKBACK,
+		STATE_HURT_KNOCKDOWN,
+		STATE_HURT_LF,
+		STATE_HURT_SF,
+		STATE_HURT_SL,
+		STATE_NORMAL_EVADE_B,
+		STATE_NORMAL_EVADE_BL,
+		STATE_NORMAL_EVADE_BR,
+		STATE_NORMAL_EVADE_F,
+		STATE_NORMAL_EVADE_FL,
+		STATE_NORMAL_EVADE_FR,
+		STATE_NORMAL_EVADE_L,
+		STATE_NORMAL_EVADE_R,
+		STATE_LOCK_ON_EVADE_B,
+		STATE_LOCK_ON_EVADE_F,
+		STATE_LOCK_ON_EVADE_R,
+		STATE_LOCK_ON_EVADE_L,
+	};
+#pragma endregion 
+#pragma region Claw State
+	m_set_Claw_Weapon_States =
+	{
+		STATE_ATTACK_LONG_CLAW_01,
+		STATE_ATTACK_LONG_CLAW_02,
+
+		/* 플레이어 우클릭 차지 공격 */
+		STATE_CLAW_CHARGE_START,
+		STATE_CLAW_CHARGE_LOOP,
+		STATE_CLAW_CHARGE_FULL_ATTACK,
+		STATE_CLAW_LONG_PLUNDER_ATTACK2,
+	};
+#pragma endregion
+#pragma region Right Weapon State
+	m_set_Right_Weapon_States =
+	{
+		STATE_ATTACK_L1,
+		STATE_ATTACK_L2,
+		STATE_ATTACK_L3,
+		STATE_ATTACK_L4,
+		STATE_ATTACK_L5,
+	};
+#pragma endregion 
+#pragma region Player Camera State
+	m_set_Player_Camera_States =
+	{
+		STATE_HARMOR_EXECUTION,
+		STATE_LV1Villager_M_Execution,
+		STATE_Joker_Execution,
+		STATE_Varg_Execution,
+		STATE_STUN_EXECUTE,
+		STATE_CATCHED,
+		STATE_VARG_RUN_EXECUTION,
+	};
+#pragma endregion 
+#pragma region Halberd Weapon State
+	m_set_Halberd_Weapon_States =
+	{
+		STATE_HALBERDS_B,
+	};
+#pragma endregion 
+#pragma region Scythe Weapon State
+	m_set_Scythe_Weapon_States =
+	{
+		STATE_SCYTHE_B,
+	};
+#pragma endregion 
+#pragma region Axe Weapon State
+	m_set_Axe_Weapon_States =
+	{
+		STATE_AXE,
+	};
+#pragma endregion
+
+}
+
+void CPlayer::Free()
+{
+
+	m_pGameInstance->Delete_Dynamic_Light(m_pTransformCom);
+
+	__super::Free();
+
+	m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+	Safe_Release(m_pStateMgr);
+	Safe_Release(m_pNavigationCom);
 }

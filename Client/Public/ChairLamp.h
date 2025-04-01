@@ -45,6 +45,10 @@ public:
     virtual HRESULT                 Ready_Components();
     virtual HRESULT                 Bind_ShaderResources();
 
+
+    /* 의자 포인터 가져오기 위해서 만듬 ( 선환 ) */
+    virtual CGameObject* Get_Chair_GameObj() { return m_pChair; }   
+
 private:
     _bool                           m_bFirstTouch = { false };
     CChair* m_pChair = { nullptr };
