@@ -5,7 +5,7 @@
 
 BEGIN(Client)
 
-class CStaticObject final : public CObject
+class CStaticObject : public CObject
 {
 public:
 	typedef struct StaticObjectDesc : public CObject::OBJECT_DESC
@@ -13,7 +13,7 @@ public:
 
 	}STATIC_OBJECT_DESC;
 
-private:
+protected:
 	CStaticObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStaticObject(const CStaticObject& Prototype);
 	virtual ~CStaticObject() = default;
@@ -29,21 +29,13 @@ public:
 	HRESULT						Render_Shadow() override;
 	virtual HRESULT				Render_Motion_Blur() override;	
 
-private:
+protected:
 	virtual HRESULT				Ready_Components() override;
 	virtual HRESULT				Bind_ShaderResources() override;
 	virtual HRESULT				Bind_Motion_Blur_ShaderResources();
 
-private:
+protected:
 	PxRigidDynamic*				m_pActor = { nullptr };
-	class CGameObject*			m_pInteractButton = { nullptr };
-
-	CGameObject*				m_pButtonGameObject = { nullptr };
-	CButton*					m_pButton = { nullptr };
-	_bool						m_bInteractOn = { false };
-	_float						m_fAlphaValue = {};
-	_bool                       m_bFadingIn = { false };
-	_bool                       m_bFadingOut = { false };
 
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

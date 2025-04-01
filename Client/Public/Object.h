@@ -36,6 +36,8 @@ public:
 		_uint		iBillBoardMeshNum = { 0 };
 		LEVELID		eLevelID = { LEVEL_TUTORIAL };
 
+		_uint		iObjectNumber = {};
+
 	}OBJECT_DESC;
 
 protected:

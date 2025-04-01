@@ -93,6 +93,7 @@
 #include "BillBoardObject.h"		// (아닐 비)인스턴싱용 게임오브젝트
 #include "GroundObject.h"		// 인스턴싱용 게임오브젝트
 #include "TriggerObject.h"		// 트리거용 게임오브젝트
+#include "LadderObject.h"
 #include "BlackScreen.h"
 #pragma endregion
 
@@ -270,8 +271,12 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 	lstrcpyW(m_szLoadingText, TEXT("네비게이션 원형을 생성한다."));	
 
 	// 03.19 네비 Circus Map 
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation48.txt")))))
+	//	return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation48.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation49.txt")))))
 		return E_FAIL;
 	
 
@@ -459,6 +464,10 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_BillBoardObject"),
 		CBillBoardObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_Ladder"),
+		CLadderObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 
