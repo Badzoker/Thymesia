@@ -58,7 +58,7 @@ private:
 	ID3D11ShaderResourceView*						m_pNoiseSRV = { nullptr };
 
 	_float											m_fTime = { 0.f };
-	_float4											m_vFogColor = { 0.55f, 0.58f, 0.56f, 1.f }; // 나중에 스테이지 변경시 안개색도 변경가능하게
+	_float4											m_vFogColor = { 0.55f, 0.58f, 0.56f, 1.f };
 
 	class CShader_Compute_Deferred* m_pLightShaftComputeShader = { nullptr };
 	class CShader_Compute_Deferred* m_pFogComputeShader = { nullptr };
@@ -99,9 +99,6 @@ private:
 
 private:
 	HRESULT Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut);	
-	float PerlinNoise3D(float x, float y, float z);
-	float PerlinNoise3D_Tiled(float x, float y, float z, float tileSize);
-	void Generate3DPerlinNoise();
 	HRESULT SetUp_ViewportDesc(_uint iWidth, _uint iHeight);
 
 	HRESULT Add_NoiseTexture();

@@ -5,7 +5,7 @@
 
 #include "Shader_Compute_Deferred.h"
 
-#include "FastNoiseLite/FastNoiseLite.h"
+#include "DirectXTex/DirectXTex.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
@@ -1220,116 +1220,49 @@ HRESULT CRenderer::Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D1
 }
 
 
-float Clamp(float x, float minVal, float maxVal) {
-	return (x < minVal) ? minVal : (x > maxVal) ? maxVal : x;
-}
+//float Clamp(float x, float minVal, float maxVal) {
+//	return (x < minVal) ? minVal : (x > maxVal) ? maxVal : x;
+//}
+//
+//float SmoothStep(float edge0, float edge1, float x) {
+//	float t = Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+//	return t * t * (3.0f - 2.0f * t);
+//}
+//
+//float fade(float t) {
+//	return t * t * t * (t * (t * 6 - 15) + 10);
+//}
+//
+//float lerp(float a, float b, float t) {
+//	return a + t * (b - a);
+//}
+//
+//float grad(int hash, float x, float y, float z) {
+//	int h = hash & 15;
+//	float u = h < 8 ? x : y;
+//	float v = h < 4 ? y : (h == 12 || h == 14 ? x : z);
+//	return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+//}
+//
+//void GeneratePermutationTable(int perm[512]) {
+//	std::vector<int> p(256);
+//
+//	for (int i = 0; i < 256; ++i) {
+//		p[i] = i;
+//	}
+//
+//	std::srand((unsigned int)std::time(nullptr));
+//
+//	for (int i = 255; i > 0; --i) {
+//		int j = std::rand() % (i + 1);
+//		std::swap(p[i], p[j]);
+//	}
+//
+//	for (int i = 0; i < 256; ++i) {
+//		perm[i] = perm[i + 256] = p[i];
+//	}
+//}
 
-float SmoothStep(float edge0, float edge1, float x) {
-	float t = Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
-	return t * t * (3.0f - 2.0f * t);
-}
-
-float fade(float t) {
-	return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-float lerp(float a, float b, float t) {
-	return a + t * (b - a);
-}
-
-float grad(int hash, float x, float y, float z) {
-	int h = hash & 15;
-	float u = h < 8 ? x : y;
-	float v = h < 4 ? y : (h == 12 || h == 14 ? x : z);
-	return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
-}
-
-void GeneratePermutationTable(int perm[512]) {
-	std::vector<int> p(256);
-
-	for (int i = 0; i < 256; ++i) {
-		p[i] = i;
-	}
-
-	std::srand((unsigned int)std::time(nullptr));
-
-	for (int i = 255; i > 0; --i) {
-		int j = std::rand() % (i + 1);
-		std::swap(p[i], p[j]);
-	}
-
-	for (int i = 0; i < 256; ++i) {
-		perm[i] = perm[i + 256] = p[i];
-	}
-}
-
-float CRenderer::PerlinNoise3D(float x, float y, float z) {
-	int X = (int)floor(x) & 255;
-	int Y = (int)floor(y) & 255;
-	int Z = (int)floor(z) & 255;
-
-	x -= floor(x);
-	y -= floor(y);
-	z -= floor(z);
-
-	float u = fade(x);
-	float v = fade(y);
-	float w = fade(z);
-
-	int A = m_perm[X] + Y;
-	int AA = m_perm[A] + Z;
-	int AB = m_perm[A + 1] + Z;
-	int B = m_perm[X + 1] + Y;
-	int BA = m_perm[B] + Z;
-	int BB = m_perm[B + 1] + Z;
-
-	return lerp(
-		lerp(
-			lerp(grad(m_perm[AA], x, y, z), grad(m_perm[BA], x - 1, y, z), u),
-			lerp(grad(m_perm[AB], x, y - 1, z), grad(m_perm[BB], x - 1, y - 1, z), u),
-			v),
-		lerp(
-			lerp(grad(m_perm[AA + 1], x, y, z - 1), grad(m_perm[BA + 1], x - 1, y, z - 1), u),
-			lerp(grad(m_perm[AB + 1], x, y - 1, z - 1), grad(m_perm[BB + 1], x - 1, y - 1, z - 1), u),
-			v),
-		w);
-}
-
-float CRenderer::PerlinNoise3D_Tiled(float x, float y, float z, float tileSize) {
-	float theta = x * (2.0f * XM_PI / tileSize);
-	float phi = y * (2.0f * XM_PI / tileSize);
-	float omega = z * (2.0f * XM_PI / tileSize);
-
-	float nx = cos(theta) * cos(phi);
-	float ny = sin(theta) * cos(phi);
-	float nz = sin(phi);
-
-	return PerlinNoise3D(nx * tileSize, ny * tileSize, nz * tileSize);
-}
-
-
-const int textureSize = 128;
-
-void CRenderer::Generate3DPerlinNoise() {
-
-	noiseData.resize(textureSize * textureSize * textureSize);
-
-	FastNoiseLite noiseGenerator;
-	noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noiseGenerator.SetFrequency(0.05f);
-
-	for (int z = 0; z < textureSize; ++z)
-	{
-		for (int y = 0; y < textureSize; ++y)
-		{
-			for (int x = 0; x < textureSize; ++x)
-			{
-				float noisevalue = noiseGenerator.GetNoise((float)x, (float)y, (float)z);
-				noiseData[x + y * textureSize + z * textureSize * textureSize] = static_cast<unsigned char>((noisevalue + 1) * 127.5f);
-			}
-		}
-	}
-}
 
 HRESULT CRenderer::SetUp_ViewportDesc(_uint iWidth, _uint iHeight)
 {
@@ -1349,32 +1282,20 @@ HRESULT CRenderer::SetUp_ViewportDesc(_uint iWidth, _uint iHeight)
 
 HRESULT CRenderer::Add_NoiseTexture()
 {
-	Generate3DPerlinNoise();
+	ScratchImage scratch;
+	TexMetadata metadata;
 
-	D3D11_TEXTURE3D_DESC textureDesc = {};
-	textureDesc.Width = textureSize;
-	textureDesc.Height = textureSize;
-	textureDesc.Depth = textureSize;
-	textureDesc.MipLevels = 1;
-	textureDesc.Format = DXGI_FORMAT_R8_UNORM;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	HRESULT hr = LoadFromDDSFile(
+		L"../Bin/Resources/Textures/3DTexture/3DNoiseTexture.dds",
+		DDS_FLAGS_NONE,
+		&metadata,
+		scratch
+	);
 
-	D3D11_SUBRESOURCE_DATA initData = {};
-	initData.pSysMem = noiseData.data();
-	initData.SysMemPitch = textureSize * sizeof(unsigned char);
-	initData.SysMemSlicePitch = textureSize * textureSize * sizeof(unsigned char);
-
-	HRESULT hr = m_pDevice->CreateTexture3D(&textureDesc, &initData, &m_pNoiseTexture3D);
-	if (FAILED(hr))
+	if (FAILED(CreateTexture(m_pDevice, scratch.GetImages(), scratch.GetImageCount(), scratch.GetMetadata(), (ID3D11Resource**)&m_pNoiseTexture3D)))
 		return E_FAIL;
 
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { DXGI_FORMAT_R8_UNORM, D3D11_SRV_DIMENSION_TEXTURE3D, 0, 0 };
-	srvDesc.Texture3D.MipLevels = 1;
-	srvDesc.Texture3D.MostDetailedMip = 0;
-
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pNoiseTexture3D, &srvDesc, &m_pNoiseSRV)))
+	if (FAILED(CreateShaderResourceView(m_pDevice, scratch.GetImages(), scratch.GetImageCount(), scratch.GetMetadata(), &m_pNoiseSRV)))
 		return E_FAIL;
 
 	return S_OK;
