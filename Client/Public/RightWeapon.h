@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
-
+#include "Player.h"	
 
 BEGIN(Engine)
 class CShader;
@@ -49,6 +49,15 @@ private:
 	float			   m_AccColliderLifeAttack2 = { 0.f };
 
 	PxRigidDynamic* m_pActor = { nullptr };
+
+
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
 
 private:
 	_float			   m_fTimeDelta = { 0.f };

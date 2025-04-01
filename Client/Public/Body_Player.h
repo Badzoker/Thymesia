@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
+#include "Player.h"	
 
 BEGIN(Engine)
 class CShader;
@@ -185,6 +186,9 @@ public:
 	/* 바그에게 뛰어가서 처형하는 모션 */	
 	void STATE_VARG_RUN_EXECUTION_Method();	
 
+	/* 노말 몬스터 처형*/
+	void STATE_LIGHT_EXECUTION_R_Method();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -219,6 +223,15 @@ private:
 	_float m_fDeadStartTimer = {};		
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
+
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
+
 
 public:
 	HRESULT Ready_Components();

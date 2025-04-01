@@ -1,7 +1,6 @@
 #include "pch.h" 
 #include "ClawWeapon.h"     
 #include "GameInstance.h"   
-#include "Player.h"
 #include "Animation.h"  
 #include "Camera_Free.h"    
 
@@ -52,6 +51,16 @@ HRESULT CClawWeapon::Initialize(void* pArg)
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
+
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+
+
     return S_OK;
 }
 
@@ -75,162 +84,155 @@ void CClawWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
  
 #pragma region 이벤트 관련 작업
 
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
-    if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01
-        || *m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02
-        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_START
-        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_LOOP
-        || *m_pParentState == CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK)
+    if (m_pSet_Claw_Weapon_States->count(curState))
     {
-    
-            for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-            {
-                if (iter.isPlay == false)
-                {
-                    if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
-                        && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
-                    {
-                        // 그 구간에서는 계속 진행  
-                        if (!strcmp(iter.szName, "Attack_Collider_1"))
-                        {
-                            if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
-                                && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                                && m_bCollisionOn)
-                            {
-                                m_pGameInstance->Add_Actor_Scene(m_pActor);
-                            }
+       for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+       {
+           if (iter.isPlay == false)
+           {
+               if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
+                   && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+               {
+                   // 그 구간에서는 계속 진행  
+                   if (!strcmp(iter.szName, "Attack_Collider_1"))
+                   {
+                       if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
+                           && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                           && m_bCollisionOn)
+                       {
+                           m_pGameInstance->Add_Actor_Scene(m_pActor);
+                       }
 
-                            else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
-                                && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                                && !m_bCollisionOn)
-                            {
-                                m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                            }
-                        }
-                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
-                        {
-                            // 카메라 포인터 가져오고 싶다.
-                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
-                            m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta); 
+                       else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
+                           && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                           && !m_bCollisionOn)
+                       {
+                           m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                       }
+                   }
+                   if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                   {
+                       // 카메라 포인터 가져오고 싶다.
+                       m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
+                       m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta); 
 
-                            m_fAccTimeDelta += fTimeDelta;
-                            m_pCamera->Set_Camera_ZoomOutSpeed(5.f);    
-                            m_pCamera->ZoomOut();
-                        }
+                       m_fAccTimeDelta += fTimeDelta;
+                       m_pCamera->Set_Camera_ZoomOutSpeed(5.f);    
+                       m_pCamera->ZoomOut();
+                   }
 
-                        if (!strcmp(iter.szName, "Camera_Zoom_In")) 
-                        {
-                            m_pCamera->Set_Camera_ZoomInSpeed(1.5f);    
-                            m_pCamera->ZoomIn();    
-                        }   
+                   if (!strcmp(iter.szName, "Camera_Zoom_In")) 
+                   {
+                       m_pCamera->Set_Camera_ZoomInSpeed(1.5f);    
+                       m_pCamera->ZoomIn();    
+                   }   
 
-                        if (!strcmp(iter.szName, "Camera_Zoom_Blur"))   
-                        {
-                            m_fAccTimeDelta += fTimeDelta;  
-                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
-                            m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
-                        }
-                    }
+                   if (!strcmp(iter.szName, "Camera_Zoom_Blur"))   
+                   {
+                       m_fAccTimeDelta += fTimeDelta;  
+                       m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+                       m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
+                   }
+               }
 
-                    else
-                    {
-                        if (!strcmp(iter.szName, "Attack_Collider_1"))
-                        {
-                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                        }
-                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
-                        {
-                            /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
-                            m_pCamera->ResetZoomOutCameraPos(1.f);
-                            m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
-                            m_fAccTimeDelta = 0.f;  
-                        }
-                        if (!strcmp(iter.szName, "Camera_Zoom_Out_No_Blur"))    
-                        {
-                            m_pCamera->ResetZoomInCameraPos(10.f);  
-                        }
-                        if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
-                        {
-                            m_fAccTimeDelta -= fTimeDelta;
+               else
+               {
+                   if (!strcmp(iter.szName, "Attack_Collider_1"))
+                   {
+                       m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                   }
+                   if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                   {
+                       /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
+                       m_pCamera->ResetZoomOutCameraPos(1.f);
+                       m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
+                       m_fAccTimeDelta = 0.f;  
+                   }
+                   if (!strcmp(iter.szName, "Camera_Zoom_Out_No_Blur"))    
+                   {
+                       m_pCamera->ResetZoomInCameraPos(10.f);  
+                   }
+                   if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
+                   {
+                       m_fAccTimeDelta -= fTimeDelta;
 
-                            if (m_fAccTimeDelta <= 0.f)
-                                m_fAccTimeDelta = 0.f;
+                       if (m_fAccTimeDelta <= 0.f)
+                           m_fAccTimeDelta = 0.f;
 
-                            m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
-                        }
+                       m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
+                   }
 
-                    }
+               }
 
-                    if ((iter.eType == EVENT_SOUND)
-                        && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
-                    {
-                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+               if ((iter.eType == EVENT_SOUND)
+                   && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
+               {
+                   iter.isPlay = true;      // 한 번만 재생 되어야 하므로
 
-                    }
+               }
 
-#pragma region Effect 0316
-                    if ((iter.eType == EVENT_EFFECT)
-                        && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
-                    {
-                        if (!strcmp(iter.szName, "Claw1_Start"))
-                        {
+#pragma region Effect 0316  
+               if ((iter.eType == EVENT_EFFECT)
+                   && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
+               {
+                   if (!strcmp(iter.szName, "Claw1_Start"))
+                   {
 
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
-                            //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                            //m_fTimer_Effect1 = 0.5f;
-                        }
-                        else if (!strcmp(iter.szName, "Claw2_Start"))
-                        {
+                       m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
+                       //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                       //m_fTimer_Effect1 = 0.5f;
+                   }
+                   else if (!strcmp(iter.szName, "Claw2_Start"))
+                   {
 
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
-                            //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                            //m_fTimer_Effect2 = 0.5f;
-                        }
-                        else if (!strcmp(iter.szName, "Claw1_Effect"))
-                        {
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_1, &m_CombinedWorldMatrix);
-                            iter.isPlay = true;
+                       m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
+                       //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                       //m_fTimer_Effect2 = 0.5f;
+                   }
+                   else if (!strcmp(iter.szName, "Claw1_Effect"))
+                   {
+                       m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_1, &m_CombinedWorldMatrix);
+                       iter.isPlay = true;
 
-                        }
-                        else if (!strcmp(iter.szName, "Claw2_Effect"))
-                        {
+                   }
+                   else if (!strcmp(iter.szName, "Claw2_Effect"))
+                   {
 
-                            m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_2, &m_CombinedWorldMatrix);
-                            iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                        }
-                    }
-                }
-                else if ((iter.eType == EVENT_EFFECT) && iter.isEventActivate == false && iter.isPlay == true)
-                {
-                    if (!strcmp(iter.szName, "Claw1_Effect"))
-                    {
-                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_1);
-                        iter.isPlay = false;      // 약간 Logic을 뒤틀어서 꺼져야할때를 구분함
-                    }
-                    else if (!strcmp(iter.szName, "Claw2_Effect"))
-                    {
-                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_2);
-                        iter.isPlay = false; 
-                    }
-                }
+                       m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_2, &m_CombinedWorldMatrix);
+                       iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                   }
+               }
+           }
+           else if ((iter.eType == EVENT_EFFECT) && iter.isEventActivate == false && iter.isPlay == true)
+           {
+               if (!strcmp(iter.szName, "Claw1_Effect"))
+               {
+                   m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_1);
+                   iter.isPlay = false;      // 약간 Logic을 뒤틀어서 꺼져야할때를 구분함
+               }
+               else if (!strcmp(iter.szName, "Claw2_Effect"))
+               {
+                   m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_CLAW_2);
+                   iter.isPlay = false; 
+               }
+           }
 #pragma endregion
-            }
+       }
     }
-
-    else if (*m_pParentState != CPlayer::STATE_PARRY_DEFLECT_L_UP  
-         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_L   
-         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R   
-         && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R_UP     
-         && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
-         && *m_pParentState != CPlayer::STATE_AXE)  
-         {
-             m_pGameInstance->Sub_Actor_Scene(m_pActor);
-             m_pCamera->ResetZoomOutCameraPos(1.f);
-             m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
-         }
+        
+    else if (!(m_pSet_Body_States->count(curState))  
+        && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION  
+        && *m_pParentState != CPlayer::STATE_AXE)    
+      {
+          m_pGameInstance->Sub_Actor_Scene(m_pActor);    
+          m_pCamera->ResetZoomOutCameraPos(1.f); 
+          m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);  
+      }
 #pragma endregion  
 
 

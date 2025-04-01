@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
+#include "Player.h"
 
 BEGIN(Engine)
 class CShader;
@@ -65,6 +66,13 @@ private:
 	_uint* m_pParentState = { nullptr };	
 	_uint* m_pParentPhsaeState = { nullptr };
 
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
 
 public:
 	HRESULT Ready_Components();
