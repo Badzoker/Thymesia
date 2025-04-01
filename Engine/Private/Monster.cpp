@@ -99,6 +99,11 @@ void CMonster::Update(_float fTimeDelta)
         PatternCreate();
 
     RootAnimation();
+
+    State_Update(fTimeDelta);
+    if (m_bNeed_Rotation)
+        Rotation_To_Player();
+
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
@@ -108,9 +113,6 @@ void CMonster::Update(_float fTimeDelta)
 void CMonster::Late_Update(_float fTimeDelta)
 {
     Recovery_HP();
-    if (m_bNeed_Rotation)
-        Rotation_To_Player();
-
     //파츠 돌리기
     __super::Late_Update(fTimeDelta);
 }
@@ -152,6 +154,10 @@ void CMonster::CalCulate_Distance()
 }
 
 void CMonster::PatternCreate()
+{
+}
+
+void CMonster::State_Update(_float fTimeDelta)
 {
 }
 
@@ -201,23 +207,19 @@ void CMonster::Rotation_To_Player()
         fRadians *= -1;
 
     if (fabs(m_fRotateDegree) < fabs(fRadians))
-        fRadians = m_fRotateDegree;
-
-    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-
-    m_fRotateDegree -= fRadians;
-
-    if (fabs(m_fRotateDegree) <= 0.01f)
     {
-        m_fRotateDegree = 0.f;
+        fRadians = m_fRotateDegree;
+        m_fRotateDegree = 0.f;  // 회전 완료
         m_bNeed_Rotation = false;
         return;
     }
-
+    else
+    {
+        m_fRotateDegree -= fRadians;
+    }
     m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
-
-    m_fRotateDegree -= fRadians;
 }
+
 
 _bool CMonster::Is_Player_Near()
 {

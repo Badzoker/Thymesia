@@ -793,6 +793,24 @@
     <Filter Include="02.GameObject\Player\State\InterAction\Chair\ArchiveSitStart">
       <UniqueIdentifier>{8c80df3d-bc98-4785-b4dc-7d8720e6d780}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Male\ScytheM">
+      <UniqueIdentifier>{0826037e-89a3-41bd-ae61-89b501535690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Male\ScytheM\Body">
+      <UniqueIdentifier>{f16f5f7c-dd05-4056-82bf-40bef7266774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Male\ScytheM\Hat">
+      <UniqueIdentifier>{96ec5ba9-a6b9-4711-a179-4873a315ac8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Punch_Man">
+      <UniqueIdentifier>{95ba3490-7a85-49a9-a858-419bda7ca830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Punch_Man\Body">
+      <UniqueIdentifier>{940abbf5-b686-4ca0-95f2-d5886cd1c052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Weapon\Scythe">
+      <UniqueIdentifier>{01c558f6-4070-44b9-a974-5074f04f5a69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1482,6 +1500,24 @@
     <ClInclude Include="..\Public\LadderObject.h">
       <Filter>02.GameObject\Object\LadderObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Normal_ScytheM.h">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_ScytheM.h">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Hat.h">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM\Hat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Punch_Man.h">
+      <Filter>02.GameObject\Monster\01. Elite\Punch_Man\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Elite_Punch_Man.h">
+      <Filter>02.GameObject\Monster\01. Elite\Punch_Man</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Monster_Scythe.h">
+      <Filter>02.GameObject\Monster\00. Normal\Weapon\Scythe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2161,6 +2197,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\LadderObject.cpp">
       <Filter>02.GameObject\Object\LadderObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_ScytheM.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_ScytheM.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Hat.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM\Hat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Punch_Man.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Punch_Man\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elite_Punch_Man.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Punch_Man</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Monster_Scythe.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Weapon\Scythe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

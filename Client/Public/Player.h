@@ -180,7 +180,7 @@ public:
 	void Slide_Move(CGameObject* pGameObject);
 	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }	
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
-	_bool Get_MonsterEvent() { m_bMonsterEvent; }
+	_bool Get_MonsterEvent() { return m_bMonsterEvent; }
 
 	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }	
 	unordered_set<STATE>* Get_Claw_Weapon_State() { return &m_set_Claw_Weapon_States; }	
@@ -303,7 +303,7 @@ public:
 
 	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }	
 	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }	
-
+	_uint* Get_State_Ptr() { return &m_iState; }
 	_int    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
 	_int    Get_MemoryFragment() { return m_iMemoryFragment; }

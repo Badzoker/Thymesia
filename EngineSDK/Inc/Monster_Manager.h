@@ -34,6 +34,7 @@ public:
 
 public:
 	HRESULT Active_Monster();
+	HRESULT Find_Closest_Monster();
 	HRESULT Add_Delete_Monster(class CMonster* pMonster);
 	HRESULT Delete_Monster();
 	HRESULT Delete_All_Monster();
@@ -42,6 +43,7 @@ private:
 	map<MONSTER_CATEGORY, vector<CMonster_Manager::MONSTER_INFO>> m_MonsterInfos;
 	deque<class CMonster*> m_pCheck_Monsters;
 	deque<class CMonster*> m_pDelete_Monsters;
+	vector<_float>		   m_fDistances;
 	class CGameInstance* m_pGameInstance = { nullptr };
 public:
 	static CMonster_Manager* Create();

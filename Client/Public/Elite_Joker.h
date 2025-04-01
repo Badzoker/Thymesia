@@ -36,6 +36,8 @@ public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
 
+	void State_Update(_float fTimeDelta);
+
 public:
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();

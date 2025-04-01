@@ -21,8 +21,12 @@ public:
 	_bool Get_Dead() const { return m_bDead; }
 	_bool Get_IsRender() const { return m_bRender; }
 	_bool Get_IsDelete() const { return m_IsDelete; }
+
+	_float Get_Distance() const { return m_fDistance; }
+
 	void Set_IsRender(_bool bRender) { m_bRender = bRender; }
 	void Set_IsDelete(_bool bDelete) { m_IsDelete = bDelete; }
+	void Set_IsClosest(_bool bClosest) { m_bIsClosest = bClosest; }
 public:
 	void Reset_Info();
 	void Cheat();
@@ -45,6 +49,7 @@ public:
 	void CalCulate_Distance();
 public:
 	virtual void PatternCreate();
+	virtual void State_Update(_float fTimeDelta);
 	virtual void Active();
 	virtual void Return_To_Spawn();
 	virtual void Stun();
@@ -68,6 +73,7 @@ protected:
 	_float4                          m_vPlayerPos = {};
 	_float4                          m_vSpawnPoint = {};
 
+	_bool                            m_bIsClosest = {};
 	_bool							 m_bMove = true;
 	_bool                            m_bActive = {};
 	_bool                            m_bRender = {};
@@ -85,6 +91,7 @@ protected:
 	_uint                            m_iHitCount = {};
 	_uint                            m_iMonster_Attack_Power = {};
 	const _uint* m_Player_Attack = { nullptr };
+	const _uint* m_Player_Phase = { nullptr };
 	const _uint* m_Player_State = { nullptr };
 
 	_float                           m_fRotateDegree = {};
