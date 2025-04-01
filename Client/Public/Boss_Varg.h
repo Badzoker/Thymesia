@@ -28,10 +28,10 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 public:
-	void PatternCreate() override;
-	void Active() override;
-	void Return_To_Spawn() override;
-	void Stun() override;
+	virtual void State_Update(_float fTimeDelta) override;
+	virtual void PatternCreate() override;
+	virtual void Active() override;
+	virtual void Stun() override;
 public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
@@ -47,7 +47,7 @@ private:
 	_uint                            m_iPhase = {};
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
-	_float							 m_fBlurStrength = {};	
+	_float							 m_fBlurStrength = {};
 
 private:
 	CState_Machine<CBoss_Varg>* m_pState_Manager = { nullptr };
@@ -227,6 +227,17 @@ public:
 		void State_Exit(CBoss_Varg* pObject) override;
 	};
 
+	class ExeCution_Start_State : public CStates<CBoss_Varg>
+	{
+	public:
+		ExeCution_Start_State() = default;
+		virtual ~ExeCution_Start_State() = default;
+	public:
+		void State_Enter(CBoss_Varg* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
+		void State_Exit(CBoss_Varg* pObject) override;
+	};
+
 	class ExeCution_State : public CStates<CBoss_Varg>
 	{
 	public:
@@ -236,6 +247,8 @@ public:
 		void State_Enter(CBoss_Varg* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
+	private:
+		_bool m_bNeed_Look_Player = {};
 	};
 
 	class Roar_State : public CStates<CBoss_Varg>
@@ -249,7 +262,7 @@ public:
 		void State_Exit(CBoss_Varg* pObject) override;
 	private:
 		_bool  m_bFirst = {};
-		_float m_fRoarBlurStrength = {};	
+		_float m_fRoarBlurStrength = {};
 	};
 
 	class Catch_State : public CStates<CBoss_Varg>

@@ -30,9 +30,12 @@
 #pragma region 엘리트 몬스터
 #include "Elite_Joker.h"
 #include "HArmorLV2.h"
+#include "Elite_Punch_Man.h"
+
 
 #include "Body_Joker.h"
 #include "Body_HArmorLV2.h"
+#include "Body_Punch_Man.h"
 
 #include "Joker_Weapon.h"
 #include "Weapon_GreatSword.h"
@@ -44,15 +47,19 @@
 #include "Normal_VillageM1.h"
 #include "Normal_VillageF0.h"
 #include "Normal_VillageF1.h"
+#include "Normal_ScytheM.h"
 
 #include "Body_VillageM0.h"
 #include "Body_VillageM1.h"
 #include "Body_VillageF0.h"
 #include "Body_VillageF1.h"
+#include "Body_ScytheM.h"
+#include "Decorative_Hat.h"
 
 #include "Weapon_Axe.h"
 #include "Weapon_Dagger.h"
 #include "Weapon_Shield.h"
+#include "Weapon_Monster_Scythe.h"
 
 #include "Monster_HP_Bar.h"
 #include "Monster_HP_Gage.h"
@@ -530,6 +537,41 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CHArmorLV2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Punch_Man_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Punch_Man/Elite_Punch_Man.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man_Body"),
+		CBody_Punch_Man::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"),
+		CElite_Punch_Man::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Grace_Body"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Grace/Elite_Grace.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+	//	return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Projectile_Dagger"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Projectile/Dagger/Projectile_Dagger.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace_Body"),
+	//	CBody_Grace::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"),
+	//	CElite_Grace::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Dagger"),
+	//	CProjectile_Dagger::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
 #pragma endregion 
 
 #pragma region 일반 몬스터
@@ -555,6 +597,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Normal_ScytheM_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_ScytheM/Normal_ScytheM.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Hat"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_ScytheM/Hat/ScytheM_Hat.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Weapon_Axe"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Axe/HandAxe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -568,6 +620,12 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Weapon_Shield"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Shield/Shield.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Weapon_Monster_Scythe"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Weapon/Scythe/Monster_Scythe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
 
 	//몬스터 Body
 
@@ -587,6 +645,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBody_VillageF1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_ScytheM_Body"),
+		CBody_ScytheM::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Hat"),
+		CDecorative_Hat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//몬스터 Weapon
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Axe"),
@@ -599,6 +665,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Shield"),
 		CWeapon_Shield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Monster_Scythe"),
+		CWeapon_Monster_Scythe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//몬스터 객체
@@ -617,6 +687,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF1"),
 		CNormal_VillageF1::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_ScytheM"),
+		CNormal_ScytheM::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//몬스터 HP바

@@ -47,7 +47,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
-    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
+    m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
     m_pState_Manager = CState_Machine<CBoss_Varg>::Create();
@@ -69,14 +70,14 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    m_pGameObjectModel = m_pModelCom;   
+    m_pGameObjectModel = m_pModelCom;
 
     return S_OK;
 }
 
 void CBoss_Varg::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State & CPlayer::PHASE_DEAD)
+    if (*m_Player_Phase & CPlayer::PHASE_DEAD)
     {
         m_Is_Player_Dead = true;
     }
@@ -114,8 +115,6 @@ void CBoss_Varg::Priority_Update(_float fTimeDelta)
 void CBoss_Varg::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
-
-    m_pState_Manager->State_Update(fTimeDelta, this);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
@@ -229,6 +228,11 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
 }
 
 
+void CBoss_Varg::State_Update(_float fTimeDelta)
+{
+    m_pState_Manager->State_Update(fTimeDelta, this);
+}
+
 void CBoss_Varg::PatternCreate()
 {
     //2페이즈 들어온 후
@@ -261,10 +265,6 @@ void CBoss_Varg::Active()
 {
     m_iPhase = PHASE_ONE;
     m_pState_Manager->ChangeState(new CBoss_Varg::Intro_State(), this);
-}
-
-void CBoss_Varg::Return_To_Spawn()
-{
 }
 
 void CBoss_Varg::Stun()
@@ -366,11 +366,6 @@ void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
 
 void CBoss_Varg::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER", _pOther->Get_Name()) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Progress)
-    {
-        m_bExecution_Progress = true;
-        m_pState_Manager->ChangeState(new ExeCution_State(), this);
-    }
 }
 
 void CBoss_Varg::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
@@ -433,6 +428,15 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     {
         m_iIndex = 35;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+    }
+    if (*pObject->m_Player_State == CPlayer::STATE_VARG_RUN_EXECUTION)
+        pObject->RotateDegree_To_Player();
+
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
+
+    if (m_iIndex == 35 && (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION && bMonster_Event)
+    {
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_Start_State(), pObject);
     }
 }
 
@@ -962,16 +966,11 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 41;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->RotateDegree_To_Player();
+    //pObject->RotateDegree_To_Player();
+    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
 
-    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
-    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
-    vPlayerLook = XMVector3Normalize(vPlayerLook);
-    vPlayerLook *= 2.f;
-    _vector vResultPos = vPlayerPos + vPlayerLook;
-    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
-
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -979,10 +978,30 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 {
     //나중에 페이즈 구분 해줘야할듯
       //1페이즈이고 애님 끝났으면 변환시키기
+    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 130.f && !m_bNeed_Look_Player)
+        m_bNeed_Look_Player = true;
+
+    if (!m_bNeed_Look_Player && (*pObject->m_Player_State == CPlayer::STATE_Varg_Execution))
+    {
+        _float teleportDistance = 0.7f;
+        _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+        _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
+        _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+        vPlayerLook = XMVector3Normalize(vPlayerLook);
+        vPlayerRight = XMVector3Normalize(vPlayerRight);
+
+        _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+        vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, 0.25f));
+
+        pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+        pObject->RotateDegree_To_Player();
+    }
+
+
     if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f)
     {
         m_iIndex = 40;
-        pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
         pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -1155,9 +1174,6 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     }
 
 
-
-
-
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Catch_State(), pObject);
 }
@@ -1165,8 +1181,8 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 void CBoss_Varg::Roar_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-    pObject->m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);  
-    m_fRoarBlurStrength = 0.f;  
+    pObject->m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+    m_fRoarBlurStrength = 0.f;
 }
 
 #pragma endregion
@@ -1273,3 +1289,38 @@ void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)
 
 #pragma endregion
 
+void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
+{
+    m_iIndex = 40;
+    pObject->m_bMove = true;
+    pObject->m_bCan_Move_Anim = true;
+    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+
+    _float teleportDistance = 1.f;
+    _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+    _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
+    _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
+
+    _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+    pObject->RotateDegree_To_Player();
+
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Varg::ExeCution_Start_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
+{
+    if ((*pObject->m_Player_State) == CPlayer::STATE_Varg_Execution)
+    {
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), pObject);
+    }
+}
+
+void CBoss_Varg::ExeCution_Start_State::State_Exit(CBoss_Varg* pObject)
+{
+    pObject->m_bCan_Move_Anim = false;
+}

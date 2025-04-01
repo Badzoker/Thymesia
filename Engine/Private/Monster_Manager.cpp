@@ -14,10 +14,20 @@ HRESULT CMonster_Manager::Initialize()
 
 void CMonster_Manager::Priority_Update(_float _fTimeDelta)
 {
+	if (m_pGameInstance->isKeyEnter(DIK_L))
+	{
+		Respawn_Monster(CATEGORY_BOSS);
+	}
+	if (m_pGameInstance->isKeyEnter(DIK_P))
+	{
+		Respawn_Monster(CATEGORY_ELITE);
+	}
 	Active_Monster();
 
 	for (auto& iter : m_pCheck_Monsters)
 		iter->Priority_Update(_fTimeDelta);
+
+	Find_Closest_Monster();
 }
 
 void CMonster_Manager::Update(_float _fTimeDelta)
@@ -140,6 +150,38 @@ HRESULT CMonster_Manager::Active_Monster()
 			}
 		}
 	}
+	return S_OK;
+}
+
+HRESULT CMonster_Manager::Find_Closest_Monster()
+{
+	if (m_pCheck_Monsters.empty())
+		return E_FAIL;
+
+	for (auto& monster : m_pCheck_Monsters)
+	{
+		monster->Set_IsClosest(false);
+	}
+
+	CMonster* pClosestMonster = nullptr;
+	_float fMinDistance = FLT_MAX; // 최댓값으로 초기화
+
+	for (auto& Monster : m_pCheck_Monsters)
+	{
+		_float fDistance = Monster->Get_Distance();
+
+		if (fDistance < fMinDistance)
+		{
+			fMinDistance = fDistance;
+			pClosestMonster = Monster;
+		}
+	}
+
+	if (pClosestMonster)
+	{
+		pClosestMonster->Set_IsClosest(true);
+	}
+
 	return S_OK;
 }
 

@@ -46,7 +46,8 @@ HRESULT CElite_Joker::Initialize(void* pArg)
     m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
-    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
+    m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
+    m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();
 
     m_pState_Manager = CState_Machine<CElite_Joker>::Create();
     if (m_pState_Manager == nullptr)
@@ -72,7 +73,7 @@ HRESULT CElite_Joker::Initialize(void* pArg)
 
 void CElite_Joker::Priority_Update(_float fTimeDelta)
 {
-    if (*m_Player_State & CPlayer::PHASE_DEAD)
+    if (*m_Player_Phase & CPlayer::PHASE_DEAD)
         m_Is_Player_Dead = true;
     else
         m_Is_Player_Dead = false;
@@ -83,8 +84,6 @@ void CElite_Joker::Priority_Update(_float fTimeDelta)
 void CElite_Joker::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
-
-    m_pState_Manager->State_Update(fTimeDelta, this);
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
@@ -176,6 +175,11 @@ HRESULT CElite_Joker::Ready_PartObjects(void* pArg)
         return E_FAIL;
 
     return S_OK;
+}
+
+void CElite_Joker::State_Update(_float fTimeDelta)
+{
+    m_pState_Manager->State_Update(fTimeDelta, this);
 }
 
 void CElite_Joker::PatternCreate()
@@ -638,22 +642,29 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
-    if (m_iIndex == 18 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
-        m_fTimer += 1.f * fTimeDelta;
+    const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
-    if (m_iIndex == 19 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 18 && iCurrentAnimIndex == m_iIndex)
+    {
+        m_fTimer += fTimeDelta;
+
+        if (m_fTimer >= 5.f)
+        {
+            m_iIndex = 17;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+        }
+        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
+    }
+    else if (m_iIndex == 19 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 18;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
-    //기절상태 유지가 어느정도 됐을시
-    if (m_iIndex == 18 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_fTimer >= 5.f)
-    {
-        m_iIndex = 17;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-    }
-
-    if (m_iIndex == 17 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 17 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
@@ -662,7 +673,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
         pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 
-        pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
+        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
     }
 }
 

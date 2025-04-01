@@ -31,10 +31,11 @@ public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
 public:
-	void PatternCreate() override;
-	void Active() override;
-	void Return_To_Spawn() override;
-	void Stun() override;
+	virtual void State_Update(_float fTimeDelta) override;
+	virtual void PatternCreate() override;
+	virtual void Active() override;
+	virtual void Return_To_Spawn() override;
+	virtual void Stun() override;
 private:
 	CState_Machine<CNormal_VillageF0>* m_pState_Manager = { nullptr };
 

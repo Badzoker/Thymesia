@@ -84,7 +84,7 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 	);
 
 
-	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_pParentState != STATE_PARRY)
 	{
 		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
@@ -92,26 +92,26 @@ void CWeapon_Axe::Update(_float fTimeDelta)
 			{
 				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
 				{
-					if (*m_pParentState != STATE_PARRY)
+					if (*m_pParentState == STATE_PARRY_ATTACK)
 					{
-						if (*m_pParentState == STATE_PARRY_ATTACK)
-						{
-							m_pGameInstance->Add_Actor_Scene(m_pKickActor);
-						}
-						else
-						{
-							m_pGameInstance->Add_Actor_Scene(m_pActor);
-						}
+						m_pGameInstance->Add_Actor_Scene(m_pKickActor);
 					}
+					else
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor);
+					}
+					iter.isPlay = true;
 				}
-				else
+			}
+			else
+			{
+				if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true)
 				{
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
 					m_pGameInstance->Sub_Actor_Scene(m_pKickActor);
-				}
-				if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-				{
-					iter.isPlay = true;
+					m_bColliderOff = false;
+					if (!iter.isEventActivate)
+						iter.isPlay = false;
 				}
 			}
 		}

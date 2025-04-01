@@ -80,26 +80,27 @@ void CWeapon_Shield::Update(_float fTimeDelta)
 		SocketMatrix *  /* 로컬 스페이스 영역 */
 		XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
 	);
-	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && !m_bColliderOff)
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_pParentState == MONSTER_STATE::STATE_PARRY)
 	{
 		for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 		{
 			if (iter.isPlay == false)
 			{
-				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true && *m_pParentState != STATE_STUN)
+				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
 				{
-					if (*m_pParentState == MONSTER_STATE::STATE_PARRY)
-					{
-						m_pGameInstance->Add_Actor_Scene(m_pActor);
-					}
+					m_pGameInstance->Add_Actor_Scene(m_pActor);
+					iter.isPlay = true;
 				}
-				else
+			}
+			else
+			{
+				if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true)
 				{
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
-				}
-				if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-				{
-					iter.isPlay = true;
+
+					m_bColliderOff = false;
+					if (!iter.isEventActivate)
+						iter.isPlay = false;
 				}
 			}
 		}
@@ -146,6 +147,31 @@ HRESULT CWeapon_Shield::Render()
 
 
 		m_pShaderCom->Begin(m_iPassNum);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CWeapon_Shield::Render_Shadow()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;/*
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_ViewMatrix", "g_ProjMatrix")))
+		return E_FAIL;*/
+
+
+	if (FAILED(m_pGameInstance->Bind_Shadow_Matrices(m_pShaderCom, "g_LightViewMatrix", "g_LightProjMatrix")))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(2);
 		m_pModelCom->Render(i);
 	}
 

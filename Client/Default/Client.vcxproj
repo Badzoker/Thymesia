@@ -191,6 +191,8 @@
     <ClInclude Include="..\Public\Body_Magician.h" />
     <ClInclude Include="..\Public\Body_Magician2.h" />
     <ClInclude Include="..\public\Body_Player.h" />
+    <ClInclude Include="..\Public\Body_Punch_Man.h" />
+    <ClInclude Include="..\Public\Body_ScytheM.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
     <ClInclude Include="..\Public\Body_VillageF0.h" />
     <ClInclude Include="..\Public\Body_VillageF1.h" />
@@ -207,9 +209,11 @@
     <ClInclude Include="..\public\ClawCommon_ChargeStart.h" />
     <ClInclude Include="..\public\ClawWeapon.h" />
     <ClInclude Include="..\Public\DeadBranch.h" />
+    <ClInclude Include="..\Public\Decorative_Hat.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
+    <ClInclude Include="..\Public\Elite_Punch_Man.h" />
     <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\GhostAisemy.h" />
     <ClInclude Include="..\public\HArmorLV1_Execution.h" />
@@ -254,6 +258,7 @@
     <ClInclude Include="..\public\Normal_Evade_FR.h" />
     <ClInclude Include="..\public\Normal_Evade_L.h" />
     <ClInclude Include="..\public\Normal_Evade_R.h" />
+    <ClInclude Include="..\Public\Normal_ScytheM.h" />
     <ClInclude Include="..\Public\Normal_VillageF0.h" />
     <ClInclude Include="..\Public\Normal_VillageF1.h" />
     <ClInclude Include="..\Public\Normal_VillageM0.h" />
@@ -394,6 +399,7 @@
     <ClInclude Include="..\public\Weapon_Halberd.h" />
     <ClInclude Include="..\Public\Weapon_Magician2_Sword.h" />
     <ClInclude Include="..\Public\Weapon_Magician_Sword.h" />
+    <ClInclude Include="..\Public\Weapon_Monster_Scythe.h" />
     <ClInclude Include="..\public\Weapon_Scythe.h" />
     <ClInclude Include="..\Public\Weapon_Shield.h" />
     <ClInclude Include="Client.h" />
@@ -424,6 +430,8 @@
     <ClCompile Include="..\Private\Body_Magician.cpp" />
     <ClCompile Include="..\Private\Body_Magician2.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
+    <ClCompile Include="..\Private\Body_Punch_Man.cpp" />
+    <ClCompile Include="..\Private\Body_ScytheM.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
     <ClCompile Include="..\Private\Body_VillageF0.cpp" />
     <ClCompile Include="..\Private\Body_VillageF1.cpp" />
@@ -440,9 +448,11 @@
     <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp" />
     <ClCompile Include="..\private\ClawWeapon.cpp" />
     <ClCompile Include="..\Private\DeadBranch.cpp" />
+    <ClCompile Include="..\Private\Decorative_Hat.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
+    <ClCompile Include="..\Private\Elite_Punch_Man.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\GhostAisemy.cpp" />
     <ClCompile Include="..\private\HArmorLV1_Execution.cpp" />
@@ -487,6 +497,7 @@
     <ClCompile Include="..\private\Normal_Evade_FR.cpp" />
     <ClCompile Include="..\private\Normal_Evade_L.cpp" />
     <ClCompile Include="..\private\Normal_Evade_R.cpp" />
+    <ClCompile Include="..\Private\Normal_ScytheM.cpp" />
     <ClCompile Include="..\Private\Normal_VillageF0.cpp" />
     <ClCompile Include="..\Private\Normal_VillageF1.cpp" />
     <ClCompile Include="..\Private\Normal_VillageM0.cpp" />
@@ -626,6 +637,7 @@
     <ClCompile Include="..\private\Weapon_Halberd.cpp" />
     <ClCompile Include="..\Private\Weapon_Magician2_Sword.cpp" />
     <ClCompile Include="..\Private\Weapon_Magician_Sword.cpp" />
+    <ClCompile Include="..\Private\Weapon_Monster_Scythe.cpp" />
     <ClCompile Include="..\private\Weapon_Scythe.cpp" />
     <ClCompile Include="..\Private\Weapon_Shield.cpp" />
     <ClCompile Include="Client.cpp" />

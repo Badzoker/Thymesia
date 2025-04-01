@@ -348,13 +348,35 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
 
         case NORMAL_VILLAGE_M0:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
-                return E_FAIL;
+            for (_uint i = 0; i < 2; i++)
+            {
+                if (i == 0)
+                {
+                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
+                        return E_FAIL;
+                }
+                else
+                {
+                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_ScytheM"), CATEGORY_NORMAL, &pDesc)))
+                        return E_FAIL;
+                }
+            }
             break;
         case NORMAL_VILLAGE_M1:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
-                return E_FAIL;
+            for (_uint i = 0; i < 2; i++)
+            {
+                if (i == 0)
+                {
+                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+                        return E_FAIL;
+                }
+                else
+                {
+                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_NORMAL, &pDesc)))
+                        return E_FAIL;
+                }
+            }
             break;
         case NORMAL_VILLAGE_F0:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;

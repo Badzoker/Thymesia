@@ -27,9 +27,10 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 public:
-	void PatternCreate() override;
-	void Active() override;
-	void Stun() override;
+	virtual void State_Update(_float fTimeDelta) override;
+	virtual void PatternCreate() override;
+	virtual void Active() override;
+	virtual void Stun() override;
 
 public:
 	HRESULT Ready_Components(void* pArg);
