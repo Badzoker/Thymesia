@@ -2235,6 +2235,31 @@ void CBody_Player::STATE_HEAL_Method()
     m_pModelCom->SetUp_Animation(237, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+#pragma region Effect
+    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+                if (!strcmp(iter.szName, "Effect_Start"))
+                {
+                    _float4x4 matLeftHand = {};
+                    XMStoreFloat4x4(&matLeftHand, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("weapon_l")) * XMLoadFloat4x4(m_pParentWorldMatrix));
+                    for (_uint i = 0; i < 2; i++)
+                    {
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PLAYER_HEAL, matLeftHand);
+                    }
+                    _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42 , m_pParentWorldMatrix->_43 , 1.f };
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL, vPos);
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_pModelCom->Get_VecAnimation().at(237)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HEAL;

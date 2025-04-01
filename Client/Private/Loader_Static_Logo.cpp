@@ -1546,6 +1546,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Quad.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Effect_HealingCurve*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_HealingCurve"), //13
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_HealingCurve.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
 	///* For.Prototype_GameObject_Effect_Mesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		CEffect_Mesh::Create(m_pDevice, m_pContext))))

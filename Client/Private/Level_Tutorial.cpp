@@ -466,6 +466,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_HALBERD)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerHealCurve_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_HEAL)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerHealCurve_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_HEAL)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -1320,6 +1328,9 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case 12:
             pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Quad");
+            break;
+        case 13:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_HealingCurve");
             break;
         }
 #pragma endregion
