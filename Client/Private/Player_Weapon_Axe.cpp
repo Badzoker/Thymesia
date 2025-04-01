@@ -115,11 +115,27 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
                         m_bAppear = true;
                     }
 
+                    if (!strcmp(iter.szName, "Camera_Shake"))   
+                    {
+                        m_pCamera->ShakeOn(400.f, 400.f, 8.f, 8.f); 
+                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
+                        m_pGameInstance->Set_ZoomBlur_Option(true, 0.1f);   
+                    }
+
+                }
+
+                else if (iter.eType == EVENT_STATE && iter.isEventActivate == false)
+                {
+                    if (!strcmp(iter.szName, "Camera_Shake"))
+                    {
+                        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                    }
                 }
 
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로       
+                    if (iter.eType != EVENT_STATE)
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로       
                 }
             }
         }
