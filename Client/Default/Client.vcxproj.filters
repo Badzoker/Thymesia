@@ -787,6 +787,9 @@
     <Filter Include="02.GameObject\SpecificObject\Ladder">
       <UniqueIdentifier>{f9f84bb9-31ff-493d-b57a-021b0d8a680b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Object\LadderObject">
+      <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1473,6 +1476,9 @@
     <ClInclude Include="..\Public\ChairLamp.h">
       <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LadderObject.h">
+      <Filter>02.GameObject\Object\LadderObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2149,6 +2155,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ChairLamp.cpp">
       <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LadderObject.cpp">
+      <Filter>02.GameObject\Object\LadderObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
