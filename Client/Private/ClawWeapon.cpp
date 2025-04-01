@@ -224,7 +224,8 @@ void CClawWeapon::Update(_float fTimeDelta)
          && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_L   
          && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R   
          && *m_pParentState != CPlayer::STATE_PARRY_DEFLECT_R_UP     
-         && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)   
+         && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
+         && *m_pParentState != CPlayer::STATE_AXE)  
          {
              m_pGameInstance->Sub_Actor_Scene(m_pActor);
              m_pCamera->ResetZoomOutCameraPos(1.f);
