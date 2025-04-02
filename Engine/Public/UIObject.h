@@ -55,6 +55,7 @@ public:
 	virtual _wstring& Get_Content() { return m_strContentText; }
 
 	void Set_TexNumber(_int iNumber) { m_iTexNumber = iNumber; }
+	_int Get_TexNumber() { return m_iTexNumber; }
 	virtual _uint Set_UI_ShaderPassNum(_uint iShadernum) { return m_iShaderPassNum = iShadernum; } // 쉐이더 패스 넘버 가져오기 -유빈
 
 

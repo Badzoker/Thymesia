@@ -4,7 +4,10 @@
 #include "UIGroup_Skill.h"
 
 #include "UI_Button.h"
+#include "UI_Image.h"
 #include "UI_TextBox.h"
+#include "UI_Text.h"
+#include "UI_Skill_Slot.h"
 
 CUIGroup_Skill::CUIGroup_Skill(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -29,27 +32,86 @@ HRESULT CUIGroup_Skill::Initialize(void* pArg)
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
 
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+	
 	m_pBaseScene = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill");
-	m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	//m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	//m_pEquipWeapon_2 = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip2");
 	m_pEquipCondition = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
+	//m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipWeapon_2, false);
+	Slot_Setting();
+	Skill_Equip_Weapon();
 
-
-	return S_OK;
+	return S_OK; 
 }
 
 void CUIGroup_Skill::Priority_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, true);
+		//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipCondition, true);
 
-		//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, true);
 	}
 }
 
 void CUIGroup_Skill::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+		{
+			m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pBaseScene, false);
+			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, false);
+			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon_2, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipCondition, false);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerSkill"), false);
+
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerMenu"), true);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+		}
+
+		Slot_Update_State();
+		Slot_Contion_Check();
+
+
+
+
+
+
+
+
+		//if (nullptr != m_pCurrentSkill)
+		//{
+		//	dynamic_cast<CUI_Skill_Slot*>(m_pEquipSkill_1)->Set_TexIconOff(false);
+		//	dynamic_cast<CUI_Skill_Slot*>(m_pEquipSkill_1)->Set_TexSlot(2);
+		//	for (auto& EquipSkill : m_pEquipWeapon->Find_UI_Button())
+		//	{
+		//		if (EquipSkill->Get_Mouse_Select_OnOff())
+		//		{
+		//			if (1 == EquipSkill->Get_UI_GroupID())
+		//			{
+		//				EquipSkill->Set_TexNumber(m_pCurrentSkill->Get_TexNumber());
+		//			}
+
+		//		}
+		//	}
+		//}
+		//
+
+			//pButton->Set_TexIconOpen(true);
+			//pButton->Set_TexIconOff(true); // 이미지 흐리게 처리
+			//pButton->Set_TexSlot(2);
+			//pButton->Set_TexEdgeOff(true);
+			//pButton->Set_TexEdge(2);  // 이미지 랜더를 켜야 함
+			//pButton->Set_TexEffectOff(true);
+			//pButton->Set_TexEffect(2);// 이미지 랜더를 꺼야 함
+
+	}
+
 }
 
 void CUIGroup_Skill::Late_Update(_float fTimeDelta)
@@ -63,6 +125,95 @@ HRESULT CUIGroup_Skill::Render()
 {
 
 	return S_OK;
+}
+
+void CUIGroup_Skill::Slot_Setting()
+{
+	for (auto& Button : m_pBaseScene->Find_UI_Button())
+	{
+		CUI_Skill_Slot* pSlot = dynamic_cast<CUI_Skill_Slot*>(Button);
+
+		if (0 < Button->Get_UI_GroupID() &&
+			50 > Button->Get_UI_GroupID())
+		{
+			pSlot->Set_Slot_State(SKILL_CLOSE_OFF);
+			m_mapSlotInfo.emplace(Button->Get_UI_GroupID(), make_pair(false, pSlot)); // 기본으로 주어지는 특성
+		}
+		switch (Button->Get_UI_GroupID()) // 어떤 스킬로 해금되는지 설정
+		{
+		case 1:
+			pSlot->Set_IconChange(1); 
+			pSlot->Set_Content(TEXT("도끼"));
+			pSlot->Set_MySkill(PLAYER_SKILL_AXE);
+			break;
+		case 2:
+			pSlot->Set_IconChange(11);
+			pSlot->Set_Content(TEXT("핼버드"));
+			pSlot->Set_MySkill(PLAYER_SKILL_HALBERD);
+			break;
+		case 3:
+			pSlot->Set_IconChange(17);
+			pSlot->Set_Content(TEXT("낫"));
+			pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
+			break;
+		default:
+			pSlot->Set_Content(TEXT(""));
+			break;
+
+		}
+	
+	}
+}
+
+void CUIGroup_Skill::Slot_Update_State()
+{
+	for (auto& SlotButton : m_mapSlotInfo)
+	{
+		CUI_Skill_Slot* pSlot = dynamic_cast<CUI_Skill_Slot*>(SlotButton.second.second);
+
+		Slot_Update_State_Value(pSlot->Get_Slot_State(), pSlot);
+
+		if (1 >= pSlot->Get_Slot_State())
+		{
+			SlotButton.second.first = true; // 스킬 해금이 되었으면 true
+			if (m_deqOpenSkill.empty())
+				m_deqOpenSkill.push_back(pSlot->Get_MySkill()); // 리볼빙을 위한 해금된 스킬 푸시백
+			else
+			{
+				_bool bCheck = false;
+				for (auto& SkillList : m_deqOpenSkill)
+				{
+					if (SkillList == pSlot->Get_MySkill())
+						bCheck = true;
+				}
+				if (!bCheck)
+				{
+					m_deqOpenSkill.push_back(pSlot->Get_MySkill());
+				}
+			}
+		}
+		else
+			SlotButton.second.first = false;
+
+		if (pSlot->Get_Mouse_OnOff()) 
+		{
+			m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, true);
+
+			for (auto& Image : m_pBaseScene->Find_UI_Image())
+			{
+				if (1 == Image->Get_UI_GroupID())
+				{
+					Image->Set_Content(pSlot->Get_Content().c_str());
+					break;
+				}
+			}
+
+
+			Condition_Text_Update(pSlot->Get_NeedItem(), SlotButton.second.first); // 스킬이 진짜 해금 되었는지에 따라 텍스트 설명 내용 변경
+		}
+
+
+	}
 }
 
 void CUIGroup_Skill::Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skill_Slot* pSlotUIObj)
@@ -94,8 +245,8 @@ void CUIGroup_Skill::Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skil
 		pSlotUIObj->Set_TexEffect(1); // 이미지 랜더를 꺼야 함
 		break;
 	case Client::SKILL_CLOSE_OFF:
-		pSlotUIObj->Set_TexSlot(2);
 		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
+		pSlotUIObj->Set_TexSlot(0);
 		pSlotUIObj->Set_TexEdgeOff(true);
 		pSlotUIObj->Set_TexEdge(1);  // 이미지 랜더를 꺼야 함
 		pSlotUIObj->Set_TexEffectOff(true);
@@ -103,7 +254,7 @@ void CUIGroup_Skill::Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skil
 		break;
 	case Client::SKILL_OPEN_IDLE:
 		pSlotUIObj->Set_TexIconOff(false); // 이미지 흐리게 처리
-		pSlotUIObj->Set_TexSlot(0);
+		pSlotUIObj->Set_TexSlot(2);
 		pSlotUIObj->Set_TexEdgeOff(false);
 		pSlotUIObj->Set_TexEdge(2);  // 이미지 랜더를 켜야 함
 		pSlotUIObj->Set_TexEffectOff(false);
@@ -112,13 +263,140 @@ void CUIGroup_Skill::Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skil
 
 	}
 
+}
 
+void CUIGroup_Skill::Slot_Contion_Check()
+{
+	for (auto& SlotButton : m_mapSlotInfo)
+	{
+		CUI_Skill_Slot* pSlot = dynamic_cast<CUI_Skill_Slot*>(SlotButton.second.second);
+
+		if ( 1 < pSlot->Get_Slot_State() && 3 <= m_pGameInstance->Get_Item_Count(pSlot->Get_NeedItem()))
+			pSlot->Set_OpenContion(true); // 클릭 했을 때 스킬을 해금 할 수 있는지 여부에 대해서 체크 하는 값
+		else
+			pSlot->Set_OpenContion(false);
+
+		SKill_Current_Slot(pSlot, SlotButton.second.first);
+
+
+	}
+}
+
+void CUIGroup_Skill::Skill_Equip_Weapon()
+{
+	//for (auto& Button : m_pEquipWeapon->Find_UI_Button())
+	//{
+	//	if (1 == Button->Get_UI_GroupID())
+	//	{
+	//		CUI_Skill_Slot* pButton = dynamic_cast<CUI_Skill_Slot*>(Button);
+
+	//		pButton->Set_TexIconOpen(true);
+	//		pButton->Set_TexIconOff(true); // 이미지 흐리게 처리
+	//		pButton->Set_TexSlot(2);
+	//		pButton->Set_TexEdgeOff(true);
+	//		pButton->Set_TexEdge(2);  // 이미지 랜더를 켜야 함
+	//		pButton->Set_TexEffectOff(true);
+	//		pButton->Set_TexEffect(2);// 이미지 랜더를 꺼야 함
+	//		m_pEquipSkill_1 = Button;
+	//	}
+	//	if (10 == Button->Get_UI_GroupID())
+	//	{
+	//		Button->Set_OnOff(false);
+	//	}
+	//}
+	//for (auto& Image : m_pEquipWeapon->Find_UI_Image())
+	//{
+	//	if (10 == Image->Get_UI_GroupID())
+	//	{
+	//		Image->Set_OnOff(false);
+	//	}
+	//}
+	//for (auto& TextBox : m_pEquipWeapon->Find_UI_TextBox())
+	//{
+	//	if (10 == TextBox->Get_UI_GroupID())
+	//	{
+	//		TextBox->Set_OnOff(false);
+	//	}
+	//}
+}
+
+void CUIGroup_Skill::SKill_Current_Slot(CUI_Skill_Slot* pSkill, _bool bOpen)
+{
+	if (bOpen)
+	{
+		if (pSkill->Get_Mouse_Select_OnOff())
+			m_pCurrentSkill = pSkill;
+	}
+	
+}
+
+void CUIGroup_Skill::Condition_Text_Update(ITEM_TYPE eItemtype, _bool bCheck)
+{
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* Text = { L"%d" };
+	_uint iCount = m_pGameInstance->Get_Item_Count(eItemtype); // 보유하고 있는 아이템 개수
+
+	for (auto& TextBox : m_pEquipCondition->Find_UI_TextBox())
+	{
+		if (1 == TextBox->Get_UI_GroupID())
+		{
+			if (bCheck)
+			{
+				TextBox->Set_OnOff(false);
+			}
+			else
+			{
+				TextBox->Set_OnOff(true);
+				wsprintf(ChangeText, Text, iCount);
+
+				TextBox->Set_Content(ChangeText);
+				if (3 <= iCount)
+					TextBox->Set_Change_TextColor(FONT_GREEN);
+				else
+					TextBox->Set_Change_TextColor(FONT_RED);
+			}
+
+		}
+		if (2 == TextBox->Get_UI_GroupID())
+		{
+			if (bCheck)
+				TextBox->Set_OnOff(false);
+			else
+				TextBox->Set_OnOff(true);
+
+		}
+		if (3 == TextBox->Get_UI_GroupID())
+		{
+			if (bCheck)
+			{
+				dynamic_cast<CTransform*>(TextBox->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { 1000.f,450.f });
+				TextBox->Set_Content(TEXT("스킬 해금이 완료되었습니다"));
+				TextBox->Set_Change_TextColor(FONT_WHITE);
+			}
+			else
+			{
+				dynamic_cast<CTransform*>(TextBox->Find_Component(TEXT("Com_Transform")))->Set_State_UIObj(CTransform::STATE_POSITION, { 1060.f,450.f });
+				if (3 <= iCount)
+				{
+					TextBox->Set_Content(TEXT("스킬을 해금할 수 있습니다"));
+					TextBox->Set_Change_TextColor(FONT_GREEN);
+				}
+				else
+				{
+					TextBox->Set_Content(TEXT("기술의 파편이 부족합니다"));
+					TextBox->Set_Change_TextColor(FONT_RED);
+				}
+			}
+		}
+
+	}
 }
 
 HRESULT CUIGroup_Skill::Ready_UIObject()
 {
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip2");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
 	return S_OK;
 }
@@ -158,9 +436,9 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 	_wstring szFontName = {};
 	_wstring szContentText = {};
 	_wstring szSaveName = {};
-	_uint iUIType = {};
+	_uint iUIType = {}; 
 	_uint iShaderNum = {};
-	_uint iTextureNum = {};
+	_uint iTextureNum = { 0 };
 	_uint iGroupID = {};
 
 	while (true)
@@ -174,17 +452,13 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
-		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
-		{
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szFontName.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szContentText.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
-
-		}
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szContentText.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
@@ -219,7 +493,8 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 
 	CloseHandle(hFile);
 
-	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
+
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

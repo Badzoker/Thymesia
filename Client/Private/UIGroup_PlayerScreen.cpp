@@ -11,6 +11,8 @@
 #include "UI_PlunderSlotFrame.h"
 #include "UI_HPBar3_MainBar.h"
 #include "UI_HPBar5_Track.h"
+#include "UIGroup_Skill.h"
+
 
 CUIGroup_PlayerScreen::CUIGroup_PlayerScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -46,6 +48,8 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
 	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
+	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
+	
 	for (auto& Textbox : m_pMyScene->Find_UI_TextBox())
 	{
 		if (101 == Textbox->Get_UI_GroupID())
@@ -83,7 +87,7 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 
 	Player_Info_GageBar();
 	UI_Direction_HPBar();
-	if (m_pMonsterText->Get_OnOff())
+	if (m_pMonsterText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
 	{
 		m_fMonsterTextOnTime += fTimeDelta;
 		if (m_fMonsterTextOnTime > 2)
@@ -93,84 +97,100 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 
 		}
 	}
-	
-	if (0 != m_pGameInstance->Get_Item_Drop_Info().size()) // 버리는 아이템이 있는경우
-	{
-		for (auto& SaveInfo : m_pGameInstance->Get_Item_Drop_Info())
-		{
-			Item_Drop_Info(SaveInfo);
-		}
-		m_pGameInstance->Get_Item_Drop_Info().clear();
-	}
-	if (0 != m_pGameInstance->Get_Item_Save_Info().size()) // 획득한 아이템이 있는 경우
-	{
-		UI_Direction_Item_Nudge();
+	Item_Nudge_Check(fTimeDelta); // 획득하거나 버린 아이템이 있는지 체크하는 함수
 
-		_uint iNum = {};
-
-		if (0 != m_pGameInstance->Get_Item_Save_Info().size())
-		{
-			for (auto& SaveInfo : m_pGameInstance->Get_Item_Save_Info())
-			{
-				if (!m_bNudgeUse[0]) // 1번 넛지 꺼져 있으면
-				{
-					Item_Save_Info(SaveInfo); // 추가해서 재생 
-					m_bNudgeUse[0] = true;
-				}
-				/*else if (!m_bNudgeUse[1])
-				{
-					Item_Save_Info(SaveInfo, 2);
-					m_bNudgeUse[0] = true;
-				}
-				else if (!m_bNudgeUse[2])
-				{
-					Item_Save_Info(SaveInfo, 3);
-					m_bNudgeUse[0] = true;
-				}
-				else if (!m_bNudgeUse[3])
-				{
-					Item_Save_Info(SaveInfo, 4);
-					m_bNudgeUse[0] = true;
-				}*/
-			}
-
-		}
-		m_pGameInstance->Get_Item_Save_Info().clear();
-	}
-	if (m_bNudgeUse[0] || m_bNudgeUse[1])
+	if (m_pGameInstance->isKeyEnter(DIK_C))
 	{
-		m_fTimeCheck += fTimeDelta;
-		if (m_fTimeCheck > 2)
+		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
 		{
-			m_bNudgeUse[0] = false;
-			m_bNudgeUse[1] = false;
-			m_fTimeCheck = 0;
-			for (auto& Image : m_pItmeScreen->Find_UI_Image())
-			{
-				if (1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
-				{
-					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
-				}
-				if (1 + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
-				{
-					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
-				}
-			}
-			for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
-			{
-				if (1 == TextBox->Get_UI_GroupID())
-				{
-					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
-				}
-				if (1 + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
-				{
-					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
-				}
-			}
+			PLAYER_SKIL eSave = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().pop_front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().push_back(eSave);
 
 		}
 	}
-	
+
+
+
+	switch (dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill())
+	{
+	case PLAYER_SKILL_AXE:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(1); // 도끼
+		break;
+	case PLAYER_SKILL_HALBERD:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(11); // 핼버드
+		break;
+	case PLAYER_SKILL_SCYTHE:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(17); // 낫
+		break;
+	default:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(0); // 스킬 없음
+		break;
+
+
+	}
+	CUIGroup_Skill* pSkill = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill);
+	if (!pSkill->Get_PlayerSkill_List().empty())
+	{
+		switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(0))
+		{
+		case PLAYER_SKILL_AXE:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(1); // 도끼
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_AXE);
+			break;
+		case PLAYER_SKILL_HALBERD:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(11); // 핼버드
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_HALBERD);
+			break;
+		case PLAYER_SKILL_SCYTHE:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(17); // 낫
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_SCYTHE);
+			break;
+		default:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
+			break;
+		}
+		if (2 <= pSkill->Get_PlayerSkill_List().size())
+		{
+			switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(1))
+			{
+			case PLAYER_SKILL_AXE:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(1); // 도끼
+				break;
+			case PLAYER_SKILL_HALBERD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(11); // 핼버드
+				break;
+			case PLAYER_SKILL_SCYTHE:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
+				break;
+			default:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
+				break;
+			}
+		}
+		if (3 <= pSkill->Get_PlayerSkill_List().size())
+		{
+			switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(2))
+			{
+			case PLAYER_SKILL_AXE:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(1); // 도끼
+				break;
+			case PLAYER_SKILL_HALBERD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(11); // 핼버드
+				break;
+			case PLAYER_SKILL_SCYTHE:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
+				break;
+			default:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음
+				break;
+			}
+		}
+	}
+
+	//m_pRevolvingSkill_2
+
+
 }
 
 void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
@@ -184,12 +204,6 @@ HRESULT CUIGroup_PlayerScreen::Render()
 {
 	if (m_bRenderOpen)
 	{
-		vector<UI_TextInfo>::iterator it;
-		for (it = m_TextInfo.begin(); it != m_TextInfo.end(); it++)
-		{
-			m_pGameInstance->Render_Font(it->strFontName.c_str(), it->srtTextContent.c_str(), it->fTextStartPos);
-
-		}
 	}
 	return S_OK;
 }
@@ -216,27 +230,48 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 		{
 			TextBox->Set_OnOff(false);
 		}
-		if (30 == TextBox->Get_UI_GroupID()) // 현재 물약 개수
-		{
-			wsprintf(ChangeText, CountTextDouble, 3, 3);
-			TextBox->Set_Content(ChangeText);
-		}
+		//if (30 == TextBox->Get_UI_GroupID()) // 현재 물약 개수
+		//{
+		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
+		//	TextBox->Set_Content(ChangeText);
+		//}
 		if (22 == TextBox->Get_UI_GroupID()) // mp 플러스 되는 수치 인 것 같음
 		{
 			TextBox->Set_OnOff(false);
 		}
-		if (40 == TextBox->Get_UI_GroupID()) // 현재 깃털 개수
-		{
-			wsprintf(ChangeText, CountTextDouble, 3, 3);
-			TextBox->Set_Content(ChangeText);
-		}
-		if (100 == TextBox->Get_UI_GroupID()) // 현재 기억의 파편 개수
-		{
-			wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
-			TextBox->Set_Content(ChangeText);
-		}
+		//if (40 == TextBox->Get_UI_GroupID()) // 현재 깃털 개수
+		//{
+		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
+		//	TextBox->Set_Content(ChangeText);
+		//}
+		//if (100 == TextBox->Get_UI_GroupID()) // 현재 기억의 파편 개수
+		//{
+		//	wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
+		//	TextBox->Set_Content(ChangeText);
+		//}
 
 	}
+
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (1 == Image->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
+			Image->Set_Content(ChangeText);
+
+		}
+		if (10 == Image->Get_UI_GroupID()) // 물약 현재 개수 / 최대 개수
+		{
+			wsprintf(ChangeText, CountTextDouble, 3, 3); // 플레이어 멤버 변수로 만들어달라고 하자
+			Image->Set_Content(ChangeText);
+		}
+		if (11 == Image->Get_UI_GroupID()) // 깃털 현재 개수 / 최대 개수
+		{
+			wsprintf(ChangeText, CountTextDouble, 3, 3); // 깃털은 몰?루
+			Image->Set_Content(ChangeText);
+		}
+	}
+
 }
 
 void CUIGroup_PlayerScreen::UI_Direction_HPBar()
@@ -254,13 +289,6 @@ void CUIGroup_PlayerScreen::UI_Direction_HPBar()
 		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(fX);
 		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(true);
 	}
-
-
-
-
-
-
-
 
 
 }
@@ -379,6 +407,86 @@ void CUIGroup_PlayerScreen::Item_Drop_Info(ITEM_TYPE eItemType)
 
 }
 
+void CUIGroup_PlayerScreen::Item_Nudge_Check(_float fTimeDelta)
+{
+	if (0 != m_pGameInstance->Get_Item_Drop_Info().size()) // 버리는 아이템이 있는경우
+	{
+		for (auto& SaveInfo : m_pGameInstance->Get_Item_Drop_Info())
+		{
+			Item_Drop_Info(SaveInfo);
+		}
+		m_pGameInstance->Get_Item_Drop_Info().clear();
+	}
+	if (0 != m_pGameInstance->Get_Item_Save_Info().size()) // 획득한 아이템이 있는 경우
+	{
+		UI_Direction_Item_Nudge();
+
+		_uint iNum = {};
+
+		if (0 != m_pGameInstance->Get_Item_Save_Info().size())
+		{
+			for (auto& SaveInfo : m_pGameInstance->Get_Item_Save_Info())
+			{
+				if (!m_bNudgeUse[0]) // 1번 넛지 꺼져 있으면
+				{
+					Item_Save_Info(SaveInfo); // 추가해서 재생 
+					m_bNudgeUse[0] = true;
+				}
+				/*else if (!m_bNudgeUse[1])
+				{
+					Item_Save_Info(SaveInfo, 2);
+					m_bNudgeUse[0] = true;
+				}
+				else if (!m_bNudgeUse[2])
+				{
+					Item_Save_Info(SaveInfo, 3);
+					m_bNudgeUse[0] = true;
+				}
+				else if (!m_bNudgeUse[3])
+				{
+					Item_Save_Info(SaveInfo, 4);
+					m_bNudgeUse[0] = true;
+				}*/
+			}
+
+		}
+		m_pGameInstance->Get_Item_Save_Info().clear();
+	}
+	if (m_bNudgeUse[0] || m_bNudgeUse[1])
+	{
+		m_fTimeCheck += fTimeDelta;
+		if (m_fTimeCheck > 2)
+		{
+			m_bNudgeUse[0] = false;
+			m_bNudgeUse[1] = false;
+			m_fTimeCheck = 0;
+			for (auto& Image : m_pItmeScreen->Find_UI_Image())
+			{
+				if (1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
+				{
+					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+				}
+				if (1 + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+				{
+					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+				}
+			}
+			for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
+			{
+				if (1 == TextBox->Get_UI_GroupID())
+				{
+					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+				}
+				if (1 + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+				{
+					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+				}
+			}
+
+		}
+	}
+}
+
 void CUIGroup_PlayerScreen::Item_In_Out_Pop()
 {
 	for (auto& ItemInfo : m_pItmeScreen->Find_UI_Image())
@@ -399,15 +507,20 @@ void CUIGroup_PlayerScreen::Item_In_Out_Pop()
 void CUIGroup_PlayerScreen::Button_Skill()
 {
 
-	if (m_pGameInstance->isKeyEnter(DIK_K))
+	if (m_pGameInstance->isKeyEnter(DIK_1))
 	{
 		/* 고정 스킬*/
-		dynamic_cast<CUI_PlunderSlotFrame*>(m_pFixSkill_1)->Set_SkillOn(true);
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
 	}
-	if (m_pGameInstance->isKeyEnter(DIK_L))
+	if (m_pGameInstance->isKeyEnter(DIK_2))
 	{
 		/* 약탈 스킬*/
-		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_SkillOn(true);
+		if (!dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_SkillOn())
+		{
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_SkillOn(true);
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Take_Away_Skill(PLAYER_SKILL_START);
+
+		}
 	}
 	
 }
@@ -441,11 +554,19 @@ void CUIGroup_PlayerScreen::Ready_Skill_Slot()
 	/*스킬 사용 연출을 위해 미리 멤버 변수로 설정하기*/
 	for (auto& Slot : m_pMyScene->Find_UI_Image())
 	{
-		if (50 == Slot->Get_UI_GroupID())
+		if (30 == Slot->Get_UI_GroupID())
 		{
-			m_pFixSkill_1 = Slot;
+			m_pRevolvingSkill_1 = Slot;
 		}
-		if (60 == Slot->Get_UI_GroupID())
+		if (31 == Slot->Get_UI_GroupID()) // 가운데
+		{
+			m_pRevolvingSkill_2 = Slot;
+		}
+		if (32 == Slot->Get_UI_GroupID())
+		{
+			m_pRevolvingSkill_3 = Slot;
+		}
+		if (40 == Slot->Get_UI_GroupID())
 		{
 			m_pPlunderSkill = Slot;
 		}
@@ -504,7 +625,7 @@ HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 	_wstring szSaveName = {};
 	_uint iUIType = {};
 	_uint iShaderNum = {};
-	_uint iTextureNum = {};
+	_uint iTextureNum = { 0 };
 	_uint iGroupID = {};
 
 	while (true)
@@ -518,17 +639,13 @@ HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
-		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
-		{
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szFontName.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szContentText.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
-
-		}
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szContentText.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
@@ -563,7 +680,8 @@ HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 
 	CloseHandle(hFile);
 
-	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
+
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

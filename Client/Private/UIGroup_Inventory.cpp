@@ -43,7 +43,7 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pMyBaseScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase");
 	m_pItemScene = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_Inven_ItemUse");
@@ -55,7 +55,7 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 	m_pItemTypePopUp = m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_ItemType_PopUp");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER");
 	
 
 
@@ -208,7 +208,7 @@ HRESULT CUIGroup_Inventory::LoadData_UIObject(_uint iLevelIndex, _uint iSceneInd
 	_wstring szSaveName = {};
 	_uint iUIType = {};
 	_uint iShaderNum = {};
-	_uint iTextureNum = {};
+	_uint iTextureNum = { 0 };
 	_uint iGroupID = {};
 
 	while (true)
@@ -222,17 +222,13 @@ HRESULT CUIGroup_Inventory::LoadData_UIObject(_uint iLevelIndex, _uint iSceneInd
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
-		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
-		{
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szFontName.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szContentText.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
-
-		}
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szContentText.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
@@ -267,7 +263,8 @@ HRESULT CUIGroup_Inventory::LoadData_UIObject(_uint iLevelIndex, _uint iSceneInd
 
 	CloseHandle(hFile);
 
-	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
+
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 
@@ -1222,5 +1219,6 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 	SaveData.ItemName = L"단도";
 	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
 	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
 }
 

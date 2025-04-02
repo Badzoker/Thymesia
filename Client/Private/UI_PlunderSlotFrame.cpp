@@ -45,7 +45,14 @@ void CUI_PlunderSlotFrame::Update(_float fTimeDelta)
 			m_fSkill_CoolTime = 0.0f;
 			m_bSkillOn = false;
 		}
+
 	}
+
+	if (0 < m_iTexicon)
+		m_bTexIconON = true;
+	else
+		m_bTexIconON = false;
+
 
 }
 
@@ -66,7 +73,7 @@ HRESULT CUI_PlunderSlotFrame::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIconOn", &m_bItemIconOn, sizeof(_bool))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIconOn", &m_bTexIconON, sizeof(_bool))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bSkillOn", &m_bSkillOn, sizeof(_bool))))
 		return E_FAIL;

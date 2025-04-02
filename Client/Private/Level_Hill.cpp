@@ -630,7 +630,9 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 
 HRESULT CLevel_Hill::Ready_Layer_UIGroup_MapChange(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_MapChange"), LEVEL_HILL, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_MapChange"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }

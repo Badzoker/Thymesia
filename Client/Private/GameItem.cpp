@@ -279,6 +279,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_KEY2:
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
+        case Engine::ITEM_TYPE::ITEM_SKILLPIECE:
             if (m_pGameInstance->isKeyEnter(DIK_E))
             {
                 m_bStartAcquireEffect = true;

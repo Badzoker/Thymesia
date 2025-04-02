@@ -171,7 +171,7 @@ HRESULT CUIGroup_Loading::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 	_wstring szSaveName = {};
 	_uint iUIType = {};
 	_uint iShaderNum = {};
-	_uint iTextureNum = {};
+	_uint iTextureNum = { 0 };
 	_uint iGroupID = {};
 
 	while (true)
@@ -185,17 +185,13 @@ HRESULT CUIGroup_Loading::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 		ReadFile(hFile, const_cast<wchar_t*>(szSaveName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iUIType, sizeof(_uint), &dwByte, nullptr);
-		if (iUIType == UI_TEXT || iUIType == UI_BUTTON)
-		{
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szFontName.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szFontName.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szFontName.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
-			ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
-			szContentText.resize(iLen);
-			ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
-
-		}
+		ReadFile(hFile, &iLen, sizeof(_uint), &dwByte, nullptr);
+		szContentText.resize(iLen);
+		ReadFile(hFile, const_cast<wchar_t*>(szContentText.data()), sizeof(_tchar) * iLen, &dwByte, nullptr);
 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
@@ -230,7 +226,8 @@ HRESULT CUIGroup_Loading::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 
 	CloseHandle(hFile);
 
-	//MessageBox(hWnd, L"Load 완료", TEXT("성공"), MB_OK);
+
+	//MessageBox(g_hWnd, L"Load 완료", _T("성공"), MB_OK);
 	return S_OK;
 }
 

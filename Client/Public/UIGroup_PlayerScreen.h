@@ -36,6 +36,7 @@ public:
 	void Item_Save_Info(ITEM_TYPE eItemType); // 아이템 획득 시 출력되는 알림
 	void Item_Drop_Info(ITEM_TYPE eItemType); // 아이템 버릴 시 출력되는 알림
 	
+	void Item_Nudge_Check(_float fTimeDelta);
 	void Item_In_Out_Pop();
 
 public:
@@ -53,8 +54,9 @@ public:
 
 private:
 	CUIObject* m_pPlunderSkill = { nullptr };
-	CUIObject* m_pFixSkill_1 = { nullptr };
-
+	CUIObject* m_pRevolvingSkill_1 = { nullptr };
+	CUIObject* m_pRevolvingSkill_2= { nullptr };
+	CUIObject* m_pRevolvingSkill_3 = { nullptr };
 
 private:
 	CUI_Scene* m_pMyScene = {}; //플레이어 화면
@@ -62,18 +64,16 @@ private:
 
 	class CGameObject* m_pPlayer = { nullptr };
 	CGameObject* m_pGroupInven = { nullptr };
-
-	_bool m_bNudgeUse[4] = { false,false,false,false };
+	CGameObject* m_pGroupSkill = { nullptr };
+	
+	_bool m_bNudgeUse[4] = { false,false,false,false }; // 아이템 알림용
 
 	LEVELID m_eLevelID = {};
 
 private:
 	_float m_fTimeCheck = {};
 	vector<UI_TextInfo> m_TextInfo = {};
-public:
-	void Set_m_bDrop(_bool bdrop) { m_bDrop = bdrop; }
 private:
-	_bool m_bDrop = { true };
 	CUI_Text* m_pMonsterText = {};
 	_float m_fMonsterTextOnTime = {};
 
