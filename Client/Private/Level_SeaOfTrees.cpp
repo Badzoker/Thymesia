@@ -78,6 +78,9 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     if (FAILED(Ready_Layer_UIGroup_PlayerTalent(TEXT("Layer_PlayerTalent"))))
         return E_FAIL;
 
+    if (FAILED(Ready_Layer_UIGroup_Skill(TEXT("Layer_PlayerSkill"))))
+        return E_FAIL;
+
     if (FAILED(Ready_Layer_UIGroup_PlayerScreen(TEXT("Layer_PlayerScreen"))))
         return E_FAIL;
 
@@ -617,6 +620,16 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLay
     CGameObject::GAMEOBJECT_DESC        Desc{};
     Desc.iCurLevel = m_iCurrentLevel;
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+        return E_FAIL;
+    return S_OK;
+}
+
+HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_Skill(const _tchar* pLayerTag)
+{
+    CGameObject::GAMEOBJECT_DESC        Desc{};
+    Desc.iCurLevel = m_iCurrentLevel;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Skill"), LEVEL_SEAOFTREES, pLayerTag, &Desc, "UI_Skill")))
         return E_FAIL;
     return S_OK;
 }
