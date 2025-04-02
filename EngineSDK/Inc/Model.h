@@ -33,8 +33,8 @@ public:
 	//void			Compute_BoundingBox(_float3& _vMin, _float3& _vMax);
 
 public:
-	void SetUp_Animation(_uint iAnimIndex, _bool isLoop);
-	void Set_LerpFinished(_bool bCheck) { m_bLerpFinished = bCheck; }
+	void SetUp_Animation(_uint iAnimIndex, _bool isLoop, _bool ReversePlay = false);	
+	void Set_LerpFinished(_bool bCheck) { m_bLerpFinished = bCheck; }	
 	_bool Play_Animation(_float fTimeDelta);
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const _char* pConstantName, _uint iTextureIndex = 0);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, _uint iMeshIndex, const _char* pConstantName);	
@@ -60,6 +60,8 @@ public:
 	void Set_Continuous_Ani(_bool _first) { m_bFirst = _first; }		
 
 	_float& Get_CurAnimation_FinalSpeed(); //3.16 종한 추가
+
+	void Set_Model_ReverseAnim(_bool _OnOff) { m_bModelReverseAni = _OnOff; }	
 
 private:
 	/* 가져온 정보를 저장한다. */
@@ -100,6 +102,7 @@ private:
 
 	/* 애니메이션 관련*/
 	_bool							m_bFirst = { true };
+	_bool							m_bModelReverseAni = { false };
 
 
 private:

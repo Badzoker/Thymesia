@@ -110,6 +110,68 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
     return false;
 }
 
+_bool CAnimation::Update_ReverseTransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _float* pCurrentTrackPoisiton, vector<_uint>& CurrentKeyFrameIndices, _bool isLoop)
+{
+    // 역방향 순서 애니메이션 
+    if (m_bFirst)
+    {
+        *pCurrentTrackPoisiton -= m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
+        m_bFirst = false;
+    }
+
+
+    else if (*pCurrentTrackPoisiton >= 0.f)
+    {
+        *pCurrentTrackPoisiton -= m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
+    }
+
+    if (true == isLoop && *pCurrentTrackPoisiton <= 0.f)
+    {
+        m_isFinished = true;
+        *pCurrentTrackPoisiton = 0.f;
+    }
+
+
+    /* 다음 애니메이션으로 이동전에는 여기 걸려서 true가 반환될거임.*/
+    else if (*pCurrentTrackPoisiton <= 0.f)
+    {
+        m_isFinished = true;
+        return true;
+    }
+
+    else
+        m_isFinished = false;
+
+
+
+    _uint			iNumChannels = {};
+
+    for (auto& pChannel : m_Channels)
+    {
+
+        pChannel->Update_Reverse_TransformationMatrix(*pCurrentTrackPoisiton, &CurrentKeyFrameIndices[iNumChannels++], Bones);
+
+    }
+
+    //애니메이션 이벤트
+
+    for (auto& pEvent : m_vecAnimFrameEvent)
+    {
+        if (pEvent.fStartTime >= m_fCurrentTrackPosition && pEvent.fEndTime < m_fCurrentTrackPosition) // 방향 반대 되야한다.       
+        {
+            /* 여기서 실행 시켜줘야 함*/
+            pEvent.isEventActivate = true;
+        }
+
+        else
+        {
+            pEvent.isEventActivate = false;
+        }
+    }
+
+    return false;
+}
+
 void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& CurrentKeyFrameIndices, _float* pCurrentTrackPoisiton)
 {
     *pCurrentTrackPoisiton = 0.0f;
@@ -131,6 +193,27 @@ void CAnimation::Reset(const vector<class CBone*>& Bones, vector<_uint>& Current
     }
 
 
+}
+
+void CAnimation::Reverse_Reset(const vector<class CBone*>& Bones, vector<_uint>& CurrentKeyFrameIndices, _float* pCurrentTrackPoisiton)
+{
+    *pCurrentTrackPoisiton = m_fDuration;
+    m_isFinished = false;
+    m_fCurrentTrackPosition = m_fDuration;
+    m_bFirst = true;
+    m_LerpTime = m_SaveLerpTime;
+
+    _uint  iChannelIndex = { 0 };
+    for (auto& pChannel : m_Channels)
+    {
+        pChannel->Reset_ReverseTransformationMatrix(Bones, &CurrentKeyFrameIndices[iChannelIndex++]);
+    }
+
+    for (auto& pEvent : m_vecAnimFrameEvent)
+    {
+        pEvent.isPlay = false;
+        pEvent.isEventActivate = false;
+    }
 }
 
 _uint CAnimation::Get_ChannelIndex(const _char* pChannelName)
@@ -184,7 +267,35 @@ _bool CAnimation::Lerp_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimati
         return true;
     }
 
-    //return _bool();
+
+}
+
+_bool CAnimation::Lerp_Reverse_NextAnimation(_float fTimeDelta, CAnimation* pNextAnimation, const vector<class CBone*>& Bones, vector<_uint>& CurrentKeyFrameIndices)
+{
+    m_LerpTimeAcc += fTimeDelta;
+
+
+    if (pNextAnimation && m_LerpTimeAcc <= m_LerpTime)
+    {
+        _uint iChannelIndex = 0;
+
+
+        for (auto& pChannel : m_Channels)
+        {
+            pChannel->Lerp_Reverse_TransformationMatrix(Bones, pNextAnimation->m_Channels[iChannelIndex], m_LerpTime, m_LerpTimeAcc, &CurrentKeyFrameIndices[iChannelIndex]);
+            iChannelIndex++;
+        }
+
+
+        return false;
+    }
+
+    else
+    {
+        m_LerpTimeAcc = 0.0f;
+        return true;
+    }
+
 }
 
 HRESULT CAnimation::Save_Anim(ostream& os)

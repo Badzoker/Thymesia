@@ -13,9 +13,12 @@ private:
 public:
 	HRESULT Initialize(const aiNodeAnim* pAIChannel, const class CModel* pModel);
 	void Update_TransformationMatrix(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, const vector<class CBone*>& Bones);
+	void Update_Reverse_TransformationMatrix(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, const vector<class CBone*>& Bones);		
 	void Lerp_TransformationMatrix(const vector<class CBone*>& Bones, CChannel* pNextChannel, _float LerpTime, _float LerpTimeAcc, _uint* pCurrentKeyFrameIndex);
+	void Lerp_Reverse_TransformationMatrix(const vector<class CBone*>& Bones, CChannel* pNextChannel, _float LerpTime, _float LerpTimeAcc, _uint* pCurrentKeyFrameIndex);	
 	void Lerp_TransformationMatrix_Offset(const vector<class CBone*>& Bones, CChannel* pNextChannel, _float LerpTime, _float LerpTimeAcc, _uint* pCurrentKeyFrameIndex, _float OffSet);	
 	void Reset_TransformationMatrix(const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
+	void Reset_ReverseTransformationMatrix(const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);	
 
 
 	/*void Lerp(_uint _iCurrentAnimIndex)*/

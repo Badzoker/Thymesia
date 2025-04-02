@@ -196,8 +196,11 @@ HRESULT CModel::Render_Instance(_uint _iMeshIndex, _uint _iNumInstanceNumber)
 //	}
 //}
 
-void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)	
+void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop, _bool ReversePlay)	
 {
+	/* 역재생 여부 */	
+	m_bModelReverseAni = ReversePlay;	
+
 	// Initialize에서 초기 애니메이션 설정을 위해 범승추가
 	if(m_bFirst)
 	{
@@ -217,7 +220,12 @@ void CModel::SetUp_Animation(_uint iAnimIndex, _bool isLoop)
 	m_pCurrentAnimation = m_Animations[m_iCurrentAnimationIndex];
 
 	m_iCurrentAnimIndex = iAnimIndex;
-	m_Animations[m_iCurrentAnimIndex]->Reset(m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], &m_fCurrentTrackPosition);
+
+	if (!m_bModelReverseAni)	
+		m_Animations[m_iCurrentAnimIndex]->Reset(m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], &m_fCurrentTrackPosition);	
+	else
+		m_Animations[m_iCurrentAnimIndex]->Reverse_Reset(m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], &m_fCurrentTrackPosition); // 여기서 Current가 m_fDuration이 되네	
+
 	m_bFinished = false;
 
 	m_isAnimLoop = isLoop;
@@ -230,47 +238,94 @@ _bool CModel::Play_Animation(_float fTimeDelta)
 {
 	/* 보간이 끝났는지를 체크해줘야할거같음 그래야 애니메이션이 안어색함*/
 
-
-	if (m_pNextAnimation)
+	if (!m_bModelReverseAni)
 	{
-		m_bLerpFinished = false;
-		m_bFinished = false;
-		/* 여기서 이제 먼저 수행해주고!*/
-		if (m_pCurrentAnimation->Lerp_NextAnimation(fTimeDelta, m_pNextAnimation, m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimationIndex]))
-		{
-			m_pNextAnimation = nullptr;
-			
-		}
-		/* 보간이 끝나면 이 조건문을 벗어나야하니깐.*/
 
-	}
-	/* 아 보간의 duration이 끝나기전에 애니메이션 변경 했기 때문에 acctime이 남아서 문제가 발생 */
-
-	else
-	{
-		/* 현재 애니메이션의 재생시간에 맞는 뼈의 상태를 받아와서 뼈들이 가지고 있는 TrnasformationMatrix를 갱신해준다. */
-		/*_bool   isFinished = */
-		if (m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, &m_fCurrentTrackPosition, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], m_isAnimLoop))
+		if (m_pNextAnimation)
 		{
-			m_bFinished = true;
+			m_bLerpFinished = false;
+			m_bFinished = false;
+			/* 여기서 이제 먼저 수행해주고!*/
+			if (m_pCurrentAnimation->Lerp_NextAnimation(fTimeDelta, m_pNextAnimation, m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimationIndex]))
+			{
+				m_pNextAnimation = nullptr;
+
+			}
+			/* 보간이 끝나면 이 조건문을 벗어나야하니깐.*/
+
 		}
+		/* 아 보간의 duration이 끝나기전에 애니메이션 변경 했기 때문에 acctime이 남아서 문제가 발생 */
+
 		else
 		{
-			m_bFinished = false;
+			/* 현재 애니메이션의 재생시간에 맞는 뼈의 상태를 받아와서 뼈들이 가지고 있는 TrnasformationMatrix를 갱신해준다. */
+			/*_bool   isFinished = */
+			if (m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, &m_fCurrentTrackPosition, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], m_isAnimLoop))
+			{
+				m_bFinished = true;
+			}
+			else
+			{
+				m_bFinished = false;
+			}
+			m_bLerpFinished = true;
 		}
-		m_bLerpFinished = true;
+
+
+		/* 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+		/* CombinedTransformationMatrix = 나의 TrnasformationMatrix * 부모의 Combined */
+
+		for (auto& pBone : m_Bones)
+		{
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		}
+
 	}
 
-
-	/* 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
-	/* CombinedTransformationMatrix = 나의 TrnasformationMatrix * 부모의 Combined */
-
-	for (auto& pBone : m_Bones)
+	/* 역방향 애니메이션 진행 */
+	else
 	{
-		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+
+		if (m_pNextAnimation)
+		{
+			m_bLerpFinished = false;
+			m_bFinished = false;
+			/* 여기서 이제 먼저 수행해주고!*/
+			if (m_pCurrentAnimation->Lerp_Reverse_NextAnimation(fTimeDelta, m_pNextAnimation, m_Bones, m_CurrentKeyFrameIndices[m_iCurrentAnimationIndex]))
+			{
+				m_pNextAnimation = nullptr;
+
+			}
+			/* 보간이 끝나면 이 조건문을 벗어나야하니깐.*/
+
+		}
+		/* 아 보간의 duration이 끝나기전에 애니메이션 변경 했기 때문에 acctime이 남아서 문제가 발생 */
+
+		else
+		{
+			/* 현재 애니메이션의 재생시간에 맞는 뼈의 상태를 받아와서 뼈들이 가지고 있는 TrnasformationMatrix를 갱신해준다. */
+			/*_bool   isFinished = */
+			if (m_Animations[m_iCurrentAnimIndex]->Update_ReverseTransformationMatrix(fTimeDelta, m_Bones, &m_fCurrentTrackPosition, m_CurrentKeyFrameIndices[m_iCurrentAnimIndex], m_isAnimLoop))
+			{
+				m_bFinished = true;
+			}
+			else
+			{
+				m_bFinished = false;
+			}
+			m_bLerpFinished = true;
+		}
+
+		/* 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+		/* CombinedTransformationMatrix = 나의 TrnasformationMatrix * 부모의 Combined */
+
+		for (auto& pBone : m_Bones)
+		{
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		}
+
 	}
 
-	//return isFinished;
 	return true;
 }
 

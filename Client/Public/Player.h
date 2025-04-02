@@ -129,6 +129,25 @@ public:
 		STATE_VARG_STUN_EXECUTE_START_R, // 291번 모션		
 		/* 바그에게 달려가면서  처형 모션 */
 		STATE_VARG_RUN_EXECUTION, // 297번 애니메이션	
+
+		/* 사다리 관련 모션 */
+		STATE_LADDER_CLIMB_START,
+
+		STATE_LADDER_CLIMB_L_DOWN,
+		STATE_LADDER_CLIMB_L_DOWN_END,
+		STATE_LADDER_CLIMB_L_UP,
+		STATE_LADDER_CLIMB_L_UP_END,
+
+		STATE_LADDER_CLIMB_L_IDLE,
+
+		STATE_LADDER_CLIMB_R_DOWN,
+		STATE_LADDER_CLIMB_R_DOWN_END,
+		STATE_LADDER_CLIMB_R_UP,
+		STATE_LADDER_CLIMB_R_UP_END,
+		STATE_LADDER_CLIMB_R_UP_REVERSE_END,
+
+
+		STATE_LADDER_CLIMB_R_IDLE,
 	};
 
 
@@ -146,6 +165,7 @@ public:
 		PHASE_DEAD = 1 << 9,	
 		PHASE_START = 1 << 10,	
 		PHASE_BOSS_INTRO = 1 << 11,	
+		PHASE_LADDER = 1 << 12,	
 	};
 
 
@@ -180,6 +200,8 @@ public:
 	void Slide_Move(CGameObject* pGameObject);
 	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }	
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
+	void Set_PlayerState(_uint _iState) { m_iState = _iState; }		
+
 	_bool Get_MonsterEvent() { return m_bMonsterEvent; }
 
 	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }	

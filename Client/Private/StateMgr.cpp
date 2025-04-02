@@ -96,6 +96,17 @@
 
 #pragma endregion 
 
+#pragma region 사다리 관련 이동 
+#include "Ladder_Climb_Start.h"
+#include "Ladder_Climb_L_Down.h"
+#include "Ladder_Climb_R_Up_End.h"
+#include "Ladder_Climb_R_Up_Reverse_End.h"	
+#include "Ladder_Climb_L_Up.h"	
+#include "Ladder_Climb_R_Up.h"
+#include "Ladder_Climb_R_Down.h"
+
+#pragma endregion 
+
 
 
 CStateMgr::CStateMgr()
@@ -369,6 +380,41 @@ HRESULT CStateMgr::Initialize()
 	m_vecState.push_back(pVarg_Catched);
 
 #pragma endregion 
+
+
+#pragma region 사다리 관련 모션 
+	/* 56번 사다리 처음 올라가는 start 모션 */
+	CLadder_Climb_Start* pLadder_Climb_Start = CLadder_Climb_Start::Create();
+	m_vecState.push_back(pLadder_Climb_Start);
+
+	/* 57번 사다리 왼쪽 내려가는 모션 */
+	CLadder_Climb_L_Down* pLadder_Climb_L_Down = CLadder_Climb_L_Down::Create();
+	m_vecState.push_back(pLadder_Climb_L_Down);
+
+	/* 58번 사디리  왼쪽 다음 오른쪽 올라가기 끝낫을때 모션  */
+	CLadder_Climb_R_Up_End* pLadder_Climb_R_Up_End = CLadder_Climb_R_Up_End::Create();
+	m_vecState.push_back(pLadder_Climb_R_Up_End);
+
+	/* 59번 사다리 처음 내려가는 모션(역재생으로함 내려갈때만) && 왼쪽 다음 오른쪽 올라가기 끝낫을때 모션 */
+	CLadder_Climb_R_Up_Reverse_End* pLadder_Climb_R_Up_Reverse_End = CLadder_Climb_R_Up_Reverse_End::Create();
+	m_vecState.push_back(pLadder_Climb_R_Up_Reverse_End);
+
+	/* 60번 사다리 왼쪽 손 올라가는 모션 */
+	CLadder_Climb_L_Up* pLadder_Climb_L_Up = CLadder_Climb_L_Up::Create();
+	m_vecState.push_back(pLadder_Climb_L_Up);
+
+	/* 61번 사다리 오른쪽 손 올라가는 모션 */
+	CLadder_Climb_R_Up* pLadder_Climb_R_Up = CLadder_Climb_R_Up::Create();
+	m_vecState.push_back(pLadder_Climb_R_Up);
+
+	/* 62번 사다리 오른쪽 내려가는 모션 */
+	CLadder_Climb_R_Down* pLadder_Climb_R_Down = CLadder_Climb_R_Down::Create();
+	m_vecState.push_back(pLadder_Climb_R_Down);
+
+#pragma endregion 
+
+
+
 
 	return S_OK;
 }
