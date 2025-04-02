@@ -38,6 +38,54 @@ void CUI_Skill_Slot::Priority_Update(_float fTimeDelta)
 
 void CUI_Skill_Slot::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (__super::On_Mouse_UI(g_hWnd, 3))
+		{
+			if (m_eSlotState == SKILL_OPEN_OFF)
+				m_eSlotState = SKILL_OPEN_ON;
+			if (m_eSlotState == SKILL_CLOSE_OFF)
+				m_eSlotState = SKILL_CLOSE_ON;
+			m_bImageOn = true;
+		}
+		else
+		{
+			if (m_eSlotState == SKILL_OPEN_ON)
+				m_eSlotState = SKILL_OPEN_OFF;
+			if (m_eSlotState == SKILL_CLOSE_ON)
+				m_eSlotState = SKILL_CLOSE_OFF;
+			m_bImageOn = false;
+		}
+
+		//if(0 < m_iTexNumber && __super::Mouse_Select(g_hWnd, DIM_LB, 3)) // 해금 후
+		//{
+		//	m_bMouseSelectOn = true;
+
+		//}
+		//else
+		//{
+		//	m_bMouseSelectOn = false;
+
+		//}
+
+		if (m_bOpenContion && __super::Mouse_Select(g_hWnd, DIM_LB, 3)) // 해금 전
+		{
+			m_bMouseSelectOn = true;
+			if (m_eSlotState == SKILL_CLOSE_ON)
+			{
+				m_eSlotState = SKILL_OPEN_ON;
+				m_iTexNumber = m_iIconChange;
+				m_pGameInstance->Use_Item(m_eNeedItem, 3);
+				m_bOpenContion = false;
+			}
+		}
+		m_fCurrentTime += fTimeDelta;
+
+		if (1 <= m_fCurrentTime)
+		{
+			m_fCurrentTime *= -1;
+		}
+	}
 }
 
 void CUI_Skill_Slot::Late_Update(_float fTimeDelta)
@@ -65,9 +113,20 @@ HRESULT CUI_Skill_Slot::Render()
 		return E_FAIL;
 	if (FAILED(m_pTextureCom[TEX_EFFECT]->Bind_ShaderResource(m_pShaderCom, "g_TexEffect", m_iTexEffect)))
 		return E_FAIL;
+	
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIconOn", &m_bTexIconOpen, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexIconOff", &m_bTexIconOff, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexEdgeOff", &m_bTexEdgeOff, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexEffectOff", &m_bTexEffectOff, sizeof(_bool))))
+		return E_FAIL;
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(m_iShaderPassNum );
 
 	m_pVIBufferCom->Bind_InputAssembler();
 

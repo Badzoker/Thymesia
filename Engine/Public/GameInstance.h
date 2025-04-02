@@ -223,6 +223,7 @@ public:
 	HRESULT		Acquire_Item(ITEM_TYPE _eItemType);
 	void		Clear_ItemInfo();
 
+	_uint Get_Item_Count(ITEM_TYPE _eItemType);
 
 	list<ITEM_TYPE>& Get_Item_Save_Info(); // 현재 아이템을 획득하는 순간 획득 알림을 띄우기 위한 용도
 	list<ITEM_TYPE>& Get_Item_Drop_Info(); // 현재 아이템을 버리는 순간 버림 알림을 띄우기 위한 용도

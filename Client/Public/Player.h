@@ -262,7 +262,7 @@ private:
 	_uint								m_iSkill_Eqip_2st = {};
 
 	/*플레이어가 약탈한 스킬 */
-	_uint								m_iTake_Away_Skill = { 100 };
+	_uint								m_iTake_Away_Skill = { PLAYER_SKILL_SCYTHE }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
 
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }

@@ -24,7 +24,18 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	void Slot_Setting();
+	void Slot_Update_State();
 	void Slot_Update_State_Value(SkILL_SLOTSTATE eSteteNum, CUI_Skill_Slot* pSlotUIObj);
+
+	void Slot_Contion_Check(); // 아이템 조건 체크
+
+	void Skill_Equip_Weapon();
+
+	void SKill_Current_Slot(CUI_Skill_Slot* pSkill, _bool bOpen);
+
+public:
+	void Condition_Text_Update(ITEM_TYPE eItemtype, _bool bCheck);
 
 public:
 	HRESULT Ready_UIObject();
@@ -33,9 +44,21 @@ public:
 private:
 	vector<UI_TextInfo> m_TextInfo = {};
 
-	CUI_Scene* m_pBaseScene = {};
-	CUI_Scene* m_pEquipWeapon = {};
-	CUI_Scene* m_pEquipCondition = {};
+	CUI_Scene* m_pBaseScene = { nullptr };
+	//CUI_Scene* m_pEquipWeapon = { nullptr };
+	//CUI_Scene* m_pEquipWeapon_2 = { nullptr }; // 슬롯 2개 활성화 되어 있는 경우
+	CUI_Scene* m_pEquipCondition = { nullptr };
+
+	CUI_Button* m_pCurrentSkill = { nullptr };
+	CUI_Button* m_pEquipSkill_1 = { nullptr };
+
+	LEVELID m_eMyLevel = {};
+public:
+	deque<PLAYER_SKIL>& Get_PlayerSkill_List() { return m_deqOpenSkill; }
+
+private:
+	map<_uint, pair<_bool, CUI_Skill_Slot*>> m_mapSlotInfo;
+	deque<PLAYER_SKIL> m_deqOpenSkill = {}; // 해금된 스킬들을 vector에 저장한다
 
 public:
 	static CUIGroup_Skill* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

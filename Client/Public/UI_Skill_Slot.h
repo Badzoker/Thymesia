@@ -27,11 +27,11 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_Slot_State(SLOTSTATE eState) { m_eSlotState = eState; }
-	SLOTSTATE Get_Slot_State() { return m_eSlotState; }
+	void Set_Slot_State(SkILL_SLOTSTATE eState) { m_eSlotState = eState; }
+	SkILL_SLOTSTATE Get_Slot_State() { return m_eSlotState; }
 
 private:
-	SLOTSTATE m_eSlotState = {}; // 슬롯 상태 값 => UI그룹에서 세팅하는 값
+	SkILL_SLOTSTATE m_eSlotState = {}; // 슬롯 상태 값 => UI그룹에서 세팅하는 값
 
 public:
 	void Set_TexSlot(_uint iTexNum) { m_iTexSlot = iTexNum; }
@@ -43,11 +43,21 @@ public:
 	void Set_TexEffect(_uint iTexNum) { m_iTexEffect = iTexNum; }
 	_uint Get_TexEffect() { return m_iTexEffect; }
 
+	void Set_IconChange(_uint iTexNum) { m_iIconChange = iTexNum; }
+
+	void Set_NeedItem(ITEM_TYPE eItemType) { m_eNeedItem = eItemType; }
+	ITEM_TYPE Get_NeedItem() { return m_eNeedItem; }
+	
+	void Set_MySkill(PLAYER_SKIL eSkill) { m_eMySkill = eSkill; }
+	PLAYER_SKIL Get_MySkill() { return m_eMySkill; }
 private:
-	_uint m_iTexSlot = { 1 };
+	_uint m_iTexSlot = { 0 };
 	_uint m_iTexEdge = { 1 };
 	_uint m_iTexEffect = { 1 };
 
+	_uint m_iIconChange = { 0 };
+	ITEM_TYPE m_eNeedItem = {ITEM_TYPE::ITEM_SKILLPIECE};
+	PLAYER_SKIL m_eMySkill = {};
 public:
 	void Set_TexIconOff(_bool bTexOff) { m_bTexIconOff = bTexOff; }
 	_uint Get_TexIconOff() { return m_bTexIconOff; }
@@ -59,9 +69,20 @@ public:
 	_uint Get_TexEffectOff() { return m_bTexEffectOff; }
 
 private:
-	_bool m_bTexIconOff = { false }; // 특성이 활성화 되어 있지 않다면 이미지를 어둡게 처리하기 위한 용도
+	_bool m_bTexIconOff = { false }; // 특성이 활성화 되어 있지 않다면 이미지를 딤드처리
 	_bool m_bTexEdgeOff = { false }; // 호버 반짝반짝
 	_bool m_bTexEffectOff = { false }; // 이펙트 이미지 그리기 여부
+
+public:
+	void Set_OpenContion(_bool bOpen) { m_bOpenContion = bOpen; }
+	void Set_TexIconOpen(_bool bOpen) { m_bTexIconOpen = bOpen; }
+
+private:
+	_float m_fCurrentTime = { 0 }; // 호버 반짝 반짝 효과 주기 위한 시간 값
+	_bool m_bOpenContion = { false };
+	_bool m_bTexIconOpen = { true }; // 
+
+	_bool m_bCurrentSelect = { false };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

@@ -159,7 +159,7 @@ PS_OUT PS_Thymesia_UI_Image_TalentSlot(PS_IN In)
     float2 ChangeUV = ((In.vTexcoord - 0.5) * 2.0 + 0.5f);
     ChangeUV = saturate(ChangeUV); // UV 범위를 [0, 1]로 제한
 
-    float4 vTexColor = g_Texture.Sample(LinearSampler, ChangeUV);
+    float4 vTexColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     float4 vTexIconColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
     float4 vTexEdgeColor = g_TexEdge.Sample(LinearSampler, In.vTexcoord);
     float4 vTexEffectColor = g_TexEffect.Sample(LinearSampler, In.vTexcoord);
@@ -173,7 +173,7 @@ PS_OUT PS_Thymesia_UI_Image_TalentSlot(PS_IN In)
     if (g_bTexEdgeOff)// 호버 이미지 반짝 반짝
         vTexEdgeColor.a = 0.0f;
     else
-        vTexEdgeColor.rgb *= abs(g_fTImeAlpha);
+        vTexEdgeColor.a *= abs(g_fTImeAlpha);
         
     
     if (g_bTexEffectOff)// 이펙트 이미지 끄기
@@ -210,16 +210,18 @@ PS_OUT PS_Thymesia_UI_Image_PlunderSlot(PS_IN In)
     else
         vFrontColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
     
-    if (!g_bIconOn)
-        vFrontColor.a = 0.0f;
+    if (!g_bIconOn) // 스킬 이미지가 없으면 
+        vFrontColor.a = 0.0f; // 아이콘 투명하게
+    
+        Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
+    
+        
+    if (g_bSkillOn) // 현재 스킬 쿨타임이 돌고 있다면 
+        Out.vColor.rgb = ((Out.vColor.rgb - 0.5) * 0.5) + 0.5; // 대조하는거? // 딤드처리
+    if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
+        Out.vColor.rgb = ((Out.vColor.rgb - 0.5) * 0.5) + 0.5; // 대조하는거? // 딤드 처리
     
     
-    
-    
-    Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
-    
-    if (g_bSkillOn)
-        Out.vColor.rgb = ((Out.vColor.rgb - 0.5) * 0.5) + 0.5; // 대조하는거?
     //Out.vColor.rgb += 0.1; // 밝기가 조정됨 
     
     return Out;
@@ -261,6 +263,32 @@ PS_OUT PS_Thymesia_UI_Image_HPBar(PS_IN In) // HP Bar 감소
     return Out;
 }
 
+PS_OUT PS_Thymesia_UI_Image_Skill_Equip_Slot(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float4 vTexColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float4 vTexIconColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
+    float4 vTexEdgeColor = g_TexEdge.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (g_bTexIconOff) // 비활성화 특성 아이콘 어둡게 처리
+        vTexColor.rgb = ((vTexColor.rgb - 0.5) * 0.5) + 0.5; 
+        vTexIconColor.a -= max(0.0f, vTexIconColor.a - 0.6f); // 음수 안나오게
+
+        //vTexIconColor.a -= max(0.0f, vTexIconColor.a - 0.6f); // 음수 안나오게
+    if (g_bIconOn)
+        vTexIconColor.a = 0;
+    
+    if (g_bTexEdgeOff)// 호버 이미지 반짝 반짝
+        vTexEdgeColor.a = 0.0f;
+    else
+        vTexEdgeColor.a *= abs(g_fTImeAlpha);
+        
+        Out.vColor = vTexColor;
+        Out.vColor = lerp(Out.vColor, vTexIconColor, saturate(vTexIconColor.a));
+
+    return Out;
+}
 technique11 DefaultTechnique
 {
   // 0번
@@ -373,6 +401,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_HPBar();
+    }
+     pass Thymesia_UI_Image_Skill // 10번
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Thymasia_UI, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_Skill_Equip_Slot();
     }
     
 }

@@ -731,6 +731,10 @@ void CGameInstance::Clear_ItemInfo()
 {
 	m_pItemMgr->Clear_ItemInfo();
 }
+_uint CGameInstance::Get_Item_Count(ITEM_TYPE _eItemType)
+{
+	return m_pItemMgr->Get_Item_Count(_eItemType);
+}
 list<ITEM_TYPE>& CGameInstance::Get_Item_Save_Info()
 {
 	return m_pItemMgr->Get_Item_Save_Info();
