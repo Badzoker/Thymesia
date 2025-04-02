@@ -343,6 +343,11 @@ void CGameInstance::Set_FogColor(_float4 vFogColor)
 	return m_pRenderer->Set_FogColor(vFogColor);
 }
 
+void CGameInstance::Set_LightShaftValue(_float4 _vLightShaftValue)
+{
+	return m_pRenderer->Set_LightShaftValue(_vLightShaftValue);
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);

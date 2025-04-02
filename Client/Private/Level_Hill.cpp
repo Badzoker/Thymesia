@@ -215,6 +215,10 @@ HRESULT CLevel_Hill::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
 		return E_FAIL;
 
+	m_pGameInstance->Set_LightShaftValue(_float4(1.f, 0.97f, 1.f, 1.f));
+
+	m_pGameInstance->Set_FogColor(_float4(0.55f, 0.58f, 0.56f, 1.f));
+
 	return S_OK;
 }
 

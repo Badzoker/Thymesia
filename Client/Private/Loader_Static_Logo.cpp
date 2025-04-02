@@ -207,6 +207,7 @@
 
 #include "Chair.h"
 #include "ChairLamp.h"
+#include "Elevator_Door.h"
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -1900,6 +1901,18 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
 		return E_FAIL;
 
+	;
+
+	SpecificPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f)); // 맵툴과 똑같이 pretransform 적용
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elevator_Up"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elevator_Down"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), CSpecificObject::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
 
@@ -1907,6 +1920,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), CChairLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), CElevator_Door::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
