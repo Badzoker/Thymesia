@@ -340,6 +340,42 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_LIGHT_EXECUTION_R:  
         STATE_LIGHT_EXECUTION_R_Method();   
         break;  
+    case CPlayer::STATE_LADDER_CLIMB_START:
+        STATE_LADDER_CLIMB_START_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_L_DOWN:
+        STATE_LADDER_CLIMB_L_DOWN_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_L_DOWN_END:
+        STATE_LADDER_CLIMB_L_DOWN_END_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_L_UP:
+        STATE_LADDER_CLIMB_L_UP_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_L_UP_END:
+        STATE_LADDER_CLIMB_L_UP_END_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_L_IDLE:
+        STATE_LADDER_CLIMB_L_IDEL_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_DOWN:
+        STATE_LADDER_CLIMB_R_DOWN_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_DOWN_END:
+        STATE_LADDER_CLIMB_R_DOWN_END_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_UP:
+        STATE_LADDER_CLIMB_R_UP_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_UP_END:
+        STATE_LADDER_CLIMB_R_UP_END_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_UP_REVERSE_END:
+        STATE_LADDER_CLIMB_R_UP_REVERSE_END_Method();
+        break;
+    case CPlayer::STATE_LADDER_CLIMB_R_IDLE:
+        STATE_LADDER_CLIMB_R_IDEL_Method();
+        break;
     default:
         break;
     }
@@ -2183,6 +2219,213 @@ void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_START_Method()
+{
+    m_pModelCom->SetUp_Animation(47, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(47)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_UP;
+        }
+
+        else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_DOWN_END;
+        }
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_L_DOWN_Method()
+{
+    m_pModelCom->SetUp_Animation(39, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(39)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_UP;
+        }
+
+        else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_DOWN;
+        }
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_L_DOWN_END_Method()
+{
+    m_pModelCom->SetUp_Animation(40, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(40)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_LADDER;
+
+        _vector PlayerPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+        m_pParentNavigationCom->Find_Closest_Cell(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+
+
+        m_pParent->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, XMVectorSetY(PlayerPos, m_pParentNavigationCom->Compute_Height(PlayerPos)));
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_L_UP_Method()
+{
+    m_pModelCom->SetUp_Animation(41, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(41)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_UP;
+        }
+
+        else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_DOWN;
+        }
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_L_UP_END_Method()
+{
+    m_pModelCom->SetUp_Animation(42, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(42)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_LADDER;
+
+        _vector PlayerPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+        m_pParentNavigationCom->Find_Closest_Cell(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+
+        m_pParent->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, XMVectorSetY(PlayerPos, m_pParentNavigationCom->Compute_Height(PlayerPos)));
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_L_IDEL_Method()
+{
+    m_pModelCom->SetUp_Animation(48, true);
+    m_iRenderState = STATE_NORMAL_RENDER;
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_DOWN_Method()
+{
+    m_pModelCom->SetUp_Animation(43, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(43)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_UP;
+        }
+
+        else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_DOWN;
+        }
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_DOWN_END_Method()
+{
+    m_pModelCom->SetUp_Animation(44, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(44)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_LADDER;
+
+        _vector PlayerPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+        m_pParentNavigationCom->Find_Closest_Cell(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+
+        m_pParent->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, XMVectorSetY(PlayerPos, m_pParentNavigationCom->Compute_Height(PlayerPos)));
+    }
+
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_UP_Method()
+{
+    m_pModelCom->SetUp_Animation(45, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(45)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_UP;
+        }
+
+        else if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_DOWN;
+        }
+    }
+
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_UP_END_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(46, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(46)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_LADDER;
+
+        _vector PlayerPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+        m_pParentNavigationCom->Find_Closest_Cell(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
+
+        m_pParent->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, XMVectorSetY(PlayerPos, m_pParentNavigationCom->Compute_Height(PlayerPos)));
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_UP_REVERSE_END_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(46, false, true);  // 역재생 하므로 true를 줌  
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(46)->isAniMationFinish())
+    {
+        if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_L_UP_END;
+        }
+
+        if (m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
+        {
+            *m_pParentState = CPlayer::STATE_LADDER_CLIMB_R_DOWN;
+        }
+    }
+}
+
+void CBody_Player::STATE_LADDER_CLIMB_R_IDEL_Method()
+{
+    m_pModelCom->SetUp_Animation(49, true);
+    m_iRenderState = STATE_NORMAL_RENDER;
 }
 
 void CBody_Player::STATE_ARCHIVE_SIT_START_Method()

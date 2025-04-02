@@ -189,6 +189,25 @@ public:
 	/* 노말 몬스터 처형*/
 	void STATE_LIGHT_EXECUTION_R_Method();
 
+
+	/* 사다리 이동 관련 */
+	void STATE_LADDER_CLIMB_START_Method();
+
+	void STATE_LADDER_CLIMB_L_DOWN_Method();
+	void STATE_LADDER_CLIMB_L_DOWN_END_Method();
+	void STATE_LADDER_CLIMB_L_UP_Method();
+	void STATE_LADDER_CLIMB_L_UP_END_Method();
+
+	void STATE_LADDER_CLIMB_L_IDEL_Method();
+
+	void STATE_LADDER_CLIMB_R_DOWN_Method();
+	void STATE_LADDER_CLIMB_R_DOWN_END_Method();
+	void STATE_LADDER_CLIMB_R_UP_Method();
+	void STATE_LADDER_CLIMB_R_UP_END_Method();
+	void STATE_LADDER_CLIMB_R_UP_REVERSE_END_Method();
+
+	void STATE_LADDER_CLIMB_R_IDEL_Method();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

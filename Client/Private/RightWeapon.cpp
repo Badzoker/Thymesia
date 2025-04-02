@@ -193,7 +193,8 @@ void CRightWeapon::Late_Update(_float fTimeDelta)
         && !m_pSet_Scythe_Weapon_States->count(curState)
         && !m_pSet_Axe_Weapon_States->count(curState)
         && !(*m_pParentPhaseState & CPlayer::PHASE_INTERACTION)
-        && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD))                   
+        && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD)
+        && !(*m_pParentPhaseState & CPlayer::PHASE_LADDER)) 
     {       
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);     
     }

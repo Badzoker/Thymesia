@@ -172,6 +172,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)	
 		)
 	{
 		/* 처형 관련 작업 */
@@ -234,7 +235,6 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				{
 					m_pStateMgr->Get_VecState().at(2)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 					m_iState = STATE_ATTACK_L1;
-					m_iState = STATE_ATTACK_L1;
 				}
 
 			}
@@ -255,7 +255,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		&& m_iState != STATE_CLAW_CHARGE_LOOP
 		&& m_iState != STATE_ATTACK_LONG_CLAW_01
 		&& m_iState != STATE_ATTACK_LONG_CLAW_02
-		&& !(m_iPhaseState & PHASE_HITTED))
+		&& !(m_iPhaseState & PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		m_fChrageTime += fTimeDelta;
 
@@ -331,7 +332,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_AXE;	
@@ -345,7 +347,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_SCYTHE_B;
@@ -361,7 +364,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY))
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_HALBERDS_B;
@@ -384,7 +388,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & PHASE_HITTED)
 		&& !(m_iPhaseState & PHASE_PARRY)
 		&& !(m_iPhaseState & PHASE_DASH)
-		&& !(m_iPhaseState & PHASE_EXECUTION))
+		&& !(m_iPhaseState & PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		m_iPhaseState |= CPlayer::PHASE_HEAL;
 		m_iPotionCount--;	 // 포션 수 감소 
@@ -399,7 +404,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& m_iState != STATE_ATTACK_LONG_CLAW_01
 		&& m_iState != STATE_ATTACK_LONG_CLAW_02
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_DEAD))	
+		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		if ((m_iState == STATE_PARRY_L ||
 			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP))))
@@ -443,7 +449,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
 		&& m_iState != STATE_PARRY_L
-		&& m_iState != STATE_PARRY_R)
+		&& m_iState != STATE_PARRY_R
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -537,7 +544,8 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
 		&& m_iState != STATE_PARRY_L
-		&& m_iState != STATE_PARRY_R)
+		&& m_iState != STATE_PARRY_R
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
 	{
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
@@ -733,7 +741,8 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_REBOUND_R
 		|| m_iState == STATE_CLAW_LONG_PLUNDER_ATTACK2
 		|| m_iState == STATE_CATCHED
-		|| m_iState == STATE_VARG_RUN_EXECUTION)	
+		|| m_iState == STATE_VARG_RUN_EXECUTION
+		|| m_iPhaseState & PHASE_LADDER)	
 	{
 		m_bMove = true;
 	}
@@ -784,7 +793,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	_vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+	if (!(m_iPhaseState & PHASE_LADDER))	
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));	
 
 	__super::Update(fTimeDelta);
 
@@ -1234,6 +1244,7 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 	m_bMove = true;
+	m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;	
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -1343,6 +1354,101 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 				m_iState = STATE_ARCHIVE_SIT_GETUP;
 
 			}
+		}
+	}
+
+
+	/* 사다리와 충돌 했을 시. */
+	else if (!strncmp("P_Ladder02_Up", _pOther->Get_Name(), 13))
+	{
+		if (m_pGameInstance->isKeyEnter(DIK_E))
+		{
+
+			_float4 fLadderLookDir = {};
+			_float4 fLadderUpDir = {};
+			_float4 fLadderPos = {};
+			const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+			fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
+			fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
+			fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
+
+			m_pStateMgr->Get_VecState().at(59)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(59)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(59)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(59)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+
+			m_iState = STATE_LADDER_CLIMB_R_UP_REVERSE_END;
+			m_iPhaseState |= PHASE_LADDER;
+		}
+	}
+
+	if (!strncmp("P_Ladder02_Up", _pOther->Get_Name(), 13))
+	{
+		_float4 fLadderLookDir = {};
+		_float4 fLadderUpDir = {};
+		_float4 fLadderPos = {};
+		const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+		fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
+		fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
+		fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
+
+		if (m_iState == STATE_LADDER_CLIMB_L_UP)
+		{
+			m_pStateMgr->Get_VecState().at(60)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(60)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(60)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(60)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+		}
+
+		else if (m_iState == STATE_LADDER_CLIMB_R_UP)
+		{
+			m_pStateMgr->Get_VecState().at(61)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(61)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(61)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(61)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+		}
+	}
+
+
+
+	if (!strncmp("P_Ladder02_Down", _pOther->Get_Name(), 15))
+	{
+		_float4 fLadderLookDir = {};
+		_float4 fLadderUpDir = {};
+		_float4 fLadderPos = {};
+
+		const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+		fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
+		fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
+		fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
+
+
+		if (m_pGameInstance->isKeyEnter(DIK_E))
+		{
+			m_pStateMgr->Get_VecState().at(56)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(56)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(56)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(56)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+
+			m_iState = STATE_LADDER_CLIMB_START;
+			m_iPhaseState |= PHASE_LADDER;
+		}
+
+
+		else if (m_iState == STATE_LADDER_CLIMB_L_DOWN)
+		{
+			m_pStateMgr->Get_VecState().at(57)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(57)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(57)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(57)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+		}
+
+		else if (m_iState == STATE_LADDER_CLIMB_R_DOWN)
+		{
+			m_pStateMgr->Get_VecState().at(62)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(62)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(62)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(62)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 		}
 	}
 }

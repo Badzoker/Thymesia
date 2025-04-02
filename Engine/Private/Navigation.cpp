@@ -279,6 +279,8 @@ _uint CNavigation::Find_Closest_Cell(/*_uint _iFloorNum, */_vector _vWorldPos)
         }
     }
 
+    m_iCurrentCellIndex = iClosestCellIndex;    
+
     return iClosestCellIndex;
 }
 
