@@ -251,6 +251,7 @@
     <ClInclude Include="..\Public\Loader_Static_Logo.h" />
     <ClInclude Include="..\Public\Loader_Tutorial.h" />
     <ClInclude Include="..\Public\Locked_On.h" />
+    <ClInclude Include="..\Public\LockLine.h" />
     <ClInclude Include="..\public\LockOn_Evade_B.h" />
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
@@ -499,6 +500,7 @@
     <ClCompile Include="..\Private\Loader_Static_Logo.cpp" />
     <ClCompile Include="..\Private\Loader_Tutorial.cpp" />
     <ClCompile Include="..\Private\Locked_On.cpp" />
+    <ClCompile Include="..\Private\LockLine.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_B.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />

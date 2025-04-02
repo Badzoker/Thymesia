@@ -13,6 +13,7 @@
 #include "UI_LeftBackground.h"
 
 #include "Button.h"
+#include "LockLine.h"
 #include "GameItem.h"
 #include "DeadBranch.h"
 
@@ -507,6 +508,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Fade(const _tchar* pLayerTag)
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Button(const _tchar* pLayerTag)
 {
+    CLockLine::LOCKLINE_DESC LineDesc = {};
+    LineDesc.iCurLevel = m_iCurrentLevel;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_LockLine"), LEVEL_SEAOFTREES, pLayerTag, &LineDesc)))
+        return E_FAIL;
+
     CButton::BUTTON_DESC ButtonDesc = {};
 
     for (_uint i = 0; i < 1; ++i)

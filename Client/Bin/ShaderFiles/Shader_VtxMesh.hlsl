@@ -32,6 +32,8 @@ float4x4 g_PreWorldMatrix, g_PreViewMatrix;
 Texture2D g_DissolveTexture;
 float g_DissolveValue;
 
+float g_fLineLength;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -745,6 +747,34 @@ PS_OUT PS_Card(PS_IN In)
 }
 
 
+PS_OUT PS_LOCK_LINE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+   
+    float2 UV = In.vTexcoord;
+    UV.x += g_Time * 3.0f;
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, UV);
+	
+    if (vMtrlDiffuse.a < 0.1f || vMtrlDiffuse.r < 0.1f || vMtrlDiffuse.g < 0.1f || vMtrlDiffuse.b < 0.1f)
+        discard;
+
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.1f;
+
+    UV.x *= g_fLineLength;
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    
+    Out.vDiffuse.a = vMtrlDiffuse.r;
+    
+    Out.vDiffuse.rgb = float3(0.89f, 0.23f, 0.25f);
+ 
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -925,5 +955,17 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Card();
     }
+
+    pass Lock_Line // 16 LockLine
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_LOCK_LINE();
+    }
+
 
 }
