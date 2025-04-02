@@ -24,6 +24,7 @@
 #include "Chair.h"
 #include "ChairLamp.h"
 #include "Elevator_Door.h"
+#include "LadderObject.h"
 
 
 CLevel_SeaOfTrees::CLevel_SeaOfTrees(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -206,6 +207,18 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
         return E_FAIL;
 
+
+
+    FOGPARAMS FogDesc{};
+    FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+    FogDesc.fFogStartDistance = _float2(0.09f, 8.f);
+    FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+    FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
+
+    m_pGameInstance->Set_FogFactors(FogDesc);
+
+    m_pGameInstance->Set_LightShaftValue(_float4(0.f, 0.f, 0.f, 0.f));
+
     return S_OK;
 }
 
@@ -238,7 +251,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
     Load_Objects(313, pLayerTag); //Circus Map 조커 방
     //Load_Objects(315, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
-    Load_Objects(316, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
+    Load_Objects(319, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
 
     Load_TriggerObjects(2);
 
@@ -250,7 +263,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Corridor(const _tchar* pLayerTa
     if (FAILED(Load_Objects(312, pLayerTag))) //Circus Map 엘레베이터 복도(보스전까지)
         return E_FAIL;
 
-    if (FAILED(Load_SpecificObjects(3)))
+    if (FAILED(Load_SpecificObjects(5)))
         return E_FAIL;
 
     return S_OK;
@@ -683,8 +696,6 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level, const _tchar* pLayer
 
     ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
 
-    _uint iLadderDownNum = {};
-    _uint iLadderUpNum = {};
     for (size_t i = 0; i < iSize; i++)
     {
         CObject::OBJECT_DESC Desc{};
@@ -709,27 +720,8 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level, const _tchar* pLayer
 
         if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
         {
-            if ((Desc.ObjectName == "P_Ladder02_Down"))
-            {
-                Desc.iObjectNumber = iLadderDownNum;
-                Desc.ObjectName = strName + "_" + to_string(iLadderDownNum);
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_Ladder"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
-                    return E_FAIL;
-                ++iLadderDownNum;
-            }
-            else if (Desc.ObjectName == "P_Ladder02_Up")
-            {
-                Desc.iObjectNumber = iLadderUpNum;
-                Desc.ObjectName = strName + "_" + to_string(iLadderUpNum);
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_Ladder"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
-                    return E_FAIL;
-                ++iLadderUpNum;
-            }
-            else
-            {
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
-                    return E_FAIL;
-            }
+            if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+                return E_FAIL;
         }
         else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
         {
@@ -978,6 +970,9 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
         Desc.iCurLevel = m_iCurrentLevel;
         CGameObject* pObject = nullptr;
 
+        _uint iLadderDownNum = { 0 };
+        _uint iLadderUpNum = { 0 };
+
         if (strName == "P_Archive_Chair01")
         {
             Desc.iPairNum = iChairNum;
@@ -1060,7 +1055,7 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
                 ElevatorDesc.iCurLevel = m_iCurrentLevel;
                 ElevatorDesc.isCulling = true;
                 ElevatorDesc.iLoadIndex.push_back(313);
-                ElevatorDesc.iLoadIndex.push_back(316);
+                ElevatorDesc.iLoadIndex.push_back(319);
                 ElevatorDesc.pCullingLayerTag = TEXT("Layer_Boss_Map");
                 ElevatorDesc.pLoadLayerTag = TEXT("Layer_Normal_Map");
                 ElevatorDesc.pPlayerTransform = pPlayerTransform;
@@ -1093,8 +1088,38 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
                 pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &ElevatorDesc));
             }
             ++iElevatorDown;
-        }
 
+        }
+        else if ((strName == "P_Ladder02_Down"))
+        {
+            CLadderObject::LADDER_DESC LadderDesc;
+            LadderDesc.fPosition = Desc.fPosition;
+            LadderDesc.fRotation = Desc.fRotation;
+            LadderDesc.fScaling = Desc.fScaling;
+            LadderDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+            LadderDesc.iCurLevel = m_iCurrentLevel;
+            LadderDesc.iObjectNumber = iLadderDownNum;
+            LadderDesc.ObjectName = strName + "_" + to_string(iLadderDownNum);
+            if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), LEVEL_SEAOFTREES, TEXT("Layer_SpecificObject"), &LadderDesc)))
+                return E_FAIL;
+            ++iLadderDownNum;
+        }
+        else if (strName == "P_Ladder02_Up")
+        {
+            CLadderObject::LADDER_DESC LadderDesc;
+            LadderDesc.fPosition = Desc.fPosition;
+            LadderDesc.fRotation = Desc.fRotation;
+            LadderDesc.fScaling = Desc.fScaling;
+            LadderDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+            LadderDesc.iCurLevel = m_iCurrentLevel;
+            LadderDesc.iObjectNumber = iLadderUpNum;
+            LadderDesc.ObjectName = strName + "_" + to_string(iLadderUpNum);
+            if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), LEVEL_SEAOFTREES, TEXT("Layer_SpecificObject"), &LadderDesc)))
+                return E_FAIL;
+            ++iLadderUpNum;
+        }
         //else if (Desc.ObjectName == "Ladder")
         //{
         //	pObject = reinterpret_cast<CLadder*>(

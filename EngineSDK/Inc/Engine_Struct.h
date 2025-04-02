@@ -32,6 +32,24 @@ namespace Engine
 	};
 
 
+	typedef struct FogParams
+	{
+		_float4x4 g_ProjMatrixInv; // 64
+		_float4x4 g_ViewMatrixInv;// 64
+
+		_float2 fHeightNoiseFactor;	//8
+		_float2 fFogStartDistance; // x 거리 안개 거리 , y 높이 안개 거리, byte = 8
+
+		_float4 g_vCamPosition; // 16
+		_float4 g_FogColor;		// 16
+		_float4 fFogFactor;		// 12
+
+		float g_fTime; //4
+		float Padding[3];
+	}FOGPARAMS;
+
+
+
 	struct MATERIAL_DESC	
 	{
 		XMFLOAT4		vDiffuse;

@@ -209,8 +209,6 @@ HRESULT CElevator_Door::Load_Objects(_int iObject_Level)
 
     ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
 
-    _uint iLadderDownNum = {};
-    _uint iLadderUpNum = {};
     for (size_t i = 0; i < iSize; i++)
     {
         CObject::OBJECT_DESC Desc{};
@@ -235,27 +233,8 @@ HRESULT CElevator_Door::Load_Objects(_int iObject_Level)
 
         if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
         {
-            if ((Desc.ObjectName == "P_Ladder02_Down"))
-            {
-                Desc.iObjectNumber = iLadderDownNum;
-                Desc.ObjectName = strName + "_" + to_string(iLadderDownNum);
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_Ladder"), LEVEL_SEAOFTREES, m_wstrLoadLayerTag, &Desc)))
-                    return E_FAIL;
-                ++iLadderDownNum;
-            }
-            else if (Desc.ObjectName == "P_Ladder02_Up")
-            {
-                Desc.iObjectNumber = iLadderUpNum;
-                Desc.ObjectName = strName + "_" + to_string(iLadderUpNum);
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_Ladder"), LEVEL_SEAOFTREES, m_wstrLoadLayerTag, &Desc)))
-                    return E_FAIL;
-                ++iLadderUpNum;
-            }
-            else
-            {
-                if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, m_wstrLoadLayerTag, &Desc)))
-                    return E_FAIL;
-            }
+            if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_SEAOFTREES, m_wstrLoadLayerTag, &Desc)))
+                return E_FAIL;
         }
         else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
         {

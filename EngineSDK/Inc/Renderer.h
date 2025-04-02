@@ -12,10 +12,12 @@ BEGIN(Engine)
 class CRenderer final : public CBase
 {
 public:
-	enum RENDERGROUP { RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
-					   RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND, RG_BLOOM,
-					   RG_END };
-	
+	enum RENDERGROUP {
+		RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
+		RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND, RG_BLOOM,
+		RG_END
+	};
+
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
@@ -24,50 +26,54 @@ public:
 	HRESULT Initialize();
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	HRESULT Render();
-	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
+	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }
 	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 	void Set_FogColor(_float4 vFogColor);
 	void Set_LightShaftValue(_float4 _vLightShatValue);
+	void Set_FogFactors(FOGPARAMS _ParamDesc) {
+		m_ParamDesc = _ParamDesc;
+	};
 
 private:
-	ID3D11Device*					m_pDevice = { nullptr };
-	ID3D11DeviceContext*			m_pContext = { nullptr };
-	class CGameInstance*			m_pGameInstance = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
+	class CGameInstance* m_pGameInstance = { nullptr };
 	list<class CGameObject*>		m_RenderObjects[RG_END];
 
-	class CShader*		  m_pShader    = { nullptr };
-	class CShader*		  m_pShadowShader = { nullptr };
-	class CVIBuffer_Rect* m_pVIBuffer  = { nullptr };
+	class CShader* m_pShader = { nullptr };
+	class CShader* m_pShadowShader = { nullptr };
+	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
 	_float4x4		      m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
 	_float4x4		      m_BlurWorldMatrix{}, m_BlurViewMatrix{}, m_BlurProjMatrix{};
 
-	ID3D11DepthStencilView* m_pShadowDSV = { nullptr };	
+	ID3D11DepthStencilView* m_pShadowDSV = { nullptr };
 	ID3D11ShaderResourceView* m_pShadowSRV = { nullptr };
 
-	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};		
+	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
-	_bool					m_bMotionBlurOnOff = { false };	
-	_bool					m_bZoomBlurOnOff = { false };	
+	_bool					m_bMotionBlurOnOff = { false };
+	_bool					m_bZoomBlurOnOff = { false };
 
-	_float					m_fZoomBlurStrength = {0.f};		
+	_float					m_fZoomBlurStrength = { 0.f };
 
 	vector<unsigned char>							noiseData;
 
 	_int											m_perm[512] = {};
-	ID3D11Texture3D*								m_pNoiseTexture3D = { nullptr };
-	ID3D11ShaderResourceView*						m_pNoiseSRV = { nullptr };
+	ID3D11Texture3D* m_pNoiseTexture3D = { nullptr };
+	ID3D11ShaderResourceView* m_pNoiseSRV = { nullptr };
 
 	_float											m_fTime = { 0.f };
 	_float4											m_vFogColor = { 0.f, 0.f, 0.f, 1.f };
 	_float4											m_vLightShaftValue = { 0.f, 0.f, 0.f, 0.f };
+	FOGPARAMS										m_ParamDesc = {};
 
 	class CShader_Compute_Deferred* m_pLightShaftComputeShader = { nullptr };
 	class CShader_Compute_Deferred* m_pFogComputeShader = { nullptr };
 
 private:
 	HRESULT Render_Priority();
-	HRESULT Render_Shadow();	
+	HRESULT Render_Shadow();
 	HRESULT Render_NonBlend();
 	HRESULT Render_Occulsion();
 	HRESULT Render_Distortion();
@@ -96,11 +102,11 @@ private:
 	HRESULT	Render_BloomX();
 	HRESULT	Render_BloomY();
 
-	HRESULT Render_Zoom_Blur();	
+	HRESULT Render_Zoom_Blur();
 
 
 private:
-	HRESULT Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut);	
+	HRESULT Ready_Depth_Stencil_Buffer(_uint iWidth, _uint iHeight, ID3D11DepthStencilView** ppOut);
 	HRESULT SetUp_ViewportDesc(_uint iWidth, _uint iHeight);
 
 	HRESULT Add_NoiseTexture();

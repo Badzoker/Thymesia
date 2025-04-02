@@ -1,14 +1,14 @@
 #pragma once
-#include "StaticObject.h"
+#include "SpecificObject.h"
 #include "Button.h"
 
 BEGIN(Client)
-class CLadderObject final : public CStaticObject
+class CLadderObject final : public CSpecificObject
 {
 public:
-    struct LADDER_DESC : public CStaticObject::StaticObjectDesc
+    struct LADDER_DESC : public CSpecificObject::SpecificObject_Desc
     {
-
+        _uint		iObjectNumber = {};
     };
 
 private:

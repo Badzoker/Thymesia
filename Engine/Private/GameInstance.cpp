@@ -348,6 +348,11 @@ void CGameInstance::Set_LightShaftValue(_float4 _vLightShaftValue)
 	return m_pRenderer->Set_LightShaftValue(_vLightShaftValue);
 }
 
+void CGameInstance::Set_FogFactors(FOGPARAMS _ParamDesc)
+{
+	return m_pRenderer->Set_FogFactors(_ParamDesc);
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);
