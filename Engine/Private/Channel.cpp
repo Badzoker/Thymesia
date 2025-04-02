@@ -245,7 +245,7 @@ void CChannel::Reset_TransformationMatrix(const vector<class CBone*>& Bones, _ui
 
 void CChannel::Reset_ReverseTransformationMatrix(const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex)
 {
-    *pCurrentKeyFrameIndex = m_Keyframes.size() - 1;    
+    *pCurrentKeyFrameIndex = static_cast<_uint>(m_Keyframes.size()) - 1;    
 
     KEYFRAME LastKeyFrame = m_Keyframes.back(); 
 
