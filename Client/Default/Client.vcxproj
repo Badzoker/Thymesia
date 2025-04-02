@@ -213,6 +213,7 @@
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
+    <ClInclude Include="..\Public\Elevator_Door.h" />
     <ClInclude Include="..\Public\Elite_Punch_Man.h" />
     <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\GhostAisemy.h" />
@@ -460,6 +461,7 @@
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
+    <ClCompile Include="..\Private\Elevator_Door.cpp" />
     <ClCompile Include="..\Private\Elite_Punch_Man.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\GhostAisemy.cpp" />

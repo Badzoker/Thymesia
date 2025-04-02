@@ -27,6 +27,7 @@ public:
 	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }		
 	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 	void Set_FogColor(_float4 vFogColor);
+	void Set_LightShaftValue(_float4 _vLightShatValue);
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
@@ -58,7 +59,8 @@ private:
 	ID3D11ShaderResourceView*						m_pNoiseSRV = { nullptr };
 
 	_float											m_fTime = { 0.f };
-	_float4											m_vFogColor = { 0.55f, 0.58f, 0.56f, 1.f };
+	_float4											m_vFogColor = { 0.f, 0.f, 0.f, 1.f };
+	_float4											m_vLightShaftValue = { 0.f, 0.f, 0.f, 0.f };
 
 	class CShader_Compute_Deferred* m_pLightShaftComputeShader = { nullptr };
 	class CShader_Compute_Deferred* m_pFogComputeShader = { nullptr };

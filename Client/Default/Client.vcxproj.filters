@@ -844,6 +844,9 @@
     <Filter Include="02.GameObject\Player\State\InterAction\Ladder\Ladder_Climb_Start">
       <UniqueIdentifier>{fabde223-483f-4b45-90fd-71023acd85b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\SpecificObject\ElevatorDoor">
+      <UniqueIdentifier>{e2e5630d-fa07-4971-84ca-3b347e5c84bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1575,6 +1578,9 @@
     <ClInclude Include="..\public\Ladder_Climb_Start.h">
       <Filter>02.GameObject\Player\State\InterAction\Ladder\Ladder_Climb_Start</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Elevator_Door.h">
+      <Filter>02.GameObject\SpecificObject\ElevatorDoor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2296,6 +2302,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Ladder_Climb_Start.cpp">
       <Filter>02.GameObject\Player\State\InterAction\Ladder\Ladder_Climb_Start</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elevator_Door.cpp">
+      <Filter>02.GameObject\SpecificObject\ElevatorDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -432,6 +432,11 @@ void CRenderer::Set_FogColor(_float4 vFogColor)
 	m_vFogColor = vFogColor;
 }
 
+void CRenderer::Set_LightShaftValue(_float4 _vLightShatValue)
+{
+	m_vLightShaftValue = _vLightShatValue;
+}
+
 HRESULT CRenderer::Render_Priority()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final"))))
@@ -640,7 +645,7 @@ HRESULT CRenderer::Render_LightShaftX()
 {
 	CShader_Compute_Deferred::LIGHTSHAFTPARAMS ParamDesc = {  };
 
-	ParamDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
+	ParamDesc.g_LightShaftValue = m_vLightShaftValue;
 	ParamDesc.g_ScreenLightPos = m_pGameInstance->Get_LightPos();
 
 	if (FAILED(m_pGameInstance->RTV_Compute_LightShaft(TEXT("Target_Occulsion"), TEXT("Target_Compute_LightShaft"), m_pLightShaftComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &ParamDesc)))
