@@ -215,6 +215,7 @@
 #include "Button.h"				// 상호작용할 때 나올 UI 오브젝트(아이템 / 의자 / 사다리 etc..)
 #include "DeadBranch.h"			// 플레이어 사망 후, 해당 사망한 자리에서 나올 게임오브젝트.
 
+#include "LockLine.h"
 #pragma endregion
 
 CLoader_Static_Logo::CLoader_Static_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -1524,14 +1525,22 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CButton::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	//====================================================================================================================================
-
-
 #pragma endregion
 
 
+#pragma region 플레이어 락온 선 
+	lstrcpyW(m_szLoadingText, TEXT("플레이어 락온 선"));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Line"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/LockOn/LockOn0.dds"), 1))))
+		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_LockLine"), CLockLine::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-#pragma endregion
+	PreTransformMatrix = XMMatrixScaling(0.00015f, 0.00015f, 0.00015f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_LockLine"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Line/Effect_Mesh_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion 
+
 
 #pragma region Effect_Mesh
 	lstrcpyW(m_szLoadingText, TEXT("Effect_Mesh 생성중"));

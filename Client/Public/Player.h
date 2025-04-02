@@ -196,6 +196,7 @@ public:
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
 	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }		
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
+	_bool Get_Lockon()const { return m_bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);
 	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }	
@@ -203,6 +204,7 @@ public:
 	void Set_PlayerState(_uint _iState) { m_iState = _iState; }		
 
 	_bool Get_MonsterEvent() { return m_bMonsterEvent; }
+	CGameObject* Get_TargetObjectPtr() const { return m_pTargetMonsterPtr; }
 
 	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }	
 	unordered_set<STATE>* Get_Claw_Weapon_State() { return &m_set_Claw_Weapon_States; }	

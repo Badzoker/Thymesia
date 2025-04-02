@@ -30,6 +30,8 @@ public:
 	virtual const _float4x4* Get_ParentWorldMatrix() { return m_pParentWorldMatrix; }
 	virtual CGameObject* Get_Parent_Ptr() { return m_pParent; }
 
+	_float4x4 Get_CombineWorldMatrix() { return m_CombinedWorldMatrix; }
+
 protected:
 	CGameObject* m_pParent	= { nullptr };
 	const _float4x4*				m_pParentWorldMatrix = { nullptr };

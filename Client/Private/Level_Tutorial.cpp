@@ -16,6 +16,7 @@
 #include "UI_LeftBackground.h"
 
 #include "Button.h"
+#include "LockLine.h"
 #include "GameItem.h"
 #include "DeadBranch.h"
 
@@ -661,8 +662,12 @@ HRESULT CLevel_Tutorial::Ready_Layer_Fade(const _tchar* pLayerTag)
 
 HRESULT CLevel_Tutorial::Ready_Layer_Button(const _tchar* pLayerTag)
 {
-    CButton::BUTTON_DESC ButtonDesc = {};
+    CLockLine::LOCKLINE_DESC LineDesc = {};
+    LineDesc.iCurLevel = m_iCurrentLevel;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_LockLine"), LEVEL_TUTORIAL, pLayerTag, &LineDesc)))
+        return E_FAIL;
 
+    CButton::BUTTON_DESC ButtonDesc = {};
     for (_uint i = 0; i < 1; ++i)
     {
         ButtonDesc._iButtonTypeIndex = i;
