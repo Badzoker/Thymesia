@@ -763,12 +763,6 @@
     <Filter Include="02.GameObject\SpecificObject\ChairLamp">
       <UniqueIdentifier>{dbe4bf5e-a56a-4e29-9b00-0fd5539ea320}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\SpecificObject\Ladder">
-      <UniqueIdentifier>{f9f84bb9-31ff-493d-b57a-021b0d8a680b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Object\LadderObject">
-      <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State\InterAction">
       <UniqueIdentifier>{b6be16e3-7440-434a-af1e-f1d2f652e4da}</UniqueIdentifier>
     </Filter>
@@ -849,6 +843,9 @@
     </Filter>
     <Filter Include="03.UIObject\3.Button\1.LockLine">
       <UniqueIdentifier>{85213942-3037-419a-9c03-bfc026bc3ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\SpecificObject\LadderObject">
+      <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1537,7 +1534,7 @@
       <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LadderObject.h">
-      <Filter>02.GameObject\Object\LadderObject</Filter>
+      <Filter>02.GameObject\SpecificObject\LadderObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Normal_ScytheM.h">
       <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM</Filter>
@@ -2265,7 +2262,7 @@
       <Filter>02.GameObject\SpecificObject\ChairLamp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LadderObject.cpp">
-      <Filter>02.GameObject\Object\LadderObject</Filter>
+      <Filter>02.GameObject\SpecificObject\LadderObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Normal_ScytheM.cpp">
       <Filter>02.GameObject\Monster\00. Normal\Male\ScytheM</Filter>

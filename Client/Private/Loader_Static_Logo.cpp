@@ -208,6 +208,7 @@
 #include "Chair.h"
 #include "ChairLamp.h"
 #include "Elevator_Door.h"
+#include "LadderObject.h"
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -1897,6 +1898,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 #pragma region 항상 있는 오브젝트(의자나 사다리 램프 같은거)
+
 	_matrix SpecificPreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_P_Archive_Chair01"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Archive_Chair01/P_Archive_Chair01.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
@@ -1922,6 +1924,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_P_Ladder02_Up"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/P_Ladder02_Up.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_P_Ladder02_Down"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Circus_08/P_Ladder02_Down.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"), CSpecificObject::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
 
@@ -1932,6 +1942,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), CElevator_Door::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), CLadderObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
