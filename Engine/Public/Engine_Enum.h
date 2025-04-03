@@ -145,12 +145,14 @@ namespace Engine
 
 	enum MONSTER_EXECUTION_CATEGORY
 	{
-		MONSTER_START = 0,
-		MONSTER_VARG,           //바그
-		MONSTER_HARMOR,         //검병
-		MONSTER_JOKER,          //조커
-		MONSTER_VILLAGEM1,      //방패병
-		MONSTER_NORMAL          //기본몬스터
+		MONSTER_START = 0,	
+		MONSTER_VARG,               //바그	
+		MONSTER_HARMOR,             //검병	
+		MONSTER_JOKER,              //조커	
+		MONSTER_VILLAGEM1,          //방패병
+		MONSTER_MAGICIAN,           // 오두르	
+		MONSTER_MUTATION_MAGICIAN,	// 변이된 오두르 		
+		MONSTER_NORMAL              //기본몬스터
 	};
 
 	enum MONSTER_CATEGORY

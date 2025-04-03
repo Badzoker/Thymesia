@@ -15,7 +15,10 @@
 #include "Body_Magician2.h"
 
 #include "VargKnife.h"
-#include "Boss_Varg_Camera.h"	
+#include "Boss_Varg_Camera.h"
+#include "Boss_Magician_Camera.h"	
+#include "Boss_Mutation_Magician_Camera.h"
+
 #include "Weapon_Cane.h"
 #include "Weapon_Magician_Sword.h"
 #include "Weapon_Magician2_Sword.h"
@@ -468,6 +471,24 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"),	
 		CBoss_Varg_Camera::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
+
+
+	//보스 매지션1 (오두르)  카메라 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician_Camera"),
+		CBoss_Magician_Camera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//보스 변종 오두르 LV2   카메라 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Mutation_Magician_Camera"),
+		CBoss_Mutation_Magician_Camera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+
+
+
 
 	//보스 HP바
 

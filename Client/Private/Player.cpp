@@ -12,6 +12,7 @@
 #include "Weapon_Scythe.h"	
 #include "Player_Weapon_Axe.h"	
 #include "ChairLamp.h"	
+#include "VargKnife.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -178,19 +179,24 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		/* 처형 관련 작업 */
 		if (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START)	
 		{
-
-			if (m_iMonster_Execution_Category == MONSTER_EXECUTION_CATEGORY::MONSTER_VARG)
-				m_iState = STATE_VARG_RUN_EXECUTION;
-
-			else if (m_iMonster_Execution_Category == MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL)
+			switch (m_iMonster_Execution_Category)
 			{
-				m_iState = STATE_LIGHT_EXECUTION_R;	
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
+				m_iState = STATE_VARG_RUN_EXECUTION;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL:
+				m_iState = STATE_LIGHT_EXECUTION_R;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_MAGICIAN:
+				m_iState = STATE_MAGICIAN_Execution;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN:
+				m_iState = STATE_MAGICIAN_MUTATION_Execution;
+			default:
+				m_iState = STATE_STUN_EXECUTE;
+				break;
 			}
 
-			else
-				m_iState = STATE_STUN_EXECUTE;	
-
-			m_iPhaseState = 0;
 			m_iPhaseState |= PHASE_EXECUTION;
 
 		}
@@ -742,7 +748,8 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_CLAW_LONG_PLUNDER_ATTACK2
 		|| m_iState == STATE_CATCHED
 		|| m_iState == STATE_VARG_RUN_EXECUTION
-		|| m_iPhaseState & PHASE_LADDER)	
+		|| m_iPhaseState & PHASE_LADDER
+		|| m_iPhaseState & PHASE_EXECUTION)	
 	{
 		m_bMove = true;
 	}
@@ -1178,13 +1185,31 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 					m_pStateMgr->Get_VecState().at(47)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					break;
-				case Player_Hitted_State::PLAYER_HURT_CATCH:	
+				case Player_Hitted_State::PLAYER_HURT_CATCH:
+				{
 					m_iState = CPlayer::STATE_CATCHED;  // 55									
 					/* 몬스터 공격 방향 */
-					m_pStateMgr->Get_VecState().at(55)->Set_MonsterLookDir(fMonsterLookDir);	
+					m_pStateMgr->Get_VecState().at(55)->Set_MonsterLookDir(fMonsterLookDir);
 
-					m_pStateMgr->Get_VecState().at(55)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);	
+					/* 바그 손 위치 가져오기 */
+					_float4x4 VargHandWorldMatrix = dynamic_cast<CVargKnife*>(_pOther)->Get_HandWorldMatrix();
+					_vector VargHandRightDir = { VargHandWorldMatrix._11, VargHandWorldMatrix._12, VargHandWorldMatrix._13, 0.f };
+					_vector VargHandUpDir = { VargHandWorldMatrix._21, VargHandWorldMatrix._22, VargHandWorldMatrix._23, 0.f };
+					VargHandRightDir = XMVector3Normalize(VargHandRightDir);
+					VargHandUpDir = XMVector3Normalize(VargHandUpDir);
+
+					_vector VargHandPos = { VargHandWorldMatrix._41 , VargHandWorldMatrix._42,VargHandWorldMatrix._43,1.f };
+
+					VargHandPos = VargHandPos - VargHandRightDir * -1.f * 0.2f;
+
+					_float4 FinalPos = {};
+					XMStoreFloat4(&FinalPos, VargHandPos);
+
+					m_pStateMgr->Get_VecState().at(55)->Set_GetMonsterPos(FinalPos);
+
+					m_pStateMgr->Get_VecState().at(55)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					break;
+				}
 				default:
 					_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
 					m_iState = CPlayer::STATE_HurtMFR_R;  // 22			

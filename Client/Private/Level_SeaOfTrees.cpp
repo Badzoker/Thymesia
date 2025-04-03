@@ -53,9 +53,9 @@ HRESULT CLevel_SeaOfTrees::Initialize()
 
     if (FAILED(Ready_Layer_Structure_Corridor(TEXT("Layer_Corrider_Map"))))
         return E_FAIL;
-
-    //if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map"))))
-    //    return E_FAIL;
+        
+    if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map"))))
+        return E_FAIL;
 
     if (FAILED(Ready_Layer_Monster()))
         return E_FAIL;
@@ -288,7 +288,8 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
     //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
     //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
     //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
-    _float4 vTestPosition = { -48.64215f, 48.0257f, -123.5272f, 1.00000f }; // 서커스맵 시작위칩
+    //_float4 vTestPosition = { -48.64215f, 48.0257f, -123.5272f, 1.00000f }; // 서커스맵 시작위칩
+    _float4 vTestPosition = { -43.f, 110.01f, -146.f, 1.f }; // 매지션 옆 위치     
 
     Desc._fPosition = vTestPosition;
 
@@ -336,13 +337,13 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 
     /*_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
     XMStoreFloat4(&pDesc.fPosition, vTestPosition);*/
-    for (_uint i = 0; i < 20; i++)
-    {
-        if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Card"), PROJECTILE_CARD, &pDesc)))
-            return E_FAIL;
-    }
-    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
-        return E_FAIL;
+    //for (_uint i = 0; i < 20; i++)
+    //{
+    //    if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Card"), PROJECTILE_CARD, &pDesc)))
+    //        return E_FAIL;
+    //}
+    //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
+    //    return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
         return E_FAIL;

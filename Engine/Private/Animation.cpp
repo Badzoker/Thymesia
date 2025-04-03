@@ -115,14 +115,14 @@ _bool CAnimation::Update_ReverseTransformationMatrix(_float fTimeDelta, const ve
     // 역방향 순서 애니메이션 
     if (m_bFirst)
     {
-        *pCurrentTrackPoisiton -= m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
+        *pCurrentTrackPoisiton -= m_fSetStartOffSetTrackPosition + m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed;
         m_bFirst = false;
     }
 
 
     else if (*pCurrentTrackPoisiton >= 0.f)
     {
-        *pCurrentTrackPoisiton -= m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed * m_vecKeyFrameAnimationSpeed.at((int)*pCurrentTrackPoisiton) * m_fHitStopTime;
+        *pCurrentTrackPoisiton -= m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed;
     }
 
     if (true == isLoop && *pCurrentTrackPoisiton <= 0.f)

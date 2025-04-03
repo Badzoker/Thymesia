@@ -199,6 +199,8 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\Public\Boss_Magician2.h" />
+    <ClInclude Include="..\public\Boss_Magician_Camera.h" />
+    <ClInclude Include="..\public\Boss_Mutation_Magician_Camera.h" />
     <ClInclude Include="..\public\Boss_Varg_Camera.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
@@ -448,6 +450,8 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\Private\Boss_Magician2.cpp" />
+    <ClCompile Include="..\private\Boss_Magician_Camera.cpp" />
+    <ClCompile Include="..\private\Boss_Mutation_Magician_Camera.cpp" />
     <ClCompile Include="..\private\Boss_Varg_Camera.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />

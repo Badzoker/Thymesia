@@ -88,6 +88,8 @@ public:
 		STATE_LV1Villager_M_Execution,
 		STATE_Joker_Execution,
 		STATE_Varg_Execution,
+		STATE_MAGICIAN_Execution,	
+		STATE_MAGICIAN_MUTATION_Execution,	
 		STATE_LIGHT_EXECUTION_L,	
 		STATE_LIGHT_EXECUTION_R,	
 
@@ -146,8 +148,11 @@ public:
 		STATE_LADDER_CLIMB_R_UP_END,
 		STATE_LADDER_CLIMB_R_UP_REVERSE_END,
 
-
 		STATE_LADDER_CLIMB_R_IDLE,
+
+		/* Magicain 오두르 인트로 */	
+		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,	
+
 	};
 
 
@@ -193,7 +198,7 @@ public:
 
 public:
 	_uint Get_PhaseState() { return m_iPhaseState; }	
-	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState = _PhaseState; }
+	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState |= _PhaseState; }
 	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }		
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	_bool Get_Lockon()const { return m_bLockOn; }

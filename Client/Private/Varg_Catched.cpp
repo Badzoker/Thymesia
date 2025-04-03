@@ -17,7 +17,7 @@ void CVarg_Catched::Priority_Update(CGameObject* pGameObject, class CNavigation*
 {
 	_vector PlayerLook = XMVector3Normalize(pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 	_vector MonsterDir = XMVector3Normalize(XMLoadFloat4(&m_vMonsterLookDir)) * -1.f;
-
+	_vector MonsterPos = XMLoadFloat4(&m_vMonsterPos);
 
 
 	float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, MonsterDir));
@@ -32,6 +32,8 @@ void CVarg_Catched::Priority_Update(CGameObject* pGameObject, class CNavigation*
 	}
 
 	pGameObject->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
+	pGameObject->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, MonsterPos);	
+
 
 }
 

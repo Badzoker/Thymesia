@@ -9,6 +9,7 @@
 #include "Animation.h"
 #include "Locked_On.h"
 #include "Player.h"
+#include "Boss_Magician_Camera.h"	
 
 CBoss_Magician::CBoss_Magician(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -188,6 +189,21 @@ HRESULT CBoss_Magician::Ready_PartObjects(void* pArg)
 	pBoss_HP_Bar.sBossName = TEXT("¿ÀµÎ¸£");
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
+		return E_FAIL;
+
+	CBoss_Magician_Camera::CAMERA_DESC Magician_CameraDesc = {};
+
+	Magician_CameraDesc.pParent = this;
+	Magician_CameraDesc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("camera");
+	Magician_CameraDesc.pParentState = &m_iMonster_State;
+	Magician_CameraDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Magician_CameraDesc.pParentModel = m_pModelCom;
+	Magician_CameraDesc.fSpeedPerSec = 0.f;
+	Magician_CameraDesc.fRotationPerSec = 0.f;
+	Magician_CameraDesc.iCurLevel = pDesc->iCurLevel;
+	Magician_CameraDesc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician_Camera"), &Magician_CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
