@@ -123,8 +123,8 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	case PLAYER_SKILL_SCYTHE:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(17); // 낫
 		break;
-	case PLAYER_SKILL_DAGGER:
-		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(13); // 대검
+	case PLAYER_SKILL_CANESWORD:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(14); // 케인
 		break;
 	default:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(0); // 스킬 없음
@@ -149,9 +149,9 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(17); // 낫
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_SCYTHE);
 			break;
-		case PLAYER_SKILL_DAGGER:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(13); // 단검
-			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_DAGGER);
+		case PLAYER_SKILL_CANESWORD:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(14); // 단검
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_CANESWORD);
 			break;
 		default:
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
@@ -170,8 +170,8 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			case PLAYER_SKILL_SCYTHE:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
 				break;
-			case PLAYER_SKILL_DAGGER:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(13); // 단검
+			case PLAYER_SKILL_CANESWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(14); // 단검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
@@ -191,8 +191,8 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			case PLAYER_SKILL_SCYTHE:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
 				break;
-			case PLAYER_SKILL_DAGGER:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(13); // 단검
+			case PLAYER_SKILL_CANESWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(14); // 단검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음

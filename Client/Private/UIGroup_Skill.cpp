@@ -157,9 +157,9 @@ void CUIGroup_Skill::Slot_Setting()
 			pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
 			break;
 		case 4:
-			pSlot->Set_IconChange(13);
-			pSlot->Set_Content(TEXT("´Ü°Ë"));
-			pSlot->Set_MySkill(PLAYER_SKILL_DAGGER);
+			pSlot->Set_IconChange(14);
+			pSlot->Set_Content(TEXT("¾îµÒ"));
+			pSlot->Set_MySkill(PLAYER_SKILL_CANESWORD);
 			break;
 		default:
 			pSlot->Set_Content(TEXT(""));
