@@ -241,8 +241,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
         return E_FAIL;
 
-    m_pGameInstance->Set_FogColor(_float4(0.223f, 0.1725f, 0.1019f, 1.f));
-
     return S_OK;
 }
 

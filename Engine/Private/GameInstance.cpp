@@ -338,11 +338,6 @@ void CGameInstance::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)
 	return m_pRenderer->Set_ZoomBlur_Option(_bOnOff, _fStrength);	
 }
 
-void CGameInstance::Set_FogColor(_float4 vFogColor)
-{
-	return m_pRenderer->Set_FogColor(vFogColor);
-}
-
 void CGameInstance::Set_LightShaftValue(_float4 _vLightShaftValue)
 {
 	return m_pRenderer->Set_LightShaftValue(_vLightShaftValue);

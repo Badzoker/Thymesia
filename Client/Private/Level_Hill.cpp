@@ -215,9 +215,15 @@ HRESULT CLevel_Hill::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
 		return E_FAIL;
 
-	m_pGameInstance->Set_LightShaftValue(_float4(1.f, 0.97f, 1.f, 1.f));
+	FOGPARAMS FogDesc{};
+	FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+	FogDesc.fFogStartDistance = _float2(0.05f, 8.f);
+	FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+	FogDesc.g_FogColor = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	m_pGameInstance->Set_FogColor(_float4(0.55f, 0.58f, 0.56f, 1.f));
+	m_pGameInstance->Set_FogFactors(FogDesc);
+
+	m_pGameInstance->Set_LightShaftValue(_float4(1.f, 0.97f, 1.f, 1.f));
 
 	return S_OK;
 }

@@ -517,7 +517,7 @@ HRESULT CRenderer::Render_NonBlend()
 
 HRESULT CRenderer::Render_Occulsion()
 {
-	if (XMVector4Equal(XMLoadFloat4(&m_vLightShaftValue), XMVectorSet(0.f, 0.f, 0.f, 0.f)))
+	if (!XMVector4Equal(XMLoadFloat4(&m_vLightShaftValue), XMVectorSet(0.f, 0.f, 0.f, 0.f)))
 	{
 		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulsion"))))
 			return E_FAIL;
