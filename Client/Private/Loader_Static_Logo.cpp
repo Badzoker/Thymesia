@@ -1911,6 +1911,116 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_Buffer.dat")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Burst */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Burst"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Burst_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Burst */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Burst"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Explosion_Mutation_Burst_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation_Impact */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation_Impact"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion_Mutation_Impact_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Rising_Impact */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Rising_Impact"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Mutation_RisingFast_Impact_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Falling_Impact */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Falling_Impact"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Mutation_FallingSlow_Impact_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Stab */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Stab"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Explosion_Mutation_Stab_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Stab_Dust */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Stab_Dust"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Stab_Dust_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Stab_Dust */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Mutation_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Left_Stab */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Left_Stab"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left_Stab_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Vertical */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Vertical"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Vertical_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Horizon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Horizon"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Horizon_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Narrow */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Narrow"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Narrow_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Horizon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Horizon"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Horizon_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Joker_Intro */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Joker_Intro"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Joker_Intro_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Intro */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Intro"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Joker_Intro_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Left */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Left"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Left_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Right */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Right"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Right_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Smash */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Smash"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Joker_Smash_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_Smash */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Smash"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Smash_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_ShockWave */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_ShockWave"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_ShockWave_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_DustDelay_ShockWave */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_ShockWave"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_ShockWave_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Scythe_WheelAttack */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_WheelAttack"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Scythe_WheelAttack_Buffer.dat")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Particle_Image*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Particle_Image"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Particle_Image/texParticle%d.dds"), 25))))

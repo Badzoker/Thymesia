@@ -277,9 +277,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.iCurLevel = m_iCurrentLevel;
 
     //_float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // º¸½º Á¤¹®	
-    _float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡  // 3¿ù 19ÀÏ	
+    //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //ÀÇÀÚ ¿· À§Ä¡  // 3¿ù 19ÀÏ	
     //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC ¿· À§Ä¡
-    //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡	
+    _float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //¹ü½ÂÀÌ º¸½º¿· À§Ä¡	
 
     Desc._fPosition = vTestPosition;
 
@@ -351,20 +351,20 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
         default:
             break;
         case ELITE_JOKER:
-    /*        pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
-                return E_FAIL;*/
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_ELITE, &pDesc)))
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
                 return E_FAIL;
+            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_ELITE, &pDesc)))
+            //    return E_FAIL;
             break;
         case ELITE_HARMORLV2:
-            /*  pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+              pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
             if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
-                return E_FAIL;*/
-            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"), CATEGORY_ELITE, &pDesc)))
                 return E_FAIL;
+            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"), CATEGORY_ELITE, &pDesc)))
+            //    return E_FAIL;
             break;
 
         case NORMAL_VILLAGE_M0:
@@ -507,6 +507,30 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_HEAL)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Mutation_Narrow_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_MUTATION_BURST)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Mutation_ShockWave_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_MUTATION_BURST)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Mutation_Impact_Glow.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_MUTATION_IMPACT)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Mutation_Sweep.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_MUTATION_SWEEP)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Mutation_Sweep_Line.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_MUTATION_SWEEP)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Joker_ShockWave.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_JOKER_SHOCKWAVE)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -640,6 +664,94 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET, 2)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Explosion_Mutation_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_BURST, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Explosion_Mutation_Impact.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Mutation_RisingFast_Impact.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Mutation_FallingSlow_Impact.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Explosion_Mutation_Stab.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Stab_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Mutation.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Horizon.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_HORIZON, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Narrow.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Vertical.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_VERTICAL, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Left_Stab.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT_STAB, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Horizon.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_HORIZON, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Scythe_WheelAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_WHEELATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_ShockWave.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_SHOCKWAVE, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_ShockWave.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_SHOCKWAVE, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Smash.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_SMASH, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Joker_Smash.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_SMASH, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_RIGHT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_LEFT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Joker_Intro.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_INTRO, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Joker_Intro.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_JOKER_INTRO, 1)))
+        return E_FAIL;
+
     //Sword Effect
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
@@ -652,6 +764,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Claw_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
         EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_CLAW_2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Mutation.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_MUTATION)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_HArmor.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_HARMOR)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Joker.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_JOKER)))
         return E_FAIL;
 
     return S_OK;
@@ -1397,7 +1521,7 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         ReadFile(hFile, &pDesc.iShaderPass, sizeof(_uint), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
-
+        pDesc.fMaxTimer += 1.f;
         ReadFile(hFile, &pDesc.vRGB, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
@@ -1551,6 +1675,94 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get");
             break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Burst");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_BURST:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Burst");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation_Impact");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Rising_Impact");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Falling_Impact");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Stab");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Stab_Dust");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_HORIZON:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Horizon");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT_STAB:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Left_Stab");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VERTICAL:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Vertical");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_HORIZON:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Horizon");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Narrow");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_JOKER_INTRO:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Joker_Intro");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_INTRO:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Intro");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_LEFT:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Left");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_RIGHT:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Right");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_SMASH:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Smash");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_SMASH:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Smash");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_SHOCKWAVE:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_ShockWave");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_SHOCKWAVE:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_ShockWave");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_WHEELATTACK:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_WheelAttack");
+            break;
         }
 #pragma endregion
 
@@ -1571,7 +1783,8 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 
         ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.iShaderPass, sizeof(_uint), &dwByte, nullptr);
-        ReadFile(hFile, &pDesc.fLength, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fLength_Up, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fLength_Right, sizeof(_float), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.fParent_Look, sizeof(_float), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vRGB, sizeof(_float3), &dwByte, nullptr);
@@ -1579,6 +1792,8 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
+
+        ReadFile(hFile, &pDesc.iSword_XYZ, sizeof(_uint), &dwByte, nullptr);
 
 
         for (_uint i = 0; i < _iEffectCount; i++)

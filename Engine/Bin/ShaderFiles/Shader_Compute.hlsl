@@ -239,10 +239,6 @@ void CSMain_Particle_Dust_Delay(int3 dispatchThreadID : SV_DispatchThreadID, uin
     sharedParticles[groupIndex] = g_tOutput_Compute[dispatchThreadID.x];
     GroupMemoryBarrierWithGroupSync();
     
-    sharedParticles[groupIndex].vSpeed.xz = tInput.vSpeed.xz * 1.f;
-    sharedParticles[groupIndex].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
-    
-    
     sharedParticles[groupIndex].fDelayTime += 0.0167f;
     sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
     
@@ -256,17 +252,24 @@ void CSMain_Particle_Dust_Delay(int3 dispatchThreadID : SV_DispatchThreadID, uin
     else
     {
         sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
+        sharedParticles[groupIndex].vSpeed.y -= tInput.vSpeed.y * 0.0167f * (1.f - (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x));
+        sharedParticles[groupIndex].vSpeed.xz = tInput.vSpeed.xz * 1.f * max(1.f - (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x), 0.f);
         vDir = vDir * sharedParticles[groupIndex].vSpeed * 0.0167f;
         sharedParticles[groupIndex].vTranslation.xyz -= vDir;
         sharedParticles[groupIndex].vTranslation.w = 1.f;
     }
-    float3 vScale = tInput.vScale * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
+    float fScale = tInput.vScale.x * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
     
-    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * vScale.x;
+    if (fScale < 0.1f)
+        fScale = 0.001f;
+    
+    sharedParticles[groupIndex].vScale = tInput.vScale * fScale;
+    
+    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * sharedParticles[groupIndex].vScale.x;
     float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
-    sharedParticles[groupIndex].vUp = vUp * vScale.y;
+    sharedParticles[groupIndex].vUp = vUp * sharedParticles[groupIndex].vScale.y;
     float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
-    sharedParticles[groupIndex].vLook = vLook * vScale.z;
+    sharedParticles[groupIndex].vLook = vLook * sharedParticles[groupIndex].vScale.z;
     
     GroupMemoryBarrierWithGroupSync();
     
@@ -282,16 +285,11 @@ void CSMain_Particle_Hurricane(int3 dispatchThreadID : SV_DispatchThreadID, uint
     GroupMemoryBarrierWithGroupSync();
     
     sharedParticles[groupIndex].vSpeed = tInput.vSpeed * 1.f;
-    sharedParticles[groupIndex].vSpeed.xz = tInput.vSpeed.xz * 1.f;
-    sharedParticles[groupIndex].vSpeed.y -= tInput.vSpeed.y * 0.0167f;
-    
     
     sharedParticles[groupIndex].fDelayTime += 0.0167f;
     sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
     
-    
-    
-    float3 vDir = float3(normalize(tInput.vTranslation.xyz - tInput.vPivot));
+    float3 vDir = 0.f;
     if (tInput.fDelayTime > sharedParticles[groupIndex].fDelayTime)
     {
         sharedParticles[groupIndex].vLifeTime.x = 0.001f;
@@ -299,25 +297,30 @@ void CSMain_Particle_Hurricane(int3 dispatchThreadID : SV_DispatchThreadID, uint
     }
     else
     {
+        sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
         float fAngleX = (tInput.vTranslation.x + tInput.vTranslation.y + tInput.vTranslation.z) + tInput.vSpeed.x * sharedParticles[groupIndex].vLifeTime.y;
         float fAngleZ = (tInput.vTranslation.x + tInput.vTranslation.y + tInput.vTranslation.z) + tInput.vSpeed.z * sharedParticles[groupIndex].vLifeTime.y;
     
         sharedParticles[groupIndex].vTranslation.x = tInput.vTranslation.x + (tInput.vTranslation.x - tInput.vPivot.x) * cos(fAngleX);
         sharedParticles[groupIndex].vTranslation.z = tInput.vTranslation.z + (tInput.vTranslation.z - tInput.vPivot.z) * cos(fAngleZ);
-        
-        sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
+        vDir = float3(normalize(tInput.vTranslation.xyz - tInput.vPivot));
         vDir = vDir * sharedParticles[groupIndex].vSpeed * 0.0167f;
         sharedParticles[groupIndex].vTranslation.y -= vDir.y;
         sharedParticles[groupIndex].vTranslation.w = 1.f;
     }
     
-    float3 vScale = tInput.vScale * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
+    float fScale = tInput.vScale.x * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
     
-    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * vScale.x;
+    if (fScale < 0.1f)
+        fScale = 0.001f;
+    
+    sharedParticles[groupIndex].vScale = tInput.vScale * fScale;
+    
+    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * sharedParticles[groupIndex].vScale.x;
     float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
-    sharedParticles[groupIndex].vUp = vUp * vScale.y;
+    sharedParticles[groupIndex].vUp = vUp * sharedParticles[groupIndex].vScale.y;
     float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
-    sharedParticles[groupIndex].vLook = vLook * vScale.z;
+    sharedParticles[groupIndex].vLook = vLook * sharedParticles[groupIndex].vScale.z;
     
     GroupMemoryBarrierWithGroupSync();
     

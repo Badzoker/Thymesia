@@ -16,13 +16,16 @@ public:
 	struct EFFECT_SWORD_DESC : public CEffect::EFFECT_DESC
 	{
 		_uint iShaderPass = {};
-		_float fLength = {};
+		_float fLength_Up = {};
+		_float fLength_Right = {};
 		_float fParent_Look = {};
 		_float3 vRGB = {};
 
 		_float3 vScale = {};
 		_float3 vRot = {};
 		_float3 vTranslation = {};
+
+		_uint iSword_XYZ = { 2 };
 	};
 
 private:
@@ -51,10 +54,12 @@ private:
 
 	_uint m_iShaderPass = {};
 	_uint m_iDiffuse = {};
-	_float m_fLength = {};
+	_float m_fLength_Up = {};
+	_float m_fLength_Right = {};
 	_float m_fParent_Look = {};
 
 	_float3 m_vRGB = {};
+	_uint m_iSword_XYZ = { 2 };
 
 	deque<_float3> m_dequeCenterPos;
 

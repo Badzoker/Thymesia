@@ -81,5 +81,7 @@ CGameObject* CCamera_Logo::Clone(void* pArg)
 
 void CCamera_Logo::Free()
 {
+	m_pGameInstance->Delete_Shadow(m_pTransformCom);
+
 	__super::Free();
 }

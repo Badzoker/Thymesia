@@ -161,6 +161,43 @@ void CWeapon_Magician2_Sword::Update(_float fTimeDelta)
                     }
                 }
             }
+
+#pragma region Effect
+
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+            {
+                if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_MUTATION, &m_CombinedWorldMatrix);
+                    }
+                }
+                if (!strcmp(iter.szName, "Weapon_Trail2")) //Trail 시작해야하는 부분
+                {
+                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                    {
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_MUTATION, &m_CombinedWorldMatrix);
+                    }
+                }
+            }
+            else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+            {
+                if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MUTATION);
+                    iter.isPlay = false;
+                }
+                if (!strcmp(iter.szName, "Weapon_Trail2")) //Trail이 꺼져야 하는 부분
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MUTATION);
+                    iter.isPlay = false;
+                }
+            }
+
+#pragma endregion
         }
     }
     else

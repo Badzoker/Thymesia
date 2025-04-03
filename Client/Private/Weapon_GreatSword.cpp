@@ -100,6 +100,83 @@ void CWeapon_GreatSword::Update(_float fTimeDelta)
 						iter.isPlay = false;
 				}
 			}
+
+#pragma region Effect
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+			{
+				if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_HARMOR, &m_CombinedWorldMatrix);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Vertical"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VERTICAL, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Narrow"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT_STAB, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Horizon"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_HORIZON, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_HORIZON, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Horizon_Back"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_HORIZON, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_HORIZON, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Left"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT_STAB, vPos, vDir);
+					}
+				}
+			}
+			else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+			{
+				if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+				{
+					m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_HARMOR);
+					iter.isPlay = false;
+				}
+			}
+#pragma endregion
+
 		}
 	}
 	else

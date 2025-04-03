@@ -100,6 +100,102 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 						iter.isPlay = false;
 				}
 			}
+#pragma region Effect
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+			{
+				if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_JOKER, &m_CombinedWorldMatrix);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Left"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_LEFT, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Right"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_RIGHT, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Smash"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_SMASH, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_SMASH, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Narrow"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_ShockWave"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_SHOCKWAVE, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_SHOCKWAVE, vPos, vDir);
+						m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_JOKER_SHOCKWAVE, *m_pParentWorldMatrix);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Intro"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_INTRO, vPos, vDir);
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_JOKER_INTRO, vPos, vDir);
+					}
+				}
+				else if (!strcmp(iter.szName, "Effect_Wheel"))
+				{
+					if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+					{
+						_vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+						_vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_WHEELATTACK, vPos, vDir);
+					}
+				}
+			}
+			else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+			{
+				if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+				{
+					m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_JOKER);
+					iter.isPlay = false;
+				}
+			}
+#pragma endregion
+
 		}
 	}
 	else

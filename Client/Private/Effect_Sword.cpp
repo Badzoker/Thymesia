@@ -23,9 +23,11 @@ HRESULT CEffect_Sword::Initialize(void* _Arg)
     m_fMaxTimer = pDesc->fMaxTimer;
     m_iDiffuse = pDesc->iDiffuse;
     m_iShaderPass = pDesc->iShaderPass;
-    m_fLength = pDesc->fLength;
+    m_fLength_Up = pDesc->fLength_Up;
+    m_fLength_Right = pDesc->fLength_Right;
     m_fParent_Look = pDesc->fParent_Look;
     m_vRGB = pDesc->vRGB;
+    m_iSword_XYZ = pDesc->iSword_XYZ;
 
     if (FAILED(__super::Initialize(_Arg)))
         return E_FAIL;
@@ -59,8 +61,8 @@ void CEffect_Sword::Update(_float _fTimeDelta)
 
         _uint iCount_Trail = static_cast<_uint>(m_dequeCenterPos.size());
         _float3 vUp{}, vRight{};
-        XMStoreFloat3(&vUp, m_fLength * XMVector3Normalize(XMVector3Cross(_vector{ 0.f, 1.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
-        XMStoreFloat3(&vRight, m_fLength * XMVector3Normalize(XMVector3Cross(_vector{ 1.f, 0.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
+        XMStoreFloat3(&vUp, m_fLength_Up * XMVector3Normalize(XMVector3Cross(_vector{ 0.f, 1.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
+        XMStoreFloat3(&vRight, m_fLength_Right * XMVector3Normalize(XMVector3Cross(_vector{ 1.f, 0.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
         m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp, vRight);
     }
     
@@ -145,11 +147,22 @@ void CEffect_Sword::Calculate_Trail(_float _fTimeDelta)
 
     XMMatrixDecompose(&vScale, &vRotation, &vTranslation, XMLoadFloat4x4(&m_matCombined));
 
-    _float3 vPos = {};
+    _float3 vPos{}, vLook_Sword{};
 
     XMStoreFloat3(&vPos, vTranslation);
 
-    _float3 vLook_Sword = { vPos.x + m_matCombined._31 * m_fParent_Look, vPos.y + m_matCombined._32 * m_fParent_Look, vPos.z + m_matCombined._33 * m_fParent_Look };
+    switch (m_iSword_XYZ)
+    {
+    case 0:
+        vLook_Sword = { vPos.x + m_matCombined._11 * m_fParent_Look, vPos.y + m_matCombined._12 * m_fParent_Look, vPos.z + m_matCombined._13 * m_fParent_Look };
+        break;
+    case 1:
+        vLook_Sword = { vPos.x + m_matCombined._21 * m_fParent_Look, vPos.y + m_matCombined._22 * m_fParent_Look, vPos.z + m_matCombined._23 * m_fParent_Look };
+        break;
+    case 2:
+        vLook_Sword = { vPos.x + m_matCombined._31 * m_fParent_Look, vPos.y + m_matCombined._32 * m_fParent_Look, vPos.z + m_matCombined._33 * m_fParent_Look };
+        break;
+    }
 
     if (false == m_bisCalculate) //크기가 적다 즉 시작했을때나 끝났을때이다
     {

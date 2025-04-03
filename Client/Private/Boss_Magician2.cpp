@@ -428,6 +428,21 @@ void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Idle_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+
+#pragma region Effect
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Intro_Effect")) //Intro Effect
+			{
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				iter.isPlay = true;
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 14 &&
 		pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex &&
 		pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f &&
@@ -571,6 +586,25 @@ void CBoss_Magician2::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magic
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 		}
 	}
+
+
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Stab")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			{
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 }
 
 void CBoss_Magician2::Attack_ComboA::State_Exit(CBoss_Magician2* pObject)
@@ -613,6 +647,32 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 		pObject->m_iMonster_Attack_Power = 114;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
 	}
+
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Stab"))
+			{
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Impact"))
+			{
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MUTATION_IMPACT, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
 
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
@@ -743,6 +803,27 @@ void CBoss_Magician2::Attack_ComboG::State_Update(_float fTimeDelta, CBoss_Magic
 {
 	pObject->RotateDegree_To_Player();
 
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Burst"))
+			{
+				for (_uint i = 0; i < 2; i++)
+				{
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MUTATION_BURST, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				}
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_BURST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if(pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 70.f)
@@ -770,6 +851,29 @@ void CBoss_Magician2::Attack_ComboH::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboH::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Sweep"))
+			{
+				for (_uint i = 0; i < 2; i++)
+				{
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MUTATION_SWEEP, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				}
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
@@ -814,6 +918,25 @@ void CBoss_Magician2::Attack_ComboJ::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboJ::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Impact")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			{
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MUTATION_IMPACT, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
@@ -837,6 +960,25 @@ void CBoss_Magician2::Attack_Special::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Special")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			{
+				for (_uint i = 0; i < 5; i++)
+				{
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_VARG_ROAR, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				}
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_bCatch_Special_Attack)

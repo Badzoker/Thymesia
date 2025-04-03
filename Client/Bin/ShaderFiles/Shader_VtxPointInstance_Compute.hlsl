@@ -3,7 +3,7 @@
 
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D g_Texture;
-Texture2D g_NoiseTexture; 
+Texture2D g_NoiseTexture;
 float3 g_vRGB;
 float4 g_vCamPosition;
 float g_fAlpha_Amount;
@@ -62,8 +62,8 @@ struct GS_IN
 struct GS_OUT
 {
     float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;   
-    float2 vLifeTime : TEXCOORD1;   
+    float2 vTexcoord : TEXCOORD0;
+    float2 vLifeTime : TEXCOORD1;
 };
 
 struct GS_OUT_WEIGHT
@@ -71,7 +71,7 @@ struct GS_OUT_WEIGHT
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
     float2 vLifeTime : TEXCOORD1;
-    float4 vProjPos  : TEXCOORD2;
+    float4 vProjPos : TEXCOORD2;
 };
 
 
@@ -291,7 +291,7 @@ struct PS_IN_WEIGHT
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
     float2 vLifeTime : TEXCOORD1;
-    float4 vProjPos  : TEXCOORD2;
+    float4 vProjPos : TEXCOORD2;
 };
 
 struct PS_OUT
@@ -303,7 +303,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);    
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
    
   
     if (0.2f >= Out.vColor.a)
