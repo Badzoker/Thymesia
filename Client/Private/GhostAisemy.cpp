@@ -313,4 +313,6 @@ CGameObject* CGhostAisemy::Clone(void* _pArg)
 void CGhostAisemy::Free()
 {
     __super::Free();
+
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
