@@ -609,7 +609,7 @@ HRESULT CLevel_Hill::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_HILL, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_HILL, pLayerTag, &Desc, "PlayerLevelUp")))
 		return E_FAIL;
 	return S_OK;
 }
