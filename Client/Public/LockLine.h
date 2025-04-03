@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -28,14 +29,16 @@ public:
 	virtual void				Update(_float fTimeDelta) override;
 	virtual void				Late_Update(_float fTimeDelta) override;
 	virtual HRESULT				Render() override;
+	virtual HRESULT				Render_Glow() override;
 private:
-	CShader*					m_pShaderCom = { nullptr };
-	CModel*						m_pModelCom = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 private:
 	_uint						m_iCurrentLevel = {};
-	CContainerObject*			m_pTargetMonsterPtr = { nullptr };
-	CPlayer*					m_pPlayer = { nullptr };
-	CGameObject*				m_pTargetPtr = { nullptr };
+	CContainerObject* m_pTargetMonsterPtr = { nullptr };
+	CPlayer* m_pPlayer = { nullptr };
+	CGameObject* m_pTargetPtr = { nullptr };
 	_float4						m_vStartPos = {};
 private:
 	_float						m_fLineLength = { 1.0f };
@@ -45,8 +48,8 @@ public:
 	HRESULT						Ready_Components();
 
 public:
-	static CLockLine*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
+	static CLockLine* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void				Free() override;
 };
 

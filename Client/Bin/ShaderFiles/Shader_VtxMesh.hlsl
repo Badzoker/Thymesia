@@ -32,6 +32,7 @@ float4x4 g_PreWorldMatrix, g_PreViewMatrix;
 Texture2D g_DissolveTexture;
 float g_DissolveValue;
 
+Texture2D g_LinePointTexture;
 float g_fLineLength;
 
 struct VS_IN
@@ -752,24 +753,18 @@ PS_OUT PS_LOCK_LINE(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
    
     float2 UV = In.vTexcoord;
-    UV.x += g_Time * 3.0f;
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, UV);
-	
-    if (vMtrlDiffuse.a < 0.1f || vMtrlDiffuse.r < 0.1f || vMtrlDiffuse.g < 0.1f || vMtrlDiffuse.b < 0.1f)
+    UV.y += g_Time * 3.0f;
+    
+    vector vLineTex = g_LinePointTexture.Sample(LinearSampler, UV);
+
+    if (vLineTex.a < 0.1f || vLineTex.r < 0.1f || vLineTex.g < 0.1f || vLineTex.b < 0.1f)
         discard;
 
-    Out.vDiffuse = vMtrlDiffuse;
+    Out.vDiffuse.rgb = float3(0.89f, 0.63f, 0.25f);
+    Out.vDiffuse.a = vLineTex.r;
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 0.1f;
-
-    UV.x *= g_fLineLength;
-    
-    Out.vDiffuse = vMtrlDiffuse;
-    
-    Out.vDiffuse.a = vMtrlDiffuse.r;
-    
-    Out.vDiffuse.rgb = float3(0.89f, 0.23f, 0.25f);
  
     return Out;
 }
