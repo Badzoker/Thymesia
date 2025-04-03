@@ -83,6 +83,12 @@ void CLockLine::Update(_float fTimeDelta)
     _vector vLook = XMVector3Normalize(XMVector3Cross(vUp, vRight));
     vUp = XMVector3Normalize(XMVector3Cross(vRight, vLook));
 
+    // x축으로 -45도 만큼 돌려버려 그럼 좀 세워짐 ㅇㅅㅇ
+    _matrix RotationMatrix = XMMatrixRotationAxis(vRight, XMConvertToRadians(-45.f));
+
+    vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+    vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
     m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
     m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
     m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
@@ -99,7 +105,7 @@ void CLockLine::Late_Update(_float fTimeDelta)
         return;
 
 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
 HRESULT CLockLine::Render()
@@ -141,12 +147,59 @@ HRESULT CLockLine::Render()
     return S_OK;
 }
 
+HRESULT CLockLine::Render_Glow()
+{
+    if (nullptr == m_pTargetMonsterPtr)
+        return S_OK;
+
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+        return E_FAIL;
+
+    _float4x4   ViewMatrix, ProjMatrix;
+    ViewMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+    ProjMatrix = m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
+
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
+        return E_FAIL;
+
+    _uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; ++i)
+    {
+        /*  if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+              return E_FAIL;*/
+
+
+        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_LinePointTexture", 0)))
+            return E_FAIL;
+
+
+        m_pShaderCom->Begin(16);
+
+        m_pModelCom->Render(i);
+    }
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fLineLength", &m_fLineLength, sizeof(_float))))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fTime, sizeof(_float))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 HRESULT CLockLine::Ready_Components()
 {
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_LockLine"), TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Line"), TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
 
@@ -183,4 +236,5 @@ void CLockLine::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pTextureCom);
 }
