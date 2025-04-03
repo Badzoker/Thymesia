@@ -244,6 +244,18 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Magician2* pObject) override;
 		void State_Exit(CBoss_Magician2* pObject) override;
 	};
+
+	class Catch_State : public CStates<CBoss_Magician2>
+	{
+	public:
+		Catch_State() = default;
+		virtual ~Catch_State() = default;
+	public:
+		void State_Enter(CBoss_Magician2* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician2* pObject) override;
+		void State_Exit(CBoss_Magician2* pObject) override;
+	};
+
 };
 
 END

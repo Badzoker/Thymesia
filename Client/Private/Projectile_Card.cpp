@@ -22,7 +22,7 @@ HRESULT CProjectile_Card::Initialize_Prototype()
 
 HRESULT CProjectile_Card::Initialize(void* pArg)
 {
-    strcpy_s(m_szName, "MONSTER_PROJECTILE");
+    strcpy_s(m_szName, "MONSTER_WEAPON");
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;

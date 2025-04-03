@@ -58,7 +58,7 @@ private:
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fSlash_Skill_CoolTime = {};
-
+	_float                           m_fCard_Delete_Time = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;

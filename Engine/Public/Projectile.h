@@ -1,17 +1,16 @@
 #pragma once
 
-#include "GameObject.h"
+#include "PartObject.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CProjectile abstract : public CGameObject
+class ENGINE_DLL CProjectile abstract : public CPartObject
 {
 public:
-	struct PROJECTILE_DESC : public CGameObject::GAMEOBJECT_DESC
+	struct PROJECTILE_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		PROJECTILE_CATEGORY eProjectile_Type = { PROJECTILE_CATEGORY::PROJECTILE_END };
-		_float fDamage = {};
-		_float fDelete_Time = {};
+		_uint* iDamage = {};
+		_float* fDelete_Time = {};
 	};
 
 protected:
@@ -29,21 +28,13 @@ public:
 public:
 	_bool Get_IsFire() { return m_bIsFire; }
 	void Set_IsFire(_bool bCheck) { m_bIsFire = bCheck; }
-	void Set_IsMultiFire(_bool bCheck) { m_bMultiFire = bCheck; }
-
-	void Reset_Projectile();
 public:
+	void Reset_Projectile();
 	void Set_Target(_vector vDir);
 protected:
 	PxRigidDynamic* m_pActor = { nullptr };
 protected:
 	_bool m_bIsFire = { false };
-	_bool m_bMultiFire = { false };
-
-	_uint  m_iCategory = { PROJECTILE_CATEGORY::PROJECTILE_END };
-
-	_float m_fDamage = {};
-	_float m_fSpeed = {};
 	_float m_fDelete_Time = {};
 
 	_float4 m_vStartPos = {};

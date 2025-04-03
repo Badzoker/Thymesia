@@ -12,6 +12,12 @@ BEGIN(Client)
 
 class CProjectile_Card final : public CProjectile
 {
+	struct PROJECTILE_CARD_DESC : public CProjectile::PROJECTILE_DESC
+	{
+		const _float4x4* pSocketMatrix = { nullptr };
+		const _uint* pParentState = { nullptr };
+		CModel* pParentModel = { nullptr };
+	};
 private:
 	CProjectile_Card(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CProjectile_Card(const CProjectile_Card& Prototype);
@@ -30,6 +36,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CModel* m_pParentModelCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
 
 public:

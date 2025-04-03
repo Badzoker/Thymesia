@@ -334,6 +334,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
     //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
     //	return E_FAIL;
 
+    pDesc.fPosition = m_MonsterSpawnInfos[0].vMonsterPos;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), LEVEL_TUTORIAL, TEXT("Layer_Monster_Building"), &pDesc)))
+        return E_FAIL;
+
+
     for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
     {
         switch (m_MonsterSpawnInfos[i].iMonsterIndex)
@@ -346,13 +351,19 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
         default:
             break;
         case ELITE_JOKER:
-            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+    /*        pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
             if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
+                return E_FAIL;*/
+            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_ELITE, &pDesc)))
                 return E_FAIL;
             break;
         case ELITE_HARMORLV2:
-            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            /*  pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
             if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
+                return E_FAIL;*/
+            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"), CATEGORY_ELITE, &pDesc)))
                 return E_FAIL;
             break;
 
@@ -374,19 +385,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
             break;
         case NORMAL_VILLAGE_M1:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            for (_uint i = 0; i < 2; i++)
-            {
-                if (i == 0)
-                {
-                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
-                        return E_FAIL;
-                }
-                else
-                {
-                    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_NORMAL, &pDesc)))
-                        return E_FAIL;
-                }
-            }
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+                return E_FAIL;
+
             break;
         case NORMAL_VILLAGE_F0:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;

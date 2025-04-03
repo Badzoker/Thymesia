@@ -42,7 +42,7 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
-    m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
+    m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
@@ -477,7 +477,7 @@ void CNormal_VillageM0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             m_iIndex = 27;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R)
         {
             pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
             return;
@@ -493,6 +493,7 @@ void CNormal_VillageM0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_IsStun = false;
+        pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
         pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
