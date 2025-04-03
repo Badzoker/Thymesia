@@ -137,7 +137,7 @@ void CUIGroup_Skill::Slot_Setting()
 			50 > Button->Get_UI_GroupID())
 		{
 			pSlot->Set_Slot_State(SKILL_CLOSE_OFF);
-			m_mapSlotInfo.emplace(Button->Get_UI_GroupID(), make_pair(false, pSlot)); // 기본으로 주어지는 특성
+			m_mapSlotInfo.emplace(Button->Get_UI_GroupID(), make_pair(false, pSlot)); // 
 		}
 		switch (Button->Get_UI_GroupID()) // 어떤 스킬로 해금되는지 설정
 		{
@@ -156,10 +156,15 @@ void CUIGroup_Skill::Slot_Setting()
 			pSlot->Set_Content(TEXT("낫"));
 			pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
 			break;
+		case 4:
+			pSlot->Set_IconChange(13);
+			pSlot->Set_Content(TEXT("단검"));
+			pSlot->Set_MySkill(PLAYER_SKILL_DAGGER);
+			break;
 		default:
 			pSlot->Set_Content(TEXT(""));
 			break;
-
+			
 		}
 	
 	}

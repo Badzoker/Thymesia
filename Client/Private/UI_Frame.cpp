@@ -29,6 +29,8 @@ HRESULT CUI_Frame::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_iContionID = { (_int)m_iGroupID - 100 }; // 내번호의 - 100 인 특성이 활성화 되어야 
+
 	return S_OK;
 }
 
@@ -46,6 +48,7 @@ void CUI_Frame::Update(_float fTimeDelta)
 				m_eSlotState = SLOT_OPEN_ON;
 			if (m_eSlotState == SLOT_CLOSE_OFF)
 				m_eSlotState = SLOT_CLOSE_ON;
+			m_bImageOn = true;
 		}
 		else
 		{
@@ -53,15 +56,26 @@ void CUI_Frame::Update(_float fTimeDelta)
 				m_eSlotState = SLOT_OPEN_OFF;
 			if (m_eSlotState == SLOT_CLOSE_ON)
 				m_eSlotState = SLOT_CLOSE_OFF;
+			m_bImageOn = false;
 		}
 
 		if (__super::Mouse_Select(g_hWnd, DIM_LB,3))
 		{
-			if (m_eSlotState == SLOT_OPEN_ON)
-				m_eSlotState = SLOT_CLOSE_ON;
-			else if (m_eSlotState == SLOT_CLOSE_ON)
-				m_eSlotState = SLOT_OPEN_ON;
+			m_bMouseSelectOn = true;
+			//if (200 <= m_iGroupID && m_bActive) // 100번대 ID는 재능이기에 on/off를 하지 않는다                                                                               
+			//{
+			//	if (m_eSlotState == SLOT_OPEN_ON)
+			//		m_eSlotState = SLOT_CLOSE_ON;
+			//	else if (m_eSlotState == SLOT_CLOSE_ON)
+			//		m_eSlotState = SLOT_OPEN_ON;
+
+			//}
 			
+		}
+		else
+		{
+			m_bMouseSelectOn = false;
+
 		}
 
 		m_fCurrentTime += fTimeDelta;

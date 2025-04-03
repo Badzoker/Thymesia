@@ -68,7 +68,7 @@ private:
 	
 	_bool m_bNudgeUse[4] = { false,false,false,false }; // 아이템 알림용
 
-	LEVELID m_eLevelID = {};
+	LEVELID m_eMyLevelID = {};
 
 private:
 	_float m_fTimeCheck = {};

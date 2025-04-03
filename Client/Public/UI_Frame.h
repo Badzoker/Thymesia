@@ -65,14 +65,31 @@ private:
 
 
 public:
+	void Set_TalentPoint(_int biPoint) {
 
-	void Set_TalentPoint(_bool bTexOff) { m_bTexEffectOff = bTexOff; }
-	_uint Get_TalentPoint() { return m_bTexEffectOff; }
+		if (0 > biPoint - 1)
+		{
+			m_iNeedTalentPoint = 0;
+		}
+		else
+		{
+			m_iNeedTalentPoint = biPoint - 1;
+		}
+	}
+	_int Get_TalentPoint() { return m_iNeedTalentPoint; }
 
+	void Set_Talent_Active(_bool bOpen) { m_bActive = bOpen; }
+	_bool Get_Talent_Active() { return m_bActive; }
+
+	_int Get_ConditionID() { return m_iContionID; }
 private:
 	_float m_fCurrentTime = { 0 }; // 호버 반짝 반짝 효과 주기 위한 시간 값
-	_uint m_iNeedTalentPoint = {}; // 이 특성을 찍기 위해서 필요한 특성 포인트
+	_int m_iNeedTalentPoint = {1}; // 이 특성을 찍기 위해서 필요한 특성 포인트
+	_bool m_bActive = { false };
 
+
+
+	_int m_iContionID = {}; // 내번호의 - 100 인 특성이 활성화 되어야 
 public:
 	HRESULT Ready_Components();
 

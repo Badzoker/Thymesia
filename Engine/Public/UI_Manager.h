@@ -37,12 +37,15 @@ public:
 	struct UI_SAVE_TALENT // ui 특성 창 내용 저장
 	{
 		/*Talent GroupID , 활성화 여부*/
-		map<_uint, _bool> m_mapSlot_LightAttack;	// 특성 : 검 
-		map<_uint, _bool> m_mapSlot_Parry;			// 특성 : 튕겨내기
-		map<_uint, _bool> m_mapSlot_Dodge;			// 특성 : 회피
-		map<_uint, _bool> m_mapSlot_Claw;			// 특성 : 발톱
-		map<_uint, _bool> m_mapSlot_Feather;		// 특성 : 깃털
-		map<_uint, _bool> m_mapSlot_Misc;			// 특성 : 전략
+		map<_uint, _bool> mapSlot_LightAttack;	// 특성 : 검 
+		map<_uint, _bool> mapSlot_Parry;			// 특성 : 튕겨내기
+		map<_uint, _bool> mapSlot_Dodge;			// 특성 : 회피
+		map<_uint, _bool> mapSlot_Claw;			// 특성 : 발톱
+		map<_uint, _bool> mapSlot_Feather;		// 특성 : 깃털
+		map<_uint, _bool> mapSlot_Misc;			// 특성 : 전략
+
+		_int iUnspentPoint;
+
 	};
 
 private:
@@ -85,11 +88,15 @@ public:
 
 	const PLAYER_SAVE_TALENT& Get_Player_Talent_SaveData() const { return m_PlayerTalent; }
 	void Set_Player_Talent_SaveData(const PLAYER_SAVE_TALENT& PlayerData) { m_PlayerTalent = PlayerData; }
+	
+	const UI_SAVE_TALENT& Get_UI_Talent_SaveData() const { return m_UITalent; }
+	void Set_UI_Talent_SaveData(const UI_SAVE_TALENT& PlayerData) { m_UITalent = PlayerData; }
 
 private:
 
 	PLAYER_SAVE_STATE m_PlayerStat = {};
 	PLAYER_SAVE_TALENT m_PlayerTalent = {};
+	UI_SAVE_TALENT m_UITalent = {};
 
 private:
 	map<const _wstring, class CUI_Scene*>*	m_pScenes = { nullptr };
