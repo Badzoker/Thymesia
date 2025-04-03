@@ -45,7 +45,7 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects(pArg)))
         return E_FAIL;
 
-    m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
+    m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
     m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();

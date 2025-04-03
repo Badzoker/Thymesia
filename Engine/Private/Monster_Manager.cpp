@@ -165,10 +165,19 @@ HRESULT CMonster_Manager::Find_Closest_Monster()
 
 	CMonster* pClosestMonster = nullptr;
 	_float fMinDistance = FLT_MAX; // 최댓값으로 초기화
+	_bool bFirst = true;
 
 	for (auto& Monster : m_pCheck_Monsters)
 	{
 		_float fDistance = Monster->Get_Distance();
+
+		if (bFirst)
+		{
+			fMinDistance = fDistance;
+			pClosestMonster = Monster;
+			bFirst = false;
+			continue;
+		}
 
 		if (fDistance < fMinDistance)
 		{

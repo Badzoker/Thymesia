@@ -42,7 +42,7 @@ HRESULT CElite_Punch_Man::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_vSpawnPoint));
+    m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
     m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
@@ -392,7 +392,7 @@ void CElite_Punch_Man::Stun_State::State_Enter(CElite_Punch_Man* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
 
-    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1;
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN;
 
 }
 
@@ -425,7 +425,7 @@ void CElite_Punch_Man::Stun_State::State_Update(_float fTimeDelta, CElite_Punch_
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_IsStun = false;
-
+        pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
         pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 

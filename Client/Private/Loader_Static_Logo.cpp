@@ -23,6 +23,7 @@
 #include "Weapon_Magician_Sword.h"
 #include "Weapon_Magician2_Sword.h"
 #include "Projectile_Card.h"
+#include "Projectile_Intro_Card.h"
 
 #include "UI_Boss_HP_Bar.h"
 #include "UI_Boss_HP_Bar_Gage.h"
@@ -34,15 +35,16 @@
 #include "Elite_Joker.h"
 #include "HArmorLV2.h"
 #include "Elite_Punch_Man.h"
-
+#include "Elite_Grace.h"
 
 #include "Body_Joker.h"
 #include "Body_HArmorLV2.h"
 #include "Body_Punch_Man.h"
+#include "Body_Grace.h"
 
 #include "Joker_Weapon.h"
 #include "Weapon_GreatSword.h"
-
+#include "Projectile_Dagger.h"
 #pragma endregion 
 
 #pragma region 일반 몬스터
@@ -51,6 +53,7 @@
 #include "Normal_VillageF0.h"
 #include "Normal_VillageF1.h"
 #include "Normal_ScytheM.h"
+#include "Circus_Balloon.h"
 
 #include "Body_VillageM0.h"
 #include "Body_VillageM1.h"
@@ -424,6 +427,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CProjectile_Card::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Intro_Card"),
+		CProjectile_Intro_Card::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"),
 		CBoss_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -574,27 +581,27 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CElite_Punch_Man::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Grace_Body"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Grace/Elite_Grace.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
-	//	return E_FAIL;
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Grace_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Grace/Elite_Grace.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
 
-	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Projectile_Dagger"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Projectile/Dagger/Projectile_Dagger.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
-	//	return E_FAIL;
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Projectile_Dagger"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Projectile/Dagger/Projectile_Dagger.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace_Body"),
-	//	CBody_Grace::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace_Body"),
+		CBody_Grace::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"),
-	//	CElite_Grace::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"),
+		CElite_Grace::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Dagger"),
-	//	CProjectile_Dagger::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Dagger"),
+		CProjectile_Dagger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion 
 
@@ -748,6 +755,24 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/LockOn/LockOn%d.dds"), 2))))
 		return E_FAIL;
 #pragma endregion 
+
+#pragma region 건물 몬스터
+	lstrcpyW(m_szLoadingText, TEXT("건물 몬스터 모델을 생성한다."));
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Building_Circus_Balloon"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Building/Circus_Balloon/Circus_Balloon.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Building_Circus_Balloon2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Building/Circus_Balloon/Circus_Balloon2.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"),
+		CCircus_Balloon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
 
 #pragma region NPC / 고세미
 	lstrcpyW(m_szLoadingText, TEXT("NPC 모델을 생성한다."));

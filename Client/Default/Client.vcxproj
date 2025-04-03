@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\BlackScreen.h" />
     <ClInclude Include="..\Public\Body_Aisemy.h" />
     <ClInclude Include="..\Public\Body_GhostSemy.h" />
+    <ClInclude Include="..\Public\Body_Grace.h" />
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
     <ClInclude Include="..\Public\Body_Joker.h" />
     <ClInclude Include="..\Public\Body_Magician.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="..\public\Camera_Debug.h" />
     <ClInclude Include="..\Public\Chair.h" />
     <ClInclude Include="..\Public\ChairLamp.h" />
+    <ClInclude Include="..\Public\Circus_Balloon.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeFull.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeLoop.h" />
     <ClInclude Include="..\public\ClawCommon_ChargeStart.h" />
@@ -216,6 +218,7 @@
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
     <ClInclude Include="..\Public\Elevator_Door.h" />
+    <ClInclude Include="..\Public\Elite_Grace.h" />
     <ClInclude Include="..\Public\Elite_Punch_Man.h" />
     <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\GhostAisemy.h" />
@@ -285,6 +288,8 @@
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\public\Player_Weapon_Axe.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
+    <ClInclude Include="..\Public\Projectile_Dagger.h" />
+    <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
     <ClInclude Include="..\Public\SpecificObject.h" />
     <ClInclude Include="..\public\StunnedEnd.h" />
@@ -437,6 +442,7 @@
     <ClCompile Include="..\Private\BlackScreen.cpp" />
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />
     <ClCompile Include="..\Private\Body_GhostSemy.cpp" />
+    <ClCompile Include="..\Private\Body_Grace.cpp" />
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
     <ClCompile Include="..\Private\Body_Joker.cpp" />
     <ClCompile Include="..\Private\Body_Magician.cpp" />
@@ -457,6 +463,7 @@
     <ClCompile Include="..\private\Camera_Debug.cpp" />
     <ClCompile Include="..\Private\Chair.cpp" />
     <ClCompile Include="..\Private\ChairLamp.cpp" />
+    <ClCompile Include="..\Private\Circus_Balloon.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeFull.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeLoop.cpp" />
     <ClCompile Include="..\private\ClawCommon_ChargeStart.cpp" />
@@ -467,6 +474,7 @@
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
     <ClCompile Include="..\Private\Elevator_Door.cpp" />
+    <ClCompile Include="..\Private\Elite_Grace.cpp" />
     <ClCompile Include="..\Private\Elite_Punch_Man.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\GhostAisemy.cpp" />
@@ -537,6 +545,8 @@
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Axe.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
+    <ClCompile Include="..\Private\Projectile_Dagger.cpp" />
+    <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
     <ClCompile Include="..\Private\SpecificObject.cpp" />
     <ClCompile Include="..\private\StunnedEnd.cpp" />

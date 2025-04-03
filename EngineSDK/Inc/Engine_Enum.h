@@ -151,7 +151,9 @@ namespace Engine
 		MONSTER_JOKER,              //조커	
 		MONSTER_VILLAGEM1,          //방패병
 		MONSTER_MAGICIAN,           // 오두르	
-		MONSTER_MUTATION_MAGICIAN,	// 변이된 오두르 		
+		MONSTER_MUTATION_MAGICIAN,	// 변이된 오두르
+		MONSTER_PUNCH_MAN,          // 펀치맨
+		MONSTER_GRACE,               // 그레이스
 		MONSTER_NORMAL              //기본몬스터
 	};
 
@@ -166,6 +168,7 @@ namespace Engine
 	enum PROJECTILE_CATEGORY
 	{
 		PROJECTILE_CARD,
+		PROJECTILE_DAGGER,
 		PROJECTILE_ARROW,
 		PROJECTILE_FEATHER,
 		PROJECTILE_SWORD,

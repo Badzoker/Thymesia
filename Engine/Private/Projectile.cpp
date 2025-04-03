@@ -2,12 +2,12 @@
 #include "GameInstance.h"
 
 CProjectile::CProjectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject(pDevice, pContext)
+	:CPartObject(pDevice, pContext)
 {
 }
 
 CProjectile::CProjectile(const CProjectile& Prototype)
-	:CGameObject(Prototype)
+	:CPartObject(Prototype)
 {
 }
 
@@ -18,19 +18,14 @@ HRESULT CProjectile::Initialize_Prototype()
 
 HRESULT CProjectile::Initialize(void* pArg)
 {
-	m_fDamage = 33.f;
-	m_fSpeed = 40.f;
-	m_fDelete_Time = 5.f;
-
 	PROJECTILE_DESC* pDesc = static_cast<PROJECTILE_DESC*>(pArg);
 
-	pDesc->fSpeedPerSec = m_fSpeed;
-	pDesc->fScaling = _float3{ 0.01f,0.01f,0.01f };
-	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
+	m_fDelete_Time = *pDesc->fDelete_Time;
+	m_iMonster_Attack = pDesc->iDamage;
+	pDesc->fScaling = _float3(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
-
 
 	return S_OK;
 }

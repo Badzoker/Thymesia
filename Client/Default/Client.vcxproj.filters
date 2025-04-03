@@ -853,6 +853,24 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera">
       <UniqueIdentifier>{8c99206c-5de9-43ee-a050-026ba86c2f58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Grace">
+      <UniqueIdentifier>{6cf067c0-11f3-4320-a17b-187281858e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Grace\Body">
+      <UniqueIdentifier>{c4343346-03d3-4d8a-b050-ea8cdd77fe26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\03. Building">
+      <UniqueIdentifier>{6449aabb-1a74-40fe-99b6-2956ce6f8132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\03. Building\Circus_Balloon">
+      <UniqueIdentifier>{6acbd451-1a66-4b9f-a72c-5ffecfb813fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile\Dagger">
+      <UniqueIdentifier>{16a1ee59-2996-488a-ba8f-3f424acdad3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile\Card\Intro">
+      <UniqueIdentifier>{d122d9b8-08a3-452e-9203-707c9c931020}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1596,6 +1614,21 @@
     <ClInclude Include="..\public\Boss_Mutation_Magician_Camera.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Elite_Grace.h">
+      <Filter>02.GameObject\Monster\01. Elite\Grace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Grace.h">
+      <Filter>02.GameObject\Monster\01. Elite\Grace\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Circus_Balloon.h">
+      <Filter>02.GameObject\Monster\03. Building\Circus_Balloon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Projectile_Dagger.h">
+      <Filter>02.GameObject\Monster\95. Projectile\Dagger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Projectile_Intro_Card.h">
+      <Filter>02.GameObject\Monster\95. Projectile\Card\Intro</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2329,6 +2362,21 @@
     </ClCompile>
     <ClCompile Include="..\private\Boss_Mutation_Magician_Camera.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elite_Grace.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Grace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Grace.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Grace\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Circus_Balloon.cpp">
+      <Filter>02.GameObject\Monster\03. Building\Circus_Balloon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_Dagger.cpp">
+      <Filter>02.GameObject\Monster\95. Projectile\Dagger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_Intro_Card.cpp">
+      <Filter>02.GameObject\Monster\95. Projectile\Card\Intro</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
