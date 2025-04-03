@@ -205,6 +205,7 @@
     <ClInclude Include="..\public\Boss_Varg_Camera.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\public\Camera_Debug.h" />
+    <ClInclude Include="..\Public\Camera_Logo.h" />
     <ClInclude Include="..\Public\Chair.h" />
     <ClInclude Include="..\Public\ChairLamp.h" />
     <ClInclude Include="..\Public\Circus_Balloon.h" />
@@ -461,6 +462,7 @@
     <ClCompile Include="..\private\Boss_Varg_Camera.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\private\Camera_Debug.cpp" />
+    <ClCompile Include="..\Private\Camera_Logo.cpp" />
     <ClCompile Include="..\Private\Chair.cpp" />
     <ClCompile Include="..\Private\ChairLamp.cpp" />
     <ClCompile Include="..\Private\Circus_Balloon.cpp" />

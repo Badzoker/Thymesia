@@ -225,6 +225,10 @@
 #include "LockLine.h"
 #pragma endregion
 
+#pragma region 로고 카메라
+#include "Camera_Logo.h"
+#pragma endregion
+
 CLoader_Static_Logo::CLoader_Static_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLoader{ pDevice, pContext }
 {
@@ -2037,8 +2041,50 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;	
 
+#pragma region Logo_Objects
+
+	_matrix PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Model_DryTreeT1_branches_1_SM"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/DryTreeT1_branches_1_SM.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Model_DryTreeT3_2_SM_02"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Trees/DryTreeT3_2_SM_02.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Model_SM_fence_13"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_13.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Model_SM_fence_19"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_19.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Model_SM_ground_Road_Middle_250x250cm_1_a"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Brick_Floor/brickFloor.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
 
 
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_GameObject_Object_StaticObject"),
+		CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_GameObject_Object_GroundObject"),
+		CGroundObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
+
+#pragma region Logo_Camera
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_GameObject_Camera_Logo"),
+		CCamera_Logo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
 	/* 로딩이 완료되었습니다.*/
 	lstrcpyW(m_szLoadingText, TEXT("로딩끝."));
 	m_isFinished = true;
