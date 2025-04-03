@@ -871,6 +871,9 @@
     <Filter Include="02.GameObject\Monster\95. Projectile\Card\Intro">
       <UniqueIdentifier>{d122d9b8-08a3-452e-9203-707c9c931020}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Camera\Camera_Logo">
+      <UniqueIdentifier>{4b6464a1-255c-41b2-98ee-6b3d0d141558}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1629,6 +1632,9 @@
     <ClInclude Include="..\Public\Projectile_Intro_Card.h">
       <Filter>02.GameObject\Monster\95. Projectile\Card\Intro</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Camera_Logo.h">
+      <Filter>02.GameObject\Camera\Camera_Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2377,6 +2383,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp">
       <Filter>02.GameObject\Monster\95. Projectile\Card\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Logo.cpp">
+      <Filter>02.GameObject\Camera\Camera_Logo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

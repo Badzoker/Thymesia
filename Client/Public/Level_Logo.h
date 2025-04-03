@@ -20,6 +20,12 @@ public:
 private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Structure(const _tchar* pLayerTag);
+	HRESULT Ready_Lights();
+
+private:
+	HRESULT Load_Objects(_int iObject_Level);
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
