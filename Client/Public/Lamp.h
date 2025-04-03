@@ -38,9 +38,9 @@ public:
     HRESULT												Bind_ShaderResources();
 
 private:
-    CShader* m_pShaderCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
-    const _float4x4* m_pSocketMatrix = { nullptr };
+    CShader*                                            m_pShaderCom = { nullptr };
+    CModel*                                             m_pModelCom = { nullptr };
+    const _float4x4*                                    m_pSocketMatrix = { nullptr };
 
 private:
     _float                                              m_fAlphaValue = {};

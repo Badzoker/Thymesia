@@ -73,6 +73,8 @@ HRESULT CChair::Render_Glow()
 
 void CChair::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    m_iColliderCount++;
+
     //if (!strcmp(m_szName, ("P_Archive_Chair01")))
     if (!strncmp(m_szName, "P_Archive_Chair01", 17))
     {
@@ -92,7 +94,6 @@ void CChair::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
         m_pGosemy = dynamic_cast<CGhostAisemy*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_NPC"), "GHOSEMY"));
         m_pBodyGosemy = m_pGosemy->Get_SemyBody();
 
-        //m_pBodyGosemy->Set_AnimationStop(false);
         if (nullptr != m_pBodyGosemy)
             m_pBodyGosemy->Activate_SemyBody(true);
 
@@ -100,7 +101,11 @@ void CChair::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
         _float fY = XMVectorGetY(vChairPos);
         vChairPos = XMVectorSetY(vChairPos, fY - 1.0f);
         XMStoreFloat4(&vGosemyPos, vChairPos);
-        m_pGosemy->Spawn_Gosemy(vGosemyPos);
+
+        if (m_iColliderCount <= 1)
+            m_pGosemy->Spawn_Gosemy(vGosemyPos, true);
+        else
+            m_pGosemy->Spawn_Gosemy(vGosemyPos, false);
 
         _vector vChairLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
         _vector vChairUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
