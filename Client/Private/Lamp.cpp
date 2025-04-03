@@ -38,13 +38,11 @@ HRESULT CLamp::Initialize(void* _pArg)
 void CLamp::Priority_Update(_float _fTimeDelta)
 {
     _matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
-
     _matrix OffsetMatrix = XMMatrixIdentity();
-    OffsetMatrix *= XMMatrixRotationX(XMConvertToRadians(75.f));
-
-    OffsetMatrix *= XMMatrixRotationY(XMConvertToRadians(155.f));
-
+    OffsetMatrix *= XMMatrixRotationZ(XMConvertToRadians(200.0f));
     SocketMatrix = XMMatrixMultiply(OffsetMatrix, SocketMatrix);
+    _vector vOffsetPos = XMVectorSet(0.0f, -150.0f, 0.0f, 0.0f);
+    SocketMatrix.r[3] += vOffsetPos;
 
     for (size_t i = 0; i < 3; ++i)
     {

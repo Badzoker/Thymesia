@@ -44,7 +44,7 @@ public:
 private:
     CGhostAisemy* m_pGosemy = { nullptr };
     CBody_GhostSemy* m_pBodyGosemy = { nullptr };
-
+    _uint                           m_iColliderCount = {};
 
 public:
     static                          CChair* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

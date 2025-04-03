@@ -791,7 +791,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	lstrcpyW(m_szLoadingText, TEXT("귀신 버젼 NPC 생성한다."));
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_GhoSemy_Body"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GhoSemy/ghostsemy.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_GhoSemy_Body"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GhoSemy/ghostsemy2.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), CGhostAisemy::Create(m_pDevice, m_pContext))))
