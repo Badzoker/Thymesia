@@ -37,10 +37,10 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP");
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
 
 
 	//선행 조건이 필요한 ui들 최초에는 off 하도록 설정
@@ -52,6 +52,8 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 
 	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(3000);
 	Setting_Default_Status_Value();
+
+
 
 	return S_OK;
 }
@@ -264,9 +266,9 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 			if (320 == Button->Get_UI_GroupID())
 			{
 				Button->Set_Mouse_Select_OnOff(false);
-				m_pGameInstance->UIGroup_Render_OnOff(m_eLevelID, TEXT("Layer_PlayerLevelUP"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(m_eLevelID, TEXT("Layer_PlayerMenu"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 			}
 		}

@@ -30,25 +30,63 @@ public:
 public:
 	HRESULT Ready_UIObject();
 	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+	HRESULT LoadData_UIText_Info(const _tchar* szSceneName, vector<UI_TextInfo>& vecText);
+
+public:
+	void Talent_Tab_Change();
+	void Talent_Info_Setting();
+	void Find_Text_Info(TABSTATE eTab);
+	void Talent_Mouse_Check(TABSTATE eTab);
 
 public:
 	void Slot_Setting();
-	void Slot_Update_State();
+	void Slot_Update_State(TABSTATE eTab); //
 	void Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Frame* pSlotUIObj );
+	void Talent_Active(TABSTATE eTab);
+private:
+	CGameObject* m_pGroupLevelUp = { nullptr };
+	LEVELID		m_eMyLevelID = {};
 
+	_int m_iTalentPoint = {0};
+	_bool m_bNotFindConditionID = false;
+private:
+	CUIObject* m_pText_TalentPoint = {}; 
+	CUIObject* m_pText_TalentName = {};  
+	CUIObject* m_pText_TalentDesc = {};  
+	CUIObject* m_pText_TalentOpen = {};  
+	CUIObject* m_pImage_Frame = {};  
+	CUIObject* m_pImage_Desc = {};  
 
+private:
+	TABSTATE m_eTabCheck = { TAB_LIGHTATTACK };
+	CUIObject* m_pCurrentTalent = { nullptr };
+	const _tchar* m_CurrentName = {};
+	const _tchar* m_CurrentDesc = {};
 
 private:
 	CUI_Scene* m_pMySceneBase = {}; // ±âº» °ø¿ë 
-	CUI_Scene* m_pSlot_LightAttack = {}; //°Ë ½½·Ô
+	CUI_Scene* m_pSlot_LightAttack = {}; //°Ë 
+	CUI_Scene* m_pSlot_Parry = {}; //Æ¨°Ü³»±â 
+	CUI_Scene* m_pSlot_Dodge = {}; //È¸ÇÇ
+	CUI_Scene* m_pSlot_Claw = {}; //¹ßÅé
+	CUI_Scene* m_pSlot_Feather = {}; //±êÅÐ
+	CUI_Scene* m_pSlot_Misc = {}; //Àü·«
 
 private:
 	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_LightAttack;
-
-
+	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_Parry;
+	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_Dodge;
+	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_Claw;
+	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_Feather;
+	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_Misc;
 
 private:
-	vector<UI_TextInfo> m_TextInfo = {};
+	vector<UI_TextInfo> m_LightAttack_Text = {};
+	vector<UI_TextInfo> m_ParryText= {};
+	vector<UI_TextInfo> m_DodgeText = {};
+	vector<UI_TextInfo> m_ClawText = {};
+	vector<UI_TextInfo> m_FeatherText = {};
+	vector<UI_TextInfo> m_MiscText = {};
 
 public:
 	static CUIGroup_PlayerTalent* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

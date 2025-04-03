@@ -40,15 +40,15 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
-	m_eLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
 	m_pItmeScreen = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItmeScreen, false);
 
-	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_Player"), "PLAYER");
-	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
-	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
+	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
+	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
 	
 	for (auto& Textbox : m_pMyScene->Find_UI_TextBox())
 	{
@@ -123,6 +123,9 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	case PLAYER_SKILL_SCYTHE:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(17); // 낫
 		break;
+	case PLAYER_SKILL_DAGGER:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(13); // 대검
+		break;
 	default:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(0); // 스킬 없음
 		break;
@@ -146,6 +149,10 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(17); // 낫
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_SCYTHE);
 			break;
+		case PLAYER_SKILL_DAGGER:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(13); // 단검
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_DAGGER);
+			break;
 		default:
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
 			break;
@@ -162,6 +169,9 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 				break;
 			case PLAYER_SKILL_SCYTHE:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
+				break;
+			case PLAYER_SKILL_DAGGER:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(13); // 단검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
@@ -180,6 +190,9 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 				break;
 			case PLAYER_SKILL_SCYTHE:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
+				break;
+			case PLAYER_SKILL_DAGGER:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(13); // 단검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음

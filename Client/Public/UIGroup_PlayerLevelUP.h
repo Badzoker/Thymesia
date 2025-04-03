@@ -88,10 +88,16 @@ private:
 	_uint       m_iCurrentTalentPoint = {};
 	_uint       m_iNextTalentPoint = {};
 
-	_uint       m_iCurrentUnspent = {};
-	_uint       m_iNextUnspent = {};
 
-	LEVELID		m_eLevelID = {};
+public:
+	void Set_TalentPoint_Unspent(_int iPoint) { m_iCurrentUnspent = iPoint; }
+	_int Get_TalentPoint_Unspent() {return  m_iCurrentUnspent; }
+
+private:
+	_int       m_iCurrentUnspent = {};
+	_int       m_iNextUnspent = {};
+
+	LEVELID		m_eMyLevelID = {};
 
 public:
 	HRESULT Ready_UIObject();
