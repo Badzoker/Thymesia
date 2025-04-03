@@ -753,7 +753,7 @@ PS_OUT PS_LOCK_LINE(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
    
     float2 UV = In.vTexcoord;
-    UV.y += g_Time * 3.0f;
+    UV.y += g_Time * 0.7f;
     
     vector vLineTex = g_LinePointTexture.Sample(LinearSampler, UV);
 
