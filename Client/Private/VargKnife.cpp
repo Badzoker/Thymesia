@@ -221,6 +221,7 @@ void CVargKnife::Update(_float fTimeDelta)
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND])))
     {
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_HAND], XMLoadFloat4x4(m_pSocket_Hand_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{0.f, 0.f,0.f,1.f});
+        XMStoreFloat4x4(&m_HandWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(m_pSocket_Hand_Matrix), XMLoadFloat4x4(m_pParentWorldMatrix))); 
     }
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_STUN])))
     {

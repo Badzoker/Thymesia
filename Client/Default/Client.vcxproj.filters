@@ -847,6 +847,12 @@
     <Filter Include="02.GameObject\SpecificObject\LadderObject">
       <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician\Boss_Magician_Camera">
+      <UniqueIdentifier>{91ffcc93-b0c7-4150-8160-7d439271380d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera">
+      <UniqueIdentifier>{8c99206c-5de9-43ee-a050-026ba86c2f58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1584,6 +1590,12 @@
     <ClInclude Include="..\Public\LockLine.h">
       <Filter>03.UIObject\3.Button\1.LockLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Boss_Magician_Camera.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Boss_Magician_Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Mutation_Magician_Camera.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2311,6 +2323,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\LockLine.cpp">
       <Filter>03.UIObject\3.Button\1.LockLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Magician_Camera.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician\Boss_Magician_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Mutation_Magician_Camera.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Boss_Mutation_Magician_Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

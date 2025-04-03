@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Boss_Mutation_Magician_Camera.h"	
 
 CBoss_Magician2::CBoss_Magician2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -213,6 +214,23 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
 		return E_FAIL;
 
+
+	CBoss_Mutation_Magician_Camera::CAMERA_DESC Mutation_Magician_Camera_Desc = {};
+
+	Mutation_Magician_Camera_Desc.pParent = this;
+	Mutation_Magician_Camera_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("camera");
+	Mutation_Magician_Camera_Desc.pParentState = &m_iMonster_State;
+	Mutation_Magician_Camera_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Mutation_Magician_Camera_Desc.pParentModel = m_pModelCom;
+	Mutation_Magician_Camera_Desc.fSpeedPerSec = 0.f;
+	Mutation_Magician_Camera_Desc.fRotationPerSec = 0.f;
+	Mutation_Magician_Camera_Desc.iCurLevel = pDesc->iCurLevel;
+	Mutation_Magician_Camera_Desc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Mutation_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Mutation_Magician_Camera"), &Mutation_Magician_Camera_Desc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -364,6 +382,7 @@ void CBoss_Magician2::Free()
 void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 18;
+	pObject->m_iMonster_State = STATE_INTRO;	
 	pObject->m_bActive = true;
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);

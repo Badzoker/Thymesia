@@ -208,6 +208,15 @@ public:
 
 	void STATE_LADDER_CLIMB_R_IDEL_Method();
 
+	/* 매지션 보스 첫번째 컷신 */
+	void STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method();
+
+	/* (오두르) 매지션 LV_1 처형 컷신 */
+	void STATE_MAGICIAN_Execution_Method();	
+
+	/* (변이된 오두르) 처형 컷신 */
+	void STATE_MAGICIAN_MUTATION_Execution_Method();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

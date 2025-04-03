@@ -376,6 +376,15 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_LADDER_CLIMB_R_IDLE:
         STATE_LADDER_CLIMB_R_IDEL_Method();
         break;
+    case CPlayer::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START:
+        STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method();
+        break;
+    case CPlayer::STATE_MAGICIAN_Execution:
+        STATE_MAGICIAN_Execution_Method();
+        break;
+    case CPlayer::STATE_MAGICIAN_MUTATION_Execution:
+        STATE_MAGICIAN_MUTATION_Execution_Method();
+        break;
     default:
         break;
     }
@@ -2178,6 +2187,34 @@ void CBody_Player::STATE_Varg_Execution_Method()
     }
 }
 
+void CBody_Player::STATE_MAGICIAN_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(225, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(225)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
+void CBody_Player::STATE_MAGICIAN_MUTATION_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(211, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(211)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
 void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
 {
     m_pModelCom->SetUp_Animation(292, false);
@@ -2426,6 +2463,17 @@ void CBody_Player::STATE_LADDER_CLIMB_R_IDEL_Method()
 {
     m_pModelCom->SetUp_Animation(49, true);
     m_iRenderState = STATE_NORMAL_RENDER;
+}
+
+void CBody_Player::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method()
+{
+    m_pModelCom->SetUp_Animation(296, true);    
+    m_iRenderState = STATE_NORMAL_RENDER;   
+
+    if (m_pModelCom->Get_VecAnimation().at(296)->isAniMationFinish())       
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;  
+    }
 }
 
 void CBody_Player::STATE_ARCHIVE_SIT_START_Method()
