@@ -90,6 +90,8 @@ public:
 		STATE_Varg_Execution,
 		STATE_MAGICIAN_Execution,	
 		STATE_MAGICIAN_MUTATION_Execution,	
+		STATE_GRACE_Execution,	
+		STATE_PUNCH_MAN_Execution,	
 		STATE_LIGHT_EXECUTION_L,	
 		STATE_LIGHT_EXECUTION_R,	
 
@@ -152,6 +154,12 @@ public:
 
 		/* Magicain 오두르 인트로 */	
 		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,	
+
+		/* 플레이어 오두르에게 잡히는 모션 */
+		STATE_MAGICIAN_CATCH,
+
+		/* 플레이어 스킬 ( 지팡이 )*/
+		STATE_CANE_SWORD_SP02,
 
 	};
 
@@ -218,6 +226,7 @@ public:
 	unordered_set<STATE>* Get_Halberd_State() { return &m_set_Halberd_Weapon_States; }
 	unordered_set<STATE>* Get_Scythe_State() { return &m_set_Scythe_Weapon_States; }
 	unordered_set<STATE>* Get_Axe_State() { return &m_set_Axe_Weapon_States; }
+	unordered_set<STATE>* Get_Cane_State() { return &m_set_Cane_Weapon_States; }
 
 private:
 	void Player_Interaction(CGameObject* _pOther);
@@ -259,6 +268,7 @@ private:
 	unordered_set<STATE> m_set_Right_Weapon_States = {};	
 	unordered_set<STATE> m_set_Scythe_Weapon_States = {};	
 	unordered_set<STATE> m_set_Axe_Weapon_States = {};	
+	unordered_set<STATE> m_set_Cane_Weapon_States = {};	
 	unordered_set<STATE> m_set_Player_Camera_States = {};	
 
 private:

@@ -108,6 +108,11 @@
 #pragma endregion 
 
 
+#pragma region 오두르 처형 관련 
+#include "Magician_LV1_Catched.h"
+#pragma endregion 
+
+
 
 CStateMgr::CStateMgr()
 {
@@ -413,7 +418,12 @@ HRESULT CStateMgr::Initialize()
 
 #pragma endregion 
 
+#pragma region 오두르 관련 모션
+	/* 63번 오두르 한테 스킬 맞아서 당하는 모션 */
+	CMagician_LV1_Catched* pMagician_LV1_Catched = CMagician_LV1_Catched::Create();
+	m_vecState.push_back(pMagician_LV1_Catched);
 
+#pragma endregion 
 
 
 	return S_OK;

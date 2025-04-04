@@ -262,6 +262,7 @@
     <ClInclude Include="..\public\LockOn_Evade_F.h" />
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
     <ClInclude Include="..\public\LockOn_Evade_R.h" />
+    <ClInclude Include="..\public\Magician_LV1_Catched.h" />
     <ClInclude Include="..\Public\Monster_HP_Bar.h" />
     <ClInclude Include="..\Public\Monster_HP_Bar_Effect.h" />
     <ClInclude Include="..\Public\Monster_HP_Gage.h" />
@@ -288,6 +289,8 @@
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\public\Player_Weapon_Axe.h" />
+    <ClInclude Include="..\public\Player_Weapon_Cane.h" />
+    <ClInclude Include="..\public\Player_Weapon_Cane_Sword.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
     <ClInclude Include="..\Public\Projectile_Dagger.h" />
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
@@ -519,6 +522,7 @@
     <ClCompile Include="..\private\LockOn_Evade_F.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_R.cpp" />
+    <ClCompile Include="..\private\Magician_LV1_Catched.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Bar.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Bar_Effect.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Gage.cpp" />
@@ -546,6 +550,8 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Axe.cpp" />
+    <ClCompile Include="..\private\Player_Weapon_Cane.cpp" />
+    <ClCompile Include="..\private\Player_Weapon_Cane_Sword.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
     <ClCompile Include="..\Private\Projectile_Dagger.cpp" />
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />

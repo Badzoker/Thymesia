@@ -13,6 +13,8 @@
 #include "Player_Weapon_Axe.h"	
 #include "ChairLamp.h"	
 #include "VargKnife.h"
+#include "Player_Weapon_Cane.h"
+#include "Player_Weapon_Cane_Sword.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -192,6 +194,13 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN:
 				m_iState = STATE_MAGICIAN_MUTATION_Execution;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_GRACE:
+				m_iState = STATE_GRACE_Execution;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN:
+				m_iState = STATE_PUNCH_MAN_Execution;
+				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
@@ -331,6 +340,20 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 
+#pragma region 스킬공격 지팡이	
+	if ((m_pGameInstance->isKeyEnter(DIK_4))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_CANE_SWORD_SP02;
+	}
+#pragma endregion 
 #pragma region 스킬공격 도끼		
 	if ((m_pGameInstance->isKeyEnter(DIK_3))
 		&& m_iState != STATE_DEAD
@@ -941,7 +964,43 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Halberd"), LEVEL_STATIC, TEXT("Prototype_GameObject_Halberd"), &Weapon_HalberdDesc)))
 		return E_FAIL;
 
+	/*지팡이 무기를 만든다. */
+	CPlayer_Weapon_Cane::WEAPON_DESC		Weapon_Cane_Desc{};
 
+	Weapon_Cane_Desc.pParent = this;
+	Weapon_Cane_Desc.pParentModel = m_pModel;
+	Weapon_Cane_Desc.pParentState = &m_iState;
+	Weapon_Cane_Desc.pPreParentState = &m_iPreState;
+	Weapon_Cane_Desc.pParentPhaseState = &m_iPhaseState;
+	Weapon_Cane_Desc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	Weapon_Cane_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_Cane_Desc.fSpeedPerSec = 0.f;
+	Weapon_Cane_Desc.fRotationPerSec = 10.f;
+
+	Weapon_Cane_Desc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Cane"), LEVEL_STATIC, TEXT("Prototype_GameObject_Cane"), &Weapon_Cane_Desc)))
+		return E_FAIL;
+
+
+
+	/*지팡이 검 무기를 만든다. */
+	CPlayer_Weapon_Cane_Sword::WEAPON_DESC		Weapon_Cane_Sword_Desc{};
+
+	Weapon_Cane_Sword_Desc.pParent = this;
+	Weapon_Cane_Sword_Desc.pParentModel = m_pModel;
+	Weapon_Cane_Sword_Desc.pParentState = &m_iState;
+	Weapon_Cane_Sword_Desc.pPreParentState = &m_iPreState;
+	Weapon_Cane_Sword_Desc.pParentPhaseState = &m_iPhaseState;
+	Weapon_Cane_Sword_Desc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
+	Weapon_Cane_Sword_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_Cane_Sword_Desc.fSpeedPerSec = 0.f;
+	Weapon_Cane_Sword_Desc.fRotationPerSec = 10.f;
+
+	Weapon_Cane_Sword_Desc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Cane_Sword"), LEVEL_STATIC, TEXT("Prototype_GameObject_Cane_Sword"), &Weapon_Cane_Sword_Desc)))
+		return E_FAIL;
 
 
 	/*낫 무기를 만든다. */
@@ -1210,6 +1269,17 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					m_pStateMgr->Get_VecState().at(55)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					break;
 				}
+				case Player_Hitted_State::PLAYER_HURT_MAGICIAN_CATCH:		
+				{
+					m_iState = CPlayer::STATE_MAGICIAN_CATCH;  // 63												
+					/* 몬스터 공격 방향 */
+					m_pStateMgr->Get_VecState().at(63)->Set_MonsterLookDir(fMonsterLookDir);	
+					//m_pStateMgr->Get_VecState().at(63)->Set_GetMonsterPos(fMonsterPos);		
+
+					m_pStateMgr->Get_VecState().at(63)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);	
+					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+					break;
+				}
 				default:
 					_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
 					m_iState = CPlayer::STATE_HurtMFR_R;  // 22			
@@ -1269,7 +1339,8 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 	m_bMove = true;
-	m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;	
+
+	//m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;	 // 이 부분 고민 좀 해봐야 할 거 같다. 
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -1565,6 +1636,12 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_AXE,
 	};
 #pragma endregion
+#pragma region Cane Weapon State
+	m_set_Cane_Weapon_States =
+	{
+		STATE_CANE_SWORD_SP02,
+	};
+#pragma endregion 
 
 }
 

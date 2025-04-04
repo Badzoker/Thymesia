@@ -137,11 +137,6 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                         m_pPlayer->Set_ParentPhaseState(CPlayer::PHASE_BOSS_INTRO);
                         m_pPlayer->Set_PlayerState(CPlayer::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START);
 
-                        //m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
-
-                        _matrix RotationTest = XMMatrixRotationAxis(_fvector{ 0.f, 1.f, 0.f, 0.f }, XMConvertToRadians(90.f));
-
-                        _vector OriginalCamPos = XMVector3TransformCoord(pos, RotationTest);
 
                         _vector PlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
@@ -151,8 +146,28 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                         if (m_bFirst)
                         {
                             m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 1.5f);
-                            m_pPlayer->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+                            //m_pPlayer->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+                            //이렇게 말고  보스 방향으로 턴하기 
+                            _vector PlayerLook = XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                            _vector MonsterDir = XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+
+
+                            float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, MonsterDir));
+                            dotResult = max(-1.0f, min(dotResult, 1.0f));
+                            float Radian = acosf(dotResult);
+
+                            _vector crossResult = XMVector3Cross(PlayerLook, MonsterDir);
+                            float crossY = XMVectorGetY(crossResult);
+                            if (crossY < 0.0f)
+                            {
+                                Radian = -Radian;
+                            }
+ 
+                            XMStoreFloat4x4(&m_fPrePlayerWorldMatrix, XMLoadFloat4x4(m_pPlayer->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+
+                            m_pPlayer->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
                             m_pPlayer->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, MonsterPos);
+
 
                             m_bFirst = false;
                         }
@@ -163,6 +178,8 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                 {
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                     {
+                        m_pPlayer->Get_Transfrom()->Set_WorldMatrix(m_fPrePlayerWorldMatrix);
+
                         //if (m_pCamera->Get_Execute_CamereScene() == 0 
                         m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
                         m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 1.5f);
@@ -177,6 +194,7 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                         _vector FinalDir = XMVector3TransformNormal(PlayerBackLook, RotationMatrix);
 
                         _vector FinalCamPos = PlayerPos + FinalDir * 4.f;
+
 
 
                         m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, FinalCamPos);

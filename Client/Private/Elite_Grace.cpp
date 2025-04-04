@@ -511,7 +511,7 @@ void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
         //플레이어 엑스큐전 상태가져오기
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)    
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Grace::Execution_State(), pObject);
             return;

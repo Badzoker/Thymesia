@@ -874,6 +874,15 @@
     <Filter Include="02.GameObject\Camera\Camera_Logo">
       <UniqueIdentifier>{4b6464a1-255c-41b2-98ee-6b3d0d141558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\Magician_LV1_Catched">
+      <UniqueIdentifier>{6f755c9d-2ded-4c86-bce1-fd9f8fc05a4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\Cane">
+      <UniqueIdentifier>{daa4b072-fba4-4a5e-95bd-fce8223a28b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\Cane\Cane_Sword">
+      <UniqueIdentifier>{44b67c18-1f24-4dc4-91a3-e577bef47cf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1635,6 +1644,15 @@
     <ClInclude Include="..\Public\Camera_Logo.h">
       <Filter>02.GameObject\Camera\Camera_Logo</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Magician_LV1_Catched.h">
+      <Filter>02.GameObject\Player\State\Hurt\Magician_LV1_Catched</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Weapon_Cane.h">
+      <Filter>02.GameObject\Player\Weapon\Cane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Weapon_Cane_Sword.h">
+      <Filter>02.GameObject\Player\Weapon\Cane\Cane_Sword</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2386,6 +2404,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Logo.cpp">
       <Filter>02.GameObject\Camera\Camera_Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Magician_LV1_Catched.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\Magician_LV1_Catched</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Weapon_Cane.cpp">
+      <Filter>02.GameObject\Player\Weapon\Cane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Weapon_Cane_Sword.cpp">
+      <Filter>02.GameObject\Player\Weapon\Cane\Cane_Sword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
