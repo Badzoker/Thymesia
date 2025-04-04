@@ -24,12 +24,16 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	_bool Get_LogoOpen() { return m_LogoOpen; }
+
 private:
 	CShader*				m_pShaderCom = { nullptr };
 	CTexture*				m_pTextureCom = { nullptr };
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 
-
+	_float m_fCurrentTime = { 0 };
+	_bool  m_LogoOpen = { false };
 
 public:
 	HRESULT Ready_Components();

@@ -2145,7 +2145,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 {
-
+	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.1f);
 #pragma region Logo 
 	lstrcpyW(m_szLoadingText, TEXT("텍스쳐 원형을 생성한다."));
 	/* For.Prototype_Component_Texture_BackGround */

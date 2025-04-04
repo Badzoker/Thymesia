@@ -25,6 +25,8 @@ public:
 	virtual HRESULT Render() override;
 
 
+public:
+	_bool Get_LogoOpen() { return m_ButtonShaderOpen; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -32,7 +34,11 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
+	_uint iMyShaderPass = {};
 	_float3 m_fTextPosition = {};
+	_bool  m_ButtonShaderOpen = { false };
+	_float m_fCurrentTime = { 0 };
+	
 
 
 public:

@@ -27,7 +27,7 @@ HRESULT CUI_GameLogoImage::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
+	m_bImageOn = true;
 	return S_OK;
 }
 
@@ -37,13 +37,30 @@ void CUI_GameLogoImage::Priority_Update(_float fTimeDelta)
 
 void CUI_GameLogoImage::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+
+		if (m_bOpen)
+		{
+			if (1 < m_fCurrentTime)
+			{
+				m_fCurrentTime = 1.f;
+				m_LogoOpen = true;
+			}
+			else
+				m_fCurrentTime += fTimeDelta / 5;
+
+
+		}
+	}
 }
 
 void CUI_GameLogoImage::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if(m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 
@@ -55,12 +72,17 @@ HRESULT CUI_GameLogoImage::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(11);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
