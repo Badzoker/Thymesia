@@ -276,10 +276,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 
-   // _float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
-    _float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
+    //_float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
+    //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
     //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-    //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
+    _float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
 
     Desc._fPosition = vTestPosition;
 
@@ -531,6 +531,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_JOKER_SHOCKWAVE)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAxe.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_AXE)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -750,6 +754,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Joker_Intro.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_JOKER_INTRO, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAxe_1_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_AXE, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAxe_1_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_HORIZON, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAxe_1_Dust_Cross.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS, 1)))
         return E_FAIL;
 
     //Sword Effect
@@ -1762,6 +1778,18 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_WHEELATTACK:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_WheelAttack");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_AXE:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_PlayerAxe");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_HORIZON:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe_Cross");
             break;
         }
 #pragma endregion

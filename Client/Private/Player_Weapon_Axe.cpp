@@ -143,8 +143,18 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
 
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    if (iter.eType != EVENT_STATE)
-                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로       
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+#pragma region Effect
+                    if (!strcmp(iter.szName, "Effect_Start"))
+                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_AXE, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                    else if (!strcmp(iter.szName, "Particle_Start"))
+                    {
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_AXE, *m_pParentWorldMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_HORIZON, *m_pParentWorldMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS, *m_pParentWorldMatrix);
+                    }
+#pragma endregion
                 }
             }
         }
