@@ -337,11 +337,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 
     /*_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
     XMStoreFloat4(&pDesc.fPosition, vTestPosition);*/
-    //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
-    //    return E_FAIL;
-
-    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
         return E_FAIL;
+
+    //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+    //    return E_FAIL;
 
     /*for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
     {

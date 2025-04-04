@@ -40,6 +40,7 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
+    m_bRender = pDesc->bRender;
     m_iMonster_Attack = pDesc->iAttack;
     m_bCane_Collider_On = pDesc->bCane_Collider_On;
     m_Is_Change_Sword_Bone = pDesc->Is_Change_Sword_Bone;
@@ -63,24 +64,24 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
 
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_KICK] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_CATCH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.8f,2.f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_SLASH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.4f,0.8f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_SPECIAL] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_PARRY] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 2.f,2.f,2.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_BURST] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SWORD], _fvector{ 0.f,0.f,100.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_KICK], _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_CATCH], _fvector{ 0.f,0.f,100.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SLASH], _fvector{ 0.f,0.f,100.f,1.f });
-    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_SPECIAL], _fvector{ 0.f,0.f,100.f,1.f });
-    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_PARRY], _fvector{ 0.f,0.f,100.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_BURST], _fvector{ 0.f,0.f,100.f,1.f });
     //막는 것들
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_SWORD], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_KICK], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     //못막는 것들
     settingColliderGroup = GROUP_TYPE::PLAYER;
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_CATCH], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_SLASH], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
-    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_SPECIAL], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
-    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_PARRY], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_BURST], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     return S_OK;
 }
 
@@ -112,6 +113,15 @@ void CWeapon_Magician_Sword::Priority_Update(_float fTimeDelta)
         m_fDissolveOff_Timer = 1.f;
         m_fDissolveOff_FinishTime = 1.f;
     }
+
+    if (m_bColliderOff == true)
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SWORD]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_CATCH]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SLASH]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BURST]);
+    }
 }
 
 void CWeapon_Magician_Sword::Update(_float fTimeDelta)
@@ -138,16 +148,31 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
                 //내가 넣은 콜라이더 시간에 진입했을때
                 if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
                 {
-                    if (*m_pParentState == STATE_SPECIAL_ATTACK)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_SPECIAL]);
-                    else if (*m_pParentState == STATE_SPECIAL_ATTACK2)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_SLASH]);
-                    else if (*m_pParentState == STATE_KICK_ATTACK)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_KICK]);
-                    else if (*m_pParentState == STATE_PARRY)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_PARRY]);
-                    else
+
+                    if (!strncmp(iter.szName, "Sword", strlen("Sword")))
+                    {
                         m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_SWORD]);
+                    }
+                    else if (!strncmp(iter.szName, "Kick", strlen("Kick")))
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_KICK]);
+                    }
+                    else if (!strncmp(iter.szName, "Parry", strlen("Parry")))
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_BURST]);
+                    }
+                    else if (!strncmp(iter.szName, "Slash", strlen("Slash")))
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_SLASH]);
+                    }
+                    else if (!strncmp(iter.szName, "Catch", strlen("Catch")))
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_CATCH]);
+                    }
+                    else //안잡히고 나서 이후에 범위공격하는거
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_BURST]);
+                    }
 
                     iter.isPlay = true;
                 }
@@ -155,13 +180,13 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
             else
             {
                 //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
-                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+                if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff)
                 {
                     m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SWORD]);
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SLASH]);
                     m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK]);
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SPECIAL]);
-                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_PARRY]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_CATCH]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SLASH]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BURST]);
 
                     m_bColliderOff = false;
                     if (!iter.isEventActivate)
@@ -177,10 +202,10 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SWORD]);
-        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SLASH]);
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK]);
-        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SPECIAL]);
-        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_PARRY]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_CATCH]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_SLASH]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BURST]);
     }
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
@@ -189,19 +214,20 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_KICK])))
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_KICK], XMLoadFloat4x4(m_pSocket_Leg_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 50.f, 0.f,0.f,1.f });
 
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_CATCH])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_CATCH], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ -100.f, 0.f, 0.f,1.f });
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SLASH])))
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SLASH], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 4000.f,1.f });
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SPECIAL])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SPECIAL], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 0.f,1.f });
-
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_PARRY])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_PARRY], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 1000.f, 0.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_BURST])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_BURST], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 0.f,1.f });
 }
 
 void CWeapon_Magician_Sword::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    if (*m_bRender)
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CWeapon_Magician_Sword::Render()
@@ -288,7 +314,10 @@ void CWeapon_Magician_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPai
         m_bColliderOff = true;
     }
     if (!strcmp("PLAYER", _pOther->Get_Name()) && *m_bSpecial_Skill_Progress)
+    {
+        m_bColliderOff = true;
         *m_bCatch_Special_Attack = true;
+    }
 }
 
 void CWeapon_Magician_Sword::OnCollision(CGameObject* _pOther, PxContactPair _information)

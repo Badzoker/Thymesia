@@ -973,6 +973,11 @@ deque<class CMonster*>& CGameInstance::Get_Check_Monsters()
 	return m_pMonster_Manager->Get_Check_Monsters();
 }
 
+_bool CGameInstance::Get_Monster_Dead(MONSTER_CATEGORY eCategory, _uint iMonsterIndex)
+{
+	return m_pMonster_Manager->Get_Monster_Dead(eCategory, iMonsterIndex);
+}
+
 #pragma endregion
 
 #pragma endregion

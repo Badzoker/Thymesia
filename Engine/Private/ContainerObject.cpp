@@ -80,6 +80,20 @@ CComponent* CContainerObject::Find_PartObject_Component(const _wstring& strPartT
     return (iter->second)->Find_Component(strComponentTag); 
 }
 
+HRESULT CContainerObject::Delete_PartObject(const _wstring& _strPartTag)
+{
+    auto iter = m_PartObjects.find(_strPartTag);
+    if (iter == m_PartObjects.end())
+    {
+        return E_FAIL;
+    }
+
+    Safe_Release(iter->second);
+    m_PartObjects.erase(iter);
+
+    return S_OK;
+}
+
 CPartObject* CContainerObject::Find_PartObject(const _wstring& _strPartTag)
 {
     auto iter = m_PartObjects.find(_strPartTag);

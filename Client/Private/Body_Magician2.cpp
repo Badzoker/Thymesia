@@ -22,6 +22,10 @@ HRESULT CBody_Magician2::Initialize_Prototype()
 
 HRESULT CBody_Magician2::Initialize(void* pArg)
 {
+	BODY_MAGICIAN2_DESC* pDesc = static_cast<BODY_MAGICIAN2_DESC*>(pArg);
+
+	m_bMutation_Active = pDesc->bMutation_Active;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -59,7 +63,9 @@ HRESULT CBody_Magician2::Render()
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		//´«¾Ë
-		if (i == 4)
+		if (i == 3 && *m_bMutation_Active == false)
+			continue;
+		else if (i == 4)
 			m_iPassNum = 3;
 		else if (i == 6)
 			continue;

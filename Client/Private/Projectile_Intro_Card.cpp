@@ -28,6 +28,7 @@ HRESULT CProjectile_Intro_Card::Initialize(void* pArg)
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentActive = pDesc->bActive;
+    m_pRender = pDesc->bRender;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -42,7 +43,7 @@ HRESULT CProjectile_Intro_Card::Initialize(void* pArg)
 
 void CProjectile_Intro_Card::Priority_Update(_float fTimeDelta)
 {
-    if (*m_pParentState != STATE_INTRO && *m_pParentActive)
+    if (*m_pParentState != STATE_INTRO || !*m_pRender)
         return;
 
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
@@ -51,7 +52,7 @@ void CProjectile_Intro_Card::Priority_Update(_float fTimeDelta)
 
 void CProjectile_Intro_Card::Update(_float fTimeDelta)
 {
-    if (*m_pParentState != STATE_INTRO && *m_pParentActive)
+    if (*m_pParentState != STATE_INTRO || !*m_pRender)
         return;
 
 
@@ -66,7 +67,7 @@ void CProjectile_Intro_Card::Update(_float fTimeDelta)
 
 void CProjectile_Intro_Card::Late_Update(_float fTimeDelta)
 {
-    if (*m_pParentState != STATE_INTRO && *m_pParentActive)
+    if (*m_pParentState != STATE_INTRO || !*m_pRender)
         return;
 
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
@@ -74,6 +75,9 @@ void CProjectile_Intro_Card::Late_Update(_float fTimeDelta)
 
 HRESULT CProjectile_Intro_Card::Render_Glow()
 {
+    if (*m_pParentState != STATE_INTRO || !*m_pRender)
+        return S_OK;
+
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 

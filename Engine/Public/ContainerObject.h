@@ -35,6 +35,7 @@ protected:
 protected:
 	HRESULT Add_PartObject(const _wstring& strPartTag, _uint ePrototypeLevelID, const _wstring& strPrototypeTag, CPartObject::PARTOBJECT_DESC* pDesc = nullptr);
 	CComponent* Find_PartObject_Component(const _wstring& strPartTag, const _wstring& strComponentTag);
+	HRESULT Delete_PartObject(const _wstring& _strPartTag);
 public:
 	CPartObject* Find_PartObject(const _wstring& _strPartTag);
 

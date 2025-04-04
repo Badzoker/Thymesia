@@ -300,6 +300,7 @@ public:
 	HRESULT Active_Monster();
 	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters();
+	_bool   Get_Monster_Dead(MONSTER_CATEGORY eCategory, _uint iMonsterIndex);
 #pragma endregion
 
 #pragma region PROJECTILE_MANAGER

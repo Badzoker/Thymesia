@@ -1,0 +1,222 @@
+#include "pch.h"
+#include "Weapon_Urd_Sword.h"
+#include "GameInstance.h"
+#include "Animation.h"
+#include "Boss_Urd.h"
+
+CWeapon_Urd_Sword::CWeapon_Urd_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    :CPartObject(pDevice, pContext)
+{
+}
+
+CWeapon_Urd_Sword::CWeapon_Urd_Sword(const CWeapon_Urd_Sword& Prototype)
+    :CPartObject(Prototype)
+{
+}
+
+HRESULT CWeapon_Urd_Sword::Initialize_Prototype()
+{
+    if (FAILED(__super::Initialize_Prototype()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CWeapon_Urd_Sword::Initialize(void* pArg)
+{
+    strcpy_s(m_szName, "MONSTER_WEAPON");
+
+    URD_SWORD_DESC* pDesc = static_cast<URD_SWORD_DESC*>(pArg);
+
+    m_pIntroSocketMatrix = pDesc->pIntroSocketMatrix;
+    m_pSocketMatrix = pDesc->pSocketMatrix;
+    m_pParentState = pDesc->pParentState;
+    m_pParentModelCom = pDesc->pParentModel;
+    m_iMonster_Attack = pDesc->iAttack;
+    m_bChange_Socket = pDesc->bChange_Socket;
+
+
+    if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Components()))
+        return E_FAIL;
+
+
+    m_pTransformCom->Scaling(_float3{ 0.5f, 0.5f, 0.5f });
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
+
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+
+    m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
+
+    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+
+    return S_OK;
+}
+
+void CWeapon_Urd_Sword::Priority_Update(_float fTimeDelta)
+{
+}
+
+void CWeapon_Urd_Sword::Update(_float fTimeDelta)
+{
+    _matrix			SocketMatrix = {};
+
+
+    if (!*m_bChange_Socket)
+        SocketMatrix = XMLoadFloat4x4(m_pIntroSocketMatrix);
+    else
+        SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+    XMStoreFloat4x4(&m_CombinedWorldMatrix,
+        XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *    /* 월드 영역 */
+        SocketMatrix *  /* 로컬 스페이스 영역 */
+        XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
+    );
+
+    //if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCane_Collider_On)
+    //{
+    //    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    //    {
+    //        if (iter.isPlay == false)
+    //        {
+    //            //내가 넣은 콜라이더 시간에 진입했을때
+    //            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
+    //            {
+    //                m_pGameInstance->Add_Actor_Scene(m_pActor);
+    //                iter.isPlay = true;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
+    //            if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+    //            {
+    //                m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    //                m_bColliderOff = false;
+    //                if (!iter.isEventActivate)
+    //                {
+    //                    iter.isPlay = false;
+    //                }
+    //            }
+    //        }
+    //        //문제 iter가 2개니까 첫 iter는 add를 했는데 다음 iter가 자기 프레임 타이밍이 아니니 Sub를 해버린다.
+    //        //다단히트 해결하기 = 충돌나면 bool 값이 ColliderOff-> true가 되는데 이때 sub하면되는디 다시 추가되는느낌?
+    //    }
+    //}
+    //else
+    //{
+    //    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    //}
+
+    //if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    //{
+    //    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
+    //}
+
+}
+
+void CWeapon_Urd_Sword::Late_Update(_float fTimeDelta)
+{
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+}
+
+HRESULT CWeapon_Urd_Sword::Render()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(0);
+        m_pModelCom->Render(i);
+    }
+
+    return S_OK;
+}
+
+HRESULT CWeapon_Urd_Sword::Ready_Components()
+{
+    /* Com_Shader */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
+        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+        return E_FAIL;
+
+    /* Com_Model */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Urd_Sword"),
+        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CWeapon_Urd_Sword::Bind_ShaderResources()
+{
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CWeapon_Urd_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+    if (!strcmp("PLAYER", _pOther->Get_Name()))
+    {
+        m_bColliderOff = true;
+    }
+}
+
+void CWeapon_Urd_Sword::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+void CWeapon_Urd_Sword::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+CWeapon_Urd_Sword* CWeapon_Urd_Sword::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+    CWeapon_Urd_Sword* pInstance = new CWeapon_Urd_Sword(pDevice, pContext);
+
+    if (FAILED(pInstance->Initialize_Prototype()))
+    {
+        MSG_BOX("Failed To Created : CWeapon_Urd_Sword");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+CGameObject* CWeapon_Urd_Sword::Clone(void* pArg)
+{
+    CWeapon_Urd_Sword* pInstance = new CWeapon_Urd_Sword(*this);
+
+    if (FAILED(pInstance->Initialize(pArg)))
+    {
+        MSG_BOX("Failed To Cloned : CWeapon_Urd_Sword");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+void CWeapon_Urd_Sword::Free()
+{
+    __super::Free();
+
+    Safe_Release(m_pShaderCom);
+    Safe_Release(m_pModelCom);
+}
