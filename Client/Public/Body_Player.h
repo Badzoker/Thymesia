@@ -217,6 +217,19 @@ public:
 	/* (변이된 오두르) 처형 컷신 */
 	void STATE_MAGICIAN_MUTATION_Execution_Method();
 
+	/* 그레이스 처형 컷신 */
+	void STATE_GRACE_Execution_Method();	
+
+	/* 펀치맨 처형 컷신 */
+	void STATE_PUNCH_MAN_Execution_Method();	
+
+	/* 오두르 스킬에 맞아서 잡히는 모션 */
+	void STATE_MAGICIAN_CATCH_Method();	
+
+	/* 플레이어 지팡이 스킬 */
+	void STATE_CANE_SWORD_SP02_Method();
+
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

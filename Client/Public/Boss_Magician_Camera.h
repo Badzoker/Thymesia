@@ -49,6 +49,9 @@ private:
 	float			   m_AccColliderLifeAttack1 = { 0.f };
 	float			   m_AccColliderLifeAttack2 = { 0.f };
 
+	_float4x4		   m_fPrePlayerWorldMatrix = {};
+
+
 	PxRigidDynamic* m_pActor = { nullptr };
 	PxRigidDynamic* m_pParentActor = { nullptr };
 private:

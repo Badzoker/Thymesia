@@ -385,6 +385,18 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_MAGICIAN_MUTATION_Execution:
         STATE_MAGICIAN_MUTATION_Execution_Method();
         break;
+    case CPlayer::STATE_GRACE_Execution:
+        STATE_GRACE_Execution_Method();
+        break;
+    case CPlayer::STATE_PUNCH_MAN_Execution:
+        STATE_PUNCH_MAN_Execution_Method();
+        break;
+    case CPlayer::STATE_MAGICIAN_CATCH:
+        STATE_MAGICIAN_CATCH_Method();
+        break;
+    case CPlayer::STATE_CANE_SWORD_SP02:    
+        STATE_CANE_SWORD_SP02_Method(); 
+        break;
     default:
         break;
     }
@@ -2215,6 +2227,64 @@ void CBody_Player::STATE_MAGICIAN_MUTATION_Execution_Method()
     }
 }
 
+void CBody_Player::STATE_GRACE_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(221, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(221)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+
+}
+
+void CBody_Player::STATE_PUNCH_MAN_Execution_Method()
+{
+    m_pModelCom->SetUp_Animation(224, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(224)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+}
+
+void CBody_Player::STATE_MAGICIAN_CATCH_Method()
+{
+    m_pModelCom->SetUp_Animation(227, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
+    if (m_pModelCom->Get_VecAnimation().at(227)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
+        *m_pParentState = STATE_IDLE;
+    }
+}
+
+void CBody_Player::STATE_CANE_SWORD_SP02_Method()   
+{
+    m_pModelCom->SetUp_Animation(88, false);    
+    m_iRenderState = STATE_NORMAL_RENDER;   
+
+    if (m_pModelCom->Get_VecAnimation().at(88)->isAniMationFinish())    
+    {
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;    
+    }   
+}
+
 void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
 {
     m_pModelCom->SetUp_Animation(292, false);
@@ -2467,6 +2537,9 @@ void CBody_Player::STATE_LADDER_CLIMB_R_IDEL_Method()
 
 void CBody_Player::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);    
+
     m_pModelCom->SetUp_Animation(296, true);    
     m_iRenderState = STATE_NORMAL_RENDER;   
 

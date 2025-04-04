@@ -99,8 +99,8 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
     CCamera_Logo::LOGO_CAMERA_DESC		Desc = {};
 
-    Desc.vEye = _float3(-379.520233f, 9.962774f, 62.532284f);
-    Desc.vAt = _float3(-379.520233, 9.962774, 65.f);
+    Desc.vEye = _float3(-379.52f, 9.96f, 62.53f);
+    Desc.vAt = _float3(-379.52f, 9.96f, 65.f);
 
     Desc.fFovy = XMConvertToRadians(50.f);
     Desc.fNear = 0.1f;

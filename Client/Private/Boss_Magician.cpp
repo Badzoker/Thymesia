@@ -1411,7 +1411,8 @@ void CBoss_Magician::Attack_Special_Catch::State_Enter(CBoss_Magician* pObject)
 {
 	m_iIndex = 41;
 	pObject->m_iMonster_Attack_Power = 190;
-	//pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_CATCH;
+	pObject->m_bCan_Move_Anim = true;  // 이런거 한번 만 (선환 범승 한번 체크 부탁함 )	
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_MAGICIAN_CATCH;	
 	pObject->Is_Change_Sword_Bone = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

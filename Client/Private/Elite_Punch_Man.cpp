@@ -409,10 +409,10 @@ void CElite_Punch_Man::Stun_State::State_Update(_float fTimeDelta, CElite_Punch_
             m_iIndex = 11;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_PUNCH_MAN_Execution)   
         {
-            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
-            return;
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject); 
+            return; 
         }
     }
     else if (m_iIndex == 13 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())

@@ -198,7 +198,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     ZeroMemory(&LightDesc, sizeof(LightDesc));
 
     LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-    LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+    LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
     LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
     LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
@@ -308,7 +308,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Camera(const _tchar* pLayerTag)
     Desc.vAt = _float3(0.f, 0.f, 0.f);
 
     Desc.fFovy = XMConvertToRadians(50.f);
-    Desc.fNear = 0.1f;
+    Desc.fNear = 0.01f; 
     Desc.fFar = 800.f;
     Desc.fMouseSensor = 0.05f;
     Desc.fSpeedPerSec = 25.f;
@@ -337,11 +337,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 
     /*_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
     XMStoreFloat4(&pDesc.fPosition, vTestPosition);*/
-    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
-        return E_FAIL;
-
-    //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+    //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
     //    return E_FAIL;
+
+    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+        return E_FAIL;
 
     /*for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
     {

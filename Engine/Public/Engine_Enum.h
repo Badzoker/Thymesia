@@ -98,6 +98,7 @@ namespace Engine
 		PLAYER_HURT_STUN,			    // 스턴걸기
 		PLAYER_HURT_REBOUND,            // 몬스터가 패링했을때
 		PLAYER_HURT_CATCH,              // 몬스터한테 잡혔을 때
+		PLAYER_HURT_MAGICIAN_CATCH,     // 마술사의 스킬에 당할 때		
 		PLAYER_HURT_END
 	};
 

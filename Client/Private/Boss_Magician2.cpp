@@ -337,11 +337,11 @@ void CBoss_Magician2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 
 void CBoss_Magician2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-	if (!strcmp("PLAYER", _pOther->Get_Name()) && /*(*m_Player_State & CPlayer::PHASE_EXECUTION) &&*/ !m_bExecution_Progress && m_iMonster_State == STATE_STUN)
-	{
-		m_bExecution_Progress = true;
-		m_pState_Manager->ChangeState(new ExeCution_State(), this);
-	}
+	//if (!strcmp("PLAYER", _pOther->Get_Name()) && /*(*m_Player_State & CPlayer::PHASE_EXECUTION) &&*/ !m_bExecution_Progress && m_iMonster_State == STATE_STUN)
+	//{
+	//	m_bExecution_Progress = true;
+	//	m_pState_Manager->ChangeState(new ExeCution_State(), this);
+	//}
 }
 
 void CBoss_Magician2::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
@@ -462,7 +462,7 @@ void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 24;
 	pObject->m_iMonster_State = STATE_STUN;
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN;
 	pObject->m_bMove = true;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->RotateDegree_To_Player();
@@ -481,6 +481,11 @@ void CBoss_Magician2::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician
 		m_iIndex = 23;
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 	}
+	if (m_iIndex == 23 && (*pObject->m_Player_State) == CPlayer::STATE_MAGICIAN_MUTATION_Execution)
+	{
+		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::ExeCution_State(), pObject);
+	}
+
 }
 
 void CBoss_Magician2::Stun_State::State_Exit(CBoss_Magician2* pObject)
@@ -492,17 +497,20 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 0;
 	pObject->m_iMonster_State = STATE_EXECUTION;
-	pObject->RotateDegree_To_Player();
 	pObject->m_bMove = true;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 
+	_float teleportDistance = 1.f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
-	_vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+	_vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
+	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
 	vPlayerLook = XMVector3Normalize(vPlayerLook);
-	vPlayerLook *= 2.f;
-	_vector vResultPos = vPlayerPos + vPlayerLook;
-	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
+	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+	pObject->RotateDegree_To_Player();
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
