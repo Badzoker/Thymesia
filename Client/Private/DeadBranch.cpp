@@ -208,6 +208,7 @@ void CDeadBranch::OnCollision(CGameObject* _pOther, PxContactPair _information)
         /* 플레이어 기억 회수 알림*/
         m_pGameInstance->UIGroup_Render_OnOff(m_pMyLevel, TEXT("Layer_Landing"), true);
         m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), true);
+        m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), true);
 
         dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_pMyLevel, TEXT("Layer_Player"), "PLAYER"))->Increase_MemoryFragment(m_iDropItemCount);
 

@@ -19,11 +19,15 @@ CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	m_iCurrentLevel = LEVEL_LOGO;
+    m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), false);
+    m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), false);
+
+    m_iCurrentLevel = LEVEL_LOGO;
 
 	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
 
-	/*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+
+  /*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;*/
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
@@ -50,27 +54,28 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
     if (!m_bNextLevelOpen)
     {
-        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT)) // 로고 전에 화면 가려 놓았음
         {
-            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9);
+            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9f); // 로고에 들어와서 첫 업데이트 하면 페이드 인으로 화면이 보임 
 
         }
-        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN))
+        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN)) // 화면이 다 보이면
         {
-            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), true);
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), true); // 인트로 연출 시작
             m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
 
         }
     }
 	else
 	{
+        // 다음 레벨로 넘어가라! 라고 값이 들어오면 m_bNextLevelOpen = true;
 		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
 		{
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false); // 인트로 ui 종료
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
 			m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 			m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.8f);
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 6, false));
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 6, false)); // 다음 레벨로
 		}
 	}
 	
