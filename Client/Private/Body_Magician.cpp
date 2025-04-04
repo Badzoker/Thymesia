@@ -25,6 +25,7 @@ HRESULT CBody_Magician::Initialize(void* pArg)
 
 	m_IsDissolveOn = pDesc->IsDissolveOn;
 	m_IsDissolveOff = pDesc->IsDissolveOff;
+	m_bRender = pDesc->bRender;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -77,7 +78,8 @@ void CBody_Magician::Update(_float fTimeDelta)
 
 void CBody_Magician::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+	if (*m_bRender)
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CBody_Magician::Render()

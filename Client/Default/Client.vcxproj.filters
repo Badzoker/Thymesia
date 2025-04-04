@@ -883,6 +883,18 @@
     <Filter Include="02.GameObject\Player\Weapon\Cane\Cane_Sword">
       <UniqueIdentifier>{44b67c18-1f24-4dc4-91a3-e577bef47cf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Magician2\Intro_Tonic">
+      <UniqueIdentifier>{29743571-5f0e-440b-bd99-3170a21d4021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Urd">
+      <UniqueIdentifier>{53e15f9a-2089-4049-86a9-7654bae4e0cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Urd\Body">
+      <UniqueIdentifier>{0ac69ab8-bd31-4546-85e4-11d6077e07bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Urd">
+      <UniqueIdentifier>{7ab9edd3-fcbe-4cf9-bd21-80b246359a28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1653,6 +1665,18 @@
     <ClInclude Include="..\public\Player_Weapon_Cane_Sword.h">
       <Filter>02.GameObject\Player\Weapon\Cane\Cane_Sword</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Tonic.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Intro_Tonic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Urd.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Urd.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Urd_Sword.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2413,6 +2437,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Player_Weapon_Cane_Sword.cpp">
       <Filter>02.GameObject\Player\Weapon\Cane\Cane_Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Tonic.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Magician2\Intro_Tonic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Urd.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Urd.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Urd_Sword.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

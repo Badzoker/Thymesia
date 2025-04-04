@@ -19,6 +19,7 @@ public:
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_bool* bActive = { nullptr };
+		_bool* bRender = { nullptr };
 	};
 private:
 	CProjectile_Intro_Card(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -42,7 +43,7 @@ private:
 private:
 	const _uint* m_pParentState = { nullptr };
 	const _bool* m_pParentActive = { nullptr };
-
+	const _bool* m_pRender = { nullptr };
 
 public:
 	static CProjectile_Intro_Card* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -32,7 +32,7 @@ HRESULT CElite_Grace::Initialize(void* pArg)
     m_fRootDistance = 1.f;
     m_fSpawn_Distance_Max = 15.f;
     m_fActive_Distance = 5.f;
-    m_fDagger_Delete_Time = 4.f;
+    m_fDagger_Delete_Time = 2.f;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -553,16 +553,19 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bExecution_Start = false;
 
-    _float teleportDistance = 1.f;
+    _float fTeleportDistance = 0.8f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
     _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
     vPlayerLook = XMVector3Normalize(vPlayerLook);
+    vPlayerRight = XMVector3Normalize(vPlayerRight);
 
-    _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+    _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, fTeleportDistance));
+    vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, -0.11f));
 
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+
     pObject->RotateDegree_To_Player();
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);

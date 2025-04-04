@@ -92,6 +92,9 @@ void CWeapon_Magician2_Sword::Priority_Update(_float fTimeDelta)
 
 void CWeapon_Magician2_Sword::Update(_float fTimeDelta)
 {
+    if (*m_pParentState == STATE_INTRO)
+        return;
+
     _matrix			SocketMatrix = {};
 
     SocketMatrix = XMLoadFloat4x4(m_pSocket_Matrix);
@@ -232,7 +235,8 @@ void CWeapon_Magician2_Sword::Update(_float fTimeDelta)
 
 void CWeapon_Magician2_Sword::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    if (*m_pParentState != STATE_INTRO)
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CWeapon_Magician2_Sword::Render()

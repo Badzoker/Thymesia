@@ -3,6 +3,7 @@
 #include "Body_Magician2.h"
 #include "Weapon_Magician2_Sword.h"
 #include "UI_Boss_HP_Bar.h"
+#include "Decorative_Tonic.h"
 #include "Locked_On.h"
 #include "Player.h"
 #include "GameInstance.h"
@@ -165,6 +166,7 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	CBody_Magician2::BODY_MAGICIAN2_DESC BodyDesc{};
+	BodyDesc.bMutation_Active = &m_bIntro_Mutation_Active;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
@@ -232,6 +234,15 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Magician_Mutation_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Mutation_Magician_Camera"), &Mutation_Magician_Camera_Desc)))
 		return E_FAIL;
 
+	CDecorative_Tonic::DECORATIVE_TONIC_DESC Tonic_Desc = {};
+	Tonic_Desc.pParentState = &m_iMonster_State;
+	Tonic_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("AnimTargetPoint");
+	Tonic_Desc.pHandSocketMatrix = m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+	Tonic_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Tonic_Desc.bChange = &m_bIntro_Change_Socket;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Decorative_Tonic"), LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Tonic"), &Tonic_Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -384,7 +395,8 @@ void CBoss_Magician2::Free()
 void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 18;
-	pObject->m_iMonster_State = STATE_INTRO;	
+	pObject->m_iMonster_State = STATE_INTRO;
+	pObject->m_bActive = true;
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -405,15 +417,26 @@ void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magicia
 	}
 
 
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
-		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1000.f && pObject->m_bIntro_Change_Socket)
+		{
+			pObject->m_bIntro_Change_Socket = false;
+		}
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 1800.f && !pObject->m_bIntro_Mutation_Active)
+		{
+			pObject->m_bIntro_Mutation_Active = true;
+		}
+
+		if (pObject->m_pModelCom->GetAniFinish())
+			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
+
 	}
 }
 
 void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 {
-	pObject->m_bActive = true;
+	pObject->Delete_PartObject(TEXT("Part_Decorative_Tonic"));
 }
 
 void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)

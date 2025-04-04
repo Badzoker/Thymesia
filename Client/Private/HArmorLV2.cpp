@@ -615,6 +615,7 @@ void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* 
         m_iIndex = 8;
         pObject->RotateDegree_To_Player();
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+        pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(20.f);
     }
 
     if (m_iIndex == 8 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
@@ -624,7 +625,7 @@ void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* 
         pObject->m_iMonster_Attack_Power = 88;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
-        pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(8.f);
+        pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(10.f);
     }
 
     if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())

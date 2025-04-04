@@ -9,10 +9,12 @@
 #include "Boss_Varg.h"
 #include "Boss_Magician.h"
 #include "Boss_Magician2.h"
+#include "Boss_Urd.h"
 
 #include "Body_Varg.h"
 #include "Body_Magician.h"
 #include "Body_Magician2.h"
+#include "Body_Urd.h"
 
 #include "VargKnife.h"
 #include "Boss_Varg_Camera.h"
@@ -22,8 +24,11 @@
 #include "Weapon_Cane.h"
 #include "Weapon_Magician_Sword.h"
 #include "Weapon_Magician2_Sword.h"
+#include "Weapon_Urd_Sword.h"
+
 #include "Projectile_Card.h"
 #include "Projectile_Intro_Card.h"
+#include "Decorative_Tonic.h"
 
 #include "UI_Boss_HP_Bar.h"
 #include "UI_Boss_HP_Bar_Gage.h"
@@ -421,7 +426,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion 
 
 #pragma region 티메시아 보스
+
 	lstrcpyW(m_szLoadingText, TEXT("보스 모델을 생성한다."));
+
+	//오두르
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -466,13 +474,24 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//변이 오두르
+
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician2_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician2/Boss_Magician2.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Tonic"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician2/Tonic/Tonic.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2_Body"),
 		CBody_Magician2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Tonic"),
+		CDecorative_Tonic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2_Sword"),
@@ -483,6 +502,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Magician2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//바그
 
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Varg_Body"),
@@ -505,6 +525,31 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Varg::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	////우르드
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Urd_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Urd/Boss_Urd.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Urd_Sword"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Urd/Urd_Sword/NoAnim/Urd_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Body"),
+		CBody_Urd::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Sword"),
+		CWeapon_Urd_Sword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"),
+		CBoss_Urd::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	//보스 바그 카메라 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"),	
 		CBoss_Varg_Camera::Create(m_pDevice, m_pContext))))	
@@ -520,12 +565,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Mutation_Magician_Camera"),
 		CBoss_Mutation_Magician_Camera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-
-
-
-
 
 
 	//보스 HP바

@@ -16,8 +16,9 @@ class CBody_Magician final : public CPartObject
 public:
 	struct BODY_MAGICIAN_DESC : public CPartObject::PARTOBJECT_DESC
 	{
-		_bool* IsDissolveOn = {};
-		_bool* IsDissolveOff = {};
+		_bool* IsDissolveOn = { nullptr };
+		_bool* IsDissolveOff = { nullptr };
+		_bool* bRender = { nullptr };
 	};
 
 private:
@@ -41,6 +42,7 @@ private:
 private:
 	_bool* m_IsDissolveOn = {};
 	_bool* m_IsDissolveOff = {};
+	_bool* m_bRender = {};
 	_bool* m_bDead = {};
 private:
 	_uint m_iPassNum = {};

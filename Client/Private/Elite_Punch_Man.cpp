@@ -654,7 +654,6 @@ void CElite_Punch_Man::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Pun
     {
         m_iIndex = 2;
         pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(0.f);
-        pObject->m_pModelCom->Set_Continuous_Ani(true);
         pObject->m_iMonster_Attack_Power = 128;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

@@ -16,6 +16,7 @@ class CBody_Magician2 final : public CPartObject
 public:
 	struct BODY_MAGICIAN2_DESC : public CPartObject::PARTOBJECT_DESC
 	{
+		_bool* bMutation_Active = { nullptr };
 	};
 
 private:
@@ -38,6 +39,7 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 private:
 	_bool* m_bDead = {};
+	_bool* m_bMutation_Active = {};
 private:
 	_uint m_iPassNum = {};
 

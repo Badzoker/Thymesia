@@ -44,6 +44,8 @@ private:
 	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bSpecial_Skill_Progress = {};
 	_bool                            m_bCatch_Special_Attack = {};
+	_bool							 m_bIntro_Change_Socket = { true };
+	_bool							 m_bIntro_Mutation_Active = {};
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fSlash_Skill_CoolTime = {};

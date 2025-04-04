@@ -8,6 +8,7 @@
 #pragma region º¸½º 
 #include "Boss_Magician.h"
 #include "Boss_Varg.h"
+#include "Boss_Urd.h"
 
 #include "Body_Varg.h"
 #include "Body_Magician.h"

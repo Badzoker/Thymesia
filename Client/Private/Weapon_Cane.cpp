@@ -34,6 +34,7 @@ HRESULT CWeapon_Cane::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_IsDissolveOn = pDesc->IsDissolveOn;
     m_IsDissolveOff = pDesc->IsDissolveOff;
+    m_bRender = pDesc->bRender;
     m_bCane_Collider_On = pDesc->bCane_Collider_On;
     m_iMonster_Attack = pDesc->iAttack;
 
@@ -144,7 +145,8 @@ void CWeapon_Cane::Update(_float fTimeDelta)
 
 void CWeapon_Cane::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    if (*m_bRender)
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
 HRESULT CWeapon_Cane::Render()
