@@ -7,9 +7,11 @@
 #include "UI_Text.h"
 #include "UI_TextBox.h"
 #include "UI_Button.h"
+#include "UI_Image.h"
 
 
 #include "UI_ButtonHighlight.h"
+#include "UI_GameLogoImage.h"
 
 CUIGroup_GameIntro::CUIGroup_GameIntro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -35,33 +37,118 @@ HRESULT CUIGroup_GameIntro::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro");
-
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMyScene, false);
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		m_pLogoImage = Image;
+	}
 	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
 	{
-		dynamic_cast<CUI_TextBox*>(TextBox)->Set_Change_TextColor(FONT_GRAY);
+	
+		m_pAnyKeyText = TextBox;
+	/*	dynamic_cast<CUI_TextBox*>(TextBox)->Set_Change_TextColor(FONT_GRAY);
 		dynamic_cast<CUI_TextBox*>(TextBox)->Set_TextRenderType(Engine::CUI_Text::FONT_OUTLINE);
+	*/}
+	for (auto& Button : m_pMyScene->Find_UI_Button())
+	{
+		if (1 == Button->Get_UI_GroupID())
+		{
+			m_pButton1 = Button;
+			m_pButton1->Set_UI_ShaderPassNum(11);
+		}
+		if (2 == Button->Get_UI_GroupID())
+		{
+			m_pButton2 = Button;
+			m_pButton2->Set_UI_ShaderPassNum(11);
+		}
+		if (3 == Button->Get_UI_GroupID())
+		{
+			m_pButton3 = Button;
+			m_pButton3->Set_UI_ShaderPassNum(11);
+		}
+		if (4 == Button->Get_UI_GroupID())
+		{
+			m_pButton4 = Button;
+			m_pButton4->Set_UI_ShaderPassNum(11);
+		}
+		if (5 == Button->Get_UI_GroupID())
+		{
+			m_pButton5 = Button;
+			m_pButton5->Set_UI_ShaderPassNum(11);
+		}
+		if (6 == Button->Get_UI_GroupID())
+		{
+			m_pButton6 = Button;
+			m_pButton6->Set_UI_ShaderPassNum(11);
+		}
 	}
+
+
+
 	return S_OK;
 }
 
 void CUIGroup_GameIntro::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
 }
 
 void CUIGroup_GameIntro::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
-
 	if (m_bRenderOpen)
 	{
-		Button_Check();
+		m_pLogoImage->Set_OnOff(true);
+
+		if (dynamic_cast<CUI_GameLogoImage*>(m_pLogoImage)->Get_LogoOpen())// 로고가 완전히 다 나왔을 때
+		{
+			if (m_TextOpen)
+			{
+				m_pAnyKeyText->Set_OnOff(true); // 텍스트를 출력한다
+				if(m_pGameInstance->isAnyEnter())
+				{
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
+
+					m_TextOpen = false;
+					m_ButtonOpen = true;
+				}
+			}
+			else
+				m_pAnyKeyText->Set_OnOff(false);
+
+			if (m_ButtonOpen)
+			{
+				_float fTime = 0.2f;
+				m_fButtonOpenTime += fTimeDelta;
+				if (fTime * 1.0f < m_fButtonOpenTime)
+					m_pButton1->Set_OnOff(true);
+				if (fTime * 2.0f < m_fButtonOpenTime)
+					m_pButton2->Set_OnOff(true);
+				if (fTime * 3.0f < m_fButtonOpenTime)
+					m_pButton3->Set_OnOff(true);
+				if (fTime * 4.0f < m_fButtonOpenTime)
+					m_pButton4->Set_OnOff(true);
+				if (fTime * 5.0f < m_fButtonOpenTime)
+					m_pButton5->Set_OnOff(true);
+				if (fTime * 6.0f < m_fButtonOpenTime)
+				{
+					m_pButton6->Set_OnOff(true);
+					m_ButtonOpen = false;
+					m_OpenComplete = true;
+					m_fButtonOpenTime = 0.f;
+				}
+			}
+			
+			//m_fButtonOpenTime += fTimeDelta;
+		}
+
+		//m_fLogoOpenTime
+
+		if(m_OpenComplete)
+			Button_Check();
 	}
 }
 
 void CUIGroup_GameIntro::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
 }
 
 HRESULT CUIGroup_GameIntro::Render()

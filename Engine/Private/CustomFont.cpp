@@ -13,12 +13,12 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
     m_pBatch = new SpriteBatch(m_pContext);
 
-    /*폰트 깊이 버퍼 활성화 용도였는데 필요 없어서 사용X*/
-    m_Desc.DepthEnable = TRUE;
-    m_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-    m_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-    m_Desc.StencilEnable = FALSE;
-    m_pDevice->CreateDepthStencilState(&m_Desc, &m_pDepthStencil);
+    ///*폰트 깊이 버퍼 활성화 용도였는데 필요 없어서 사용X*/
+    //m_Desc.DepthEnable = TRUE;
+    //m_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    //m_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    //m_Desc.StencilEnable = FALSE;
+    //m_pDevice->CreateDepthStencilState(&m_Desc, &m_pDepthStencil);
 
     return S_OK;
 }
@@ -119,7 +119,7 @@ void CCustomFont::Free()
 
     Safe_Release(m_pContext);
     Safe_Release(m_pDevice);
-    Safe_Release(m_pDepthStencil);
+    //Safe_Release(m_pDepthStencil);
 
 
 }

@@ -95,6 +95,21 @@ PS_OUT PS_Thymesia_UI(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_Thymesia_UI_ImageOpen(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor.a *= abs(g_fTImeAlpha);
+    
+    if (!g_bImageOn)
+    {
+        Out.vColor.a = 0.0f;
+        
+    }
+    
+    return Out;
+}
 PS_OUT PS_Thymesia_UI_ImageOnOff(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -124,7 +139,7 @@ PS_OUT PS_Thymesia_UI_ImageOnOffLoop(PS_IN In)
     
     if (true == g_bImageLoopOn) // 루프 값이 켜졌을 때
     {
-        Out.vColor.rgb *= abs(g_fTImeAlpha);
+        Out.vColor.a *= abs(g_fTImeAlpha);
 
     }
     return Out;
@@ -411,6 +426,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_Skill_Equip_Slot();
+    }
+     pass Thymesia_UI_ImageOpen // 11번
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Thymasia_UI, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_ImageOpen();
     }
     
 }

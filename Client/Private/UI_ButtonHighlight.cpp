@@ -30,6 +30,8 @@ HRESULT CUI_ButtonHighlight::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_Change_TextColor(FONT_GRAY);
+
+	iMyShaderPass = m_iShaderPassNum;
 	return S_OK;
 }
 
@@ -41,30 +43,54 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen) // UI 가 보여지고 있을 때에만 기능 작동
 	{
-		if (__super::On_Mouse_UI(g_hWnd,3))
+		if (m_bOpen)
 		{
-			m_bImageOn = true;
-			Set_Change_TextColor(FONT_WHITE);
-
-		}
-		else
-		{
-			m_bImageOn = false;
-			Set_Change_TextColor(FONT_GRAY);
-		}
-
-		if (m_bImageOn)
-		{
-			if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+			if (!m_ButtonShaderOpen)
 			{
-				m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
+				m_bImageOn = false;
+				m_iShaderPassNum = 11;
+
+				if (1 < m_fCurrentTime)
+				{
+					m_fCurrentTime = 0.0f;
+					m_ButtonShaderOpen = true;
+					m_iShaderPassNum = iMyShaderPass;
+				}
+				else
+					m_fCurrentTime += fTimeDelta;
+			}
+			
+
+		}
+		if (iMyShaderPass == m_iShaderPassNum)
+		{
+			if (__super::On_Mouse_UI(g_hWnd, 3))
+			{
+				m_bImageOn = true;
+				Set_Change_TextColor(FONT_WHITE);
+
 			}
 			else
 			{
-				m_bMouseSelectOn = false; // 
+				m_bImageOn = false;
+				Set_Change_TextColor(FONT_GRAY);
+			}
 
+			if (m_bImageOn)
+			{
+				if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+				{
+					m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
+				}
+				else
+				{
+					m_bMouseSelectOn = false; // 
+
+				}
 			}
 		}
+	
+
 	}
 }
 
@@ -87,10 +113,12 @@ HRESULT CUI_ButtonHighlight::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
-
+	
 	m_pShaderCom->Begin(m_iShaderPassNum);
 
 	m_pVIBufferCom->Bind_InputAssembler();

@@ -46,7 +46,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		if (FAILED(Ready_Layer_Mouse(TEXT("Layer_Mouse"))))
 			return E_FAIL;	
 
-		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
+		//m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
 
 		if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
 			return E_FAIL;
@@ -56,6 +56,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_AUTO);
 		
 	}
+	
 
 	switch (m_eNextLevelID)
 	{
@@ -131,16 +132,15 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			}
 		}
 
-		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), true);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
-		
+	
 	}
 	if (true == m_pLoader->isFinished())
 	{
 
 		if (m_eNextLevelID == LEVEL_STATIC)
 		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO, 0, true));
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO, 0, true)); // 여기 안에서 페이드 생성 
+
 		}
 		if (m_eNextLevelID == LEVEL_LOGO)
 		{

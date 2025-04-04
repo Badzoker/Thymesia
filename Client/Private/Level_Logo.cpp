@@ -23,8 +23,8 @@ HRESULT CLevel_Logo::Initialize()
 
 	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
 
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;*/
 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
 		return E_FAIL;
 
@@ -47,11 +47,21 @@ HRESULT CLevel_Logo::Initialize()
 void CLevel_Logo::Update(_float fTimeDelta)
 {
 
-	if (!m_bNextLevelOpen)
-	{
-		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), true);
-		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
-	}
+
+    if (!m_bNextLevelOpen)
+    {
+        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+        {
+            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9);
+
+        }
+        if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN))
+        {
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), true);
+            m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), true);
+
+        }
+    }
 	else
 	{
 		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
