@@ -25,6 +25,10 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	virtual HRESULT Render_Fog_Front() override; // ¹°Ã¼ÀÇ ¾Õ¸é ±íÀÌ¸¦ ±â·Ï
+	virtual HRESULT Render_Fog_Back() override; // ¹°Ã¼ÀÇ µÞ¸é ±íÀÌ¸¦ ±â·Ï
+	virtual HRESULT Render_Fog_Final(ID3D11ShaderResourceView* pNoiseSRV) override; // ¾È°³ ÃÖÁ¾ ·»´õ¸µ
 public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
@@ -37,6 +41,8 @@ private:
 	CModel* m_pSecondModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+
+	CShader* m_pFogShaderCom = { nullptr }; // ¾È°³ ·»´õ¸µ¿ë ½¦ÀÌ´õ Ãß°¡
 private:
 	class CGameObject* m_pPlayer = { nullptr };
 private:

@@ -4,6 +4,7 @@ Texture2D<float4> g_DepthTexture : register(t0);
 Texture3D<float4> g_NoiseTexture : register(t1);
 Texture2D<float4> g_GodRayTexture : register(t2);
 Texture2D<float4> g_FinalTexture : register(t3);
+Texture2D<float> g_RangeFogTexture : register(t4);
 RWTexture2D<float4> g_OutputTexture : register(u0);
 SamplerState g_LinearSampler : register(s0);
 
@@ -80,15 +81,18 @@ void CSMain_Fog(int3 dispatchThreadID : SV_DispatchThreadID)
     float fFinalFogFactor = min(fDistanceFogFactor, fHeightFogFactor); // 거리가 멀땐 거리 안개, 거리가 가까울땐 높이 안개 적용(더 작은수 적용)
     fFinalFogFactor /= fogFade; // 높이안개 거리에 따라 사라지게 적용
     
-    fFinalFogFactor = smoothstep(0.f, 1.f, fFinalFogFactor); // 안개 선형 보간(필요할지 모르겠음?)
+    fFinalFogFactor = 1.f - smoothstep(0.f, 1.f, fFinalFogFactor); // 안개 선형 보간(필요할지 모르겠음?)
     
     float4 vColor = g_FinalTexture.Load(int3(Texcoord, 0.f));
+    float fRangeFogfactor = g_RangeFogTexture.Load(int3(Texcoord, 0));
+    
+    fFinalFogFactor = max(fRangeFogfactor, fFinalFogFactor);
     
     if (vDepth.x <= 0.f)
         vColor = FogColor; // 깊이가 없으면 안개 최대로 적용 (물체가 그려지지않은곳들 메꾸기)
     else
-        vColor = float4(lerp(FogColor, vColor, fFinalFogFactor)); // 현재 색깔과 안개 색 선형보간
-    
+        vColor = float4(lerp(vColor, FogColor, fFinalFogFactor)); // 현재 색깔과 안개 색 선형보간
+ 
     g_OutputTexture[Texcoord] = vColor;
 }
 

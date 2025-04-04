@@ -98,6 +98,7 @@ void CCircus_Balloon::Late_Update(_float fTimeDelta)
         return;
 
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_FOG, this);
 }
 
 HRESULT CCircus_Balloon::Render()
@@ -134,6 +135,104 @@ HRESULT CCircus_Balloon::Render()
     return S_OK;
 }
 
+HRESULT CCircus_Balloon::Render_Fog_Front()
+{
+
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pFogShaderCom, "g_WorldMatrix")))
+        return E_FAIL;
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    _float3 vBoxExtents = _float3(35.f, 1.5f, 35.f); // x 길이 : 70 y 길이 5 z 길이 : 70
+
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
+        return E_FAIL;
+
+    m_pFogShaderCom->Begin(0);
+
+    m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+    m_pContext->Draw(1, 0); // 정점 버퍼가 없을때 최소한의 정보만 넣어주기
+    return S_OK;
+}
+
+HRESULT CCircus_Balloon::Render_Fog_Back()
+{
+
+    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pFogShaderCom, "g_WorldMatrix")))
+        return E_FAIL;
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    m_pFogShaderCom->Begin(1);
+
+    m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+    m_pContext->Draw(1, 0);
+
+    return S_OK;
+}
+
+HRESULT CCircus_Balloon::Render_Fog_Final(ID3D11ShaderResourceView* pNoiseSRV)
+{
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_RangeFog_Front"), m_pFogShaderCom, "g_FrontTexture")))
+        return E_FAIL;
+
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_RangeFog_Back"), m_pFogShaderCom, "g_BackTexture")))
+        return E_FAIL;
+
+
+    //if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow_Final"), m_pFogShaderCom, "g_FinalTexture")))
+    //    return E_FAIL;
+
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pFogShaderCom, "g_DepthTexture")))
+        return E_FAIL;
+
+    //if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_RangeFog_Final"), m_pFogShaderCom, "g_PreviousFogTexture")))
+    //    return E_FAIL;
+
+
+    if (FAILED(m_pFogShaderCom->Bind_SRV("g_VolumeFogTexture", pNoiseSRV)))
+        return E_FAIL;
+
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ViewMatrixInv", &m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+
+    if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ProjMatrixInv", &m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCamPos", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+        return E_FAIL;
+
+    _float3 vBoxExtents = _float3(35.f, 1.5f, 35.f);
+
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
+        return E_FAIL;
+
+    _float4 vCubeCenterPos;
+    _vector vCubePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    vCubePos.m128_f32[1] += vBoxExtents.y * 0.5f;
+    XMStoreFloat4(&vCubeCenterPos, vCubePos);
+
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubePos", &vCubeCenterPos, sizeof(_float4))))
+        return E_FAIL;
+
+    _float3 vFogColor = _float3(0.3f, 0.2f, 0.1019f);
+
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vFogColor", &vFogColor, sizeof(_float3))))
+        return E_FAIL;
+
+    m_pFogShaderCom->Begin(2);
+
+    m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+    m_pContext->IASetInputLayout(NULL);
+    m_pContext->Draw(4, 0);
+
+    return S_OK;
+}
+
 HRESULT CCircus_Balloon::Ready_Components(void* pArg)
 {
     CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
@@ -158,6 +257,11 @@ HRESULT CCircus_Balloon::Ready_Components(void* pArg)
 
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Building_Circus_Balloon2"),
         TEXT("Com_Model2"), reinterpret_cast<CComponent**>(&m_pSecondModelCom))))
+        return E_FAIL;
+
+    /* Com_FogShader */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Fog"),
+        TEXT("Com_FogShader"), reinterpret_cast<CComponent**>(&m_pFogShaderCom))))
         return E_FAIL;
 
     return S_OK;
@@ -253,4 +357,5 @@ void CCircus_Balloon::Free()
 
     Safe_Release(m_pSecondModelCom);
 
+    Safe_Release(m_pFogShaderCom);
 }

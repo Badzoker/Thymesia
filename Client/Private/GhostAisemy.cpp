@@ -101,15 +101,12 @@ void CGhostAisemy::Update(_float _fTimeDelta)
 
 
     // Test
-    _vector vGhoSemyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-    _float fX = XMVectorGetX(vGhoSemyPosition);
-    vGhoSemyPosition = XMVectorSetX(vGhoSemyPosition, fX + 3.0f);
-
-    _float4 vPos;
-    XMStoreFloat4(&vPos, vGhoSemyPosition);
-    if (m_pGameInstance->isKeyEnter(DIK_8))
+    _float4 vPos = { 112.0f, 15.6f, -30.0f ,1.0f };
+    if (m_pGameInstance->Get_Boss_Dead())
+    {
         Spawn_Conversation_Gosemy(vPos, true);
+        return;
+    }
 
     __super::Update(_fTimeDelta);
 }

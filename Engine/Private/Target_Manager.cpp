@@ -160,7 +160,7 @@ HRESULT CTarget_Manager::RTV_Compute_LightShaft(const _wstring& strRenderTargetT
     return pCompute_Shader->Compute_Shader_LightShaft(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetToRead->Get_SRV(), pRenderTargetToWrite->Get_UAV(), pArg);
 }
 
-HRESULT CTarget_Manager::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetTagFog, CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
+HRESULT CTarget_Manager::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetTagRangeFogFinal, const _wstring& strRenderTargetTagFog, CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
 {
 
     CRenderTarget* pRenderTargetDepth = Find_RenderTarget(strRenderTargetTagDepth);
@@ -177,15 +177,31 @@ HRESULT CTarget_Manager::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth
 
     if (pRenderTargetFinal == nullptr)
         return E_FAIL;
+    CRenderTarget* pRenderTargetRangeFog = Find_RenderTarget(strRenderTargetTagRangeFogFinal);
+
+    if (pRenderTargetRangeFog == nullptr)
+        return E_FAIL;
 
     CRenderTarget* pRenderTargetFog = Find_RenderTarget(strRenderTargetTagFog);
 
     if (pRenderTargetFog == nullptr)
         return E_FAIL;
 
-    return pCompute_Shader->Compute_Shader_Fog(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetDepth->Get_SRV(), pNoiseSRV, pRenderTargetGodRay->Get_SRV(), pRenderTargetFinal->Get_SRV(), pRenderTargetFog->Get_UAV(), pArg);
+    return pCompute_Shader->Compute_Shader_Fog(_iThreadCountX, _iThreadCountY, _iThreadCountZ, pRenderTargetDepth->Get_SRV(), pNoiseSRV, pRenderTargetGodRay->Get_SRV(), pRenderTargetFinal->Get_SRV(), pRenderTargetRangeFog->Get_SRV(), pRenderTargetFog->Get_UAV(), pArg);
 }
 
+
+HRESULT CTarget_Manager::Clear_RTV(const _wstring& strRenderTargetTag)
+{
+    CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);
+
+    if (pRenderTarget == nullptr)
+        return E_FAIL;
+
+    pRenderTarget->Clear();
+
+    return S_OK;
+}
 #ifdef _DEBUG
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {

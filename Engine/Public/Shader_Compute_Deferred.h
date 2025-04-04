@@ -48,8 +48,8 @@ public:
 	HRESULT Create_ComputeShader(const _tchar* _pShaderFilePath, const _char* _pFunctionName, ID3D11Device* _pDevice);
 	HRESULT Compute_Shader_LightShaft(_uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, ID3D11ShaderResourceView* pSRV, ID3D11UnorderedAccessView* pUAV, void* pArg);
 
-	HRESULT Compute_Shader_Fog(_uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, ID3D11ShaderResourceView* pSRVDepth, ID3D11ShaderResourceView* pNoiseSRV, ID3D11ShaderResourceView* pSRVGodRay,
-		ID3D11ShaderResourceView* pSRVFinal, ID3D11UnorderedAccessView* pUAV, void* pArg);
+	HRESULT Compute_Shader_Fog(_uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, ID3D11ShaderResourceView* pSRVDepth, ID3D11ShaderResourceView* pNoiseSRV, ID3D11ShaderResourceView* pSRVGodRay, ID3D11ShaderResourceView* pSRVFinal, ID3D11ShaderResourceView* pSRVRangeFogFinal, ID3D11UnorderedAccessView* pUAV, void* pArg);
+
 
 private:
 	HRESULT Create_ConstantBuffer_LightShaft(LightShaftParams* ParamDesc);

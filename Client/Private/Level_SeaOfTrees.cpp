@@ -212,7 +212,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
 
     FOGPARAMS FogDesc{};
     FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
-    FogDesc.fFogStartDistance = _float2(0.09f, 8.f);
+    FogDesc.fFogStartDistance = _float2(0.04f, 8.f);
     FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
     FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
 
@@ -336,10 +336,19 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
     pDesc.iCurLevel = m_iCurrentLevel;
     pDesc.fPosition = m_MonsterSpawnInfos[0].vMonsterPos;
 
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), LEVEL_TUTORIAL, TEXT("Layer_Monster_Building"), &pDesc)))
+        return E_FAIL;
+
+    _vector vMonsterPos = XMLoadFloat4(&m_MonsterSpawnInfos[0].vMonsterPos);
+
+    pDesc.fPosition = _float4(XMVectorGetX(vMonsterPos) + 20.f, XMVectorGetY(vMonsterPos), XMVectorGetZ(vMonsterPos), 1.f);
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), LEVEL_TUTORIAL, TEXT("Layer_Monster_Building"), &pDesc)))
+        return E_FAIL;
     /*_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
     XMStoreFloat4(&pDesc.fPosition, vTestPosition);*/
-    if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
-        return E_FAIL;
+   /* if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
+        return E_FAIL;*/
 
     //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
     //    return E_FAIL;
