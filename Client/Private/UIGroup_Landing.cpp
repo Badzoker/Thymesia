@@ -36,19 +36,19 @@ HRESULT CUIGroup_Landing::Initialize(void* pArg)
 	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pMessage_Dead = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_1Dead");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Dead, false);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Dead, false);
 
 	m_pMessage_Beacon = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_2Beacon");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Beacon, false);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Beacon, false);
 
 	m_pMessage_Recall = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_3Recall");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Recall, false);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Recall, false);
 
 	m_pMessage_Memories = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_4Memories");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_Memories, false);
-	
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Memories, false);
+
 	m_pMessage_MapName = m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, L"UIScene_Landing_5MapName");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_MapName, false);
 
 	
 	return S_OK;
@@ -66,20 +66,46 @@ void CUIGroup_Landing::Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		Map_Name();
-		m_fRandingTime += fTimeDelta;
-		if (m_fRandingTime > 4)
+		if (
+			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Dead) ||
+			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Beacon) ||
+			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Recall) ||
+			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Memories) ||
+			m_pGameInstance->Get_Scene_Render_State(m_pMessage_MapName))
 		{
-			
-			m_fRandingTime = 0;
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Landing"), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), false);
-			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), false);
+			if (m_fRandingTime > 2.f)
+			{
+				m_fRandingTime = 0.0f;
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Dead, false);
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Beacon, false);
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Recall, false);
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Memories, false);
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_MapName, false);
+			}
+			else
+			{
+				m_fRandingTime += fTimeDelta / 3;
+			}
 
-			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-			//m_bRenderOpen = false;
 		}
+		
+		//m_fRandingTime += fTimeDelta;
+		//if (m_fRandingTime > 4)
+		//{
+		//	
+		//	m_fRandingTime = 0;
+		//	
+		//	
+		//	
+		//	//m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Landing"), false);
+		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), false);
+		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), false);
+		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), false);
+		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), false);*/
+
+		//	//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
+		//	//m_bRenderOpen = false;
+		//}
 	
 	}
 

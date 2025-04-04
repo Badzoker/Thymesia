@@ -138,9 +138,6 @@ HRESULT CLoader_Tutorial::Start_Loading()
 
 HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 {
-	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOADING, TEXT("Layer_Loading"), true);
-	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
-
 	/* 게임플레이레벨을 위한 자원을 로드합니다.  */
 	lstrcpyW(m_szLoadingText, TEXT("게임플레이레벨을 위한 자원을 로딩 중입니다."));
 

@@ -131,12 +131,12 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				break;
 			}
 		}
-
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), true);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
 	
 	}
 	if (true == m_pLoader->isFinished())
 	{
-
 		if (m_eNextLevelID == LEVEL_STATIC)
 		{
 			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO, 0, true)); // 여기 안에서 페이드 생성 

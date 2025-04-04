@@ -86,7 +86,7 @@ void CUIGroup_Loading::Texture_Num_Check()
 {
 	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
 	{
-		if (1 == TextBox->Get_UI_GroupID()) // 力格
+		if (1 == TextBox->Get_UI_GroupID()) // 力格	
 		{
 			for (auto& Text : m_TextInfo)
 			{

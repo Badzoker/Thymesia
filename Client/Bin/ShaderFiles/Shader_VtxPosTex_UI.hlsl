@@ -304,6 +304,24 @@ PS_OUT PS_Thymesia_UI_Image_Skill_Equip_Slot(PS_IN In)
 
     return Out;
 }
+
+
+PS_OUT PS_Thymesia_UI_ImageLanding(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    
+   
+    
+    //Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    //if (true == g_bImageLoopOn;) // 루프 값이 켜졌을 때
+    //{
+    //    Out.vColor.a *= abs(g_fTImeAlpha);
+
+    //}
+    return Out;
+}
 technique11 DefaultTechnique
 {
   // 0번

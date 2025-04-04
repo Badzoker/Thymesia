@@ -100,6 +100,7 @@ HRESULT CLevel_Fortress::Initialize()
 	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
 	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_Landing"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 
 	return S_OK;
 }

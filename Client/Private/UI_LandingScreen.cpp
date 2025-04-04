@@ -28,6 +28,11 @@ HRESULT CUI_LandingScreen::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_bImageOn = true;
+	m_fMySize = m_fSize;
+
+	m_mtrSaveWorld = m_pTransformCom->Get_WorldMatrix_Ptr();
+
 	return S_OK;
 }
 
@@ -39,7 +44,38 @@ void CUI_LandingScreen::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
+		if (m_bOpen)
+		{
+			if (1 <= m_fCurrentTime) // 1이 되는 순간
+			{
+				m_fCurrentTime *= -1; // -1 로 변경
+			}
+			else
+			{
+				m_fCurrentTime += fTimeDelta / 3; // 계속 델타타임 더하기
+				m_fSizeTime = 1.0f + (fTimeDelta * 0.05f);
 
+			}
+
+			if (0 < m_iGroupID)
+			{
+				
+					m_fMySize = { m_fMySize.x * m_fSizeTime, m_fMySize.y * m_fSizeTime };
+					m_pTransformCom->Scaling(_float3(m_fMySize.x, m_fMySize.y, 1.f));
+
+			}
+				
+		}
+		else
+		{
+			m_fCurrentTime = 0.f;
+			m_fSizeTime = 0.f;
+			if (0 < m_iGroupID)
+			{
+				m_fMySize = m_fSize;
+				m_pTransformCom->Set_WorldMatrix(*m_mtrSaveWorld);
+			}
+		}
 	}
 }
 
@@ -60,12 +96,17 @@ HRESULT CUI_LandingScreen::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(11);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 

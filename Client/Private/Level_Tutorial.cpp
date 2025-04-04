@@ -146,6 +146,8 @@ void CLevel_Tutorial::Update(_float fTimeDelta)
     if (m_pGameInstance->isKeyEnter(DIK_B))
     {
         m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+        m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
+        m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
     }
     if (m_bNextLevelOpen)
     {
