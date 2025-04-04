@@ -50,10 +50,15 @@ void CEffect_Sword::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Sword::Update(_float _fTimeDelta)
 {
-    if (nullptr != m_pSettingMatrix)
+    if (nullptr != m_pSettingMatrix && nullptr == m_pSocketMatrix) //소켓이 아니다
     {
-        //m_pTransformCom->Set_MulWorldMatrix(m_pSettingMatrix);
         XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSettingMatrix));
+    }
+	else if (nullptr != m_pSocketMatrix && nullptr != m_pSettingMatrix) //소켓이다)
+    {
+        _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+        XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));
     }
     if (true == m_bIsPlaying)
     {
@@ -65,7 +70,6 @@ void CEffect_Sword::Update(_float _fTimeDelta)
         XMStoreFloat3(&vRight, m_fLength_Right * XMVector3Normalize(XMVector3Cross(_vector{ 1.f, 0.f, 0.f, 0.f }, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, 0.f } - XMLoadFloat4(&m_pGameInstance->Get_CamPosition()))));
         m_pBufferCom->Set_Trail_Local(m_dequeCenterPos, iCount_Trail, vUp, vRight);
     }
-    
 }
 
 void CEffect_Sword::Late_Update(_float _fTimeDelta)
@@ -135,6 +139,11 @@ void CEffect_Sword::Set_IsPlaying(_bool _bIsPlaying)
         m_fTimer_Timelag = 0.f;
         m_bIsPlaying = _bIsPlaying;
         m_pBufferCom->Set_Trail_Reset();
+
+        if (nullptr != m_pSettingMatrix)
+            m_pSettingMatrix = nullptr;
+        if (nullptr != m_pSocketMatrix)
+            m_pSocketMatrix = nullptr;
     }
     m_bisCalculate = _bIsPlaying;
 }

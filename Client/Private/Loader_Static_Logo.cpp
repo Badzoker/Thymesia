@@ -2122,7 +2122,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Sword_Image*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sword_Image"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Sword_Image/texSword%d.dds"), 9))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Sword_Image/texSword%d.dds"), 11))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Sword */

@@ -799,6 +799,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_JOKER)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Player_Eye.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE)))
+        return E_FAIL;
+
     return S_OK;
 }
 

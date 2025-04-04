@@ -33,6 +33,7 @@ public:
 	
 	void Set_MaxTimer(_float _fMaxTimer) { m_fMaxTimer = _fMaxTimer; }
 	void Set_SettingMatrix(const _float4x4* _pSettingMatrix) { m_pSettingMatrix = _pSettingMatrix; }
+	void Set_SocketMatrix(const _float4x4* _pSocketMatrix) { m_pSocketMatrix = _pSocketMatrix; }
 	void Clear_Setting();
 	void Set_Direction(_fvector _vDir);
 	void Set_Pos_With_Matrix(_float4x4 _matWorld);
@@ -42,6 +43,7 @@ public:
 protected:
 	//EFFECT_TYPE m_eEffectType = { EFFECT_TYPE::EFFECT_TYPE_END };
 	const _float4x4* m_pSettingMatrix = { nullptr };
+	const _float4x4* m_pSocketMatrix = { nullptr };
 	const _float* m_pAnimation_Speed = { nullptr };
 
 	_float4x4 m_matCombined = {};

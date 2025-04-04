@@ -11,6 +11,7 @@ CEffect::CEffect(const CEffect& _Prototype)
 	, m_bIsPlaying{ _Prototype.m_bIsPlaying }
 	, m_pAnimation_Speed{ _Prototype.m_pAnimation_Speed }
 	, m_pSettingMatrix{ _Prototype.m_pSettingMatrix }
+	, m_pSocketMatrix{ _Prototype.m_pSocketMatrix }
 	//, m_eEffectType{ _Prototype.m_eEffectType }
 {
 }

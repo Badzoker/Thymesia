@@ -647,6 +647,11 @@ HRESULT CGameInstance::Play_Effect_Matrix_OneMoment(EFFECT_NAME _eEffectName, _f
 	return m_pEffect_Manager->Play_Effect_Matrix_OneMoment(_eEffectName, _matMatrix);
 }
 
+HRESULT CGameInstance::Play_Effect_Matrix_With_Socket(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix_With_Socket(_eEffectName, _pMatrix, _pSocketMatrix);
+}
+
 #pragma endregion 
 
 #pragma region Sound Manager 

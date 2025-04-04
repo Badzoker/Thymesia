@@ -143,19 +143,41 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
 
                 if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
 #pragma region Effect
-                    if (!strcmp(iter.szName, "Effect_Start"))
+                    if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                        {
+                            const _float4x4* matSocket = m_pParentModelCom->Get_BoneMatrix("Bip001-Head");
+
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE, m_pParentWorldMatrix, matSocket);
+                            iter.isPlay = true;
+                        }
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start"))
+                    {
+                        iter.isPlay = true;
                         m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_AXE, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                    }
                     else if (!strcmp(iter.szName, "Particle_Start"))
                     {
+                        iter.isPlay = true;
                         m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_AXE, *m_pParentWorldMatrix);
                         m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_HORIZON, *m_pParentWorldMatrix);
                         m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS, *m_pParentWorldMatrix);
                     }
-#pragma endregion
+
+
                 }
+                else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+                {
+                    if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+                    {
+                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
+                        iter.isPlay = false;
+                    }
+                }
+#pragma endregion
             }
         }
     }
