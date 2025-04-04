@@ -61,6 +61,14 @@ DepthStencilState DSS_SKip_Z
     DepthWriteMask = ZERO;
 };
 
+
+DepthStencilState DSS_Skip_Write // 깊이 비교를 하되 깊이를 작성하지는 않음
+{
+    DepthEnable = TRUE;
+    DepthWriteMask = ZERO;
+    DepthFunc = ALWAYS;
+};
+
 DepthStencilState DSS_Thymasia_UI
 {
     //DepthEnable = TRUE;

@@ -260,6 +260,12 @@ namespace Engine
 		const static unsigned int					iNumElements = 2;
 		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXST;
+
+	typedef struct ENGINE_DLL vtxNull // 정점 버퍼가 필요없는경우
+	{
+		const static unsigned int					iNumElements = 1;
+		const static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXNULL;
 }
 
 

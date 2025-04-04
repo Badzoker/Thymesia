@@ -529,10 +529,15 @@ HRESULT CGameInstance::RTV_Compute_LightShaft(const _wstring& strRenderTargetTag
 	return m_pTarget_Manager->RTV_Compute_LightShaft(strRenderTargetTagToRead, strRenderTargetTagToWrite, pCompute_Shader, _iThreadCountX, _iThreadCountY, _iThreadCountZ, pArg);
 }
 
-HRESULT CGameInstance::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetTagFog,
+HRESULT CGameInstance::RTV_Compute_Fog(const _wstring& strRenderTargetTagDepth, ID3D11ShaderResourceView* pNoiseSRV, const _wstring& strRenderTargetTagGodRay, const _wstring& strRenderTargetTagFinal, const _wstring& strRenderTargetRangeFogFinal, const _wstring& strRenderTargetTagFog,
 	CShader_Compute_Deferred* pCompute_Shader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, void* pArg)
 {
-	return m_pTarget_Manager->RTV_Compute_Fog(strRenderTargetTagDepth, pNoiseSRV, strRenderTargetTagGodRay, strRenderTargetTagFinal, strRenderTargetTagFog, pCompute_Shader, _iThreadCountX, _iThreadCountY, _iThreadCountZ, pArg);
+	return m_pTarget_Manager->RTV_Compute_Fog(strRenderTargetTagDepth, pNoiseSRV, strRenderTargetTagGodRay, strRenderTargetTagFinal, strRenderTargetRangeFogFinal, strRenderTargetTagFog, pCompute_Shader, _iThreadCountX, _iThreadCountY, _iThreadCountZ, pArg);
+}
+
+HRESULT CGameInstance::Clear_RTV(const _wstring& strRenderTargetTag)
+{
+	return m_pTarget_Manager->Clear_RTV(strRenderTargetTag);
 }
 
 #ifdef _DEBUG

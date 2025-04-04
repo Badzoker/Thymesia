@@ -158,6 +158,19 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final_Last"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+	/* Target_RangeFog*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RangeFog_Front"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_RangeFog*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RangeFog_Back"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_RangeFog_Final*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RangeFog_Final"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
 	/* MRT_GameObjects */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -234,6 +247,18 @@ HRESULT CRenderer::Initialize()
 
 	/* 진짜 최종 final */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Final_Last"), TEXT("Target_Final_Last"))))
+		return E_FAIL;
+
+	/* MRT_Fog_Front */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Fog_Front"), TEXT("Target_RangeFog_Front"))))
+		return E_FAIL;
+
+	/* MRT_Fog_Back */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Fog_Back"), TEXT("Target_RangeFog_Back"))))
+		return E_FAIL;
+
+	/* MRT_Fog_Final */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Fog_Final"), TEXT("Target_RangeFog_Final"))))
 		return E_FAIL;
 
 
@@ -705,16 +730,54 @@ HRESULT CRenderer::Render_LightShaftY()
 
 HRESULT CRenderer::Render_Fog()
 {
+	for (auto& pRenderObject : m_RenderObjects[RG_FOG])
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Fog_Front"), true)))
+			return E_FAIL;
+		if (FAILED(pRenderObject->Render_Fog_Front()))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->End_MRT()))
+			return E_FAIL;
+
+
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Fog_Back"), true)))
+			return E_FAIL;
+
+		if (FAILED(pRenderObject->Render_Fog_Back()))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->End_MRT()))
+			return E_FAIL;
+
+		//MRT_Fog_Final
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Fog_Final"), false)))
+			return E_FAIL;
+
+		if (FAILED(pRenderObject->Render_Fog_Final(m_pNoiseSRV)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->End_MRT()))
+			return E_FAIL;
+		Safe_Release(pRenderObject);
+
+	}
+
+	m_RenderObjects[RG_FOG].clear();
+
 	m_ParamDesc.g_vCamPosition = m_pGameInstance->Get_CamPosition();
 	XMStoreFloat4x4(&m_ParamDesc.g_ProjMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_PROJ))));
 	XMStoreFloat4x4(&m_ParamDesc.g_ViewMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW))));
 	m_ParamDesc.g_fTime = m_fTime += 0.001f;
 
-	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Shadow_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &m_ParamDesc)))
+	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Shadow_Final"), TEXT("Target_RangeFog_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &m_ParamDesc)))
 		return E_FAIL;
+
+	m_pGameInstance->Clear_RTV(TEXT("Target_RangeFog_Final"));
 
 	return S_OK;
 }
+
 
 HRESULT CRenderer::Render_MotionBlur_By_Velocity()
 {

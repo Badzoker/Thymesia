@@ -1006,6 +1006,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex_UI.hlsl"), VTXPOSTEX_UI::Elements, VTXPOSTEX_UI::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxPosTex_UI */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Fog"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Fog.hlsl"), VTXNULL::Elements, VTXNULL::iNumElements))))
+		return E_FAIL;
+
 
 #pragma endregion 
 

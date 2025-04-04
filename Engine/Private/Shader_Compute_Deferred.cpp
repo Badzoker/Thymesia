@@ -179,7 +179,7 @@ HRESULT CShader_Compute_Deferred::Compute_Shader_LightShaft(_uint _iThreadCountX
 	return S_OK;
 }
 
-HRESULT CShader_Compute_Deferred::Compute_Shader_Fog(_uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, ID3D11ShaderResourceView* pSRVDepth, ID3D11ShaderResourceView* pNoiseSRV, ID3D11ShaderResourceView* pSRVGodRay, ID3D11ShaderResourceView* pSRVFinal, ID3D11UnorderedAccessView* pUAV, void* pArg)
+HRESULT CShader_Compute_Deferred::Compute_Shader_Fog(_uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, ID3D11ShaderResourceView* pSRVDepth, ID3D11ShaderResourceView* pNoiseSRV, ID3D11ShaderResourceView* pSRVGodRay, ID3D11ShaderResourceView* pSRVFinal, ID3D11ShaderResourceView* pSRVRangeFogFinal, ID3D11UnorderedAccessView* pUAV, void* pArg)
 {
 	FOGPARAMS* Desc = static_cast<FOGPARAMS*>(pArg);
 
@@ -192,6 +192,7 @@ HRESULT CShader_Compute_Deferred::Compute_Shader_Fog(_uint _iThreadCountX, _uint
 		m_pContext->CSSetShaderResources(1, 1, &pNoiseSRV);
 	m_pContext->CSSetShaderResources(2, 1, &pSRVGodRay);
 	m_pContext->CSSetShaderResources(3, 1, &pSRVFinal);
+	m_pContext->CSSetShaderResources(4, 1, &pSRVRangeFogFinal);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &pUAV, nullptr);
 	m_pContext->CSSetSamplers(0, 1, &m_pComputeShaderSampler);
 
@@ -222,6 +223,7 @@ HRESULT CShader_Compute_Deferred::Compute_Shader_Fog(_uint _iThreadCountX, _uint
 	m_pContext->CSSetShaderResources(1, 1, nullSRV);
 	m_pContext->CSSetShaderResources(2, 1, nullSRV);
 	m_pContext->CSSetShaderResources(3, 1, nullSRV);
+	m_pContext->CSSetShaderResources(4, 1, nullSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 	m_pContext->CSSetShader(nullptr, nullptr, 0);
 
