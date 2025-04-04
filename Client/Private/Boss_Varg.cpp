@@ -1279,12 +1279,20 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
         pObject->m_bDead = true;
         pObject->m_bActive = false;
         pObject->m_pModelCom->SetUp_Animation(39, false);
+
+#pragma region BossÁ×À»½ÃÈ¿°ú+UI
+        pObject->m_pGameInstance->Set_Boss_Dead(true);
+        pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+        pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+        pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+#pragma endregion
     }
 }
 
 void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
+    
 }
 
 #pragma endregion

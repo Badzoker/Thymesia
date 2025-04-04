@@ -31,7 +31,9 @@ public:
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
 	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters() { return m_pCheck_Monsters; }
-	_bool   Get_Monster_Dead(MONSTER_CATEGORY eCategory, _uint iMonsterIndex) { return m_pMonsters[eCategory][iMonsterIndex]->Get_Dead(); }
+	//_bool   Get_Monster_Dead(MONSTER_CATEGORY eCategory, _uint iMonsterIndex) { return m_pMonsters[eCategory][iMonsterIndex]->Get_Dead(); }
+	void Set_Boss_Dead(_bool bCheck) { m_bStage_Boss_Dead = bCheck; };
+	_bool Get_Boss_Dead()const { return m_bStage_Boss_Dead; }
 
 public:
 	HRESULT Active_Monster();
@@ -46,6 +48,10 @@ private:
 	deque<class CMonster*> m_pDelete_Monsters;
 	vector<_float>		   m_fDistances;
 	class CGameInstance* m_pGameInstance = { nullptr };
+
+private:
+	_bool m_bStage_Boss_Dead = { false };
+
 public:
 	static CMonster_Manager* Create();
 	virtual void Free() override;

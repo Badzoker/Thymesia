@@ -346,12 +346,12 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
         switch (m_MonsterSpawnInfos[i].iMonsterIndex)
         {
         case BOSS_VARG:
-            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
-            //    return E_FAIL;
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
                 return E_FAIL;
+            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
+            //    return E_FAIL;
             break;
         default:
             break;

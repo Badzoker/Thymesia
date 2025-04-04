@@ -38,7 +38,8 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 {
 	m_eNextLevelID = eNextLevelID;
 	m_iLoadingeNum = iLoadingNum;
-
+		//종한 0404 추가
+	m_pGameInstance->Set_Boss_Dead(false);
 	if (bCheck)
 	{
   		if (FAILED(Ready_Layer_UIGroup_Loading(TEXT("Layer_Loading"))))
@@ -54,7 +55,6 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
 		m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_AUTO);
-		
 	}
 	
 
