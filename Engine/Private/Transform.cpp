@@ -260,6 +260,30 @@ void CTransform::Sliding_Root_Ani(_float fTimeDelta, CNavigation* pNavigation, _
 	}
 }
 
+void CTransform::Sliding_Monster_Root_Ani(_float fTimeDelta, CNavigation* pNavigation, _float MoveSpeed)
+{
+	_vector		vPosition = Get_State(STATE_POSITION);
+	_vector		vLook = Get_State(STATE_LOOK) * -1.f;
+
+	vPosition += XMVector3Normalize(vLook) * MoveSpeed;
+
+	if (!pNavigation->isMove(vPosition))
+	{
+		/* 여기서 해당 방향으로 갈 수 있게 해주기  Dir 을 더해줘서 */
+
+		_vector		vDir = pNavigation->Setting_SlidingMove(vPosition, vLook);
+
+		vPosition -= XMVector3Normalize(vLook) * MoveSpeed;
+		vPosition += XMVector3Normalize(vDir) * MoveSpeed * 0.5f;
+
+		if (pNavigation->isMove(vPosition))
+		{
+			Set_State(STATE_POSITION, vPosition);
+		}
+	}
+}
+
+
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 {
 	_vector			vRight = Get_State(CTransform::STATE_RIGHT);

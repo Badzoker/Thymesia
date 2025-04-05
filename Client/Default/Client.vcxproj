@@ -294,6 +294,8 @@
     <ClInclude Include="..\public\Player_Weapon_Axe.h" />
     <ClInclude Include="..\public\Player_Weapon_Cane.h" />
     <ClInclude Include="..\public\Player_Weapon_Cane_Sword.h" />
+    <ClInclude Include="..\public\Player_Weapon_GreadSword.h" />
+    <ClInclude Include="..\public\Player_Weapon_JavelinSword.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
     <ClInclude Include="..\Public\Projectile_Dagger.h" />
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
@@ -559,6 +561,8 @@
     <ClCompile Include="..\private\Player_Weapon_Axe.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Cane.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Cane_Sword.cpp" />
+    <ClCompile Include="..\private\Player_Weapon_GreadSword.cpp" />
+    <ClCompile Include="..\private\Player_Weapon_JavelinSword.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
     <ClCompile Include="..\Private\Projectile_Dagger.cpp" />
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />

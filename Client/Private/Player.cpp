@@ -15,6 +15,8 @@
 #include "VargKnife.h"
 #include "Player_Weapon_Cane.h"
 #include "Player_Weapon_Cane_Sword.h"
+#include "Player_Weapon_GreadSword.h"
+#include "Player_Weapon_JavelinSword.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -339,7 +341,34 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
+#pragma region 스킬공격 자벨린	
+	if ((m_pGameInstance->isKeyEnter(DIK_6))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_JAVELIN_SWORD;
+	}
 
+#pragma region 스킬공격 대검	
+	if ((m_pGameInstance->isKeyEnter(DIK_5))
+		&& m_iState != STATE_DEAD
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	{
+		m_iPhaseState |= CPlayer::PHASE_FIGHT;
+		m_iState = STATE_GREATSWORD;
+	}
+#pragma endregion 
 #pragma region 스킬공격 지팡이	
 	if ((m_pGameInstance->isKeyEnter(DIK_4))
 		&& m_iState != STATE_DEAD
@@ -962,6 +991,44 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_HalberdDesc.iCurLevel = pDesc->iCurLevel;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Halberd"), LEVEL_STATIC, TEXT("Prototype_GameObject_Halberd"), &Weapon_HalberdDesc)))
+		return E_FAIL;
+
+
+	/*자벨린 무기를 만든다. */
+	CPlayer_Weapon_JavelinSword::WEAPON_DESC		Weapon_JavelinSwordDesc{};
+
+	Weapon_JavelinSwordDesc.pParent = this;
+	Weapon_JavelinSwordDesc.pParentModel = m_pModel;
+	Weapon_JavelinSwordDesc.pParentState = &m_iState;
+	Weapon_JavelinSwordDesc.pPreParentState = &m_iPreState;
+	Weapon_JavelinSwordDesc.pParentPhaseState = &m_iPhaseState;
+	Weapon_JavelinSwordDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	Weapon_JavelinSwordDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_JavelinSwordDesc.fSpeedPerSec = 0.f;
+	Weapon_JavelinSwordDesc.fRotationPerSec = 10.f;
+
+	Weapon_JavelinSwordDesc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Javelin_Sword"), LEVEL_STATIC, TEXT("Prototype_GameObject_Javelin_Sword"), &Weapon_JavelinSwordDesc)))
+		return E_FAIL;
+
+
+	/*대검 무기를 만든다. */
+	CPlayer_Weapon_GreadSword::WEAPON_DESC		Weapon_GreadSwordDesc{};
+
+	Weapon_GreadSwordDesc.pParent = this;
+	Weapon_GreadSwordDesc.pParentModel = m_pModel;
+	Weapon_GreadSwordDesc.pParentState = &m_iState;
+	Weapon_GreadSwordDesc.pPreParentState = &m_iPreState;
+	Weapon_GreadSwordDesc.pParentPhaseState = &m_iPhaseState;
+	Weapon_GreadSwordDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
+	Weapon_GreadSwordDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Weapon_GreadSwordDesc.fSpeedPerSec = 0.f;
+	Weapon_GreadSwordDesc.fRotationPerSec = 10.f;
+
+	Weapon_GreadSwordDesc.iCurLevel = pDesc->iCurLevel;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_GreadSword"), LEVEL_STATIC, TEXT("Prototype_GameObject_GreadSword"), &Weapon_GreadSwordDesc)))
 		return E_FAIL;
 
 	/*지팡이 무기를 만든다. */
@@ -1604,6 +1671,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_ATTACK_L3,
 		STATE_ATTACK_L4,
 		STATE_ATTACK_L5,
+		STATE_LIGHT_EXECUTION_R,
 	};
 #pragma endregion 
 #pragma region Player Camera State
@@ -1642,6 +1710,20 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_CANE_SWORD_SP02,
 	};
 #pragma endregion 
+
+#pragma region GreadSword Weapon States
+	m_set_GreadSword_Weapon_States =
+	{
+		STATE_GREATSWORD,
+	};
+#pragma endregion
+
+#pragma region JavelinSword Weapon States
+	m_set_JavelinSword_Weapon_States =
+	{
+		STATE_JAVELIN_SWORD,
+	};
+#pragma endregion
 
 }
 

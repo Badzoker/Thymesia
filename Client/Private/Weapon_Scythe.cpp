@@ -46,7 +46,7 @@ HRESULT CWeapon_Scythe::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,1.5f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.7f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -90,9 +90,9 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;
 
-    if (m_pSet_Scythe_Weapon_States->count(curState))   
+    if (m_pSet_Scythe_Weapon_States->count(curState))
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -129,7 +129,7 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
 
                 }
 
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 
@@ -156,7 +156,6 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
     if (m_bDeadOn)
         m_fFinishTime += fTimeDelta * 7.f;
 
-
     if (m_bAppear)
         m_fAppearTimer += fTimeDelta * 8.f;
 
@@ -167,11 +166,17 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
         m_fAppearTimer = 0.f;
         m_fDeadTimer = 0.f;
         m_fFinishTime = 0.f;
+        m_fHitStopTime = 0.f;
     } // 이전하고 현재 비교 해야함 
 
 
+    if (m_bHitStopOnOff)
+    {
+        Hit_Slow();
+    }
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 75.f, 0.f,0.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f,0.f,1.f });
 
 }
 
@@ -288,19 +293,20 @@ HRESULT CWeapon_Scythe::Bind_ShaderResources()
 
 HRESULT CWeapon_Scythe::Hit_Slow()
 {
-    m_fHitStopTime += m_fTimeDelta;
-
-
-    if (m_fHitStopTime < 0.15f)
+    if (m_fHitStopTime < 0.20f)
     {
+        m_pCamera->ShakeOn(400.f, 400.f, 6.f, 6.f);
+        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+        m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.5f);
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
-        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
     }
     else
     {
+        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         m_bHitStopOnOff = false;
     }
+
     m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //         
 
     return S_OK;
@@ -308,7 +314,8 @@ HRESULT CWeapon_Scythe::Hit_Slow()
 
 void CWeapon_Scythe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-
+    m_fHitStopTime = 0.f;
+    m_bHitStopOnOff = true;
 }
 
 void CWeapon_Scythe::OnCollision(CGameObject* _pOther, PxContactPair _information)

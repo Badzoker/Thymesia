@@ -130,7 +130,7 @@ void CGroundObject::Priority_Update(_float fTimeDelta)
 
 void CGroundObject::Update(_float fTimeDelta)
 {
-    Update_InstanceBuffer_ForCulling();
+    //Update_InstanceBuffer_ForCulling();
 }
 
 void CGroundObject::Late_Update(_float _fTimeDelta)

@@ -1,22 +1,22 @@
 #include "pch.h" 
-#include "Player_Weapon_Cane_Sword.h"  
+#include "Player_Weapon_JavelinSword.h"     
 #include "GameInstance.h"   
 #include "Animation.h"  
 #include "Camera_Free.h"    
 
-CPlayer_Weapon_Cane_Sword::CPlayer_Weapon_Cane_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CPlayer_Weapon_JavelinSword::CPlayer_Weapon_JavelinSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject{ pDevice, pContext }
 {
 
 }
 
-CPlayer_Weapon_Cane_Sword::CPlayer_Weapon_Cane_Sword(const CPlayer_Weapon_Cane_Sword& Prototype)
+CPlayer_Weapon_JavelinSword::CPlayer_Weapon_JavelinSword(const CPlayer_Weapon_JavelinSword& Prototype)
     :CPartObject(Prototype)
 {
 
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Initialize_Prototype()
+HRESULT CPlayer_Weapon_JavelinSword::Initialize_Prototype()
 {
     if (FAILED(__super::Initialize_Prototype()))
         return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize_Prototype()
     return S_OK;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
+HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
 {
 
     strcpy_s(m_szName, "PLAYER_WEAPON");
@@ -44,9 +44,11 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pTransformCom->Set_Speed(10.f);
+    m_pTransformCom->Scaling(_float3{ 1.5f,1.5f,1.5f });
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 4.f,4.f,4.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.6f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -63,14 +65,19 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
     m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
     m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
-    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
+    m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
+
+
+    XMStoreFloat4x4(&m_PreTransformMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
 
     return S_OK;
 
 }
 
-void CPlayer_Weapon_Cane_Sword::Priority_Update(_float fTimeDelta)
+void CPlayer_Weapon_JavelinSword::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
     m_fTime += fTimeDelta;
@@ -79,21 +86,87 @@ void CPlayer_Weapon_Cane_Sword::Priority_Update(_float fTimeDelta)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 }
 
-void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
+void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
 {
 
     _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
+    if (!m_bThrow)
+    {
+        XMStoreFloat4x4(&m_CombinedWorldMatrix,
+            XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *    /* 월드 영역 */
+            SocketMatrix *  /* 로컬 스페이스 영역 */
+            XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
+        );
+    }
 
-    XMStoreFloat4x4(&m_CombinedWorldMatrix,
-        XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *    /* 월드 영역 */
-        SocketMatrix *  /* 로컬 스페이스 영역 */
-        XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
-    );
+    else
+    {
+        //_vector fDir = XMVectorSetW(XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)), 0.f);    
+        //m_pTransformCom->Go_Dir_NoNavi(fDir,fTimeDelta * 100.f);    
+        //m_pTransformCom->Go_Right(fTimeDelta * 100.f);          
+
+        /* 그럼 자벨린의 Right와 캐릭터의 look을 비교해서 회전하면 될 듯  */
+        //m_pTransformCom->(fTimeDelta * 100.f);  
+
+        if (!m_bFirst)
+        {
+            XMStoreFloat4x4(&m_CombinedWorldMatrix,
+                XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *    /* 월드 영역 */
+                XMLoadFloat4x4(&m_PreSocketMatrix) *  /* 로컬 스페이스 영역 */
+                XMLoadFloat4x4(&m_PreParentMatrix)   /* 월드 영역 */
+            );
+            m_bFirst = true;
+        }
+        _vector vScale = {};
+        _vector qRotation = {};    // 회전 제거 (단위 쿼터니언 사용)
+        _vector vTranslation = {};
+        // 행렬 분해
+        XMMatrixDecompose(&vScale, &qRotation, &vTranslation, XMLoadFloat4x4(&m_CombinedWorldMatrix));
+
+        // 회전 제거 (단위 쿼터니언 사용)
+        qRotation = XMQuaternionIdentity();
+
+        _matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), qRotation, vTranslation);
+
+        XMStoreFloat4x4(&m_CombinedWorldMatrix, TransformationMatrix); // 회전 x 상황으로 바꿧고 
+
+        /* 플레이어 look 방향 */
+        _vector PlayerLook = XMVectorSetW(XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)), 0.f);
+        _vector RightDir = XMVectorSetW(XMVector3Normalize({ m_CombinedWorldMatrix._11 ,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13,0.f }), 0.f);
+
+
+        float dotResult = XMVectorGetX(XMVector3Dot(RightDir, PlayerLook));
+        dotResult = max(-1.0f, min(dotResult, 1.0f));
+        float Radian = acosf(dotResult);
+
+        _vector crossResult = XMVector3Cross(RightDir, PlayerLook);
+        float crossY = XMVectorGetY(crossResult);
+        if (crossY < 0.0f) {
+            Radian = -Radian;
+        }
+
+
+        _matrix RotationMatrix = XMMatrixRotationAxis(_fvector{ 0.f,1.f,0.f,0.f }, Radian);
+
+        XMStoreFloat4x4(&m_CombinedWorldMatrix, XMMatrixMultiply(RotationMatrix, TransformationMatrix));
+
+        _vector Dir = XMVectorSetW(XMVector3Normalize({ m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13 }), 0.f);
+
+        m_CombinedWorldMatrix._41 += Dir.m128_f32[0] * fTimeDelta * 100.f;
+        //m_CombinedWorldMatrix._42 += Dir.m128_f32[1] * fTimeDelta * 100.f;  
+        m_CombinedWorldMatrix._43 += Dir.m128_f32[2] * fTimeDelta * 100.f;
+        m_CombinedWorldMatrix._44 = 1.f;
+
+        int a = 4;
+    }
+
+
+
 
     CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;
 
-    if (m_pSet_Cane_Weapon_States->count(curState))
+    if (m_pSet_JavelinSword_Weapon_States->count(curState))
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -103,7 +176,20 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
                 {
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
                         && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
+                    {
+
                         m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+                        if (!m_bThrow)
+                        {
+                            XMStoreFloat4x4(&m_PreParentMatrix, XMLoadFloat4x4(m_pParentWorldMatrix));
+                            XMStoreFloat4x4(&m_PreSocketMatrix, SocketMatrix);
+
+                        }
+                        m_bThrow = true;
+
+
+                    }
                 }
 
                 else if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == false)
@@ -111,6 +197,9 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
                     if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
                     {
                         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                        m_pTransformCom->Set_WorldMatrix(m_PreTransformMatrix);
+                        m_bThrow = false;
+                        m_bFirst = false;
                         iter.isPlay = true;
                     }
                 }
@@ -130,10 +219,12 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
 
                 }
 
-                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)   // 여기가 EVENT_EFFECT, 부분    
                 {
-                    //iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 
+#pragma region Effect
+#pragma endregion
                 }
             }
         }
@@ -145,11 +236,11 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
     }
 
     if (m_bDeadOn)
-        m_fFinishTime += fTimeDelta * 7.f;
+        m_fFinishTime += fTimeDelta * 0.5f;
 
 
     if (m_bAppear)
-        m_fAppearTimer += fTimeDelta * 8.f;
+        m_fAppearTimer += fTimeDelta * 4.f;
 
     if (*m_pParentState != *m_pPreParentState)
     {
@@ -158,27 +249,36 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
         m_fAppearTimer = 0.f;
         m_fDeadTimer = 0.f;
         m_fFinishTime = 0.f;
+        m_fHitStopTime = 0.f;
+        m_bThrow = false;
     } // 이전하고 현재 비교 해야함 
 
 
+
+    if (m_bHitStopOnOff)
+    {
+        Hit_Slow();
+    }
+
+
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 75.f, 0.f,0.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 200.f, 0.f,0.f,1.f });
 
 }
 
-void CPlayer_Weapon_Cane_Sword::Late_Update(_float fTimeDelta)
+void CPlayer_Weapon_JavelinSword::Late_Update(_float fTimeDelta)
 {
 
-    if (*m_pParentState == CPlayer::STATE_CANE_SWORD_SP02)
+    if (*m_pParentState == CPlayer::STATE_JAVELIN_SWORD)
     {
-
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
     }
 
     //m_iPreParentState = *m_pParentState;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Render()
+HRESULT CPlayer_Weapon_JavelinSword::Render()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -200,7 +300,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Render()
     return S_OK;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Render_Glow()
+HRESULT CPlayer_Weapon_JavelinSword::Render_Glow()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -219,7 +319,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Render_Glow()
         if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 9)))
             return E_FAIL;
 
-        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveNoiseTexture", 32)))
+        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveNoiseTexture", 4)))
             return E_FAIL;
 
         if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fTime, sizeof(_float))))
@@ -244,7 +344,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Render_Glow()
     return S_OK;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Ready_Components()
+HRESULT CPlayer_Weapon_JavelinSword::Ready_Components()
 {
     /* Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
@@ -252,7 +352,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Ready_Components()
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Cane_Sword"),
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Javelin_Sword"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -265,7 +365,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Ready_Components()
     return S_OK;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Bind_ShaderResources()
+HRESULT CPlayer_Weapon_JavelinSword::Bind_ShaderResources()
 {
     if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
         return E_FAIL;
@@ -277,68 +377,72 @@ HRESULT CPlayer_Weapon_Cane_Sword::Bind_ShaderResources()
     return S_OK;
 }
 
-HRESULT CPlayer_Weapon_Cane_Sword::Hit_Slow()
+HRESULT CPlayer_Weapon_JavelinSword::Hit_Slow()
 {
     m_fHitStopTime += m_fTimeDelta;
 
-
-    if (m_fHitStopTime < 0.15f)
+    if (m_fHitStopTime < 0.3f)
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
         m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+        m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 0.75f);
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
     }
     else
     {
+        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
         m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         m_bHitStopOnOff = false;
     }
-    m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //         
+
+    //m_fHitStopTime += m_fTimeDelta ;
 
     return S_OK;
 }
 
-void CPlayer_Weapon_Cane_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+void CPlayer_Weapon_JavelinSword::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+    m_fHitStopTime = 0.f;
+    m_bHitStopOnOff = true;
+}
+
+void CPlayer_Weapon_JavelinSword::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CPlayer_Weapon_Cane_Sword::OnCollision(CGameObject* _pOther, PxContactPair _information)
+void CPlayer_Weapon_JavelinSword::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 
 }
 
-void CPlayer_Weapon_Cane_Sword::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+CPlayer_Weapon_JavelinSword* CPlayer_Weapon_JavelinSword::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-
-}
-
-CPlayer_Weapon_Cane_Sword* CPlayer_Weapon_Cane_Sword::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-    CPlayer_Weapon_Cane_Sword* pInstance = new CPlayer_Weapon_Cane_Sword(pDevice, pContext);
+    CPlayer_Weapon_JavelinSword* pInstance = new CPlayer_Weapon_JavelinSword(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed To Created : CPlayer_Weapon_Cane_Sword");
+        MSG_BOX("Failed To Created : CPlayer_Weapon_JavelinSword");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-CGameObject* CPlayer_Weapon_Cane_Sword::Clone(void* pArg)
+CGameObject* CPlayer_Weapon_JavelinSword::Clone(void* pArg)
 {
-    CPlayer_Weapon_Cane_Sword* pInstance = new CPlayer_Weapon_Cane_Sword(*this);
+    CPlayer_Weapon_JavelinSword* pInstance = new CPlayer_Weapon_JavelinSword(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : CPlayer_Weapon_Cane_Sword");
+        MSG_BOX("Failed To Cloned : CPlayer_Weapon_JavelinSword");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-void CPlayer_Weapon_Cane_Sword::Free()
+void CPlayer_Weapon_JavelinSword::Free()
 {
     __super::Free();
 

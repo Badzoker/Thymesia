@@ -103,6 +103,8 @@
 #include "Player_Weapon_Axe.h"
 #include "Player_Weapon_Cane.h"
 #include "Player_Weapon_Cane_Sword.h"
+#include "Player_Weapon_GreadSword.h"
+#include "Player_Weapon_JavelinSword.h"
 #pragma endregion 
 
 #pragma region 환경요소 
@@ -416,6 +418,31 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CPlayer_Weapon_Cane_Sword::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
+
+#pragma region 플레이어 대검 무기	
+	lstrcpyW(m_szLoadingText, TEXT("대검 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_GreadSword"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_GreadSword/Weapon_GreadSword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Weapon_Scythe */	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GreadSword"),
+		CPlayer_Weapon_GreadSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
+#pragma region 플레이어 자벨린 무기		
+	lstrcpyW(m_szLoadingText, TEXT("자벨린 무기 모델을 생성한다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Javelin_Sword"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Javelin_Sword/Weapon_Javelin_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_Weapon_Scythe */	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Javelin_Sword"),
+		CPlayer_Weapon_JavelinSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion 
+
 
 
 #pragma region 티메시아 카메라 

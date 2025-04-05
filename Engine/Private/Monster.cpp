@@ -137,10 +137,20 @@ void CMonster::RootAnimation()
         /* 2월 19일 추가 코드 */
         if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
         {
+            _vector PrePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
             _float4x4 test = {};
             XMStoreFloat4x4(&test, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
             const _float4x4* test2 = const_cast<_float4x4*>(&test);
             m_pTransformCom->Set_MulWorldMatrix(test2);
+
+            // Pretest 와 test2 의 변위량 구해서 넣어놓기
+            _vector Curtest = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+            _float MoveSpeed = XMVectorGetX(XMVector3Length(PrePos - Curtest));
+
+            /* 루트 애니메이션의 이동량 만큼만 슬라이딩 할 수 있게 설정하기*/
+            m_pTransformCom->Sliding_Monster_Root_Ani(m_fTimeDelta, m_pNavigationCom, MoveSpeed);
         }
     }
 }

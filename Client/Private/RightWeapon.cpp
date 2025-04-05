@@ -88,8 +88,8 @@ void CRightWeapon::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
- 
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;
+
 #pragma region 이벤트 관련 작업
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     if (m_pSet_Right_Weapon_States->count(curState))
@@ -98,22 +98,24 @@ void CRightWeapon::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
-                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                switch (iter.eType)
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                        && m_bCollisionOn)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);  // 4타 때가 문제. 
-
-                    else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                        && !m_bCollisionOn)
-                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                }
-
-                else
+                case EVENT_COLLIDER:
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
+                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                            && m_bCollisionOn)
+                            m_pGameInstance->Add_Actor_Scene(m_pActor);  // 4타 때가 문제.   
+
+                        else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드     
+                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
+                            && !m_bCollisionOn)
+                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    }
+
+                    else if (iter.isEventActivate == false && m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                     {
                         if (*m_pParentState == CPlayer::STATE_ATTACK_L4)
                             m_bCollisionOn = true;
@@ -123,38 +125,68 @@ void CRightWeapon::Update(_float fTimeDelta)
                         m_fHitStopTime = 0.f;
                     }
 
+                    break;
                 }
-
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                case EVENT_STATE:
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    if (iter.isEventActivate == true)
+                    {
+                        if (!strcmp(iter.szName, "Zoom_Blur"))
+                        {
+                            m_fZoomBlurTime += fTimeDelta;
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurTime * 0.2f);
+                        }
+
+                        else if (iter.isEventActivate == false && m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                        {
+                            if (!strcmp(iter.szName, "Zoom_Blur"))
+                            {
+                                if (m_fZoomBlurTime <= 0.f)
+                                {
+                                    m_fZoomBlurTime = 0.f;
+                                    m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                                }
+                                else
+                                {
+                                    m_fZoomBlurTime -= fTimeDelta * 1.5f;
+                                    m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurTime * 0.15f);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 
 #pragma region Effect0321수정
-                    if (!strcmp(iter.szName, "LAttack1_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack2_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack3_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD3, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack4_1_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack4_2_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack5_Start"))
-                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD5, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
-                    else if (!strcmp(iter.szName, "LAttack5_Dust"))
-                    {
-                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
-                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
-                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos, vDir);
+                        if (!strcmp(iter.szName, "LAttack1_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack2_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack3_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD3, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack4_1_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack4_2_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack5_Start"))
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD5, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        else if (!strcmp(iter.szName, "LAttack5_Dust"))
+                        {
+                            _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                            _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos, vDir);
+                        }
                     }
 #pragma endregion
-
-
-
+                    break;
                 }
-
-
+                }
             }
         }
     }
@@ -165,11 +197,10 @@ void CRightWeapon::Update(_float fTimeDelta)
     }
 #pragma endregion  
 
-    m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
+    /*m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   */
 
     if (m_iPreParentState != *m_pParentState)
     {
-        
         m_fHitStopTime = 0.f;
         m_bCollisionOn = true;
     }
@@ -186,7 +217,7 @@ void CRightWeapon::Update(_float fTimeDelta)
 
 void CRightWeapon::Late_Update(_float fTimeDelta)
 {
-    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;
 
     if (!m_pSet_Claw_Weapon_States->count(curState)
         && !m_pSet_Halberd_Weapon_States->count(curState)
@@ -195,9 +226,11 @@ void CRightWeapon::Late_Update(_float fTimeDelta)
         && !(*m_pParentPhaseState & CPlayer::PHASE_INTERACTION)
         && !(*m_pParentPhaseState & CPlayer::PHASE_DEAD)
         && !(*m_pParentPhaseState & CPlayer::PHASE_LADDER)
-        && *m_pParentState != CPlayer::STATE_CANE_SWORD_SP02)   
-    {       
-        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);     
+        && *m_pParentState != CPlayer::STATE_CANE_SWORD_SP02
+        && *m_pParentState != CPlayer::STATE_GREATSWORD
+        && *m_pParentState != CPlayer::STATE_JAVELIN_SWORD)
+    {
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }
 
     m_iPreParentState = *m_pParentState;
@@ -256,34 +289,34 @@ HRESULT CRightWeapon::Hit_Slow()
 {
     if (m_fHitStopTime < 0.15f)
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);  
-        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f); 
-        
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+
         m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
 
         switch (*m_pParentState)
         {
         case CPlayer::STATE_ATTACK_L1:
-            m_pGameInstance->Set_ZoomBlur_Option(true,m_fHitStopTime * 1.f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.f);
             break;
         case CPlayer::STATE_ATTACK_L2:
-            m_pGameInstance->Set_ZoomBlur_Option(true,m_fHitStopTime * 1.f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.f);
             break;
         case CPlayer::STATE_ATTACK_L3:
-            m_pGameInstance->Set_ZoomBlur_Option(true,m_fHitStopTime * 1.0f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.0f);
             break;
         case CPlayer::STATE_ATTACK_L4:
-            m_pGameInstance->Set_ZoomBlur_Option(true,m_fHitStopTime * 1.3f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.3f);
             break;
         case CPlayer::STATE_ATTACK_L5:
-            m_pGameInstance->Set_ZoomBlur_Option(true,m_fHitStopTime * 1.6f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.6f);
             break;
         }
     }
     else
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
-        m_bHitStopOnOff = false;    
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
+        m_bHitStopOnOff = false;
 
         m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
         m_fHitStopTime = 0.f;
@@ -337,7 +370,7 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
 void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
- 
+
 }
 
 void CRightWeapon::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)

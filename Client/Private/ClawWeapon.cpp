@@ -227,7 +227,10 @@ void CClawWeapon::Update(_float fTimeDelta)
         
     else if (!(m_pSet_Body_States->count(curState))  
         && *m_pParentPhsaeState != CPlayer::PHASE_EXECUTION  
-        && *m_pParentState != CPlayer::STATE_AXE)    
+        && *m_pParentState != CPlayer::STATE_AXE
+        && *m_pParentState != CPlayer::STATE_SCYTHE_B   
+        && *m_pParentState != CPlayer::STATE_HALBERDS_B 
+        && *m_pParentState != CPlayer::STATE_GREATSWORD)
       {
           m_pGameInstance->Sub_Actor_Scene(m_pActor);    
           m_pCamera->ResetZoomOutCameraPos(1.f); 

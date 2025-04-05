@@ -895,6 +895,12 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Urd">
       <UniqueIdentifier>{7ab9edd3-fcbe-4cf9-bd21-80b246359a28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\JavelinSword">
+      <UniqueIdentifier>{f552badb-30d6-4d9c-bcdb-e92af8ce00d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\GreadSword">
+      <UniqueIdentifier>{dcc05284-ee32-4fc3-aa34-0834bb354ce4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1677,6 +1683,12 @@
     <ClInclude Include="..\Public\Weapon_Urd_Sword.h">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_Weapon_JavelinSword.h">
+      <Filter>02.GameObject\Player\Weapon\JavelinSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Weapon_GreadSword.h">
+      <Filter>02.GameObject\Player\Weapon\GreadSword</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2449,6 +2461,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Weapon_Urd_Sword.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Weapon_JavelinSword.cpp">
+      <Filter>02.GameObject\Player\Weapon\JavelinSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Weapon_GreadSword.cpp">
+      <Filter>02.GameObject\Player\Weapon\GreadSword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

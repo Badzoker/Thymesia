@@ -118,9 +118,12 @@ public:
 		STATE_CLAW_LONG_PLUNDER_ATTACK2,	
 
 		/* 플레이어 스킬 */
-		STATE_HALBERDS_B,	
-		STATE_SCYTHE_B,	
-		STATE_AXE,	
+		STATE_HALBERDS_B,		
+		STATE_SCYTHE_B,		
+		STATE_AXE,		
+		STATE_CANE_SWORD_SP02, /* 플레이어 스킬 ( 지팡이 ) */	
+		STATE_GREATSWORD,	   /* 플레이어 스킬 ( 대검 )   */	
+		STATE_JAVELIN_SWORD,   /* 플레이어 스킬 ( 자벨린 ) */	
 
 		/* 플레이어 잡히는 모션 */
 		STATE_CATCHED,
@@ -157,9 +160,6 @@ public:
 
 		/* 플레이어 오두르에게 잡히는 모션 */
 		STATE_MAGICIAN_CATCH,
-
-		/* 플레이어 스킬 ( 지팡이 )*/
-		STATE_CANE_SWORD_SP02,
 
 	};
 
@@ -227,6 +227,8 @@ public:
 	unordered_set<STATE>* Get_Scythe_State() { return &m_set_Scythe_Weapon_States; }
 	unordered_set<STATE>* Get_Axe_State() { return &m_set_Axe_Weapon_States; }
 	unordered_set<STATE>* Get_Cane_State() { return &m_set_Cane_Weapon_States; }
+	unordered_set<STATE>* Get_GreadSword_State() { return &m_set_GreadSword_Weapon_States; }
+	unordered_set<STATE>* Get_JavelinSword_State() { return &m_set_JavelinSword_Weapon_States; }
 
 private:
 	void Player_Interaction(CGameObject* _pOther);
@@ -262,18 +264,20 @@ private:
 
 	PxRigidDynamic* m_pActor = { nullptr };
 
-	unordered_set<STATE> m_set_Body_States = {};	
-	unordered_set<STATE> m_set_Claw_Weapon_States = {};	
-	unordered_set<STATE> m_set_Halberd_Weapon_States = {};	
-	unordered_set<STATE> m_set_Right_Weapon_States = {};	
-	unordered_set<STATE> m_set_Scythe_Weapon_States = {};	
-	unordered_set<STATE> m_set_Axe_Weapon_States = {};	
-	unordered_set<STATE> m_set_Cane_Weapon_States = {};	
-	unordered_set<STATE> m_set_Player_Camera_States = {};	
+	unordered_set<STATE> m_set_Body_States                = {};	
+	unordered_set<STATE> m_set_Claw_Weapon_States         = {};	
+	unordered_set<STATE> m_set_Halberd_Weapon_States      = {};	
+	unordered_set<STATE> m_set_Right_Weapon_States        = {};	
+	unordered_set<STATE> m_set_Scythe_Weapon_States       = {};	
+	unordered_set<STATE> m_set_Axe_Weapon_States          = {};	
+	unordered_set<STATE> m_set_Cane_Weapon_States         = {};	
+	unordered_set<STATE> m_set_GreadSword_Weapon_States   = {};	
+	unordered_set<STATE> m_set_JavelinSword_Weapon_States = {};	
+	unordered_set<STATE> m_set_Player_Camera_States       = {};	
 
 private:
 	_float								m_fTimeDelta = { 0.f };
-	CStateMgr* m_pStateMgr = { nullptr };
+	CStateMgr*							m_pStateMgr = { nullptr };
 
 
 #pragma region UI 관련 함수 
@@ -330,24 +334,24 @@ public:
 	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }	
 	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }	
 
-	_int    Get_Level() { return m_iLevel; }
+	_int    Get_Level()           { return m_iLevel; }
 
-	_int    Get_FullHp() { return m_iFullHp; }
-	_int    Get_CurrentHp() { return m_iCurrentHp; }	
+	_int    Get_FullHp()          { return m_iFullHp; }
+	_int    Get_CurrentHp()       { return m_iCurrentHp; }	
 
-	_int    Get_FullMp() { return m_iFullMp; }	
-	_int    Get_CurrentMp() { return m_iCurrentMp; }	
+	_int    Get_FullMp()          { return m_iFullMp; }	
+	_int    Get_CurrentMp()       { return m_iCurrentMp; }	
 
-	_int    Get_AttackPower() { return m_iAttackPower; }
+	_int    Get_AttackPower()     { return m_iAttackPower; }
 
-	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }	
-	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }	
-	_uint* Get_State_Ptr() { return &m_iState; }
-	_int    Get_ClawAttacPower() { return m_iClawAttackPower; }
+	_uint*  Get_AttackPower_Ptr() { return &m_iAttackPower; }	
+	_uint*  Get_PhaseState_Ptr()  { return &m_iPhaseState; }	
+	_uint*  Get_State_Ptr()       { return &m_iState; }
+	_int    Get_ClawAttacPower()  { return m_iClawAttackPower; }
 
-	_int    Get_MemoryFragment() { return m_iMemoryFragment; }
+	_int    Get_MemoryFragment()  { return m_iMemoryFragment; }
 
-	_int    Get_Potion_Count() { return m_iPotionCount; }
+	_int    Get_Potion_Count()    { return m_iPotionCount; }
 	/* ============================== */
 #pragma endregion 
 
