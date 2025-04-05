@@ -173,6 +173,9 @@ public:
 	void STATE_HALBERDS_B_Method();	
 	void STATE_SCYTHE_B_Method();	
 	void STATE_AXE_Method();	
+	void STATE_CANE_SWORD_SP02_Method();	/* 플레이어 지팡이 스킬 */
+	void STATE_GREATSWORD_Method();			/* 플레이어 대검 스킬 */
+	void STATE_JAVELIN_SWORD_Method();		/* 플레이어 자벨린 스킬 */
 
 	/* 플레이어 잡히는 모션 */
 	void STATE_CATCHED_Method();	
@@ -226,8 +229,7 @@ public:
 	/* 오두르 스킬에 맞아서 잡히는 모션 */
 	void STATE_MAGICIAN_CATCH_Method();	
 
-	/* 플레이어 지팡이 스킬 */
-	void STATE_CANE_SWORD_SP02_Method();
+
 
 
 private:
