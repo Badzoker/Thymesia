@@ -907,6 +907,9 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera">
       <UniqueIdentifier>{98444e88-4123-486c-86c2-a2abe3a9efcc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\DestructObject">
+      <UniqueIdentifier>{6ae36dc6-6cae-433c-bba6-f22c9db9f6ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1701,6 +1704,9 @@
     <ClInclude Include="..\public\Boss_Urd_Camera.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DestructObject.h">
+      <Filter>02.GameObject\DestructObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2486,6 +2492,9 @@
     <ClCompile Include="..\private\Boss_Urd_Camera.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\DestructObject.cpp">
+      <Filter>02.GameObject\DestructObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2561,6 +2570,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fog.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxDestructMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

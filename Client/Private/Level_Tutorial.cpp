@@ -12,6 +12,7 @@
 #include "Chair.h"
 #include "ChairLamp.h"
 #include "BlackScreen.h"
+#include "DestructObject.h"
 
 #include "UI_LeftBackground.h"
 
@@ -266,6 +267,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 
     Load_SpecificObjects(12);
 
+    Load_DestructObjects(6);
+
     return S_OK;
 }
 
@@ -278,8 +281,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 
-    _float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
-    //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
+    //_float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
+    _float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
     //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
     //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
 
@@ -1851,6 +1854,54 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
     }
 
     CloseHandle(hFile);
+
+    return S_OK;
+}
+
+HRESULT CLevel_Tutorial::Load_DestructObjects(_int iObject_Level)
+{
+    string strDataPath = "../Bin/DataFiles/DestructObjectData/DestructObjectData";
+
+    strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+    _tchar		szLastPath[MAX_PATH] = {};
+
+    MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+    HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed To Load ObjectData File!");
+        return E_FAIL;
+    }
+
+    DWORD dwByte = 0;
+
+    _uint iSize = 0;
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (size_t i = 0; i < iSize; i++)
+    {
+        CDestructObject::DestructObject_Desc Desc{};
+
+        _char szLoadName[MAX_PATH] = {};
+
+        ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+        Desc.ObjectName = szLoadName;
+        Desc.iCurLevel = m_iCurrentLevel;
+
+        CDestructObject* pObject = nullptr;
+        if (pObject == nullptr)
+        {
+            pObject = reinterpret_cast<CDestructObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_DestructObject"), LEVEL_TUTORIAL, TEXT("Layer_DestructObject"), &Desc));
+        }
+    }
 
     return S_OK;
 }
