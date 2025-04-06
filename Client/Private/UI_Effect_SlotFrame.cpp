@@ -27,7 +27,9 @@ HRESULT CUI_Effect_SlotFrame::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
+	
+	m_fMySize = m_fSize;
+	m_mtrSaveWorld = m_pTransformCom->Get_WorldMatrix_Ptr();
 	return S_OK;
 }
 
@@ -37,13 +39,41 @@ void CUI_Effect_SlotFrame::Priority_Update(_float fTimeDelta)
 
 void CUI_Effect_SlotFrame::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (m_bOpen)
+		{
+			if (33 == m_iGroupID)
+			{
+				m_fCurrentTime += fTimeDelta; // 계속 델타타임 더하기
+				m_fSizeTime = 1.0f + (fTimeDelta * 0.25f);
+
+				if (0.3 < m_fCurrentTime)
+				{
+					m_fCurrentTime = 0.f;
+					m_fSizeTime = 0.f;
+					m_fMySize = m_fSize;
+					m_pTransformCom->Set_WorldMatrix(*m_mtrSaveWorld);
+					m_bOpen = false;
+				}
+				else
+				{
+					m_fMySize = { m_fMySize.x * m_fSizeTime, m_fMySize.y * m_fSizeTime };
+					m_pTransformCom->Scaling(_float3(m_fMySize.x, m_fMySize.y, 1.f));
+				}
+
+
+			}
+		}
+	}
 }
 
 void CUI_Effect_SlotFrame::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if(m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 
@@ -61,7 +91,6 @@ HRESULT CUI_Effect_SlotFrame::Render()
 		return E_FAIL;
 
 
-	m_iShaderPassNum = 8;
 	m_pShaderCom->Begin(m_iShaderPassNum);
 
 	m_pVIBufferCom->Bind_InputAssembler();

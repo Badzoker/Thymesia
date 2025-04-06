@@ -126,8 +126,9 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	case PLAYER_SKILL_CANESWORD:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(14); // 케인
 		break;
-	default:
+	case PLAYER_SKILL_START:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(0); // 스킬 없음
+		dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Take_Away_Skill(PLAYER_SKILL_START);
 		break;
 
 
@@ -525,6 +526,12 @@ void CUIGroup_PlayerScreen::Button_Skill()
 		/* 고정 스킬*/
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
 	}
+	if (dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Get_EffectOn())
+	{
+		m_pEffectSkill_2->Set_OnOff(true);
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_EffectOn(false);
+	}
+
 	if (m_pGameInstance->isKeyEnter(DIK_2))
 	{
 		/* 약탈 스킬*/
@@ -578,6 +585,11 @@ void CUIGroup_PlayerScreen::Ready_Skill_Slot()
 		if (32 == Slot->Get_UI_GroupID())
 		{
 			m_pRevolvingSkill_3 = Slot;
+		}
+		if (33 == Slot->Get_UI_GroupID())
+		{
+			Slot->Set_OnOff(false);
+			m_pEffectSkill_2 = Slot;
 		}
 		if (40 == Slot->Get_UI_GroupID())
 		{
@@ -677,7 +689,7 @@ HRESULT CUIGroup_PlayerScreen::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 		Desc.fZ = fPos.z;
 		Desc.fSizeX = fSize.x;
 		Desc.fSizeY = fSize.y;
-
+			
 		Desc.strFontName = szFontName;
 		Desc.strContent = szContentText;
 

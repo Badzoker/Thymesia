@@ -34,6 +34,10 @@ private:
 private:
 	_bool m_bCoolTime = { false };
 
+	_float m_fCurrentTime = { 0 };
+	_float m_fSizeTime = { 0 };
+	_float2 m_fMySize = {};
+	const _float4x4* m_mtrSaveWorld = {};
 public:
 	HRESULT Ready_Components();
 

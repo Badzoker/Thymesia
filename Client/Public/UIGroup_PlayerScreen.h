@@ -56,6 +56,7 @@ private:
 	CUIObject* m_pPlunderSkill = { nullptr };
 	CUIObject* m_pRevolvingSkill_1 = { nullptr };
 	CUIObject* m_pRevolvingSkill_2= { nullptr };
+	CUIObject* m_pEffectSkill_2= { nullptr };
 	CUIObject* m_pRevolvingSkill_3 = { nullptr };
 
 private:

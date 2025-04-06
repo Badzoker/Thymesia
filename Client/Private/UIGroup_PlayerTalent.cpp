@@ -856,7 +856,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID && // 조건인 슬롯이 없는 경우
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
@@ -962,7 +963,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID &&
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
@@ -1068,7 +1070,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID &&
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
@@ -1177,7 +1180,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID &&
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
@@ -1286,7 +1290,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID &&
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
@@ -1394,7 +1399,8 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 					}
 
-					if (m_bNotFindConditionID &&
+					if (m_iTalentPoint >= pSlot->Get_TalentPoint() &&
+						m_bNotFindConditionID &&
 						pSlot->Get_Slot_State() == SLOT_CLOSE_ON)
 					{
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
