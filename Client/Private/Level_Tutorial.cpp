@@ -773,6 +773,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS, 1)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Claw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, 1)))
+        return E_FAIL;
+
     //Sword Effect
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
@@ -1799,6 +1803,10 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe_Cross");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw");
             break;
         }
 #pragma endregion

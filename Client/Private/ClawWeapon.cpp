@@ -197,6 +197,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                    else if (!strcmp(iter.szName, "Claw1_Effect"))
                    {
                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_1, &m_CombinedWorldMatrix);
+                       m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, m_pParentWorldMatrix, m_pSocketMatrix);
                        iter.isPlay = true;
 
                    }

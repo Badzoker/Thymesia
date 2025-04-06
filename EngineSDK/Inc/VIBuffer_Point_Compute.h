@@ -23,9 +23,9 @@ public:
 		_float2		vDelayTime = _float2(0.f, 0.f); // Particle 시작위치가 원점기준이냐(0), 중심기준 원모양이냐(1), 중심기준 구모양이냐(2)
 	};
 
-	struct CAMERA_FLOAT4
+	struct COMPUTE_POSITION
 	{
-		_float4     vCameraPos = {};
+		_float4     vPos = {};
 	};
 
 private:
@@ -39,6 +39,7 @@ public:
 	virtual HRESULT Bind_InputAssembler() override;
 	virtual HRESULT Render() override;
 	HRESULT Compute_Shader(class CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ);
+	HRESULT Compute_Shader(class CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ, _float4 _vStartPos);
 	HRESULT Compute_Shader_Reset(class CShader_Compute* _pComputeShader, _uint _iThreadCountX, _uint _iThreadCountY, _uint _iThreadCountZ);
 
 private:
@@ -60,12 +61,13 @@ private:
 	ID3D11Buffer*					m_pBuffer_UAV = { nullptr };
 	ID3D11Buffer*					m_pBuffer_SRV = { nullptr };
 	ID3D11Buffer*					m_pBuffer_Copy = { nullptr };
-	ID3D11Buffer*					m_pBuffer_Camera = { nullptr };
+	ID3D11Buffer*					m_pBuffer_StartPosition = { nullptr };
 
 	HRESULT CreateStructureBuffer();
 	HRESULT CreateBuffer_SRV_UAV();
 	HRESULT CreateBuffer_Constant();
 	HRESULT CreateAndCopyBuffer();
+	HRESULT StartPositionCopyBuffer(_float4 _vStartPos);
 
 public:
 	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile);

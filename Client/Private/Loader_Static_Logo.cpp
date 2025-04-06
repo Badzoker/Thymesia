@@ -1847,6 +1847,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Scythe", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_World */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World"),
+		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Holding_World", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
+		return E_FAIL;
+
 	//Particle Compute Shader »ý¼º ³¡
 
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Left */
@@ -2132,6 +2137,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe_Cross */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe_Cross"),
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_PlayerAxe_1_Dust_Cross_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Claw_Buffer.dat")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Particle_Image*/

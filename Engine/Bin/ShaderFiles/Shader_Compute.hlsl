@@ -13,6 +13,11 @@ struct Point_Particle
     float fDelayTime;
 };
 
+cbuffer GlobalPosition : register(b0)
+{
+    float4 g_vWorld;
+}
+
 float g_fTime = 0.0167f; //1.f / 60.f //이거 안됨 상수버퍼로 던져야지 가능할듯 아직 안해봄
 
 StructuredBuffer<Point_Particle> g_tInput_Compute : register(t0);
@@ -368,6 +373,55 @@ void CSMain_Particle_Scythe(int3 dispatchThreadID : SV_DispatchThreadID, uint gr
     g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
 }
 
+[numthreads(256, 1, 1)]
+void CSMain_Particle_Holding_World(int3 dispatchThreadID : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex)
+{
+    Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
+    
+    sharedParticles[groupIndex] = g_tOutput_Compute[dispatchThreadID.x];
+    GroupMemoryBarrierWithGroupSync();
+    
+    sharedParticles[groupIndex].fDelayTime += 0.0167f;
+    sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
+    sharedParticles[groupIndex].vScale = tInput.vScale * 1.f;
+    float3 vDir = 0.f;
+    
+    if (tInput.fDelayTime > sharedParticles[groupIndex].fDelayTime)
+    {
+        //sharedParticles[groupIndex].vLifeTime.x = 0.001f;
+        sharedParticles[groupIndex].vLifeTime.y = 0.f;
+        sharedParticles[groupIndex].vTranslation = g_vWorld * 1.f;
+        
+    }
+    else
+    {
+        sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
+        sharedParticles[groupIndex].vSpeed.x = tInput.vSpeed.x * max(1.f - (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x), 0.f);
+        sharedParticles[groupIndex].vSpeed.yz -= tInput.vSpeed.yz * 0.0167f * (1.f - (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x));
+        vDir = sharedParticles[groupIndex].vSpeed * 0.0167f;
+        sharedParticles[groupIndex].vTranslation.xyz -= vDir;
+        sharedParticles[groupIndex].vTranslation.w = 1.f;
+    }
+    
+    float fScale = tInput.vScale.x - tInput.vScale.x * (sharedParticles[groupIndex].vLifeTime.y / sharedParticles[groupIndex].vLifeTime.x);
+    fScale = (abs(fScale - 0.5f) * -2.f) + 1.f;
+    
+    if (fScale < 0.1f)
+        fScale = 0.001f;
+    
+    sharedParticles[groupIndex].vScale = tInput.vScale * fScale;
+    
+    sharedParticles[groupIndex].vRight = float4(normalize(vDir), 0.f) * sharedParticles[groupIndex].vScale.x;
+    float4 vUp = normalize(float4(cross(vDir, float3(0.f, 0.f, 1.f)), 0.f));
+    sharedParticles[groupIndex].vUp = vUp * sharedParticles[groupIndex].vScale.y;
+    float4 vLook = normalize(float4(cross(vUp.xyz, vDir), 0.f));
+    sharedParticles[groupIndex].vLook = vLook * sharedParticles[groupIndex].vScale.z;
+
+    GroupMemoryBarrierWithGroupSync();
+    
+    g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
+}
+
 technique11 DefaultTechnique
 {
     pass ParticleReset //0
@@ -439,4 +493,12 @@ technique11 DefaultTechnique
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Scythe()));
     }
+
+    pass ParticleWorld //10
+    {
+        SetVertexShader(NULL);
+        SetPixelShader(NULL);
+        SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Holding_World()));
+    }
+
 }

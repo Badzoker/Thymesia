@@ -84,6 +84,8 @@ void CEffect::Clear_Setting()
 		m_pSettingMatrix = nullptr;
 	if (nullptr != m_pAnimation_Speed)
 		m_pAnimation_Speed = nullptr;
+	if (nullptr != m_pSocketMatrix)
+		m_pSocketMatrix = nullptr;
 
 	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 }

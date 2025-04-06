@@ -62,9 +62,24 @@ void CEffect_Particle::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Particle::Update(_float _fTimeDelta)
 {
-    m_pBufferCom->Compute_Shader(m_pShaderCom, 1, 1, 1);
+    if (6 == m_iShaderPass) //소켓에 붙을 파티클
+    {
+        _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
-    __super::Update(_fTimeDelta);
+        XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));
+
+        _float4 vPos = { m_matCombined._41, m_matCombined._42, m_matCombined._43, 1.f };
+
+        m_pBufferCom->Compute_Shader(m_pShaderCom, 1, 1, 1, vPos);
+        if (true == m_bIsPlaying)
+            Timer_Check(_fTimeDelta);
+    }
+    else
+    {
+        m_pBufferCom->Compute_Shader(m_pShaderCom, 1, 1, 1);
+
+        __super::Update(_fTimeDelta);
+    }
 }
 
 void CEffect_Particle::Late_Update(_float _fTimeDelta)
@@ -93,6 +108,10 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
 
     case 5:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this); //Dust
+        break;
+
+    case 6:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this); //World
         break;
     }
 }
@@ -123,7 +142,7 @@ HRESULT CEffect_Particle::Render_WeightBlend()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
     
-    if (5 == m_iShaderPass) //DUST
+    if (5 == m_iShaderPass || 6 == m_iShaderPass) //DUST || WORLD
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
             return E_FAIL;
@@ -160,11 +179,17 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
     m_bIsPlaying = _bIsPlaying;
     if (true == _bIsPlaying) //시작해라 느낌
     {
+        XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
+        if (nullptr != m_pSettingMatrix)
+            m_pSettingMatrix = nullptr;
+        if (nullptr != m_pAnimation_Speed)
+            m_pAnimation_Speed = nullptr;
+        if (nullptr != m_pSocketMatrix)
+            m_pSocketMatrix = nullptr;
         m_fTimerX = 0.f;
         m_fTimerY = 0.f;
         m_fDissolve = 0.f;
         m_fTimer_Timelag = 0.f;
-        XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
         m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 1, 1, 1);
     }
 }
@@ -181,10 +206,16 @@ HRESULT CEffect_Particle::Ready_Components()
 
 HRESULT CEffect_Particle::Bind_ShaderResources()
 {
-    //if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-    //    return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
-        return E_FAIL;
+    if (6 == m_iShaderPass)
+    {
+        if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+            return E_FAIL;
+    }
+    else //보통 요놈임
+    {
+        if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+            return E_FAIL;
+    }
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
