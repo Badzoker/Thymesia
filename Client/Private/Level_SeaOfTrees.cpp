@@ -262,7 +262,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Corridor(const _tchar* pLayerTa
     if (FAILED(Load_Objects(312, pLayerTag))) //Circus Map 엘레베이터 복도(보스전까지)
         return E_FAIL;
 
-    if (FAILED(Load_SpecificObjects(5)))
+    if (FAILED(Load_SpecificObjects(6)))
         return E_FAIL;
 
     return S_OK;
