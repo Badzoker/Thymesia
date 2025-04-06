@@ -225,6 +225,8 @@
 #include "ChairLamp.h"
 #include "Elevator_Door.h"
 #include "LadderObject.h"
+
+#include "DestructObject.h"
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -2236,6 +2238,37 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), CLadderObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+#pragma endregion
+
+#pragma region 부술 수 있는 오브젝트 
+
+	_matrix DestructPreTransformMatrix = XMMatrixIdentity();
+	DestructPreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_barrel"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/DestructibleObjects/barrel.fbx", CModel::MODEL_NONANIM, DestructPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Rock"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/DestructibleObjects/Rock.fbx", CModel::MODEL_NONANIM, DestructPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Fence2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/DestructibleObjects/Fence2.fbx", CModel::MODEL_NONANIM, DestructPreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_TestFenceNoiseTexture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Destruct/T_Noise_Small.png"), 1))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxDestructMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxDestructMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_DestructObject"),
+		CDestructObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 

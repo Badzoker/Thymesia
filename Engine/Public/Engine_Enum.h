@@ -27,7 +27,8 @@ namespace Engine
 		ENEMY = 1 << 4,		  /* 0x0010000 */
 		OBJECT = 1 << 5,		  /* 0x0100000 */
 		ITEM = 1 << 6,			/* 0x1000000 */
-		GROUP_END = 1 << 7,		  
+		DESTRUCT = 1 << 7,			/* 0x1000000 */
+		GROUP_END = 1 << 8,
 	};
 
 	enum class EVENT_TYPE{

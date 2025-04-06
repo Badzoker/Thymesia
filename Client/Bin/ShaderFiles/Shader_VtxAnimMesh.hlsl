@@ -512,8 +512,8 @@ PS_OUT PS_GHOSEMY(PS_IN In)
     //vNormal = normalize(mul(vNormal, matWorld));
     //Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 
-    Out.vDepth = float4(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-    Out.fSpecular = 0.1f;
+    //Out.vDepth = float4(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    //Out.fSpecular = 0.1f;
     return Out;
 }
 

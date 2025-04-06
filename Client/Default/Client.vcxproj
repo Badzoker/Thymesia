@@ -219,6 +219,7 @@
     <ClInclude Include="..\Public\DeadBranch.h" />
     <ClInclude Include="..\Public\Decorative_Hat.h" />
     <ClInclude Include="..\Public\Decorative_Tonic.h" />
+    <ClInclude Include="..\Public\DestructObject.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
@@ -487,6 +488,7 @@
     <ClCompile Include="..\Private\DeadBranch.cpp" />
     <ClCompile Include="..\Private\Decorative_Hat.cpp" />
     <ClCompile Include="..\Private\Decorative_Tonic.cpp" />
+    <ClCompile Include="..\Private\DestructObject.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
@@ -719,6 +721,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fog.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMeshNoDefferd.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxDestructMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxFadeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstanceMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxItemTex.hlsl" />

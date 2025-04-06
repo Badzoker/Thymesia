@@ -83,8 +83,37 @@ void CLockLine::Update(_float fTimeDelta)
     _vector vLook = XMVector3Normalize(XMVector3Cross(vUp, vRight));
     vUp = XMVector3Normalize(XMVector3Cross(vRight, vLook));
 
+    static XMVECTOR s_CurrentQuat = XMQuaternionIdentity();
+
+    float fTargetAngle = 0.f;
+
+    if (*(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_L ||
+        *(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_BL ||
+        *(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_FL)
+    {
+        fTargetAngle = -22.5f;
+    }
+    else if (*(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_R ||
+        *(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_BR ||
+        *(m_pPlayer->Get_State_Ptr()) == CPlayer::STATE_LOCK_ON_RUN_FR)
+    {
+        fTargetAngle = -157.5f;
+    }
+    else
+    {
+        fTargetAngle = -67.5f;
+    }
+
+    XMVECTOR vTargetQuat = XMQuaternionRotationAxis(vRight, XMConvertToRadians(fTargetAngle));
+
+    float fLerpSpeed = 0.1f;
+    s_CurrentQuat = XMQuaternionSlerp(s_CurrentQuat, vTargetQuat, fLerpSpeed);
+
+    _matrix RotationMatrix = XMMatrixRotationQuaternion(s_CurrentQuat);
+
+
     // x축으로 -45도 만큼 돌려버려 그럼 좀 세워짐 ㅇㅅㅇ
-    _matrix RotationMatrix = XMMatrixRotationAxis(vRight, XMConvertToRadians(-45.f));
+    //_matrix RotationMatrix = XMMatrixRotationAxis(vRight, XMConvertToRadians(-45.f));
 
     vUp = XMVector3TransformNormal(vUp, RotationMatrix);
     vLook = XMVector3TransformNormal(vLook, RotationMatrix);

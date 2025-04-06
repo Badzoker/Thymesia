@@ -12,6 +12,7 @@
 #include "Chair.h"
 #include "ChairLamp.h"
 #include "BlackScreen.h"
+#include "DestructObject.h"
 
 #include "UI_LeftBackground.h"
 
@@ -265,6 +266,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
     Load_TriggerObjects(2);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 
     Load_SpecificObjects(12);
+
+    Load_DestructObjects(6);
 
     return S_OK;
 }
@@ -1851,6 +1854,54 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
     }
 
     CloseHandle(hFile);
+
+    return S_OK;
+}
+
+HRESULT CLevel_Tutorial::Load_DestructObjects(_int iObject_Level)
+{
+    string strDataPath = "../Bin/DataFiles/DestructObjectData/DestructObjectData";
+
+    strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+    _tchar		szLastPath[MAX_PATH] = {};
+
+    MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+    HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed To Load ObjectData File!");
+        return E_FAIL;
+    }
+
+    DWORD dwByte = 0;
+
+    _uint iSize = 0;
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (size_t i = 0; i < iSize; i++)
+    {
+        CDestructObject::DestructObject_Desc Desc{};
+
+        _char szLoadName[MAX_PATH] = {};
+
+        ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+        Desc.ObjectName = szLoadName;
+        Desc.iCurLevel = m_iCurrentLevel;
+
+        CDestructObject* pObject = nullptr;
+        if (pObject == nullptr)
+        {
+            pObject = reinterpret_cast<CDestructObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_DestructObject"), LEVEL_TUTORIAL, TEXT("Layer_DestructObject"), &Desc));
+        }
+    }
 
     return S_OK;
 }
