@@ -57,6 +57,7 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
 
     m_fDissolveAmount = 0.3f;
 
+
     m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
     m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
     m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
@@ -64,6 +65,9 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
     m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+
 
     return S_OK;
 
@@ -99,37 +103,59 @@ void CWeapon_Halberd::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
-                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER, STATE 부분        
+                switch (iter.eType)
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
+                case EVENT_COLLIDER:
+                {
+                    if (iter.isEventActivate == true)
                         m_pGameInstance->Add_Actor_Scene(m_pActor);
-                }
 
-                else if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == false)
+                    else
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                        {
+                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                            iter.isPlay = true;
+                        }
+                    }
+
+                }
+                break;
+                case EVENT_STATE:
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                    if (iter.isEventActivate == true)
                     {
-                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                        iter.isPlay = true;
+                        if (!strcmp(iter.szName, "Dissolve_Weapon"))
+                        {
+                            m_bDeadOn = true;
+                        }
+
+                        if (!strcmp(iter.szName, "Reverse_Dissolve_Weapon"))
+                        {
+                            m_bAppear = true;
+                        }
+
+
+                        if (!strcmp(iter.szName, "Zoom_In"))
+                        {
+                            m_pCamera->Set_Camera_ZoomInSpeed(10.f);
+                            m_pCamera->ZoomIn();
+                        }
+                    }
+
+                    else
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                        {
+                            if (!strcmp(iter.szName, "Zoom_In"))
+                            {
+                                m_pCamera->ResetZoomInCameraPos(10.f);
+                            }
+                        }
                     }
                 }
-
-
-                if (iter.eType == EVENT_STATE && iter.isEventActivate == true)
-                {
-                    if (!strcmp(iter.szName, "Dissolve_Weapon"))
-                    {
-                        m_bDeadOn = true;
-                    }
-
-                    if (!strcmp(iter.szName, "Reverse_Dissolve_Weapon"))
-                    {
-                        m_bAppear = true;
-                    }
-
+                break;
                 }
-
                 if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
@@ -152,13 +178,18 @@ void CWeapon_Halberd::Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
         if (*m_pParentPhaseState != CPlayer::PHASE_EXECUTION
+            && !(m_pSet_Body_States->count(curState))
             && !(m_pSet_Claw_Weapon_States->count(curState))
             && !(m_pSet_Axe_Weapon_States->count(curState))
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Scythe_Weapon_States->count(curState))
-            && !(m_pSet_Body_States->count(curState)))
+            && !(m_pSet_GreadSword_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+            )
         {
             /* 카메라 관련 */
+            m_pCamera->ResetZoomInCameraPos(10.f);
         }
     }
 
@@ -307,7 +338,7 @@ HRESULT CWeapon_Halberd::Hit_Slow()
         m_pCamera->ShakeOn(400.f, 400.f, 6.f, 6.f);
         m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
         m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.5f);
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(0.3f);
+        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fHitStopTime);
     }
     else
     {

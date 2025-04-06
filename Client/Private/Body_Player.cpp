@@ -55,6 +55,9 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+
 
     return S_OK;
 }
@@ -63,19 +66,19 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
 
-    m_fDissolveAmount = 0.3f;   
+    m_fDissolveAmount = 0.3f;
 
     if (m_pCamera == nullptr)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 
-    if (*m_pParentState == CPlayer::STATE_DEAD) 
-        m_fDeadStartTimer += fTimeDelta;    
+    if (*m_pParentState == CPlayer::STATE_DEAD)
+        m_fDeadStartTimer += fTimeDelta;
 
 
 
     if (*m_pParentState == CPlayer::STATE_DEAD && m_fDeadStartTimer > 1.f)
     {
-        /* 플레이어 죽음 알림(유빈)*/  
+        /* 플레이어 죽음 알림(유빈)*/
         if (0 == m_fDeadTimer)
         {
             m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
@@ -283,7 +286,7 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_Varg_Execution:
         STATE_Varg_Execution_Method();
-        break;  
+        break;
     case CPlayer::STATE_ARCHIVE_SIT_START:
         STATE_ARCHIVE_SIT_START_Method();
         break;
@@ -299,8 +302,8 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_HEAL:
         STATE_HEAL_Method();
         break;
-    case CPlayer::STATE_DEAD:   
-        STATE_DEAD_Method();    
+    case CPlayer::STATE_DEAD:
+        STATE_DEAD_Method();
         break;
     case CPlayer::STATE_START_WALK:
         STATE_START_WALK_Method();
@@ -314,14 +317,14 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK:
         STATE_CLAW_CHARGE_FULL_ATTACK_Method();
         break;
-    case CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2:  
-        STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();   
+    case CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2:
+        STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();
         break;
-    case CPlayer::STATE_HALBERDS_B: 
-        STATE_HALBERDS_B_Method();  
+    case CPlayer::STATE_HALBERDS_B:
+        STATE_HALBERDS_B_Method();
         break;
-    case CPlayer::STATE_SCYTHE_B:   
-        STATE_SCYTHE_B_Method();    
+    case CPlayer::STATE_SCYTHE_B:
+        STATE_SCYTHE_B_Method();
         break;
     case CPlayer::STATE_CATCHED:
         STATE_CATCHED_Method();
@@ -329,18 +332,18 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_GET_UP:
         STATE_GET_UP_Method();
         break;
-    case CPlayer::STATE_VARG_RUN_EXECUTION: 
-        STATE_VARG_RUN_EXECUTION_Method();  
+    case CPlayer::STATE_VARG_RUN_EXECUTION:
+        STATE_VARG_RUN_EXECUTION_Method();
         break;
-    case CPlayer::STATE_VARG_STUN_EXECUTE_START_R:  
-        STATE_VARG_STUN_EXECUTE_START_R_Method();   
+    case CPlayer::STATE_VARG_STUN_EXECUTE_START_R:
+        STATE_VARG_STUN_EXECUTE_START_R_Method();
         break;
-    case CPlayer::STATE_AXE:    
-        STATE_AXE_Method(); 
-        break;  
-    case CPlayer::STATE_LIGHT_EXECUTION_R:  
-        STATE_LIGHT_EXECUTION_R_Method();   
-        break;  
+    case CPlayer::STATE_AXE:
+        STATE_AXE_Method();
+        break;
+    case CPlayer::STATE_LIGHT_EXECUTION_R:
+        STATE_LIGHT_EXECUTION_R_Method();
+        break;
     case CPlayer::STATE_LADDER_CLIMB_START:
         STATE_LADDER_CLIMB_START_Method();
         break;
@@ -395,14 +398,20 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_MAGICIAN_CATCH:
         STATE_MAGICIAN_CATCH_Method();
         break;
-    case CPlayer::STATE_CANE_SWORD_SP02:    
-        STATE_CANE_SWORD_SP02_Method(); 
+    case CPlayer::STATE_CANE_SWORD_SP02:
+        STATE_CANE_SWORD_SP02_Method();
         break;
-    case CPlayer::STATE_GREATSWORD: 
-        STATE_GREATSWORD_Method();  
+    case CPlayer::STATE_GREATSWORD:
+        STATE_GREATSWORD_Method();
         break;
     case CPlayer::STATE_JAVELIN_SWORD:
-        STATE_JAVELIN_SWORD_Method();   
+        STATE_JAVELIN_SWORD_Method();
+        break;
+    case CPlayer::STATE_SPRINT:
+        STATE_SPRINT_Method();
+        break;
+    case CPlayer::STATE_SPRINT_ATTACK_L1:
+        STATE_SPRINT_ATTACK_L1_Method();
         break;
     default:
         break;
@@ -414,7 +423,7 @@ void CBody_Player::Update(_float fTimeDelta)
     XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
 
-    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;  
+    CPlayer::STATE curState = (CPlayer::STATE)*m_pParentState;
 
 #pragma region 이벤트 관련 작업
     /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
@@ -437,15 +446,15 @@ void CBody_Player::Update(_float fTimeDelta)
 
                     if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
-                        m_pCamera->Set_Camera_ZoomInSpeed(10.f);    
+                        m_pCamera->Set_Camera_ZoomInSpeed(10.f);
                         m_pCamera->ZoomIn();
                     }
 
                     if (!strcmp(iter.szName, "Zoom_In_Blur"))
                     {
                         m_fZoomBlurDeltaTime += fTimeDelta;
-                        m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f); 
-                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());  
+                        m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f);
+                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
                         m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
                     }
 
@@ -461,7 +470,7 @@ void CBody_Player::Update(_float fTimeDelta)
                     if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
                     {
                         // 카메라 포인터 가져오고 싶다. 
-                        m_pCamera->ResetZoomInCameraPos(10.f);  
+                        m_pCamera->ResetZoomInCameraPos(10.f);
                     }
 
                     if (!strcmp(iter.szName, "Zoom_In_Blur"))
@@ -496,7 +505,8 @@ void CBody_Player::Update(_float fTimeDelta)
             && !(m_pSet_Halberd_Weapon_States->count(curState))
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Scythe_Weapon_States->count(curState))
-            && !(m_pSet_Axe_Weapon_States->count(curState)))    
+            && !(m_pSet_Axe_Weapon_States->count(curState))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState)))
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
             m_fZoomBlurDeltaTime = 0.f;
@@ -528,9 +538,9 @@ HRESULT CBody_Player::Render()
     case STATE_CLAW_RENDER:
         STATE_ATTACK_LONG_CLAW_Render();
         break;
-    case STATE_DEAD_RENDER: 
-        STATE_DEAD_Render();    
-        break;  
+    case STATE_DEAD_RENDER:
+        STATE_DEAD_Render();
+        break;
     default:
         break;
     }
@@ -676,7 +686,7 @@ HRESULT CBody_Player::STATE_DEAD_Render()
         m_pShaderCom->Begin(6);
         m_pModelCom->Render(i);
     }
-    return S_OK;    
+    return S_OK;
 }
 
 
@@ -699,9 +709,33 @@ void CBody_Player::STATE_WALK_Method()
 void CBody_Player::STATE_ATTACK_Method()
 {
 }
+
+
+void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(279, false);
+
+    if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 80.f)
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
+
+    }
+
+    if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(279)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentState = STATE_IDLE;
+        *m_pParentNextStateCan = true;
+    }
+}
+
 void CBody_Player::STATE_ATTACK_L1_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
     m_pModelCom->Set_LerpFinished(true);
     m_pModelCom->SetUp_Animation(3, false);
 
@@ -711,7 +745,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
 #pragma region 스킬 연계기   
         /* 여기다 넣어놓기 */
-            
+
 
 #pragma endregion 
 
@@ -1073,7 +1107,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 }
 void CBody_Player::STATE_ATTACK_L4_Method()
@@ -1195,7 +1229,7 @@ void CBody_Player::STATE_ATTACK_L4_Method()
     }
 #pragma endregion 
 
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_iRenderState = STATE_NORMAL_RENDER;
 
 
 }
@@ -1453,7 +1487,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 {
     m_pModelCom->SetUp_Animation(1, false);
 
-    m_pModelCom->Get_VecAnimation().at(1)->Set_StartOffSetTrackPosition(16.f);  
+    m_pModelCom->Get_VecAnimation().at(1)->Set_StartOffSetTrackPosition(16.f);
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
@@ -1667,8 +1701,8 @@ void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 }
 void CBody_Player::STATE_PARRY_L_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(15, false);
 
@@ -2128,9 +2162,9 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 }
 
@@ -2149,10 +2183,10 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
         case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:
             *m_pParentState = CPlayer::STATE_Joker_Execution;
             break;
-        case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1: 
-            *m_pParentState = CPlayer::STATE_LV1Villager_M_Execution;   
-            m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1);  
-            m_pCamera->Set_Camera_Cut_Scene_OnOff(true);    
+        case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1:
+            *m_pParentState = CPlayer::STATE_LV1Villager_M_Execution;
+            m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1);
+            m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
             break;
         default:
             break;
@@ -2179,7 +2213,7 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
-        m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_START);  
+        m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_START);
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
     }
@@ -2194,9 +2228,9 @@ void CBody_Player::STATE_Joker_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 }
 
@@ -2209,7 +2243,7 @@ void CBody_Player::STATE_Varg_Execution_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
     }
@@ -2217,8 +2251,8 @@ void CBody_Player::STATE_Varg_Execution_Method()
 
 void CBody_Player::STATE_MAGICIAN_Execution_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(225, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -2228,16 +2262,16 @@ void CBody_Player::STATE_MAGICIAN_Execution_Method()
         *m_pParentState = CPlayer::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 }
 
 void CBody_Player::STATE_MAGICIAN_MUTATION_Execution_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(211, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -2247,16 +2281,16 @@ void CBody_Player::STATE_MAGICIAN_MUTATION_Execution_Method()
         *m_pParentState = CPlayer::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 }
 
 void CBody_Player::STATE_GRACE_Execution_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(221, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -2266,9 +2300,9 @@ void CBody_Player::STATE_GRACE_Execution_Method()
         *m_pParentState = CPlayer::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;      
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 
 }
@@ -2309,17 +2343,27 @@ void CBody_Player::STATE_MAGICIAN_CATCH_Method()
     }
 }
 
-void CBody_Player::STATE_CANE_SWORD_SP02_Method()   
+void CBody_Player::STATE_SPRINT_Method()
 {
-    m_pModelCom->SetUp_Animation(88, false);    
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_pModelCom->SetUp_Animation(252, true);
+    m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(88)->isAniMationFinish())    
+    /* 3월 8일 추가 */
+    *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+}
+
+
+void CBody_Player::STATE_CANE_SWORD_SP02_Method()
+{
+    m_pModelCom->SetUp_Animation(88, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(88)->isAniMationFinish())
     {
-        *m_pParentNextStateCan = true;  
-        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
-        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;    
-    }   
+        *m_pParentNextStateCan = true;
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+    }
 }
 
 void CBody_Player::STATE_GREATSWORD_Method()
@@ -2566,16 +2610,16 @@ void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
 
 void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(298, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(298)->Get_Current_TrackPoisition() >= 45.f)  
+    if (m_pModelCom->Get_VecAnimation().at(298)->Get_Current_TrackPoisition() >= 45.f)
     {
         // 이때 바그가 밀치기 당할 수 있게 추가하기 
-        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);  
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
     }
 
     if (m_pModelCom->Get_VecAnimation().at(298)->isAniMationFinish())
@@ -2597,9 +2641,9 @@ void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;  
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
     }
 }
 
@@ -2812,15 +2856,15 @@ void CBody_Player::STATE_LADDER_CLIMB_R_IDEL_Method()
 
 void CBody_Player::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
-    m_pModelCom->SetUp_Animation(296, true);    
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_pModelCom->SetUp_Animation(296, true);
+    m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(296)->isAniMationFinish())       
+    if (m_pModelCom->Get_VecAnimation().at(296)->isAniMationFinish())
     {
-        *m_pParentState = CPlayer::STATE_IDLE;  
+        *m_pParentState = CPlayer::STATE_IDLE;
         *m_pParentNextStateCan = true;
     }
 }
@@ -2911,7 +2955,7 @@ void CBody_Player::STATE_HEAL_Method()
 void CBody_Player::STATE_DEAD_Method()
 {
     m_pModelCom->SetUp_Animation(266, false);
-    m_iRenderState = STATE_DEAD_RENDER;     
+    m_iRenderState = STATE_DEAD_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(266)->isAniMationFinish())
     {
@@ -2920,10 +2964,10 @@ void CBody_Player::STATE_DEAD_Method()
 
 void CBody_Player::STATE_START_WALK_Method()
 {
-    m_pModelCom->SetUp_Animation(184, false);
+    m_pModelCom->SetUp_Animation(14, false); // 184
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(184)->isAniMationFinish())
+    if (m_pModelCom->Get_VecAnimation().at(14)->isAniMationFinish())
     {
 
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
@@ -2935,9 +2979,9 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
     m_pModelCom->SetUp_Animation(144, false);
     m_iRenderState = STATE_CLAW_RENDER;
 
-    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);  
+    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
 
-    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished()) 
+    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished())
     {
 
         *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
@@ -2947,37 +2991,37 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
 
 void CBody_Player::STATE_CLAW_CHARGE_LOOP_Method()
 {
-    m_pModelCom->SetUp_Animation(142, true);    
+    m_pModelCom->SetUp_Animation(142, true);
     m_iRenderState = STATE_CLAW_RENDER;
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
 {
-    m_pModelCom->SetUp_Animation(145, false);   
-    m_iRenderState = STATE_CLAW_RENDER; 
+    m_pModelCom->SetUp_Animation(145, false);
+    m_iRenderState = STATE_CLAW_RENDER;
 
-    m_pModelCom->Get_VecAnimation().at(145)->Set_StartOffSetTrackPosition(36.f);    
+    m_pModelCom->Get_VecAnimation().at(145)->Set_StartOffSetTrackPosition(36.f);
 
     if (m_pModelCom->Get_VecAnimation().at(145)->isAniMationFinish())
     {
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
 
     }
 }
 
-void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method() 
+void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
 {
 
-    m_pModelCom->SetUp_Animation(147, false);   
+    m_pModelCom->SetUp_Animation(147, false);
     m_iRenderState = STATE_CLAW_RENDER;
-        
-    m_pModelCom->Get_VecAnimation().at(147)->Set_StartOffSetTrackPosition(3.f); 
 
-    if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())   
+    m_pModelCom->Get_VecAnimation().at(147)->Set_StartOffSetTrackPosition(3.f);
+
+    if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())
     {
-        *m_pParentNextStateCan = true;  
+        *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
@@ -2986,10 +3030,10 @@ void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
 void CBody_Player::STATE_HALBERDS_B_Method()
 {
     m_pModelCom->SetUp_Animation(107, false);
-    m_iRenderState = STATE_NORMAL_RENDER;       
+    m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())   
-    {   
+    if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())
+    {
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
@@ -3100,13 +3144,13 @@ void CBody_Player::STATE_HALBERDS_B_Method()
 
 void CBody_Player::STATE_SCYTHE_B_Method()
 {
-    m_pModelCom->SetUp_Animation(122, false);   
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_pModelCom->SetUp_Animation(122, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(122)->isAniMationFinish())   
+    if (m_pModelCom->Get_VecAnimation().at(122)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
-        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
 #pragma region 락온 상태  O 타격 중  회피 
@@ -3215,14 +3259,14 @@ void CBody_Player::STATE_SCYTHE_B_Method()
 
 void CBody_Player::STATE_AXE_Method()
 {
-    m_pModelCom->SetUp_Animation(69, false);    
-    m_iRenderState = STATE_NORMAL_RENDER;   
+    m_pModelCom->SetUp_Animation(69, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())    
-    {   
+    if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())
+    {
         *m_pParentNextStateCan = true;
-        *m_pParentState = CPlayer::STATE::STATE_IDLE;   
-        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;    
+        *m_pParentState = CPlayer::STATE::STATE_IDLE;
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
     }
 #pragma region 락온 상태  O 타격 중  회피 
     if (*m_pParentState == CPlayer::STATE_AXE
@@ -3329,8 +3373,8 @@ void CBody_Player::STATE_AXE_Method()
 
 void CBody_Player::STATE_CATCHED_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
-    m_pModelCom->Set_LerpFinished(true);    
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(233, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -3363,18 +3407,18 @@ void CBody_Player::STATE_GET_UP_Method()
 HRESULT CBody_Player::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimMesh"), 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corner"),   
-        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))  
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corner"),
+        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
     /* Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),  
-        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))    
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
+        TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
 

@@ -81,7 +81,8 @@ private:
 	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
-
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
 
 private:
 	_uint* m_pParentState = { nullptr };

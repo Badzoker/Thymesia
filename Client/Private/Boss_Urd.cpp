@@ -6,6 +6,7 @@
 #include "Body_Urd.h"
 #include "Weapon_Urd_Sword.h"
 #include "UI_Boss_HP_Bar.h"
+#include "Boss_Urd_Camera.h"		
 
 CBoss_Urd::CBoss_Urd(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -238,6 +239,24 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
 		return E_FAIL;
+
+
+	CBoss_Urd_Camera::CAMERA_DESC Boss_Urd_Camera_Desc = {};
+
+	Boss_Urd_Camera_Desc.pParent = this;
+	Boss_Urd_Camera_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("camera");
+	Boss_Urd_Camera_Desc.pParentState = &m_iMonster_State;
+	Boss_Urd_Camera_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Boss_Urd_Camera_Desc.pParentModel = m_pModelCom;
+	Boss_Urd_Camera_Desc.fSpeedPerSec = 0.f;
+	Boss_Urd_Camera_Desc.fRotationPerSec = 0.f;
+	Boss_Urd_Camera_Desc.iCurLevel = pDesc->iCurLevel;
+	Boss_Urd_Camera_Desc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Urd_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Camera"), &Boss_Urd_Camera_Desc)))
+		return E_FAIL;
+
+
 
 	return S_OK;
 }

@@ -48,7 +48,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
     m_pTransformCom->Scaling(_float3{ 1.5f,1.5f,1.5f });
     m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.6f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.6f,0.f }, _float3{ 0.f,0.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
@@ -102,13 +102,6 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
 
     else
     {
-        //_vector fDir = XMVectorSetW(XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)), 0.f);    
-        //m_pTransformCom->Go_Dir_NoNavi(fDir,fTimeDelta * 100.f);    
-        //m_pTransformCom->Go_Right(fTimeDelta * 100.f);          
-
-        /* 그럼 자벨린의 Right와 캐릭터의 look을 비교해서 회전하면 될 듯  */
-        //m_pTransformCom->(fTimeDelta * 100.f);  
-
         if (!m_bFirst)
         {
             XMStoreFloat4x4(&m_CombinedWorldMatrix,
@@ -153,9 +146,9 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
 
         _vector Dir = XMVectorSetW(XMVector3Normalize({ m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13 }), 0.f);
 
-        m_CombinedWorldMatrix._41 += Dir.m128_f32[0] * fTimeDelta * 100.f;
+        m_CombinedWorldMatrix._41 += Dir.m128_f32[0] * fTimeDelta * 75.f;
         //m_CombinedWorldMatrix._42 += Dir.m128_f32[1] * fTimeDelta * 100.f;  
-        m_CombinedWorldMatrix._43 += Dir.m128_f32[2] * fTimeDelta * 100.f;
+        m_CombinedWorldMatrix._43 += Dir.m128_f32[2] * fTimeDelta * 75.f;
         m_CombinedWorldMatrix._44 = 1.f;
 
         int a = 4;
@@ -172,59 +165,107 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
-                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER, STATE 부분        
+                switch (iter.eType)
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
+                case EVENT_COLLIDER:
+                {
+                    if (iter.isEventActivate == true)
                     {
-
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);
-
-                        if (!m_bThrow)
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
+                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
                         {
-                            XMStoreFloat4x4(&m_PreParentMatrix, XMLoadFloat4x4(m_pParentWorldMatrix));
-                            XMStoreFloat4x4(&m_PreSocketMatrix, SocketMatrix);
 
+                            m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+                            if (!m_bThrow)
+                            {
+                                XMStoreFloat4x4(&m_PreParentMatrix, XMLoadFloat4x4(m_pParentWorldMatrix));
+                                XMStoreFloat4x4(&m_PreSocketMatrix, SocketMatrix);
+
+                            }
+                            m_bThrow = true;
                         }
-                        m_bThrow = true;
-
-
                     }
-                }
 
-                else if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == false)
-                {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                    else
                     {
-                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                        m_pTransformCom->Set_WorldMatrix(m_PreTransformMatrix);
-                        m_bThrow = false;
-                        m_bFirst = false;
-                        iter.isPlay = true;
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                        {
+                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                            m_pTransformCom->Set_WorldMatrix(m_PreTransformMatrix);
+                            m_bThrow = false;
+                            m_bFirst = false;
+                            iter.isPlay = true;
+                            m_fFinishTime = 100.f; // 창 사라지게 하기 
+                        }
                     }
+                    break;
                 }
-
-
-                if (iter.eType == EVENT_STATE && iter.isEventActivate == true)
+                case EVENT_STATE:
                 {
-                    if (!strcmp(iter.szName, "Dissolve_Weapon"))
+                    if (iter.isEventActivate == true)
                     {
-                        m_bDeadOn = true;
+                        if (!strcmp(iter.szName, "Dissolve_Weapon"))
+                        {
+                            m_bDeadOn = true;
+                        }
+
+                        if (!strcmp(iter.szName, "Reverse_Dissolve_Weapon"))
+                        {
+                            m_bAppear = true;
+                        }
+
+                        if (!strcmp(iter.szName, "Zoom_In"))
+                        {
+                            m_pCamera->Set_Camera_ZoomInSpeed(4.f);
+                            m_pCamera->ZoomIn();
+                        }
+
+                        if (!strcmp(iter.szName, "Zoom_Blur"))
+                        {
+                            m_fZoomBlurDeltaTime += fTimeDelta;
+                            m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f);
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 2.0f);
+                        }
+
                     }
 
-                    if (!strcmp(iter.szName, "Reverse_Dissolve_Weapon"))
+                    else
                     {
-                        m_bAppear = true;
-                    }
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fEndTime)
+                        {
+                            if (!strcmp(iter.szName, "Zoom_In"))
+                            {
+                                m_pCamera->ResetZoomInCameraPos(10.f);
+                            }
 
+                            if (!strcmp(iter.szName, "Zoom_Blur"))
+                            {
+                                if (m_fZoomBlurDeltaTime <= 0.f)
+                                {
+                                    m_fZoomBlurDeltaTime = 0.f;
+                                    m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                                    iter.isPlay = true;
+                                }
+                                else
+                                {
+                                    m_fZoomBlurDeltaTime -= fTimeDelta;
+                                    m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
+                                }
+
+                            }
+                        }
+                    }
+                    break;
                 }
-
-                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)   // 여기가 EVENT_EFFECT, 부분    
+                case EVENT_EFFECT:
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
-#pragma region Effect
-#pragma endregion
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                    break;
+                }
+                default:
+                    break;
                 }
             }
         }
@@ -233,6 +274,20 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+        if (*m_pParentPhaseState != CPlayer::PHASE_EXECUTION
+            && !(m_pSet_Body_States->count(curState))
+            && !(m_pSet_Claw_Weapon_States->count(curState))
+            && !(m_pSet_Axe_Weapon_States->count(curState))
+            && !(m_pSet_Right_Weapon_States->count(curState))
+            && !(m_pSet_Halberd_Weapon_States->count(curState))
+            && !(m_pSet_GreadSword_Weapon_States->count(curState))
+            && !(m_pSet_Scythe_Weapon_States->count(curState)))
+        {
+            m_pCamera->ResetZoomInCameraPos(1.f);
+            //m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
+            // 여기 조건 다 추가해야함 
+        }
     }
 
     if (m_bDeadOn)
@@ -259,8 +314,6 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
     {
         Hit_Slow();
     }
-
-
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 200.f, 0.f,0.f,1.f });
@@ -379,7 +432,6 @@ HRESULT CPlayer_Weapon_JavelinSword::Bind_ShaderResources()
 
 HRESULT CPlayer_Weapon_JavelinSword::Hit_Slow()
 {
-    m_fHitStopTime += m_fTimeDelta;
 
     if (m_fHitStopTime < 0.3f)
     {
@@ -395,7 +447,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Hit_Slow()
         m_bHitStopOnOff = false;
     }
 
-    //m_fHitStopTime += m_fTimeDelta ;
+    m_fHitStopTime += m_fTimeDelta;
 
     return S_OK;
 }

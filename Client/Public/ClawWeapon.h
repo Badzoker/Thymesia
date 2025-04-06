@@ -20,7 +20,7 @@ public:
 	struct WEAPON_DESC : public CPartObject::PARTOBJECT_DESC
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
-		_uint* pParentState = { nullptr };	
+		_uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_uint* pParentPhaseState = { nullptr };
 	};
@@ -49,21 +49,21 @@ private:
 
 
 private:
-	_float			   m_fTimeDelta    = { 0.f };
+	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fAccTimeDelta = { 0.f };
-	_float			   m_fHitStopTime  = { 0.f };
+	_float			   m_fHitStopTime = { 0.f };
 
 	_float			   m_fTimer_Effect1 = { 0.5f };
 	_float			   m_fTimer_Effect2 = { 0.5f };
 
 	_uint		       m_iPreParentState = {};
-	_bool			   m_bHitStopOnOff = { false };	
-	_bool              m_bCollisionOn = { false };	
+	_bool			   m_bHitStopOnOff = { false };
+	_bool              m_bCollisionOn = { false };
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
 private:
-	_uint* m_pParentState = { nullptr };	
+	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
 
 	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
@@ -72,6 +72,8 @@ private:
 	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
 
 public:

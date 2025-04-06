@@ -88,12 +88,12 @@ public:
 		STATE_LV1Villager_M_Execution,
 		STATE_Joker_Execution,
 		STATE_Varg_Execution,
-		STATE_MAGICIAN_Execution,	
-		STATE_MAGICIAN_MUTATION_Execution,	
-		STATE_GRACE_Execution,	
-		STATE_PUNCH_MAN_Execution,	
-		STATE_LIGHT_EXECUTION_L,	
-		STATE_LIGHT_EXECUTION_R,	
+		STATE_MAGICIAN_Execution,
+		STATE_MAGICIAN_MUTATION_Execution,
+		STATE_GRACE_Execution,
+		STATE_PUNCH_MAN_Execution,
+		STATE_LIGHT_EXECUTION_L,
+		STATE_LIGHT_EXECUTION_R,
 
 		/*앉기 및 의자 상호작용 */
 		STATE_ARCHIVE_SIT_START,
@@ -115,15 +115,15 @@ public:
 		STATE_CLAW_CHARGE_START,
 		STATE_CLAW_CHARGE_LOOP,
 		STATE_CLAW_CHARGE_FULL_ATTACK,
-		STATE_CLAW_LONG_PLUNDER_ATTACK2,	
+		STATE_CLAW_LONG_PLUNDER_ATTACK2,
 
 		/* 플레이어 스킬 */
-		STATE_HALBERDS_B,		
-		STATE_SCYTHE_B,		
-		STATE_AXE,		
-		STATE_CANE_SWORD_SP02, /* 플레이어 스킬 ( 지팡이 ) */	
-		STATE_GREATSWORD,	   /* 플레이어 스킬 ( 대검 )   */	
-		STATE_JAVELIN_SWORD,   /* 플레이어 스킬 ( 자벨린 ) */	
+		STATE_HALBERDS_B,
+		STATE_SCYTHE_B,
+		STATE_AXE,
+		STATE_CANE_SWORD_SP02, /* 플레이어 스킬 ( 지팡이 ) */
+		STATE_GREATSWORD,	   /* 플레이어 스킬 ( 대검 )   */
+		STATE_JAVELIN_SWORD,   /* 플레이어 스킬 ( 자벨린 ) */
 
 		/* 플레이어 잡히는 모션 */
 		STATE_CATCHED,
@@ -155,11 +155,17 @@ public:
 
 		STATE_LADDER_CLIMB_R_IDLE,
 
-		/* Magicain 오두르 인트로 */	
-		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,	
+		/* Magicain 오두르 인트로 */
+		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,
 
 		/* 플레이어 오두르에게 잡히는 모션 */
 		STATE_MAGICIAN_CATCH,
+
+		/* 플레이어 달리기 */
+		STATE_SPRINT,
+
+		/* 플레이어 달리면서 처음 대쉬 어택 */
+		STATE_SPRINT_ATTACK_L1,
 
 	};
 
@@ -175,10 +181,11 @@ public:
 		PHASE_EXECUTION = 1 << 6,
 		PHASE_INTERACTION = 1 << 7,
 		PHASE_HEAL = 1 << 8,
-		PHASE_DEAD = 1 << 9,	
-		PHASE_START = 1 << 10,	
-		PHASE_BOSS_INTRO = 1 << 11,	
-		PHASE_LADDER = 1 << 12,	
+		PHASE_DEAD = 1 << 9,
+		PHASE_START = 1 << 10,
+		PHASE_BOSS_INTRO = 1 << 11,
+		PHASE_LADDER = 1 << 12,
+		PHASE_SPRINT = 1 << 13,
 	};
 
 
@@ -205,24 +212,24 @@ public:
 	void Keyboard_section(_float fTimeDelta);
 
 public:
-	_uint Get_PhaseState() { return m_iPhaseState; }	
+	_uint Get_PhaseState() { return m_iPhaseState; }
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState |= _PhaseState; }
-	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }		
+	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	_bool Get_Lockon()const { return m_bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);
-	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }	
+	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
-	void Set_PlayerState(_uint _iState) { m_iState = _iState; }		
+	void Set_PlayerState(_uint _iState) { m_iState = _iState; }
 
 	_bool Get_MonsterEvent() { return m_bMonsterEvent; }
 	CGameObject* Get_TargetObjectPtr() const { return m_pTargetMonsterPtr; }
 
-	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }	
-	unordered_set<STATE>* Get_Claw_Weapon_State() { return &m_set_Claw_Weapon_States; }	
+	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }
+	unordered_set<STATE>* Get_Claw_Weapon_State() { return &m_set_Claw_Weapon_States; }
 	unordered_set<STATE>* Get_Right_Weapon_State() { return &m_set_Right_Weapon_States; }
-	unordered_set<STATE>* Get_Player_Camera_State() { return &m_set_Player_Camera_States; }	
+	unordered_set<STATE>* Get_Player_Camera_State() { return &m_set_Player_Camera_States; }
 	unordered_set<STATE>* Get_Halberd_State() { return &m_set_Halberd_Weapon_States; }
 	unordered_set<STATE>* Get_Scythe_State() { return &m_set_Scythe_Weapon_States; }
 	unordered_set<STATE>* Get_Axe_State() { return &m_set_Axe_Weapon_States; }
@@ -253,7 +260,7 @@ private:
 
 	_float								m_fChrageTime = {};
 
-	CGameObject*						m_pTargetMonsterPtr = { nullptr };
+	CGameObject* m_pTargetMonsterPtr = { nullptr };
 
 
 	CNavigation* m_pNavigationCom = { nullptr };
@@ -264,20 +271,20 @@ private:
 
 	PxRigidDynamic* m_pActor = { nullptr };
 
-	unordered_set<STATE> m_set_Body_States                = {};	
-	unordered_set<STATE> m_set_Claw_Weapon_States         = {};	
-	unordered_set<STATE> m_set_Halberd_Weapon_States      = {};	
-	unordered_set<STATE> m_set_Right_Weapon_States        = {};	
-	unordered_set<STATE> m_set_Scythe_Weapon_States       = {};	
-	unordered_set<STATE> m_set_Axe_Weapon_States          = {};	
-	unordered_set<STATE> m_set_Cane_Weapon_States         = {};	
-	unordered_set<STATE> m_set_GreadSword_Weapon_States   = {};	
-	unordered_set<STATE> m_set_JavelinSword_Weapon_States = {};	
-	unordered_set<STATE> m_set_Player_Camera_States       = {};	
+	unordered_set<STATE> m_set_Body_States = {};
+	unordered_set<STATE> m_set_Claw_Weapon_States = {};
+	unordered_set<STATE> m_set_Halberd_Weapon_States = {};
+	unordered_set<STATE> m_set_Right_Weapon_States = {};
+	unordered_set<STATE> m_set_Scythe_Weapon_States = {};
+	unordered_set<STATE> m_set_Axe_Weapon_States = {};
+	unordered_set<STATE> m_set_Cane_Weapon_States = {};
+	unordered_set<STATE> m_set_GreadSword_Weapon_States = {};
+	unordered_set<STATE> m_set_JavelinSword_Weapon_States = {};
+	unordered_set<STATE> m_set_Player_Camera_States = {};
 
 private:
 	_float								m_fTimeDelta = { 0.f };
-	CStateMgr*							m_pStateMgr = { nullptr };
+	CStateMgr* m_pStateMgr = { nullptr };
 
 
 #pragma region UI 관련 함수 
@@ -324,34 +331,34 @@ public:
 
 	void     Set_Potion_Number(_uint _iPotionCount) { m_iPotionCount = _iPotionCount; }
 	void     Increase_PotionNumber(_uint _iCount) { m_iPotionCount += _iCount; }
-		
-	void     Set_Player_Skill_1st(_uint _iSkill) { m_iSkill_Eqip_1st = _iSkill; }	
-	void     Set_Player_Skill_2st(_uint _iSkill) { m_iSkill_Eqip_2st = _iSkill; }	
 
-	void     Set_Player_Take_Away_Skill(_uint _iSkill) { m_iTake_Away_Skill = _iSkill; }	
+	void     Set_Player_Skill_1st(_uint _iSkill) { m_iSkill_Eqip_1st = _iSkill; }
+	void     Set_Player_Skill_2st(_uint _iSkill) { m_iSkill_Eqip_2st = _iSkill; }
 
-	_uint    Get_Player_Skill_1st() { return m_iSkill_Eqip_1st; }	
-	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }	
-	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }	
+	void     Set_Player_Take_Away_Skill(_uint _iSkill) { m_iTake_Away_Skill = _iSkill; }
 
-	_int    Get_Level()           { return m_iLevel; }
+	_uint    Get_Player_Skill_1st() { return m_iSkill_Eqip_1st; }
+	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }
+	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }
 
-	_int    Get_FullHp()          { return m_iFullHp; }
-	_int    Get_CurrentHp()       { return m_iCurrentHp; }	
+	_int    Get_Level() { return m_iLevel; }
 
-	_int    Get_FullMp()          { return m_iFullMp; }	
-	_int    Get_CurrentMp()       { return m_iCurrentMp; }	
+	_int    Get_FullHp() { return m_iFullHp; }
+	_int    Get_CurrentHp() { return m_iCurrentHp; }
 
-	_int    Get_AttackPower()     { return m_iAttackPower; }
+	_int    Get_FullMp() { return m_iFullMp; }
+	_int    Get_CurrentMp() { return m_iCurrentMp; }
 
-	_uint*  Get_AttackPower_Ptr() { return &m_iAttackPower; }	
-	_uint*  Get_PhaseState_Ptr()  { return &m_iPhaseState; }	
-	_uint*  Get_State_Ptr()       { return &m_iState; }
-	_int    Get_ClawAttacPower()  { return m_iClawAttackPower; }
+	_int    Get_AttackPower() { return m_iAttackPower; }
 
-	_int    Get_MemoryFragment()  { return m_iMemoryFragment; }
+	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
+	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }
+	_uint* Get_State_Ptr() { return &m_iState; }
+	_int    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
-	_int    Get_Potion_Count()    { return m_iPotionCount; }
+	_int    Get_MemoryFragment() { return m_iMemoryFragment; }
+
+	_int    Get_Potion_Count() { return m_iPotionCount; }
 	/* ============================== */
 #pragma endregion 
 
