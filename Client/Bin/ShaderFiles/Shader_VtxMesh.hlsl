@@ -762,9 +762,6 @@ PS_OUT PS_LOCK_LINE(PS_IN In)
 
     Out.vDiffuse.rgb = float3(0.89f, 0.63f, 0.25f);
     Out.vDiffuse.a = vLineTex.r;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-    Out.fSpecular = 0.1f;
  
     return Out;
 }
