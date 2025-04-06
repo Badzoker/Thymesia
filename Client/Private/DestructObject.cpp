@@ -48,7 +48,7 @@ HRESULT CDestructObject::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(pDesc->fRotation.x, pDesc->fRotation.y, pDesc->fRotation.z, pDesc->fRotation.w);
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 1.2f, 1.2f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 1.0f, 1.0f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER_WEAPON;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::DESTRUCT, iSettingColliderGroup);
