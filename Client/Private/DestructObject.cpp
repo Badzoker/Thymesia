@@ -68,7 +68,7 @@ void CDestructObject::Update(_float fTimeDelta)
         if (m_bHitted)
         {
             m_fLifeTime += fTimeDelta;
-
+            m_pGameInstance->Sub_Actor_Scene(m_pActor);
             m_fExplosionPower += fTimeDelta * 3.0f;
             m_fFallingTime += fTimeDelta;
 
