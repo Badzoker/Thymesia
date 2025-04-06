@@ -901,6 +901,12 @@
     <Filter Include="02.GameObject\Player\Weapon\GreadSword">
       <UniqueIdentifier>{dcc05284-ee32-4fc3-aa34-0834bb354ce4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Run\Sprint">
+      <UniqueIdentifier>{a682f044-c47a-4e12-b162-1d27f3c858c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera">
+      <UniqueIdentifier>{98444e88-4123-486c-86c2-a2abe3a9efcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1689,6 +1695,12 @@
     <ClInclude Include="..\public\Player_Weapon_GreadSword.h">
       <Filter>02.GameObject\Player\Weapon\GreadSword</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerSprint.h">
+      <Filter>02.GameObject\Player\State\Run\Sprint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Urd_Camera.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2467,6 +2479,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Player_Weapon_GreadSword.cpp">
       <Filter>02.GameObject\Player\Weapon\GreadSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerSprint.cpp">
+      <Filter>02.GameObject\Player\State\Run\Sprint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Urd_Camera.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Urd\Boss_Urd_Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

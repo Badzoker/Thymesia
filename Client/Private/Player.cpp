@@ -44,7 +44,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 {
 	strcpy_s(m_szName, "PLAYER");
 
-	
+
 
 
 	m_pStateMgr = CStateMgr::Create();
@@ -82,14 +82,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
 
-	m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));	
+	m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));
 
-	/* 여기다가 해당 신 별로 다르게 설정만 하면 됨 */	
-	m_iState = STATE_START_WALK;	
-	m_iPhaseState |= PHASE_START;	
+	/* 여기다가 해당 신 별로 다르게 설정만 하면 됨 */
+	m_iState = STATE_START_WALK;
+	m_iPhaseState |= PHASE_START;
 
-	/* 플레이어 파츠별 사용하는 애니메이션 분류 */	
-	Player_Setting_PartAni();	
+	/* 플레이어 파츠별 사용하는 애니메이션 분류 */
+	Player_Setting_PartAni();
 
 	return S_OK;
 }
@@ -103,7 +103,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 #pragma region Mouse_Input
 
-	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))		
+	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))
 	{	 // 의자 관련 
 		Mouse_section(fTimeDelta);
 #pragma endregion 
@@ -114,12 +114,12 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 #pragma endregion 
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_iPreState == STATE::STATE_DEAD && m_iState != STATE::STATE_DEAD)	
+	if (m_iPreState == STATE::STATE_DEAD && m_iState != STATE::STATE_DEAD)
 	{
 		//m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));		
 		_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일		
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치				
-		m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);	
+		m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
 
 	}
 
@@ -177,11 +177,11 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)
 		)
 	{
 		/* 처형 관련 작업 */
-		if (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START)	
+		if (m_iMonster_Execution_Category != MONSTER_EXECUTION_CATEGORY::MONSTER_START)
 		{
 			switch (m_iMonster_Execution_Category)
 			{
@@ -209,12 +209,24 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			}
 
 			m_iPhaseState |= PHASE_EXECUTION;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 
 		}
 
+		else if (m_iPhaseState & PHASE_SPRINT)
+		{
+			m_iState = STATE_SPRINT_ATTACK_L1;
+			m_iPhaseState |= PHASE_FIGHT;
+
+			/* 페이즈 상태 해제 */
+			m_iPhaseState &= ~PHASE_DASH;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.		
+		}
+
+
 		else
 		{
-			if (m_iState == STATE_ATTACK_L1
+			if ((m_iState == STATE_ATTACK_L1 || m_iState == STATE_SPRINT_ATTACK_L1)
 				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 15.f
 					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
 			{
@@ -260,6 +272,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 			/* 페이즈 상태 해제 */
 			m_iPhaseState &= ~PHASE_DASH;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 
 		}
 		m_iPhaseState &= ~PHASE_PARRY;
@@ -273,11 +286,12 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		&& m_iState != STATE_ATTACK_LONG_CLAW_01
 		&& m_iState != STATE_ATTACK_LONG_CLAW_02
 		&& !(m_iPhaseState & PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
 		m_fChrageTime += fTimeDelta;
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 
-		if (m_fChrageTime > 0.3f)
+		if (m_fChrageTime > 0.3f) // 이거 조금만 더 짧게 해보자 
 		{
 			if (m_iState != STATE_CLAW_CHARGE_START)
 			{
@@ -293,11 +307,13 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	}
 
 
-	else if (m_pGameInstance->isMouseRelease(DIM_RB) && !(m_iPhaseState & CPlayer::PHASE_HITTED))
+	else if (m_pGameInstance->isMouseRelease(DIM_RB)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
 
-		if (m_iState != STATE_CLAW_CHARGE_START 
-			&& m_iState != STATE_CLAW_CHARGE_LOOP 
+		if (m_iState != STATE_CLAW_CHARGE_START
+			&& m_iState != STATE_CLAW_CHARGE_LOOP
 			&& m_iState != STATE_CLAW_CHARGE_FULL_ATTACK)
 		{
 			if (m_iState == STATE_ATTACK_LONG_CLAW_01
@@ -320,6 +336,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			/* 페이즈 상태 해제 */
 			m_iPhaseState &= ~PHASE_DASH;
 			m_iPhaseState &= ~PHASE_PARRY;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		}
 
 		else
@@ -327,7 +344,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			m_iState = STATE_CLAW_CHARGE_FULL_ATTACK;
 		}
 
-		m_fChrageTime = 0.f;	
+		m_fChrageTime = 0.f;
 	}
 
 
@@ -351,10 +368,11 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_JAVELIN_SWORD;
 	}
-
+#pragma endregion 
 #pragma region 스킬공격 대검	
 	if ((m_pGameInstance->isKeyEnter(DIK_5))
 		&& m_iState != STATE_DEAD
@@ -365,6 +383,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_GREATSWORD;
 	}
@@ -379,6 +398,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_CANE_SWORD_SP02;
 	}
@@ -391,13 +411,13 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_AXE;	
+		m_iState = STATE_AXE;
 	}
 #pragma endregion 
-
 #pragma region 스킬공격 낫
 	if ((m_pGameInstance->isKeyEnter(DIK_2))
 		&& m_iState != STATE_DEAD
@@ -406,15 +426,13 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_SCYTHE_B;
 	}
 #pragma endregion 
-
-
-
 #pragma region 스킬공격 할버드 
 	if ((m_pGameInstance->isKeyEnter(DIK_1))
 		&& m_iState != STATE_DEAD
@@ -423,19 +441,21 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		m_iPhaseState |= CPlayer::PHASE_FIGHT;
 		m_iState = STATE_HALBERDS_B;
 	}
 #pragma endregion 
 
 #pragma region 죽음 
-	if ( (m_pGameInstance->isKeyEnter(DIK_T) || m_iCurrentHp <= 0)
-		&& m_iState != STATE_DEAD)	
+	if ((m_pGameInstance->isKeyEnter(DIK_T) || m_iCurrentHp <= 0)
+		&& m_iState != STATE_DEAD)
 	{
-		m_iPhaseState |= CPlayer::PHASE_DEAD;	
-		m_iState = STATE_DEAD;	
+		m_iPhaseState = 0;
+		m_iPhaseState |= CPlayer::PHASE_DEAD;
+		m_iState = STATE_DEAD;
 	}
 #pragma endregion 
 
@@ -447,8 +467,9 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & PHASE_PARRY)
 		&& !(m_iPhaseState & PHASE_DASH)
 		&& !(m_iPhaseState & PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.		
 		m_iPhaseState |= CPlayer::PHASE_HEAL;
 		m_iPotionCount--;	 // 포션 수 감소 
 		m_iState = STATE_HEAL;
@@ -463,8 +484,10 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& m_iState != STATE_ATTACK_LONG_CLAW_02
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+
 		if ((m_iState == STATE_PARRY_L ||
 			((m_iState == STATE_PARRY_DEFLECT_L || (m_iState == STATE_PARRY_DEFLECT_L_UP))))
 			&& m_pModel->Get_CurrentAnmationTrackPosition() > 20.f) // 패링 2번째 모션				
@@ -508,7 +531,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
 		&& m_iState != STATE_PARRY_L
 		&& m_iState != STATE_PARRY_R
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
 #pragma region 대쉬 
 		if (m_pGameInstance->isKeyEnter(DIK_SPACE))
@@ -572,8 +595,23 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				|| (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))
 			&& !(m_iPhaseState & PHASE_DASH))
 		{
-			m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
-			m_iState = STATE_RUN;
+			// Sprint 추가 
+			if (m_pGameInstance->isKeyEnter(DIK_LSHIFT))
+			{
+				m_iPhaseState ^= PHASE_SPRINT;
+			}
+
+			if (m_iPhaseState & PHASE_SPRINT)
+			{
+				m_pStateMgr->Get_VecState().at(64)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_SPRINT;
+			}
+
+			else
+			{
+				m_pStateMgr->Get_VecState().at(1)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+				m_iState = STATE_RUN;
+			}
 		}
 
 		else
@@ -583,6 +621,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				&& m_iState != STATE_PARRY_R
 				&& !(m_iPhaseState & PHASE_PARRY))
 			{
+				m_iPhaseState &= ~PHASE_SPRINT;
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
 
@@ -596,15 +635,17 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 #pragma region 락온모드 8방향 이동 
 	if (!(m_iPhaseState & PHASE_FIGHT)
 		&& (m_iPhaseState & PHASE_LOCKON)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)	
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)	
-		&& !(m_iPhaseState & PHASE_PARRY)	
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & PHASE_PARRY)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_DEAD)
 		&& m_iState != STATE_PARRY_L
 		&& m_iState != STATE_PARRY_R
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))	
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
 	{
+		//m_iPhaseState &= ~PHASE_SPRINT;	 // 락온 상태일 때는 스프린트 해제 시킴.	
+
 		/* 두 키입력이 동시에 들어왔을 때 */
 		if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)))   // WA	
 			|| ((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D)))  // WD
@@ -619,12 +660,14 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(10)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_FL;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제
 			}
 			else if (((m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))) //WD
 				&& m_bNextStateCanPlay)
 			{
 				m_pStateMgr->Get_VecState().at(9)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_FR;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 
 			else if (((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S)) && (m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A))) //SA
@@ -632,6 +675,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(12)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_BL;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 
 
@@ -640,6 +684,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(11)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_BR;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제		
 			}
 
 
@@ -648,6 +693,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제				
 			}
 
 			else if (((m_pGameInstance->isKeyEnter(DIK_A) || m_pGameInstance->isKeyPressed(DIK_A)) && (m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))) //AD
@@ -655,6 +701,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_IDLE;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 
 		}
@@ -673,14 +720,23 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 					m_pStateMgr->Get_VecState().at(10)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 
 					m_iState = STATE_LOCK_ON_RUN_FL;
-
+					m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제				
 				}
 
 				else
 				{
-					m_pStateMgr->Get_VecState().at(14)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+					if (m_iPhaseState & PHASE_SPRINT)
+					{
+						m_pStateMgr->Get_VecState().at(64)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 
-					m_iState = STATE_RUN;
+						m_iState = STATE_SPRINT;
+					}
+					else
+					{
+						m_pStateMgr->Get_VecState().at(14)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
+
+						m_iState = STATE_RUN;
+					}
 				}
 			}
 
@@ -689,6 +745,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(8)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_L;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 
 			else if ((m_pGameInstance->isKeyEnter(DIK_D) || m_pGameInstance->isKeyPressed(DIK_D))
@@ -696,6 +753,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(7)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_R;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 
 			else if ((m_pGameInstance->isKeyEnter(DIK_S) || m_pGameInstance->isKeyPressed(DIK_S))
@@ -703,6 +761,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(13)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_LOCK_ON_RUN_B;
+				m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 			}
 		}
 
@@ -712,6 +771,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(18)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_F;
 			m_bNextStateCanPlay = false;
+			m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 
 		}
 
@@ -721,6 +781,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(16)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_L;
 			m_bNextStateCanPlay = false;
+			m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 
 		}
 
@@ -730,6 +791,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(17)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_R;
 			m_bNextStateCanPlay = false;
+			m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 
 		}
 
@@ -738,6 +800,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_pStateMgr->Get_VecState().at(15)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_LOCK_ON_EVADE_B;
 			m_bNextStateCanPlay = false;
+			m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 
 		}
 
@@ -757,6 +820,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		{
 			m_pStateMgr->Get_VecState().at(0)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 			m_iState = STATE_IDLE;
+			m_iPhaseState &= ~PHASE_SPRINT; // 스프린트 해제	
 		}
 
 	}
@@ -801,7 +865,7 @@ void CPlayer::Can_Move()
 		|| m_iState == STATE_CATCHED
 		|| m_iState == STATE_VARG_RUN_EXECUTION
 		|| m_iPhaseState & PHASE_LADDER
-		|| m_iPhaseState & PHASE_EXECUTION)	
+		|| m_iPhaseState & PHASE_EXECUTION)
 	{
 		m_bMove = true;
 	}
@@ -833,27 +897,27 @@ void CPlayer::Update(_float fTimeDelta)
 		/* 2월 19일 추가 코드 */
 		if (!m_pNavigationCom->isMove(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
 		{
-			_float4x4 PreMatirx = {};	
+			_float4x4 PreMatirx = {};
 			_vector PrePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-			XMStoreFloat4x4(&PreMatirx, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));	
-			const _float4x4* Const_PreMatirx = const_cast<_float4x4*>(&PreMatirx);	
-			m_pTransformCom->Set_MulWorldMatrix(Const_PreMatirx);	
+			XMStoreFloat4x4(&PreMatirx, XMMatrixInverse(nullptr, XMLoadFloat4x4(m_pRootMatrix)));
+			const _float4x4* Const_PreMatirx = const_cast<_float4x4*>(&PreMatirx);
+			m_pTransformCom->Set_MulWorldMatrix(Const_PreMatirx);
 
 			// Pretest 와 test2 의 변위량 구해서 넣어놓기
 			_vector Curtest = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-			_float MoveSpeed = XMVectorGetX(XMVector3Length(PrePos - Curtest));	
+			_float MoveSpeed = XMVectorGetX(XMVector3Length(PrePos - Curtest));
 
-			/* 루트 애니메이션의 이동량 만큼만 슬라이딩 할 수 있게 설정하기*/	
-			m_pTransformCom->Sliding_Root_Ani(fTimeDelta * 0.01f, m_pNavigationCom, MoveSpeed);		
+			/* 루트 애니메이션의 이동량 만큼만 슬라이딩 할 수 있게 설정하기*/
+			m_pTransformCom->Sliding_Root_Ani(fTimeDelta * 0.01f, m_pNavigationCom, MoveSpeed);
 		}
 	}
 
 	_vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if (!(m_iPhaseState & PHASE_LADDER))	
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));	
+	if (!(m_iPhaseState & PHASE_LADDER))
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
 
 	__super::Update(fTimeDelta);
 
@@ -896,7 +960,7 @@ HRESULT CPlayer::Ready_Components(void* _pArg)
 	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),		 // 이걸 나중에 Current Scene으로 바꿔야할듯 
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))		
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
 		return E_FAIL;
 
 
@@ -927,7 +991,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 
 	BodyDesc.iCurLevel = pDesc->iCurLevel;
 
-	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_STATIC, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))	
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Body"), LEVEL_STATIC, TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
 		return E_FAIL;
 
 	m_pModel = dynamic_cast<CModel*>(Find_PartObject_Component(TEXT("Part_Body"), TEXT("Com_Model")));
@@ -1092,7 +1156,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	/* 왼손 무기를 만든다. */
 	CLeftWeapon::WEAPON_DESC		LeftWeaponDesc{};
 
-	LeftWeaponDesc.pParent = this;	
+	LeftWeaponDesc.pParent = this;
 	LeftWeaponDesc.pParentState = &m_iState;
 	LeftWeaponDesc.pParentPhaseState = &m_iPhaseState;
 	LeftWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_l"); /* 캐릭터 모델마다 다름 */
@@ -1110,10 +1174,10 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	/* 오른쪽 손톱 무기를 만든다. */
 	CClawWeapon::WEAPON_DESC		RightClawWeaponDesc{};
 
-	RightClawWeaponDesc.pParent = this;	
+	RightClawWeaponDesc.pParent = this;
 	RightClawWeaponDesc.pParentModel = m_pModel;
 	RightClawWeaponDesc.pParentState = &m_iState;
-	RightClawWeaponDesc.pParentPhaseState = &m_iPhaseState;	
+	RightClawWeaponDesc.pParentPhaseState = &m_iPhaseState;
 	RightClawWeaponDesc.pSocketMatrix = pBodyModelCom->Get_BoneMatrix("weapon_r"); /* 캐릭터 모델마다 다름 */
 	RightClawWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	RightClawWeaponDesc.fSpeedPerSec = 0.f;
@@ -1211,7 +1275,8 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			m_iPhaseState &= ~CPlayer::PHASE_IDLE;     // 3월 19일
 			m_iPhaseState &= ~CPlayer::PHASE_DASH;     // 3월 19일
 			m_iPhaseState &= ~CPlayer::PHASE_EXECUTION;	  // 3월 19일 
-			m_iPhaseState &= ~CPlayer::PHASE_HEAL;	
+			m_iPhaseState &= ~CPlayer::PHASE_HEAL;
+			m_iPhaseState &= ~CPlayer::PHASE_SPRINT;
 
 
 			if (!(m_iPhaseState & PHASE_DEAD))
@@ -1222,12 +1287,12 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				const _float4x4* ParentMatrix = dynamic_cast<CPartObject*>(_pOther)->Get_ParentWorldMatrix();
 				fMonsterLookDir = { ParentMatrix->_31,ParentMatrix->_32,ParentMatrix->_33,0.f };
 
-				
+
 				/* 데미지 안받기 위해 */
 				//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
 				//if (m_iCurrentHp <= 0)
 				//	m_iCurrentHp = 0;
-				
+
 
 				switch (dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State())
 				{
@@ -1336,14 +1401,14 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					m_pStateMgr->Get_VecState().at(55)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					break;
 				}
-				case Player_Hitted_State::PLAYER_HURT_MAGICIAN_CATCH:		
+				case Player_Hitted_State::PLAYER_HURT_MAGICIAN_CATCH:
 				{
 					m_iState = CPlayer::STATE_MAGICIAN_CATCH;  // 63												
 					/* 몬스터 공격 방향 */
-					m_pStateMgr->Get_VecState().at(63)->Set_MonsterLookDir(fMonsterLookDir);	
+					m_pStateMgr->Get_VecState().at(63)->Set_MonsterLookDir(fMonsterLookDir);
 					//m_pStateMgr->Get_VecState().at(63)->Set_GetMonsterPos(fMonsterPos);		
 
-					m_pStateMgr->Get_VecState().at(63)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);	
+					m_pStateMgr->Get_VecState().at(63)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
 					break;
 				}
@@ -1672,6 +1737,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_ATTACK_L4,
 		STATE_ATTACK_L5,
 		STATE_LIGHT_EXECUTION_R,
+		STATE_SPRINT_ATTACK_L1,
 	};
 #pragma endregion 
 #pragma region Player Camera State

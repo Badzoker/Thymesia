@@ -113,6 +113,11 @@
 #pragma endregion 
 
 
+#pragma region 플레이어 달리기		
+#include "PlayerSprint.h"	
+#pragma endregion 
+
+
 
 CStateMgr::CStateMgr()
 {
@@ -422,6 +427,14 @@ HRESULT CStateMgr::Initialize()
 	/* 63번 오두르 한테 스킬 맞아서 당하는 모션 */
 	CMagician_LV1_Catched* pMagician_LV1_Catched = CMagician_LV1_Catched::Create();
 	m_vecState.push_back(pMagician_LV1_Catched);
+
+#pragma endregion 
+
+
+#pragma region 플레이어 달리기 모션 
+	/*64번 플레이어 스프린트 달리기 모션 */
+	CPlayerSprint* pPlayerSprint = CPlayerSprint::Create();
+	m_vecState.push_back(pPlayerSprint);
 
 #pragma endregion 
 

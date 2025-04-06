@@ -59,6 +59,8 @@ private:
 	_float			   m_fTime = { 0.f };
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };
+	_float			   m_fZoomBlurDeltaTime = { 0.f };	
+
 	_bool			   m_bHitStopOnOff = { false };
 	_bool              m_bCollisionOn = { false };
 

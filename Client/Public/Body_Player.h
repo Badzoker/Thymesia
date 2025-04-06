@@ -8,7 +8,7 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CNavigation;
-class CTexture; 
+class CTexture;
 END
 
 class CStateMgr;
@@ -63,7 +63,7 @@ public:
 	/* 각 모션에 따른 렌더링 관련 */
 	HRESULT    STATE_NORMAL_Render();
 	HRESULT    STATE_ATTACK_LONG_CLAW_Render();
-	HRESULT    STATE_DEAD_Render();	
+	HRESULT    STATE_DEAD_Render();
 	/* ============================ */
 
 public:
@@ -157,37 +157,37 @@ public:
 	void STATE_HEAL_Method();
 
 	/* 죽음 관련 모션 */
-	void STATE_DEAD_Method();	
+	void STATE_DEAD_Method();
 
 	/* 게임 시작 및 리스폰 시작 모션*/
-	void STATE_START_WALK_Method();	
+	void STATE_START_WALK_Method();
 
 	/* 플레이어 우클릭 차지 공격 */
-	void STATE_CLAW_CHARGE_START_Method();	
-	void STATE_CLAW_CHARGE_LOOP_Method();	
+	void STATE_CLAW_CHARGE_START_Method();
+	void STATE_CLAW_CHARGE_LOOP_Method();
 	void STATE_CLAW_CHARGE_FULL_ATTACK_Method();
-	void STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();	
+	void STATE_CLAW_LONG_PLUNDER_ATTACK2_Method();
 
 
 	/* 스킬 관련 */
-	void STATE_HALBERDS_B_Method();	
-	void STATE_SCYTHE_B_Method();	
-	void STATE_AXE_Method();	
+	void STATE_HALBERDS_B_Method();
+	void STATE_SCYTHE_B_Method();
+	void STATE_AXE_Method();
 	void STATE_CANE_SWORD_SP02_Method();	/* 플레이어 지팡이 스킬 */
 	void STATE_GREATSWORD_Method();			/* 플레이어 대검 스킬 */
 	void STATE_JAVELIN_SWORD_Method();		/* 플레이어 자벨린 스킬 */
 
 	/* 플레이어 잡히는 모션 */
-	void STATE_CATCHED_Method();	
+	void STATE_CATCHED_Method();
 
 	/* 플레이어 잡히고 일어서는 모션*/
-	void STATE_GET_UP_Method();	
+	void STATE_GET_UP_Method();
 
-	/* 바그에게 뛰어가기 전 모션 */	
-	void STATE_VARG_STUN_EXECUTE_START_R_Method();	
+	/* 바그에게 뛰어가기 전 모션 */
+	void STATE_VARG_STUN_EXECUTE_START_R_Method();
 
-	/* 바그에게 뛰어가서 처형하는 모션 */	
-	void STATE_VARG_RUN_EXECUTION_Method();	
+	/* 바그에게 뛰어가서 처형하는 모션 */
+	void STATE_VARG_RUN_EXECUTION_Method();
 
 	/* 노말 몬스터 처형*/
 	void STATE_LIGHT_EXECUTION_R_Method();
@@ -215,33 +215,35 @@ public:
 	void STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START_Method();
 
 	/* (오두르) 매지션 LV_1 처형 컷신 */
-	void STATE_MAGICIAN_Execution_Method();	
+	void STATE_MAGICIAN_Execution_Method();
 
 	/* (변이된 오두르) 처형 컷신 */
 	void STATE_MAGICIAN_MUTATION_Execution_Method();
 
 	/* 그레이스 처형 컷신 */
-	void STATE_GRACE_Execution_Method();	
+	void STATE_GRACE_Execution_Method();
 
 	/* 펀치맨 처형 컷신 */
-	void STATE_PUNCH_MAN_Execution_Method();	
+	void STATE_PUNCH_MAN_Execution_Method();
 
 	/* 오두르 스킬에 맞아서 잡히는 모션 */
-	void STATE_MAGICIAN_CATCH_Method();	
+	void STATE_MAGICIAN_CATCH_Method();
 
+	void STATE_SPRINT_Method();
 
+	void STATE_SPRINT_ATTACK_L1_Method();
 
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };	
+	CTexture* m_pTextureCom = { nullptr };
 	CCamera_Free* m_pCamera = { nullptr };
 	CGameObject* m_pParent = { nullptr };
 
 	_float							m_fAnimSpeed = 1.f;
-	_float						    m_fTimeDelta = {};	
-	_float							m_fZoomBlurDeltaTime = {};	
+	_float						    m_fTimeDelta = {};
+	_float							m_fZoomBlurDeltaTime = {};
 
 	_float							m_fHitStopTime = {};
 private:
@@ -260,20 +262,22 @@ private:
 
 	_bool  m_bParryStopOnOff = { true };
 
-	_float m_fDissolveAmount = {};	
-	_float m_fDeadTimer      = {};		
-	_float m_fFinishTime     = {};		
-	_float m_fDeadStartTimer = {};		
+	_float m_fDissolveAmount = {};
+	_float m_fDeadTimer = {};
+	_float m_fFinishTime = {};
+	_float m_fDeadStartTimer = {};
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
-	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States                = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States         = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States      = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States        = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States       = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States          = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States   = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States       = { nullptr };
 
 
 public:

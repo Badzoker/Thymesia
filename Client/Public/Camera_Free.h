@@ -81,7 +81,7 @@ private:
 	_float*             m_fPlayerPosition = { nullptr };
 	_float				m_fMouseSensor = {};
 	_float				m_fLerpTime = { 0.06f };
-	_float				m_fCamCloseLimitDistance = { 2.5f };
+	_float				m_fCamCloseLimitDistance = { 2.0f };
 	_float				m_fCamDistance = { 3.5f };
 	_float				m_fCamFarLimitDistance = { 4.5f };
 	_float				m_fCurCamDistance = { 3.5f };

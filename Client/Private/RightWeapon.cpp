@@ -61,6 +61,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
 
     return S_OK;
 
@@ -104,14 +105,10 @@ void CRightWeapon::Update(_float fTimeDelta)
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                            && m_bCollisionOn)
+                        if (m_bCollisionOn)
                             m_pGameInstance->Add_Actor_Scene(m_pActor);  // 4타 때가 문제.   
 
-                        else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드     
-                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                            && !m_bCollisionOn)
+                        else
                             m_pGameInstance->Sub_Actor_Scene(m_pActor);
                     }
 
@@ -135,7 +132,8 @@ void CRightWeapon::Update(_float fTimeDelta)
                         {
                             m_fZoomBlurTime += fTimeDelta;
                             m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
-                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurTime * 0.2f);
+                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurTime * 0.15f);
+                            m_pCamera->ShakeOn(400.f, 400.f, 3.f, 3.f);
                         }
 
                         else if (iter.isEventActivate == false && m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
@@ -310,6 +308,9 @@ HRESULT CRightWeapon::Hit_Slow()
             break;
         case CPlayer::STATE_ATTACK_L5:
             m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.6f);
+            break;
+        case CPlayer::STATE_SPRINT_ATTACK_L1:
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.f);
             break;
         }
     }
