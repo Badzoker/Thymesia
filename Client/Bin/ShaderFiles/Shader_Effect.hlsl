@@ -35,7 +35,10 @@ float g_fMaxTimer;
 
 
 
-
+float4 g_ModelPosition;
+float g_fExplosionPower;
+float g_fFallingTime;
+float g_fModelHeightCenterY;
 
 
 
@@ -636,11 +639,8 @@ PS_OUT_GLOW PS_MAIN_REVERSE(PS_IN In)
 
 //============================================ 추가 합니다. DESTRUCT 관련 부분 VS , GS , PS 는 요기서부터 쓸게요 (불만이라도?) ============================================ 
 
-float4 g_ModelPosition;
-float g_fExplosionPower;
-float g_fFallingTime;
-float g_fModelHeightCenterY;
 
+float g_fGravity = -9.8f;
 
 // ============================================================= DESTRUCT 버텍스 쉐이더 부문 =============================================================
 struct VS_IN_DESTRUCT
@@ -706,7 +706,7 @@ struct GS_OUT_DESTRUCT
     float2 vTexcoord : TEXCOORD0;
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
-    float fDissolve : TEXCOORD3;                // 아 ㅋㅋ 저는 PS에서 디졸브 줄려고 썻엇는데 일단 그대로 복붙요 ㅋㅋ
+    //float fDissolve : TEXCOORD3;                // 아 ㅋㅋ 저는 PS에서 디졸브 줄려고 썻엇는데 일단 그대로 복붙요 ㅋㅋ
 	
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
@@ -836,16 +836,6 @@ PS_OUT_DESTRUCT PS_MAIN_DESTRUCT(PS_IN_DESTRUCT In)
 
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 	
-    //if (In.fDissolve > 0.1f)
-    //{
-    //    float vDissolveAlpha = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
-
-    //    if (vDissolveAlpha < g_DissolveAmount)
-    //    {
-    //        clip(-1);
-    //    }
-    //}
-    
     if (vMtrlDiffuse.a < 0.1f)
         discard;
 	
