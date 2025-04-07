@@ -329,7 +329,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Camera(const _tchar* pLayerTag)
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 {
 
-    Load_MonsterIndex(6);
+    Load_MonsterIndex(7);
 
     CGameObject::GAMEOBJECT_DESC pDesc = {};
 

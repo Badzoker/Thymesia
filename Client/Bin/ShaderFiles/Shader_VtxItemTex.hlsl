@@ -94,7 +94,7 @@ technique11 DefaultTechnique
 	pass DefaultPass
 	{
         SetRasterizerState(Rs_Cull_NONE);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_Skip_ITEMZ, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
