@@ -33,6 +33,13 @@ float g_fTexcoordLerpY;
 
 float g_fMaxTimer;
 
+
+
+
+
+
+
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -622,6 +629,222 @@ PS_OUT_GLOW PS_MAIN_REVERSE(PS_IN In)
     return Out;
 }
 
+
+
+
+
+
+//============================================ 추가 합니다. DESTRUCT 관련 부분 VS , GS , PS 는 요기서부터 쓸게요 (불만이라도?) ============================================ 
+
+float4 g_ModelPosition;
+float g_fExplosionPower;
+float g_fFallingTime;
+float g_fModelHeightCenterY;
+
+
+// ============================================================= DESTRUCT 버텍스 쉐이더 부문 =============================================================
+struct VS_IN_DESTRUCT
+{
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float3 vTangent : TANGENT;
+};
+
+struct VS_OUT_DESTRUCT
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+	
+    float4 vTangent : TEXCOORD3;
+    float4 vBinormal : TEXCOORD4;
+};
+
+
+VS_OUT_DESTRUCT VS_MAIN_DESTRUCT(VS_IN_DESTRUCT In)
+{
+    VS_OUT_DESTRUCT Out = (VS_OUT_DESTRUCT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), matWV));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
+	
+    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f);
+	
+    return Out;
+}
+
+// ============================================================= DESTRUCT 지오메트리 쉐이더 부문 =============================================================
+
+struct GS_IN_DESTRUCT
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+	
+    float4 vTangent : TEXCOORD3;
+    float4 vBinormal : TEXCOORD4;
+};
+
+struct GS_OUT_DESTRUCT
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+    float fDissolve : TEXCOORD3;                // 아 ㅋㅋ 저는 PS에서 디졸브 줄려고 썻엇는데 일단 그대로 복붙요 ㅋㅋ
+	
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
+};
+
+#define PARTS_COUNT 12 // 13 부터 안되던데요..?ㄹㅇㅋ;;
+[maxvertexcount(3 * PARTS_COUNT)]
+void GS_MAIN_MAGNITUDE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_OUT_DESTRUCT> triStream)
+{
+    for (int iPartIndex = 0; iPartIndex < PARTS_COUNT; ++iPartIndex)
+    {
+        // 2 * PI = (6.28) * ( 0 ~ 1) 이고..
+        // 그럼 0 부터... 6.28 을 에 360도를 몇 조각 파트로 나눈 걸 곱해서 라디안 값 0.5...~의 소숫점 라디안값
+        // 이 소숫점 값들은 라디안으로 22.5도 ~ 45도 뭐 이런식으로 
+        
+        float fAngle = (2.0f * 3.141592f) * (iPartIndex / (float) PARTS_COUNT);
+        
+        // cos(angle)-> cos(0.6) 0.6 라디안 (각도 : 34.3775도 에 대한 cos값을 구함) 
+        // -0.99617263967 ipartIndex 가 12 면? 대충 -1  / 0 이면? 1 이되니 얼추 -1 ~ 1 이 되네.
+        // sin도 킹찬가지
+        
+        // 방향 벡터 ( - 1 ~ 1 ) 계산 된 것. PARTS_COUNT 만 큼
+        float3 vMoveDir = normalize(float3(cos(fAngle), 1.0f, sin(fAngle)));
+        
+        // 방향 벡터 * g_fExplosionPower 한 만큼 [[모델 이동량]] ( 좀 가로로 넓게 퍼집니다 뒤에 1.5 이런거 조절하면 ㅇㅇ)
+        float3 vMoveValue = vMoveDir * (g_fExplosionPower * 1.5f);
+
+        // 떨어지는 시간 (중력 가속도 식 : V * t - (0.5 * g * t ^ 2) 에서의 t값) -> fTimeDelta ++ 한 거를 받아옵니다.
+        float fFallingTime = g_fFallingTime;
+        
+        // 이것은 중력 값.
+        float fGravityPower = -9.8f;
+        
+        // 이것은 초기 튀어오르는 속도 값인데, 에.. 이것도 툴에서 조절해주면 초기에 얼마나 높이 튀어오를까 미세컨 가능하지 않을까 싶네요ㅇㅈ?
+        float fInitialPopVelocity = 1.2f;
+        
+        // 떨궈지는 값 을 이제 아까 vMoveDir [[모델 이동량]] 에서 += 해주면, (사실상 += 인데 음수값이니 떨어짐)
+        float fFallingValue = (fInitialPopVelocity * fFallingTime) + (0.4f * fGravityPower * fFallingTime * fFallingTime);
+        vMoveValue.y += fFallingValue;
+
+        // 회전축 설정 이 새끼도 그 PART_COUNT 갯수 맞춰서 계산된 걸로 아까 위의, vMoveDir 과 진짜 킹찬가지.
+        float3 vRotationAxis = normalize(float3(cos(fAngle), 0.5f, sin(fAngle)));
+
+        // 이것은 이제 모델 개개인이, (모델 원형 1개든,PARTS_COUNT 만큼 복제된 모델이든, 지가 돌아버리는 속도값)
+        float fRotationSpeed = 30.0f;
+        
+        // 여기서부터는 씹드리게스 회전 행렬 공식 적용. ( 짐벌락, 보간 등등 된다네요 ) 
+        // 걍 여기선 걍 행렬 식 보고 그대로 베껴씁니다;
+        float fRotationAngle = g_fFallingTime * fRotationSpeed;
+        float fCosAngle = cos(fRotationAngle);
+        float fSinAngle = sin(fRotationAngle);
+
+        float x = vRotationAxis.x;
+        float y = vRotationAxis.y;
+        float z = vRotationAxis.z;
+        float3x3 matRotation =
+        {
+            fCosAngle + ((x * x) * (1 - fCosAngle)), (1 - fCosAngle) * x * y - fSinAngle * z, (1 - fCosAngle) * x * z + fSinAngle * y,
+            (1 - fCosAngle) * x * y + fSinAngle * z, fCosAngle + ((y * y) * (1 - fCosAngle)), (1 - fCosAngle) * y * z - fSinAngle * x,
+            (1 - fCosAngle) * x * z - fSinAngle * y, (1 - fCosAngle) * y * z + fSinAngle * x, fCosAngle + ((z * z) * (1 - fCosAngle))
+        };
+        
+        
+        // 이제 모델 의 정점 [0] [1] [2] 3개를 픽셀 쉐이더로 보낼 준비해요.
+        for (int i = 0; i < 3; ++i)
+        {
+            GS_OUT_DESTRUCT Out = (GS_OUT_DESTRUCT) 0;
+
+            Out.vTexcoord = input[i].vTexcoord;
+            Out.vNormal = input[i].vNormal;
+            Out.vTangent = input[i].vTangent;
+            Out.vBinormal = input[i].vBinormal;
+
+            // 정점이 모델의 중심점 기준으로 움직여야해서 회전 기준점을 모델 중심으로 잡아요
+            // 모델 중심 기준으로 현재의 정점이 얼마나 떨어져 있는지에 대한 느낌, 
+            // ex). 아 이번 정점의 월드 위치가 모델의 중심보다 2 정도 옆에 있어.
+            
+            float3 vLocalOffset = input[i].vWorldPos.xyz - g_ModelPosition.xyz;
+            
+            // 위의 그 2에다가 회전을 일단 씹드리게스 회전행렬 공식을 맥여버려요
+            float3 vRotated = mul(vLocalOffset, matRotation);
+            
+            // 그리고 내 실제 모델의 월드 위치에 그 정점 회전 맥인거를 싸악 맥여주면 돌아가요 모델의 중심으로 
+            // 최종적으로, 모델의 월드 위치에 + 회전 된거 + 모델 이동량을 해준 것으로 채워줘요.
+            float3 vFinalPos = g_ModelPosition.xyz + vRotated + vMoveValue;
+
+            // 이제 Out.vWorldPos 에 위치 포지션 담아서 픽쉐로 ㄱㄱ씽!! 
+            Out.vWorldPos = float4(vFinalPos, 1);
+            Out.vPosition = mul(Out.vWorldPos, mul(g_ViewMatrix, g_ProjMatrix));
+            triStream.Append(Out);
+        }
+        
+        // 이제 For문 한 바퀴 끝. 끊어서 다음 모델 복제 준비하자. 앞으로 PARTS_COUNT - 1번 남앗다구.
+        triStream.RestartStrip();
+    }
+}
+
+
+
+// ============================================================= DESTRUCT 픽셀 쉐이더 부문 =============================================================
+
+struct PS_IN_DESTRUCT
+{
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+    float fDissolve : TEXCOORD3;                // ㄹㅇㅋㅋ 
+	
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
+};
+
+struct PS_OUT_DESTRUCT
+{
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
+    float fSpecular : SV_TARGET3;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -733,5 +956,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GLOW_DISAPPEAR();
+    }
+
+
+    pass Pompeii // 10 폼페이 화산 폭발 돌굴라가유 쉐이더 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_DESTRUCT();
+        GeometryShader = compile gs_5_0 GS_MAIN_MAGNITUDE();
+        PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
     }
 }
