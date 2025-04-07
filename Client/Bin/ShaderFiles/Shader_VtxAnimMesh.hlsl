@@ -165,6 +165,11 @@ struct PS_OUT
     float fSpecular : SV_TARGET3;
 };
 
+struct PS_OUT_GLOW
+{
+    float4 vGlow : SV_TARGET0; // ·»´õÅ¸°Ù 0¹ø¿¡ ÀúÀå 
+};
+
 struct PS_IN_SHADOW
 {
     float4 vPosition : SV_POSITION;
@@ -481,9 +486,9 @@ PS_OUT PS_PLAYER_DISSOLVE(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_GHOSEMY(PS_IN In)
+PS_OUT_GLOW PS_GHOSEMY(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
 
     float noise = g_GhostNoiseTexture.Sample(LinearSampler, In.vTexcoord).r;
     float dissolve = saturate(g_DissolveValue - noise);
@@ -504,7 +509,7 @@ PS_OUT PS_GHOSEMY(PS_IN In)
     vResultColor.rgb *= 0.4f;
     vResultColor.a = 0.05f;
 
-    Out.vDiffuse = vResultColor;
+    Out.vGlow = vResultColor;
 
     //float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     //float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;

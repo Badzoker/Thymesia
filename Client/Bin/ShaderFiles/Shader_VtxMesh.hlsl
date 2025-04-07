@@ -748,9 +748,9 @@ PS_OUT PS_Card(PS_IN In)
 }
 
 
-PS_OUT PS_LOCK_LINE(PS_IN In)
+PS_OUT_GLOW PS_LOCK_LINE(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
    
     float2 UV = In.vTexcoord;
     UV.y += g_Time * 0.7f;
@@ -760,8 +760,8 @@ PS_OUT PS_LOCK_LINE(PS_IN In)
     if (vLineTex.a < 0.1f || vLineTex.r < 0.1f || vLineTex.g < 0.1f || vLineTex.b < 0.1f)
         discard;
 
-    Out.vDiffuse.rgb = float3(0.89f, 0.63f, 0.25f);
-    Out.vDiffuse.a = vLineTex.r;
+    Out.vGlow.rgb = float3(0.89f, 0.63f, 0.25f);
+    Out.vGlow.a = vLineTex.r;
  
     return Out;
 }
