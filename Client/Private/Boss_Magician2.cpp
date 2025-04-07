@@ -168,6 +168,9 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	CBody_Magician2::BODY_MAGICIAN2_DESC BodyDesc{};
 	BodyDesc.bMutation_Active = &m_bIntro_Mutation_Active;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	BodyDesc.pParentState = &m_iMonster_State;
+	BodyDesc.bMutation_Active = &m_bIntro_Mutation_Active;
+	BodyDesc.bDead = &m_bDead;
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
 
@@ -486,7 +489,6 @@ void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
 	m_iIndex = 24;
 	pObject->m_iMonster_State = STATE_STUN;
 	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN;
-	pObject->m_bMove = true;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->RotateDegree_To_Player();
 
@@ -499,16 +501,17 @@ void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 24 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 23;
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 	}
-	if (m_iIndex == 23 && (*pObject->m_Player_State) == CPlayer::STATE_MAGICIAN_MUTATION_Execution)
+	if ((m_iIndex == 23 || m_iIndex == 24) &&
+		pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex &&
+		(*pObject->m_Player_State) == CPlayer::STATE_MAGICIAN_MUTATION_Execution)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::ExeCution_State(), pObject);
 	}
-
 }
 
 void CBoss_Magician2::Stun_State::State_Exit(CBoss_Magician2* pObject)
@@ -520,7 +523,6 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 0;
 	pObject->m_iMonster_State = STATE_EXECUTION;
-	pObject->m_bMove = true;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 
@@ -532,8 +534,13 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 	vPlayerLook = XMVector3Normalize(vPlayerLook);
 
 	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
 	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-	pObject->RotateDegree_To_Player();
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
+
+	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -542,9 +549,8 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 {
 	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
-		pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
-		pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
-		//pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
+		//사실 여기로 들어오면 그냥 죽은거임 ㅇㅇ	
+		pObject->m_iMonster_State = STATE_DEAD;
 	}
 }
 
@@ -826,6 +832,7 @@ void CBoss_Magician2::Attack_ComboG::State_Enter(CBoss_Magician2* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iMonster_Attack_Power = 29;
+	pObject->m_bCan_Move_Anim = true;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -868,6 +875,7 @@ void CBoss_Magician2::Attack_ComboG::State_Update(_float fTimeDelta, CBoss_Magic
 
 void CBoss_Magician2::Attack_ComboG::State_Exit(CBoss_Magician2* pObject)
 {
+	pObject->m_bCan_Move_Anim = false;
 }
 
 void CBoss_Magician2::Attack_ComboH::State_Enter(CBoss_Magician2* pObject)

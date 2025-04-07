@@ -45,6 +45,10 @@ HRESULT CProjectile_Card::Initialize(void* pArg)
 void CProjectile_Card::Priority_Update(_float fTimeDelta)
 {
     __super::Priority_Update(fTimeDelta);
+    if (m_bIsFire)
+        m_pGameInstance->Add_Actor_Scene(m_pActor);
+    else
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
 
 void CProjectile_Card::Update(_float fTimeDelta)

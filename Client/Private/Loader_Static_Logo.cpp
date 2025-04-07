@@ -26,6 +26,7 @@
 #include "Weapon_Magician_Sword.h"
 #include "Weapon_Magician2_Sword.h"
 #include "Weapon_Urd_Sword.h"
+#include "Stand_Stack_Sword.h"
 
 #include "Projectile_Card.h"
 #include "Projectile_Intro_Card.h"
@@ -555,7 +556,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Varg::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	////우르드
+	//우르드
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Urd_Body"),
@@ -573,6 +574,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Sword"),
 		CWeapon_Urd_Sword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Stack_Sword"),
+		CStand_Stack_Sword::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"),

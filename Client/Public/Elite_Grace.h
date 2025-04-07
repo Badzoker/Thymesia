@@ -52,6 +52,7 @@ private:
 	_uint                            m_iFarPatternIndex = {};
 	_uint							 m_iSpawn_Cell_Index = {};
 	_uint					         m_iHit_Motion_Index = {};
+	_uint						     m_iParryReadyHits = {};
 private:
 	CState_Machine<CElite_Grace>* m_pState_Manager = { nullptr };
 
@@ -220,6 +221,8 @@ public:
 		void State_Enter(CElite_Grace* pObject) override;
 		void State_Update(_float fTimeDelta, CElite_Grace* pObject) override;
 		void State_Exit(CElite_Grace* pObject) override;
+	private:
+		_bool m_bIs_Fired = {};
 	};
 
 	class Shoot_Attack_A : public CStates<CElite_Grace>

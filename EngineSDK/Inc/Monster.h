@@ -74,7 +74,7 @@ protected:
 	_float4                          m_vSpawnPoint = {};
 
 	_bool                            m_bIsClosest = {};
-	_bool							 m_bMove = true;
+	_bool							 m_bNot_Need_Root = {};
 	_bool                            m_bActive = {};
 	_bool                            m_bRender = {};
 	_bool                            m_bCanRecovery = {};

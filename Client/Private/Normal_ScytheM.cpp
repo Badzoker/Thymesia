@@ -33,6 +33,7 @@ HRESULT CNormal_ScytheM::Initialize(void* pArg)
     m_fRootDistance = 1.f;
     m_fSpawn_Distance_Max = 10.f;
     m_fActive_Distance = 5.f;
+    m_iParryReadyHits = 3;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -196,7 +197,45 @@ void CNormal_ScytheM::PatternCreate()
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CNormal_ScytheM::Parry_State(), this);
+            }
+            else
+            {
+                _uint iRandom = rand() % 3;
+                switch (iRandom)
+                {
+                case 0:
+                    m_pState_Manager->ChangeState(new Attack_ComboA(), this);
+                    break;
+                case 1:
+                    m_pState_Manager->ChangeState(new Attack_ComboB(), this);
+                    break;
+                case 2:
+                    m_pState_Manager->ChangeState(new Attack_ComboC(), this);
+                    break;
+                }
+            }
+        }
+
+        else if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
         {
             _uint iRandom = rand() % 2;
             switch (iRandom)
@@ -246,60 +285,57 @@ void CNormal_ScytheM::Stun()
 
 void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        _uint m_iNoDamage = 1;
-        if (m_iHitCount >= 3.f)
-        {
-            m_iHitCount = 0;
-            m_fDelayTime = 0.f;
-            m_bPatternProgress = true;
-            m_pState_Manager->ChangeState(new Parry_State(), this);
-            m_iNoDamage = 0;
-        }
-        m_fRecoveryTime = 0.f;
-        m_bCanRecovery = false;
+        if (m_iHitCount >= m_iParryReadyHits)
+            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack * 0.5f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f * m_iNoDamage;
-        if (m_bCanHit)
+        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
+
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+        }
+        else
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
+        }
+
+        if (m_bCanHit &&
+            m_fMonsterCurHP > 0.f &&
+            m_iHitCount < m_iParryReadyHits)
         {
             _uint iRandom = rand() % 2;
             while (true)
             {
                 if (iRandom == m_iHit_Motion_Index)
-                {
                     iRandom = rand() % 2;
-                }
                 else
                 {
                     m_iHit_Motion_Index = iRandom;
                     break;
                 }
             }
-
-            m_iHitCount += 1;
             m_pState_Manager->ChangeState(new CNormal_ScytheM::Hit_State(m_iHit_Motion_Index), this);
         }
     }
+
+
+
+
 }
 
 void CNormal_ScytheM::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) &&
-        m_iMonster_State != STATE_STUN &&
-        m_iMonster_State != STATE_EXECUTION &&
-        m_fMonsterCurHP > 0.f)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CNormal_ScytheM::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CNormal_ScytheM* CNormal_ScytheM::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -341,6 +377,7 @@ void CNormal_ScytheM::Intro_State::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 22;
 
+    pObject->m_bCanHit = true;
     pObject->m_bActive = true;
     pObject->m_bFirstActive = true;
     pObject->m_bPatternProgress = true;
@@ -368,6 +405,7 @@ void CNormal_ScytheM::Intro_State::State_Exit(CNormal_ScytheM* pObject)
 void CNormal_ScytheM::Idle_State::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 14;
+    pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
@@ -385,13 +423,14 @@ void CNormal_ScytheM::Idle_State::State_Update(_float fTimeDelta, CNormal_Scythe
 
 void CNormal_ScytheM::Idle_State::State_Exit(CNormal_ScytheM* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
 
 #pragma region Move_State
 void CNormal_ScytheM::Move_State::State_Enter(CNormal_ScytheM* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 33;
     else
     {
@@ -409,6 +448,7 @@ void CNormal_ScytheM::Move_State::State_Enter(CNormal_ScytheM* pObject)
             break;
         }
     }
+    pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -419,12 +459,12 @@ void CNormal_ScytheM::Move_State::State_Update(_float fTimeDelta, CNormal_Scythe
 {
     pObject->RotateDegree_To_Player();
 
-    if (pObject->m_fDistance >= 5.f)
+    if (pObject->m_fDistance >= 3.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
 
-    else if (pObject->m_fDistance < 5.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 3.f)
     {
-        if (m_iIndex == 33)
+        if (m_iIndex == 33 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 30)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -445,6 +485,7 @@ void CNormal_ScytheM::Move_State::State_Exit(CNormal_ScytheM* pObject)
 void CNormal_ScytheM::Run_State::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 18;
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_RUN;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
     pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
@@ -459,7 +500,7 @@ void CNormal_ScytheM::Run_State::State_Update(_float fTimeDelta, CNormal_ScytheM
     }
 
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -481,8 +522,8 @@ void CNormal_ScytheM::Run_State::State_Exit(CNormal_ScytheM* pObject)
 void CNormal_ScytheM::Stun_State::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 13;
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_State = STATE_STUN;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -497,31 +538,37 @@ void CNormal_ScytheM::Stun_State::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Stun_State::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
-    if (m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
+
+    if (m_iIndex == 12 && iCurrentAnimIndex == m_iIndex)
+    {
         m_fTime += fTimeDelta;
 
-
-    if (m_iIndex == 13 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
-    {
-        m_iIndex = 12;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (m_fTime >= 5.f)
+        {
+            m_iIndex = 11;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+        }
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
     }
-
-    if (m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_fTime >= 5.f)
+    else if (m_iIndex == 13 && iCurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 11;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 12;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
-
-    if (m_iIndex == 12 &&
-        pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex &&
-        *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE &&
-        pObject->m_bIsClosest)
-    {
-        pObject->m_pState_Manager->ChangeState(new CNormal_ScytheM::Execution_State(), pObject);
-    }
-
-    if (m_iIndex == 11 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 11 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
@@ -533,6 +580,7 @@ void CNormal_ScytheM::Stun_State::State_Update(_float fTimeDelta, CNormal_Scythe
 
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
     }
+
 }
 
 void CNormal_ScytheM::Stun_State::State_Exit(CNormal_ScytheM* pObject)
@@ -558,10 +606,10 @@ void CNormal_ScytheM::Hit_State::State_Enter(CNormal_ScytheM* pObject)
         m_iIndex = 10;
         break;
     }
+    pObject->m_iHitCount++;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_HIT;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -620,6 +668,7 @@ void CNormal_ScytheM::Return_To_SpawnPoint_State::State_Exit(CNormal_ScytheM* pO
 void CNormal_ScytheM::NotActive_Idle::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 15;
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
@@ -650,10 +699,10 @@ void CNormal_ScytheM::Execution_State::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 27;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bExecution_Start = false;
+    pObject->m_bCanHit = false;
 
     _float teleportDistance = 1.f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
@@ -664,8 +713,9 @@ void CNormal_ScytheM::Execution_State::State_Enter(CNormal_ScytheM* pObject)
 
     _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
 
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-    pObject->RotateDegree_To_Player();
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
@@ -720,6 +770,7 @@ void CNormal_ScytheM::Parry_State::State_Exit(CNormal_ScytheM* pObject)
 void CNormal_ScytheM::Attack_ComboA::State_Enter(CNormal_ScytheM* pObject)
 {
     m_iIndex = 0;
+    pObject->m_bCanHit = true;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_Attack_Power = 95;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_ATTACK;

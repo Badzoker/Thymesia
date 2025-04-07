@@ -31,7 +31,6 @@ public:
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
 	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters() { return m_pCheck_Monsters; }
-	//_bool   Get_Monster_Dead(MONSTER_CATEGORY eCategory, _uint iMonsterIndex) { return m_pMonsters[eCategory][iMonsterIndex]->Get_Dead(); }
 	void Set_Boss_Dead(_bool bCheck) { m_bStage_Boss_Dead = bCheck; };
 	_bool Get_Boss_Dead()const { return m_bStage_Boss_Dead; }
 

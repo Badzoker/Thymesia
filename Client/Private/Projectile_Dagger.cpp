@@ -48,6 +48,10 @@ HRESULT CProjectile_Dagger::Initialize(void* pArg)
 void CProjectile_Dagger::Priority_Update(_float fTimeDelta)
 {
     __super::Priority_Update(fTimeDelta);
+    if (m_bIsFire)
+        m_pGameInstance->Add_Actor_Scene(m_pActor);
+    else
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }
 
 void CProjectile_Dagger::Update(_float fTimeDelta)

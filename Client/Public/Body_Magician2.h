@@ -16,7 +16,9 @@ class CBody_Magician2 final : public CPartObject
 public:
 	struct BODY_MAGICIAN2_DESC : public CPartObject::PARTOBJECT_DESC
 	{
+		const _uint* pParentState = { nullptr };
 		_bool* bMutation_Active = { nullptr };
+		_bool* bDead = {};
 	};
 
 private:
@@ -38,10 +40,14 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 private:
-	_bool* m_bDead = {};
-	_bool* m_bMutation_Active = {};
+	_bool* m_bDead = { nullptr };
+	_bool* m_bMutation_Active = { nullptr };
 private:
 	_uint m_iPassNum = {};
+	const _uint* m_pParentState = { nullptr };
+
+	_float			   m_fDeadTimer = {};
+	_float			   m_fFinishTime = {};
 
 public:
 	HRESULT Ready_Components();

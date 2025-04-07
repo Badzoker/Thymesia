@@ -33,6 +33,7 @@ HRESULT CElite_Grace::Initialize(void* pArg)
     m_fSpawn_Distance_Max = 15.f;
     m_fActive_Distance = 5.f;
     m_fDagger_Delete_Time = 2.f;
+    m_iParryReadyHits = 3;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -226,10 +227,35 @@ HRESULT CElite_Grace::Ready_PartObjects(void* pArg)
 
 void CElite_Grace::PatternCreate()
 {
-    if (!m_bPatternProgress && m_bActive)
+    if (!m_bPatternProgress && m_bActive && !m_IsStun)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CElite_Grace::Parry_State(), this);
+            }
+            else
+            {
+                Near_Pattern_Create();
+            }
+        }
+        else if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
         {
             if (m_fDistance >= 3.f)
                 Far_Pattern_Create();
@@ -237,6 +263,7 @@ void CElite_Grace::PatternCreate()
                 Near_Pattern_Create();
 
             m_fDelayTime = 0.f;
+            m_bCanHit = false;
             m_bPatternProgress = true;
         }
     }
@@ -310,39 +337,44 @@ void CElite_Grace::Far_Pattern_Create()
 
 void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        _uint m_iNoDamage = 1;
-        if (m_iHitCount >= 3.f)
-        {
-            m_iHitCount = 0;
-            m_fDelayTime = 0.f;
-            m_bPatternProgress = true;
-            m_pState_Manager->ChangeState(new Parry_State(), this);
-            m_iNoDamage = 0;
-        }
-        m_fRecoveryTime = 0.f;
-        m_bCanRecovery = false;
+        if (m_iHitCount >= m_iParryReadyHits)
+            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack / 5.f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= (*m_Player_Attack) / 5.f * 1.5f * m_iNoDamage;
-        if (!m_bPatternProgress)
+        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
+
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+        }
+        else if(!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
+        }
+
+        if (m_bCanHit &&
+            m_iMonster_State != STATE_ATTACK &&
+            m_iMonster_State != STATE_SPECIAL_ATTACK &&
+            m_fMonsterCurHP > 0.f &&
+            m_iHitCount < m_iParryReadyHits)
         {
             _uint iRandom = rand() % 2;
             while (true)
             {
                 if (iRandom == m_iHit_Motion_Index)
-                {
                     iRandom = rand() % 2;
-                }
                 else
                 {
                     m_iHit_Motion_Index = iRandom;
                     break;
                 }
             }
-            m_iHitCount += 1;
             m_pState_Manager->ChangeState(new CElite_Grace::Hit_State(m_iHit_Motion_Index), this);
         }
     }
@@ -351,20 +383,10 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
 void CElite_Grace::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) &&
-        m_iMonster_State != STATE_STUN &&
-        m_iMonster_State != STATE_EXECUTION &&
-        m_fMonsterCurHP > 0.f &&
-        !m_bPatternProgress)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CElite_Grace::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CElite_Grace* CElite_Grace::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -407,6 +429,7 @@ void CElite_Grace::Idle_State::State_Enter(CElite_Grace* pObject)
     m_iIndex = 10;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
+    pObject->m_bCanHit = true;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -421,6 +444,7 @@ void CElite_Grace::Idle_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
 
 void CElite_Grace::Idle_State::State_Exit(CElite_Grace* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion
@@ -429,7 +453,7 @@ void CElite_Grace::Idle_State::State_Exit(CElite_Grace* pObject)
 
 void CElite_Grace::Move_State::State_Enter(CElite_Grace* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 36;
     else
     {
@@ -447,6 +471,7 @@ void CElite_Grace::Move_State::State_Enter(CElite_Grace* pObject)
             break;
         }
     }
+    pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -455,12 +480,12 @@ void CElite_Grace::Move_State::State_Enter(CElite_Grace* pObject)
 
 void CElite_Grace::Move_State::State_Update(_float fTimeDelta, CElite_Grace* pObject)
 {
-    if (pObject->m_fDistance >= 7.f)
+    if (pObject->m_fDistance >= 4.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 7.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 4.f)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 36)
+        if (m_iIndex == 36 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 35)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -484,8 +509,9 @@ void CElite_Grace::Stun_State::State_Enter(CElite_Grace* pObject)
 {
     m_iIndex = 27;
     pObject->m_iMonster_State = STATE_STUN;
-    pObject->m_bMove = true;
+
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bCanHit = false;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
@@ -501,7 +527,7 @@ void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
 {
     const _uint CurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
-    if (m_iIndex == 26 && CurrentAnimIndex == 26)
+    if (m_iIndex == 26 && CurrentAnimIndex == m_iIndex)
     {
         m_fTime += fTimeDelta;
 
@@ -517,12 +543,20 @@ void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
             return;
         }
     }
-    else if (m_iIndex == 27 && CurrentAnimIndex == 27 && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 27 && CurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 26;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)
+        {
+            pObject->m_pState_Manager->ChangeState(new CElite_Grace::Execution_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 26;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
-    else if (m_iIndex == 25 && CurrentAnimIndex == 25 && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 25 && CurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP / 2.f;
         pObject->m_fShieldHP = pObject->m_fMonsterMaxHP / 2.f;
@@ -548,7 +582,7 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
 {
     m_iIndex = 29;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->m_bMove = true;
+    pObject->m_bCanHit = false;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bExecution_Start = false;
@@ -564,9 +598,9 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
     _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, fTeleportDistance));
     vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, -0.11f));
 
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-
-    pObject->RotateDegree_To_Player();
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
@@ -646,7 +680,7 @@ void CElite_Grace::Run_State::State_Update(_float fTimeDelta, CElite_Grace* pObj
     }
 
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -914,6 +948,15 @@ void CElite_Grace::Parry_Attack_B::State_Update(_float fTimeDelta, CElite_Grace*
 {
     if (m_iIndex == 21 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
     {
+        if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 16.f && !m_bIs_Fired)
+        {
+            _vector vStartPos, vEndPos = {};
+            pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
+            m_bIs_Fired = true;
+            pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
+            pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
+        }
+
         if (pObject->m_pModelCom->GetAniFinish())
         {
             _uint iRandom = rand() % 2;
@@ -950,10 +993,11 @@ void CElite_Grace::Hit_State::State_Enter(CElite_Grace* pObject)
         m_iIndex = 9;
         break;
     }
+    pObject->m_iHitCount++;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_HIT;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
+    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -967,6 +1011,7 @@ void CElite_Grace::Hit_State::State_Update(_float fTimeDelta, CElite_Grace* pObj
 void CElite_Grace::Hit_State::State_Exit(CElite_Grace* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
+    pObject->m_bPatternProgress = false;
 }
 
 void CElite_Grace::Shoot_Attack_A::State_Enter(CElite_Grace* pObject)

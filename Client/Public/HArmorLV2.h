@@ -43,12 +43,13 @@ public:
 
 private:
 	_bool                            m_bExecution_Progress = {};
-	_bool                            m_bExecution_Start = {};
 	_bool                            m_bFirstActive = {};
+	_bool							 m_bCanHit = {};
 
 	_uint                            m_iNearPatternIndex = {};
 	_uint							 m_iSpawn_Cell_Index = {};
 	_uint							 m_iHit_Motion_Index = {};
+	_uint							 m_iParryReadyHits = {};
 
 private:
 	CState_Machine<CHArmorLV2>* m_pState_Manager = { nullptr };

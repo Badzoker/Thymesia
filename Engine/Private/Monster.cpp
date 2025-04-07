@@ -15,7 +15,6 @@ void CMonster::Reset_Info()
 {
     //나중에 뭐가 필요한지 추가해봐야할듯
     m_fDelayTime = 0.f;
-    m_bMove = true;
     m_bNeed_Rotation = false;
 }
 void CMonster::Cheat()
@@ -129,7 +128,7 @@ void CMonster::RootAnimation()
     /* 루트 모션 애니메션 코드 */
     m_pRootMatrix = m_pModelCom->Get_RootMotionMatrix("root");
 
-    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bActive && m_bMove))
+    if ((!XMVector4Equal(XMLoadFloat4x4(m_pRootMatrix).r[3], test) && m_pModelCom->Get_LerpFinished() && m_bActive && !m_bNot_Need_Root))
     {
         if ((m_pNavigationCom->isMove(vCurPosition) && m_fDistance > m_fRootDistance) || m_bCan_Move_Anim)
             m_pTransformCom->Set_MulWorldMatrix(m_pRootMatrix);

@@ -50,11 +50,13 @@ HRESULT CBody_Grace::Initialize(void* pArg)
     m_pActor[COLLIDER_HAND_LEFT] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_KICK_RIGHT] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_KICK_LEFT] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_PARRY] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND_RIGHT], _fvector{ 0.f,0.f,90.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_HAND_LEFT], _fvector{ 0.f,0.f,90.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_KICK_RIGHT], _fvector{ 0.f,0.f,92.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_KICK_LEFT], _fvector{ 0.f,0.f,92.f,1.f });
+    m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_PARRY], _fvector{ 0.f,0.f,92.f,1.f });
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
 
@@ -62,6 +64,7 @@ HRESULT CBody_Grace::Initialize(void* pArg)
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_HAND_LEFT], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_KICK_RIGHT], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_KICK_LEFT], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_PARRY], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
     return S_OK;
 }
@@ -109,6 +112,10 @@ void CBody_Grace::Update(_float fTimeDelta)
                     {
                         m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_KICK_LEFT]);
                     }
+                    else if (!strncmp(iter.szName, "Parry", strlen("Parry")))
+                    {
+                        m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_PARRY]);
+                    }
                     iter.isPlay = true;
                 }
             }
@@ -120,6 +127,7 @@ void CBody_Grace::Update(_float fTimeDelta)
                     m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_HAND_LEFT]);
                     m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK_RIGHT]);
                     m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK_LEFT]);
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_PARRY]);
 
                     m_bColliderOff = false;
                     if (!iter.isEventActivate)
@@ -134,6 +142,7 @@ void CBody_Grace::Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_HAND_LEFT]);
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK_RIGHT]);
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_KICK_LEFT]);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_PARRY]);
     }
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_HAND_RIGHT])))
@@ -144,6 +153,8 @@ void CBody_Grace::Update(_float fTimeDelta)
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_KICK_RIGHT], XMLoadFloat4x4(m_pSocketMatrix[COLLIDER_KICK_RIGHT]) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_KICK_LEFT])))
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_KICK_LEFT], XMLoadFloat4x4(m_pSocketMatrix[COLLIDER_KICK_LEFT]) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_PARRY])))
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_PARRY], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 500.f,0.f,1.f });
 
 }
 

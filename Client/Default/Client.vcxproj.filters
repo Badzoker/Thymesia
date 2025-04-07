@@ -910,6 +910,9 @@
     <Filter Include="02.GameObject\DestructObject">
       <UniqueIdentifier>{6ae36dc6-6cae-433c-bba6-f22c9db9f6ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Urd\Stack">
+      <UniqueIdentifier>{d64e8817-9134-41e7-85e8-831c9de0b99e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1707,6 +1710,9 @@
     <ClInclude Include="..\Public\DestructObject.h">
       <Filter>02.GameObject\DestructObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Stand_Stack_Sword.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd\Stack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1975,9 +1981,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageM0.cpp">
       <Filter>02.GameObject\Monster\00. Normal\Male\VillageM0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Normal_VillageM1.cpp">
-      <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_VillageM0.cpp">
       <Filter>02.GameObject\Monster\00. Normal\Male\VillageM0\Body</Filter>
@@ -2494,6 +2497,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\DestructObject.cpp">
       <Filter>02.GameObject\DestructObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Stand_Stack_Sword.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd\Stack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Normal_VillageM1.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

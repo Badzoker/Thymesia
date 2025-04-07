@@ -65,6 +65,7 @@ private:
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
 	_uint							 m_iHit_Motion_Index = -1;
+	_uint							 m_iParryReadyHits = {};
 	_uint                            m_iPhase = { PHASE_END };
 
 
@@ -169,6 +170,8 @@ public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_bIs_Fired = {};
 	};
 
 	class Shoot_ComboB : public CStates<CBoss_Magician>
@@ -182,7 +185,7 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
 	private:
-		_bool IsFired = {};
+		_bool m_bIs_Fired = {};
 		_float4 m_vPos = {};
 		_float4 m_vPlayerPos = {};
 	};
@@ -345,6 +348,17 @@ public:
 		void State_Exit(CBoss_Magician* pObject) override;
 	private:
 		_bool m_Is_Spawn = {};
+	};
+
+	class Phase_Change_State : public CStates<CBoss_Magician>
+	{
+	public:
+		Phase_Change_State() = default;
+		virtual ~Phase_Change_State() = default;
+	public:
+		void State_Enter(CBoss_Magician* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
+		void State_Exit(CBoss_Magician* pObject) override;
 	};
 
 };
