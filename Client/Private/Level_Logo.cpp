@@ -50,8 +50,8 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Update(_float fTimeDelta)
 {
-
-
+    m_bNextLevelOpen = true;
+    m_iNextLevel = LEVEL_TUTORIAL;
     if (!m_bNextLevelOpen)
     {
         if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT)) // 로고 전에 화면 가려 놓았음

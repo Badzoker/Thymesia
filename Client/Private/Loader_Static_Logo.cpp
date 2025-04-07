@@ -1608,7 +1608,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_NextLineHint::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
+	//====================================================================================================================================
+/* For.Prototype_Component_Texture_UI_CloudNoise*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_CloudNoise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Noise/UI_CloudNoise.dds"), 1))))
+		return E_FAIL;
 
 	//====================================================================================================================================
 	/* For.Prototype_Component_Texture_MouseCursor*/

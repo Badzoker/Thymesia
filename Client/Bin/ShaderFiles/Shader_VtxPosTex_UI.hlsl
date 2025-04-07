@@ -5,6 +5,7 @@ Texture2D g_Texture;
 Texture2D g_TexIcon;
 Texture2D g_TexEdge;
 Texture2D g_TexEffect;
+Texture2D g_TexNoise;
 
 bool g_bIconOn; // 아이콘 이미지  onoff
 bool g_bSkillOn; // 아이템 슬롯 이미지 열고 닫기
@@ -24,6 +25,8 @@ uint g_SlotNum; // 플레이어 화면 스킬 슬롯 두개의 사이즈가 달라 스킬 아이콘과의 
 float g_fHPBar_Max;
 float g_fHPBar_Current;
 
+bool g_bIconEffectClose; // 아이콘이 디졸브 효과로 스르ㅡㄹ 사라짐
+bool g_bIconEffectOpen; // 아이콘이 디졸브 효과로 스르ㅡㄹ 나타남
 
 
 struct VS_IN
@@ -68,30 +71,18 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-
-	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
-	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-
     
-    //if (0.1f >= Out.vColor.a)
-    //    discard;
-
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 
     return Out;
 }
 
-
 PS_OUT PS_Thymesia_UI(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-
-	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
-	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
-
     return Out;
 }
 
@@ -114,9 +105,6 @@ PS_OUT PS_Thymesia_UI_ImageOnOff(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-	/* Sample : g_Texture로 부터 지정된 좌표의 색을 지정한 방식으로 얻어온다.*/
-	// g_Texture.Sample(어떻게 얻어올건지(Sampler_State), 어디 색을 가져올건지)
-    
     if (true == g_bImageOn)
     {
         Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
@@ -163,7 +151,7 @@ PS_OUT PS_Thymesia_UI_Image_Pause(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    Out.vColor.a -= 0.6f;
+    Out.vColor.a -= Out.vColor.a / 2.0f;
     return Out;
 }
 
@@ -183,7 +171,6 @@ PS_OUT PS_Thymesia_UI_Image_TalentSlot(PS_IN In)
     
     if (g_bTexIconOff) // 비활성화 특성 아이콘 어둡게 처리
         vTexIconColor.a -= max(0.0f, vTexIconColor.a - 0.6f); // 음수 안나오게
-        //vTexIconColor.a -= max(0.0f, vTexIconColor.a - 0.6f); // 음수 안나오게
     
     if (g_bTexEdgeOff)// 호버 이미지 반짝 반짝
         vTexEdgeColor.a = 0.0f;
@@ -214,33 +201,30 @@ PS_OUT PS_Thymesia_UI_Image_TalentSlot(PS_IN In)
 PS_OUT PS_Thymesia_UI_Image_PlunderSlot(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
+    
+    //saturate(g_fTimeDelta);
+    float fEdgeWidth = 0.05; // 경계선 두께 0.03 ~ 0.1 값이 일반적 
+    float vEdgeColor = (1, 0, 0, 1);
     float4 vBackColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    float4 vFrontColor;
-    
-    float2 ChangeUV = ((In.vTexcoord - 0.5) * 0.5 + 0.5f);
-    ChangeUV = saturate(ChangeUV); // UV 범위를 [0, 1]로 제한
-    
-    if (0 == g_SlotNum)
-        vFrontColor = g_TexIcon.Sample(LinearSampler, ChangeUV);
-    else
-        vFrontColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
-    
-    if (!g_bIconOn) // 스킬 이미지가 없으면 
-        vFrontColor.a = 0.0f; // 아이콘 투명하게
-    
-        Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
-    
-        
-    if (g_bSkillOn) // 현재 스킬 쿨타임이 돌고 있다면 
-        Out.vColor.rgb = ((Out.vColor.rgb - 0.5) * 0.5) + 0.5; // 대조하는거? // 딤드처리
+    float4 vIconColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
+    float fNoise = g_TexNoise.Sample(LinearSampler, In.vTexcoord + g_fTimeDelta).r;
+   
+    if (g_bSkillOn) // 현재 스킬이 켜져 있으면 
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
     if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
-        Out.vColor.rgb = ((Out.vColor.rgb - 0.5) * 0.5) + 0.5; // 대조하는거? // 딤드 처리
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; //
+    
+    vIconColor.a *= saturate(fNoise + g_fTimeDelta);
+    if (vIconColor.a <= 0.01f)
+        vIconColor.a = 0.0f;
+    if (!g_bIconOn)
+        vIconColor.a = 0.0f;
+    
+    Out.vColor = lerp(vBackColor, vIconColor, vIconColor.a);
     
     
-    //Out.vColor.rgb += 0.1; // 밝기가 조정됨 
-    
-    return Out;
-}
+        return Out;
+    }
 
 PS_OUT PS_Thymesia_UI_Image_Skill_CoolTime(PS_IN In) // 스킬 사용 시 쿨타임 연출용
 {
@@ -305,11 +289,52 @@ PS_OUT PS_Thymesia_UI_Image_Skill_Equip_Slot(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_Thymesia_UI_Image_SKill1st(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float2 ChangeUV = ((In.vTexcoord - 0.5) * 0.5 + 0.5f);
+    ChangeUV = saturate(ChangeUV); // UV 범위를 [0, 1]로 제한
+    
+    // vEffectColor.rgb = ((vEffectColor.rgb - 0.1) * 0.5) + 0.5; // 대조하는거? // 딤드처리
+    
+    float4 vBackColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float4 vEffectColor = g_TexEffect.Sample(LinearSampler, In.vTexcoord);
+    float4 vFrontColor;
+    if (0 == g_SlotNum) 
+        vFrontColor = g_TexIcon.Sample(LinearSampler, ChangeUV);
+    else
+        vFrontColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
+    
+    if (!g_bIconOn) // 스킬 이미지가 없으면 
+        vFrontColor.a = 0.0f; // 아이콘 투명하게
 
-PS_OUT PS_Thymesia_UI_ImageLanding(PS_IN In)
+   
+    if (g_bSkillOn) // 현재 스킬이 켜져 있으면 
+    {
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
+        vFrontColor.rgb = ((vFrontColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
+    }
+    if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
+    {
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; //
+    }
+    
+
+    float fBase = smoothstep(g_fTImeAlpha / 5.0f, 0.0f, 1.0 - In.vTexcoord.y); // 1.0 - In.vTexcoord.y 아래에서 부터 위로
+    float fBase2 = pow(fBase, 0.1f); // 자연스럽게 곡선으로 올라오겠끔  설정
+    float fAlpha = fBase2 * vEffectColor.a; // * 0.9f;
+   
+    vBackColor = lerp(vBackColor, vEffectColor, fAlpha);
+    Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
+  
+    return Out;
+}
+
+PS_OUT PS_Thymesia_UI_Image_SKill2st(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
+    /*  약탈 스킬 효과*/
     
    
     
@@ -454,6 +479,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_ImageOpen();
+    }
+
+    pass Thymesia_UI_Image_SKill1st // 12번
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Thymasia_UI, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_SKill1st();
     }
     
 }
