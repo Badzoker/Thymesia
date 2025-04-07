@@ -423,6 +423,7 @@ void CNormal_ScytheM::Idle_State::State_Update(_float fTimeDelta, CNormal_Scythe
 
 void CNormal_ScytheM::Idle_State::State_Exit(CNormal_ScytheM* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
 

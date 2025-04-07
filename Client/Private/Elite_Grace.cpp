@@ -227,7 +227,7 @@ HRESULT CElite_Grace::Ready_PartObjects(void* pArg)
 
 void CElite_Grace::PatternCreate()
 {
-    if (!m_bPatternProgress && m_bActive)
+    if (!m_bPatternProgress && m_bActive && !m_IsStun)
     {
         m_fDelayTime += m_fTimeDelta;
         if (m_iHitCount >= m_iParryReadyHits)
