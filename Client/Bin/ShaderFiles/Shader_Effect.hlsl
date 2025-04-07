@@ -830,6 +830,39 @@ struct PS_OUT_DESTRUCT
 };
 
 
+PS_OUT_DESTRUCT PS_MAIN_DESTRUCT(PS_IN_DESTRUCT In)
+{
+    PS_OUT_DESTRUCT Out = (PS_OUT_DESTRUCT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    //if (In.fDissolve > 0.1f)
+    //{
+    //    float vDissolveAlpha = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
+
+    //    if (vDissolveAlpha < g_DissolveAmount)
+    //    {
+    //        clip(-1);
+    //    }
+    //}
+    
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.1f;
+    
+    return Out;
+}
 
 
 
