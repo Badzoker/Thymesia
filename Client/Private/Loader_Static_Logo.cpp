@@ -1802,6 +1802,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_HealingCurve.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Effect_Rock */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Rock"), //14
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Rock.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Sphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Sphere"), //17 <- Tool 에서의 번호라고 보면됨
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
 	///* For.Prototype_GameObject_Effect_Mesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
 		CEffect_Mesh::Create(m_pDevice, m_pContext))))
@@ -1868,6 +1878,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_World */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World"),
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Holding_World", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Burst */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst"),
+		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Burst", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
 	//Particle Compute Shader 생성 끝
@@ -2160,6 +2175,26 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw"),
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Claw_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_World_CaneSword_Hand */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_CaneSword_Hand"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_CaneSword_Hand_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Burst_NarrowVertical */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_NarrowVertical"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Burst_NarrowVertical_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Burst_CaneSword */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_CaneSword"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Burst_CaneSword_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Dust_NarrowVertical */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_NarrowVertical"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_NarrowVertical_Buffer.dat")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Particle_Image*/

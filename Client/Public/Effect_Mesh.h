@@ -36,8 +36,10 @@ public:
 		_float fTexcoord_LerpX = {};
 		_float fTexcoord_LerpY = {};
 		_bool bUsing_Noise = { false };
-		_bool bLoop = { false };	//쓸지 모르겠음
-		_bool bMinus = { false };	 //쓸지 모르겠음
+		_bool bLoop = { false };	
+		_bool bMinus_X = { false };	
+		_bool bMinus_Y = { false };	
+		_bool bGray = { false };	
 
 		_float3 vScale = {};
 		_float3 vRot = {};
@@ -92,7 +94,9 @@ private:
 
 	_bool m_bUsing_Noise = { false };
 	_bool m_bLoop = { false };
-	_bool m_bMinus = { false };
+	_bool m_bMinus_X = { false };
+	_bool m_bMinus_Y = { false };
+	_bool m_bGray = { false };
 
 private:
 	//void Timer_Check(_float _fTimeDelta);

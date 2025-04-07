@@ -119,7 +119,7 @@ void CBoss_Urd::PatternCreate()
 	if (m_iPhase == PHASE_TWO)
 		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
 
-	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num)
+	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
 	{
 
 		if (m_iHitCount >= m_iParryReadyHits)

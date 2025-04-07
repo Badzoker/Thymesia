@@ -239,8 +239,8 @@ void GS_MAIN_DUST(point GS_IN In[1], inout TriangleStream<GS_OUT_WEIGHT> DataStr
     float fLength_Up = length(vUp);
     
     vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz) * fLength_Look;
-    vUp = normalize(cross(vLook, vRight)) * fLength_Up;
     vRight = normalize(cross(vUp, vLook)) * fLength_Right;
+    vUp = normalize(cross(vLook, vRight)) * fLength_Up;
     
     float4x4 matVP = mul(g_ViewMatrix, g_ProjMatrix);
 

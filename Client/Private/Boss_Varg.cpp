@@ -241,7 +241,7 @@ void CBoss_Varg::PatternCreate()
         m_fSpecial_Skill_CoolTime += 1 * m_fTimeDelta;
     }
 
-    if (!m_bPatternProgress && m_bActive)
+    if (!m_bPatternProgress && m_bActive && !m_IsStun)
     {
         m_fDelayTime += 1 * m_fTimeDelta;
         if (m_fDelayTime >= m_fCoolTime)

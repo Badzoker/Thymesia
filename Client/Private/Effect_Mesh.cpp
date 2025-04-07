@@ -47,7 +47,9 @@ HRESULT CEffect_Mesh::Initialize(void* _pArg)
 
 	m_bUsing_Noise = pDesc->bUsing_Noise;
 	m_bLoop = pDesc->bLoop;
-	m_bMinus = pDesc->bMinus;
+	m_bMinus_X = pDesc->bMinus_X;
+	m_bMinus_Y = pDesc->bMinus_Y;
+	m_bGray = pDesc->bGray;
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
@@ -196,26 +198,11 @@ HRESULT CEffect_Mesh::Bind_ShaderResources()
 	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 	//	return E_FAIL;
 
-	if (false == m_bMinus)
-	{
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeX", &m_fTimerX, sizeof(_float))))
-			return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeX", &m_fTimerX, sizeof(_float))))
+		return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeY", &m_fTimerY, sizeof(_float))))
-			return E_FAIL;
-	}
-	else
-	{
-		_float fTime = m_fMaxTimer - m_fTimerX;
-
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeX", &fTime, sizeof(_float))))
-			return E_FAIL;
-
-		fTime = m_fMaxTimer - m_fTimerY;
-
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeY", &fTime, sizeof(_float))))
-			return E_FAIL;
-	}
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeY", &m_fTimerY, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartTexcoordX", &m_fStartTexcoordX, sizeof(_float))))
 		return E_FAIL;
@@ -242,6 +229,12 @@ HRESULT CEffect_Mesh::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordLerpY", &m_fTexcoord_LerpY, sizeof(_float))))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bMinus_X", &m_bMinus_X, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bMinus_Y", &m_bMinus_Y, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bGray", &m_bGray, sizeof(_bool))))
+		return E_FAIL;
 
 	if (FAILED(m_pTextureCom[TEXTURE_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuse)))
 		return E_FAIL;

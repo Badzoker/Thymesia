@@ -514,7 +514,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerAxe.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
-        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_AXE)))
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_AXE, 2)))
         return E_FAIL;
 
     //Particle Effect
@@ -752,6 +752,22 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Claw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_CaneSword_Hand.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CANESWORD, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Burst_NarrowVertical.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BURST_NARROW_VERTICAL, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Burst_CaneSword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BURST_PLAYER_CANESWORD, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_NarrowVertical.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW_VERTICAL, 1)))
         return E_FAIL;
 
     //Sword Effect
@@ -1451,11 +1467,14 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 
         ReadFile(hFile, &pDesc.bUsing_Noise, sizeof(_bool), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.bLoop, sizeof(_bool), &dwByte, nullptr);
-        ReadFile(hFile, &pDesc.bMinus, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.bMinus_X, sizeof(_bool), &dwByte, nullptr);
 
         ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
+
+        ReadFile(hFile, &pDesc.bMinus_Y, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.bGray, sizeof(_bool), &dwByte, nullptr);
 
 #pragma region Switch For Mesh Model Name
         switch (iNumber_Mesh_Effect) //이거 Tool에서의 순서 기반임
@@ -1501,6 +1520,12 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case 13:
             pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_HealingCurve");
+            break;
+        case 14:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Rock");
+            break;
+        case 17:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Sphere");
             break;
         }
 #pragma endregion
@@ -1784,6 +1809,22 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CANESWORD:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_CaneSword_Hand");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_BURST_NARROW_VERTICAL:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_NarrowVertical");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_BURST_PLAYER_CANESWORD:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_CaneSword");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW_VERTICAL:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_NarrowVertical");
             break;
         }
 #pragma endregion

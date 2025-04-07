@@ -33,6 +33,9 @@ float g_fTexcoordLerpY;
 
 float g_fMaxTimer;
 
+bool g_bMinus_X;
+bool g_bMinus_Y;
+bool g_bGray;
 
 
 float4 g_ModelPosition;
@@ -496,6 +499,15 @@ PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
     PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
     float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
     
+    float fTimeX = g_TimeX;
+    float fTimeY = g_TimeY;
+    
+    if (true == g_bMinus_X)
+        fTimeX = g_fMaxTimer - fTimeX;
+    
+    if (true == g_bMinus_Y)
+        fTimeY = g_fMaxTimer - fTimeY;
+    
     vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
     float fMask = vMask.r;
     
@@ -503,11 +515,11 @@ PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
     
     float2 vTexcoord = 0;
     
-    vTexcoord = float2(In.vTexcoord.x * g_TimeX + g_StartTexcoordX, In.vTexcoord.y * g_TimeY + g_StartTexcoordY);
+    vTexcoord = float2(In.vTexcoord.x * fTimeX + g_StartTexcoordX, In.vTexcoord.y * fTimeY + g_StartTexcoordY);
     
-    float fTimerX = (g_TimeX / g_fMaxTimer);
+    float fTimerX = (fTimeX / g_fMaxTimer);
     
-    float fTimerY = (g_TimeY / g_fMaxTimer);
+    float fTimerY = (fTimeY / g_fMaxTimer);
     
     if (vMaskTexcoord.x < fTimerX)
         discard;
@@ -523,7 +535,7 @@ PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
     float fWeightX = vNoise.r * g_fWeightX;
     float fWeightY = vNoise.r * g_fWeightY;
     
-    vTexcoord = float2((g_TimeX + g_StartTexcoordX) * fWeightX, (g_TimeY + g_StartTexcoordY) * fWeightY);
+    vTexcoord = float2((fTimeX + g_StartTexcoordX) * fWeightX, (fTimeY + g_StartTexcoordY) * fWeightY);
     
     if (true == g_bTexcoordX)
         vTexcoord.x = lerp(0.5f, vTexcoord.x, (1.f - vTexcoord.y) * g_fTexcoordLerpX);
@@ -534,6 +546,14 @@ PS_OUT_GLOW PS_MAIN_ROAR(PS_IN In)
 	
     if (vMtrlDiffuse.a < 0.1f)
         discard;
+    
+    vMtrlDiffuse *= vector(g_vRGB, 1.f);
+    
+    if (true == g_bGray)
+    {
+        float gray = dot(vMtrlDiffuse.rgb, float3(0.3f, 0.59f, 0.11f));
+        vMtrlDiffuse.rgb = float3(gray, gray, gray);
+    }
     
     Out.vGlow = vMtrlDiffuse * vector(g_vRGB, 1.f);
 	

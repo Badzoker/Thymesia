@@ -62,12 +62,14 @@ private:
 	ID3D11Buffer*					m_pBuffer_SRV = { nullptr };
 	ID3D11Buffer*					m_pBuffer_Copy = { nullptr };
 	ID3D11Buffer*					m_pBuffer_StartPosition = { nullptr };
+	ID3D11Buffer*					m_pBuffer_CameraPosition = { nullptr };
 
 	HRESULT CreateStructureBuffer();
 	HRESULT CreateBuffer_SRV_UAV();
 	HRESULT CreateBuffer_Constant();
 	HRESULT CreateAndCopyBuffer();
 	HRESULT StartPositionCopyBuffer(_float4 _vStartPos);
+	HRESULT CameraCopyBuffer();
 
 public:
 	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile);

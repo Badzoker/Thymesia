@@ -130,10 +130,28 @@ void CPlayer_Weapon_Cane::Update(_float fTimeDelta)
 
                 }
 
-                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+#pragma region EFFECT
+                if ((iter.eType == EVENT_EFFECT)
+                    && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
                 {
+                    if (!strcmp(iter.szName, "Effect_Start"))
+                    {
+                        iter.isPlay = true;
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CANESWORD, m_pParentWorldMatrix, m_pSocketMatrix);
+                    }
+                    else if (!strcmp(iter.szName, "Particle_Start"))
+                    {
 
+                        iter.isPlay = true;
+                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_AXE, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BURST_PLAYER_CANESWORD, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BURST_NARROW_VERTICAL, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW_VERTICAL, *m_pParentWorldMatrix);
+                    }
                 }
+#pragma endregion
             }
         }
     }

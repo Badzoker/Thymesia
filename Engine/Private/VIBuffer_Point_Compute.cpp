@@ -15,6 +15,7 @@ CVIBuffer_Point_Compute::CVIBuffer_Point_Compute(const CVIBuffer_Point_Compute& 
     , m_pBuffer_SRV(_Prototype.m_pBuffer_SRV)
     , m_pBuffer_Copy(_Prototype.m_pBuffer_Copy)
     , m_pBuffer_StartPosition(_Prototype.m_pBuffer_StartPosition)
+    , m_pBuffer_CameraPosition(_Prototype.m_pBuffer_CameraPosition)
     , m_InstanceBufferDesc(_Prototype.m_InstanceBufferDesc)
     , m_InstanceInitialData(_Prototype.m_InstanceInitialData)
     , m_iInstanceVertexStride(_Prototype.m_iInstanceVertexStride)
@@ -563,7 +564,10 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader(CShader_Compute* _pComputeShader
     
     m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, (_uint*)&m_pUAV);
 
-    //m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_StartPosition);
+    if (FAILED(CameraCopyBuffer()))
+        return E_FAIL;
+
+    m_pContext->CSSetConstantBuffers(1, 1, &m_pBuffer_CameraPosition);
 
     m_pContext->Dispatch(_iThreadCountX, _iThreadCountY, _iThreadCountZ);
 
@@ -597,6 +601,11 @@ HRESULT CVIBuffer_Point_Compute::Compute_Shader(CShader_Compute* _pComputeShader
         return E_FAIL;
 
     m_pContext->CSSetConstantBuffers(0, 1, &m_pBuffer_StartPosition);
+
+    if (FAILED(CameraCopyBuffer()))
+        return E_FAIL;
+
+    m_pContext->CSSetConstantBuffers(1, 1, &m_pBuffer_CameraPosition);
 
     m_pContext->Dispatch(_iThreadCountX, _iThreadCountY, _iThreadCountZ);
 
@@ -734,6 +743,9 @@ HRESULT CVIBuffer_Point_Compute::CreateBuffer_Constant()
     if (FAILED(m_pDevice->CreateBuffer(&constantDesc, &constantData, &m_pBuffer_StartPosition)))
         return E_FAIL;
 
+    if (FAILED(m_pDevice->CreateBuffer(&constantDesc, &constantData, &m_pBuffer_CameraPosition)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -786,6 +798,19 @@ HRESULT CVIBuffer_Point_Compute::StartPositionCopyBuffer(_float4 _vStartPos)
     return S_OK;
 }
 
+HRESULT CVIBuffer_Point_Compute::CameraCopyBuffer()
+{
+    D3D11_MAPPED_SUBRESOURCE subCameraPosition;
+
+    m_pContext->Map(m_pBuffer_CameraPosition, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subCameraPosition);
+    XMFLOAT4* pCamPos = {};
+    pCamPos = static_cast<XMFLOAT4*>(subCameraPosition.pData);
+    pCamPos[0] = m_pGameInstance->Get_CamPosition();
+    m_pContext->Unmap(m_pBuffer_CameraPosition, 0);
+
+    return S_OK;
+}
+
 CVIBuffer_Point_Compute* CVIBuffer_Point_Compute::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile)
 {
 	CVIBuffer_Point_Compute* pInstance = new CVIBuffer_Point_Compute(_pDevice, _pContext);
@@ -829,5 +854,6 @@ void CVIBuffer_Point_Compute::Free()
     Safe_Release(m_pBuffer_SRV);
     Safe_Release(m_pBuffer_Copy);
     Safe_Release(m_pBuffer_StartPosition);
+    Safe_Release(m_pBuffer_CameraPosition);
     Safe_Release(m_pVBInstance);
 }
