@@ -88,6 +88,11 @@ HRESULT CWeapon_Magician2_Sword::Initialize(void* pArg)
 
 void CWeapon_Magician2_Sword::Priority_Update(_float fTimeDelta)
 {
+    if (*m_pParentState == STATE_DEAD)
+    {
+        m_fDeadTimer += fTimeDelta * 0.5f;
+        m_fFinishTime += fTimeDelta * 0.5f;
+    }
 }
 
 void CWeapon_Magician2_Sword::Update(_float fTimeDelta)
@@ -251,7 +256,23 @@ HRESULT CWeapon_Magician2_Sword::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        if (*m_pParentState == STATE_DEAD)
+        {
+            m_iPassNum = 9;
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+                return E_FAIL;
+        }
+        else
+            m_iPassNum = 0;
+
+
+        m_pShaderCom->Begin(m_iPassNum);
         m_pModelCom->Render(i);
     }
 

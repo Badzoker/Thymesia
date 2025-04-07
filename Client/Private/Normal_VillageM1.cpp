@@ -33,6 +33,7 @@ HRESULT CNormal_VillageM1::Initialize(void* pArg)
     m_fRootDistance = 1.f;
     m_fSpawn_Distance_Max = 10.f;
     m_fActive_Distance = 5.f;
+    m_iParryReadyHits = 3;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -197,11 +198,48 @@ void CNormal_VillageM1::State_Update(_float fTimeDelta)
 
 void CNormal_VillageM1::PatternCreate()
 {
-
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CNormal_VillageM1::Parry_State(), this);
+            }
+            else
+            {
+                _uint iRandom = rand() % 3;
+                switch (iRandom)
+                {
+                case 0:
+                    m_pState_Manager->ChangeState(new Attack_01_State(), this);
+                    break;
+                case 1:
+                    m_pState_Manager->ChangeState(new Attack_02_State(), this);
+                    break;
+                case 2:
+                    m_pState_Manager->ChangeState(new Attack_03_State(), this);
+                    break;
+                }
+            }
+        }
+
+        else if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
         {
             _uint iRandom = rand() % 3;
             switch (iRandom)
@@ -247,45 +285,56 @@ void CNormal_VillageM1::Stun()
 
 void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        _uint m_iNoDamage = 1;
-        if (m_iHitCount >= 6.f)
-        {
-            m_iHitCount = 0;
-            m_fDelayTime = 0.f;
-            m_bPatternProgress = true;
-            m_pState_Manager->ChangeState(new Parry_State(), this);
-            m_iNoDamage = 0;
-        }
-        m_fRecoveryTime = 0.f;
-        m_bCanRecovery = false;
+        if (m_iHitCount >= m_iParryReadyHits)
+            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack * 0.5f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f * m_iNoDamage;
-        m_iHitCount += 1;
-        if (m_bCanHit)
+        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
+
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_pState_Manager->ChangeState(new CNormal_VillageM1::Hit_State(), this);
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+        }
+        else
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
+        }
+
+        if (m_bCanHit &&
+            m_iMonster_State != STATE_ATTACK &&
+            m_iMonster_State != STATE_SPECIAL_ATTACK &&
+            m_fMonsterCurHP > 0.f &&
+            m_iHitCount < m_iParryReadyHits)
+        {
+            _uint iRandom = rand() % 2;
+            while (true)
+            {
+                if (iRandom == m_iHit_Motion_Index)
+                    iRandom = rand() % 2;
+                else
+                {
+                    m_iHit_Motion_Index = iRandom;
+                    break;
+                }
+            }
+            m_pState_Manager->ChangeState(new CNormal_VillageM1::Hit_State(m_iHit_Motion_Index), this);
         }
     }
-
 
 }
 
 void CNormal_VillageM1::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_HIT)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CNormal_VillageM1::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CNormal_VillageM1* CNormal_VillageM1::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -327,6 +376,7 @@ void CNormal_VillageM1::Idle_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 30;
     pObject->m_bPatternProgress = false;
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -354,7 +404,7 @@ void CNormal_VillageM1::Idle_State::State_Exit(CNormal_VillageM1* pObject)
 #pragma region Move_State
 void CNormal_VillageM1::Move_State::State_Enter(CNormal_VillageM1* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 43;
     else
     {
@@ -372,6 +422,7 @@ void CNormal_VillageM1::Move_State::State_Enter(CNormal_VillageM1* pObject)
             break;
         }
     }
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
@@ -380,10 +431,10 @@ void CNormal_VillageM1::Move_State::State_Update(_float fTimeDelta, CNormal_Vill
 {
     if (pObject->m_fDistance >= 2.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 2.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 2.f)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 43)
+        if (m_iIndex == 43 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 41)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -404,6 +455,7 @@ void CNormal_VillageM1::Move_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Run_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 1;
+    pObject->m_bCanHit = true;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     pObject->m_iMonster_State = STATE_RUN;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
@@ -418,7 +470,7 @@ void CNormal_VillageM1::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
     }
 
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -442,7 +494,7 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 29;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
+    pObject->m_bCanHit = false;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -466,16 +518,24 @@ void CNormal_VillageM1::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             m_iIndex = 27;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
         }
     }
-    else if (m_iIndex == 29 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 29 && iCurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 28;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 28;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
     else if (m_iIndex == 27 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
@@ -525,6 +585,7 @@ void CNormal_VillageM1::Attack_01_State::State_Exit(CNormal_VillageM1* pObject)
 void CNormal_VillageM1::Attack_02_State::State_Enter(CNormal_VillageM1* pObject)
 {
     m_iIndex = 5;
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_ATTACK;
     pObject->m_iMonster_Attack_Power = 85;
     pObject->RotateDegree_To_Player();
@@ -575,16 +636,14 @@ void CNormal_VillageM1::Attack_03_State::State_Exit(CNormal_VillageM1* pObject)
 
 #pragma endregion
 #pragma region Hit_State
+
+CNormal_VillageM1::Hit_State::Hit_State(_uint pHitNum)
+{
+    m_iHitNum = pHitNum;
+}
 void CNormal_VillageM1::Hit_State::State_Enter(CNormal_VillageM1* pObject)
 {
-    _uint iRandom = rand() % 2;
-    while (true)
-    {
-        iRandom = rand() % 2;
-        if (m_iHitNum != iRandom)
-            break;
-    }
-    switch (iRandom)
+    switch (m_iHitNum)
     {
     case 0:
         m_iIndex = 25;
@@ -593,10 +652,11 @@ void CNormal_VillageM1::Hit_State::State_Enter(CNormal_VillageM1* pObject)
         m_iIndex = 26;
         break;
     }
+    pObject->m_iHitCount++;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_HIT;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -609,6 +669,8 @@ void CNormal_VillageM1::Hit_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageM1::Hit_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_bPatternProgress = false;
+    pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion
 
@@ -618,15 +680,22 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
     m_iIndex = 39;
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->RotateDegree_To_Player();
 
+
+    _float teleportDistance = 1.f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
-    _vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+    _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
+    _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
     vPlayerLook = XMVector3Normalize(vPlayerLook);
-    _vector vResultPos = vPlayerPos + vPlayerLook;
-    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vResultPos);
+
+    _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
+    pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
@@ -686,13 +755,12 @@ void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
 
 void CNormal_VillageM1::Parry_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
 {
-    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 150.f)
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 120.f)
         pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
 }
 
 void CNormal_VillageM1::Parry_State::State_Exit(CNormal_VillageM1* pObject)
 {
-    pObject->m_bCanHit = true;
 }
 
 void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageM1* pObject)

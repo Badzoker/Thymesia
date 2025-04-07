@@ -78,45 +78,43 @@ void CWeapon_Urd_Sword::Update(_float fTimeDelta)
         XMLoadFloat4x4(m_pParentWorldMatrix)   /* 월드 영역 */
     );
 
-    //if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCane_Collider_On)
-    //{
-    //    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-    //    {
-    //        if (iter.isPlay == false)
-    //        {
-    //            //내가 넣은 콜라이더 시간에 진입했을때
-    //            if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
-    //            {
-    //                m_pGameInstance->Add_Actor_Scene(m_pActor);
-    //                iter.isPlay = true;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
-    //            if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
-    //            {
-    //                m_pGameInstance->Sub_Actor_Scene(m_pActor);
-    //                m_bColliderOff = false;
-    //                if (!iter.isEventActivate)
-    //                {
-    //                    iter.isPlay = false;
-    //                }
-    //            }
-    //        }
-    //        //문제 iter가 2개니까 첫 iter는 add를 했는데 다음 iter가 자기 프레임 타이밍이 아니니 Sub를 해버린다.
-    //        //다단히트 해결하기 = 충돌나면 bool 값이 ColliderOff-> true가 되는데 이때 sub하면되는디 다시 추가되는느낌?
-    //    }
-    //}
-    //else
-    //{
-    //    m_pGameInstance->Sub_Actor_Scene(m_pActor);
-    //}
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+    {
+        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                //내가 넣은 콜라이더 시간에 진입했을때
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
+                {
+                    m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    iter.isPlay = true;
+                }
+            }
+            else
+            {
+                //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
+                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+                {
+                    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                    m_bColliderOff = false;
+                    if (!iter.isEventActivate)
+                    {
+                        iter.isPlay = false;
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    }
 
-    //if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-    //{
-    //    m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
-    //}
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+    {
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 100.f, 0.f, 0.f,1.f });
+    }
 
 }
 

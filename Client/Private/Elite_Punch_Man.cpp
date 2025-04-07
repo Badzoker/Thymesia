@@ -251,34 +251,31 @@ void CElite_Punch_Man::Far_Pattern_Create()
 
 void CElite_Punch_Man::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if ((!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name())) && m_fMonsterCurHP > 0.f)
     {
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack / 10.f;
-        m_fShieldHP -= (*m_Player_Attack / 10.f) * 1.5f;
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+        }
+        else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
+        }
     }
 }
 
 void CElite_Punch_Man::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) &&
-        m_iMonster_State != STATE_STUN &&
-        m_iMonster_State != STATE_EXECUTION &&
-        m_fMonsterCurHP > 0.f &&
-        !m_bCan_Move_Anim)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CElite_Punch_Man::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!m_bMove && !m_bCan_Move_Anim)
-        m_bMove = true;
 }
 
 CElite_Punch_Man* CElite_Punch_Man::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -369,7 +366,7 @@ void CElite_Punch_Man::Move_State::State_Enter(CElite_Punch_Man* pObject)
 void CElite_Punch_Man::Move_State::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
     pObject->RotateDegree_To_Player();
-    if (m_iIndex == 17 && pObject->m_bMove)
+    if (m_iIndex == 17 && pObject->m_fDistance > pObject->m_fRootDistance)
         pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
 }
 
@@ -382,7 +379,6 @@ void CElite_Punch_Man::Stun_State::State_Enter(CElite_Punch_Man* pObject)
 {
     m_iIndex = 13;
     pObject->m_iMonster_State = STATE_STUN;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -415,10 +411,18 @@ void CElite_Punch_Man::Stun_State::State_Update(_float fTimeDelta, CElite_Punch_
             return; 
         }
     }
-    else if (m_iIndex == 13 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 13 && iCurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 12;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_PUNCH_MAN_Execution)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 12;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
     else if (m_iIndex == 11 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
@@ -443,7 +447,6 @@ void CElite_Punch_Man::Execution_State::State_Enter(CElite_Punch_Man* pObject)
 {
     m_iIndex = 16;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bExecution_Start = false;
@@ -457,8 +460,9 @@ void CElite_Punch_Man::Execution_State::State_Enter(CElite_Punch_Man* pObject)
 
     _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
 
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-    pObject->RotateDegree_To_Player();
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
@@ -590,7 +594,6 @@ void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Pun
     if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 3;
-        pObject->m_bMove = false;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
 
@@ -598,7 +601,6 @@ void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Pun
     {
         m_iIndex = 2;
         pObject->m_iMonster_Attack_Power = 128;
-        pObject->m_bMove = true;
         pObject->m_bCan_Move_Anim = false;
         pObject->m_iMonster_State = MONSTER_STATE::STATE_ATTACK;
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
@@ -623,7 +625,6 @@ void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Pun
 
 void CElite_Punch_Man::Attack_ComboB::State_Exit(CElite_Punch_Man* pObject)
 {
-    pObject->m_bMove = true;
 }
 
 #pragma endregion 

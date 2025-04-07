@@ -32,6 +32,7 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
     m_fRootDistance = 1.f;
     m_fSpawn_Distance_Max = 15.f;
     m_fActive_Distance = 5.f;
+    m_iParryReadyHits = 3;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -187,13 +188,39 @@ void CHArmorLV2::PatternCreate()
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(2, 4);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CHArmorLV2::Parry_State(), this);
+            }
+            else
+            {
+                m_bCanHit = false;
+                Near_Pattern_Create();
+            }
+        }
+        else if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
         {
             if (m_fDistance >= 3.f)
                 Far_Pattern_Create();
             else
                 Near_Pattern_Create();
-
+            m_bCanHit = false;
             m_fDelayTime = 0.f;
             m_bPatternProgress = true;
         }
@@ -290,66 +317,57 @@ _bool CHArmorLV2::Is_Need_Turn_Attack()
 
 void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        _uint m_iNoDamage = 1;
-        m_fRecoveryTime = 0.f;
-        m_bCanRecovery = false;
+        if (m_iHitCount >= m_iParryReadyHits)
+            return;
+
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        if (m_iHitCount >= 2.f)
+        m_fDelayTime -= m_fTimeDelta * 1.05f;
+        m_fRecoveryTime = 0.f;
+        m_bCanRecovery = false;
+
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_iHitCount = 0;
-            m_bPatternProgress = true;
-            m_fDelayTime = 0.f;
-            m_iNoDamage = 0;
-            m_pState_Manager->ChangeState(new Parry_State(), this);
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
         }
-        m_fMonsterCurHP -= *m_Player_Attack / 3.f * m_iNoDamage;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= (*m_Player_Attack / 3.f) * 1.5f * m_iNoDamage;
-        if (!m_bPatternProgress)
+        else if(!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
+        }
+
+        if (m_bCanHit &&
+            m_iMonster_State != STATE_ATTACK &&
+            m_iMonster_State != STATE_SPECIAL_ATTACK &&
+            m_fMonsterCurHP > 0.f &&
+            m_iHitCount < m_iParryReadyHits)
         {
             _uint iRandom = rand() % 2;
             while (true)
             {
                 if (iRandom == m_iHit_Motion_Index)
-                {
                     iRandom = rand() % 2;
-                }
                 else
                 {
                     m_iHit_Motion_Index = iRandom;
                     break;
                 }
             }
-            m_iHitCount += 1;
             m_pState_Manager->ChangeState(new CHArmorLV2::Hit_State(m_iHit_Motion_Index), this);
         }
     }
-
-
-
 }
 
 void CHArmorLV2::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || (!strcmp("PLAYER", _pOther->Get_Name()))) &&
-        m_iMonster_State != STATE_STUN &&
-        m_iMonster_State != STATE_EXECUTION &&
-        m_fMonsterCurHP > 0.f)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
-    if ((!strcmp("PLAYER", _pOther->Get_Name())) && (*m_Player_State & CPlayer::PHASE_EXECUTION) && !m_bExecution_Start && !m_bExecution_Progress)
-    {
-        m_bExecution_Start = true;
-    }
+  
 }
 
 void CHArmorLV2::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CHArmorLV2* CHArmorLV2::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -424,6 +442,7 @@ void CHArmorLV2::Idle_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 26;
     pObject->m_iMonster_State = STATE_IDLE;
+    pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
@@ -438,6 +457,7 @@ void CHArmorLV2::Idle_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
 
 void CHArmorLV2::Idle_State::State_Exit(CHArmorLV2* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion
@@ -448,7 +468,7 @@ void CHArmorLV2::Idle_State::State_Exit(CHArmorLV2* pObject)
 
 void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 47;
     else
     {
@@ -466,6 +486,7 @@ void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
             break;
         }
     }
+    pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -474,12 +495,12 @@ void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Move_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
-    if (pObject->m_fDistance >= 5.f)
+    if (pObject->m_fDistance >= 3.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 5.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 3.f)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 47)
+        if (m_iIndex == 47 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 44)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -503,6 +524,7 @@ void CHArmorLV2::Move_State::State_Exit(CHArmorLV2* pObject)
 void CHArmorLV2::Run_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 33;
+    pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_RUN;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
     pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
@@ -517,7 +539,7 @@ void CHArmorLV2::Run_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
     }
 
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -540,8 +562,9 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 24;
     pObject->m_iMonster_State = STATE_STUN;
-    pObject->m_bMove = true;
+
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bCanHit = false;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
@@ -566,16 +589,24 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
             m_iIndex = 22;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION)
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
         }
     }
-    else if (m_iIndex == 24 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 24 && iCurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 23;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION)
+        {
+            pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 23;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
     else if (m_iIndex == 22 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
@@ -719,7 +750,6 @@ void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* 
     {
         m_iIndex = 36;
         pObject->RotateDegree_To_Player();
-        pObject->m_bMove = true;
         pObject->m_bCan_Move_Anim = true;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
@@ -928,12 +958,11 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 53;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_bHP_Bar_Active = false;
-    pObject->m_bExecution_Start = false;
+    pObject->m_bCanHit = false;
 
-    _float teleportDistance = 1.4f;
+    _float teleportDistance = 0.9f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
     _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
@@ -942,8 +971,9 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
 
     _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
 
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-    pObject->RotateDegree_To_Player();
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
 
 
@@ -994,18 +1024,25 @@ void CHArmorLV2::Hit_State::State_Enter(CHArmorLV2* pObject)
         m_iIndex = 21;
         break;
     }
+    pObject->m_iHitCount++;
     pObject->RotateDegree_To_Player();
     pObject->m_iMonster_State = STATE_HIT;
+    pObject->m_bCan_Move_Anim = true;
+    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CHArmorLV2::Hit_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+        pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
 
 void CHArmorLV2::Hit_State::State_Exit(CHArmorLV2* pObject)
 {
+    pObject->m_bCan_Move_Anim = false;
+    pObject->m_bPatternProgress = false;
 }
 #pragma endregion
 
@@ -1084,6 +1121,7 @@ void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
 {
     m_iIndex = 29;
     pObject->RotateDegree_To_Player();
+    pObject->m_bCanHit = false;
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;

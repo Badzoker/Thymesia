@@ -351,15 +351,19 @@ void CBoss_Varg::Far_Pattern_Create()
 void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
     /* 몬스터 무기와의 충돌 */
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
-        m_fMonsterCurHP -= *m_Player_Attack / 5.f;
-        m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
-        if (!m_bPatternProgress)
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_pState_Manager->ChangeState(new CBoss_Varg::Hit_State(), this);
+            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
+            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+        }
+        else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fShieldHP -= *m_Player_Attack / 5.f;
         }
     }
 }
@@ -412,7 +416,6 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 36;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
     pObject->m_iMonster_State = STATE_STUN;
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
@@ -424,7 +427,7 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if (pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
@@ -434,7 +437,7 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
     _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
 
-    if (m_iIndex == 35 && (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION && bMonster_Event)
+    if ((m_iIndex == 35 || m_iIndex == 36) && (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION && bMonster_Event)
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_Start_State(), pObject);
     }
@@ -523,8 +526,6 @@ void CBoss_Varg::Avoid_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    //if (pObject->m_fDistance <= 1.5)
-    //    pObject->m_bMove = false;
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (m_bBonusAttack)
@@ -547,7 +548,6 @@ void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 void CBoss_Varg::Avoid_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
-    pObject->m_bMove = true;
 }
 
 #pragma endregion
@@ -956,7 +956,6 @@ void CBoss_Varg::Raid_Attack_02::State_Update(_float fTimeDelta, CBoss_Varg* pOb
 
 void CBoss_Varg::Raid_Attack_02::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_bMove = true;
 }
 
 #pragma endregion
@@ -967,7 +966,6 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 41;
     pObject->m_iMonster_State = STATE_EXECUTION;
     //pObject->RotateDegree_To_Player();
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -1300,7 +1298,6 @@ void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)
 void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 40;
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
@@ -1313,8 +1310,9 @@ void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 
     _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
 
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-    pObject->RotateDegree_To_Player();
+    pObject->m_pTransformCom->LookAt(vPlayerPos);
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

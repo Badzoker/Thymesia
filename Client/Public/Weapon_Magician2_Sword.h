@@ -67,7 +67,9 @@ private:
 	_bool  m_bColliderOff = {};
 
 	_float m_fTimeDelta = { 0.f };
-
+	_float             m_fDeadTimer = {};
+	_float             m_fFinishTime = {};
+	_uint              m_iPassNum = {};
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

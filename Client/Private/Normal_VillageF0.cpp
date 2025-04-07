@@ -234,14 +234,24 @@ void CNormal_VillageF0::Stun()
 
 void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    if ((!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name())) && m_fMonsterCurHP > 0.f)
     {
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack * 0.5f;  //나중에 플레이어의 공격력 받아오기
-        m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f;
+
+        if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= *m_Player_Attack * 0.5f;  
+            m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f;
+        }
+        else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        {
+            m_fMonsterCurHP -= (*m_Player_Attack) * 0.5f * 1.5f;
+            m_fShieldHP -= *m_Player_Attack * 0.5f;
+        }
+
         if (m_bCanHit)
         {
             _uint iRandom = rand() % 2;
@@ -252,9 +262,12 @@ void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
                     iRandom = rand() % 2;
                 }
                 else
+                {
+                    m_iHit_Motion_Index = iRandom;
                     break;
+                }
             }
-            m_pState_Manager->ChangeState(new CNormal_VillageF0::Hit_State(iRandom), this);
+            m_pState_Manager->ChangeState(new CNormal_VillageF0::Hit_State(m_iHit_Motion_Index), this);
         }
     }
 
@@ -263,16 +276,10 @@ void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
 void CNormal_VillageF0::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_HIT)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CNormal_VillageF0::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CNormal_VillageF0* CNormal_VillageF0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -369,7 +376,7 @@ void CNormal_VillageF0::Idle_State::State_Exit(CNormal_VillageF0* pObject)
 
 void CNormal_VillageF0::Move_State::State_Enter(CNormal_VillageF0* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 46;
     else
     {
@@ -394,12 +401,12 @@ void CNormal_VillageF0::Move_State::State_Enter(CNormal_VillageF0* pObject)
 
 void CNormal_VillageF0::Move_State::State_Update(_float fTimeDelta, CNormal_VillageF0* pObject)
 {
-    if (pObject->m_fDistance >= 5.f)
+    if (pObject->m_fDistance >= 3.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 5.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 3.f)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 46)
+        if (m_iIndex == 46 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 45)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -441,7 +448,7 @@ void CNormal_VillageF0::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -577,7 +584,6 @@ void CNormal_VillageF0::Hit_State::State_Enter(CNormal_VillageF0* pObject)
     }
     pObject->m_iMonster_State = STATE_HIT;
     pObject->RotateDegree_To_Player();
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -603,7 +609,6 @@ void CNormal_VillageF0::Stun_State::State_Enter(CNormal_VillageF0* pObject)
     m_iIndex = 31;
     pObject->m_iMonster_State = STATE_STUN;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->RotateDegree_To_Player();
@@ -634,10 +639,18 @@ void CNormal_VillageF0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             return;
         }
     }
-    else if (m_iIndex == 31 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    else if (m_iIndex == 31 && iCurrentAnimIndex == m_iIndex)
     {
-        m_iIndex = 30;
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R)
+        {
+            pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
+            return;
+        }
+        if (pObject->m_pModelCom->GetAniFinish())
+        {
+            m_iIndex = 30;
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+        }
     }
     else if (m_iIndex == 28 && iCurrentAnimIndex == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
@@ -677,7 +690,6 @@ void CNormal_VillageF0::Dead_State::State_Enter(CNormal_VillageF0* pObject)
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->RotateDegree_To_Player();
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_bMove = true;
 
 #pragma region UI상호작용
     // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가

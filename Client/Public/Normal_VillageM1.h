@@ -40,7 +40,11 @@ public:
 private:
 	CState_Machine<CNormal_VillageM1>* m_pState_Manager = { nullptr };
 private:
-_bool m_bCanHit = {}; public:
+	_bool m_bCanHit = {};
+	_uint m_iParryReadyHits = {};
+
+	_uint m_iHit_Motion_Index = {};
+public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
@@ -103,7 +107,7 @@ public:
 		void State_Update(_float fTimeDelta, CNormal_VillageM1* pObject) override;
 		void State_Exit(CNormal_VillageM1* pObject) override;
 	private:
-		_float m_fTime;
+		_float m_fTime = {};
 	};
 
 	class Attack_01_State : public CStates<CNormal_VillageM1>
@@ -168,7 +172,7 @@ public:
 	class Hit_State : public CStates<CNormal_VillageM1>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint pHitNum);
 		virtual ~Hit_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨

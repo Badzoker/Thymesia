@@ -41,6 +41,8 @@ private:
 	_bool m_bExecution_Start = {};
 	_bool m_bFirstActive = {};
 	_uint m_iHit_Motion_Index = -1;
+	_uint m_iParryReadyHits = {};
+
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

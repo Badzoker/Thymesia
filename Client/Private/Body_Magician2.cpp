@@ -25,6 +25,8 @@ HRESULT CBody_Magician2::Initialize(void* pArg)
 	BODY_MAGICIAN2_DESC* pDesc = static_cast<BODY_MAGICIAN2_DESC*>(pArg);
 
 	m_bMutation_Active = pDesc->bMutation_Active;
+	m_pParentState = pDesc->pParentState;
+	m_bDead = pDesc->bDead;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,6 +41,15 @@ HRESULT CBody_Magician2::Initialize(void* pArg)
 
 void CBody_Magician2::Priority_Update(_float fTimeDelta)
 {
+	if (*m_pParentState == STATE_DEAD)
+	{
+		m_fDeadTimer += fTimeDelta * 0.5f;
+		m_fFinishTime += fTimeDelta * 0.5f;
+		if (m_fDeadTimer >= 1.5)
+		{
+			*m_bDead = true;
+		}
+	}
 }
 
 void CBody_Magician2::Update(_float fTimeDelta)
@@ -62,8 +73,20 @@ HRESULT CBody_Magician2::Render()
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		//´«¾Ë
-		if (i == 3 && *m_bMutation_Active == false)
+
+		if (*m_pParentState == STATE_DEAD)
+		{
+			m_iPassNum = 5;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else if (i == 3 && *m_bMutation_Active == false)
 			continue;
 		else if (i == 4)
 			m_iPassNum = 3;
@@ -72,13 +95,13 @@ HRESULT CBody_Magician2::Render()
 		else
 			m_iPassNum = 0;
 
-
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
 		if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))
 			return E_FAIL;
+
 
 		m_pShaderCom->Begin(m_iPassNum);
 		m_pModelCom->Render(i);

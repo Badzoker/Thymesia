@@ -233,6 +233,8 @@ void CNormal_VillageF1::Stun()
 
 void CNormal_VillageF1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    //나중에 한번에 수정하기.
+
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
     {
         m_fRecoveryTime = 0.f;
@@ -258,16 +260,10 @@ void CNormal_VillageF1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
 void CNormal_VillageF1::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if ((!strcmp("MONSTER", _pOther->Get_Name()) || !strcmp("PLAYER", _pOther->Get_Name())) && m_iMonster_State != STATE_HIT)
-    {
-        m_bMove = false;
-        m_pTransformCom->Sliding_Move(m_fTimeDelta, m_pNavigationCom, _pOther->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-    }
 }
 
 void CNormal_VillageF1::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bMove = true;
 }
 
 CNormal_VillageF1* CNormal_VillageF1::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -337,7 +333,7 @@ void CNormal_VillageF1::Idle_State::State_Exit(CNormal_VillageF1* pObject)
 
 void CNormal_VillageF1::Move_State::State_Enter(CNormal_VillageF1* pObject)
 {
-    if (pObject->m_fDistance > 0.5f)
+    if (pObject->m_fDistance > 1.f)
         m_iIndex = 46;
     else
     {
@@ -361,12 +357,12 @@ void CNormal_VillageF1::Move_State::State_Enter(CNormal_VillageF1* pObject)
 
 void CNormal_VillageF1::Move_State::State_Update(_float fTimeDelta, CNormal_VillageF1* pObject)
 {
-    if (pObject->m_fDistance >= 2.f)
+    if (pObject->m_fDistance >= 3.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
-    else if (pObject->m_fDistance < 2.f && pObject->m_bMove)
+    else if (pObject->m_fDistance < 3.f)
     {
         pObject->RotateDegree_To_Player();
-        if (m_iIndex == 46)
+        if (m_iIndex == 46 && pObject->m_fDistance > pObject->m_fRootDistance)
             pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
         else if (m_iIndex == 45)
             pObject->m_pTransformCom->Go_Backward_With_Navi(fTimeDelta, pObject->m_pNavigationCom);
@@ -407,7 +403,7 @@ void CNormal_VillageF1::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
     }
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
-    if (bCheck && pObject->m_bMove)
+    if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
         pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
@@ -569,7 +565,6 @@ void CNormal_VillageF1::Hit_State::State_Enter(CNormal_VillageF1* pObject)
     }
     pObject->m_iMonster_State = STATE_HIT;
     pObject->RotateDegree_To_Player();
-    pObject->m_bMove = true;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

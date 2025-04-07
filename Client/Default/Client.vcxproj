@@ -304,6 +304,7 @@
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
     <ClInclude Include="..\Public\SpecificObject.h" />
+    <ClInclude Include="..\Public\Stand_Stack_Sword.h" />
     <ClInclude Include="..\public\StunnedEnd.h" />
     <ClInclude Include="..\public\StunnedLoop.h" />
     <ClInclude Include="..\public\StunnedStart.h" />
@@ -574,6 +575,7 @@
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
     <ClCompile Include="..\Private\SpecificObject.cpp" />
+    <ClCompile Include="..\Private\Stand_Stack_Sword.cpp" />
     <ClCompile Include="..\private\StunnedEnd.cpp" />
     <ClCompile Include="..\private\StunnedLoop.cpp" />
     <ClCompile Include="..\private\StunnedStart.cpp" />

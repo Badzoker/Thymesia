@@ -45,7 +45,7 @@ HRESULT CWeapon_Shield::Initialize(void* pArg)
 	_vector vOffSetPos = { 20.f,0.f,-10.f,1.f };
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vOffSetPos);
 
-	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.6f,0.6f,0.8f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,80.f,1.f });
 

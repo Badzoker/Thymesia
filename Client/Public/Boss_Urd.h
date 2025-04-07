@@ -17,6 +17,7 @@ class CBoss_Urd final : public CMonster
 {
 public:
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
+	enum SWORD_STACK { STACK_ONE, STACK_TWO, STACK_THREE, STACK_END };
 private:
 	CBoss_Urd(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBoss_Urd(const CBoss_Urd& Prototype);
@@ -39,11 +40,21 @@ public:
 
 public:
 	void Near_Pattern_Create();
-	void Far_Pattern_Create();
+	void Stack_Skill_Create();
+private:
+	_bool                            m_bNeed_Memory_Position[STACK_END] = {};
+	_bool							 m_bIs_Equipped_To_LeftHand[STACK_END] = {};
+	_bool							 m_bIs_Stand_In_Ground[STACK_END] = {};
+	_bool							 m_bNeed_Fly_To_Player[STACK_END] = {};
 
+private:
+	_bool							 m_bPattern70 = {};
+	_bool							 m_bPattern50 = {};
+	_bool							 m_bPattern30 = {};
 private:
 	_bool						     m_bCan_Hit_Motion = {};
 	_bool							 m_bChange_Socket = {};
+	_bool							 m_bRender_Left_Sword = {};
 	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bSpecial_Skill_Progress = {};
 
@@ -57,7 +68,9 @@ private:
 	_uint                            m_iFarPatternIndex = -1;
 	_uint							 m_iHit_Motion_Index = -1;
 	_uint							 m_iStep_Count = {};
+	_uint							 m_iSword_Stack_Count = {};
 	_uint                            m_iCheck_Step_Num = {};
+	_uint                            m_iParryReadyHits = {};
 
 	_uint                            m_iPhase = { PHASE_END };
 
@@ -96,17 +109,31 @@ public:
 		void State_Exit(CBoss_Urd* pObject) override;
 	};
 
-	class Move_State : public CStates<CBoss_Urd>
+
+	class Hit_State : public CStates<CBoss_Urd>
 	{
 	public:
-		Move_State() = default;
-		virtual ~Move_State() = default;
+		Hit_State(_uint iHit_Index);
+		virtual ~Hit_State() = default;
 	public:
 		void State_Enter(CBoss_Urd* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
 		void State_Exit(CBoss_Urd* pObject) override;
 	private:
-		_uint iRandomMove = {};
+		_uint m_iHit_Index = {};
+	};
+
+	class Parry_State : public CStates<CBoss_Urd>
+	{
+	public:
+		Parry_State() = default;
+		virtual ~Parry_State() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	private:
+		_uint m_iParry_Index = {};
 	};
 
 	class Step_Front_State : public CStates<CBoss_Urd>
@@ -153,22 +180,6 @@ public:
 		void State_Enter(CBoss_Urd* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
 		void State_Exit(CBoss_Urd* pObject) override;
-	};
-
-
-	class Dissappear_Move_State : public CStates<CBoss_Urd>
-	{
-	public:
-		Dissappear_Move_State(_uint iDissappear_Index, _bool bShootCard = false);
-		virtual ~Dissappear_Move_State() = default;
-	public:
-		void State_Enter(CBoss_Urd* pObject) override;
-		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
-		void State_Exit(CBoss_Urd* pObject) override;
-	private:
-		_bool m_bShootCard = {};
-		_uint m_iDissappear_Index = {};
-		_uint iRandomMove = {};
 	};
 
 	class Stun_State : public CStates<CBoss_Urd>
@@ -236,7 +247,79 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
 		void State_Exit(CBoss_Urd* pObject) override;
 	};
+	class Attack_Combo_E : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Combo_E() = default;
+		virtual ~Attack_Combo_E() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	};
 
+
+	class Attack_Combo_F : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Combo_F() = default;
+		virtual ~Attack_Combo_F() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	};
+
+
+	class Attack_Stack_Skill_01 : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Stack_Skill_01() = default;
+		virtual ~Attack_Stack_Skill_01() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	private:
+		_bool m_bIsSpawn = {};
+	};
+
+	class Attack_Stack_Skill_02 : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Stack_Skill_02() = default;
+		virtual ~Attack_Stack_Skill_02() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	private:
+		_bool m_bIsSpawn = {};
+	};
+
+	class Attack_Stack_Skill_03 : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Stack_Skill_03() = default;
+		virtual ~Attack_Stack_Skill_03() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	private:
+		_bool m_bIsSpawn = {};
+	};
+
+	class Attack_Special_Skill : public CStates<CBoss_Urd>
+	{
+	public:
+		Attack_Special_Skill() = default;
+		virtual ~Attack_Special_Skill() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	};
 };
 
 END
