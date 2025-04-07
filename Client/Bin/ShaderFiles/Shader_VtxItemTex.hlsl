@@ -8,7 +8,8 @@ Texture2D       g_NoiseTexture2;
 
 float			g_Time;
 float4			g_vCamPosition;
-float4          g_fAlphaValue;
+
+int             g_ItemNumber;
 
 struct VS_IN
 {
@@ -53,9 +54,9 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    float fSpeedOffsetX = { 0.0f };             // 노이즈 텍스쳐 x(좌우로) 얼마나 빠르게 움직이게할꺼셈? 
-    float fSpeedOffsetY = {0.5f};              // 노이즈 텍스쳐 y(위로) 얼마나 빠르게 움직이게할꺼셈? 
-    float fRatioNoiseTexture = { 1.0f };        // 노이즈 텍스쳐 쓰는 비율너낌?
+    float fSpeedOffsetX = { 0.0f }; // 노이즈 텍스쳐 x(좌우로) 얼마나 빠르게 움직이게할꺼셈? 
+    float fSpeedOffsetY = { 0.5f }; // 노이즈 텍스쳐 y(위로) 얼마나 빠르게 움직이게할꺼셈? 
+    float fRatioNoiseTexture = { 1.0f }; // 노이즈 텍스쳐 쓰는 비율너낌?
     
     float2 vTexCoord = In.vTexcoord;
 
@@ -64,16 +65,23 @@ PS_OUT PS_MAIN(PS_IN In)
     vTexCoord += vDistortion;
 
     
-    //float3 vLavaColor = lerp(float3(1.0, 0.3, 0.0), float3(1.0, 0.8, 0.0), float3(1.0, 0.0, 0.0));
-    //float3 vBlueColor = lerp(float3(0.0, 0.3, 1.0), float3(0.0, 0.8, 1.0), float3(0.0, 0.0, 1.0));
-    //float3 vGreenColor = lerp(float3(0.0, 1.0, 0.2), float3(0.0, 1.0, 0.8), float3(0.0, 1.0, 0.0));
+    float3 vRedColor = lerp(float3(1.0, 0.3, 0.0), float3(1.0, 0.8, 0.0), float3(1.0, 0.0, 0.0));
     float3 vGreenColor = lerp(float3(0.8, 1.0, 0.7), float3(0.5, 1.0, 0.6), float3(0.3, 1.0, 0.4));
+    float3 vBlueColor = lerp(float3(0.5, 0.4, 1.0), float3(0.2, 0.6, 1.0), float3(0.4, 0.3, 1.0));
+    float3 vYellowColor = lerp(float3(1.0, 1.0, 0.4), float3(1.0, 0.9, 0.2), float3(1.0, 0.8, 0.0));
     float fDistortionStrength = 1.2f;
 
     float4 FlareColor = g_Texture.Sample(LinearSampler_Clamp, vTexCoord);
-    //Out.vColor.rgb = FlareColor.rgb * vLavaColor * fDistortionStrength;
-    //Out.vColor.rgb = FlareColor.rgb * vBlueColor * fDistortionStrength;
-    Out.vColor.rgb = FlareColor.rgb * vGreenColor * fDistortionStrength;
+    
+    if (g_ItemNumber == 1) // 파랑 (KEY 1) 
+        Out.vColor.rgb = FlareColor.rgb * vBlueColor * fDistortionStrength;
+    else if (g_ItemNumber == 2)  // 초록 (SKILL PIECE) 
+        Out.vColor.rgb = FlareColor.rgb * vGreenColor * fDistortionStrength;
+    else if (g_ItemNumber == 3) // 빨강 (KEY 2) 
+        Out.vColor.rgb = FlareColor.rgb * vRedColor * fDistortionStrength;
+    else if (g_ItemNumber == 4) // 노랑 (ITEM_FORGIVEN)
+        Out.vColor.rgb = FlareColor.rgb * vYellowColor * fDistortionStrength;
+    
     Out.vColor.a = FlareColor.a * 0.5f;
 
    

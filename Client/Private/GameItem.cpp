@@ -53,21 +53,23 @@ HRESULT CGameItem::Initialize(void* _pArg)
 
     m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_PlayerInventory"), "Inventory");
 
+
     switch (m_eItemType)
     {
     case Engine::ITEM_TYPE::ITEM_KEY1:
-        m_fAlphaValue = { 1.0f, 1.0f, 1.0f, 1.0f };
+        m_iItemTypeNumber = 1;
         break;
     case Engine::ITEM_TYPE::ITEM_KEY2:
-        m_fAlphaValue = { 0.0f, 1.0f, 0.0f, 1.0f };
+        m_iItemTypeNumber = 2;
         break;
     case Engine::ITEM_TYPE::ITEM_MEMORY:
-        m_fAlphaValue = { 0.0f, 0.0f, 1.0f, 1.0f };
+        m_iItemTypeNumber = 3;
         break;
     case Engine::ITEM_TYPE::ITEM_FORGIVEN:
-        m_fAlphaValue = { 0.0f, 0.0f, 0.0f, 1.0f };
+        m_iItemTypeNumber = 4;
         break;
     }
+
 
     return S_OK;
 }
@@ -182,9 +184,6 @@ HRESULT CGameItem::Render_Glow()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
         return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaValue", &m_fAlphaValue, sizeof(_float))))
-        return E_FAIL;
-
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
 
@@ -192,6 +191,9 @@ HRESULT CGameItem::Render_Glow()
         return E_FAIL;
 
     if (FAILED(m_pNoiseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_ItemNumber", &m_iItemTypeNumber, sizeof(_uint))))
         return E_FAIL;
 
     m_pShaderCom->Begin(0);

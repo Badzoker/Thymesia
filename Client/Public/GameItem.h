@@ -57,10 +57,7 @@ private:
     ITEM_TYPE                   m_eItemType = { ITEM_TYPE::ITEM_END };
     _char		                m_GameItemName[MAX_PATH] = {};
 
-    //PxRigidDynamic*             m_pActor = { nullptr };
     class CGameObject*          m_pInteractButton = { nullptr };
-
-    //_float4                     m_fAlphaValue = {};
 
     CGameObject*                m_pButtonGameObject = { nullptr };
     CButton*                    m_pButton = { nullptr };
@@ -68,6 +65,8 @@ private:
     CGameObject*                m_pGroupInven = { nullptr };
 
     _float                      m_fTime = {};
+    _uint                       m_iItemTypeNumber = {};
+
 
 public:
     static CGameItem*           Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
