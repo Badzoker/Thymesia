@@ -288,7 +288,10 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
                 m_bEnLarging = true;
                 m_fEnLargingTime = 0.f;
                 m_pButton->Activate_Button(false);
-                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
             }
             break;
         }

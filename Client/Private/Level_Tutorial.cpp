@@ -647,7 +647,19 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET, 2)))
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_Red.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_Blue.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_Yellow.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, 2)))
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
@@ -1702,9 +1714,21 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Heal");
             break;
-        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET:
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Red");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Blue");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Yellow");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
