@@ -102,17 +102,10 @@ HRESULT CLeftWeapon::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        //m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(17);
         m_pModelCom->Render(i);
     }
-
-#ifdef _DEBUG
-    //if(*m_pParentState & (CPlayer::STATE_ATTACK | CPlayer::STATE_ATTACK2) && m_AccColliderLife < 0.4f)
-    //    m_pColliderCom->Render();
-    //if ((*m_pParentState & CPlayer::STATE_ATTACK) && m_AccColliderLifeAttack1 < 0.4f || (*m_pParentState & CPlayer::STATE_ATTACK2) && m_AccColliderLifeAttack2 < 0.2f)  
-    //    m_pColliderCom->Render();       
-#endif // DEBUG 
-
 
     return S_OK;
 }

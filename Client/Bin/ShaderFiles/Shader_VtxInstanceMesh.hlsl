@@ -11,6 +11,8 @@ float           g_DissolveAmount;
 
 float4x4 g_PreWorldMatrix, g_PreViewMatrix;
 
+float4 g_WorldCamPos;
+
 struct VS_IN
 {
 	float3			vPosition : POSITION;	
@@ -162,6 +164,15 @@ struct PS_OUT_MOTIONBLUR
     float4 vColor : SV_TARGET0;
 };
 
+float Dither4x4[16] =
+{
+    0.0 / 16.0, 8.0 / 16.0, 2.0 / 16.0, 10.0 / 16.0,
+    12.0 / 16.0, 4.0 / 16.0, 14.0 / 16.0, 6.0 / 16.0,
+     3.0 / 16.0, 11.0 / 16.0, 1.0 / 16.0, 9.0 / 16.0,
+    15.0 / 16.0, 7.0 / 16.0, 13.0 / 16.0, 5.0 / 16.0
+};
+
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {
@@ -190,7 +201,31 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth   = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);	
     Out.fSpecular = 0.1f;
 	
-	return Out;
+    float2 ScreenPos;
+        
+    ScreenPos.x = In.vPosition.x;
+    ScreenPos.y = In.vPosition.y;
+    
+    // 카메라와 픽셀 거리 계산
+    float dist = distance(In.vWorldPos.xyz, g_WorldCamPos.xyz);
+
+    // 디더링 비율 계산 (0 = 완전 디더링, 1 = 완전 보임)
+    float alpha = saturate((dist) / (2.5f));
+
+    // 디더링 패턴 적용
+    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    
+    int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
+
+    float threshold = Dither4x4[index];
+
+    if (alpha < 1.f)
+    {
+        if (alpha * 0.1f < threshold)
+            discard; // 픽셀 제거   
+    }
+
+    return Out;
 }
 
 

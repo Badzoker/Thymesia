@@ -37,6 +37,10 @@ protected:
 protected:
 	PxRigidDynamic*				m_pActor = { nullptr };
 
+	_float		 g_DitherStartDist = { };     // 시작 거리			
+	_float		 g_DitherEndDist   = { };     // 완전 보임 거리				
+	CGameObject* m_pCamera = { nullptr };	
+
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
