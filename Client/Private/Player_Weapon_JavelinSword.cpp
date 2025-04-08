@@ -110,6 +110,12 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
                 XMLoadFloat4x4(&m_PreParentMatrix)   /* 월드 영역 */
             );
             m_bFirst = true;
+
+#pragma region EFFECT
+            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_THROWING, &m_CombinedWorldMatrix, m_pTransformCom->Get_WorldMatrix_Ptr());
+#pragma endregion
+
+
         }
         _vector vScale = {};
         _vector qRotation = {};    // 회전 제거 (단위 쿼터니언 사용)
@@ -259,11 +265,31 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
                     }
                     break;
                 }
+#pragma region EFFECT
                 case EVENT_EFFECT:
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                    if (iter.isEventActivate == true)
+                    {
+                        if (!strcmp(iter.szName, "Effect_Start"))
+                        {
+                            iter.isPlay = true;
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_START, m_pParentWorldMatrix, m_pSocketMatrix);
+                        }
+                        else if (!strcmp(iter.szName, "Particle_Start"))
+                        {
+                            iter.isPlay = true;
+                            m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_JAVELIN_DISTORTION, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        }
+                        else if (!strcmp(iter.szName, "Particle2_Start"))
+                        {
+                            iter.isPlay = true;
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN, m_pParentWorldMatrix, m_pSocketMatrix);
+                        }
+                    }
+
                     break;
                 }
+#pragma endregion
                 default:
                     break;
                 }

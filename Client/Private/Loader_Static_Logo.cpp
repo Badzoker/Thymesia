@@ -1862,11 +1862,6 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Dust", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark"),
-		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Buffer.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay"),
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Dust_Delay", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
@@ -1893,6 +1888,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	//Particle Compute Shader »ý¼º ³¡
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Buffer.dat")))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Point_Compute_Spark_Left */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Left"),
@@ -2227,6 +2227,21 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Skill_GreatSword */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_GreatSword"),
 		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_GreatSword_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Start */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Start"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin_Start_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Throwing */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Throwing"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin_Throwing_Buffer.dat")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin"),
+		CVIBuffer_Point_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin_Buffer.dat")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Particle_Image*/

@@ -533,6 +533,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_GREATSWORD)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerJavelin_Distortion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_JAVELIN_DISTORTION)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -804,6 +808,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_GreatSword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin_Start.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_START, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin_Throwing.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_THROWING, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN, 1)))
         return E_FAIL;
 
     //Sword Effect
@@ -1861,7 +1877,15 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD:
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_GreatSword");
             break;
-
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_START:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Start");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN_THROWING:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin_Throwing");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin");
+            break;
         }
 #pragma endregion
 
