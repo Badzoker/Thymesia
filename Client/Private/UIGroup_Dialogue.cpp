@@ -34,6 +34,10 @@ HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 	m_pTalkScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy");
 	m_pPopScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop");
 
+	
+	m_pTalkScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
+	m_pPopScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
+
 
 	return S_OK;
 }
@@ -54,12 +58,27 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 
 			}
 		}
+		else if (m_pGameInstance->Get_Scene_Render_State(m_pTalkScene_Boss))
+		{
+			m_fDelayTime += fTimeDelta;
+
+			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
+			{
+				m_fDelayTime = 0;
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pTalkScene_Boss, false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, true);
+
+			}
+		}
 
 		if (m_pGameInstance->Get_Scene_Render_State(m_pPopScene))
 		{
 			AIsemy_Pop_Button();
 		}
-		//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, true);
+		else if (m_pGameInstance->Get_Scene_Render_State(m_pPopScene_Boss))
+		{
+			AIsemy_Pop_Boss_Button();
+		}
 	}
 }
 
@@ -119,10 +138,42 @@ void CUIGroup_Dialogue::AIsemy_Pop_Button()
 	}
 }
 
+void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
+{
+	for (auto& Button : m_pPopScene_Boss->Find_UI_Button())
+	{
+		if (Button->Get_Mouse_Select_OnOff())
+		{
+			if (1 == Button->Get_UI_GroupID())
+			{
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
+
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL);
+
+			}
+		
+			if (2 == Button->Get_UI_GroupID())
+			{
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+				Button->Set_Mouse_Select_OnOff(false);
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
+
+			}
+		}
+	}
+}
+
 HRESULT CUIGroup_Dialogue::Ready_UIObject()
 {
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemy");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyPop");
+	
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
 	return S_OK;
 }
 

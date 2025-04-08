@@ -24,6 +24,7 @@ public:
 
 public:
 	void AIsemy_Pop_Button();
+	void AIsemy_Pop_Boss_Button();
 
 public:
 	HRESULT Ready_UIObject();
@@ -34,6 +35,9 @@ private:
 
 	CUI_Scene* m_pTalkScene = {};
 	CUI_Scene* m_pPopScene = {};
+
+	CUI_Scene* m_pTalkScene_Boss = {}; // 철학자 세미
+	CUI_Scene* m_pPopScene_Boss = {}; // 고스트 세미
 private:
 	LEVELID m_eMyLevel = {};
 	_float m_fDelayTime = {};

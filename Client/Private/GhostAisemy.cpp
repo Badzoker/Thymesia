@@ -26,7 +26,7 @@ HRESULT CGhostAisemy::Initialize(void* pArg)
 
     GHOST_SEMY_DESC* pDesc = static_cast<GHOST_SEMY_DESC*>(pArg);
 
-    LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+    m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
     if (FAILED(__super::Initialize(&pDesc)))
         return E_FAIL;
@@ -44,7 +44,7 @@ HRESULT CGhostAisemy::Initialize(void* pArg)
     //m_fApproachTime = 2.0f;
     //m_fLightOnTime = 2.0f;
 
-    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Button"), "BUTTON");
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Button"), "BUTTON");
     m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
@@ -214,12 +214,16 @@ void CGhostAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
     {
         m_pButton->Activate_Button(false);
 
+        if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1"))
+            && !m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1")))
+        {
+            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
 
-        // UI 뜨면될듯
-
-
-
+            m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), true);
+            m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1")), true);
+        }
     }
+    
 }
 
 void CGhostAisemy::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
