@@ -26,6 +26,7 @@
 #include "Effect_Particle.h"
 
 #include "Terrain.h"
+#include "BarrierScreen.h"
 
 
 CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -271,6 +272,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
     Load_SpecificObjects(12);
 
     Load_DestructObjects(6);
+
+    CBarrierScreen::BARRIER_SCREEN_DESC     BarrierDesc = {};
+    _float4 vVargBossEntrancePosition = { 111.56f, 18.61f, -46.5f, 1.f };           // 보스 바그 방 앞에 있음.
+    BarrierDesc._fPosition = vVargBossEntrancePosition;
+    BarrierDesc.iCurLevel = m_iCurrentLevel;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_BarrierScreen"), m_iCurrentLevel, pLayerTag, &BarrierDesc)))
+        return E_FAIL;
 
     return S_OK;
 }

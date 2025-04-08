@@ -288,10 +288,28 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
                 m_bEnLarging = true;
                 m_fEnLargingTime = 0.f;
                 m_pButton->Activate_Button(false);
-                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                // 1 : ÆÄ¶û
+                // 2 : ÃÊ·Ï
+                // 3 : »¡°­ 
+                // 4 : ³ë¶û 
+                switch (m_iItemTypeNumber)
+                {
+                case 1:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+
+                case 2:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+
+                case 3:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+
+                case 4:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                }
             }
             break;
         }
