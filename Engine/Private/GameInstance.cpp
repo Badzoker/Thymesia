@@ -348,6 +348,21 @@ void CGameInstance::Set_FogFactors(FOGPARAMS _ParamDesc)
 	return m_pRenderer->Set_FogFactors(_ParamDesc);
 }
 
+void CGameInstance::Set_FogOnOff()
+{
+	m_pRenderer->Set_FogOnOff();
+}
+
+void CGameInstance::Set_GodRayOnOff()
+{
+	m_pRenderer->Set_GodRayOnOff();
+}
+
+void CGameInstance::Set_ShadowOnOff()
+{
+	m_pRenderer->Set_ShadowOnOff();
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);

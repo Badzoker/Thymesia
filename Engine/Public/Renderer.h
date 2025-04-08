@@ -35,6 +35,18 @@ public:
 		m_ParamDesc = _ParamDesc;
 	};
 
+	void Set_FogOnOff() {
+		m_bFogStop = !m_bFogStop;
+	};
+
+	void Set_GodRayOnOff() {
+		m_bGodRayStop = !m_bGodRayStop;
+	};
+
+	void Set_ShadowOnOff() {
+		m_bShadowStop = !m_bShadowStop;
+	};
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -68,6 +80,12 @@ private:
 	_float4											m_vFogColor = { 0.f, 0.f, 0.f, 1.f };
 	_float4											m_vLightShaftValue = { 0.f, 0.f, 0.f, 0.f };
 	FOGPARAMS										m_ParamDesc = {};
+
+
+	_bool											m_bFogStop = { false };
+	_bool											m_bGodRayStop = { false };
+	_bool											m_bShadowStop = { false };
+
 
 	class CShader_Compute_Deferred* m_pLightShaftComputeShader = { nullptr };
 	class CShader_Compute_Deferred* m_pFogComputeShader = { nullptr };

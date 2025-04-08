@@ -156,6 +156,22 @@ void CLevel_SeaOfTrees::Update(_float fTimeDelta)
         m_pGameInstance->Clear_ItemInfo();
         m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
     }
+
+
+    if (m_pGameInstance->isKeyEnter(DIK_F5))
+    {
+        m_pGameInstance->Set_FogOnOff();
+    }
+    if (m_pGameInstance->isKeyEnter(DIK_F6))
+    {
+        m_pGameInstance->Set_ShadowOnOff();
+    }
+
+
+    //if (m_pGameInstance->isKeyEnter(DIK_F10))
+    //{
+    //    m_pGameInstance->Set_GodRayOnOff();
+    //}
 }
 
 HRESULT CLevel_SeaOfTrees::Render()

@@ -542,38 +542,41 @@ HRESULT CRenderer::Render_NonBlend()
 
 HRESULT CRenderer::Render_Occulsion()
 {
-	if (!XMVector4Equal(XMLoadFloat4(&m_vLightShaftValue), XMVectorSet(0.f, 0.f, 0.f, 0.f)))
+	if (!m_bGodRayStop)
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulsion"))))
-			return E_FAIL;
+		if (!XMVector4Equal(XMLoadFloat4(&m_vLightShaftValue), XMVectorSet(0.f, 0.f, 0.f, 0.f)))
+		{
+			if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulsion"))))
+				return E_FAIL;
 
-		m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
-		m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
-		m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+			m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+			m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+			m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-		if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+				return E_FAIL;
 
-		if (FAILED(m_pGameInstance->Bind_LightPos(m_pShader, "g_ScreenLightPos")))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->Bind_LightPos(m_pShader, "g_ScreenLightPos")))
+				return E_FAIL;
 
-		if (FAILED(m_pGameInstance->Bind_LightDir(m_pShader, "g_ScreenLightDir")))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->Bind_LightDir(m_pShader, "g_ScreenLightDir")))
+				return E_FAIL;
 
-		_matrix matWorld = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
+			_matrix matWorld = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
 
-		_float4 CamDir;
-		XMStoreFloat4(&CamDir, matWorld.r[1]);
+			_float4 CamDir;
+			XMStoreFloat4(&CamDir, matWorld.r[1]);
 
-		if (FAILED(m_pShader->Bind_RawValue("g_ScreenCameraDir", &CamDir, sizeof(_float4))))
-			return E_FAIL;
+			if (FAILED(m_pShader->Bind_RawValue("g_ScreenCameraDir", &CamDir, sizeof(_float4))))
+				return E_FAIL;
 
-		m_pShader->Begin(13);
-		m_pVIBuffer->Bind_InputAssembler();
-		m_pVIBuffer->Render();
+			m_pShader->Begin(13);
+			m_pVIBuffer->Bind_InputAssembler();
+			m_pVIBuffer->Render();
 
-		if (FAILED(m_pGameInstance->End_MRT()))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->End_MRT()))
+				return E_FAIL;
+		}
 	}
 
 	return S_OK;
@@ -770,8 +773,16 @@ HRESULT CRenderer::Render_Fog()
 	XMStoreFloat4x4(&m_ParamDesc.g_ViewMatrixInv, XMMatrixTranspose(XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW))));
 	m_ParamDesc.g_fTime = m_fTime += 0.001f;
 
-	if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Shadow_Final"), TEXT("Target_RangeFog_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &m_ParamDesc)))
-		return E_FAIL;
+	if (m_bShadowStop)
+	{
+		if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Final"), TEXT("Target_RangeFog_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &m_ParamDesc)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->RTV_Compute_Fog(TEXT("Target_Depth"), m_pNoiseSRV, TEXT("Target_LightShaftY"), TEXT("Target_Shadow_Final"), TEXT("Target_RangeFog_Final"), TEXT("Target_Fog"), m_pFogComputeShader, m_iOriginalViewportWidth, m_iOriginalViewportHeight, 1, &m_ParamDesc)))
+			return E_FAIL;
+	}
 
 	m_pGameInstance->Clear_RTV(TEXT("Target_RangeFog_Final"));
 
@@ -1016,10 +1027,22 @@ HRESULT CRenderer::Render_Final() //원래 Deferred 에 있었음
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final_Last"))))
 		return E_FAIL;
+	if (!m_bFogStop)
+	{
+		if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))
+			return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Fog"), m_pShader, "g_FinalTexture")))
-		return E_FAIL;
-
+	}
+	else if (m_bFogStop && m_bShadowStop)
+	{
+		if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow_Final"), m_pShader, "g_FinalTexture")))
+			return E_FAIL;
+	}
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_HighLightY"), m_pShader, "g_HighLightYTexture")))
 		return E_FAIL;
 
