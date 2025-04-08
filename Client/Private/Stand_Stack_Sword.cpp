@@ -119,7 +119,7 @@ HRESULT CStand_Stack_Sword::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(17); // 0
         m_pModelCom->Render(i);
     }
 

@@ -217,7 +217,7 @@ HRESULT CWeapon_GreatSword::Render()
 				return E_FAIL;
 		}
 		else
-			m_iPassNum = 0;
+			m_iPassNum = 17;// 0;
 
 
 		m_pShaderCom->Begin(m_iPassNum);

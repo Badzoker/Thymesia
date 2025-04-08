@@ -248,7 +248,7 @@ HRESULT CVargKnife::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(17);    
         m_pModelCom->Render(i);
     }
 

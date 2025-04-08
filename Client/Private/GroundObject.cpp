@@ -139,7 +139,6 @@ void CGroundObject::Late_Update(_float _fTimeDelta)
     if (m_iNumInstance > 0)
     {
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-        m_pGameInstance->Add_RenderGroup(CRenderer::RG_MOTION_BLUR, this);
     }
 }
 
@@ -345,6 +344,16 @@ HRESULT CGroundObject::Ready_Components()
 
 HRESULT CGroundObject::Bind_ShaderResources()
 {
+
+    if (m_pGameInstance->Get_Current_Level_Index() >= 3)
+    {
+        m_pCamera = m_pGameInstance->Get_GameObject_To_Layer(m_pGameInstance->Get_Current_Level_Index(), TEXT("Layer_Camera"), "Camera_Free");
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldCamPos", &m_pCamera->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), sizeof(_float4))))
+            return E_FAIL;
+    }
+
+
     if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))

@@ -186,7 +186,7 @@ HRESULT CWeapon_Cane::Render()
                 return E_FAIL;
         }
         else
-            m_iPassNum = 0;
+            m_iPassNum = 17;//; 
 
 
         m_pShaderCom->Begin(m_iPassNum);

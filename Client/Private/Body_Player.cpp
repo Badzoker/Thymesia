@@ -497,7 +497,7 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
-        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
+            if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
             m_pGameInstance->Add_Actor_Scene(m_pParentActor);
 
         if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
@@ -510,6 +510,7 @@ void CBody_Player::Update(_float fTimeDelta)
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
             m_fZoomBlurDeltaTime = 0.f;
+            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
         }
     }
 
