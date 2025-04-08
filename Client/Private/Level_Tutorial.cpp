@@ -1714,6 +1714,9 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case 11:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             break;
+        case 12:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Round");
+            break;
         }
 
         switch (_eEffectName)
