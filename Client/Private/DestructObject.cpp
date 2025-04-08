@@ -22,19 +22,21 @@ HRESULT CDestructObject::Initialize_Prototype()
 
 HRESULT CDestructObject::Initialize(void* pArg)
 {
+    strcpy_s(m_szName, "DESTRUCT");
+
     DestructObject_Desc* pDesc = static_cast<DestructObject_Desc*>(pArg);
 
-    strcpy_s(m_szName, pDesc->ObjectName.c_str());
+    strcpy_s(m_szIndivisualName, pDesc->ObjectName.c_str());
 
     m_fFrustumRadius = pDesc->fFrustumRadius;
 
     m_fModelPos = pDesc->fPosition;
 
-    if (!strcmp(m_szName, "barrel"))
+    if (!strcmp(m_szIndivisualName, "barrel"))
         m_fModelHeightCenterY = m_fModelPos.y + 0.44f;
-    else if (!strcmp(m_szName, "Rock"))
+    else if (!strcmp(m_szIndivisualName, "Rock"))
         m_fModelHeightCenterY = m_fModelPos.y + 0.125f;
-    else if (!strcmp(m_szName, "Fence2"))
+    else if (!strcmp(m_szIndivisualName, "Fence2"))
         m_fModelHeightCenterY = m_fModelPos.y + 0.41f;
 
     m_iCurrentLevel = pDesc->iCurLevel;
@@ -113,7 +115,7 @@ HRESULT CDestructObject::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
             return E_FAIL;
 
-        if (!strcmp(m_szName, "barrel") || (!strcmp(m_szName, "Fence2")))
+        if (!strcmp(m_szIndivisualName, "barrel") || (!strcmp(m_szIndivisualName, "Fence2")))
             m_pShaderCom->Begin(0);
         else
             m_pShaderCom->Begin(1);
@@ -131,7 +133,7 @@ HRESULT CDestructObject::Ready_Components()
         return E_FAIL;
 
     string strComponentName = "Prototype_Component_Model_";
-    strComponentName += m_szName;
+    strComponentName += m_szIndivisualName;
     _tchar		szComponentName[MAX_PATH] = {};
 
     MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), static_cast<int>(strlen(strComponentName.c_str())), szComponentName, MAX_PATH);

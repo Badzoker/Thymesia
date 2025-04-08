@@ -913,6 +913,9 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Urd\Stack">
       <UniqueIdentifier>{d64e8817-9134-41e7-85e8-831c9de0b99e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\BarrierScreen">
+      <UniqueIdentifier>{2a4b4876-b310-46f9-b150-742a1bf6a5ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1713,6 +1716,9 @@
     <ClInclude Include="..\Public\Stand_Stack_Sword.h">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Urd\Stack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BarrierScreen.h">
+      <Filter>02.GameObject\BarrierScreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2503,6 +2509,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Normal_VillageM1.cpp">
       <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BarrierScreen.cpp">
+      <Filter>02.GameObject\BarrierScreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

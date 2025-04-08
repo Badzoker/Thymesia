@@ -73,12 +73,11 @@ public:
 
 
 private:
-    PxRigidDynamic* m_pActor = { nullptr };
+    PxRigidDynamic*                 m_pActor = { nullptr };
     _uint                           m_iCurrentLevel = {};
 
-
-
-
+private:
+    _char				            m_szIndivisualName[MAX_PATH] = {};
 
 private:
     // 지메쉐에서 모델의 좌표를 던져서 4등분이든 8등분이든 나누기위해서

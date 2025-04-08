@@ -37,6 +37,8 @@ float g_fLineLength;
 
 float4 g_WorldCamPos;
 
+int g_LevelID;
+
 
 struct VS_IN
 {
@@ -836,6 +838,56 @@ PS_OUT PS_MAIN_WEAPON(PS_IN In)
     return Out;
 }
 
+PS_OUT_GLOW PS_NASENGMUN(PS_IN In)
+{
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
+
+    float fSpeedOffsetX = { 0.0f };
+    float fSpeedOffsetY = { 0.5f };
+    float fRatioNoiseTexture = { 1.0f };
+    
+    float2 vTiling = float2(5.0f, 5.0f); // 외부에서 조절 가능하게
+
+    float2 vNoiseUV = In.vTexcoord * vTiling;
+
+    float fNoiseValue = g_NoiseTexture.Sample(LinearSampler, vNoiseUV + float2(fSpeedOffsetX, g_Time * fSpeedOffsetY)).r;
+    float2 vDistortion = (fNoiseValue - 0.5f) * float2(0.1f, 0.2f);
+    //float2 vNoiseUV = In.vTexcoord;
+    //
+    //float fNoiseValue = g_NoiseTexture.Sample(LinearSampler, vNoiseUV * fRatioNoiseTexture + float2(fSpeedOffsetX, g_Time * fSpeedOffsetY)).r;
+    //float2 vDistortion = (fNoiseValue - 0.5f) * float2(0.1f, 0.2f);
+    float2 vDiffuseUV = In.vTexcoord;
+    //vDiffuseUV.y += g_Time * 0.12f;
+    //vDiffuseUV.x += g_Time * 0.12f;
+    
+    vDiffuseUV += vDistortion;
+    vDiffuseUV.y += g_Time * 0.05f;
+    vDiffuseUV.x += g_Time * 0.05f;
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vDiffuseUV);
+	
+    if (vMtrlDiffuse.a < 0.1f || vMtrlDiffuse.r < 0.1f || vMtrlDiffuse.g < 0.1f || vMtrlDiffuse.b < 0.1f)
+        discard;
+
+    float3 vGreenColor = lerp(float3(0.8, 1.0, 0.7), float3(0.5, 1.0, 0.6), float3(0.3, 1.0, 0.4));
+    float3 vRedColor = lerp(float3(1.0, 0.3, 0.0), float3(1.0, 0.8, 0.0), float3(1.0, 0.0, 0.0));
+    float3 vYellowColor = lerp(float3(1.0, 1.0, 0.4), float3(1.0, 0.9, 0.2), float3(1.0, 0.8, 0.0));
+    
+    if (g_LevelID == 3)
+        Out.vGlow.rgb = vGreenColor;
+    else if (g_LevelID == 4)
+        Out.vGlow.rgb = vYellowColor;
+    else if (g_LevelID == 5)
+        Out.vGlow.rgb = vRedColor;
+        
+    Out.vGlow.a = vMtrlDiffuse.r * 0.12f;
+    
+    //Out.vGlow.rgb = float3(0.89f, 0.63f, 0.25f);
+    //Out.vGlow.a = vMtrlDiffuse.r * 0.45f;
+ 
+    return Out;
+}
+
 
 
 
@@ -1041,6 +1093,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();    
         GeometryShader = NULL;  
         PixelShader = compile ps_5_0 PS_MAIN_WEAPON();  
+    }
+
+    pass NaSengMun // 18
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_NASENGMUN();
     }
     
 

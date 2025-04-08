@@ -228,6 +228,7 @@
 #include "LadderObject.h"
 
 #include "DestructObject.h"
+#include "BarrierScreen.h"
 #pragma endregion
 
 #pragma region 상호작용 오브젝트 
@@ -2344,6 +2345,18 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CDestructObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma endregion
+
+#pragma region 나생문 오브젝트 ( 보스 방 특수 방벽 )
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_BarrierScreen"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/BarrierScreen/BarrierScreen.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_BarrierScreen"), CBarrierScreen::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BarrierScreenTexture"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item01/T_Noise_03.png"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 
