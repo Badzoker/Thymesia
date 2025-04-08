@@ -86,6 +86,9 @@ public:
 	void	Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 	void	Set_LightShaftValue(_float4 _vLightShaftValue);
 	void	Set_FogFactors(FOGPARAMS _ParamDesc);
+	void	Set_FogOnOff();
+	void	Set_GodRayOnOff();
+	void	Set_ShadowOnOff();
 #pragma endregion
 
 #pragma region PIPELINE
