@@ -10,9 +10,13 @@
 #include "UIGroup_Inventory.h"
 #include "UI_PlunderSlotFrame.h"
 #include "UI_HPBar3_MainBar.h"
+#include "UI_MPBar3_MainBar.h"
 #include "UI_HPBar5_Track.h"
 #include "UIGroup_Skill.h"
 
+// 아이템
+#include "UI_LootNotifyBackground.h"
+#include "UI_Item_Icon.h"
 
 CUIGroup_PlayerScreen::CUIGroup_PlayerScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -83,34 +87,7 @@ void CUIGroup_PlayerScreen::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 {
-	Button_Skill();
-
-	Player_Info_GageBar();
-	UI_Direction_HPBar();
-	if (m_pMonsterText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
-	{
-		m_fMonsterTextOnTime += fTimeDelta;
-		if (m_fMonsterTextOnTime > 2)
-		{
-			m_pMonsterText->Set_OnOff(false);
-			m_fMonsterTextOnTime = 0;
-
-		}
-	}
-	Item_Nudge_Check(fTimeDelta); // 획득하거나 버린 아이템이 있는지 체크하는 함수
-
-	if (m_pGameInstance->isKeyEnter(DIK_C))
-	{
-		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
-		{
-			PLAYER_SKIL eSave = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().front();
-			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().pop_front();
-			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().push_back(eSave);
-
-		}
-	}
-
-
+	Button_Skill(); // 현재 임의로 키다운 시 스킬 실행
 
 	switch (dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill())
 	{
@@ -202,7 +179,24 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 		}
 	}
 
-	//m_pRevolvingSkill_2
+	Player_Info_GageBar();// 플레이어 정보를 출력하기에 상시 업데이트
+
+	UI_Direction_HPBar(); // bar 연출
+	UI_Direction_MPBar();
+
+	if (m_pMonsterText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
+	{
+		m_fMonsterTextOnTime += fTimeDelta;
+		if (m_fMonsterTextOnTime > 2)
+		{
+			m_pMonsterText->Set_OnOff(false);
+			m_fMonsterTextOnTime = 0;
+
+		}
+	}
+
+	Item_Nudge_Check(fTimeDelta); // 획득하거나 버린 아이템이 있는지 체크하는 함수
+
 
 
 }
@@ -290,134 +284,40 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 
 void CUIGroup_PlayerScreen::UI_Direction_HPBar()
 {
+	_int iFullHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp();
+	_int iCurrentHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp();
+	_int iHpBarTransform = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION).x);
+	_int iHpBarSizeX = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Compute_Scaled().x);
 
-	dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Set_PlayerHP_Info((_float)dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp(), (_float)dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp());
 
-	if (dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp() == dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp())
+	dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Set_PlayerHP_Info((float)iFullHP, (float)iCurrentHP);
+
+	if (iCurrentHP >= iFullHP || iCurrentHP <= 0 )
 	{
 		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(false);
 	}
 	else
 	{
-		_float fX = dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION).x + 129;
-		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(fX);
+		// HPBar 길이 258
+		// CurrentHP / FullHP => 나온 비율 ex. 1 /10 => Track의 X 좌표에서 258 * 1/10 = 25.8 이만큼을 뺀다 
 		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(true);
+
+		_int iHPTrackX = iHpBarTransform + 129;
+		_int fHPBarLastPointX = static_cast<int>((float)iHpBarSizeX * (1.0f -(((float)iCurrentHP / (float)iFullHP))));
+				
+		iHPTrackX -= fHPBarLastPointX;
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(iHPTrackX);
 	}
 
 
 }
 
-void CUIGroup_PlayerScreen::Item_Save_Info(ITEM_TYPE eItemType)
+void CUIGroup_PlayerScreen::UI_Direction_MPBar()
 {
-	UI_Item MakeInfo = {};
-	for (auto& ItemInfo : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info())
-	{
-		if (eItemType == ItemInfo.ItemType)
-		{
-			MakeInfo = ItemInfo;
-			break;
-		}
-	}
+	_int iFullMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp();
+	_int iCurrentMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp();
 
-	_uint iTexNum = {};
-	switch (MakeInfo.ItemType)
-	{
-	case ITEM_TYPE::ITEM_KEY1:
-		MakeInfo.ItemDesc = L"- 일반 아이템 -";
-		iTexNum = 0;
-		break;
-	case ITEM_TYPE::ITEM_KEY2:
-		MakeInfo.ItemDesc = L"- 일반 아이템- ";
-		iTexNum = 0;
-		break;
-	case ITEM_TYPE::ITEM_MEMORY:
-		MakeInfo.ItemDesc = L"- 소비 아이템 -";
-		iTexNum = 0;
-		break;
-	case ITEM_TYPE::ITEM_FORGIVEN:
-		MakeInfo.ItemDesc = L"- 소비 아이템 -";
-		iTexNum = 3;
-		break;
-	case ITEM_TYPE::ITEM_SKILLPIECE:
-		MakeInfo.ItemDesc = L"- 기술의 파편 -";
-		iTexNum = 2;
-		break;
-
-	}
-
-	// 여기서 시작, 도착 좌표해서 보간하면 될 듯
-	_uint iNum = { 1 };
-	for (auto& Image : m_pItmeScreen->Find_UI_Image())
-	{
-		if (iNum == Image->Get_UI_GroupID()) // 배경 이미지 설정
-		{
-			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(iTexNum);
-		}
-		if (iNum +10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
-		{
-			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(MakeInfo.ItemIconNum);
-		}
-	}
-	for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
-	{
-		if (iNum == TextBox->Get_UI_GroupID())
-		{
-			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemName);
-		}
-		if (iNum +10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
-		{
-			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemDesc);
-		}
-	}
-
-
-}
-
-void CUIGroup_PlayerScreen::Item_Drop_Info(ITEM_TYPE eItemType)
-{
-	UI_Item MakeInfo = {};
-	for (auto& ItemInfo : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info())
-	{
-		if (eItemType == ItemInfo.ItemType)
-		{
-			MakeInfo = ItemInfo;
-			break;
-		}
-	}
-
-	MakeInfo.ItemDesc = L"- 떨어뜨림 -";
-	m_bNudgeUse[1] = true;
-	_uint iNum = { 1 };
-	for (auto& Image : m_pItmeScreen->Find_UI_Image())
-	{
-		if (iNum == Image->Get_UI_GroupID()) // 배경 이미지 설정
-		{
-			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(1);
-		}
-		if (iNum + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
-		{
-			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
-			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(MakeInfo.ItemIconNum);
-		}
-	}
-	for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
-	{
-		if (iNum == TextBox->Get_UI_GroupID())
-		{
-			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemName);
-		}
-		if (iNum + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
-		{
-			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
-			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemDesc);
-		}
-	}
+	dynamic_cast<CUI_MPBar3_MainBar*>(m_pMPGageBar)->Set_PlayerMp_Info ((float)iFullMP, (float)iCurrentMP);
 
 }
 
@@ -425,80 +325,310 @@ void CUIGroup_PlayerScreen::Item_Nudge_Check(_float fTimeDelta)
 {
 	if (0 != m_pGameInstance->Get_Item_Drop_Info().size()) // 버리는 아이템이 있는경우
 	{
-		for (auto& SaveInfo : m_pGameInstance->Get_Item_Drop_Info())
+		auto& listDropItmeInfo = m_pGameInstance->Get_Item_Drop_Info();
+
+		auto it = listDropItmeInfo.begin();
+
+		while (it != listDropItmeInfo.end())
 		{
-			Item_Drop_Info(SaveInfo);
+			if (!m_bNudgeUse[0]) // 1번 넛지 꺼져 있으면
+			{
+				Item_Nudge_Info(*it, ITEM_DROP, 1); // 추가해서 재생 
+				it = listDropItmeInfo.erase(it);
+				m_bNudgeUse[0] = true;
+			}
+			else if (!m_bNudgeUse[1])
+			{
+				Item_Nudge_Info(*it, ITEM_DROP, 2);
+				it = listDropItmeInfo.erase(it);
+				m_bNudgeUse[1] = true;
+			}
+			else if (!m_bNudgeUse[2])
+			{
+				Item_Nudge_Info(*it, ITEM_DROP, 3);
+				it = listDropItmeInfo.erase(it);
+				m_bNudgeUse[2] = true;
+			}
+			else if (!m_bNudgeUse[3])
+			{
+				Item_Nudge_Info(*it, ITEM_DROP, 4);
+				it = listDropItmeInfo.erase(it);
+				m_bNudgeUse[3] = true;
+			}
+			else
+			{
+				break;
+			}
 		}
-		m_pGameInstance->Get_Item_Drop_Info().clear();
+		
 	}
 	if (0 != m_pGameInstance->Get_Item_Save_Info().size()) // 획득한 아이템이 있는 경우
 	{
-		UI_Direction_Item_Nudge();
 
-		_uint iNum = {};
-
-		if (0 != m_pGameInstance->Get_Item_Save_Info().size())
+		auto& listSaveItmeInfo = m_pGameInstance->Get_Item_Save_Info();
+		
+		if (0 != listSaveItmeInfo.size())
 		{
-			for (auto& SaveInfo : m_pGameInstance->Get_Item_Save_Info())
+			auto it = listSaveItmeInfo.begin();
+
+			while (it != listSaveItmeInfo.end())
 			{
 				if (!m_bNudgeUse[0]) // 1번 넛지 꺼져 있으면
 				{
-					Item_Save_Info(SaveInfo); // 추가해서 재생 
+					Item_Nudge_Info(*it, ITEM_SAVE, 1); // 추가해서 재생 
+					it = listSaveItmeInfo.erase(it);
 					m_bNudgeUse[0] = true;
 				}
-				/*else if (!m_bNudgeUse[1])
+				else if (!m_bNudgeUse[1])
 				{
-					Item_Save_Info(SaveInfo, 2);
-					m_bNudgeUse[0] = true;
+					Item_Nudge_Info(*it, ITEM_SAVE, 2);
+					it = listSaveItmeInfo.erase(it);
+					m_bNudgeUse[1] = true;
 				}
 				else if (!m_bNudgeUse[2])
 				{
-					Item_Save_Info(SaveInfo, 3);
-					m_bNudgeUse[0] = true;
+					Item_Nudge_Info(*it, ITEM_SAVE, 3);
+					it = listSaveItmeInfo.erase(it);
+					m_bNudgeUse[2] = true;
 				}
 				else if (!m_bNudgeUse[3])
 				{
-					Item_Save_Info(SaveInfo, 4);
-					m_bNudgeUse[0] = true;
-				}*/
+					Item_Nudge_Info(*it, ITEM_SAVE, 4);
+					it = listSaveItmeInfo.erase(it);
+					m_bNudgeUse[3] = true;
+				}
+				else
+				{
+					break;
+				}
 			}
-
 		}
-		m_pGameInstance->Get_Item_Save_Info().clear();
-	}
-	if (m_bNudgeUse[0] || m_bNudgeUse[1])
+	} 
+	_float2 fSetPos = {};
+	for (_int i = 0; i < 4; i++) // n초 뒤에 알림 끄기
 	{
-		m_fTimeCheck += fTimeDelta;
-		if (m_fTimeCheck > 2)
+		if (m_bNudgeUse[i])
 		{
-			m_bNudgeUse[0] = false;
-			m_bNudgeUse[1] = false;
-			m_fTimeCheck = 0;
-			for (auto& Image : m_pItmeScreen->Find_UI_Image())
+			m_fTimeCheck[i] += fTimeDelta;
+
+			if (m_fTimeCheck[i] > 4) // 끄고
 			{
-				if (1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
+				m_bNudgeUse[i] = false;
+				m_fTimeCheck[i] = 0;
+
+				for (auto& Image : m_pItmeScreen->Find_UI_Image())
 				{
-					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+					if (i + 1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
+					{
+						dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_LootNotifyBackground*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos.y = ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y ;
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, { 1500.f,fSetPos.y });
+					}
+					if (i + 11 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+					{
+						dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_Item_Icon*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos.y = ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y;
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, { 1280.f,fSetPos.y });
+
+					}
 				}
-				if (1 + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+				for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
 				{
-					dynamic_cast<CUI_Image*>(Image)->Set_OnOff(false);
+					if (i + 1 == TextBox->Get_UI_GroupID())
+					{
+						dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos.y = BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y;
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, { 1320.f,fSetPos.y });
+					}
+					if (i + 11 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+					{
+						dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos.y = BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y;
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, { 1335.f,fSetPos.y });
+					}
 				}
 			}
-			for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
+			else if (m_fTimeCheck[i] > 2) // 사라지고
 			{
-				if (1 == TextBox->Get_UI_GroupID())
+				for (auto& Image : m_pItmeScreen->Find_UI_Image())
 				{
-					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+					if (i + 1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
+					{
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_LootNotifyBackground*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + m_fNudgeSpeed ,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
+					if (i + 11 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+					{
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_Item_Icon*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + m_fNudgeSpeed ,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+
+					}
 				}
-				if (1 + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+				for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
 				{
-					dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(false);
+					if (i + 1 == TextBox->Get_UI_GroupID())
+					{
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + m_fNudgeSpeed ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
+					if (i + 11 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+					{
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + m_fNudgeSpeed ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
 				}
+			}
+			else // 생겨나고
+			{
+				for (auto& Image : m_pItmeScreen->Find_UI_Image())
+				{
+					if (i + 1 == Image->Get_UI_GroupID()) // 배경 이미지 설정
+					{
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_LootNotifyBackground*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x - m_fNudgeSpeed ,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						if (1500.f > fSetPos.x)
+							fSetPos.x = 1500.f;
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
+					if (i + 11 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+					{
+						CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_Item_Icon*>(Image)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x - m_fNudgeSpeed ,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						if (1280.f > fSetPos.x)
+							fSetPos.x = 1280.f;
+						ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+
+					}
+				}
+				for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
+				{
+					if (i + 1 == TextBox->Get_UI_GroupID())
+					{
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x - m_fNudgeSpeed ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						if (1320.f > fSetPos.x)
+							fSetPos.x = 1320.f;
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
+					if (i + 11 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+					{
+						CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+						fSetPos = { BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x - m_fNudgeSpeed ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y };
+						if (1335.f > fSetPos.x)
+							fSetPos.x = 1335.f;
+						BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, fSetPos);
+					}
+				}
+
 			}
 
 		}
 	}
+
+}
+
+void CUIGroup_PlayerScreen::Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eState, _int iNum)
+{
+	UI_Item MakeInfo = {};
+	for (auto& ItemInfo : dynamic_cast<CUIGroup_Inventory*>(m_pGroupInven)->Get_Vector_Itme_default_Info()) 
+	{
+		if (eItemType == ItemInfo.ItemType)
+		{
+			MakeInfo = ItemInfo;// 인벤 아이템 정보 컨테이너 가져와서
+			break;
+		}
+	}
+
+	_uint iTexNum = {};
+	if (eState == ITEM_SAVE)
+	{
+		switch (MakeInfo.ItemType) // 아이템 타입에 따른 정보 조합
+		{
+		case ITEM_TYPE::ITEM_KEY1:
+			MakeInfo.ItemDesc = L"- 일반 아이템 -";
+			iTexNum = 0;
+			break;
+		case ITEM_TYPE::ITEM_KEY2:
+			MakeInfo.ItemDesc = L"- 일반 아이템- ";
+			iTexNum = 0;
+			break;
+		case ITEM_TYPE::ITEM_MEMORY:
+			MakeInfo.ItemDesc = L"- 소비 아이템 -";
+			iTexNum = 0;
+			break;
+		case ITEM_TYPE::ITEM_FORGIVEN:
+			MakeInfo.ItemDesc = L"- 소비 아이템 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_SKILLPIECE:
+			MakeInfo.ItemDesc = L"- 기술의 파편 -";
+			iTexNum = 2;
+			break;
+
+		}
+	}
+	else if (eState == ITEM_DROP)
+	{
+		MakeInfo.ItemDesc = L"- 떨어뜨림 -";
+		iTexNum = 1;
+	}
+
+	// 여기서 시작, 도착 좌표해서 보간하면 될 듯
+	for (auto& Image : m_pItmeScreen->Find_UI_Image())
+	{
+		if (iNum == Image->Get_UI_GroupID()) // 배경 이미지 설정
+		{
+			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
+			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(iTexNum);
+
+			CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_LootNotifyBackground*>(Image)->Find_Component(TEXT("Com_Transform")));
+			ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, 
+				{ ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + 528.f ,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y });
+
+		}
+		if (iNum + 10 == Image->Get_UI_GroupID()) // 획득 아이템 아이콘 설정
+		{
+			dynamic_cast<CUI_Image*>(Image)->Set_OnOff(true);
+			dynamic_cast<CUI_Image*>(Image)->Set_TexNumber(MakeInfo.ItemIconNum);
+
+			CTransform* ImageTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_Item_Icon*>(Image)->Find_Component(TEXT("Com_Transform")));
+			ImageTrans->Set_State_UIObj(CTransform::STATE_POSITION, 
+				{ ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + 528.f,ImageTrans->Get_State_UIObj(CTransform::STATE_POSITION).y });
+
+		}
+	}
+	for (auto& TextBox : m_pItmeScreen->Find_UI_TextBox()) // 아이템 이름 
+	{
+		if (iNum == TextBox->Get_UI_GroupID())
+		{
+			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemName);
+			
+			CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+			BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, 
+				{ BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + 528.f ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y });
+
+
+		}
+		if (iNum + 10 == TextBox->Get_UI_GroupID()) // 아이템 카테고리 설명
+		{
+			dynamic_cast<CUI_Text*>(TextBox)->Set_OnOff(true);
+			dynamic_cast<CUI_Text*>(TextBox)->Set_Content(MakeInfo.ItemDesc);
+
+			CTransform* BoxTrans = dynamic_cast<CTransform*>(dynamic_cast<CUI_TextBox*>(TextBox)->Find_Component(TEXT("Com_Transform")));
+			BoxTrans->Set_State_UIObj(CTransform::STATE_POSITION, 
+				{ BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).x + 528.f ,BoxTrans->Get_State_UIObj(CTransform::STATE_POSITION).y });
+		}
+	}
+
 }
 
 void CUIGroup_PlayerScreen::Item_In_Out_Pop()
@@ -542,23 +672,21 @@ void CUIGroup_PlayerScreen::Button_Skill()
 
 		}
 	}
-	
+	if (m_pGameInstance->isKeyEnter(DIK_C))
+	{
+		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
+		{
+			PLAYER_SKIL eSave = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().pop_front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().push_back(eSave);
+
+		}
+	}
+
 }
 
 void CUIGroup_PlayerScreen::UI_Direction_Monster_MemoryGet()
 {
-}
-
-void CUIGroup_PlayerScreen::UI_Direction_Item_Nudge()
-{
-	// 아이템 획득, 버리기 알림을 띄운다
-	// 아이템 알림은 최대 한 번에 4개까지 출력할 수 있으며 => 4개가 종료된 이후에 첫 번째 알림부터 사용
-	
-
-
-
-
-
 }
 
 HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
@@ -608,6 +736,8 @@ void CUIGroup_PlayerScreen::Ready_Player_GageBar()
 			m_pHPGageBar = Gage;
 		if (11 == Gage->Get_UI_GroupID())
 			m_pHPGageTrack = Gage;
+		if (20 == Gage->Get_UI_GroupID())
+			m_pMPGageBar = Gage;
 	}
 
 

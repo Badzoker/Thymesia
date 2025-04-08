@@ -1427,6 +1427,12 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MPBar3_MainBar"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_MPBar3_MainBar.dds"), 1))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_MPBar4_Delay*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MPBar4_Delay"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_MPBar4_Delay.dds"), 1))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UI_MPBar3_MainBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_MPBar3_MainBar"),
 		CUI_MPBar3_MainBar::Create(m_pDevice, m_pContext))))

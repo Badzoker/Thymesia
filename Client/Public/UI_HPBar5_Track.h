@@ -30,10 +30,10 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 public:
-	void Set_ChangeX(_float fX) { m_fChangeX = fX; }
+	void Set_ChangeX(_int iX) { m_iChangeX = iX; }
 
 private:
-	_float m_fChangeX = {};
+	_int m_iChangeX = {};
 
 public:
 	HRESULT Ready_Components();

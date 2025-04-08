@@ -27,9 +27,20 @@ public:
 private:
 	CShader*				m_pShaderCom = { nullptr };
 	CTexture*				m_pTextureCom = { nullptr };
+	CTexture*				m_pTexBackCom = { nullptr };
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 
+	
+public:
+	void Set_PlayerMp_Info(_float fMax, _float fCurrent) { m_fMaxMP = fMax, m_fCurentMP = fCurrent; }
 
+private:
+	_float m_fMaxMP = {};
+	_float m_fCurentMP = {};
+	_float m_fDelayMp = {};
+	_float m_fDeliverMp = {};
+
+	_float m_fDelayTime = {};
 
 public:
 	HRESULT Ready_Components();

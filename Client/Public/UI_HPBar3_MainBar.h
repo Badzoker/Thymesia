@@ -37,7 +37,6 @@ private:
 	_float m_fCurentHP = {};
 
 
-
 public:
 	HRESULT Ready_Components();
 

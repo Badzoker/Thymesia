@@ -22,8 +22,9 @@ bool g_bTexEffectOff; // true 값일 때 이미지 모습이 깜박깜박 보임
 
 uint g_SlotNum; // 플레이어 화면 스킬 슬롯 두개의 사이즈가 달라 스킬 아이콘과의 비율을 맞추기 위해 받아옴  
 
-float g_fHPBar_Max;
-float g_fHPBar_Current;
+float g_fGageBar_Max;
+float g_fGageBar_Current;
+float g_fGageBar_Delay;
 
 bool g_bIconEffectClose; // 아이콘이 디졸브 효과로 스르ㅡㄹ 사라짐
 bool g_bIconEffectOpen; // 아이콘이 디졸브 효과로 스르ㅡㄹ 나타남
@@ -243,21 +244,55 @@ PS_OUT PS_Thymesia_UI_Image_Skill_CoolTime(PS_IN In) // 스킬 사용 시 쿨타임 연출
 PS_OUT PS_Thymesia_UI_Image_HPBar(PS_IN In) // HP Bar 감소
 {
     PS_OUT Out = (PS_OUT) 0;
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    float4 vBarColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float4 vGlowColor = (1.0f, 1.0f, 1.0f, 1.0f);
+    
+    //if (In.vTexcoord.x >= 0.9 && In.vTexcoord.x <= 1.0)
+    //{
+    //    vBarColor.rgb += vGlowColor.rgb * 0.1f;
+    //}
+    
+    Out.vColor = vBarColor;
     
     
-    float Percent = g_fHPBar_Current / g_fHPBar_Max;
+    float Percent = clamp(g_fGageBar_Current / g_fGageBar_Max, 0.0f, 1.0f);
     
     if (In.vTexcoord.x > Percent)
         discard;
     
-        //if (!g_bImageOn)
-        //    Out.vColor.a = 0.0f;
-    
-    
-     //g_HPBar_Max;
-     //g_HPBar_Current;
 
+    return Out;
+}
+
+PS_OUT PS_Thymesia_UI_Image_MPBar(PS_IN In) // MP Bar 감소
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float4 vFrontColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float4 vBackColor = g_TexEffect.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    float Percent = clamp(g_fGageBar_Current / g_fGageBar_Max, 0.0f, 1.0f);
+    float DelayPercent = clamp(g_fGageBar_Delay / g_fGageBar_Max, 0.0f, 1.0f);
+    
+    if (In.vTexcoord.x > Percent)
+        vFrontColor.a = 0.0f;
+   
+    
+    if (In.vTexcoord.x > DelayPercent)
+    {
+        //float Alpha = saturate((In.vTexcoord.x - Percent) / (1.0f - Percent)); // 0~1 사이 값으로
+        //Alpha = pow(Alpha, 0.5f);
+        vBackColor.a = 0.0f;// -  Alpha; // 좌 -> 우
+        
+    }
+    else
+        vBackColor.a = 1.0f;
+    
+      
+    Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
+  
+    // Out.vColor = ((testValue < Percent) ? float4(1.0f, 0.0f, 0.0f, 1.0f) : float4(0.0f, 0.0f, 1.0f, 1.0f)); 조건 테스트용
     
     return Out;
 }
@@ -490,6 +525,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_SKill1st();
+    }
+    
+    pass Thymesia_UI_Image_MPBar // 13번
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Thymasia_UI, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_MPBar();
     }
     
 }
