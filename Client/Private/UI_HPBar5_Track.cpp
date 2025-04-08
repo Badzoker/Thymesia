@@ -28,7 +28,7 @@ HRESULT CUI_HPBar5_Track::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_fChangeX = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x;
+	//m_iChangeX = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x;
 
 	return S_OK;
 }
@@ -41,7 +41,7 @@ void CUI_HPBar5_Track::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pTransformCom->Set_State_UIObj(CTransform::STATE_POSITION, { m_fChangeX ,m_fPos.y });
+		m_pTransformCom->Set_State_UIObj(CTransform::STATE_POSITION, { (_float)m_iChangeX ,m_fPos.y });
 	}
 }
 

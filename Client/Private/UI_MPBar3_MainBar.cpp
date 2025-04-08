@@ -37,6 +37,37 @@ void CUI_MPBar3_MainBar::Priority_Update(_float fTimeDelta)
 
 void CUI_MPBar3_MainBar::Update(_float fTimeDelta)
 {
+
+	if (m_bRenderOpen)
+	{
+
+		if (m_fDeliverMp > m_fCurentMP)
+		{
+			m_fDelayTime = 0.0f;
+
+		}
+
+		if (m_fDelayMp > m_fCurentMP)
+		{
+			m_fDelayTime += fTimeDelta;
+			if (m_fDelayTime > 2.0f)
+			{
+				m_fDelayMp = m_fDelayMp + (m_fCurentMP - m_fDelayMp) * fTimeDelta;// *0.2f;  
+			}
+			//a + (b - a) * t;
+
+
+		}
+		else
+		{
+			m_fDelayTime = 0.0f;
+			m_fDelayMp = m_fCurentMP;
+		}
+
+		m_fDeliverMp = m_fCurentMP;
+
+	}
+
 }
 
 void CUI_MPBar3_MainBar::Late_Update(_float fTimeDelta)
@@ -55,12 +86,26 @@ HRESULT CUI_MPBar3_MainBar::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGageBar_Current", &m_fCurentMP, sizeof(_float))))
+		return E_FAIL;
+	
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGageBar_Delay", &m_fDelayMp, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGageBar_Max", &m_fMaxMP, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
+	
+	if (FAILED(m_pTexBackCom->Bind_ShaderResource(m_pShaderCom, "g_TexEffect", 0)))
+		return E_FAIL;
+
+	
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(13);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -74,6 +119,10 @@ HRESULT CUI_MPBar3_MainBar::Ready_Components()
 	/* Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MPBar3_MainBar"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MPBar4_Delay"),
+		TEXT("Com_TexBack"), reinterpret_cast<CComponent**>(&m_pTexBackCom))))
 		return E_FAIL;
 
 	/* Com_Shader */
@@ -123,4 +172,5 @@ void CUI_MPBar3_MainBar::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTexBackCom);
 }
