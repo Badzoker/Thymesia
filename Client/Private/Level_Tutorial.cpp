@@ -520,6 +520,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_AXE, 2)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerGreatSword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_GREATSWORD)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -783,6 +787,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_NarrowVertical.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW_VERTICAL, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_GreatSword_Start.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD_START, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_GreatSword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD, 1)))
         return E_FAIL;
 
     //Sword Effect
@@ -1584,284 +1596,263 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         ReadFile(hFile, &pDesc.fAlpha_Amount, sizeof(_float), &dwByte, nullptr);
 
 #pragma region Switch For Particle Buffer&Shader Name
+
+        switch (iParticle_Function)
+        {
+        case 0:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop");
+            break;
+        case 1:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
+            break;
+        case 2:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
+            break;
+        case 3:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
+            break;
+        case 4:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
+            break;
+        case 5:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
+            break;
+        case 6:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
+            break;
+        case 7:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
+            break;
+        case 8:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
+            break;
+        case 9:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
+            break;
+        case 10:
+            //pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World_Continue");
+            break;
+        case 11:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
+            break;
+        }
+
         switch (_eEffectName)
         {
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DROP:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Left");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Right");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Test");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_1");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_3_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_3");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_1_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_4_1");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_4_2_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_4_2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_5_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_5");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_PlayerAttack_5_Dust");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Player_Hit");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_EXPLOSION:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Explosion");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Vertical_Dust");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HORIZON_DUST_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Dust_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_LEFT_DUST_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Left_Dust_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_NARROW_DUST_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Dust_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_RIGHT_DUST_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Right_Dust_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_NARROW_SPARK_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Narrow_Spark_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HORIZON_SPARK_VARG:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Horizon_Spark_Varg");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION_1_2:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution_1_2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_EXECUTION3:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION1:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution1");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION2:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_VARG_EXECUTION3:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
-            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Execution3");
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Varg_Execution3");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_VARG_DEAD:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Varg_Dead");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_DEAD:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Varg_Dead");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Intro");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_PLAYER_SCYTHE_1:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_Player_Scythe_1");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_PLAYER_SCYTHE_2:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_Player_Scythe_2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_PLAYER_HALBERD_1:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_Player_Halberd_1");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_PLAYER_HALBERD_2:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_Player_Halberd_2");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Heal");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Red");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Blue");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Item_Get_Yellow");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Burst");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_BURST:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Burst");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation_Impact");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Rising_Impact");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Hurricane");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Hurricane_Mutation_Falling_Impact");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Explosion");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Explosion_Mutation_Stab");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_Mutation_Stab_Dust");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Mutation");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_HORIZON:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Horizon");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT_STAB:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Left_Stab");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_VERTICAL:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Vertical");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_HORIZON:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Horizon");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Narrow");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_JOKER_INTRO:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Joker_Intro");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_INTRO:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Intro");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_LEFT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Left");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_RIGHT:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Right");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_SMASH:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Joker_Smash");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_SMASH:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Smash");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_SHOCKWAVE:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_ShockWave");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_SHOCKWAVE:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust_Delay");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_DustDelay_ShockWave");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SCYTHE_WHEELATTACK:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Scythe");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Scythe_WheelAttack");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_AXE:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_PlayerAxe");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_HORIZON:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_AXE_CROSS:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_PlayerAxe_Cross");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Player_Claw");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CANESWORD:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_CaneSword_Hand");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BURST_NARROW_VERTICAL:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_NarrowVertical");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_BURST_PLAYER_CANESWORD:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Burst_CaneSword");
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW_VERTICAL:
-            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Dust");
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_NarrowVertical");
             break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD_START:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_GreatSword_Start");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_GreatSword");
+            break;
+
         }
 #pragma endregion
 

@@ -152,11 +152,21 @@ void CPlayer_Weapon_GreadSword::Update(_float fTimeDelta)
                 }
                 }
 
-                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)   // 여기가 EVENT_EFFECT, 부분    
+                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
 #pragma region Effect
+
+                    if (!strcmp(iter.szName, "Effect_Start"))
+                    {
+                        iter.isPlay = true;
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD_START, m_pParentWorldMatrix, m_pSocketMatrix);
+                    }
+                    else if (!strcmp(iter.szName, "Particle_Start"))
+                    {
+                        iter.isPlay = true;
+                        m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_GREATSWORD, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WORLD_GREATSWORD, *m_pParentWorldMatrix);
+                    }
 #pragma endregion
                 }
             }
