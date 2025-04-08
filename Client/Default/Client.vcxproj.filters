@@ -916,6 +916,12 @@
     <Filter Include="02.GameObject\BarrierScreen">
       <UniqueIdentifier>{2a4b4876-b310-46f9-b150-742a1bf6a5ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\SpecificObject\DoorObject">
+      <UniqueIdentifier>{e6503411-9993-4454-87f7-2b7448023120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\SpecificObject\DoorObject\DoorManager">
+      <UniqueIdentifier>{d1aedd4f-0fec-4ab4-b568-c8214743c2b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1719,6 +1725,12 @@
     <ClInclude Include="..\Public\BarrierScreen.h">
       <Filter>02.GameObject\BarrierScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DoorManager.h">
+      <Filter>02.GameObject\SpecificObject\DoorObject\DoorManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DoorObject.h">
+      <Filter>02.GameObject\SpecificObject\DoorObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2512,6 +2524,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\BarrierScreen.cpp">
       <Filter>02.GameObject\BarrierScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DoorManager.cpp">
+      <Filter>02.GameObject\SpecificObject\DoorObject\DoorManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DoorObject.cpp">
+      <Filter>02.GameObject\SpecificObject\DoorObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

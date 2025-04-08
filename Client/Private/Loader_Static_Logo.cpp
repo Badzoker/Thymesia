@@ -226,6 +226,8 @@
 #include "ChairLamp.h"
 #include "Elevator_Door.h"
 #include "LadderObject.h"
+#include "DoorObject.h"
+#include "DoorManager.h"
 
 #include "DestructObject.h"
 #include "BarrierScreen.h"
@@ -2299,11 +2301,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	SpecificPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f)); // 맵툴과 똑같이 pretransform 적용
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elevator_Up"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elevator_Down"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Specific_Door"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
 		return E_FAIL;
 
@@ -2328,6 +2326,12 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), CLadderObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Object"), CDoorObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Manager_Object"), CDoorManager::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

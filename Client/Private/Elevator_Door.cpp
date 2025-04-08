@@ -169,7 +169,10 @@ void CElevator_Door::OnCollisionExit(CGameObject* _pOther, PxContactPair _inform
 
 HRESULT CElevator_Door::Ready_Components()
 {
-    if (FAILED(__super::Ready_Components()))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"), TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+        return E_FAIL;
+
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Specific_Door"), TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
     return S_OK;

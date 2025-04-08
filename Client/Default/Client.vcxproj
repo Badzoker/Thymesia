@@ -221,6 +221,8 @@
     <ClInclude Include="..\Public\Decorative_Hat.h" />
     <ClInclude Include="..\Public\Decorative_Tonic.h" />
     <ClInclude Include="..\Public\DestructObject.h" />
+    <ClInclude Include="..\Public\DoorManager.h" />
+    <ClInclude Include="..\Public\DoorObject.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
@@ -492,6 +494,8 @@
     <ClCompile Include="..\Private\Decorative_Hat.cpp" />
     <ClCompile Include="..\Private\Decorative_Tonic.cpp" />
     <ClCompile Include="..\Private\DestructObject.cpp" />
+    <ClCompile Include="..\Private\DoorManager.cpp" />
+    <ClCompile Include="..\Private\DoorObject.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
