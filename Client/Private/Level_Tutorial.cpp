@@ -94,6 +94,9 @@ HRESULT CLevel_Tutorial::Initialize()
     if (FAILED(Ready_Layer_UIGroup_LandingMessage(TEXT("Layer_Landing"))))
         return E_FAIL;
 
+    if (FAILED(Ready_Layer_UIGroup_Dialogue(TEXT("Layer_Dialogue"))))
+        return E_FAIL;
+
     if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
         return E_FAIL;
 
@@ -1014,6 +1017,15 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayer
         return E_FAIL;
     return S_OK;
 
+}
+
+HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Dialogue(const _tchar* pLayerTag)
+{
+    CGameObject::GAMEOBJECT_DESC        Desc{};
+    Desc.iCurLevel = m_iCurrentLevel;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Dialogue"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
+        return E_FAIL;
+    return S_OK;
 }
 
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Skill(const _tchar* pLayerTag)

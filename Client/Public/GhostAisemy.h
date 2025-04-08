@@ -82,7 +82,7 @@ private:
 
 private:
 	_uint							m_iState = {};
-
+	LEVELID							m_eMyLevel = {};
 private:
 	//_float							m_fLightOnTime = {};
 	//_float							m_fApproachTime = {};

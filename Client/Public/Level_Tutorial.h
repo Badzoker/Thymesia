@@ -55,6 +55,7 @@ private:
 	HRESULT Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UIGroup_Dialogue(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_Skill(const _tchar* pLayerTag);
 
 
