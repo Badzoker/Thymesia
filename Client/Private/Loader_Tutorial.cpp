@@ -214,8 +214,6 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation11.txt")))))
 		return E_FAIL;
 
-		//CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation9.txt")))))
-
 #pragma endregion 
 
 
