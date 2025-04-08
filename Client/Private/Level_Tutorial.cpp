@@ -13,6 +13,8 @@
 #include "ChairLamp.h"
 #include "BlackScreen.h"
 #include "DestructObject.h"
+#include "DoorObject.h"
+#include "DoorManager.h"
 
 #include "UI_LeftBackground.h"
 
@@ -267,11 +269,15 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 
 
     //Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
-    Load_TriggerObjects(2);				// 이제 보스 입구 쪽에 심어져있는 파일임.
+    if (FAILED(Load_TriggerObjects(2)))// 이제 보스 입구 쪽에 심어져있는 파일임.
+        return E_FAIL;
 
-    Load_SpecificObjects(12);
+    if (FAILED(Load_SpecificObjects(15)))
+        return E_FAIL;
 
-    Load_DestructObjects(6);
+    if (FAILED(Load_DestructObjects(6)))
+        return E_FAIL;
+
 
     CBarrierScreen::BARRIER_SCREEN_DESC     BarrierDesc = {};
     _float4 vVargBossEntrancePosition = { 111.56f, 18.61f, -46.5f, 1.f };           // 보스 바그 방 앞에 있음.
@@ -1353,6 +1359,11 @@ HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
 
     _uint iChairNum = 0;
     _uint iLampNum = 0;
+    _uint iDoorNum = 0;
+    _uint iDoorManager = 0;
+
+    CDoorManager::DOOR_MANAGER_DESC DoorManagerDesc = {};
+
     for (size_t i = 0; i < iSize; i++)
     {
         CSpecificObject::SpecificObject_Desc Desc{};
@@ -1383,19 +1394,62 @@ HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
             pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
             ++iLampNum;
         }
-        //else if (Desc.ObjectName == "Ladder")
-        //{
-        //	pObject = reinterpret_cast<CLadder*>(
-        //		m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder"),
-        //			LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
-        //}
-        //else
-        //{
-        //	// 디폴트: 그냥 SpecificObject로 로드
-        //	pObject = reinterpret_cast<CSpecificObject*>(
-        //		m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"),
-        //			LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
-        //}
+        else if (strName == "SM_Door_Left")
+        {
+
+            CDoorObject::DOOR_DESC DoorDesc;
+            DoorDesc.iPairNum = iDoorNum;
+            DoorDesc.ObjectName = strName + "_" + to_string(iDoorNum);
+            DoorDesc.fPosition = Desc.fPosition;
+            DoorDesc.fRotation = Desc.fRotation;
+            DoorDesc.fScaling = Desc.fScaling;
+            DoorDesc.fFrustumRadius = Desc.fFrustumRadius;
+            DoorDesc.iCurLevel = Desc.iCurLevel;
+            DoorDesc.fRotationPerSec = 30.f;
+
+            pObject = reinterpret_cast<CDoorObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Object"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &DoorDesc));
+            ++iDoorNum;
+
+            DoorManagerDesc.pObjectLeft = DoorDesc.pDoorObject;
+            DoorManagerDesc.pLeftPosition = DoorDesc.fPosition;
+        }
+        else if (strName == "SM_Door_Right")
+        {
+            CDoorObject::DOOR_DESC DoorDesc;
+            DoorDesc.iPairNum = iDoorNum;
+            DoorDesc.ObjectName = strName + "_" + to_string(iDoorNum);
+            DoorDesc.fPosition = Desc.fPosition;
+            DoorDesc.fRotation = Desc.fRotation;
+            DoorDesc.fScaling = Desc.fScaling;
+            DoorDesc.fFrustumRadius = Desc.fFrustumRadius;
+            DoorDesc.iCurLevel = Desc.iCurLevel;
+            DoorDesc.fRotationPerSec = 30.f;
+
+            pObject = reinterpret_cast<CDoorObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Object"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &DoorDesc));
+            ++iDoorNum;
+
+            DoorManagerDesc.pObjectRight = DoorDesc.pDoorObject;
+            DoorManagerDesc.pRightPosition = DoorDesc.fPosition;
+        }
+
+        if ((DoorManagerDesc.pObjectLeft != nullptr) && (DoorManagerDesc.pObjectRight != nullptr))
+        {
+            DoorManagerDesc.ObjectName = "Door_Manager" + iDoorManager;
+            XMStoreFloat4(&DoorManagerDesc.fPosition, (XMLoadFloat4(&DoorManagerDesc.pLeftPosition) + XMLoadFloat4(&DoorManagerDesc.pRightPosition)) / 2.f);
+            DoorManagerDesc.fRotation = _float4(0.f, 0.f, 0.f, 1.f);
+            DoorManagerDesc.fScaling = _float3(0.001f, 0.001f, 0.001f);
+            DoorManagerDesc.fFrustumRadius = 0.f;
+            DoorManagerDesc.iCurLevel = Desc.iCurLevel;
+
+            if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Manager_Object"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &DoorManagerDesc)))
+                return E_FAIL;
+
+            DoorManagerDesc.pObjectLeft = nullptr;
+            DoorManagerDesc.pObjectRight = nullptr;
+
+            CDoorManager::DOOR_MANAGER_DESC eDesc = {};
+            DoorManagerDesc = eDesc;
+        }
     }
 
     return S_OK;

@@ -1679,6 +1679,14 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 			m_pStateMgr->Get_VecState().at(62)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 		}
 	}
+
+	if (!strncmp("SM_Door", _pOther->Get_Name(), 7)) // 막히는 문과 상호작용
+	{
+
+
+
+	}
+
 }
 
 void CPlayer::Player_Setting_PartAni()

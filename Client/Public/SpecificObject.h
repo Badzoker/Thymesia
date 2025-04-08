@@ -51,7 +51,7 @@ public:
     _bool                           Get_ColliderRender() { return m_bColliderOn; }
     void                            Set_ColliderRender(_bool _bRendering) { m_bColliderOn = _bRendering; }
 
-private:
+protected:
     CShader* m_pShaderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
     _float		                    m_fFrustumRadius = { 0.f };
