@@ -7,7 +7,7 @@
 BEGIN(Engine)
 class CModel;
 class CNavigation;
-
+class CTexture;
 END
 
 BEGIN(Client)
@@ -36,19 +36,19 @@ public:
 	HRESULT Bind_ShaderResources();
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CModel* m_pSecondModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
-
-	CShader* m_pFogShaderCom = { nullptr }; // ¾È°³ ·»´õ¸µ¿ë ½¦ÀÌ´õ Ãß°¡
+	CShader*						m_pShaderCom = { nullptr };
+	CModel*							m_pModelCom = { nullptr };
+	CModel*							m_pSecondModelCom = { nullptr };
+	CNavigation*					m_pNavigationCom = { nullptr };
+	PxRigidDynamic*					m_pActor = { nullptr };
+	CTexture*						m_pTextureCom = { nullptr };
+	CShader*						m_pFogShaderCom = { nullptr }; // ¾È°³ ·»´õ¸µ¿ë ½¦ÀÌ´õ Ãß°¡
 private:
-	class CGameObject* m_pPlayer = { nullptr };
+	class CGameObject*				m_pPlayer = { nullptr };
 private:
-	const _uint* m_Player_Attack = { nullptr };
-	const _uint* m_Player_Phase = { nullptr };
-	const _uint* m_Player_State = { nullptr };
+	const _uint*					m_Player_Attack = { nullptr };
+	const _uint*					m_Player_Phase = { nullptr };
+	const _uint*					m_Player_State = { nullptr };
 private:
 	_float4                          m_vSpawnPoint = {};
 
@@ -66,15 +66,31 @@ private:
 	_float                           m_fMonsterCurHP = {};
 	_float                           m_fShieldHP = {};
 
-public:
-	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
-	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
-	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+
+private:
+	_bool							m_bHitted = { false };
+	_bool							m_bUpdating = { false };
+
+	_float							m_fWigglingTime = {};
+	_float							m_fLifeTime = {};
+	_float							m_fInitialJumpPower = {};
+	_float							m_fExplosionPowerOffsetValue = {};
+	_float							m_fDissolveAmount = {};
+
+	_float                          m_fExplosionPower = {};
+	_float                          m_fFallingTime = {};
+	_float                          m_fModelHeightCenterY = {};
+	_float4							m_vModelPosition = {};
 
 public:
-	static CCircus_Balloon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg) override;
-	virtual void Free() override;
+	virtual void					OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void					OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void					OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+
+public:
+	static CCircus_Balloon*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
+	virtual void					Free() override;
 };
 
 END
