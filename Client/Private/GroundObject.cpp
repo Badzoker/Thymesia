@@ -142,7 +142,12 @@ void CGroundObject::Late_Update(_float _fTimeDelta)
     //if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
     if (m_iNumInstance > 0)
     {
-        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+        if (m_pGameInstance->isKeyEnter(DIK_F1))
+        {
+            m_bTestRender = !m_bTestRender;
+        }
+        if(m_bTestRender)
+            m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }
 }
 
