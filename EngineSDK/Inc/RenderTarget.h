@@ -24,10 +24,10 @@ public:
 	ID3D11UnorderedAccessView* Get_UAV() const { return m_pUAV; }
 
 #ifdef _DEBUG
+#endif
 public:
 	HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);	
-#endif
 private:
 	ID3D11Device*        m_pDevice  = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -41,9 +41,9 @@ private:
 
 
 #ifdef _DEBUG
+#endif // _DEBUG
 private:
 	_float4x4				  m_WorldMatrix   = {}; 
-#endif // _DEBUG
 
 
 public:

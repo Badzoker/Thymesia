@@ -149,11 +149,11 @@ public:
 	HRESULT Clear_RTV(const _wstring& strRenderTargetTag);
 
 #ifdef _DEBUG
+#endif
 public:
 	HRESULT Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Render_RT_Debug(const _wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	
-#endif
 #pragma endregion
 
 

@@ -556,6 +556,7 @@ HRESULT CGameInstance::Clear_RTV(const _wstring& strRenderTargetTag)
 }
 
 #ifdef _DEBUG
+#endif // _DEBUG
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	return m_pTarget_Manager->Ready_RT_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);
@@ -566,7 +567,6 @@ HRESULT CGameInstance::Render_RT_Debug(const _wstring& strMRTTag, CShader* pShad
 	return m_pTarget_Manager->Render_RT_Debug(strMRTTag, pShader, pVIBuffer);
 }
 
-#endif // _DEBUG
 
 
 
