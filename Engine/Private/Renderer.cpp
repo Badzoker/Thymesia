@@ -375,8 +375,17 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroupID, CGameObject* pGam
 
 HRESULT CRenderer::Render()
 {
-	if (FAILED(Render_Priority()))
-		return E_FAIL;
+	if (m_pGameInstance->isKeyEnter(DIK_F3))
+	{
+		m_bDebugRender2 = !m_bDebugRender2;
+	}
+
+	if (true == m_bDebugRender2)
+	{
+		if (FAILED(Render_Priority()))
+			return E_FAIL;
+	}
+	
 
 	if (FAILED(Render_Shadow()))
 		return E_FAIL;
