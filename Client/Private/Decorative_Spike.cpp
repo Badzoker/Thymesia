@@ -79,8 +79,7 @@ void CDecorative_Spike::Late_Update(_float fTimeDelta)
 {
 	if (*m_pRender)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-		//m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLOOM, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLEND, this);
 	}
 }
 
@@ -96,32 +95,10 @@ HRESULT CDecorative_Spike::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 
-	/*	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_EmissiveTexture", 0)))
-			return E_FAIL;*/
-
-		m_pShaderCom->Begin(0);
-		m_pModelCom->Render(i);
-	}
-
-	return S_OK;
-}
-
-HRESULT CDecorative_Spike::Render_Bloom()
-{
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_EmissiveTexture", 0)))
 			return E_FAIL;
 
-		//if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_EmissiveTexture", 0)))
-		//	return E_FAIL;
-
-		m_pShaderCom->Begin(17);
+		m_pShaderCom->Begin(21);
 		m_pModelCom->Render(i);
 	}
 
@@ -140,9 +117,9 @@ HRESULT CDecorative_Spike::Ready_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Emissive"),
-	//	TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Emissive"),
+		TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -191,4 +168,5 @@ void CDecorative_Spike::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureCom);
 }

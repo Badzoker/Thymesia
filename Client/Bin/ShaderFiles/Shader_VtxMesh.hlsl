@@ -3,6 +3,7 @@
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_OldViewMatrix, g_OldWorldMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
+Texture2D g_EmissiveTexture;
 vector g_vCamPosition;
 
 matrix g_LightViewMatrix[3];
@@ -919,6 +920,42 @@ PS_OUT_GLOW PS_NASENGMUN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_SPIKES(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float fPower = 3.f;
+ 
+    
+    // ORME 텍스처의 Alpha 채널을 Emission 강도로 사용
+    float2 vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + 0.08);
+
+    float fEmissionStrength = g_EmissiveTexture.Sample(LinearSampler, vTexcoord).a;
+    
+    float3 vEmissionColor = float3(1.0f, 0.07f, 0.07f); // 붉은 빛
+    float3 vEmission = vEmissionColor * fEmissionStrength * fPower;
+
+    float3 finalColor = vMtrlDiffuse.rgb + vEmission;
+
+	/* 탄젠트 스페이스에 존재하는 노멀이다. */	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	/* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+    
+    Out.vDiffuse.rgb = finalColor;
+    Out.vDiffuse.a = vMtrlDiffuse.a;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 1.f;
+
+    return Out;
+}
 
 
 
@@ -1159,6 +1196,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_NO_DITHERING();
+    }
+
+    pass Bat_SPIKES // 21
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SPIKES();
     }
 
 }

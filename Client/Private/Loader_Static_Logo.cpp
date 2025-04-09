@@ -33,6 +33,7 @@
 
 #include "Projectile_Card.h"
 #include "Projectile_Intro_Card.h"
+#include "Projectile_Air.h"
 #include "Decorative_Tonic.h"
 
 #include "UI_Boss_HP_Bar.h"
@@ -615,6 +616,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Bat::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"),
+		CProjectile_Air::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//보스 바그 카메라 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"),	
 		CBoss_Varg_Camera::Create(m_pDevice, m_pContext))))	
@@ -890,6 +895,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	//몬스터용 노이즈 텍스쳐 /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise6.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Emissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Boss/Boss_Bat/Bat_Spike/T_P_BatSpikes01_ORME.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Locked_On"),

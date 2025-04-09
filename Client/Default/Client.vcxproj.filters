@@ -934,6 +934,9 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike">
       <UniqueIdentifier>{27ea6261-a4a7-4d42-8f03-6fadd59cfb5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile\Air">
+      <UniqueIdentifier>{de69f488-7baa-4a84-8161-87b9aaa5fe5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1755,6 +1758,9 @@
     <ClInclude Include="..\Public\Decorative_Spike.h">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Projectile_Air.h">
+      <Filter>02.GameObject\Monster\95. Projectile\Air</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2566,6 +2572,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Decorative_Spike.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_Air.cpp">
+      <Filter>02.GameObject\Monster\95. Projectile\Air</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
