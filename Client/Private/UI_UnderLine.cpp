@@ -28,19 +28,66 @@ HRESULT CUI_UnderLine::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_bImageOn = true;
+
 	return S_OK;
 }
 
 void CUI_UnderLine::Priority_Update(_float fTimeDelta)
 {
+	
 }
 
 void CUI_UnderLine::Update(_float fTimeDelta)
 {
-	if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
-		m_bMouseSelectOn = true; // 1회 체크..?
+	_float3 fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
+	_float3 fMySize = m_pTransformCom->Compute_Scaled();
+
+	_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+	m_fTextPosition.x = fMyPos.x - (TextSize.x / 2);
+	m_fTextPosition.y = (fMyPos.y - (TextSize.y / 2)) - 25.f;
+
+
+	/*m_fTextPosition.x = (fMyPos.x + (fMySize.x / 2)) - TextSize.x;
+	m_fTextPosition.y = (fMyPos.y + (fMySize.y / 2)) - TextSize.y;*/
+
+
+	m_fTextPosition.z = fMyPos.z;
+
+	POINT	ptMouse{};
+	GetCursorPos(&ptMouse);
+	ScreenToClient(g_hWnd, &ptMouse);
+	if (ptMouse.x >= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x - m_pTransformCom->Compute_Scaled().x / 2 &&
+		ptMouse.x <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x + m_pTransformCom->Compute_Scaled().x / 2 &&
+		ptMouse.y >= (m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y - m_pTransformCom->Compute_Scaled().y / 2) - TextSize.y &&
+		ptMouse.y <= m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y + m_pTransformCom->Compute_Scaled().y / 2)
+	{
+		if (m_pGameInstance->isMouseEnter(DIM_LB))
+		{
+			m_bMouseSelectOn = true; // 
+		}
+	}
 	else
-		m_bMouseSelectOn = false;
+	 	m_bMouseSelectOn = false;
+	
+	if (m_bImageOn)
+	{
+		if (1.0f <= m_fCurrentTime)
+		{
+			m_fCurrentTime = 1.0f; ;
+		}
+		else
+		{
+			m_fCurrentTime += fTimeDelta;
+
+		}
+	}
+	else
+	{
+		m_fCurrentTime = 0.0f;
+
+	}
+
 
 }
 
@@ -61,11 +108,16 @@ HRESULT CUI_UnderLine::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+		return E_FAIL;
+
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	m_pShaderCom->Begin(11);
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -73,19 +125,7 @@ HRESULT CUI_UnderLine::Render()
 
 	if (lstrcmp(m_strContentText.c_str(), TEXT("%d")))
 	{
-		_float3 fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
-		_float3 fMySize = m_pTransformCom->Compute_Scaled();
-
-		_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
-		m_fTextPosition.x = fMyPos.x - (TextSize.x / 2);
-		m_fTextPosition.y = (fMyPos.y - (TextSize.y / 2)) - 25.f;
-
-
-		/*m_fTextPosition.x = (fMyPos.x + (fMySize.x / 2)) - TextSize.x;
-		m_fTextPosition.y = (fMyPos.y + (fMySize.y / 2)) - TextSize.y;*/
-
-
-		m_fTextPosition.z = fMyPos.z;
+		
 		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
 	}
 	return S_OK;

@@ -30,6 +30,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 	_float3 m_fTextPosition = {};
+	_float m_fCurrentTime = { 0 };
 
 
 public:

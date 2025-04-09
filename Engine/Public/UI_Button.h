@@ -25,7 +25,8 @@ public:
 
 	void Set_Mouse_Select_OnOff(_bool bOn) { m_bMouseSelectOn = bOn; }
 	_bool Get_Mouse_Select_OnOff() { return m_bMouseSelectOn; }
-	
+
+	void Set_Open_Image(_bool bOpen) { m_bImageOn = bOpen; }
 	_bool Get_Mouse_OnOff() { return m_bImageOn; }
 
 public:

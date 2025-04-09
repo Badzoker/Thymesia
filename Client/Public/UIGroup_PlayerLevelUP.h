@@ -43,6 +43,7 @@ public:
 private:
 	_bool m_bApplyOn = false;
 	_bool m_bResetOn = false;
+	_bool m_bEscapeCheck = false;
 
 
 private:
@@ -51,11 +52,13 @@ private:
 	_uint m_iNextLevel = {};
 
 	// 기억 파편
-	_uint m_iMemoryCurrentCount = {}; // 유저가 갖고 있는 기억의 파편 개수
-	_uint m_iMemoryNextCount = {}; // 뺄셈해서 보여줄 => 레벨업 진행 시 남는 기억의 파편 개수
-	_uint m_iMemoryNeed = { 529 }; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴
+	_int m_iMemoryCurrentCount = {}; // 유저가 갖고 있는 기억의 파편 개수
+	_int m_iMemoryNextCount = {}; // 뺄셈해서 보여줄 => 레벨업 진행 시 남는 기억의 파편 개수
 
-	_uint m_iMemoryTotalUse = { 0 }; //지금까지 플레이어가 레벨업에 사용한 기억 파편 개수를 저장함
+	_int m_iCurrentMemoryNeed = {}; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴
+	_int m_iNextMemoryNeed = {}; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴
+
+	_int m_iMemoryTotalUse = { 0 }; //지금까지 플레이어가 레벨업에 사용한 기억 파편 개수를 저장함
 
 
 	// 캐릭터 능력치 변수
@@ -90,8 +93,8 @@ private:
 
 
 public:
-	void Set_TalentPoint_Unspent(_int iPoint) { m_iCurrentUnspent = iPoint; }
-	_int Get_TalentPoint_Unspent() {return  m_iCurrentUnspent; }
+	void Set_TalentPoint_ALlUnspent(_int iPoint) { m_iCurrentUnspent = iPoint, m_iNextUnspent = iPoint; }
+	_int Get_TalentPoint_CurrentUnspent() {return  m_iCurrentUnspent; }
 
 private:
 	_int       m_iCurrentUnspent = {};

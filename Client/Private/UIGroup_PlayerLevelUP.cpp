@@ -60,7 +60,6 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 
 void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);
 	if (m_bRenderOpen)
 	{
 		if (m_pMyScene->Get_Scene_Render_State())
@@ -84,9 +83,12 @@ void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_PlayerLevelUP::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
 	if (m_bRenderOpen)
 	{
+		m_iCurrentMemoryNeed = (500 + (30 * (m_iNextLevel-1)));
+		m_iNextMemoryNeed = (500 + (30 * m_iNextLevel));
+
+
 
 		Button_Input_Check();
 		Button_Render_Check();
@@ -107,7 +109,6 @@ void CUIGroup_PlayerLevelUP::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		__super::Late_Update(fTimeDelta);
 	}
 }
 
@@ -211,7 +212,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextAmountOfWounds -= 2;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
-				m_iMemoryNextCount += m_iMemoryNeed;
+				m_iMemoryNextCount += m_iCurrentMemoryNeed;
 			}
 			if (212 == Button->Get_UI_GroupID())
 			{
@@ -221,7 +222,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextAmountOfWounds += 2;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
-				m_iMemoryNextCount -= m_iMemoryNeed;
+				m_iMemoryNextCount -= m_iNextMemoryNeed;
 			}
 
 			if (221 == Button->Get_UI_GroupID()) // 활력 감소 
@@ -231,7 +232,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextFullHp -= 14;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
-				m_iMemoryNextCount += m_iMemoryNeed;
+				m_iMemoryNextCount += m_iCurrentMemoryNeed;
 
 			}
 			if (222 == Button->Get_UI_GroupID())
@@ -241,7 +242,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextFullHp += 14;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
-				m_iMemoryNextCount -= m_iMemoryNeed;
+				m_iMemoryNextCount -= m_iNextMemoryNeed;
 			}
 			if (231 == Button->Get_UI_GroupID()) // 역병 감소 
 			{
@@ -251,7 +252,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextFullMp -= 10;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
-				m_iMemoryNextCount += m_iMemoryNeed;
+				m_iMemoryNextCount += m_iCurrentMemoryNeed;
 			}
 			if (232 == Button->Get_UI_GroupID())
 			{
@@ -261,11 +262,13 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextFullMp += 10;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
-				m_iMemoryNextCount -= m_iMemoryNeed;
+				m_iMemoryNextCount -= m_iNextMemoryNeed;
 			}
 			if (320 == Button->Get_UI_GroupID())
 			{
 				Button->Set_Mouse_Select_OnOff(false);
+				m_bEscapeCheck = true;
+				m_bResetOn = true;
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
@@ -306,7 +309,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Render_Check()
 			222 == Button->Get_UI_GroupID() ||
 			232 == Button->Get_UI_GroupID()) // 힘, 활력, 역병 증가 버튼 오픈 조건
 		{
-			if (((int)(m_iMemoryNextCount - m_iMemoryNeed)) > 0) // .uint는 0 보다 작은수 체크를 못함 
+			if (m_iMemoryNextCount - m_iNextMemoryNeed > 0) //
 				Button->Set_OnOff(true); // 레벨 업이 가능한 경우에만 증가 버튼 생성
 			else
 				Button->Set_OnOff(false); // 레벨 업이 불가능한 경우 증가 버튼 제거
@@ -436,7 +439,7 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Memory_Check()
 		}
 		if (14 == TextBox->Get_UI_GroupID()) //  다음 레벨을 상승 시키는데 필요한 개수 표시
 		{
-			wsprintf(ChangeText, CountText, m_iMemoryNeed);
+			wsprintf(ChangeText, CountText, m_iNextMemoryNeed);
 			TextBox->Set_Content(ChangeText);
 		}
 
@@ -616,7 +619,7 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_TalentPoint_Check()
 		{
 			wsprintf(ChangeText, CountText, m_iCurrentTalentPoint);
 			TextBox->Set_Content(ChangeText);
-
+			      
 		}
 		if (101 == TextBox->Get_UI_GroupID()) // 특성 전체 포인트 후
 		{
@@ -679,26 +682,36 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset_Button()
 {
 	if (m_bResetOn)
 	{
-		for (auto& Button : m_pApplyPopUp->Find_UI_Button())
+		if (m_bEscapeCheck)
 		{
-			if (1 == Button->Get_UI_GroupID()) // 네
+			LevelUP_Reset();
+			m_bResetOn = false;
+			m_bEscapeCheck = false;
+		}
+		else
+		{
+			for (auto& Button : m_pApplyPopUp->Find_UI_Button())
 			{
-				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				if (1 == Button->Get_UI_GroupID()) // 네
 				{
-					LevelUP_Reset();
-					m_bResetOn = false;
-					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+					if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+					{
+						LevelUP_Reset();
+						m_bResetOn = false;
+						m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+					}
 				}
-			}
-			if (2 == Button->Get_UI_GroupID()) // 아니요
-			{
-				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				if (2 == Button->Get_UI_GroupID()) // 아니요
 				{
-					m_bResetOn = false;
-					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+					if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+					{
+						m_bResetOn = false;
+						m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
+					}
 				}
 			}
 		}
+
 	}
 	return S_OK;
 }
@@ -717,7 +730,7 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Apply()
 	m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
 	m_iMemoryNextCount = m_iMemoryCurrentCount;
 
-	m_iMemoryNeed = { 529 }; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴 지금은 그냥 상수값
+	//m_iMemoryNeed = { 529 }; // 다음 레벨 업에 필요한 기억의 파편 수를 받아 옴 지금은 그냥 상수값 => 실시간 계산으로 변경
 
 
 	// 캐릭터 능력치 변수
@@ -761,7 +774,7 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset()
 	m_iNextLevel = m_iCurrentLevel;
 	m_iMemoryNextCount = m_iMemoryCurrentCount;
 
-	m_iMemoryNeed = { 529 }; // 나중에 레벨별 상수 값 달리 설정 해야 함
+	//m_iMemoryNeed = { 529 }; // 나중에 레벨별 상수 값 달리 설정 해야 함
 
 	m_iNextPower = m_iCurrentPower; // 힘 수치
 	m_iNextVitality = m_iCurrentVitality; // 활력 수치

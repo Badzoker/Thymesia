@@ -52,11 +52,14 @@ private:
 	CUI_Button* m_pCurrentSkill = { nullptr };
 	CUI_Button* m_pEquipSkill_1 = { nullptr };
 
-	LEVELID m_eMyLevel = {};
+
+	_bool m_bEscape = { false };
+
 public:
 	deque<PLAYER_SKIL>& Get_PlayerSkill_List() { return m_deqOpenSkill; }
 
 private:
+	LEVELID m_eMyLevel = {};
 	map<_uint, pair<_bool, CUI_Skill_Slot*>> m_mapSlotInfo;
 	deque<PLAYER_SKIL> m_deqOpenSkill = {}; // 해금된 스킬들을 vector에 저장한다
 
