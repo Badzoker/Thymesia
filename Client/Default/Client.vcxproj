@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\BillBoardObject.h" />
     <ClInclude Include="..\Public\BlackScreen.h" />
     <ClInclude Include="..\Public\Body_Aisemy.h" />
+    <ClInclude Include="..\Public\Body_Bat.h" />
     <ClInclude Include="..\Public\Body_GhostSemy.h" />
     <ClInclude Include="..\Public\Body_Grace.h" />
     <ClInclude Include="..\Public\Body_HArmorLV2.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\Public\Body_VillageF1.h" />
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
+    <ClInclude Include="..\Public\Boss_Bat.h" />
     <ClInclude Include="..\Public\Boss_Magician2.h" />
     <ClInclude Include="..\public\Boss_Magician_Camera.h" />
     <ClInclude Include="..\public\Boss_Mutation_Magician_Camera.h" />
@@ -219,6 +221,7 @@
     <ClInclude Include="..\public\ClawWeapon.h" />
     <ClInclude Include="..\Public\DeadBranch.h" />
     <ClInclude Include="..\Public\Decorative_Hat.h" />
+    <ClInclude Include="..\Public\Decorative_Spike.h" />
     <ClInclude Include="..\Public\Decorative_Tonic.h" />
     <ClInclude Include="..\Public\DestructObject.h" />
     <ClInclude Include="..\Public\DoorManager.h" />
@@ -460,6 +463,7 @@
     <ClCompile Include="..\Private\BillBoardObject.cpp" />
     <ClCompile Include="..\Private\BlackScreen.cpp" />
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />
+    <ClCompile Include="..\Private\Body_Bat.cpp" />
     <ClCompile Include="..\Private\Body_GhostSemy.cpp" />
     <ClCompile Include="..\Private\Body_Grace.cpp" />
     <ClCompile Include="..\Private\Body_HArmorLV2.cpp" />
@@ -475,6 +479,7 @@
     <ClCompile Include="..\Private\Body_VillageF1.cpp" />
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
+    <ClCompile Include="..\Private\Boss_Bat.cpp" />
     <ClCompile Include="..\Private\Boss_Magician2.cpp" />
     <ClCompile Include="..\private\Boss_Magician_Camera.cpp" />
     <ClCompile Include="..\private\Boss_Mutation_Magician_Camera.cpp" />
@@ -493,6 +498,7 @@
     <ClCompile Include="..\private\ClawWeapon.cpp" />
     <ClCompile Include="..\Private\DeadBranch.cpp" />
     <ClCompile Include="..\Private\Decorative_Hat.cpp" />
+    <ClCompile Include="..\Private\Decorative_Spike.cpp" />
     <ClCompile Include="..\Private\Decorative_Tonic.cpp" />
     <ClCompile Include="..\Private\DestructObject.cpp" />
     <ClCompile Include="..\Private\DoorManager.cpp" />

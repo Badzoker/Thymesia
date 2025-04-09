@@ -491,6 +491,7 @@ void CBoss_Urd::Intro_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+	pObject->m_pGameInstance->Set_Boss_Active(true);
 }
 
 void CBoss_Urd::Intro_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
@@ -526,12 +527,6 @@ void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Idle_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
-	if (m_iIndex == 19 &&
-		pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex &&
-		pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f &&
-		pObject->m_fDistance >= 10.f)
-	{
-	}
 }
 
 void CBoss_Urd::Idle_State::State_Exit(CBoss_Urd* pObject)
@@ -599,16 +594,16 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
-	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
-		if (pObject->m_iPhase == PHASE_ONE)
+		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->GetAniFinish())
 		{
 			pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 			pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 			pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 		}
-		//else
-			//pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Dead_State(), pObject);
+		else if (pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 210.f)
+			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Dead_State(), pObject);
 	}
 
 }
@@ -1246,4 +1241,54 @@ void CBoss_Urd::Parry_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 void CBoss_Urd::Parry_State::State_Exit(CBoss_Urd* pObject)
 {
 
+}
+
+void CBoss_Urd::Dead_State::State_Enter(CBoss_Urd* pObject)
+{
+	m_iIndex = 10;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->m_iMonster_State = STATE_DEAD;
+
+	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Urd::Dead_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
+{
+	//#pragma region Effect_Dead
+	//
+	//	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	//	{
+	//		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+	//		{
+	//			if (!strcmp(iter.szName, "Dead_Effect")) //Roar_Line
+	//			{
+	//				pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_DEAD_BLINK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+	//				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//				iter.isPlay = true;
+	//			}
+	//		}
+	//	}
+	//#pragma endregion
+
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		pObject->m_bDead = true;
+		pObject->m_bActive = false;
+#pragma region BossÁ×À»½ÃÈ¿°ú+UI
+		pObject->m_pGameInstance->Set_Boss_Dead(true);
+		pObject->m_pGameInstance->Set_Boss_Active(false);
+		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+#pragma endregion
+	}
+
+}
+
+void CBoss_Urd::Dead_State::State_Exit(CBoss_Urd* pObject)
+{
 }

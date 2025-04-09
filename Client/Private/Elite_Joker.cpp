@@ -359,6 +359,7 @@ void CElite_Joker::Idle_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
 
 void CElite_Joker::Idle_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion

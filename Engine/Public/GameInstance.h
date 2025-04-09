@@ -307,7 +307,9 @@ public:
 	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters();
 	_bool Get_Boss_Dead()const;
+	_bool Get_Boss_Active()const;
 	void Set_Boss_Dead(_bool bCheck);
+	void Set_Boss_Active(_bool bCheck);
 #pragma endregion
 
 #pragma region PROJECTILE_MANAGER

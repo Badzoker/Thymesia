@@ -585,6 +585,7 @@ void CNormal_VillageF0::Hit_State::State_Enter(CNormal_VillageF0* pObject)
     pObject->m_iMonster_State = STATE_HIT;
     pObject->RotateDegree_To_Player();
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bPatternProgress = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -597,6 +598,7 @@ void CNormal_VillageF0::Hit_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageF0::Hit_State::State_Exit(CNormal_VillageF0* pObject)
 {
+    pObject->m_bPatternProgress = false;
     pObject->m_bCan_Move_Anim = false;
 }
 

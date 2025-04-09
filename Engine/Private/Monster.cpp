@@ -211,22 +211,26 @@ void CMonster::RotateDegree_To_Player()
 
 void CMonster::Rotation_To_Player()
 {
-    _float fRadians = m_fRotateSpeed * m_fTimeDelta;
-    if (m_fRotateDegree < 0.f)
-        fRadians *= -1;
+    _vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    _vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+    _vector vTargetDir = XMLoadFloat4(&m_vPlayerPos) - vMyPos;
 
-    if (fabs(m_fRotateDegree) < fabs(fRadians))
-    {
-        fRadians = m_fRotateDegree;
-        m_fRotateDegree = 0.f;  // 회전 완료
+    vTargetDir = XMVectorSet(XMVectorGetX(vTargetDir), 0.f, XMVectorGetZ(vTargetDir), 0.f);
+    vTargetDir = XMVector3Normalize(vTargetDir);
+    vMyLook = XMVector3Normalize(vMyLook);
+
+    _float fLerpSpeed = 5.f; // 회전 속도 조절
+    _vector vNewLook = XMVectorLerp(vMyLook, vTargetDir, fLerpSpeed * m_fTimeDelta);
+    vNewLook = XMVector3Normalize(vNewLook);
+
+    m_pTransformCom->Look(vNewLook);
+
+
+    _float fDot = XMVectorGetX(XMVector3Dot(vNewLook, vTargetDir));
+    if (fDot >= 0.9995f)
         m_bNeed_Rotation = false;
-        return;
-    }
     else
-    {
-        m_fRotateDegree -= fRadians;
-    }
-    m_pTransformCom->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRadians));
+        m_bNeed_Rotation = true;
 }
 
 

@@ -10,11 +10,14 @@
 #include "Boss_Magician.h"
 #include "Boss_Magician2.h"
 #include "Boss_Urd.h"
+#include "Boss_Bat.h"
 
 #include "Body_Varg.h"
 #include "Body_Magician.h"
 #include "Body_Magician2.h"
 #include "Body_Urd.h"
+#include "Body_Bat.h"
+#include "Decorative_Spike.h"
 
 #include "VargKnife.h"
 #include "Boss_Varg_Camera.h"
@@ -588,6 +591,29 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Urd::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//매달린 여왕
+	//Decorative_Spikes
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Bat_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Bat/Boss_Bat.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Spike"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Bat/Bat_Spike/Bat_Spike1.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat_Body"),
+		CBody_Bat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Spike"),
+		CDecorative_Spike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"),
+		CBoss_Bat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	//보스 바그 카메라 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"),	

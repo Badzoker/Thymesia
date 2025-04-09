@@ -459,6 +459,7 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_iMonster_State = STATE_INTRO;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+    pObject->m_pGameInstance->Set_Boss_Active(true);
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -1280,6 +1281,7 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
 #pragma region BossÁ×À»½ÃÈ¿°ú+UI
         pObject->m_pGameInstance->Set_Boss_Dead(true);
+        pObject->m_pGameInstance->Set_Boss_Active(false);
         pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
         pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
         pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);

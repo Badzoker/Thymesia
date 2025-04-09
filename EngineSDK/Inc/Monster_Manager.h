@@ -31,8 +31,10 @@ public:
 	HRESULT Add_Monster(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, MONSTER_CATEGORY _eCategory, void* _pArg);
 	HRESULT Respawn_Monster(MONSTER_CATEGORY _eCategory);
 	deque<class CMonster*>& Get_Check_Monsters() { return m_pCheck_Monsters; }
-	void Set_Boss_Dead(_bool bCheck) { m_bStage_Boss_Dead = bCheck; };
+	void Set_Boss_Dead(_bool bCheck) { m_bStage_Boss_Dead = bCheck; }
+	void Set_Boss_Active(_bool bCheck) { m_bBoss_Active = bCheck; }
 	_bool Get_Boss_Dead()const { return m_bStage_Boss_Dead; }
+	_bool Get_Boss_Active() const { return m_bBoss_Active; }
 
 public:
 	HRESULT Active_Monster();
@@ -50,7 +52,7 @@ private:
 
 private:
 	_bool m_bStage_Boss_Dead = { false };
-
+	_bool m_bBoss_Active = { false };
 public:
 	static CMonster_Manager* Create();
 	virtual void Free() override;
