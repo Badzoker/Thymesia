@@ -83,8 +83,8 @@ void CBoss_Urd::Priority_Update(_float fTimeDelta)
 			m_iCheck_Step_Num = (rand() % 1) + 1;
 	}
 
-	if(m_iMonster_State != STATE_INTRO)
-		RotateDegree_To_Player();
+	//if(m_iMonster_State != STATE_INTRO)
+	//	RotateDegree_To_Player();
 	
 	__super::Priority_Update(fTimeDelta);
 }
@@ -538,12 +538,12 @@ void CBoss_Urd::Stun_State::State_Enter(CBoss_Urd* pObject)
 {
 	m_iIndex = 40;
 	pObject->m_iMonster_State = STATE_STUN;
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN;
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_URD;	
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->RotateDegree_To_Player();
 
-	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+	//pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
 
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -558,7 +558,7 @@ void CBoss_Urd::Stun_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 	}
 
-	if (m_iIndex == 39 && (*pObject->m_Player_State) == CPlayer::STATE_PUNCH_MAN_Execution)
+	if ((m_iIndex == 39 || m_iIndex == 40) && (*pObject->m_Player_State) == CPlayer::STATE_URD_EXECUTION)	
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::ExeCution_State(), pObject);
 	}
@@ -588,6 +588,12 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
 	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
 	pObject->RotateDegree_To_Player();
+
+	/* 선환 추가 */
+	pObject->m_pModelCom->Get_VecAnimation().at(41)->SetLerpTime(0.f);
+	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(45.f);
+	/* ============ */
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

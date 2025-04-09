@@ -121,6 +121,10 @@ HRESULT CGroundObject::Initialize(void* _pArg)
 
     m_vecVisible.resize(m_iNumInstance);
 
+
+    m_pDitheringOnOff = m_pGameInstance->Get_Dithering_Ptr();
+
+
     return S_OK;
 }
 
@@ -152,39 +156,9 @@ HRESULT CGroundObject::Render()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    //if (m_bCullingObject)
-    //{
-    //    for (_uint i = 0; i < iNumMeshes; i++)
-    //    {
-    //        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-    //            return E_FAIL;
-
-    //        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
-    //            return E_FAIL;
-
-    //        vector<VTX_MODEL_INSTANCE> vecVTXInstance;
-    //        for (_uint j = 0; j < m_iNumInstance; ++j)
-    //        {
-    //            if (m_vecVisible[j])
-    //                vecVTXInstance.push_back(m_vecInstanceData[j]);
-    //        }
-
-    //        _uint iVisibleCount = static_cast<_uint>(vecVTXInstance.size());
-
-    //        if (iVisibleCount == 0)
-    //            continue;
-
-    //        m_pModelCom->Update_InstanceBuffer(iVisibleCount, vecVTXInstance.data());
-
-    //        if (m_iNumInstance > 0)
-    //        {
-    //            m_pShaderCom->Begin(m_iPassIndex);
-    //            m_pModelCom->Render_Instance(i, iVisibleCount);
-    //        }
-    //    }
-    //}
-    //else
+    if (*m_pDitheringOnOff)
     {
+
         for (_uint i = 0; i < iNumMeshes; i++)
         {
             if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
@@ -196,7 +170,18 @@ HRESULT CGroundObject::Render()
         }
     }
 
-
+    else
+    {
+        for (_uint i = 0; i < iNumMeshes; i++)
+        {
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+                return E_FAIL;
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0)))
+                return E_FAIL;
+            m_pShaderCom->Begin(2);
+            m_pModelCom->Render_Instance(i, m_iNumInstance);
+        }
+    }
 
     return S_OK;
 }

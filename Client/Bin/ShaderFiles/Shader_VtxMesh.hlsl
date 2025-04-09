@@ -348,6 +348,37 @@ PS_OUT PS_MAIN(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_NO_DITHERING(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+
+	/* 탄젠트 스페이스에 존재하는 노멀이다. */	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	
+	
+	/* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    //Out.vNormal  = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.1f;
+ 
+    
+    return Out;
+}
+
 PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -1106,5 +1137,28 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_NASENGMUN();
     }
     
+
+    pass NO_DITHERING_Pass // 19
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_NO_DITHERING();
+    }
+
+
+    pass CullNonePass_NO_DITHERING_Pass // 20
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_NO_DITHERING();
+    }
 
 }

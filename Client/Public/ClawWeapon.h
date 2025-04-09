@@ -62,6 +62,15 @@ private:
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
+
+	/* 손톱 디졸브 관련 */
+	_float* m_pfClawParentTime = { };
+	_float* m_pfClawFinishTime = {};
+	_float* m_pfClawAppearTimer = {};
+	_bool* m_pbClawDeadOn = {};
+	_bool* m_pbClawAppear = {};
+
+
 private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };

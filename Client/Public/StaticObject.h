@@ -40,6 +40,8 @@ protected:
 	_float		 g_DitherStartDist = { };     // 시작 거리			
 	_float		 g_DitherEndDist   = { };     // 완전 보임 거리				
 	CGameObject* m_pCamera = { nullptr };	
+	_bool*		 m_pDitheringOnOff = { nullptr };	
+
 
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -94,6 +94,9 @@ public:
 		STATE_PUNCH_MAN_Execution,
 		STATE_LIGHT_EXECUTION_L,
 		STATE_LIGHT_EXECUTION_R,
+		STATE_STUN_EXECUTE_START_URD,
+		STATE_URD_EXECUTION,
+		STATE_STUN_EXECUTE_START_VARG,
 
 		/*앉기 및 의자 상호작용 */
 		STATE_ARCHIVE_SIT_START,
@@ -132,8 +135,6 @@ public:
 		STATE_GET_UP,
 
 
-		/* 바그 처형 달려가기전 모션 */
-		STATE_VARG_STUN_EXECUTE_START_R, // 291번 모션		
 		/* 바그에게 달려가면서  처형 모션 */
 		STATE_VARG_RUN_EXECUTION, // 297번 애니메이션	
 
@@ -167,6 +168,10 @@ public:
 		/* 플레이어 달리면서 처음 대쉬 어택 */
 		STATE_SPRINT_ATTACK_L1,
 
+		/* 플레이어 철학자의 언덕 로비 애니메이션 */
+		STATE_LOBBY_IDLE_01,
+		STATE_LOBBY_IDLE_01_END,
+
 	};
 
 
@@ -186,8 +191,14 @@ public:
 		PHASE_BOSS_INTRO = 1 << 11,
 		PHASE_LADDER = 1 << 12,
 		PHASE_SPRINT = 1 << 13,
+		PHASE_NO_RENDER = 1 << 14,
 	};
 
+
+	/*enum PLAYER_TALENT
+	{
+
+	};*/
 
 
 private:
@@ -221,9 +232,13 @@ public:
 	void Slide_Move(CGameObject* pGameObject);
 	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
+	void Set_MonsterFinalEvent(_bool _OnOff) { m_bMonsterFinalEvent = _OnOff; }
 	void Set_PlayerState(_uint _iState) { m_iState = _iState; }
 
+
 	_bool Get_MonsterEvent() { return m_bMonsterEvent; }
+	_bool Get_MonsterFinalEvent() { return m_bMonsterFinalEvent; }
+
 	CGameObject* Get_TargetObjectPtr() const { return m_pTargetMonsterPtr; }
 
 	unordered_set<STATE>* Get_Body_State() { return &m_set_Body_States; }
@@ -236,6 +251,18 @@ public:
 	unordered_set<STATE>* Get_Cane_State() { return &m_set_Cane_Weapon_States; }
 	unordered_set<STATE>* Get_GreadSword_State() { return &m_set_GreadSword_Weapon_States; }
 	unordered_set<STATE>* Get_JavelinSword_State() { return &m_set_JavelinSword_Weapon_States; }
+
+
+	_float4* Get_RespawnPosPtr() { return &m_fRespawnArea; }
+
+
+	/* 손톱 디졸브 관련 */
+	_float* Get_ClawTimePtr() { return &m_fClawTime; }
+	_float* Get_ClawFinishTimePtr() { return &m_fClawFinishTime; }
+	_float* Get_ClawAppearTimerPtr() { return &m_fClawAppearTimer; }
+	_bool* Get_ClawDeadOnPtr() { return &m_bClawDeadOn; }
+	_bool* Get_ClawAppearPtr() { return &m_bClawAppear; }
+
 
 private:
 	void Player_Interaction(CGameObject* _pOther);
@@ -256,9 +283,11 @@ private:
 	_bool								m_bMove = { false };
 	_bool								m_bNextStateCanPlay = { true };
 	_bool								m_bMonsterEvent = { false };
+	_bool								m_bMonsterFinalEvent = { false };
 
 
 	_float								m_fChrageTime = {};
+	_float4								m_fRespawnArea = {};
 
 	CGameObject* m_pTargetMonsterPtr = { nullptr };
 
@@ -281,6 +310,14 @@ private:
 	unordered_set<STATE> m_set_GreadSword_Weapon_States = {};
 	unordered_set<STATE> m_set_JavelinSword_Weapon_States = {};
 	unordered_set<STATE> m_set_Player_Camera_States = {};
+
+
+	/* 손톱 디졸브 관련 */
+	_float m_fClawTime = {};
+	_float m_fClawFinishTime = {};
+	_float m_fClawAppearTimer = {};
+	_bool  m_bClawDeadOn = {};
+	_bool  m_bClawAppear = {};
 
 private:
 	_float								m_fTimeDelta = { 0.f };

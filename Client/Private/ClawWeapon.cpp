@@ -62,6 +62,15 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
 
+
+
+    m_pfClawParentTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
+    m_pfClawFinishTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
+    m_pfClawAppearTimer = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearTimerPtr();
+    m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
+    m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
+
+
     return S_OK;
 }
 
@@ -96,85 +105,88 @@ void CClawWeapon::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
-                if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
-                    && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
+                switch (iter.eType)
                 {
-                    // 그 구간에서는 계속 진행  
-                    if (!strcmp(iter.szName, "Attack_Collider_1"))
+                case EVENT_COLLIDER:
+                {
+                    if (iter.isEventActivate == true)
                     {
-                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
-                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                            && m_bCollisionOn)
-                        {
+                        if (m_bCollisionOn)
                             m_pGameInstance->Add_Actor_Scene(m_pActor);
-                        }
+                    }
 
-                        else if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime   // 이제 다단 히트 x 하기 위해서 추가한 코드 
-                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime
-                            && !m_bCollisionOn)
+                    else
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                         {
                             m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                            iter.isPlay = true;
                         }
                     }
-                    if (!strcmp(iter.szName, "Camera_Zoom_Out"))
-                    {
-                        // 카메라 포인터 가져오고 싶다.
-                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
-                        m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta);
-
-                        m_fAccTimeDelta += fTimeDelta;
-                        m_pCamera->Set_Camera_ZoomOutSpeed(5.f);
-                        m_pCamera->ZoomOut();
-                    }
-
-                    if (!strcmp(iter.szName, "Camera_Zoom_In"))
-                    {
-                        m_pCamera->Set_Camera_ZoomInSpeed(1.5f);
-                        m_pCamera->ZoomIn();
-                    }
-
-                    if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
-                    {
-                        m_fAccTimeDelta += fTimeDelta;
-                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
-                        m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
-                    }
                 }
+                break;
 
-                else
+                case EVENT_STATE:
                 {
-                    if (!strcmp(iter.szName, "Attack_Collider_1"))
+                    if (iter.isEventActivate == true)
                     {
-                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-                    }
-                    if (!strcmp(iter.szName, "Camera_Zoom_Out"))
-                    {
-                        /* 여기서 줌 아웃 리셋이 끝나면 모션 블러를 끝내야 할거같음. */
-                        m_pCamera->ResetZoomOutCameraPos(1.f);
-                        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
-                        m_fAccTimeDelta = 0.f;
-                    }
-                    if (!strcmp(iter.szName, "Camera_Zoom_Out_No_Blur"))
-                    {
-                        m_pCamera->ResetZoomInCameraPos(10.f);
-                    }
-                    if (!strcmp(iter.szName, "Camera_Zoom_Blur"))
-                    {
-                        m_fAccTimeDelta -= fTimeDelta;
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                        {
+                            // 카메라 포인터 가져오고 싶다.
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+                            m_pGameInstance->Set_ZoomBlur_Option(true, 1.5f * m_fAccTimeDelta);
 
-                        if (m_fAccTimeDelta <= 0.f)
-                            m_fAccTimeDelta = 0.f;
+                            m_fAccTimeDelta += fTimeDelta;
+                            m_pCamera->Set_Camera_ZoomOutSpeed(5.f);
+                            m_pCamera->ZoomOut();
+                        }
 
-                        m_pGameInstance->Set_ZoomBlur_Option(true, 0.4f * m_fAccTimeDelta);
+                        if (!strcmp(iter.szName, "Camera_Zoom_In"))
+                        {
+                            m_pCamera->Set_Camera_ZoomInSpeed(1.5f);
+                            m_pCamera->ZoomIn();
+                        }
+
+
+                        if (!strcmp(iter.szName, "Dissolve_Weapon"))
+                        {
+                            *m_pbClawDeadOn = true;
+                        }
+
+                        if (!strcmp(iter.szName, "Reverse_Dissolve_Weapon"))
+                        {
+                            *m_pbClawAppear = true;
+                        }
                     }
 
+
+                    else
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                        {
+                            if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                            {
+                                m_pCamera->ResetZoomInCameraPos(10.f);
+
+                                m_fAccTimeDelta -= fTimeDelta;
+
+                                if (m_fAccTimeDelta <= 0.f)
+                                    m_fAccTimeDelta = 0.f;
+
+                                m_pGameInstance->Set_ZoomBlur_Option(true, 0.3f * m_fAccTimeDelta);
+                            }
+
+                        }
+                    }
                 }
+                break;
+                }
+
 
                 if ((iter.eType == EVENT_SOUND)
                     && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-
+                    iter.isPlay = true;  // 한 번만 재생 되어야 하므로
                 }
 
 #pragma region Effect 0316  
@@ -198,7 +210,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                     else if (!strcmp(iter.szName, "Claw1_Effect"))
                     {
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_1, &m_CombinedWorldMatrix);
-                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, m_pParentWorldMatrix, m_pSocketMatrix); 
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, m_pParentWorldMatrix, m_pSocketMatrix);
                         iter.isPlay = true;
 
                     }
@@ -248,12 +260,28 @@ void CClawWeapon::Update(_float fTimeDelta)
         m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
         m_fAccTimeDelta = 0.f;
         m_bCollisionOn = true;
+
+        if (!m_pSet_Claw_Weapon_States->count(curState))
+        {
+            *m_pbClawAppear = false;
+            *m_pbClawDeadOn = false;
+            *m_pfClawFinishTime = 0.f;
+            *m_pfClawAppearTimer = 0.f;
+        }
     }
 
     if (m_bHitStopOnOff)
     {
         Hit_Slow();
     }
+
+
+
+    if (*m_pbClawDeadOn)
+        *m_pfClawFinishTime += fTimeDelta * 0.75f;
+
+    if (*m_pbClawAppear)
+        *m_pfClawAppearTimer += fTimeDelta * 1.25f;
 
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
@@ -287,18 +315,18 @@ HRESULT CClawWeapon::Bind_ShaderResources()
 
 HRESULT CClawWeapon::Hit_Slow()
 {
-    m_fHitStopTime += m_fTimeDelta;
-
 
     if (m_fHitStopTime < 0.1f)
     {
         m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
     }
+
     else
     {
         m_bHitStopOnOff = false;
     }
 
+    m_fHitStopTime += m_fTimeDelta;
 
     return S_OK;
 }
