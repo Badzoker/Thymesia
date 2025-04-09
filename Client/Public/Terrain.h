@@ -42,7 +42,6 @@ private:
 	CVIBuffer_Terrain* m_pVIBufferCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 
-
 public:
 	HRESULT Ready_Components(void* _pArg);
 	HRESULT Bind_ShaderResources();

@@ -47,16 +47,8 @@ void CStaticObject::Late_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
 	{
-
-		if (m_pGameInstance->isKeyEnter(DIK_F2))
-		{
-			m_bTestRender = !m_bTestRender;
-		}
-		if (m_bTestRender)
-		{
-			m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
-			m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
-		}
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_SHADOW, this);
 	}
 }
 

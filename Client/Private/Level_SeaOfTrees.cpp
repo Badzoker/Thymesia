@@ -467,35 +467,35 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
     ItemDesc.bTaken = true;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
     //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
     //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
     //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
     //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
     //============================================================================================
@@ -506,7 +506,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
     BranchDesc.iCurLevel = m_iCurrentLevel;
     BranchDesc.bTaken = true;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), LEVEL_TUTORIAL, pLayerTag, &BranchDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_DeadBranch"), m_iCurrentLevel, pLayerTag, &BranchDesc)))
         return E_FAIL;
 
 
@@ -889,14 +889,14 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
         {
             Desc.iPairNum = iChairNum;
             Desc.ObjectName = strName + "_" + to_string(iChairNum);
-            pObject = reinterpret_cast<CChair*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Chair"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
+            pObject = reinterpret_cast<CChair*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Chair"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
             ++iChairNum;
         }
         else if (strName == "NPCLamp")
         {
             Desc.iPairNum = iLampNum;
             Desc.ObjectName = strName + "_" + to_string(iLampNum);
-            pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
+            pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
             ++iLampNum;
         }
         else if (strName == "Elevator_Up")
@@ -923,7 +923,7 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
 
                 ElevatorDesc.iPairNum = iElevatorUp;
                 ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorUp);
-                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
             }
             else
             {
@@ -945,7 +945,7 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
 
                 ElevatorDesc.iPairNum = iElevatorUp;
                 ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorUp);
-                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
             }
             ++iElevatorUp;
 
@@ -975,7 +975,7 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
 
                 ElevatorDesc.iPairNum = iElevatorDown;
                 ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorDown);
-                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
             }
             else
             {
@@ -997,7 +997,7 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
 
                 ElevatorDesc.iPairNum = iElevatorDown;
                 ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorDown);
-                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+                pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
             }
             ++iElevatorDown;
 
@@ -1036,14 +1036,14 @@ HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
         //{
         //	pObject = reinterpret_cast<CLadder*>(
         //		m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder"),
-        //			LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
+        //			m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
         //}
         //else
         //{
         //	// 디폴트: 그냥 SpecificObject로 로드
         //	pObject = reinterpret_cast<CSpecificObject*>(
         //		m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_SpecificObject"),
-        //			LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &Desc));
+        //			m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
         //}
     }
 

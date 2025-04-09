@@ -74,7 +74,6 @@ HRESULT CTerrain::Render()
 	//m_pNavigationCom->Render();
 #endif // _DEBUG
 
-
 	return S_OK;
 }
 
@@ -140,9 +139,6 @@ HRESULT CTerrain::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureMaskCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
 		return E_FAIL;
-
-	return S_OK;
-
 
 	return S_OK;
 }
