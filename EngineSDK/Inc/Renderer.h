@@ -29,6 +29,8 @@ public:
 	HRESULT Render();
 	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }
 	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
+	void Set_Dithering(_bool _OnOff) { m_bDitheringOnOff = _OnOff; }	
+	_bool* Get_Dithering_Ptr() { return  &m_bDitheringOnOff; }	
 	void Set_FogColor(_float4 vFogColor);
 	void Set_LightShaftValue(_float4 _vLightShatValue);
 	void Set_FogFactors(FOGPARAMS _ParamDesc) {
@@ -67,6 +69,7 @@ private:
 
 	_bool					m_bMotionBlurOnOff = { false };
 	_bool					m_bZoomBlurOnOff = { false };
+	_bool					m_bDitheringOnOff = { true };
 
 	_float					m_fZoomBlurStrength = { 0.f };
 

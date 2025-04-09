@@ -93,7 +93,10 @@ void CPlayerCamera::Update(_float fTimeDelta)
         || *m_pParentState == CPlayer::STATE_GRACE_Execution
         || *m_pParentState == CPlayer::STATE_MAGICIAN_Execution
         || *m_pParentState == CPlayer::STATE_MAGICIAN_MUTATION_Execution
-        || *m_pParentState == CPlayer::STATE_MAGICIAN_CATCH)
+        || *m_pParentState == CPlayer::STATE_MAGICIAN_CATCH
+        || *m_pParentState == CPlayer::STATE_MAGICIAN_CATCH
+        || *m_pParentState == CPlayer::STATE_URD_EXECUTION
+        || *m_pParentState == CPlayer::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
@@ -139,6 +142,10 @@ void CPlayerCamera::Update(_float fTimeDelta)
 
                         m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
 
+                        if (!strcmp(iter.szName, "NO_RENDER"))
+                        {
+                            dynamic_cast<CPlayer*>(m_pParent)->Set_ParentPhaseState(CPlayer::PHASE_NO_RENDER);
+                        }
                     }
                 }
 
@@ -150,6 +157,13 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
 
                         m_pGameInstance->Add_Actor_Scene(m_pParentActor);   
+
+                        if (!strcmp(iter.szName, "NO_RENDER"))
+                        {
+                            dynamic_cast<CPlayer*>(m_pParent)->Sub_PhaseState(CPlayer::PHASE_NO_RENDER);
+                            iter.isPlay = true;
+                        }
+
                     }
 
                 }

@@ -437,7 +437,7 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
     _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
 
-    if ((m_iIndex == 35 || m_iIndex == 36) && (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION && bMonster_Event)
+    if ((m_iIndex == 35 || m_iIndex == 36) /*&& (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION*/ && bMonster_Event)
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_Start_State(), pObject);
     }
@@ -969,6 +969,11 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
     //pObject->RotateDegree_To_Player();
     pObject->m_bCan_Move_Anim = true;
 
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(41)->SetLerpTime(0.1f);
+    pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(15.f);
+
+
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -1218,6 +1223,11 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     //항상 거리가 짧으면 바로 잡히는 애니메이션 실행 -> 콜라이더로 검사해야할듯
     if (pObject->m_Is_Catch)
     {
+        /* 선환 추가 */
+        pObject->m_pModelCom->Get_VecAnimation().at(28)->SetLerpTime(0.f);
+        pObject->m_pModelCom->Set_LerpFinished(true);
+        /* =========  */
+
         m_iIndex = 28;
         pObject->m_iMonster_Attack_Power = 281;
         pObject->m_iMonster_State = STATE_ATTACK;
@@ -1299,6 +1309,9 @@ void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)
 
 void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 {
+    pObject->m_pModelCom->Get_VecAnimation().at(40)->SetLerpTime(0.f);
+    pObject->m_pModelCom->Set_LerpFinished(true);
+
     m_iIndex = 40;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
@@ -1322,9 +1335,11 @@ void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::ExeCution_Start_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    if ((*pObject->m_Player_State) == CPlayer::STATE_Varg_Execution)
+    _bool bMonster_FinalEvent = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterFinalEvent(); 
+
+    if ((*pObject->m_Player_State) == CPlayer::STATE_Varg_Execution && bMonster_FinalEvent) 
     {
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), pObject);
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_State(), pObject); 
     }
 }
 

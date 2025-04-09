@@ -144,6 +144,8 @@ public:
 	void STATE_LV1Villager_M_Execution_Method();
 	void STATE_Joker_Execution_Method();
 	void STATE_Varg_Execution_Method();
+	void STATE_STUN_EXECUTE_START_URD_Method();	
+	void STATE_URD_EXECUTION_Method();	
 
 	/* ------------------------------- */
 
@@ -182,9 +184,6 @@ public:
 
 	/* 플레이어 잡히고 일어서는 모션*/
 	void STATE_GET_UP_Method();
-
-	/* 바그에게 뛰어가기 전 모션 */
-	void STATE_VARG_STUN_EXECUTE_START_R_Method();
 
 	/* 바그에게 뛰어가서 처형하는 모션 */
 	void STATE_VARG_RUN_EXECUTION_Method();
@@ -229,15 +228,25 @@ public:
 	/* 오두르 스킬에 맞아서 잡히는 모션 */
 	void STATE_MAGICIAN_CATCH_Method();
 
+	/* 플레이어 스프린트 */
 	void STATE_SPRINT_Method();
 
+	/* 플레이어 스프린트 어택 */
 	void STATE_SPRINT_ATTACK_L1_Method();
+
+	/* 플레이어 철학자의 언덕 로비 IDLE 상태 */
+	void STATE_LOBBY_IDLE_01_Method();
+	void STATE_LOBBY_IDLE_01_END_Method();
+
+	/* 바그 처음 처형 모션 시작 */
+	void STATE_STUN_EXECUTE_START_VARG_Method();
 
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pDissolveNoiseTextureCom = { nullptr };
 	CCamera_Free* m_pCamera = { nullptr };
 	CGameObject* m_pParent = { nullptr };
 
@@ -246,6 +255,7 @@ private:
 	_float							m_fZoomBlurDeltaTime = {};
 
 	_float							m_fHitStopTime = {};
+	_float4*						m_fRespawnPosPtr = {};
 private:
 
 	_uint* m_pParentMonsterExecute = { nullptr };
@@ -267,6 +277,14 @@ private:
 	_float m_fFinishTime = {};
 	_float m_fDeadStartTimer = {};
 
+	/* 손톱 디졸브 관련 */
+	_float* m_pfClawParentTime = { };
+	_float* m_pfClawFinishTime = {};
+	_float* m_pfClawAppearTimer = {};
+	_bool* m_pbClawDeadOn = {};
+	_bool* m_pbClawAppear = {};
+
+
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
 	unordered_set<CPlayer::STATE>* m_pSet_Body_States                = { nullptr };
@@ -278,6 +296,8 @@ private:
 	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States   = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States       = { nullptr };
+
+	_bool  m_bFirstCameraPos = { true };
 
 
 public:

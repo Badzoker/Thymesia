@@ -28,6 +28,13 @@ Texture2D       g_GhostNoiseTexture;
 float4          g_GhostColor;
 float           g_DissolveValue;
 
+/* 무기 손톱 관련 */
+Texture2D g_DissolveNoiseTexture;
+bool g_Appear;
+bool g_Dead;
+float g_ReverseDissolveTime;
+
+
 struct VS_IN
 {
 	float3			vPosition :   POSITION;	
@@ -522,6 +529,60 @@ PS_OUT_GLOW PS_GHOSEMY(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_PLAYER_CLAW_DISSOLVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+
+    
+
+      // 기본 변수들 
+ 
+    if (g_Appear)
+    {
+        //In.vTexcoord.x += g_Time * 5.f;
+        //In.vTexcoord.y += g_Time * 10.f;      
+    
+        Out.vDiffuse = float4(0.3f, 1.f, 0.7f, 0.8f);
+
+        float2 noiseUV = In.vTexcoord;
+    
+        float noiseValue = g_DissolveNoiseTexture.Sample(LinearSampler_Clamp, noiseUV).r;
+  
+        if ((1.0 - noiseValue) > g_ReverseDissolveTime)
+        {
+            clip(-1);
+        }
+
+    }
+    
+   
+    if (g_Dead)
+    {
+        float2 noiseUV = In.vTexcoord;
+    
+        float noiseValue = g_DissolveNoiseTexture.Sample(LinearSampler_Clamp, noiseUV).r;
+  
+        if (noiseValue < g_DissolveAmount)
+        {
+            clip(-1);
+        }
+  
+    }
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.0f - 1.0f;
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+        
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass
@@ -613,5 +674,19 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_GHOSEMY();
+    }
+
+
+    
+
+    pass PLAYER_CLAW_DISSOLVE // 8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_PLAYER_CLAW_DISSOLVE();
     }
 }

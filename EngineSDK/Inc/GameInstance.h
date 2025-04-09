@@ -83,6 +83,8 @@ public:
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, class CGameObject* pGameObject);
 	void    Set_MotionBlur(_bool _bOnOff);	
+	void	Set_Dithering(_bool _OnOff);
+	_bool*  Get_Dithering_Ptr();
 	void	Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 	void	Set_LightShaftValue(_float4 _vLightShaftValue);
 	void	Set_FogFactors(FOGPARAMS _ParamDesc);

@@ -337,7 +337,7 @@ HRESULT CLevel_Hill::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	_float4 vTestPosition = { 8.f, 1.05f, -32.f, 1.f }; //의자 옆 위치  // 3월 27일	
+	_float4 vTestPosition = { 3.45f, 1.10f, -15.61f, 1.0f }; //의자 옆 위치  // 3월 27일	
 
 	Desc._fPosition = vTestPosition;
 

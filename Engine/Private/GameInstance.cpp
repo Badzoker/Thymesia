@@ -185,7 +185,7 @@ HRESULT CGameInstance::Draw()
 {
  	m_pRenderer->Render();
 
-	m_pPhysX_Manager->Render_PhysXDebugger();	
+	//m_pPhysX_Manager->Render_PhysXDebugger();	
 
 	m_pLevel_Manager->Render();
 
@@ -331,6 +331,16 @@ HRESULT CGameInstance::Add_RenderGroup(CRenderer::RENDERGROUP eRenderGroupID, CG
 void CGameInstance::Set_MotionBlur(_bool _bOnOff)
 {
 	return m_pRenderer->Set_MotionBlur(_bOnOff);
+}
+
+void CGameInstance::Set_Dithering(_bool _OnOff)
+{
+	return m_pRenderer->Set_Dithering(_OnOff);
+}
+
+_bool* CGameInstance::Get_Dithering_Ptr()
+{
+	return m_pRenderer->Get_Dithering_Ptr();
 }
 
 void CGameInstance::Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength)

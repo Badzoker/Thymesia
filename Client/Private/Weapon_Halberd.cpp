@@ -333,7 +333,7 @@ HRESULT CWeapon_Halberd::Bind_ShaderResources()
 
 HRESULT CWeapon_Halberd::Hit_Slow()
 {
-    if (m_fHitStopTime < 0.15f)
+    if (m_fHitStopTime < 0.075f)    
     {
         m_pCamera->ShakeOn(400.f, 400.f, 6.f, 6.f);
         m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());

@@ -81,7 +81,10 @@ void CLeftWeapon::Late_Update(_float fTimeDelta)
         && !(*m_pParentPhaseState & CPlayer::PHASE_LADDER)
         && *m_pParentState != CPlayer::STATE_CANE_SWORD_SP02    
         && *m_pParentState != CPlayer::STATE_GREATSWORD 
-        && *m_pParentState != CPlayer::STATE_JAVELIN_SWORD)
+        && *m_pParentState != CPlayer::STATE_JAVELIN_SWORD
+        && *m_pParentState != CPlayer::STATE_JAVELIN_SWORD
+        && *m_pParentState != CPlayer::STATE_LOBBY_IDLE_01
+        && *m_pParentState != CPlayer::STATE_LOBBY_IDLE_01_END)
     {
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     }

@@ -58,6 +58,15 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
 
+    m_fRespawnPosPtr = dynamic_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr();
+
+
+    m_pfClawParentTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
+    m_pfClawFinishTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
+    m_pfClawAppearTimer = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearTimerPtr();
+    m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
+    m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
+
 
     return S_OK;
 }
@@ -110,7 +119,8 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
             m_fDeadStartTimer = 0.f;
 
             // ½ÃÀÛ À§Ä¡ 
-            m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _fvector{ 83.19f, 6.3f, -117.26f, 1.0f });
+            //m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _fvector{ 83.19f, 6.3f, -117.26f, 1.0f });
+            //m_pCamera->Get
             m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&m_pCamera->Get_FirstCamDir()));
 
         }
@@ -335,9 +345,6 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_VARG_RUN_EXECUTION:
         STATE_VARG_RUN_EXECUTION_Method();
         break;
-    case CPlayer::STATE_VARG_STUN_EXECUTE_START_R:
-        STATE_VARG_STUN_EXECUTE_START_R_Method();
-        break;
     case CPlayer::STATE_AXE:
         STATE_AXE_Method();
         break;
@@ -412,6 +419,21 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_SPRINT_ATTACK_L1:
         STATE_SPRINT_ATTACK_L1_Method();
+        break;
+    case CPlayer::STATE_STUN_EXECUTE_START_URD:
+        STATE_STUN_EXECUTE_START_URD_Method();
+        break;
+    case CPlayer::STATE_URD_EXECUTION:
+        STATE_URD_EXECUTION_Method();
+        break;
+    case CPlayer::STATE_LOBBY_IDLE_01:
+        STATE_LOBBY_IDLE_01_Method();
+        break;
+    case CPlayer::STATE_LOBBY_IDLE_01_END:
+        STATE_LOBBY_IDLE_01_END_Method();
+        break;
+    case CPlayer::STATE_STUN_EXECUTE_START_VARG:
+        STATE_STUN_EXECUTE_START_VARG_Method();
         break;
     default:
         break;
@@ -497,7 +519,7 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
-            if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
+        if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
             m_pGameInstance->Add_Actor_Scene(m_pParentActor);
 
         if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
@@ -510,7 +532,7 @@ void CBody_Player::Update(_float fTimeDelta)
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
             m_fZoomBlurDeltaTime = 0.f;
-            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);   
+            m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         }
     }
 
@@ -580,34 +602,43 @@ HRESULT CBody_Player::STATE_NORMAL_Render()
 {
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (_uint i = 0; i < iNumMeshes; i++)
+    if (!(*m_pParentPhsaeState & CPlayer::PHASE_NO_RENDER))
     {
-        /* Æò»ó½Ã ¸ðµå
-        (i == 11  ±êÅÐ ),
-        (i == 12(¿Þ) , i == 5(¿À), ¹ßÅé, ),
-        (i == 10(¿Þ) , i == 9(¿À),  ÆÈ¸ñ Àå½Ä)
-        (i == 4(¿Þ) ,   i == 8(¿À),  ¾î±ú Àå½Ä)*/
-        if (i == 11
-            || i == 12
-            || i == 5
-            || i == 10
-            || i == 9
-            || i == 4
-            || i == 8)
-            continue;
+        for (_uint i = 0; i < iNumMeshes; i++)
+        {
+            /* Æò»ó½Ã ¸ðµå
+            (i == 11  ±êÅÐ ),
+            (i == 12(¿Þ) , i == 13(¿À), ¹ßÅé, ),
+            (i == 10(¿Þ) , i == 9(¿À),  ÆÈ¸ñ Àå½Ä)
+            (i == 4(¿Þ) ,   i == 8(¿À),  ¾î±ú Àå½Ä)*/
+            if (i == 11
+                || i == 12
+                || i == 5
+                || i == 10
+                || i == 9
+                || i == 4  // ¿Þ¼Õ ÆÈ¸ñ ±êÅÐ  
+                || i == 8
+                || i == 13)   // ¿À¸¥¼Õ ¹ßÅé 
+                continue;
 
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+                return E_FAIL;
 
 
-        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+            m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // ¿©±â¼­ ÀÌµ¿°ªÀ» ¾ø¾ÖÁà¾ß°Ù³×
-            return E_FAIL;
+            if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // ¿©±â¼­ ÀÌµ¿°ªÀ» ¾ø¾ÖÁà¾ß°Ù³×
+                return E_FAIL;
 
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render(i);
+
+            m_pShaderCom->Begin(0);
+            m_pModelCom->Render(i);
+        }
     }
+
+    //m_fClawDeadTimer = 0.f;
+    //m_fClawFinishTime = 0.f;
+
     return S_OK;
 }
 
@@ -622,24 +653,66 @@ HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
         (i == 11  ±êÅÐ ),
         (i == 12(¿Þ) , i == 5(¿À), ¹ßÅé, ),
         (i == 10(¿Þ) , i == 9(¿À),  ÆÈ¸ñ Àå½Ä)
-        (i == 4(¿Þ) ,   i == 8(¿À),  ¾î±ú Àå½Ä)*/
+        (i == 4(¿Þ) ,   i == 8(¿À),  ¾î±ú Àå½Ä)*/    //13, 5,
+
         if (i == 11
             || i == 12
-            || i == 10
-            || i == 4)
+            || i == 8  // °ËÁ¤»ö ¸ÁÅä 
+            || i == 4
+            || i == 13)
             continue;
 
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
+        else if (i == 5  // ¿À¸¥ÂÊ ¹ßÅé »ý¼º 
+            || i == 9
+            || i == 10)
+        {
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+                return E_FAIL;
+
+            m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+            if (FAILED(m_pDissolveNoiseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 9))) //19
+                return E_FAIL;
+
+            if (FAILED(m_pDissolveNoiseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveNoiseTexture", 4)))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", m_pfClawParentTime, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", m_pfClawFinishTime, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_ReverseDissolveTime", m_pfClawAppearTimer, sizeof(_float))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Dead", m_pbClawDeadOn, sizeof(_bool))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Appear", m_pbClawAppear, sizeof(_bool))))
+                return E_FAIL;
+
+            if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // ¿©±â¼­ ÀÌµ¿°ªÀ» ¾ø¾ÖÁà¾ß°Ù³×             
+                return E_FAIL;
+
+            m_pShaderCom->Begin(8);
+            m_pModelCom->Render(i);
+        }
+
+        else
+        {
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+                return E_FAIL;
 
 
-        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+            m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-        if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // ¿©±â¼­ ÀÌµ¿°ªÀ» ¾ø¾ÖÁà¾ß°Ù³× 
-            return E_FAIL;
+            if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // ¿©±â¼­ ÀÌµ¿°ªÀ» ¾ø¾ÖÁà¾ß°Ù³× 
+                return E_FAIL;
 
-        m_pShaderCom->Begin(0);
-        m_pModelCom->Render(i);
+            m_pShaderCom->Begin(0);
+            m_pModelCom->Render(i);
+        }
     }
     return S_OK;
 }
@@ -733,6 +806,59 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
         *m_pParentNextStateCan = true;
     }
 }
+
+void CBody_Player::STATE_LOBBY_IDLE_01_Method()
+{
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(242, true);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_bFirstCameraPos)
+    {
+        _float4x4 CamWorldMatrix = {};
+
+        CamWorldMatrix._11 = 0.421f * -1.f;
+        CamWorldMatrix._12 = 0.0f;
+        CamWorldMatrix._13 = 0.906f * -1.f;
+        CamWorldMatrix._14 = 0.0f;
+
+        CamWorldMatrix._21 = -0.15f;
+        CamWorldMatrix._22 = 0.98f;
+        CamWorldMatrix._23 = 0.07f;
+        CamWorldMatrix._24 = 0.0f;
+
+        CamWorldMatrix._31 = 0.893f;
+        CamWorldMatrix._32 = 0.168f;
+        CamWorldMatrix._33 = -0.41f;
+        CamWorldMatrix._34 = 0.0f;
+
+        CamWorldMatrix._41 = 0.321f;
+        CamWorldMatrix._42 = 1.516f;
+        CamWorldMatrix._43 = -14.156f;
+        CamWorldMatrix._44 = 1.0f;
+
+        m_pCamera->Get_Transfrom()->Set_WorldMatrix(CamWorldMatrix);
+        m_bFirstCameraPos = false;
+    }
+
+    if (m_pGameInstance->isKeyEnter(DIK_W))
+        *m_pParentState = CPlayer::STATE_LOBBY_IDLE_01_END;
+}
+
+void CBody_Player::STATE_LOBBY_IDLE_01_END_Method()
+{
+
+    m_pModelCom->SetUp_Animation(243, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(243)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
+        m_bFirstCameraPos = true;
+    }
+}
+
 
 void CBody_Player::STATE_ATTACK_L1_Method()
 {
@@ -2240,7 +2366,43 @@ void CBody_Player::STATE_Varg_Execution_Method()
     m_pModelCom->SetUp_Animation(50, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterFinalEvent(true);
+
     if (m_pModelCom->Get_VecAnimation().at(50)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterFinalEvent(false);
+        *m_pParentNextStateCan = true;
+    }
+}
+
+void CBody_Player::STATE_STUN_EXECUTE_START_URD_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        m_pModelCom->Get_VecAnimation().at(232)->Set_StartOffSetTrackPosition(45.f);
+        *m_pParentState = CPlayer::STATE_URD_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_URD_EXECUTION_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(232, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(232)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
@@ -2248,6 +2410,7 @@ void CBody_Player::STATE_Varg_Execution_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
     }
+
 }
 
 void CBody_Player::STATE_MAGICIAN_Execution_Method()
@@ -2597,35 +2760,49 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
     }
 #pragma endregion 
 }
-void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
-{
-    m_pModelCom->SetUp_Animation(292, false);
-    m_iRenderState = STATE_NORMAL_RENDER;
+//void CBody_Player::STATE_VARG_STUN_EXECUTE_START_R_Method()
+//{
+//    m_pModelCom->SetUp_Animation(292, false);
+//    m_iRenderState = STATE_NORMAL_RENDER;
+//
+//    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 68.f)
+//    {
+//        m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(68.f);
+//        *m_pParentState = CPlayer::STATE_VARG_RUN_EXECUTION;
+//    }
+//}
 
-    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 68.f)
-    {
-        m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(68.f);
-        *m_pParentState = CPlayer::STATE_VARG_RUN_EXECUTION;
-    }
-}
 
-void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
+void CBody_Player::STATE_STUN_EXECUTE_START_VARG_Method()
 {
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
     m_pModelCom->Set_LerpFinished(true);
 
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+        m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(45.f);
+
+        *m_pParentState = CPlayer::STATE_VARG_RUN_EXECUTION;
+    }
+}
+
+
+
+void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
+{
     m_pModelCom->SetUp_Animation(298, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(298)->Get_Current_TrackPoisition() >= 45.f)
-    {
-        // ÀÌ¶§ ¹Ù±×°¡ ¹ÐÄ¡±â ´çÇÒ ¼ö ÀÖ°Ô Ãß°¡ÇÏ±â 
-        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
-    }
-
     if (m_pModelCom->Get_VecAnimation().at(298)->isAniMationFinish())
     {
-        //m_pModelCom->Get_VecAnimation().at(50)->Set_StartOffSetTrackPosition(15.f);
+        m_pModelCom->Get_VecAnimation().at(50)->Set_StartOffSetTrackPosition(15.f);
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(false);
         *m_pParentState = CPlayer::STATE_Varg_Execution;
     }
 }
@@ -2634,6 +2811,7 @@ void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
 {
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
     m_pModelCom->Set_LerpFinished(true);
+
 
     m_pModelCom->SetUp_Animation(210, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -2645,6 +2823,7 @@ void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
     }
 }
 
@@ -2965,12 +3144,14 @@ void CBody_Player::STATE_DEAD_Method()
 
 void CBody_Player::STATE_START_WALK_Method()
 {
-    m_pModelCom->SetUp_Animation(14, false); // 184
+    //m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(14, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(14)->isAniMationFinish())
     {
-
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
     }
 }
@@ -3422,6 +3603,11 @@ HRESULT CBody_Player::Ready_Components()
         TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
+    /* Com_Dissolve_Noise*/
+
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
+        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDissolveNoiseTextureCom))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -3471,4 +3657,5 @@ void CBody_Player::Free()
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pTextureCom);
+    Safe_Release(m_pDissolveNoiseTextureCom);
 }

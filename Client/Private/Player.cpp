@@ -84,8 +84,20 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));
 
+	/* 신 들어갈때 페이드인 주기 */
+	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 2.f);
+
 	/* 여기다가 해당 신 별로 다르게 설정만 하면 됨 */
-	m_iState = STATE_START_WALK;
+	if (pDesc->iCurLevel != LEVEL_HILL)
+	{
+		m_iState = STATE_START_WALK;
+	}
+	else
+	{
+		m_iState = STATE_LOBBY_IDLE_01;
+	}
+
+
 	m_iPhaseState |= PHASE_START;
 
 	/* 플레이어 파츠별 사용하는 애니메이션 분류 */
@@ -117,9 +129,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	if (m_iPreState == STATE::STATE_DEAD && m_iState != STATE::STATE_DEAD)
 	{
 		//m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));		
-		_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일		
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTestPosition); //NPC 옆 위치				
-		m_pNavigationCom->Set_CurrentNaviIndex(vTestPosition);
+		//_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일		
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_fRespawnArea)); //NPC 옆 위치				
+		m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_fRespawnArea));
 
 	}
 
@@ -151,8 +163,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 {
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
@@ -187,7 +198,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			switch (m_iMonster_Execution_Category)
 			{
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
-				m_iState = STATE_VARG_RUN_EXECUTION;
+				//m_iState = STATE_VARG_RUN_EXECUTION;
+				m_iState = STATE_STUN_EXECUTE_START_VARG;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL:
 				m_iState = STATE_LIGHT_EXECUTION_R;
@@ -203,6 +215,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN:
 				m_iState = STATE_PUNCH_MAN_Execution;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_URD:
+				m_iState = STATE_STUN_EXECUTE_START_URD;
 				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
@@ -318,7 +333,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			&& m_iState != STATE_CLAW_CHARGE_FULL_ATTACK)
 		{
 			if (m_iState == STATE_ATTACK_LONG_CLAW_01
-				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 45.f))
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 45.f)
+				&& (m_pModel->Get_CurrentAnmationTrackPosition() < 90.f)) // 새로 추가
 			{
 				m_pStateMgr->Get_VecState().at(6)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_ATTACK_LONG_CLAW_02;
@@ -870,6 +886,11 @@ void CPlayer::Can_Move()
 	{
 		m_bMove = true;
 	}
+
+	if (m_iState == STATE_STUN_EXECUTE_START_URD)
+	{
+		m_bMove = false;
+	}
 }
 
 
@@ -942,6 +963,19 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_iPreState = m_iState;
 
 	m_iPrePhaseState = m_iPhaseState;
+
+
+	/* 디더링 관련 설정 */
+	if (m_iPhaseState & PHASE_EXECUTION
+		|| m_iPhaseState & PHASE_BOSS_INTRO
+		|| m_iState == STATE_CATCHED
+		|| m_iState == STATE_MAGICIAN_CATCH)
+	{
+		m_pGameInstance->Set_Dithering(false);
+	}
+
+	else
+		m_pGameInstance->Set_Dithering(true);
 
 }
 
@@ -1465,6 +1499,8 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 		/* =========================== */
 	}
 
+
+
 	Player_Interaction(_pOther);
 
 }
@@ -1536,9 +1572,14 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 			if (m_iState != STATE_ARCHIVE_SIT_LIGHT_UP)
 			{
 				_float4 fChairLookDir = {};
+				_float4 fChairRightDir = {};
 				_float4 fChairPos = {};
 				const _float4x4* ChiarWolrdMatrix = dynamic_cast<CChairLamp*>(_pOther)->Get_Chair_GameObj()->Get_Transfrom()->Get_WorldMatrix_Ptr();
 				fChairLookDir = { ChiarWolrdMatrix->_31,ChiarWolrdMatrix->_32,ChiarWolrdMatrix->_33,0.f };
+
+				XMStoreFloat4(&fChairRightDir, XMVector3Normalize(XMLoadFloat4(&fChairRightDir)));
+
+
 				fChairPos = { ChiarWolrdMatrix->_41,ChiarWolrdMatrix->_42,ChiarWolrdMatrix->_43,1.f };
 
 				m_pStateMgr->Get_VecState().at(51)->Set_MonsterLookDir(fChairLookDir);
@@ -1547,6 +1588,15 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 				m_iState = STATE_ARCHIVE_SIT_LIGHT_UP;
 				m_iPhaseState |= PHASE_INTERACTION;
+
+
+
+				XMStoreFloat4(&fChairLookDir, XMVector3Normalize(XMLoadFloat4(&fChairLookDir)));
+
+				_vector vRespawn = XMLoadFloat4(&fChairPos) + XMLoadFloat4(&fChairLookDir) * 2.5f;
+
+				XMStoreFloat4(&m_fRespawnArea, vRespawn);	// 다시 살아나는 곳 설정하기.		
+
 			}
 		}
 	}
@@ -1681,12 +1731,7 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 		}
 	}
 
-	if (!strncmp("SM_Door", _pOther->Get_Name(), 7)) // 막히는 문과 상호작용
-	{
 
-
-
-	}
 
 }
 
@@ -1747,6 +1792,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_ATTACK_L5,
 		STATE_LIGHT_EXECUTION_R,
 		STATE_SPRINT_ATTACK_L1,
+		STATE_STUN_EXECUTE_START_VARG,
 	};
 #pragma endregion 
 #pragma region Player Camera State
