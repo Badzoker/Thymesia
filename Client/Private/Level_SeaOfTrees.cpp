@@ -245,16 +245,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
     pDesc.iCurLevel = m_iCurrentLevel;
 
-
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Terrain"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
-        return E_FAIL;
-
-    //for (size_t i = 0; i < 3; i++)
-    //{
-    //	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_ForkLift"), LEVEL_SEAOFTREES, pLayerTag, nullptr)))
-    //		return E_FAIL;
-    //}
-
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Prototype_GameObject_Sky"), LEVEL_SEAOFTREES, pLayerTag, &pDesc)))
         return E_FAIL;
 
