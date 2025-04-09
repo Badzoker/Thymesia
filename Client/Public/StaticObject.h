@@ -42,7 +42,7 @@ protected:
 	CGameObject* m_pCamera = { nullptr };	
 	_bool*		 m_pDitheringOnOff = { nullptr };	
 
-
+	_bool        m_bTestRender = true;
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
