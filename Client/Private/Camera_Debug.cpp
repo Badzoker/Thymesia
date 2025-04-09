@@ -33,6 +33,11 @@ HRESULT CCamera_Debug::Initialize(void* pArg)
 	/* 플레이어가 먼저 레이어에 들어가니깐*/
 	/* 플레이어 위치값 가져오면 될듯*/
 
+	_float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vTestPosition));
+
+
+
 
 	return S_OK;
 }
@@ -50,22 +55,22 @@ void CCamera_Debug::Priority_Update(_float fTimeDelta)
 	{
 		if (GetKeyState('W') & 0x8000)
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Straight(fTimeDelta);
 		}
 
 		if (GetKeyState('S') & 0x8000)
 		{
-			m_pTransformCom->Go_Backward(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Backward(fTimeDelta);
 		}
 
 		if (GetKeyState('A') & 0x8000)
 		{
-			m_pTransformCom->Go_Left(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Left(fTimeDelta);
 		}
 
 		if (GetKeyState('D') & 0x8000)
 		{
-			m_pTransformCom->Go_Right(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Right(fTimeDelta);
 		}
 
 		_long	MouseMove = {};
@@ -82,7 +87,6 @@ void CCamera_Debug::Priority_Update(_float fTimeDelta)
 
 		__super::Priority_Update(fTimeDelta);
 	}
-
 
 
 }

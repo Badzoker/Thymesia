@@ -50,8 +50,10 @@ HRESULT CBarrierScreen::Initialize(void* pArg)
 
 void CBarrierScreen::Priority_Update(_float fTimeDelta)
 {
-    if (m_pGameInstance->isKeyEnter(DIK_N))
+    if (m_pGameInstance->Get_Boss_Active())
+    {
         m_bActivateBarrier = true;
+    }
 }
 
 void CBarrierScreen::Update(_float fTimeDelta)
@@ -78,7 +80,6 @@ void CBarrierScreen::Late_Update(_float fTimeDelta)
 
 HRESULT CBarrierScreen::Render()
 {
-
     return S_OK;
 }
 

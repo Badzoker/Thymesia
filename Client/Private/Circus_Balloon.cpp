@@ -54,18 +54,20 @@ HRESULT CCircus_Balloon::Initialize(void* pArg)
 
 
     m_pTransformCom->Scaling(_float3(0.0025f, 0.0025f, 0.0025f));
-    //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->_fPosition));
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f,0.5f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
-    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
+    _uint settingColliderGroup = /*GROUP_TYPE::PLAYER | */GROUP_TYPE::PLAYER_WEAPON /*| GROUP_TYPE::MONSTER*/;
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    m_fInitialJumpPower = 1.2f;
 
+    m_fExplosionPowerOffsetValue = 1.7f;
 
     return S_OK;
 }
@@ -85,11 +87,57 @@ void CCircus_Balloon::Update(_float fTimeDelta)
 {
     if (m_bDead)
         return;
+
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+    
+    XMStoreFloat4(&m_vModelPosition, vPosition);
+    _float fPosY = XMVectorGetY(vPosition);
 
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 300.f,0.f,1.f });
+    m_fModelHeightCenterY = fPosY + 0.36f;
+
+
+    //if (m_fMonsterCurHP <= 0.0f)
+    //    m_bHitted = true;
+    ////
+
+    if (!m_bUpdating)
+    {
+        if (m_bHitted)
+        {
+            m_fWigglingTime = 0.0f;
+            m_fLifeTime += fTimeDelta;
+            m_fExplosionPower += fTimeDelta * 3.0f;
+            m_fFallingTime += fTimeDelta;
+            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+            if (m_fLifeTime >= 2.0f)
+            {
+                m_bUpdating = true;
+            }
+        }
+        else
+        {
+            if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+                m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 300.f,0.f,1.f });
+
+            m_fWigglingTime += fTimeDelta;
+
+            if (m_fWigglingTime >= 3.1f)
+            {
+                m_fWigglingTime = 0.0f;
+            }
+        }
+    }
+    else
+    {
+        m_fDissolveAmount += fTimeDelta * 0.6f;
+        
+        if (m_fDissolveAmount >= 1.0f)
+        {
+              m_bDead = true;
+        }
+    }
 }
 
 void CCircus_Balloon::Late_Update(_float fTimeDelta)
@@ -115,7 +163,11 @@ HRESULT CCircus_Balloon::Render()
 
         m_pSecondModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-        m_pShaderCom->Begin(0);
+        if (m_bHitted == 0)
+            m_pShaderCom->Begin(2);
+        else if (m_bHitted == 1)
+            m_pShaderCom->Begin(0);
+
         m_pSecondModelCom->Render(i);
     }
 
@@ -129,7 +181,7 @@ HRESULT CCircus_Balloon::Render()
             return E_FAIL;
         m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(3);
         m_pModelCom->Render(i);
     }
     return S_OK;
@@ -246,7 +298,11 @@ HRESULT CCircus_Balloon::Ready_Components(void* pArg)
     m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
 
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
+    //if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
+    //    TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    //    return E_FAIL;
+
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxDestructMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
@@ -262,6 +318,11 @@ HRESULT CCircus_Balloon::Ready_Components(void* pArg)
     /* Com_FogShader */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Fog"),
         TEXT("Com_FogShader"), reinterpret_cast<CComponent**>(&m_pFogShaderCom))))
+        return E_FAIL;
+
+    /* Com_Texture */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_TestFenceNoiseTexture"),
+        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
     return S_OK;
@@ -297,20 +358,63 @@ HRESULT CCircus_Balloon::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_ModelPosition", &m_vModelPosition, sizeof(_float4))))
+        return E_FAIL;
 
+
+    // 디졸브 맥일꺼임 ㅋㅋ
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture", 0)))
+        return E_FAIL;
+
+    // 디졸브 변화량 값임 ㅋㅋ
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveAmount, sizeof(_float))))
+        return E_FAIL;
+
+    if (m_bHitted)
+    {
+        // 얼마나 세게
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fExplosionPower", &m_fExplosionPower, sizeof(_float))))
+            return E_FAIL;
+
+        // 얼마나 오래 떨어질꺼?
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fFallingTime", &m_fFallingTime, sizeof(_float))))
+            return E_FAIL;
+
+
+        // 모델의 y 중심점 (등분 할 때 쓸꺼임) 
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fModelHeightCenterY", &m_fModelHeightCenterY, sizeof(_float))))
+            return E_FAIL;
+
+
+        // 포자 얼마나 높이 올라갈건지 오프셋 바인딩하자.
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_InitialJumpPower", &m_fInitialJumpPower, sizeof(_float))))
+            return E_FAIL;
+
+
+        // 포자 얼마나 날라갈지 오프셋 바인딩하자. 
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_ExplosionPowerOffset", &m_fExplosionPowerOffsetValue, sizeof(_float))))
+            return E_FAIL;
+    }
+    else
+    {
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_WigglingTime", &m_fWigglingTime, sizeof(_float))))
+            return E_FAIL;
+    }
     return S_OK;
 }
 
 void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
-    {
-        m_bHP_Bar_Active = true;
-        m_fHP_Bar_Active_Timer = 0.f;
-        m_fMonsterCurHP -= *m_Player_Attack;
-        m_fShieldHP -= (*m_Player_Attack);
-
-    }
+    //if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    //{
+    //    m_bHP_Bar_Active = true;
+    //    m_fHP_Bar_Active_Timer = 0.f;
+    //    m_fMonsterCurHP -= *m_Player_Attack;
+    //    m_fShieldHP -= (*m_Player_Attack);
+    //
+    //   
+    //}
+    m_bHitted = true;
 }
 
 void CCircus_Balloon::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -358,4 +462,6 @@ void CCircus_Balloon::Free()
     Safe_Release(m_pSecondModelCom);
 
     Safe_Release(m_pFogShaderCom);
+
+    Safe_Release(m_pTextureCom);
 }

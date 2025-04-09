@@ -341,7 +341,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 HRESULT CLevel_Tutorial::Ready_Layer_Monster()
 {
-
     Load_MonsterIndex(3);
 
     CGameObject::GAMEOBJECT_DESC pDesc = {};
@@ -405,6 +404,20 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
             break;
         }
     }
+
+    _float4 vVargBossEntrancePosition = { 111.56f, 18.61f, -62.5f, 1.f };
+    //_uint iTypenumber = {};
+
+    pDesc.iCurLevel = m_iCurrentLevel;
+    pDesc._fPosition = vVargBossEntrancePosition;
+
+    //for (_uint i = 0; i < 3; ++i)
+    {
+      //  pDesc._fPosition.z -= 1.0f;
+        if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_iCurrentLevel, TEXT("Layer_Monster_Building"), &pDesc)))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 

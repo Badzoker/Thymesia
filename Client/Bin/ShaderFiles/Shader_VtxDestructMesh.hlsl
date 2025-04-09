@@ -20,6 +20,12 @@ float g_fFallingTime;
 float g_fModelHeightCenterY;
 
 
+float g_WigglingTime;
+float g_InitialJumpPower = 0.3f;
+float g_ExplosionPowerOffset = 0.8f;
+
+
+
 // ============================================================= 버텍스 쉐이더 부문 =============================================================
 struct VS_IN
 {
@@ -36,11 +42,32 @@ struct VS_OUT_DESTRUCT
     float2 vTexcoord : TEXCOORD0;
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float fDissolve : TEXCOORD3;
 	
-	   
-    float4 vTangent : TEXCOORD3;
-    float4 vBinormal : TEXCOORD4;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
+
+VS_OUT_DESTRUCT VS_MAIN(VS_IN In)
+{
+    VS_OUT_DESTRUCT Out = (VS_OUT_DESTRUCT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), matWV));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
+	
+    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f); // 외적 순서 중요하다 왜냐하면 순서바뀌면 binormal이 - 축으로 설정되니깐 
+	
+    return Out;
+}
 
 
 VS_OUT_DESTRUCT VS_MAIN_DESTRUCT(VS_IN In)
@@ -74,10 +101,10 @@ struct GS_IN_DESTRUCT
     float2 vTexcoord : TEXCOORD0;
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float fDissolve : TEXCOORD3;
 	
-	   
-    float4 vTangent : TEXCOORD3;
-    float4 vBinormal : TEXCOORD4;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 struct GS_OUT_DESTRUCT
@@ -116,8 +143,8 @@ void GS_MAIN_DESTRUCT(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
     float fVerticesWorldPosY = input[0].vWorldPos.y;
 
     // 모델 정점의 월드 좌표에서, 모델의 중심 좌표 뺀 값.( 정점이 모델 중심에서 얼마나 떨어져잇는가 )
-    float fVerticesPosX = fVerticesWorldPosX - g_ModelPosition.x;       // x는 모델 피킹 배치된 그 x중심 
-    float fVerticesPosY = fVerticesWorldPosY - g_fModelHeightCenterY;   // y는 블렌더에서 + 오프셋한 값 해준걸로
+    float fVerticesPosX = fVerticesWorldPosX - g_ModelPosition.x; // x는 모델 피킹 배치된 그 x중심 
+    float fVerticesPosY = fVerticesWorldPosY - g_fModelHeightCenterY; // y는 블렌더에서 + 오프셋한 값 해준걸로
 
     float fHorizonQuaterValue = 0.25f;
 
@@ -134,20 +161,20 @@ void GS_MAIN_DESTRUCT(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
         iHorizontalPart = 3;
     
     int iVerticalPart = (fVerticesPosY >= 0.0f) ? 1 : 0;
-    int iPartIndex = iHorizontalPart * iVerticalPart * 4; // ( 0 ~ 3 ) * 0 / ( 0 ~ 3 ) * 1 에다가 * 4  => 0 ~ 8
+    int iPartIndex = iHorizontalPart + (iVerticalPart * 4); // ( 0 ~ 3 ) * 0 / ( 0 ~ 3 ) * 1 에다가 * 4  => 0 ~ 8
     
     float3 vMoveDir = float3(0, 1, 0);
     
     switch (iPartIndex)
     {
         case 0:
-            vMoveDir = float3(-1, -1, -1);// 대각 1
+            vMoveDir = float3(-1, -1, -1); // 대각 1
             break;
         case 1:
             vMoveDir = float3(-1, -1, 0); // 옆 1
             break;
         case 2:
-            vMoveDir = float3(1, -1, 0);  // 옆 2
+            vMoveDir = float3(1, -1, 0); // 옆 2
             break;
         case 3:
             vMoveDir = float3(1, -1, -1); // 대각 2
@@ -169,14 +196,16 @@ void GS_MAIN_DESTRUCT(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
 
     //float3 move = moveDir * (g_fExplosionPower * 0.8f);
     // 모델의 정점들의 이동량
-    float3 vMoveValue = vMoveDir * (g_fExplosionPower * 0.8f);
+    //float3 vMoveValue = vMoveDir * (g_fExplosionPower * 0.8f) * 1.5f;
+    float3 vMoveValue = vMoveDir * (g_fExplosionPower * 0.8f) * g_ExplosionPowerOffset;
 
-    //float t = g_fTime;
     float fFallingTime = g_fFallingTime;
     float fGravityPower = -9.8f;
     
     // 초기 튀어오르는(점프느낌) 속도 
-    float fInitialPopVelocity = 0.5f;
+    //float fInitialPopVelocity = 0.5f;
+    
+    float fInitialPopVelocity = g_InitialJumpPower;
     //  V0 * t  + (0.5) * g * t^2
     float fFallingValue = (fInitialPopVelocity * fFallingTime) + (0.4f) * (fGravityPower * fFallingTime * fFallingTime);
     vMoveValue.y += fFallingValue;
@@ -257,6 +286,7 @@ void GS_MAIN_DESTRUCT(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
         Out.vNormal = input[i].vNormal;
         Out.vTangent = input[i].vTangent;
         Out.vBinormal = input[i].vBinormal;
+        Out.vProjPos = input[i].vProjPos;
 
         // [0] 으로 해야 모델 이루는 삼각형의 세 점 중 하나라도 일단 먼저 땅에 닿으면
         // 땅이라는 것도 모델의 피킹 배치된 y기준 높이 말하는거임 
@@ -274,11 +304,12 @@ void GS_MAIN_DESTRUCT(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
         Out.fDissolve = bIsDissolve ? 1.0f : 0.0f;
 
         float3 vVerticesPosOffset = input[i].vWorldPos.xyz - vPartCenter;
-        float3 vRotationOffset= mul(vVerticesPosOffset, matRotation);
+        float3 vRotationOffset = mul(vVerticesPosOffset, matRotation);
         float3 vResultVerticesPos = vPartCenter + vRotationOffset + vResultMoveValue;
 
         Out.vWorldPos = float4(vResultVerticesPos, 1.0f);
         Out.vPosition = mul(mul(Out.vWorldPos, g_ViewMatrix), g_ProjMatrix);
+        
 
         triStream.Append(Out);
     }
@@ -329,6 +360,7 @@ void GS_MAIN_PARTICLE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
         Out.vNormal = input[i].vNormal;
         Out.vTangent = input[i].vTangent;
         Out.vBinormal = input[i].vBinormal;
+        Out.vProjPos = input[i].vProjPos;
 
         float3 vPos = input[i].vWorldPos.xyz - vVerticesCenterPos;
         float3 vRotatedPos = mul(vPos, matRotation);
@@ -357,6 +389,42 @@ void GS_MAIN_PARTICLE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
     triStream.RestartStrip();
 }
 
+
+[maxvertexcount(3)]
+void GS_MAIN_SPORE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_OUT_DESTRUCT> triStream)
+{
+    float fWiggleTime = g_WigglingTime;
+    
+    for (int i = 0; i < 3; ++i)
+    {
+        GS_OUT_DESTRUCT Out = (GS_OUT_DESTRUCT) 0;
+        
+        Out.vTexcoord = input[i].vTexcoord;
+        
+        Out.vNormal = input[i].vNormal;
+        Out.vTangent = input[i].vTangent;
+        Out.vBinormal = input[i].vBinormal;
+        
+        float3 vWorldPos = input[i].vWorldPos.xyz;
+        float3 vLocalOffset = vWorldPos - g_ModelPosition.xyz;
+        
+        // 대각선(정점의 x 와 z를 더해서)
+        // fFarOffsetValue 얘를 건들수록 파동의 진폭이 좁아져서 존나 자글자글해짐 
+        float fFarOffsetValue = (vLocalOffset.x + vLocalOffset.z) * 2.0f;
+        float fWiggleValue = sin(fWiggleTime * 10.0f + fFarOffsetValue) * 0.02f;
+        
+        vLocalOffset += input[i].vNormal.xyz * fWiggleValue;
+        
+        float3 vFinalPos = g_ModelPosition.xyz + vLocalOffset;
+        
+        Out.vWorldPos = float4(vFinalPos, 1);
+        Out.vPosition = mul(Out.vWorldPos, mul(g_ViewMatrix, g_ProjMatrix));
+        Out.vProjPos = input[i].vProjPos;
+        triStream.Append(Out);
+    }
+    triStream.RestartStrip();
+}
+
 // ============================================================= 픽셀 쉐이더 부문 =============================================================
 
 struct PS_IN_DESTRUCT
@@ -379,6 +447,37 @@ struct PS_OUT_DESTRUCT
     float4 vDepth : SV_TARGET2;
     float fSpecular : SV_TARGET3;
 };
+
+PS_OUT_DESTRUCT PS_MAIN(PS_IN_DESTRUCT In)
+{
+    PS_OUT_DESTRUCT Out = (PS_OUT_DESTRUCT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float vDissolveAlpha = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
+    
+    if (vDissolveAlpha < g_DissolveAmount)
+    {
+        clip(-1);
+    }
+    
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.1f;
+    
+    return Out;
+}
 
 
 PS_OUT_DESTRUCT PS_MAIN_DESTRUCT(PS_IN_DESTRUCT In)
@@ -440,4 +539,25 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
     }
 
+    pass SporePass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_DESTRUCT();
+        GeometryShader = compile gs_5_0 GS_MAIN_SPORE();
+        PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
+    }
+
+    pass PartSporePass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
 }

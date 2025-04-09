@@ -344,8 +344,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Camera(const _tchar* pLayerTag)
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 {
-
-
     CGameObject::GAMEOBJECT_DESC pDesc = {};
     Load_MonsterIndex(6);
     pDesc.iCurLevel = m_iCurrentLevel;
@@ -358,14 +356,14 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
     pDesc.iCurLevel = m_iCurrentLevel;
     pDesc.fPosition = m_MonsterSpawnInfos[0].vMonsterPos;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), LEVEL_TUTORIAL, TEXT("Layer_Monster_Building"), &pDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_iCurrentLevel, TEXT("Layer_Monster_Building"), &pDesc)))
         return E_FAIL;
 
     _vector vMonsterPos = XMLoadFloat4(&m_MonsterSpawnInfos[0].vMonsterPos);
 
     pDesc.fPosition = _float4(XMVectorGetX(vMonsterPos) + 20.f, XMVectorGetY(vMonsterPos), XMVectorGetZ(vMonsterPos), 1.f);
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), LEVEL_TUTORIAL, TEXT("Layer_Monster_Building"), &pDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_iCurrentLevel, TEXT("Layer_Monster_Building"), &pDesc)))
         return E_FAIL;
 
     Load_MonsterIndex(7);
