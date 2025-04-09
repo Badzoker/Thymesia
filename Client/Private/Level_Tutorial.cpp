@@ -560,6 +560,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_JAVELIN_DISTORTION)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerChargeClaw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CHARGECLAW)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -806,7 +810,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Claw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, 1)))
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, 4)))
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_CaneSword_Hand.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
@@ -843,6 +847,30 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Skill_Javelin.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw_Hit.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw_Hit_Steal.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw_Hit_Steal_Complete.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL_COMPLETE, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw_Loop.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_ChargeClaw_Ready.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_READY, 1)))
         return E_FAIL;
 
     //Sword Effect
@@ -1731,13 +1759,16 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Burst");
             break;
         case 10:
-            //pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World_Continue");
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World_Continue");
             break;
         case 11:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Blood");
             break;
         case 12:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Round");
+            break;
+        case 13:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Falling_World");
             break;
         }
 
@@ -1964,6 +1995,24 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_JAVELIN:
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Skill_Javelin");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Hit");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Hit_Steal");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL_COMPLETE:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Hit_StealComplete");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Loop");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_READY:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Ready");
             break;
         }
 #pragma endregion

@@ -197,15 +197,15 @@ void CClawWeapon::Update(_float fTimeDelta)
                     {
 
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
-                        //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                        //m_fTimer_Effect1 = 0.5f;
+                        iter.isPlay = true;      
+                        
                     }
                     else if (!strcmp(iter.szName, "Claw2_Start"))
                     {
 
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
-                        //iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                        //m_fTimer_Effect2 = 0.5f;
+                        iter.isPlay = true;    
+                        
                     }
                     else if (!strcmp(iter.szName, "Claw1_Effect"))
                     {
@@ -218,6 +218,52 @@ void CClawWeapon::Update(_float fTimeDelta)
                     {
 
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_CLAW_2, &m_CombinedWorldMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_CLAW, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start_Fail"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CHARGECLAW, m_pParentWorldMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Particle_Start_Fail"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW, m_pParentWorldMatrix, m_pSocketMatrix);
+                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start_Success"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT, m_pParentWorldMatrix, m_pSocketMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Particle_Start_Success"))
+                    {
+                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP);
+                        //m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Particle2_Start_Success"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_HIT_STEAL_COMPLETE, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start_Ready"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_READY, m_pParentWorldMatrix, m_pSocketMatrix);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start_Loop"))
+                    {
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP, m_pParentWorldMatrix, m_pSocketMatrix);
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로
                     }
                 }
