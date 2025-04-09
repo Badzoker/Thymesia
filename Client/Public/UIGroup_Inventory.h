@@ -70,11 +70,15 @@ private:
 private:
 	_bool m_bCommonOpen = { true }; // 일반 탭 오픈
 	_bool m_bSkillOpen = { false }; // 기술의 파편 탭 오픈
+	_bool m_bHerbOpen = { false }; // 재료 탭 오픈
+	_bool m_bStoryOpen = { false }; // 이야기 탭 오픈
 
 private:
 	map<ITEM_TYPE, pair<_uint, vector<CItem*>>> m_ItemMgrContainerRef; // 아이템 매니저에 적재되어 있는 아이템 정보
 	vector<UI_Item> m_InvenItemCommon = {}; // 일반 아이템 저장
 	vector<UI_Item> m_InvenItemSkill = {}; // 스킬 아이템 저장
+	vector<UI_Item> m_InvenItemStory = {}; // 이야기 아이템 저장
+	vector<UI_Item> m_InvenItemHerb = {}; // 허브 아이템 저장
 
 private:
 	_uint m_iMouseOnLastSlot = {}; // 마지막으로 마우스가 가리킨 슬롯의 그룹 아이디

@@ -90,11 +90,27 @@ void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 void CUIGroup_Inventory::Update(_float fTimeDelta)
 {
 
-	Change_UI_Item_Tab(); // 아이템 탭안의 아이템 종류 탭을 변경 시 마다 슬롯 정보 변경
-
-
 	if (m_bRenderOpen)
 	{
+		for (auto& EscapeButton : m_pMyBaseScene->Find_UI_Button())
+		{
+			if (1 == EscapeButton->Get_UI_GroupID())
+			{
+				if (EscapeButton->Get_Mouse_Select_OnOff())
+				{
+					EscapeButton->Set_Mouse_Select_OnOff(false);
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerInventory"), false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyBaseScene, false);
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+
+
+				}
+				break;
+			}
+		}
+		Change_UI_Item_Tab(); // 아이템 탭안의 아이템 종류 탭을 변경 시 마다 슬롯 정보 변경
 		if (!m_bItemUsePopOpen)// 아이템 사용/ 버리기 팝업이 켜져 있지 않다면
 		{
 			Update_Get_ItemMgr(); //아이템 매니저가 갖고 있는 보유 아이템 목록을 가져옴
@@ -106,6 +122,10 @@ void CUIGroup_Inventory::Update(_float fTimeDelta)
 					Slot_Button_MouseOn_Check(m_InvenItemCommon); // 슬롯을 마우스로 가리키는지
 				if (m_bSkillOpen) // 스킬 탭 켜져 있을 때
 					Slot_Button_MouseOn_Check(m_InvenItemSkill);
+				if (m_bStoryOpen) // 스킬 탭 켜져 있을 때
+					Slot_Button_MouseOn_Check(m_InvenItemSkill);
+				if (m_bHerbOpen) // 스킬 탭 켜져 있을 때
+					Slot_Button_MouseOn_Check(m_InvenItemSkill);
 			}
 			// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
 
@@ -114,6 +134,10 @@ void CUIGroup_Inventory::Update(_float fTimeDelta)
 				Slot_Button_Select_Check(m_InvenItemCommon); // 슬롯을 마우스로 누르는지
 			if (m_bSkillOpen)
 				Slot_Button_Select_Check(m_InvenItemSkill);
+			if (m_bStoryOpen)
+				Slot_Button_Select_Check(m_InvenItemStory);
+			if (m_bHerbOpen)
+				Slot_Button_Select_Check(m_InvenItemHerb);
 			
 			if (m_bItemTypePopOpen)
 				ItemType_PopUP_Button(); // 아이템 타입 팝업이 켜져 있다면 버튼 누르기 활성화
@@ -276,6 +300,13 @@ void CUIGroup_Inventory::Change_UI_Item_Tab()
 	if (m_bSkillOpen)
 		Itme_View_Inventory(m_InvenItemSkill);// 스킬 아이템을 슬롯에 띄우기
 
+	if (m_bStoryOpen)
+		Itme_View_Inventory(m_InvenItemStory);// 이야기 아이템을 슬롯에 띄우기
+
+	if (m_bHerbOpen)
+		Itme_View_Inventory(m_InvenItemHerb);// 재료 아이템을 슬롯에 띄우기
+
+
 	for (auto& Button : m_pItemScene->Find_UI_Button())
 	{
 		CUI_UnderLine* pButton = dynamic_cast<CUI_UnderLine*>(Button);
@@ -285,21 +316,77 @@ void CUIGroup_Inventory::Change_UI_Item_Tab()
 			if (pButton->Get_Mouse_Select_OnOff()) // 일반 버튼을 누를 시
 			{
 				m_bCommonOpen = true;
+				m_bStoryOpen = false;
 				m_bSkillOpen = false;
+				m_bHerbOpen = false;
+				pButton->Set_Open_Image(true);
 			}
 
 		}
-		if (20 == Button->Get_UI_GroupID()) {} // 이야기
+		if (20 == Button->Get_UI_GroupID())// 이야기
+		{
+			if (pButton->Get_Mouse_Select_OnOff()) // 이야기 버튼을 누를 시
+			{
+				m_bCommonOpen = false;
+				m_bStoryOpen = true;
+				m_bSkillOpen = false;
+				m_bHerbOpen = false;
+				pButton->Set_Open_Image(true);
+			}
+
+		}
 		if (30 == Button->Get_UI_GroupID()) // 기술의 파편
 		{
 			if (pButton->Get_Mouse_Select_OnOff()) // 기술의 파편 버튼을 누를 시
 			{
 				m_bCommonOpen = false;
+				m_bStoryOpen = false;
 				m_bSkillOpen = true;
+				m_bHerbOpen = false;
+				pButton->Set_Open_Image(true);
 
 			}
 		}
-		if (40 == Button->Get_UI_GroupID()) {} // 재료
+		if (40 == Button->Get_UI_GroupID()) // 재료
+		{
+			if (pButton->Get_Mouse_Select_OnOff()) // 이야기 버튼을 누를 시
+			{
+				m_bCommonOpen = false;
+				m_bStoryOpen = false;
+				m_bSkillOpen = false;
+				m_bHerbOpen = true;
+				pButton->Set_Open_Image(true);
+			}
+
+		}
+		if (!m_bCommonOpen)
+		{
+			if (10 == Button->Get_UI_GroupID()) // 일반 
+			{
+				pButton->Set_Open_Image(false);
+			}
+		}
+		if (!m_bStoryOpen)
+		{
+			if (20 == Button->Get_UI_GroupID()) // 이야기 
+			{
+				pButton->Set_Open_Image(false);
+			}
+		}
+		if (!m_bSkillOpen)
+		{
+			if (30 == Button->Get_UI_GroupID()) // 기술의 파편
+			{
+				pButton->Set_Open_Image(false);
+			}
+		}
+		if (!m_bHerbOpen)
+		{
+			if (40 == Button->Get_UI_GroupID()) // 재료 
+			{
+				pButton->Set_Open_Image(false);
+			}
+		}
 
 	}
 }
@@ -981,6 +1068,13 @@ void CUIGroup_Inventory::ItemUse_Update()
 
 	if (m_bSkillOpen)
 		Itme_View_Inventory(m_InvenItemSkill);// 스킬 아이템을 슬롯에 띄우기
+
+	if (m_bStoryOpen)
+		Itme_View_Inventory(m_InvenItemStory);// 이야기 아이템을 슬롯에 띄우기
+
+	if (m_bHerbOpen)
+		Itme_View_Inventory(m_InvenItemHerb);// 재료 아이템을 슬롯에 띄우기
+
 
 }
 

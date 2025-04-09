@@ -61,8 +61,9 @@ void CUIGroup_Skill::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE) || m_bEscape)
 		{
+			m_bEscape = false;
 			m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pBaseScene, false);
 			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, false);
@@ -77,11 +78,24 @@ void CUIGroup_Skill::Update(_float fTimeDelta)
 		Slot_Update_State();
 		Slot_Contion_Check();
 
+		for (auto& EscapeButton : m_pBaseScene->Find_UI_Button())
+		{
+			if (30 == EscapeButton->Get_UI_GroupID())
+			{
+				if (EscapeButton->Get_Mouse_Select_OnOff())
+				{
+					m_bEscape = true;
+					EscapeButton->Set_Mouse_Select_OnOff(false);
+
+				}
+				break;
+			}
+
+		}
+		
 
 
-
-
-
+			
 
 
 		//if (nullptr != m_pCurrentSkill)
@@ -134,37 +148,38 @@ void CUIGroup_Skill::Slot_Setting()
 		CUI_Skill_Slot* pSlot = dynamic_cast<CUI_Skill_Slot*>(Button);
 
 		if (0 < Button->Get_UI_GroupID() &&
-			50 > Button->Get_UI_GroupID())
+			20 > Button->Get_UI_GroupID())
 		{
 			pSlot->Set_Slot_State(SKILL_CLOSE_OFF);
 			m_mapSlotInfo.emplace(Button->Get_UI_GroupID(), make_pair(false, pSlot)); // 
-		}
-		switch (Button->Get_UI_GroupID()) // ¾î¶² ½ºÅ³·Î ÇØ±ÝµÇ´ÂÁö ¼³Á¤
-		{
-		case 1:
-			pSlot->Set_IconChange(1); 
-			pSlot->Set_Content(TEXT("µµ³¢"));
-			pSlot->Set_MySkill(PLAYER_SKILL_AXE);
-			break;
-		case 2:
-			pSlot->Set_IconChange(11);
-			pSlot->Set_Content(TEXT("ÇÛ¹öµå"));
-			pSlot->Set_MySkill(PLAYER_SKILL_HALBERD);
-			break;
-		case 3:
-			pSlot->Set_IconChange(17);
-			pSlot->Set_Content(TEXT("³´"));
-			pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
-			break;
-		case 4:
-			pSlot->Set_IconChange(14);
-			pSlot->Set_Content(TEXT("¾îµÒ"));
-			pSlot->Set_MySkill(PLAYER_SKILL_CANESWORD);
-			break;
-		default:
-			pSlot->Set_Content(TEXT(""));
-			break;
-			
+			switch (Button->Get_UI_GroupID()) // ¾î¶² ½ºÅ³·Î ÇØ±ÝµÇ´ÂÁö ¼³Á¤
+			{
+			case 1:
+				pSlot->Set_IconChange(1);
+				pSlot->Set_Content(TEXT("µµ³¢"));
+				pSlot->Set_MySkill(PLAYER_SKILL_AXE);
+				break;
+			case 2:
+				pSlot->Set_IconChange(11);
+				pSlot->Set_Content(TEXT("ÇÛ¹öµå"));
+				pSlot->Set_MySkill(PLAYER_SKILL_HALBERD);
+				break;
+			case 3:
+				pSlot->Set_IconChange(17);
+				pSlot->Set_Content(TEXT("³´"));
+				pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
+				break;
+			case 4:
+				pSlot->Set_IconChange(14);
+				pSlot->Set_Content(TEXT("¾îµÒ"));
+				pSlot->Set_MySkill(PLAYER_SKILL_CANESWORD);
+				break;
+			default:
+				pSlot->Set_Content(TEXT(""));
+				break;
+			}
+
+
 		}
 	
 	}

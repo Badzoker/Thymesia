@@ -58,7 +58,7 @@ void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 	{
 		_tchar ChangeText[MAX_PATH] = {};
 		const _tchar* CountText = L"미사용 특성 점수 %d";
-		m_iTalentPoint = dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Get_TalentPoint_Unspent();
+		m_iTalentPoint = dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Get_TalentPoint_CurrentUnspent();
 		wsprintf(ChangeText, CountText, m_iTalentPoint);
 		m_pText_TalentPoint->Set_Content(ChangeText);
 	}
@@ -790,7 +790,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -806,7 +806,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -829,7 +829,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -847,7 +847,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -863,7 +863,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
@@ -897,7 +897,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -913,7 +913,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -936,7 +936,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -954,7 +954,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -970,7 +970,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
@@ -1004,7 +1004,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -1020,7 +1020,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -1043,7 +1043,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -1061,7 +1061,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -1077,7 +1077,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
@@ -1114,7 +1114,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -1130,7 +1130,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -1153,7 +1153,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -1171,7 +1171,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -1187,7 +1187,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
@@ -1224,7 +1224,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -1240,7 +1240,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -1263,7 +1263,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -1281,7 +1281,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -1297,7 +1297,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
@@ -1333,7 +1333,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 					pSlot->Set_Slot_State(SLOT_CLOSE_ON);
 					MySlot.second.first = false;
 					m_iTalentPoint++;
-					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+					dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 				}
 				else
 				{
@@ -1349,7 +1349,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 								pSlot->Set_Slot_State(SLOT_OPEN_ON);
 								MySlot.second.first = true;
 								m_iTalentPoint--;
-								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+								dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 							}
 							m_bNotFindConditionID = false;
 							break;
@@ -1372,7 +1372,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								// 선제조건 불만족
 								m_bNotFindConditionID = false;
@@ -1390,7 +1390,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 									pSlot->Set_Slot_State(SLOT_OPEN_ON);
 									MySlot.second.first = true;
 									m_iTalentPoint--;
-									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+									dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 								}
 								m_bNotFindConditionID = false;
 								break;
@@ -1406,7 +1406,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 						pSlot->Set_Slot_State(SLOT_OPEN_ON);
 						MySlot.second.first = true;
 						m_iTalentPoint--;
-						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_Unspent(m_iTalentPoint);
+						dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Set_TalentPoint_ALlUnspent(m_iTalentPoint);
 					}
 				}
 			}
