@@ -527,6 +527,7 @@ void CBoss_Magician::Intro_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_bCardActive = true;
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+	pObject->m_pGameInstance->Set_Boss_Active(true);
 }
 
 void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -559,6 +560,7 @@ void CBoss_Magician::Idle_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_IDLE;
 	pObject->m_bPatternProgress = false;
 	pObject->m_fDelayTime = 0.f;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1190,7 +1192,7 @@ void CBoss_Magician::Hit_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_bCan_Move_Anim = true;
 	pObject->RotateDegree_To_Player();
 	pObject->Is_Change_Sword_Bone = false;
-	pObject->m_bPatternProgress = false;
+	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1203,6 +1205,7 @@ void CBoss_Magician::Hit_State::State_Update(_float fTimeDelta, CBoss_Magician* 
 void CBoss_Magician::Hit_State::State_Exit(CBoss_Magician* pObject)
 {
 	pObject->m_bCan_Move_Anim = false;
+	pObject->m_bPatternProgress = false;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
@@ -1422,7 +1425,9 @@ void CBoss_Magician::Attack_Special_Catch::State_Enter(CBoss_Magician* pObject)
 	vPlayerRight = XMVector3Normalize(vPlayerRight);
 
 	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
-	vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, 0.6f));
+	vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, 0.1f));
+
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
 	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
 	pObject->m_pTransformCom->LookAt(vPlayerPos);
 

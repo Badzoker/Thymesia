@@ -1,0 +1,892 @@
+#include "pch.h"
+#include "Boss_Bat.h"
+#include "GameInstance.h"
+#include "Body_Bat.h"
+#include "Decorative_Spike.h"
+#include "Locked_On.h"
+#include "Player.h"
+#include "UI_Boss_HP_Bar.h"
+#include "Animation.h"
+
+CBoss_Bat::CBoss_Bat(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	:CMonster(pDevice, pContext)
+{
+}
+
+CBoss_Bat::CBoss_Bat(const CBoss_Bat& Prototype)
+	:CMonster(Prototype)
+{
+}
+
+HRESULT CBoss_Bat::Initialize_Prototype()
+{
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBoss_Bat::Initialize(void* pArg)
+{
+	m_fRotateSpeed = 180.f;
+	m_fRootDistance = 4.5f;
+	m_fActive_Distance = 15.f;
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_PartObjects(pArg)))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+	m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
+	m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
+	m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+
+	m_pState_Manager = CState_Machine<CBoss_Bat>::Create();
+	if (m_pState_Manager == nullptr)
+		return E_FAIL;
+
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 3.f,3.f,3.f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+
+	_uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
+
+	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
+
+	m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+	return S_OK;
+}
+
+void CBoss_Bat::Priority_Update(_float fTimeDelta)
+{
+	__super::Priority_Update(fTimeDelta);
+}
+
+void CBoss_Bat::Update(_float fTimeDelta)
+{
+	__super::Update(fTimeDelta);
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 300.f,100.f,1.f });
+}
+
+void CBoss_Bat::Late_Update(_float fTimeDelta)
+{
+	__super::Late_Update(fTimeDelta);
+}
+
+HRESULT CBoss_Bat::Render()
+{
+	return S_OK;
+}
+
+void CBoss_Bat::State_Update(_float fTimeDelta)
+{
+	m_pState_Manager->State_Update(fTimeDelta, this);
+}
+
+void CBoss_Bat::Active()
+{
+	m_iPhase = PHASE_TWO;
+	m_pState_Manager->ChangeState(new CBoss_Bat::Intro_State(), this);
+}
+
+void CBoss_Bat::Stun()
+{
+	m_IsStun = true;
+	m_bPatternProgress = true;
+	m_fDelayTime = 0.f;
+	m_pState_Manager->ChangeState(new CBoss_Bat::Stun_State(), this);
+}
+
+HRESULT CBoss_Bat::Ready_Components(void* pArg)
+{
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+
+	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
+	if (FAILED(__super::Add_Component(iLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
+		return E_FAIL;
+
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(iLevel, TEXT("Layer_Player"), "PLAYER");
+
+	return S_OK;
+}
+
+HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
+{
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+
+	CBody_Bat::BODY_BAT_DESC BodyDesc{};
+	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	BodyDesc.fSpeedPerSec = 0.f;
+	BodyDesc.fRotationPerSec = 0.f;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Body_Bat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat_Body"), &BodyDesc)))
+		return E_FAIL;
+
+
+	m_pModelCom = dynamic_cast<CModel*>(__super::Find_PartObject_Component(TEXT("Part_Body_Bat"), TEXT("Com_Model")));
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
+
+	CLocked_On::LOCKED_ON_DESC Locked_On_Desc = {};
+	Locked_On_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("Bip001-Pelvis");
+	Locked_On_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Locked_On_Desc.pParentState = &m_iMonster_State;
+	Locked_On_Desc.bLocked_On_Active = &m_bLocked_On;
+	Locked_On_Desc.fSpeedPerSec = 0.f;
+	Locked_On_Desc.fRotationPerSec = 0.f;
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Locked_On"), LEVEL_STATIC, TEXT("Prototype_GameObject_Monster_Locked_On"), &Locked_On_Desc)))
+		return E_FAIL;
+
+	CUI_Boss_HP_Bar::UI_BOSS_HP_BAR_DESC pBoss_HP_Bar = {};
+	pBoss_HP_Bar.fMaxHP = &m_fMonsterMaxHP;
+	pBoss_HP_Bar.fCurHP = &m_fMonsterCurHP;
+	pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
+	pBoss_HP_Bar.bBossActive = &m_bActive;
+	pBoss_HP_Bar.bBossDead = &m_bDead;
+	pBoss_HP_Bar.iPhase = &m_iPhase;
+	pBoss_HP_Bar.iCurLevel = iLevel;
+	pBoss_HP_Bar.sBossName = TEXT("매달린 여왕");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
+		return E_FAIL;
+
+
+	_float3 fRotateDegree[6] = {};
+	_float4 fPosition[6] = {};
+
+	fRotateDegree[0] = { 25.f,00.f,10.f };
+	fPosition[0] = { 100.f,1.f,-50.f,1.f };
+
+	fRotateDegree[1] = { 40.f,00.f,10.f };
+	fPosition[1] = { 100.f,1.f,-50.f,1.f };
+
+	fRotateDegree[2] = { -40.f,00.f,-10.f };
+	fPosition[2] = { 100.f,1.f,50.f,1.f };
+
+	fRotateDegree[3] = { -20.f,00.f,-0.f };
+	fPosition[3] = { 90.f,1.f,10.f,1.f };
+
+	fRotateDegree[4] = { 10.f,00.f,-35.f };
+	fPosition[4] = { 50.f,1.f,10.f,1.f };
+
+	fRotateDegree[5] = { -20.f,00.f,-35.f };
+	fPosition[5] = { 10.f,1.f,20.f,1.f };
+
+
+	for (_uint i = 0; i < 6; i++)
+	{
+		wstring strName = L"Part_Decorative_Spike" + to_wstring(i);
+		CDecorative_Spike::DECORATIVE_SPIKE_DESC Deco_Desc{};
+		Deco_Desc.fPosition = _float4(1.f, 1.f, 1.f, 1.f);
+		Deco_Desc.pRotate_Degree = &fRotateDegree[i];
+		Deco_Desc.pPosition = &fPosition[i];
+		Deco_Desc.pRender = &m_bCristal_Create;
+		Deco_Desc.fScaling = _float3(0.4f, 0.001f, 0.4f);
+		Deco_Desc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("spine_02");
+		Deco_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		Deco_Desc.pParentState = &m_iMonster_State;
+		Deco_Desc.fSpeedPerSec = 0.f;
+		Deco_Desc.fRotationPerSec = 0.f;
+
+		if (FAILED(__super::Add_PartObject(strName.c_str(), LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Spike"), &Deco_Desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void CBoss_Bat::PatternCreate()
+{
+	if (!m_bPatternProgress && m_bActive && !m_IsStun)
+	{
+		m_fDelayTime += 1 * m_fTimeDelta;
+		if (m_fDelayTime >= m_fCoolTime)
+		{
+			//if (m_fSpecial_Skill_CoolTime >= 30.f)
+			//{
+			//	m_pState_Manager->ChangeState(new CBoss_Bat::Roar_State(false), this);
+			//}
+			//if (m_fDistance >= 5.f)
+				//Far_Pattern_Create();
+			//else
+			Near_Pattern_Create();
+
+			m_fDelayTime = 0.f;
+			m_bPatternProgress = true;
+		}
+	}
+}
+
+void CBoss_Bat::Near_Pattern_Create()
+{
+	_uint iRandomPattern = rand() % 7;
+	while (true)
+	{
+		if (iRandomPattern == m_iNearPatternIndex)
+		{
+			iRandomPattern = rand() % 7;
+		}
+		else
+		{
+			m_iNearPatternIndex = iRandomPattern;
+			break;
+		}
+	}
+
+
+	switch (m_iNearPatternIndex)
+	{
+	case 0:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_A(), this);
+		break;
+	case 1:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_B(), this);
+		break;
+	case 2:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_C(), this);
+		break;
+	case 3:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_D(), this);
+		break;
+	case 4:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_E(), this);
+		break;
+	case 5:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_G(), this);
+		break;
+	case 6:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Recovery_State(), this);
+		break;
+	}
+}
+
+void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+	/* 플레이어 무기와의 충돌 */
+	if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+	{
+		m_fRecoveryTime = 0.f;
+		m_bCanRecovery = false;
+		if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+		{
+			m_fMonsterCurHP -= *m_Player_Attack / 10.f;
+			m_fShieldHP -= (*m_Player_Attack / 10.f) * 1.5f;
+		}
+		else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+		{
+			m_fMonsterCurHP -= (*m_Player_Attack / 10.f) * 1.5f;
+			m_fShieldHP -= *m_Player_Attack / 10.f;
+		}
+	}
+}
+
+void CBoss_Bat::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+void CBoss_Bat::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+CBoss_Bat* CBoss_Bat::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CBoss_Bat* pInstance = new CBoss_Bat(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed To Created : CBoss_Bat");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CBoss_Bat::Clone(void* pArg)
+{
+	CBoss_Bat* pInstance = new CBoss_Bat(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CBoss_Bat");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CBoss_Bat::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pState_Manager);
+}
+
+#pragma region Intro_State
+
+void CBoss_Bat::Intro_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 21;
+	pObject->m_iMonster_State = STATE_INTRO;
+	pObject->m_bActive = true;
+	pObject->m_bPatternProgress = true;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+	pObject->m_pGameInstance->Set_Boss_Active(true);
+}
+
+void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+	}
+}
+
+void CBoss_Bat::Intro_State::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion 
+
+#pragma region Idle_State
+
+void CBoss_Bat::Idle_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 16;
+	pObject->m_iMonster_State = STATE_IDLE;
+	pObject->m_bPatternProgress = false;
+	pObject->m_bCan_Hit_Motion = true;
+	pObject->m_fDelayTime = 0.f;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Idle_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	//pObject->RotateDegree_To_Player();
+}
+
+void CBoss_Bat::Idle_State::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion 
+
+#pragma region Move_State
+
+void CBoss_Bat::Move_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 33;
+	pObject->m_bPatternProgress = false;
+	pObject->m_iMonster_State = STATE_MOVE;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+}
+
+void CBoss_Bat::Move_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	pObject->RotateDegree_To_Player();
+	if (m_iIndex == 33 && pObject->m_fDistance > pObject->m_fRootDistance)
+		pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
+}
+
+void CBoss_Bat::Move_State::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion 
+
+#pragma region Stun_State
+
+void CBoss_Bat::Stun_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 27;
+	pObject->m_iMonster_State = STATE_STUN;
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->m_bCan_Hit_Motion = false;
+	pObject->RotateDegree_To_Player();
+
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+}
+
+void CBoss_Bat::Stun_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		m_iIndex = 26;
+		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+	}
+
+	if ((m_iIndex == 27 || m_iIndex == 26) && (*pObject->m_Player_State) == CPlayer::STATE_PUNCH_MAN_Execution)
+	{
+		pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Execution_State(), pObject);
+	}
+}
+
+void CBoss_Bat::Stun_State::State_Exit(CBoss_Bat* pObject)
+{
+	pObject->m_bCan_Move_Anim = false;
+}
+
+#pragma endregion
+
+#pragma region Execution_State
+
+void CBoss_Bat::Execution_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 30;
+	pObject->m_iMonster_State = STATE_EXECUTION;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->m_bCan_Hit_Motion = false;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
+
+	_float teleportDistance = 1.f;
+	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
+	_vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
+	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+	vPlayerLook = XMVector3Normalize(vPlayerLook);
+
+	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
+	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
+
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Execution_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Dead_State(), pObject);
+	}
+}
+
+void CBoss_Bat::Execution_State::State_Exit(CBoss_Bat* pObject)
+{
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+}
+
+#pragma endregion
+
+#pragma region Dead_State
+
+void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 29;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->m_iMonster_State = STATE_DEAD;
+
+	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && !pObject->m_bDead)
+	{
+		pObject->m_bDead = true;
+		pObject->m_bActive = false;
+#pragma region Boss죽을시효과+UI
+		pObject->m_pGameInstance->Set_Boss_Dead(true);
+		pObject->m_pGameInstance->Set_Boss_Active(false);
+		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+#pragma endregion
+	}
+}
+
+void CBoss_Bat::Dead_State::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_A (오른손 긁기 패턴(Index 4))
+
+void CBoss_Bat::Attack_Combo_A::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 4;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 153.f)
+		{
+			m_iIndex = 6;
+			pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+		}
+	}
+	if (m_iIndex == 6 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+		}
+	}
+
+}
+
+void CBoss_Bat::Attack_Combo_A::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_B (왼손 긁기 패턴 (Index 0))
+
+void CBoss_Bat::Attack_Combo_B::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 0;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 306.f)
+		{
+			m_iIndex = 2;
+			pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+		}
+	}
+	if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+		}
+	}
+}
+
+void CBoss_Bat::Attack_Combo_B::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_C (두번 물기 패턴 (Index 7))
+
+void CBoss_Bat::Attack_Combo_C::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 7;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+
+}
+
+void CBoss_Bat::Attack_Combo_C::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_D (한번 물기 패턴 (Index 8))
+
+void CBoss_Bat::Attack_Combo_D::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 8;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 8 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+}
+
+void CBoss_Bat::Attack_Combo_D::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_E (뒤로 뺐다 돌진 패턴(Index 9))
+
+void CBoss_Bat::Attack_Combo_E::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 9;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 171;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+}
+
+void CBoss_Bat::Attack_Combo_E::State_Exit(CBoss_Bat* pObject)
+{
+	pObject->m_bCan_Move_Anim = false;
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_F (기둥 소환 패턴(HellScream (Index 13)))
+
+void CBoss_Bat::Attack_Combo_F::State_Enter(CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Combo_F::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_G (점프뛰어서 짓누르는 패턴?(Index 17, 18(앞으로) 19(제자리)))
+
+void CBoss_Bat::Attack_Combo_G::State_Enter(CBoss_Bat* pObject)
+{
+	if (pObject->m_bCristal_Create)
+	{
+		m_iIndex = 17;
+		pObject->m_iMonster_Attack_Power = 221;
+		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+		pObject->m_bCristal_Create = false;
+	}
+	else if (pObject->m_fDistance >= 10.f)
+	{
+		m_iIndex = 18;
+		pObject->m_iMonster_Attack_Power = 114;
+		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	}
+	else
+	{
+		m_iIndex = 19;
+		pObject->m_iMonster_Attack_Power = 114;
+		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
+	}
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_G::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+}
+
+void CBoss_Bat::Attack_Combo_G::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_H (SonicBoom?아마 공기팡?(Index 22))
+
+void CBoss_Bat::Attack_Combo_H::State_Enter(CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Combo_H::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Combo_H::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Attack_Combo_I (뒤로 점프뛰면서 플레이어 가드 시키는 패턴(Index = 24))
+
+void CBoss_Bat::Attack_Combo_I::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 24;
+	pObject->m_bCan_Move_Anim = true;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 0;
+	pObject->m_iMonster_State = STATE_MOVE;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURXXLF; //임시
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Attack_Combo_I::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+}
+
+void CBoss_Bat::Attack_Combo_I::State_Exit(CBoss_Bat* pObject)
+{
+	pObject->m_bCan_Move_Anim = false;
+}
+
+#pragma endregion
+
+#pragma region Attack_Special (파티클 지리는 스페셜 스킬 패턴)
+
+void CBoss_Bat::Attack_Special::State_Enter(CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Special::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+}
+
+void CBoss_Bat::Attack_Special::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion
+
+#pragma region Recovery_State (피 회복하는 상태)
+
+void CBoss_Bat::Recovery_State::State_Enter(CBoss_Bat* pObject)
+{
+	m_iIndex = 10;
+	pObject->m_fMonsterCurHP += 20.f;
+	pObject->m_fShieldHP += 20.f;
+	pObject->m_bCanRecovery = true;
+	pObject->m_bCristal_Create = true;
+	pObject->Recovery_HP();
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+}
+
+void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
+{
+	if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	{
+		_uint iRandom = rand() % 2;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+			break;
+		}
+	}
+}
+
+void CBoss_Bat::Recovery_State::State_Exit(CBoss_Bat* pObject)
+{
+}
+
+#pragma endregion

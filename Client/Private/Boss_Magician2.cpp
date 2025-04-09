@@ -551,6 +551,14 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 	{
 		//사실 여기로 들어오면 그냥 죽은거임 ㅇㅇ	
 		pObject->m_iMonster_State = STATE_DEAD;
+#pragma region Boss죽을시효과+UI
+		pObject->m_pGameInstance->Set_Boss_Dead(true);
+		pObject->m_pGameInstance->Set_Boss_Active(false);
+		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+#pragma endregion
+
 	}
 }
 

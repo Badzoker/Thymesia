@@ -608,6 +608,7 @@ void CNormal_ScytheM::Hit_State::State_Enter(CNormal_ScytheM* pObject)
     }
     pObject->m_iHitCount++;
     pObject->RotateDegree_To_Player();
+    pObject->m_bPatternProgress = true;
     pObject->m_iMonster_State = STATE_HIT;
     pObject->m_bCan_Move_Anim = true;
     pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -622,6 +623,7 @@ void CNormal_ScytheM::Hit_State::State_Update(_float fTimeDelta, CNormal_ScytheM
 
 void CNormal_ScytheM::Hit_State::State_Exit(CNormal_ScytheM* pObject)
 {
+    pObject->m_bPatternProgress = false;
     pObject->m_bCan_Move_Anim = false;
 }
 #pragma endregion

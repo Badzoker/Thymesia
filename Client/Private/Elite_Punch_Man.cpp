@@ -352,6 +352,7 @@ void CElite_Punch_Man::Idle_State::State_Update(_float fTimeDelta, CElite_Punch_
 
 void CElite_Punch_Man::Idle_State::State_Exit(CElite_Punch_Man* pObject)
 {
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CElite_Punch_Man::Move_State::State_Enter(CElite_Punch_Man* pObject)

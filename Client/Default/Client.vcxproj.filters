@@ -925,6 +925,15 @@
     <Filter Include="02.GameObject\Effect\Instancing">
       <UniqueIdentifier>{76b694c8-91c4-43f7-b398-eef4c7faa03d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Bat">
+      <UniqueIdentifier>{aee007e8-0a0b-44be-bad5-e38f011ed903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Bat\Body">
+      <UniqueIdentifier>{eb05e62a-5e2a-42d0-92fc-a4c195e9beea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike">
+      <UniqueIdentifier>{27ea6261-a4a7-4d42-8f03-6fadd59cfb5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1737,6 +1746,15 @@
     <ClInclude Include="..\Public\Effect_Instancing.h">
       <Filter>02.GameObject\Effect\Instancing</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Boss_Bat.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Bat.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Spike.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2539,6 +2557,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Instancing.cpp">
       <Filter>02.GameObject\Effect\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Bat.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Bat.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Spike.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Bat_Spike</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

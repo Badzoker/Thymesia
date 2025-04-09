@@ -123,6 +123,17 @@ public:
 		_uint m_iHit_Index = {};
 	};
 
+	class Dead_State : public CStates<CBoss_Urd>
+	{
+	public:
+		Dead_State() = default;
+		virtual ~Dead_State() = default;
+	public:
+		void State_Enter(CBoss_Urd* pObject) override;
+		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
+		void State_Exit(CBoss_Urd* pObject) override;
+	};
+
 	class Parry_State : public CStates<CBoss_Urd>
 	{
 	public:

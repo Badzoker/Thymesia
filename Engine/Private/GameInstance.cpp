@@ -1003,9 +1003,19 @@ _bool CGameInstance::Get_Boss_Dead() const
 	return m_pMonster_Manager->Get_Boss_Dead();
 }
 
+_bool CGameInstance::Get_Boss_Active() const
+{
+	return m_pMonster_Manager->Get_Boss_Active();
+}
+
 void CGameInstance::Set_Boss_Dead(_bool bCheck)
 {
 	m_pMonster_Manager->Set_Boss_Dead(bCheck);
+}
+
+void CGameInstance::Set_Boss_Active(_bool bCheck)
+{
+	m_pMonster_Manager->Set_Boss_Active(bCheck);
 }
 
 #pragma endregion
