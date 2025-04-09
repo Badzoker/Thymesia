@@ -119,6 +119,7 @@
 #include "Effect_Mesh.h"
 #include "Effect_Sword.h"
 #include "Effect_Particle.h"
+#include "Effect_Instancing.h"
 
 #pragma endregion
 
@@ -2268,7 +2269,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 #pragma region Sword
-
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Sword 생성중"));
 	/* For.Prototype_Component_Shader_Effect_Sword */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Sword"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect_Sword.hlsl"), VTXST::Elements, VTXST::iNumElements))))
@@ -2291,6 +2292,24 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion
 
+#pragma region Mesh_Instancing
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Instancing 생성중"));
+	/* For.Prototype_Component_Shader_Effect_Instancing */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Instancing"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect_Instancing.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Instancing_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Instancing_Image"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Instancing_Image/texInstancing%d.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Effect_Instancing*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+		CEffect_Instancing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
 
 #pragma region 항상 있는 오브젝트(의자나 사다리 램프 같은거)
 

@@ -223,6 +223,7 @@
     <ClInclude Include="..\Public\DestructObject.h" />
     <ClInclude Include="..\Public\DoorManager.h" />
     <ClInclude Include="..\Public\DoorObject.h" />
+    <ClInclude Include="..\Public\Effect_Instancing.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_Particle.h" />
     <ClInclude Include="..\Public\Effect_Sword.h" />
@@ -496,6 +497,7 @@
     <ClCompile Include="..\Private\DestructObject.cpp" />
     <ClCompile Include="..\Private\DoorManager.cpp" />
     <ClCompile Include="..\Private\DoorObject.cpp" />
+    <ClCompile Include="..\Private\Effect_Instancing.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_Particle.cpp" />
     <ClCompile Include="..\Private\Effect_Sword.cpp" />
@@ -725,6 +727,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Instancing.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Sword.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fog.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />

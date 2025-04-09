@@ -26,6 +26,7 @@
 #include "Effect_Mesh.h"
 #include "Effect_Sword.h"
 #include "Effect_Particle.h"
+#include "Effect_Instancing.h"
 
 #include "Terrain.h"
 #include "BarrierScreen.h"
@@ -856,6 +857,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Player_Eye.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
         EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE)))
+        return E_FAIL;
+
+    //Effect_Instancing
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Rock.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, 3)))
         return E_FAIL;
 
     return S_OK;
@@ -1952,6 +1958,89 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
                 return E_FAIL;
         }
 
+    }
+    else if (EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING == _eEffectType)
+    {
+        DWORD dwByte = 0;
+
+        CEffect_Instancing::EFFECT_INSTANCING_DESC pDesc = {};
+
+        _uint iNumber_Mesh_Effect{}, iMesh_Model_Count{}; //약간 Tool 용도라서 미리 빼두는 느낌(본 Project 에선 필요없을듯)
+        ReadFile(hFile, &iNumber_Mesh_Effect, sizeof(_uint), &dwByte, nullptr);
+        ReadFile(hFile, &iMesh_Model_Count, sizeof(_uint), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.iDiffuse, sizeof(_uint), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fMaxTimer, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fTimer_SpeedX, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fTimer_SpeedY, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fDissolve_Speed, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fHeightX, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.fHeightY, sizeof(_float), &dwByte, nullptr);
+
+        ReadFile(hFile, &pDesc.bLoop, sizeof(_bool), &dwByte, nullptr);
+
+        ReadFile(hFile, &pDesc.vScale, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
+
+#pragma region Switch For Mesh Model Name
+        switch (iNumber_Mesh_Effect) //이거 Tool에서의 순서 기반임
+        {
+        case 0:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Donut");
+            break;
+        case 1:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_ThinDonut");
+            break;
+        case 2:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Rainbow");
+            break;
+        case 3:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Claw");
+            break;
+        case 4:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Sword");
+            break;
+        case 5:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Twist");
+            break;
+        case 6:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Strange");
+            break;
+        case 7:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Tornado");
+            break;
+        case 8: //이건 아마 없을예정(플레이어 까마귀 팔 Mesh)
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Quad");
+            break;
+        case 9:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Cross");
+            break;
+        case 10:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Ring");
+            break;
+        case 11:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Circle");
+            break;
+        case 12:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Quad");
+            break;
+        case 13:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_HealingCurve");
+            break;
+        case 14:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Rock");
+            break;
+        case 17:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Sphere");
+            break;
+        }
+#pragma endregion
+
+        for (_uint i = 0; i < _iEffectCount; i++)
+        {
+            if (FAILED(m_pGameInstance->Add_Effect(_iPrototypeLevelIndex, _pEffectPrototypeName, _eEffectName, &pDesc)))
+                return E_FAIL;
+        }
     }
     else //Sword
     {

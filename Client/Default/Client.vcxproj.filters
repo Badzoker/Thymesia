@@ -922,6 +922,9 @@
     <Filter Include="02.GameObject\SpecificObject\DoorObject\DoorManager">
       <UniqueIdentifier>{d1aedd4f-0fec-4ab4-b568-c8214743c2b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Instancing">
+      <UniqueIdentifier>{76b694c8-91c4-43f7-b398-eef4c7faa03d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1731,6 +1734,9 @@
     <ClInclude Include="..\Public\DoorObject.h">
       <Filter>02.GameObject\SpecificObject\DoorObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Instancing.h">
+      <Filter>02.GameObject\Effect\Instancing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2531,6 +2537,9 @@
     <ClCompile Include="..\Private\DoorObject.cpp">
       <Filter>02.GameObject\SpecificObject\DoorObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Instancing.cpp">
+      <Filter>02.GameObject\Effect\Instancing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2609,6 +2618,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxDestructMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Instancing.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

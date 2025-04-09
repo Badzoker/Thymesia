@@ -151,6 +151,7 @@ void CVargKnife::Update(_float fTimeDelta)
                         _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_VERTICAL_DUST, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, *m_pParentWorldMatrix);
                     }
                 }
                 else if (!strcmp(iter.szName, "Weapon_Effect_Narrow_Dust"))
@@ -162,6 +163,7 @@ void CVargKnife::Update(_float fTimeDelta)
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_NARROW_DUST_VARG, vPos, vDir);
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_NARROW_SPARK_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, *m_pParentWorldMatrix);
                     }
                 }
                 else if (!strcmp(iter.szName, "Weapon_Effect_Horizon_Dust"))
@@ -173,6 +175,7 @@ void CVargKnife::Update(_float fTimeDelta)
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HORIZON_DUST_VARG, vPos, vDir);
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HORIZON_SPARK_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, *m_pParentWorldMatrix);
                     }
                 }
                 else if (!strcmp(iter.szName, "Weapon_Effect_Left_Dust"))
@@ -183,6 +186,7 @@ void CVargKnife::Update(_float fTimeDelta)
                         _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_LEFT_DUST_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, *m_pParentWorldMatrix);
                     }
                 }
                 else if (!strcmp(iter.szName, "Weapon_Effect_Right_Dust"))
@@ -193,6 +197,7 @@ void CVargKnife::Update(_float fTimeDelta)
                         _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_RIGHT_DUST_VARG, vPos, vDir);
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, *m_pParentWorldMatrix);
                     }
                 }
             }
