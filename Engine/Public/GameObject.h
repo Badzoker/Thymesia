@@ -42,6 +42,7 @@ public:
 	virtual HRESULT	Render_Fog_Front() { return S_OK; }
 	virtual HRESULT	Render_Fog_Back() { return S_OK; }
 	virtual HRESULT	Render_Fog_Final(ID3D11ShaderResourceView* pNoiseSRV) { return S_OK; }
+	virtual HRESULT	Render_Reflection() { return S_OK; }
 
 
 	/* 11월 11일 추가*/

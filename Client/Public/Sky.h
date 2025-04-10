@@ -25,6 +25,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Reflection() override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -36,6 +37,7 @@ private:
 public:
 	HRESULT Ready_Components(void* _pArg);
 	HRESULT Bind_ShaderResources();
+	HRESULT Bind_ShaderResources_Reflection();
 
 public:
 	static CSky* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

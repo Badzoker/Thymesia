@@ -66,6 +66,14 @@ DepthStencilState DSS_Skip_Write // 깊이 비교를 하되 깊이를 작성하지는 않음
 {
     DepthEnable = TRUE;
     DepthWriteMask = ZERO;
+    DepthFunc = LESS_EQUAL;
+};
+
+
+DepthStencilState DSS_Skip_Always // 깊이 비교를 하되 깊이를 작성하지는 않음
+{
+    DepthEnable = TRUE;
+    DepthWriteMask = ZERO;
     DepthFunc = ALWAYS;
 };
 

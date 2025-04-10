@@ -24,8 +24,6 @@ public:
 	}
 
 
-	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix);
-
 #ifdef _DEBUG
 public:
 	void SetUp_WindowText();
@@ -42,6 +40,10 @@ protected:
 
 	_bool					m_isFinished = { false };
 	_tchar					m_szLoadingText[MAX_PATH] = {};
+
+protected:
+	virtual HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) PURE;
+	virtual vector<string> GetFBXFileNames(const string& folderPath);
 
 public:
 	//static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);

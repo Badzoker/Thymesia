@@ -529,7 +529,7 @@ technique11 DefaultTechnique
     pass Render_Back
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Skip_Write, 0);
+        SetDepthStencilState(DSS_Skip_Always, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -540,7 +540,7 @@ technique11 DefaultTechnique
     pass Render_Front
     {
         SetRasterizerState(Rs_Cull_CW);
-        SetDepthStencilState(DSS_Skip_Write, 0);
+        SetDepthStencilState(DSS_Skip_Always, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
         VertexShader = compile vs_5_0 VS_MAIN();

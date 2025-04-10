@@ -937,6 +937,18 @@
     <Filter Include="02.GameObject\Monster\95. Projectile\Air">
       <UniqueIdentifier>{de69f488-7baa-4a84-8161-87b9aaa5fe5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Object\GlassObject">
+      <UniqueIdentifier>{e8df8807-53d4-4b69-94f2-b06f8eb930bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Object\EmissiveObject">
+      <UniqueIdentifier>{e52400ca-8b8e-4786-a0f2-3e0b4f33019e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InstancingObject\Emissive_GroundObject">
+      <UniqueIdentifier>{b3033987-779a-4e2a-bd8b-98de3ee6c72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Water">
+      <UniqueIdentifier>{62f66a85-2c9c-44d6-b82b-0f2778cc661d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1761,6 +1773,18 @@
     <ClInclude Include="..\Public\Projectile_Air.h">
       <Filter>02.GameObject\Monster\95. Projectile\Air</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Glass_StaticObject.h">
+      <Filter>02.GameObject\Object\GlassObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Emissive_StaticObject.h">
+      <Filter>02.GameObject\Object\EmissiveObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Emissive_GroundObject.h">
+      <Filter>02.GameObject\InstancingObject\Emissive_GroundObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>02.GameObject\Water</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2576,6 +2600,18 @@
     <ClCompile Include="..\Private\Projectile_Air.cpp">
       <Filter>02.GameObject\Monster\95. Projectile\Air</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Glass_StaticObject.cpp">
+      <Filter>02.GameObject\Object\GlassObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Emissive_StaticObject.cpp">
+      <Filter>02.GameObject\Object\EmissiveObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Emissive_GroundObject.cpp">
+      <Filter>02.GameObject\InstancingObject\Emissive_GroundObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>02.GameObject\Water</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2617,9 +2653,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Water.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshNoDefferd.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
@@ -2657,6 +2690,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect_Instancing.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Water.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

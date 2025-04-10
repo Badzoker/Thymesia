@@ -114,38 +114,11 @@ _uint APIENTRY Thread_Main_SeaOfTrees(void* pArg)
 	return 0;
 }
 
-
-vector<string> GetFBXFileNames(const std::string& folderPath)
-{
-	vector<string> fbxFiles;
-
-	string searchPath = folderPath + "\\*.fbx";
-	WIN32_FIND_DATAA findData;
-	HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findData);
-
-	if (hFind != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			string filename = findData.cFileName;
-			size_t dot = filename.find_last_of('.');
-			if (dot != string::npos)
-				filename = filename.substr(0, dot);
-
-			fbxFiles.push_back(filename);
-		} while (FindNextFileA(hFind, &findData) != 0);
-
-		FindClose(hFind);
-	}
-
-	return fbxFiles;
-}
-
-HRESULT CLoader::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
+HRESULT CLoader_SeaOfTrees::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
 {
 	vector<string> strFBXNames;
 
-	strFBXNames = GetFBXFileNames(pFilePath);
+	strFBXNames = __super::GetFBXFileNames(pFilePath);
 
 	for (auto& FBXName : strFBXNames)
 	{

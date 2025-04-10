@@ -22,7 +22,7 @@ public:
 
 private:
 	HRESULT Loading_For_Level_Tutorial();
-	
+	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) override;
 
 public:
 	static CLoader_Tutorial* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);

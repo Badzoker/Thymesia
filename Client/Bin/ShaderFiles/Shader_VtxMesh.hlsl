@@ -2,7 +2,9 @@
 
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_OldViewMatrix, g_OldWorldMatrix;
 Texture2D g_DiffuseTexture;
+Texture2D g_MaskTexture;
 Texture2D g_NormalTexture;
+Texture2D g_RoughnessTexture;
 Texture2D g_EmissiveTexture;
 vector g_vCamPosition;
 
@@ -40,6 +42,10 @@ float4 g_WorldCamPos;
 
 int g_LevelID;
 
+float4 g_vGlassBaseColor, g_vGlassColor;
+
+float4 g_vEmissiveColor;
+float g_fEmissivePower;
 
 struct VS_IN
 {
@@ -234,6 +240,8 @@ struct PS_OUT
     float4 vNormal : SV_TARGET1;
     float4 vDepth : SV_TARGET2;
     float fSpecular : SV_TARGET3;
+    float fRoughness : SV_TARGET4;
+    float4 vEmissive : SV_TARGET5;
 };
 
 struct PS_OUT_DISTORTION
@@ -958,7 +966,137 @@ PS_OUT PS_MAIN_SPIKES(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_GLASS_NO_DITHERING(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
 
+    float GlassFactor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord).r;
+    
+    Out.vDiffuse = lerp(g_vGlassBaseColor, g_vGlassColor, GlassFactor);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.5f;
+    
+    return Out;
+}
+
+
+PS_OUT PS_MAIN_GLASS(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float GlassFactor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord).r;
+    
+    Out.vDiffuse = lerp(g_vGlassBaseColor, g_vGlassColor, GlassFactor);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.5f;
+    
+    float2 ScreenPos;
+
+    ScreenPos.x = In.vPosition.x;
+    ScreenPos.y = In.vPosition.y;
+    
+    // 카메라와 픽셀 거리 계산
+    float dist = distance(In.vWorldPos.xyz, g_WorldCamPos.xyz);
+
+    // 디더링 비율 계산 (0 = 완전 디더링, 1 = 완전 보임)
+    float alpha = saturate((dist - 0.1f) / (3.f - 0.1f));
+
+    // 디더링 패턴 적용
+    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    
+    int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
+
+    float threshold = Dither4x4[index];
+
+    if (alpha < 1.f)
+    {
+        if (alpha * 0.1f < threshold)
+            discard; // 픽셀 제거   
+    }
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_EMISSIVE_NO_DITHERING(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord).rgb;
+    float4 vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+	
+	/* 탄젠트 스페이스에 존재하는 노멀이다. */	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+	/* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    Out.vDiffuse = 0.05f;
+    //float4(vDiffuse, 0.5f);
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 1.f;
+    Out.fRoughness = vRoughness.r;
+    Out.vEmissive = vEmissive * g_vEmissiveColor;
+    return Out;
+}
+
+
+PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord).rgb;
+    float4 vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+	
+	/* 탄젠트 스페이스에 존재하는 노멀이다. */	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+	/* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+   
+    Out.vDiffuse = 0.05f;
+    //float4(vDiffuse, 0.5f);
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 1.f;
+    Out.fRoughness = vRoughness.r;
+    Out.vEmissive = vEmissive * g_vEmissiveColor;
+    
+    float2 ScreenPos;
+
+    ScreenPos.x = In.vPosition.x;
+    ScreenPos.y = In.vPosition.y;
+    
+    // 카메라와 픽셀 거리 계산
+    float dist = distance(In.vWorldPos.xyz, g_WorldCamPos.xyz);
+
+    // 디더링 비율 계산 (0 = 완전 디더링, 1 = 완전 보임)
+    float alpha = saturate((dist - 0.1f) / (3.f - 0.1f));
+
+    // 디더링 패턴 적용
+    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    
+    int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
+
+    float threshold = Dither4x4[index];
+
+    if (alpha < 1.f)
+    {
+        if (alpha * 0.1f < threshold)
+            discard; // 픽셀 제거   
+    }
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -1209,4 +1347,47 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPIKES();
     }
 
+    pass Glass // 22
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Skip_Write, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GLASS();
+    }
+
+    pass Glass_NO_DITHERING_Pass // 23
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Skip_Write, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GLASS_NO_DITHERING();
+    }
+
+    pass Emissive // 24
+    {       
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_EMISSIVE_NO_DITHERING();
+    }
+
+    pass Emissive_NO_DITHERING_Pass // 25
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_EMISSIVE();
+    }
 }

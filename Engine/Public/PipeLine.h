@@ -60,9 +60,31 @@ public:
 	void  Set_Zoom_Blur_Center(_float2 _fPos) { m_fZoomBlurCenter = _fPos; }	
 	_float2 Get_Zoom_Blur_Center() { return m_fZoomBlurCenter; }	
 
+
+	// 물에 반사되는 카메라 행렬을 가져오기 위한함수들
+	_float4x4 Get_Reflection_Transform_Float4x4(D3DTRANSFORMSTATE eState) const {
+		return m_ReflectionTransformationMatrices[eState];
+	}
+	_matrix Get_Reflection_Transform_Matrix(D3DTRANSFORMSTATE eState) const {
+		return XMLoadFloat4x4(&m_ReflectionTransformationMatrices[eState]);
+	}
+	_float4x4 Get_Reflection_Transform_Float4x4_Inverse(D3DTRANSFORMSTATE eState) const {
+		return m_ReflectionTransformationInverseMatrices[eState];
+	}
+	_matrix Get_Reflection_Transform_Matrix_Inverse(D3DTRANSFORMSTATE eState)const {
+		return XMLoadFloat4x4(&m_ReflectionTransformationInverseMatrices[eState]);
+	}
+	_float4 Get_Reflection_CamPosition() const {
+		return m_vReflectionCamPosition;
+	}
+
 public:
 	void Set_Transform(D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrices[eState], TransformMatrix);
+	}
+
+	void Set_Reflection_Transform(D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix) {
+		XMStoreFloat4x4(&m_ReflectionTransformationMatrices[eState], TransformMatrix);
 	}
 
 public:
@@ -82,6 +104,14 @@ private:
 	/* 모션 블러를 위한 이전 뷰 행렬을 저장하는 맴버 변수들 */
 	_float4x4				m_PreTransformationMatrices[D3DTS_END] = {};
 	_float4x4				m_PreTransformationInverseMatrices[D3DTS_END] = {};
+
+	/* 물에 반사되는 풍경을 그리는 뷰 행렬을 저장하는 맴버 변수들*/
+
+	_float4x4				m_ReflectionTransformationMatrices[D3DTS_END] = {};
+	_float4x4				m_ReflectionTransformationInverseMatrices[D3DTS_END] = {};
+	_float4					m_vReflectionCamPosition = {};
+
+
 
 	_float4					m_vCamPosition = {};
 

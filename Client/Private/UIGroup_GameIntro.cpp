@@ -185,8 +185,8 @@ void CUIGroup_GameIntro::Button_Check()
 
 			if (4 == Button->Get_UI_GroupID()) // 설정
 			{
-				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
-				//m_pGameInstance->Set_NextLevel_Open(true, LEVEL_ROYALGARDEN); //Tutorial로 가라
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_ROYALGARDEN); //Tutorial로 가라
 			}
 
 			if (5 == Button->Get_UI_GroupID()) // 제작진

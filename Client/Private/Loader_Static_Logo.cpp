@@ -1091,6 +1091,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Fog.hlsl"), VTXNULL::Elements, VTXNULL::iNumElements))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Water"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Water.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
 
 #pragma endregion 
 
@@ -2571,6 +2574,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 
 	return S_OK;
 #pragma endregion 
+}
+
+HRESULT CLoader_Static_Logo::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
+{
+	return S_OK;
 }
 
 

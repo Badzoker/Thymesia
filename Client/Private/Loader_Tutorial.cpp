@@ -1294,6 +1294,11 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 	return S_OK;
 }
 
+HRESULT CLoader_Tutorial::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
+{
+	return S_OK;
+}
+
 CLoader_Tutorial * CLoader_Tutorial::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevelID)
 {
 	CLoader_Tutorial*	pInstance = new CLoader_Tutorial(pDevice, pContext);

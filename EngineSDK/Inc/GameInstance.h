@@ -109,6 +109,14 @@ public:
 
 	void    Set_Zoom_Blur_Center(_float2 _fPos);	
 	_float2 Get_Zoom_Blur_Center();	
+
+
+	_float4x4 Get_Reflection_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_matrix Get_Reflection_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_float4x4 Get_Reflection_Transform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_matrix Get_Reflection_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const;
+	_float4 Get_Reflection_CamPosition() const;
+	void Set_Reflection_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix);
 #pragma endregion
 
 

@@ -584,7 +584,7 @@ HRESULT CLevel_Hill::Load_Objects(_int iObject_Level)
 	_ulong dwByte = {};
 	_ulong dwByte2 = {};
 
-	string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+	string strDataPath = "../Bin/DataFiles/ObjectData/Level_Philsopers_Hill/ObjectData";
 
 	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 

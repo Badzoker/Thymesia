@@ -23,6 +23,9 @@ public:
 private:
 	HRESULT Loading_For_Level_RoyalGarden();
 
+private:
+	virtual HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) override;
+
 public:
 	static CLoader_RoyalGarden* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);
 	virtual void Free() override;

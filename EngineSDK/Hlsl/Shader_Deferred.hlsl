@@ -24,7 +24,12 @@ Texture2D g_OccusionTexture;
 Texture2D g_LightShaftXTexture;
 Texture2D g_LightShaftYTexture;
 
+Texture2D g_WaterTexture;
+Texture2D g_WaterDepthTexture;
+
 Texture2D g_MtrlSpecular;
+Texture2D g_RoughnessTexture;
+Texture2D g_EmissiveTexture;
 
 Texture2D g_FinalTexture;
 
@@ -185,15 +190,18 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 {
     PS_OUT_LIGHT Out = (PS_OUT_LIGHT) 0;
 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-    vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
     
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
 	
     vector vShade = saturate(max(dot(normalize(g_vLightDir * -1.f), normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
     Out.vShade = g_vLightDiffuse * vShade;
+    
+    vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
+    vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
 	
     vector vWorldPos;
 	
@@ -218,8 +226,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition; // 캠에서 해당 물체를 바라보는 look 방향을 구한거 .
 	
-    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 90.f);
-
+    Out.vSpecular = ((g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)));
+    
     return Out;
 
 }
@@ -232,6 +240,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     
     vector vMtrlSpecular = g_MtrlSpecular.Sample(LinearSampler, In.vTexcoord);
+    vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y;
@@ -269,7 +278,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
     vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
 
-    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), 50.f) * fAtt;
+    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)) * fAtt;
     
     return Out;
 }
@@ -482,44 +491,22 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     float4 vLight = float4(vShade.xyz, 1.f); // 빛 연산한후 a값 유지
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
-
-    Out.vColor = vDiffuse * vLight + vSpecular;
-	
-    //vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
-    //float fViewZ = vDepthDesc.y;
-	
- //   vector vWorldPos;
-	
-	///* 투영공간상의 위치 */
-	///* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 * 1/w */
- //   vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
- //   vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
- //   vWorldPos.z = vDepthDesc.x;
- //   vWorldPos.w = 1.f;
-   
-	///* 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬  */
- //   vWorldPos = vWorldPos.xyzw * fViewZ;
-
-	///* 로컬위치 * 월드행렬 * 뷰행렬 */
- //   vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-	///* 월드위치 */
-
-	///* 로컬위치 * 월드행렬  */
- //   vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
- //   vWorldPos = mul(vWorldPos, g_LightViewMatrix);
- //   vWorldPos = mul(vWorldPos, g_LightProjMatrix);
+    vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
     
- //   float2 vTexcoord;
-
- //   vTexcoord.x = (vWorldPos.x / vWorldPos.w) * 0.5f + 0.5f;
- //   vTexcoord.y = (vWorldPos.y / vWorldPos.w) * -0.5f + 0.5f;
-
- //   vector vShadowDepthDesc = g_ShadowTexture.Sample(LinearSampler, vTexcoord);
     
- //   if (vShadowDepthDesc.y + 0.15f <= vWorldPos.w)
- //       Out.vColor = Out.vColor * 0.7f;
-    
+    vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vWater = g_WaterTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vWaterDepth = g_WaterDepthTexture.Sample(LinearSampler, In.vTexcoord);
+
+    if(vDepth.r < vWaterDepth.r)
+    {
+        Out.vColor = vWater * vLight + vSpecular + vEmissive;
+    }
+    else
+    {
+        Out.vColor = vDiffuse * vLight + vSpecular + vEmissive;
+    }
+	
     return Out;
 }
 

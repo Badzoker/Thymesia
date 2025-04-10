@@ -19,6 +19,14 @@ HRESULT CPipeLine::Initialize()
 
 	m_vCamPosition = _float4(0.f, 0.f, 0.f, 1.f);
 
+	for (size_t i = 0; i < D3DTS_END; i++)
+	{
+		XMStoreFloat4x4(&m_ReflectionTransformationMatrices[i], XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ReflectionTransformationInverseMatrices[i], XMMatrixIdentity());
+	}
+
+	m_vReflectionCamPosition = _float4(0.f, 0.f, 0.f, 1.f);
+
 	return S_OK;
 }
 
@@ -41,6 +49,13 @@ void CPipeLine::Update()
 	}
 
 	XMStoreFloat4(&m_vCamPosition, XMLoadFloat4x4(&m_TransformationInverseMatrices[D3DTS_VIEW]).r[3]);
+
+	for (size_t i = 0; i < D3DTS_END; i++)
+	{
+		XMStoreFloat4x4(&m_ReflectionTransformationInverseMatrices[i], XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_ReflectionTransformationMatrices[i])));
+	}
+
+	XMStoreFloat4(&m_vReflectionCamPosition, XMLoadFloat4x4(&m_ReflectionTransformationInverseMatrices[D3DTS_VIEW]).r[3]);
 }
 
 CPipeLine* CPipeLine::Create()
