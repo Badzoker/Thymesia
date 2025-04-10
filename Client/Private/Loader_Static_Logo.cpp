@@ -35,6 +35,8 @@
 #include "Projectile_Intro_Card.h"
 #include "Projectile_Air.h"
 #include "Decorative_Tonic.h"
+#include "Decorative_Mutation.h"
+#include "Decorative_Mutation2.h"
 
 #include "UI_Boss_HP_Bar.h"
 #include "UI_Boss_HP_Bar_Gage.h"
@@ -774,6 +776,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Mutation"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageF1/Mutation/Decorative_Mutation.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Mutation2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageM1/Mutation/Decorative_Mutation2.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Normal_ScytheM_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_ScytheM/Normal_ScytheM.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -828,6 +840,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Hat"),
 		CDecorative_Hat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Mutation"),
+		CDecorative_Mutation::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Mutation2"),
+		CDecorative_Mutation2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//∏ÛΩ∫≈Õ Weapon

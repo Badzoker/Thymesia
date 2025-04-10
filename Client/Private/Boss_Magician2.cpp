@@ -139,10 +139,10 @@ void CBoss_Magician2::Active()
 
 void CBoss_Magician2::Stun()
 {
+	m_pState_Manager->ChangeState(new CBoss_Magician2::Stun_State(), this);
 	m_IsStun = true;
 	m_bPatternProgress = true;
 	m_fDelayTime = 0.f;
-	m_pState_Manager->ChangeState(new CBoss_Magician2::Stun_State(), this);
 }
 
 HRESULT CBoss_Magician2::Ready_Components(void* pArg)

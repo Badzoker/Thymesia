@@ -44,12 +44,15 @@ HRESULT CWeapon_Dagger::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pParryActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 2.f,1.f,2.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,80.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pParryActor, _fvector{ 0.f,0.f,80.f,1.f });
 
 	_uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
-
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	settingColliderGroup = GROUP_TYPE::PLAYER;
+	m_pGameInstance->Set_CollisionGroup(m_pParryActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
 	return S_OK;
 }
@@ -86,7 +89,14 @@ void CWeapon_Dagger::Update(_float fTimeDelta)
 			{
 				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
 				{
-					m_pGameInstance->Add_Actor_Scene(m_pActor);
+					if (!strncmp(iter.szName, "Parry", strlen("Parry")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pParryActor);
+					}
+					else
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor);
+					}
 					iter.isPlay = true;
 				}
 			}
@@ -95,6 +105,7 @@ void CWeapon_Dagger::Update(_float fTimeDelta)
 				if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true)
 				{
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+					m_pGameInstance->Sub_Actor_Scene(m_pParryActor);
 
 					m_bColliderOff = false;
 					if (!iter.isEventActivate)
@@ -104,10 +115,17 @@ void CWeapon_Dagger::Update(_float fTimeDelta)
 		}
 	}
 	else
+	{
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+		m_pGameInstance->Sub_Actor_Scene(m_pParryActor);
+	}
 
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 10, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pParryActor)))
+		m_pGameInstance->Update_Collider(m_pParryActor, XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+
 }
 
 void CWeapon_Dagger::Late_Update(_float fTimeDelta)

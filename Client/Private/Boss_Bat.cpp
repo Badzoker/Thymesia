@@ -100,10 +100,10 @@ void CBoss_Bat::Active()
 
 void CBoss_Bat::Stun()
 {
+	m_pState_Manager->ChangeState(new CBoss_Bat::Stun_State(), this);
 	m_IsStun = true;
 	m_bPatternProgress = true;
 	m_fDelayTime = 0.f;
-	m_pState_Manager->ChangeState(new CBoss_Bat::Stun_State(), this);
 }
 
 HRESULT CBoss_Bat::Ready_Components(void* pArg)

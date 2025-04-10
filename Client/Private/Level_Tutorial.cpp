@@ -342,11 +342,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
         {
         case BOSS_VARG:
             pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
-            //    return E_FAIL;
-           
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"), CATEGORY_BOSS, &pDesc)))
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
                 return E_FAIL;
+           
+            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"), CATEGORY_BOSS, &pDesc)))
+            //    return E_FAIL;
 
             //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
             //    return E_FAIL;
@@ -377,14 +377,16 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
             //    return E_FAIL;
             break;
         case NORMAL_VILLAGE_M1:
-            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
-            //    return E_FAIL;
+            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+                return E_FAIL;
             break;
         case NORMAL_VILLAGE_F0:
-            //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+            pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
             //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF0"), CATEGORY_NORMAL, &pDesc)))
             //    return E_FAIL;
+            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
+                 return E_FAIL;
             break;
         case NORMAL_VILLAGE_F1:
             //pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;

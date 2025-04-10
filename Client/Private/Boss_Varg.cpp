@@ -269,10 +269,10 @@ void CBoss_Varg::Active()
 
 void CBoss_Varg::Stun()
 {
+    m_pState_Manager->ChangeState(new CBoss_Varg::Stun_State(), this);
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
-    m_pState_Manager->ChangeState(new CBoss_Varg::Stun_State(), this);
 }
 
 void CBoss_Varg::Near_Pattern_Create()
@@ -966,52 +966,76 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 41;
     pObject->m_iMonster_State = STATE_EXECUTION;
-    //pObject->RotateDegree_To_Player();
     pObject->m_bCan_Move_Anim = true;
 
     /* 선환 추가 */
     pObject->m_pModelCom->Get_VecAnimation().at(41)->SetLerpTime(0.1f);
     pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(15.f);
 
-
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    //나중에 페이즈 구분 해줘야할듯
-      //1페이즈이고 애님 끝났으면 변환시키기
-    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 130.f && !m_bNeed_Look_Player)
-        m_bNeed_Look_Player = true;
-
-    if (!m_bNeed_Look_Player && (*pObject->m_Player_State == CPlayer::STATE_Varg_Execution))
+    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
     {
-        _float teleportDistance = 0.7f;
-        _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
-        _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
-        _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+        _float fCurrenTrackPos = pObject->m_pModelCom->Get_CurrentAnmationTrackPosition();
 
-        vPlayerLook = XMVector3Normalize(vPlayerLook);
-        vPlayerRight = XMVector3Normalize(vPlayerRight);
+        if (fCurrenTrackPos >= 20.f && !m_bNeed_Look_Player)
+        {
+            m_bNeed_Look_Player = true;
 
-        _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
-        vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, 0.25f));
+            _float teleportDistance = 1.1f;
+            _vector vPlayerLook = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+            _vector vPlayerRight = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT));
+            _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
-        pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
-        pObject->RotateDegree_To_Player();
+            _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+            vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerRight, 0.4f));
+
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+            pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+        }
+        else if (fCurrenTrackPos >= 155.f && !m_bOne_More_Look)
+        {
+            m_bOne_More_Look = true;
+
+            _float teleportDistance = 1.1f;
+            _vector vPlayerLook = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+            _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+            _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+            pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+        }
+
+        if (pObject->m_iPhase == PHASE_ONE && fCurrenTrackPos >= 150.f)
+        {
+            m_iIndex = 40;
+            pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
+            pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+            _float teleportDistance = 1.1f;
+            _vector vPlayerLook = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+            _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+
+            _vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+            pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+            pObject->m_pTransformCom->LookAt(vPlayerPos);
+        }
+        else if (pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->GetAniFinish())
+        {
+            pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
+        }
     }
-
-
-    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f)
+    else if (m_iIndex == 40 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
-        m_iIndex = 40;
-        pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
-        pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-    }
-    if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->GetAniFinish())
-    {
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Dead_State, pObject);
+        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
     }
 
 #pragma region Effect_CutScene
@@ -1063,10 +1087,6 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 
 #pragma endregion
 
-    if (m_iIndex == 40 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
-    {
-        pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(true), pObject);
-    }
 }
 
 void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)

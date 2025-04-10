@@ -43,6 +43,7 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pParryActor = { nullptr };
 private:
 	_bool              m_bColliderOff = {};
 	_uint              m_iPreAnimIndex = {};

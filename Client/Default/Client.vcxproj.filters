@@ -973,6 +973,12 @@
     <Filter Include="02.GameObject\Player\PlayerSkill\SkillScythe">
       <UniqueIdentifier>{7e8bd854-d601-4be4-a28a-c22c51e47cab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF1\Decorative">
+      <UniqueIdentifier>{7c34bcbc-0961-4fe5-be6d-c250c7a2e05c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative">
+      <UniqueIdentifier>{65ef2c4c-5886-4d76-a167-77447bb03d64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1833,6 +1839,12 @@
     <ClInclude Include="..\public\PlayerSkillMgr.h">
       <Filter>02.GameObject\Player\PlayerSkill\PlayerSkillMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Mutation.h">
+      <Filter>02.GameObject\Monster\00. Normal\Female\VillageF1\Decorative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Mutation2.h">
+      <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2683,6 +2695,12 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerSkillMgr.cpp">
       <Filter>02.GameObject\Player\PlayerSkill\PlayerSkillMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Mutation.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Female\VillageF1\Decorative</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Mutation2.cpp">
+      <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
