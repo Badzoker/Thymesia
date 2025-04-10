@@ -44,8 +44,8 @@ private:
 	_float							m_fAspect = { 0.f };
 
 	_float							m_fTime = { 0.f };
-	_float							m_fWaveSpeed = { 0.05f };
-	_float							m_fWaveFrequency = { 0.3f };
+	_float							m_fWaveSpeed = { 0.02f };
+	_float							m_fWaveFrequency = { 0.15f };
 	_float							m_fWaveAmplitude = { 0.3f };
 
 	_float							m_fWaveHeight = { 2.f };
@@ -55,12 +55,12 @@ private:
 	_float2							m_fWindDirection = { 0.5f, 0.5f };
 	_float							m_fWindDirDebug[2] = {0.5f, 0.5f};
 
-	_int							m_iFresnelMode = { 1 };
-	_float							m_iDrawMode = { 1 };
+	_int							m_iFresnelMode = { 0 };
+	_float							m_iDrawMode = { 0 };
 
 	_float							m_fDullBlendFactor = { 1.f };
 
-	_float							m_fSpecPerturb = { 2.f };
+	_float							m_fSpecPerturb = { 3.f };
 	_float							m_fSpecPower = { 100.f };
 
 public:
