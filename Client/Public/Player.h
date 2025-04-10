@@ -9,6 +9,7 @@ END
 
 
 class CStateMgr;
+class CPlayerSkillMgr;
 
 BEGIN(Client)
 
@@ -96,7 +97,9 @@ public:
 		STATE_LIGHT_EXECUTION_R,
 		STATE_STUN_EXECUTE_START_URD,
 		STATE_URD_EXECUTION,
-		STATE_STUN_EXECUTE_START_VARG,
+		STATE_STUN_EXECUTE_START_VARG, // 바그 처형 시작 모션 
+		STATE_STUN_EXECUTE_START_PUNCHMAN,
+
 
 		/*앉기 및 의자 상호작용 */
 		STATE_ARCHIVE_SIT_START,
@@ -172,6 +175,10 @@ public:
 		STATE_LOBBY_IDLE_01,
 		STATE_LOBBY_IDLE_01_END,
 
+		/* 플레이어 변종 오두르에게 스킬 당할 때의 모션 */
+		STATE_HURT_MUTATION_MAGICIAN_CATCH,
+
+
 	};
 
 
@@ -195,10 +202,17 @@ public:
 	};
 
 
-	/*enum PLAYER_TALENT
+	enum PLAYER_TALENT
 	{
-
-	};*/
+		TALENT_START = 1,
+		TALENT_HIT_COMBO = 1 << 1,
+		TALENT_DOUBLE_CLAW = 1 << 2,
+		TALENT_EXECUTION_HP_MP = 1 << 3,
+		TALENT_SWORD_ATTACK_DAMAGE = 1 << 4,
+		TALENT_SWORD_MP = 1 << 5,
+		TALNET_PARRY_MP = 1 << 6,
+		TALENT_CRAW_MP = 1 << 7,
+	};
 
 
 private:
@@ -224,8 +238,18 @@ public:
 
 public:
 	_uint Get_PhaseState() { return m_iPhaseState; }
+
+	/* 플레이어 페이즈 상태 관련 */
 	void Set_ParentPhaseState(_uint _PhaseState) { m_iPhaseState |= _PhaseState; }
 	void Sub_PhaseState(_uint _PhaseState) { m_iPhaseState &= ~_PhaseState; }
+	/* ========================== */
+
+	/* 플레이어 특성(TALENT) 상태 관련 */
+	void Set_TalentState(_uint _TalentState) { m_iTalentState |= _TalentState; } // 비트 연산자  ( 매 Scene 넣기 )
+	void Sub_TalentState(_uint _TalentState) { m_iTalentState &= ~_TalentState; } //
+	/* =============================== */
+
+
 	void Set_Lockon(_bool _bLockOn) { m_bLockOn = _bLockOn; }
 	_bool Get_Lockon()const { return m_bLockOn; }
 	void Can_Move();
@@ -275,6 +299,8 @@ private:
 	_uint								m_iPhaseState = { PHASE_IDLE };
 	_uint								m_iPrePhaseState = { PHASE_IDLE };
 
+	_uint								m_iTalentState = { TALENT_START };
+
 	_uint								m_iMonsterExectue = {};		 //  몬스터  처형 상태		
 
 	_uint								m_iNormalExecute_Motion = {};
@@ -321,7 +347,9 @@ private:
 
 private:
 	_float								m_fTimeDelta = { 0.f };
+
 	CStateMgr* m_pStateMgr = { nullptr };
+	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
 
 
 #pragma region UI 관련 함수 
@@ -333,7 +361,7 @@ private:
 	_int								m_iCurrentHp = { 300 };
 
 	_int								m_iFullMp = { 150 };
-	_int								m_iCurrentMp = { 150 };
+	_int								m_iCurrentMp = { 150 }; //150
 
 
 	_uint								m_iAttackPower = { 25 };
@@ -345,11 +373,29 @@ private:
 	_int								m_iMemoryFragment = { 0 };
 
 	/* 플레이어 장착할 스킬 2칸 */
-	_uint								m_iSkill_Eqip_1st = {};
+	_uint								m_iSkill_Eqip_1st = {}; // 리볼버 스킬 
 	_uint								m_iSkill_Eqip_2st = {};
 
 	/*플레이어가 약탈한 스킬 */
 	_uint								m_iTake_Away_Skill = { PLAYER_SKILL_SCYTHE }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
+
+	/* UI 종료 관련 */
+	_bool								m_bUI_End = { false };
+
+
+	/* 플레이어 보너스 관련 */
+	_int								m_iBonus_Sword_Attack_Power = {};
+
+	_int							    m_iBonus_Sword_Attack_Mp = {};
+	_int							    m_iBonus_Claw_Attack_Mp = {};
+	_int							    m_iBonus_Parry_Mp = {};
+
+	_int								m_iBonus_Execution_Hp = { };
+	_int								m_iBonus_Execution_Mp = { };
+
+	/* 포션 회복량 */
+	_int								m_iPotion_Heal_Amount = { 100 };
+
 
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
@@ -374,6 +420,19 @@ public:
 
 	void     Set_Player_Take_Away_Skill(_uint _iSkill) { m_iTake_Away_Skill = _iSkill; }
 
+	void     Set_UI_End(_bool _bUI_OnOff) { m_bUI_End = _bUI_OnOff; }
+
+	/* 새롭게 추가 된 것 들 */
+	void     Set_Bonus_Sword_Attack_Power(_int _BonusAttackPower) { m_iBonus_Sword_Attack_Power = _BonusAttackPower; }
+	void     Set_Bonus_Sword_Attack_Mp(_int _BonusAttackMp) { m_iBonus_Sword_Attack_Mp = _BonusAttackMp; }
+	void     Set_Bonus_Claw_Attack_Mp(_int _BonusClawAttackMp) { m_iBonus_Claw_Attack_Mp = _BonusClawAttackMp; }
+	void     Set_Bonus_Parry_Mp(_int _BonusParryMp) { m_iBonus_Parry_Mp = _BonusParryMp; }
+	void     Set_Bonus_Execution_Hp(_int _BonusExecutionHp) { m_iBonus_Execution_Hp = _BonusExecutionHp; }
+	void     Set_Bonus_Execution_Mp(_int _BonusExecutionMp) { m_iBonus_Execution_Mp = _BonusExecutionMp; }
+
+
+	/* --------------------- */
+
 	_uint    Get_Player_Skill_1st() { return m_iSkill_Eqip_1st; }
 	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }
 	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }
@@ -395,7 +454,20 @@ public:
 
 	_int    Get_MemoryFragment() { return m_iMemoryFragment; }
 
-	_int    Get_Potion_Count() { return m_iPotionCount; }
+	_int* Get_Potion_Count() { return &m_iPotionCount; }
+
+
+	/* 새로 추가 된 것들 UI 연동  */
+	_int* Get_Bonus_Sword_Power() { return &m_iBonus_Sword_Attack_Power; }
+
+	_int* Get_Bonus_Sword_Attack_Mp() { return &m_iBonus_Sword_Attack_Mp; }
+	_int* Get_Bonus_Claw_Attack_Mp() { return &m_iBonus_Claw_Attack_Mp; }
+	_int* Get_Bonus_Parry_Mp() { return &m_iBonus_Parry_Mp; }
+
+	_int* Get_Bonus_Execution_Hp() { return &m_iBonus_Execution_Hp; }
+	_int* Get_Bonus_Execution_Mp() { return &m_iBonus_Execution_Mp; }
+
+	CPlayerSkillMgr* Get_PlayerSkillMgr() { return m_pPlayerSkillMgr; }
 	/* ============================== */
 #pragma endregion 
 

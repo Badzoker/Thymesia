@@ -79,6 +79,15 @@ namespace Engine
 		_uint ItemCount = {};
 	};
 
+	struct ENGINE_DLL Skill_Information
+	{
+		_float* fSkillCoolTime = {};	        // 전체 스킬 쿨 타임 시간	
+		_float* fSkillCurrentCoolTime = {};	    // 현재 스킬 쿨 타임 지난 시간		
+		_bool* bSkill_Unlocked = {};	        // 스킬이 해금 되었는 지 안 되었는 지 확인	
+		_bool* bSkill_CanUse = {};		        // 스킬이 현재 쿨타임이 지나 사용이 가능 한 지, 안 한지 체크.	
+		PLAYER_SKILL* eSkill_Name = {};         // 스킬 이름		
+	};
+
 
 	struct ENGINE_DLL VTXPOS	
 	{

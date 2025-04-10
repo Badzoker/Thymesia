@@ -34,6 +34,8 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentPhaseState = pDesc->pParentPhaseState;
+    m_pParentHp = pDesc->pParentHp;
+    m_pParentMp = pDesc->pParentMp;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -62,6 +64,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
 
     return S_OK;
 
@@ -142,6 +145,18 @@ void CRightWeapon::Update(_float fTimeDelta)
                             m_pCamera->ZoomIn();
                         }
 
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out"))
+                        {
+                            m_pCamera->Set_Camera_ZoomOutSpeed(5.f);
+                            m_pCamera->ZoomOut();
+                        }
+
+                        if (!strcmp(iter.szName, "Camera_Zoom_Out_2"))
+                        {
+                            m_pCamera->Set_Camera_ZoomOutSpeed(5.f);
+                            m_pCamera->ZoomOut();
+                        }
+
 
                         else if (iter.isEventActivate == false && m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                         {
@@ -158,7 +173,11 @@ void CRightWeapon::Update(_float fTimeDelta)
                                     m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurTime * 0.15f);
                                 }
                             }
+
+
                         }
+
+
                     }
                     break;
                 }
@@ -199,6 +218,19 @@ void CRightWeapon::Update(_float fTimeDelta)
     else
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+        if (!(m_pSet_Body_States->count(curState))
+            && *m_pParentPhaseState != CPlayer::PHASE_EXECUTION
+            && !(m_pSet_Axe_Weapon_States->count(curState))
+            && !(m_pSet_Scythe_Weapon_States->count(curState))
+            && !(m_pSet_Halberd_Weapon_States->count(curState))
+            && !(m_pSet_GreadSword_Weapon_States->count(curState))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+            && !(m_pSet_Claw_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState)))
+        {
+
+        }
     }
 #pragma endregion  
 
@@ -209,6 +241,7 @@ void CRightWeapon::Update(_float fTimeDelta)
         m_fHitStopTime = 0.f;
         m_bCollisionOn = true;
     }
+
 
     if (m_bHitStopOnOff)
     {
@@ -376,6 +409,25 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
     }
 #pragma endregion
+
+#pragma region UI 연동 작업 
+
+
+    _int IncreaseMp_Amount = *static_cast<CPlayer*>(m_pParent)->Get_Bonus_Sword_Attack_Mp() + 6;
+    _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+
+    if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때        
+    {
+        if (m_iFullMp > *m_pParentMp)
+            *m_pParentMp += m_iFullMp - *m_pParentMp;
+    }
+
+    else
+    {
+        *m_pParentMp += IncreaseMp_Amount;
+    }
+
+#pragma endregion 
 }
 
 void CRightWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)

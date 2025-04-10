@@ -107,6 +107,8 @@ HRESULT CWater::Render_Reflection()
 	m_pVIBufferCom->Bind_InputAssembler();
 
 	m_pVIBufferCom->Render();
+
+	return S_OK;	
 }
 
 HRESULT CWater::Ready_Components(void* _pArg)
