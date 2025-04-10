@@ -151,7 +151,7 @@ HRESULT CWater::Bind_ShaderResources()
 	if(FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Reflection"), m_pShaderCom, "g_ReflectionTexture")))
 		return E_FAIL;
 
-	if(FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 1)))
+	if(FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectionView", &m_pGameInstance->Get_Reflection_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))

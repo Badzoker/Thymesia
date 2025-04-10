@@ -169,21 +169,21 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float dullBrightBlendFactor = g_dullBlendFactor * brightness;
     
-    Out.vColor = (dullBrightBlendFactor * dullColor + (1 - dullBlendFactor) * combinedColor);
+    Out.vColor = (dullBrightBlendFactor * dullColor) + (1 - dullBlendFactor) * combinedColor;
     
     float4 speccolor;
 
-    float3 lightSourceDir = normalize(float3(0.1f, 0.6f, 0.5f));
+    float3 lightSourceDir = normalize(float3(0.5f, 0.5f, 0.5f));
 
-    float3 halfvec = normalize(eyeVector + +float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
-	
-    float3 temp = 0;
+    float3 halfvec = normalize(eyeVector + lightSourceDir + float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
+    
+    float3 temp = 0.1f;
 
     temp.x = pow(dot(halfvec, normalVector), specPower);
 	
     speccolor = float4(0.98, 0.97, 0.7, 0.6);
 	
-    speccolor = speccolor * temp.x;
+    speccolor = speccolor * abs(temp.x);
 
     speccolor = float4(speccolor.x * speccolor.w, speccolor.y * speccolor.w, speccolor.z * speccolor.w, 0);
     
