@@ -23,6 +23,8 @@ public:
 		_uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_uint* pParentPhaseState = { nullptr };
+		_int* pParentHp = { nullptr };
+		_int* pParentMp = { nullptr };
 	};
 private:
 	CClawWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -47,6 +49,9 @@ private:
 
 	PxRigidDynamic* m_pActor = { nullptr };
 
+
+	_int* m_pParentHp = { nullptr };
+	_int* m_pParentMp = { nullptr };
 
 private:
 	_float			   m_fTimeDelta = { 0.f };

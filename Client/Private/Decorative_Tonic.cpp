@@ -82,7 +82,7 @@ HRESULT CDecorative_Tonic::Render()
 
         m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(17);
         m_pModelCom->Render(i);
     }
 

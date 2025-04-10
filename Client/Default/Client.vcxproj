@@ -303,6 +303,8 @@
     <ClInclude Include="..\public\Parry_L.h" />
     <ClInclude Include="..\public\Parry_R.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\public\PlayerSkillMgr.h" />
+    <ClInclude Include="..\public\PlayerSkillState.h" />
     <ClInclude Include="..\public\PlayerSprint.h" />
     <ClInclude Include="..\public\Player_Weapon_Axe.h" />
     <ClInclude Include="..\public\Player_Weapon_Cane.h" />
@@ -314,6 +316,12 @@
     <ClInclude Include="..\Public\Projectile_Dagger.h" />
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
+    <ClInclude Include="..\public\SkillAxe.h" />
+    <ClInclude Include="..\public\SkillCane.h" />
+    <ClInclude Include="..\public\SkillGreadSword.h" />
+    <ClInclude Include="..\public\SkillHalberd.h" />
+    <ClInclude Include="..\public\SkillJavelinSword.h" />
+    <ClInclude Include="..\public\SkillScythe.h" />
     <ClInclude Include="..\Public\SpecificObject.h" />
     <ClInclude Include="..\Public\Stand_Stack_Sword.h" />
     <ClInclude Include="..\public\StunnedEnd.h" />
@@ -586,6 +594,8 @@
     <ClCompile Include="..\private\Parry_R.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\PlayerSkillMgr.cpp" />
+    <ClCompile Include="..\private\PlayerSkillState.cpp" />
     <ClCompile Include="..\private\PlayerSprint.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Axe.cpp" />
     <ClCompile Include="..\private\Player_Weapon_Cane.cpp" />
@@ -597,6 +607,12 @@
     <ClCompile Include="..\Private\Projectile_Dagger.cpp" />
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
+    <ClCompile Include="..\private\SkillAxe.cpp" />
+    <ClCompile Include="..\private\SkillCane.cpp" />
+    <ClCompile Include="..\private\SkillGreadSword.cpp" />
+    <ClCompile Include="..\private\SkillHalberd.cpp" />
+    <ClCompile Include="..\private\SkillJavelinSword.cpp" />
+    <ClCompile Include="..\private\SkillScythe.cpp" />
     <ClCompile Include="..\Private\SpecificObject.cpp" />
     <ClCompile Include="..\Private\Stand_Stack_Sword.cpp" />
     <ClCompile Include="..\private\StunnedEnd.cpp" />

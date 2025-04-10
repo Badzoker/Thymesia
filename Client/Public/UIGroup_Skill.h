@@ -56,12 +56,12 @@ private:
 	_bool m_bEscape = { false };
 
 public:
-	deque<PLAYER_SKIL>& Get_PlayerSkill_List() { return m_deqOpenSkill; }
+	deque<PLAYER_SKILL>& Get_PlayerSkill_List() { return m_deqOpenSkill; }
 
 private:
 	LEVELID m_eMyLevel = {};
 	map<_uint, pair<_bool, CUI_Skill_Slot*>> m_mapSlotInfo;
-	deque<PLAYER_SKIL> m_deqOpenSkill = {}; // 해금된 스킬들을 vector에 저장한다
+	deque<PLAYER_SKILL> m_deqOpenSkill = {}; // 해금된 스킬들을 vector에 저장한다
 
 public:
 	static CUIGroup_Skill* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

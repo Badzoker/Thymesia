@@ -949,6 +949,30 @@
     <Filter Include="02.GameObject\Water">
       <UniqueIdentifier>{62f66a85-2c9c-44d6-b82b-0f2778cc661d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill">
+      <UniqueIdentifier>{c5321c19-3002-49ee-9749-07badd50c900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\PlayerSkillMgr">
+      <UniqueIdentifier>{c932d2b0-a4df-4243-8bec-56b61471c26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillAxe">
+      <UniqueIdentifier>{1a43cb37-02ba-4e31-bc5b-f4eaf2b9cd5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillCane">
+      <UniqueIdentifier>{f4f3995e-478d-47a1-8863-9d4b8ea90cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillGreadSword">
+      <UniqueIdentifier>{b3d7aef6-4bf2-49b4-8b57-f5f9767e7f18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillHalberd">
+      <UniqueIdentifier>{fe06525d-ba27-42c6-97c6-e435d77e8de2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillJavelinSword">
+      <UniqueIdentifier>{b7fac72d-faf0-4d15-a6a5-100a68899c1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\PlayerSkill\SkillScythe">
+      <UniqueIdentifier>{7e8bd854-d601-4be4-a28a-c22c51e47cab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1785,6 +1809,30 @@
     <ClInclude Include="..\Public\Water.h">
       <Filter>02.GameObject\Water</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerSkillState.h">
+      <Filter>02.GameObject\Player\PlayerSkill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillScythe.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillScythe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillJavelinSword.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillJavelinSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillHalberd.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillHalberd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillGreadSword.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillGreadSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillCane.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillCane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillAxe.h">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillAxe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerSkillMgr.h">
+      <Filter>02.GameObject\Player\PlayerSkill\PlayerSkillMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2611,6 +2659,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>02.GameObject\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerSkillState.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillScythe.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillScythe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillJavelinSword.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillJavelinSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillHalberd.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillHalberd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillGreadSword.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillGreadSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillCane.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillCane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillAxe.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\SkillAxe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerSkillMgr.cpp">
+      <Filter>02.GameObject\Player\PlayerSkill\PlayerSkillMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

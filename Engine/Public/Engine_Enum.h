@@ -88,41 +88,44 @@ namespace Engine
 
 	enum Player_Hitted_State
 	{
-		PLAYER_HURT_KNOCKDOWN,			// 캐릭터 넉다운
-		PLAYER_HURT_HURTMFL,			// 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTSF,				// 아주 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTSL,				// 아주 조금 뒤로 이동하면서 휘청 
-		PLAYER_HURT_HURTLF,				// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
-		PLAYER_HURT_HURXXLF,			// 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
-		PLAYER_HURT_KnockBackF,			// 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
-		PLAYER_HURT_FallDown,			// 공중에 띄워지면서 날라감
-		PLAYER_HURT_STUN,			    // 스턴걸기
-		PLAYER_HURT_REBOUND,            // 몬스터가 패링했을때
-		PLAYER_HURT_CATCH,              // 몬스터한테 잡혔을 때
-		PLAYER_HURT_MAGICIAN_CATCH,     // 마술사의 스킬에 당할 때		
-		PLAYER_HURT_END
+		PLAYER_HURT_KNOCKDOWN,			     // 캐릭터 넉다운
+		PLAYER_HURT_HURTMFL,			     // 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSF,				     // 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTSL,				     // 아주 조금 뒤로 이동하면서 휘청 
+		PLAYER_HURT_HURTLF,				     // 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
+		PLAYER_HURT_HURXXLF,			     // 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
+		PLAYER_HURT_KnockBackF,			     // 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
+		PLAYER_HURT_FallDown,			     // 공중에 띄워지면서 날라감
+		PLAYER_HURT_STUN,			         // 스턴걸기
+		PLAYER_HURT_REBOUND,                 // 몬스터가 패링했을때
+		PLAYER_HURT_CATCH,                   // 몬스터한테 잡혔을 때
+		PLAYER_HURT_MAGICIAN_CATCH,          // 마술사의 스킬에 당할 때	
+		PLAYER_HURT_MUTATION_MAGICIAN_CATCH, // 변이 마술사에게 스킬을 당할 때	
+		PLAYER_HURT_END,
 	};
 
-	enum PLAYER_SKIL
+
+	enum PLAYER_SKILL
 	{
-		PLAYER_SKILL_START,
-		PLAYER_SKILL_AXE,
-		PLAYER_SKILL_BLOODWHIP,
+		PLAYER_SKILL_START,	
+		PLAYER_SKILL_AXE,	
+		PLAYER_SKILL_BLOODWHIP,	
 		PLAYER_SKILL_BOW,
-		PLAYER_SKILL_CANESWORD,
-		PLAYER_SKILL_DAGGER,
-		PLAYER_SKILL_FISTBLADE,
+		PLAYER_SKILL_CANESWORD,	
+		PLAYER_SKILL_DAGGER,	
+		PLAYER_SKILL_FISTBLADE,	
 		PLAYER_SKILL_GREADSWORD,
-		PLAYER_SKILL_HALBERD,
+		PLAYER_SKILL_HALBERD,	
 		PLAYER_SKILL_HAMMER,
 		PLAYER_SKILL_KNIFE,
 		PLAYER_SKILL_MAGICIANLV2,
-		PLAYER_SKILL_PUPPET,
+		PLAYER_SKILL_PUPPET,	
 		PLAYER_SKILL_SCYTHE,
-		PLAYER_SKILL_SHIELD,
+		PLAYER_SKILL_SHIELD,	
 		PLAYER_SKILL_TWINSWORD,
 		PLAYER_SKILL_URDSWORD,
-		PLAYER_SKILL_VARGSWORD,
+		PLAYER_SKILL_VARGSWORD,	
+		PLAYER_SKILL_JAVELINSWORD,	
 		PLAYER_SKILL_END,	
 	};
 

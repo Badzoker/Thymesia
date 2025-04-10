@@ -17,6 +17,7 @@
 #include "Player_Weapon_Cane_Sword.h"
 #include "Player_Weapon_GreadSword.h"
 #include "Player_Weapon_JavelinSword.h"
+#include "PlayerSkillMgr.h"	
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CContainerObject(pDevice, pContext)
@@ -52,6 +53,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	{
 		MSG_BOX("Failed to Created : StateMgr");
 	}
+
+	m_pPlayerSkillMgr = CPlayerSkillMgr::Create();
+	if (m_pPlayerSkillMgr == nullptr)
+	{
+		MSG_BOX("Failed to Created : PlayerSkillMgr");
+	}
+
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
@@ -113,6 +121,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	//	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_AUTO, 2.0f, 0.5f);
 	//}
 
+	//m_pPlayerSkillMgr->UnLockSkill(PLAYER_SKILL_AXE);	
+
 #pragma region Mouse_Input
 
 	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))
@@ -163,7 +173,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 {
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		//m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 	}
 
@@ -215,7 +225,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_iState = STATE_GRACE_Execution;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN:
-				m_iState = STATE_PUNCH_MAN_Execution;
+				m_iState = STATE_STUN_EXECUTE_START_PUNCHMAN;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_URD:
 				m_iState = STATE_STUN_EXECUTE_START_URD;
@@ -377,95 +387,165 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 void CPlayer::Keyboard_section(_float fTimeDelta)
 {
 #pragma region 스킬공격 자벨린	
-	if ((m_pGameInstance->isKeyEnter(DIK_6))
-		&& m_iState != STATE_DEAD
-		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
-	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_JAVELIN_SWORD;
-	}
+	//if ((m_pGameInstance->isKeyEnter(DIK_6))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_JAVELIN_SWORD;
+	//}
 #pragma endregion 
 #pragma region 스킬공격 대검	
-	if ((m_pGameInstance->isKeyEnter(DIK_5))
-		&& m_iState != STATE_DEAD
-		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
-	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_GREATSWORD;
-	}
+	//if ((m_pGameInstance->isKeyEnter(DIK_5))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_GREATSWORD;
+	//}
 #pragma endregion 
 #pragma region 스킬공격 지팡이	
-	if ((m_pGameInstance->isKeyEnter(DIK_4))
-		&& m_iState != STATE_DEAD
-		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
-	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_CANE_SWORD_SP02;
-	}
+	//if ((m_pGameInstance->isKeyEnter(DIK_4))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_CANE_SWORD_SP02;
+	//}
 #pragma endregion 
 #pragma region 스킬공격 도끼		
-	if ((m_pGameInstance->isKeyEnter(DIK_3))
-		&& m_iState != STATE_DEAD
-		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
-	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_AXE;
-	}
+	//if ((m_pGameInstance->isKeyEnter(DIK_3))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_AXE;
+	//}
 #pragma endregion 
 #pragma region 스킬공격 낫
-	if ((m_pGameInstance->isKeyEnter(DIK_2))
-		&& m_iState != STATE_DEAD
-		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
-		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
-		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
-		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
-		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
-	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_SCYTHE_B;
-	}
+	//if ((m_pGameInstance->isKeyEnter(DIK_2))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_SCYTHE_B;
+	//}
 #pragma endregion 
 #pragma region 스킬공격 할버드 
+	//if ((m_pGameInstance->isKeyEnter(DIK_1))
+	//	&& m_iState != STATE_DEAD
+	//	&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+	//	&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+	//{
+	//	m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
+	//	m_iPhaseState |= CPlayer::PHASE_FIGHT;
+	//	m_iState = STATE_HALBERDS_B;
+	//}
+#pragma endregion 
 	if ((m_pGameInstance->isKeyEnter(DIK_1))
-		&& m_iState != STATE_DEAD
 		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
 		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
 		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
-		&& !(m_iPhaseState & CPlayer::PHASE_LADDER))
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)
+		&& m_iState != STATE_DEAD)
 	{
-		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
-		m_iPhaseState |= CPlayer::PHASE_FIGHT;
-		m_iState = STATE_HALBERDS_B;
+		switch (m_iSkill_Eqip_1st)
+		{
+		case PLAYER_SKILL::PLAYER_SKILL_AXE:
+			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_AXE;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
+			if (m_pPlayerSkillMgr->Get_VecState().at(1)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_CANE_SWORD_SP02;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
+			if (m_pPlayerSkillMgr->Get_VecState().at(2)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_GREATSWORD;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
+			if (m_pPlayerSkillMgr->Get_VecState().at(3)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_HALBERDS_B;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
+			if (m_pPlayerSkillMgr->Get_VecState().at(4)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_JAVELIN_SWORD;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
+			if (m_pPlayerSkillMgr->Get_VecState().at(5)->Priority_Update(this, fTimeDelta))
+			{
+				m_iState = STATE_SCYTHE_B;
+				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+				m_iPhaseState |= CPlayer::PHASE_FIGHT;
+				m_iCurrentMp -= 20;
+			}
+			break;
+		}
+
 	}
-#pragma endregion 
+
+
 
 #pragma region 죽음 
 	if ((m_pGameInstance->isKeyEnter(DIK_T) || m_iCurrentHp <= 0)
@@ -490,6 +570,21 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.		
 		m_iPhaseState |= CPlayer::PHASE_HEAL;
 		m_iPotionCount--;	 // 포션 수 감소 
+
+		if (m_iCurrentHp + m_iPotion_Heal_Amount > m_iFullHp  // 회복량이 100인데 100을 증가시킬 수 없을때
+			&& m_iFullHp > m_iCurrentHp)
+		{
+			m_iCurrentHp += (m_iCurrentHp + m_iPotion_Heal_Amount) - m_iFullHp;
+		}
+
+		else if (m_iCurrentHp <= m_iFullHp)	 // 이미 체력 300인데 회복할려고 할 때 
+		{
+			m_iCurrentHp = m_iFullHp;
+		}
+
+		else
+			m_iCurrentHp += m_iPotion_Heal_Amount;	 // 현재 체력량이 회복시켜도 풀 hp보다  넘지 않을 때 
+
 		m_iState = STATE_HEAL;
 	}
 #pragma endregion 
@@ -944,6 +1039,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	__super::Update(fTimeDelta);
 
+	m_pPlayerSkillMgr->Update_Skill_CoolTime(this, fTimeDelta);
+
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
 
@@ -1022,8 +1119,11 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	BodyDesc.pParentExectueMonsterState = &m_iMonster_Execution_Category;
 
 	BodyDesc.fSpeedPerSec = 0.f;
-	//BodyDesc.fSpeedPerSec = 1.f;
 	BodyDesc.fRotationPerSec = 0.f;
+
+	BodyDesc.pParentHp = &m_iCurrentHp;
+	BodyDesc.pParentMp = &m_iCurrentMp;
+
 
 	BodyDesc.iCurLevel = pDesc->iCurLevel;
 
@@ -1048,6 +1148,9 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	RightWeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	RightWeaponDesc.fSpeedPerSec = 0.f;
 	RightWeaponDesc.fRotationPerSec = 10.f;
+	RightWeaponDesc.pParentHp = &m_iCurrentHp;
+	RightWeaponDesc.pParentMp = &m_iCurrentMp;
+
 
 	RightWeaponDesc.iCurLevel = pDesc->iCurLevel;
 
@@ -1221,6 +1324,9 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 
 	RightClawWeaponDesc.iCurLevel = pDesc->iCurLevel;
 
+	RightClawWeaponDesc.pParentHp = &m_iCurrentHp;
+	RightClawWeaponDesc.pParentMp = &m_iCurrentMp;
+
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
 		return E_FAIL;
 
@@ -1271,6 +1377,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			switch (m_iState)
 			{
 			case STATE::STATE_PARRY_L:
+			{
 				if (Parry == 0)
 				{
 					m_iState = STATE_PARRY_DEFLECT_L;
@@ -1282,8 +1389,22 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
 				}
 
+
+
+
+				if ((m_iCurrentMp + m_iBonus_Parry_Mp) > m_iFullMp) // Mp가 이미 더 클 때              
+				{
+					if (m_iFullMp > m_iCurrentMp)
+						m_iCurrentMp += m_iFullMp - m_iCurrentMp;
+				}
+				else
+				{
+					m_iCurrentMp += m_iBonus_Parry_Mp;
+				}
+
 				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_LEFT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-				break;
+			}
+			break;
 			case STATE::STATE_PARRY_R:
 				if (Parry == 0)
 				{
@@ -1294,6 +1415,17 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				{
 					m_iState = STATE_PARRY_DEFLECT_R_UP;
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+				}
+
+
+				if ((m_iCurrentMp + m_iBonus_Parry_Mp) > m_iFullMp) // Mp가 이미 더 클 때				      
+				{
+					if (m_iFullMp > m_iCurrentMp)
+						m_iCurrentMp += m_iFullMp - m_iCurrentMp;
+				}
+				else
+				{
+					m_iCurrentMp += m_iBonus_Parry_Mp;
 				}
 
 				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_RIGHT, vHitPosition, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
@@ -1445,6 +1577,19 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					//m_pStateMgr->Get_VecState().at(63)->Set_GetMonsterPos(fMonsterPos);		
 
 					m_pStateMgr->Get_VecState().at(63)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+					break;
+				}
+				case Player_Hitted_State::PLAYER_HURT_MUTATION_MAGICIAN_CATCH:
+				{
+					m_iState = CPlayer::STATE_HURT_MUTATION_MAGICIAN_CATCH;  // 65												
+					/* 몬스터 공격 방향 */
+					m_pStateMgr->Get_VecState().at(65)->Set_MonsterLookDir(fMonsterLookDir);
+
+					_float4 FinalPos = { -42.2f,m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1],-100.46f,1.f };
+					m_pStateMgr->Get_VecState().at(65)->Set_GetMonsterPos(FinalPos);
+
+					m_pStateMgr->Get_VecState().at(65)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
 					break;
 				}
@@ -1629,9 +1774,11 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 		if (m_iPhaseState & PHASE_INTERACTION)
 		{
-			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
+			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))//m_bUI_End)	
 			{
 				m_iState = STATE_ARCHIVE_SIT_GETUP;
+
+				m_iAttackPower += m_iBonus_Sword_Attack_Power;  // 의자에서 일어날 때가 특성 적용 타이밍 
 
 			}
 		}
@@ -1794,18 +1941,37 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_LIGHT_EXECUTION_R,
 		STATE_SPRINT_ATTACK_L1,
 		STATE_STUN_EXECUTE_START_VARG,
+		STATE_STUN_EXECUTE_START_PUNCHMAN,
+		STATE_PUNCH_MAN_Execution,
 	};
 #pragma endregion 
 #pragma region Player Camera State
 	m_set_Player_Camera_States =
 	{
+
 		STATE_HARMOR_EXECUTION,
 		STATE_LV1Villager_M_Execution,
 		STATE_Joker_Execution,
 		STATE_Varg_Execution,
-		STATE_STUN_EXECUTE,
+		STATE_STUN_EXECUTE ,   // 이게 처형 시작 모션	
 		STATE_CATCHED,
 		STATE_VARG_RUN_EXECUTION,
+		STATE_GRACE_Execution,
+		STATE_MAGICIAN_Execution,
+		STATE_MAGICIAN_MUTATION_Execution,
+		STATE_MAGICIAN_CATCH,
+		STATE_URD_EXECUTION,
+		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,
+		STATE_HURT_MUTATION_MAGICIAN_CATCH,
+		///
+		//STATE_HARMOR_EXECUTION,
+		//STATE_LV1Villager_M_Execution,
+		//STATE_Joker_Execution,
+		//STATE_Varg_Execution,
+		//STATE_STUN_EXECUTE,
+		//STATE_CATCHED,
+		//STATE_VARG_RUN_EXECUTION,
+		//STATE_HURT_MUTATION_MAGICIAN_CATCH,	
 	};
 #pragma endregion 
 #pragma region Halberd Weapon State
@@ -1859,5 +2025,6 @@ void CPlayer::Free()
 	m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
 	Safe_Release(m_pStateMgr);
+	Safe_Release(m_pPlayerSkillMgr);
 	Safe_Release(m_pNavigationCom);
 }

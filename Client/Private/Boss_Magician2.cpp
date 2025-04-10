@@ -1001,7 +1001,7 @@ void CBoss_Magician2::Attack_Special::State_Enter(CBoss_Magician2* pObject)
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->m_bSpecial_Skill_Progress = true;
-	//pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_CATCH;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_MUTATION_MAGICIAN_CATCH;	
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 

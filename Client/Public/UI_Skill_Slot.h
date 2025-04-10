@@ -48,8 +48,8 @@ public:
 	void Set_NeedItem(ITEM_TYPE eItemType) { m_eNeedItem = eItemType; }
 	ITEM_TYPE Get_NeedItem() { return m_eNeedItem; }
 	
-	void Set_MySkill(PLAYER_SKIL eSkill) { m_eMySkill = eSkill; }
-	PLAYER_SKIL Get_MySkill() { return m_eMySkill; }
+	void Set_MySkill(PLAYER_SKILL eSkill) { m_eMySkill = eSkill; }
+	PLAYER_SKILL Get_MySkill() { return m_eMySkill; }
 private:
 	_uint m_iTexSlot = { 0 };
 	_uint m_iTexEdge = { 1 };
@@ -57,7 +57,7 @@ private:
 
 	_uint m_iIconChange = { 0 };
 	ITEM_TYPE m_eNeedItem = {ITEM_TYPE::ITEM_SKILLPIECE};
-	PLAYER_SKIL m_eMySkill = {};
+	PLAYER_SKILL m_eMySkill = {};
 public:
 	void Set_TexIconOff(_bool bTexOff) { m_bTexIconOff = bTexOff; }
 	_uint Get_TexIconOff() { return m_bTexIconOff; }

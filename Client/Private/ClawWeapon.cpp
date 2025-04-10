@@ -34,6 +34,8 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pParentState = pDesc->pParentState;
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentPhsaeState = pDesc->pParentPhaseState;
+    m_pParentHp = pDesc->pParentHp;
+    m_pParentMp = pDesc->pParentMp;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -391,6 +393,23 @@ void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
     }
 
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+
+#pragma region 발톱 관련 UI
+
+    _int IncreaseMp_Amount = *static_cast<CPlayer*>(m_pParent)->Get_Bonus_Claw_Attack_Mp() + 5;
+    _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+
+    if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때              
+    {
+        if (m_iFullMp > *m_pParentMp)
+            *m_pParentMp += m_iFullMp - *m_pParentMp;
+    }
+    else
+    {
+        *m_pParentMp += IncreaseMp_Amount;
+    }
+#pragma endregion 
 }
 
 void CClawWeapon::OnCollision(CGameObject* _pOther, PxContactPair _information)

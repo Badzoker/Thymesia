@@ -36,6 +36,8 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pParentNavigationCom = pDesc->pParentNavigationCom;
     m_pParentActor = pDesc->pParentActor;
     m_pParentMonsterExecute = pDesc->pParentExectueMonsterState;
+    m_pParentHp = pDesc->pParentHp;
+    m_pParentMp = pDesc->pParentMp;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -434,6 +436,12 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_STUN_EXECUTE_START_VARG:
         STATE_STUN_EXECUTE_START_VARG_Method();
+        break;
+    case CPlayer::STATE_STUN_EXECUTE_START_PUNCHMAN:
+        STATE_STUN_EXECUTE_START_PUNCHMAN_Method();
+        break;
+    case CPlayer::STATE_HURT_MUTATION_MAGICIAN_CATCH:
+        STATE_HURT_MUTATION_MAGICIAN_CATCH_Method();
         break;
     default:
         break;
@@ -2471,6 +2479,21 @@ void CBody_Player::STATE_GRACE_Execution_Method()
 
 }
 
+void CBody_Player::STATE_STUN_EXECUTE_START_PUNCHMAN_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+        *m_pParentState = CPlayer::STATE_PUNCH_MAN_Execution;
+    }
+}
+
 void CBody_Player::STATE_PUNCH_MAN_Execution_Method()
 {
     m_pModelCom->SetUp_Animation(224, false);
@@ -2792,6 +2815,24 @@ void CBody_Player::STATE_STUN_EXECUTE_START_VARG_Method()
     }
 }
 
+void CBody_Player::STATE_HURT_MUTATION_MAGICIAN_CATCH_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+
+    m_pModelCom->SetUp_Animation(212, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
+    if (m_pModelCom->Get_VecAnimation().at(212)->isAniMationFinish())
+    {
+        *m_pParentState = CPlayer::STATE::STATE_GET_UP;
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+    }
+}
+
 
 
 void CBody_Player::STATE_VARG_RUN_EXECUTION_Method()
@@ -2878,7 +2919,6 @@ void CBody_Player::STATE_LADDER_CLIMB_L_DOWN_END_Method()
         _vector PlayerPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
         m_pParentNavigationCom->Find_Closest_Cell(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
-
 
         m_pParent->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, XMVectorSetY(PlayerPos, m_pParentNavigationCom->Compute_Height(PlayerPos)));
     }
@@ -3577,8 +3617,12 @@ void CBody_Player::STATE_GET_UP_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(273)->isAniMationFinish())
     {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentNextStateCan = true;
+
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
-        *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_HITTED;
+
     }
 }
 

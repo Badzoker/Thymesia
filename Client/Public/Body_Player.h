@@ -42,6 +42,9 @@ public:
 		CNavigation* pParentNavigationCom = { nullptr };
 		CGameObject* pParent = { nullptr };
 		PxRigidDynamic* pParentActor = { nullptr };
+
+		_int* pParentHp = { nullptr };
+		_int* pParentMp = { nullptr };
 	};
 
 private:
@@ -144,8 +147,8 @@ public:
 	void STATE_LV1Villager_M_Execution_Method();
 	void STATE_Joker_Execution_Method();
 	void STATE_Varg_Execution_Method();
-	void STATE_STUN_EXECUTE_START_URD_Method();	
-	void STATE_URD_EXECUTION_Method();	
+	void STATE_STUN_EXECUTE_START_URD_Method();
+	void STATE_URD_EXECUTION_Method();
 
 	/* ------------------------------- */
 
@@ -223,6 +226,7 @@ public:
 	void STATE_GRACE_Execution_Method();
 
 	/* 펀치맨 처형 컷신 */
+	void STATE_STUN_EXECUTE_START_PUNCHMAN_Method();
 	void STATE_PUNCH_MAN_Execution_Method();
 
 	/* 오두르 스킬에 맞아서 잡히는 모션 */
@@ -241,6 +245,9 @@ public:
 	/* 바그 처음 처형 모션 시작 */
 	void STATE_STUN_EXECUTE_START_VARG_Method();
 
+	/* 변이 오두르에게 당할 때 */
+	void STATE_HURT_MUTATION_MAGICIAN_CATCH_Method();
+
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -255,7 +262,7 @@ private:
 	_float							m_fZoomBlurDeltaTime = {};
 
 	_float							m_fHitStopTime = {};
-	_float4*						m_fRespawnPosPtr = {};
+	_float4* m_fRespawnPosPtr = {};
 private:
 
 	_uint* m_pParentMonsterExecute = { nullptr };
@@ -264,6 +271,9 @@ private:
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
 	_uint  m_iRenderState = {};
+
+	_int* m_pParentHp = { nullptr };
+	_int* m_pParentMp = { nullptr };
 
 	CStateMgr* m_pParentStateMgr = { nullptr };
 	CNavigation* m_pParentNavigationCom = { nullptr };
@@ -287,15 +297,15 @@ private:
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
-	unordered_set<CPlayer::STATE>* m_pSet_Body_States                = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States         = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States      = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States        = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States       = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States          = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States   = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States       = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
 
 	_bool  m_bFirstCameraPos = { true };
 
