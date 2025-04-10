@@ -31,7 +31,7 @@ void CSoundMgr::Release()
 	m_mapSound.clear();
 
 	m_pSystem->close();	
-	//m_pSystem->release();	
+	m_pSystem->release();	
 }
 
 void CSoundMgr::Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVolume)

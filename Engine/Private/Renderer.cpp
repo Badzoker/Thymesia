@@ -60,9 +60,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Water"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Water_Depth"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 1000.f, 0.f, 0.f))))
-		return E_FAIL;
-
 	CShader_Compute_Deferred::LIGHTSHAFTPARAMS LightShaftDesc = {};
 
 	LightShaftDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
@@ -207,8 +204,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Water"), TEXT("Target_Water"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Water"), TEXT("Target_Water_Depth"))))
-		return E_FAIL;
 	//Occulusion Texture
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Occulsion"), TEXT("Target_Occulsion"))))
 		return E_FAIL;
@@ -416,9 +411,6 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
 
-	if (FAILED(Render_Water()))
-		return E_FAIL;
-
 	if (FAILED(Render_Occulsion()))
 		return E_FAIL;
 
@@ -603,6 +595,16 @@ HRESULT CRenderer::Render_NonBlend()
 	}
 
 	m_RenderObjects[RG_NONBLEND].clear();
+
+	for (auto& pRenderObject : m_RenderObjects[RG_WATER])
+	{
+		if (FAILED(pRenderObject->Render_Reflection()))
+			return E_FAIL;
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[RG_WATER].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
@@ -977,8 +979,6 @@ HRESULT CRenderer::Render_Deferred() //원래 Final에 있었음
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Water"), m_pShader, "g_WaterTexture")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Water_Depth"), m_pShader, "g_WaterDepthTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))

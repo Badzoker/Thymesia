@@ -60,7 +60,7 @@ HRESULT CEmissive_StaticObject::Render()
 
 	if (*m_pDitheringOnOff)
 	{
-		for (size_t i = 0; i < iNumMeshes; i++)
+		for (_uint i = 0; i < iNumMeshes; i++)
 		{
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 				return E_FAIL;
@@ -112,7 +112,7 @@ HRESULT CEmissive_StaticObject::Ready_Components()
 
 	_tchar		szComponentName[MAX_PATH] = {};
 
-	MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), strlen(strComponentName.c_str()), szComponentName, MAX_PATH);
+	MultiByteToWideChar(CP_ACP, 0, strComponentName.c_str(), (_uint)strlen(strComponentName.c_str()), szComponentName, MAX_PATH);
 
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(m_eCurrentLevel, szComponentName,
