@@ -34,6 +34,31 @@ void CUI_TextBox::Priority_Update(_float fTimeDelta)
 
 void CUI_TextBox::Update(_float fTimeDelta)
 {
+	_float2 TextSize = {};
+	_float3 fMyPos = {};
+	switch (m_eTextSort)
+	{
+	case Client::CUI_TextBox::TEXT_CENTER:
+		fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
+		TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+		m_fTextPosition.x = fMyPos.x - TextSize.x / 2;
+		m_fTextPosition.y = fMyPos.y - TextSize.y / 2;
+		break;
+	case Client::CUI_TextBox::TEXT_LEFT:
+		TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+		m_fTextPosition.x = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x;
+		m_fTextPosition.y = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y;
+		break;
+	case Client::CUI_TextBox::TEXT_RIGHT:
+		fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
+		_float3 fMySize = m_pTransformCom->Compute_Scaled();
+		TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
+		m_fTextPosition.x = (fMyPos.x - TextSize.x);
+		m_fTextPosition.y = (fMyPos.y - (TextSize.y / 2));
+		break;
+
+	}
+	
 }
 
 void CUI_TextBox::Late_Update(_float fTimeDelta)
@@ -49,9 +74,7 @@ HRESULT CUI_TextBox::Render()
 {
 	if (m_bRenderOpen)
 	{
-		_float2 TextSize = m_pGameInstance->Get_TextSize(m_strFontName, m_strContentText.c_str());//텍스트 가로 세로 길이
-		m_fTextPosition.x = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).x;
-		m_fTextPosition.y = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).y;
+		
 		_float fZ = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION).z;
 
 		switch (m_eRenderType)

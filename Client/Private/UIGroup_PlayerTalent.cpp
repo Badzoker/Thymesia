@@ -181,6 +181,8 @@ HRESULT CUIGroup_PlayerTalent::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 
 	while (true)
 	{
+		_uint iTextSort = { static_cast<CUIObject::TEXTSORT>(CUIObject::TEXTSORT::TEXT_LEFT) };
+
 		ReadFile(hFile, &fPos, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &fSize, sizeof(_float2), &dwByte, nullptr);
 		ReadFile(hFile, &fRotation, sizeof(_float3), &dwByte, nullptr);
@@ -201,7 +203,11 @@ HRESULT CUIGroup_PlayerTalent::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iGroupID, sizeof(_uint), &dwByte, nullptr);
+		if (iUIType == UI_TEXT)
+		{
+			ReadFile(hFile, &iTextSort, sizeof(_uint), &dwByte, nullptr);
 
+		}
 		if (0 == dwByte)
 		{
 			break;
@@ -224,6 +230,8 @@ HRESULT CUIGroup_PlayerTalent::LoadData_UIObject(_uint iLevelIndex, _uint iScene
 		Desc.iTexNumber = iTextureNum;
 		Desc.iGroupID = iGroupID;
 		Desc.fRotation = fRotation;
+		Desc.eTextSort = static_cast<CUIObject::TEXTSORT>(iTextSort);
+
 		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
 			return E_FAIL;
 
@@ -339,12 +347,119 @@ void CUIGroup_PlayerTalent::Talent_Tab_Change()
 
 		}
 	}
+
+	switch (m_eTabCheck)
+	{
+	case Client::CUIGroup_PlayerTalent::TAB_LIGHTATTACK:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(true);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(false);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(false);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(false);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(false);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(false);
+		}
+		break;
+	case Client::CUIGroup_PlayerTalent::TAB_PARRY:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(false);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(true);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(false);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(false);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(false);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(false);
+		}
+		break;
+	case Client::CUIGroup_PlayerTalent::TAB_DODGE:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(false);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(false);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(true);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(false);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(false);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(false);
+		}
+		break;
+	case Client::CUIGroup_PlayerTalent::TAB_CLAW:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(false);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(false);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(false);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(true);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(false);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(false);
+		}
+		break;
+	case Client::CUIGroup_PlayerTalent::TAB_FEATHER:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(false);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(false);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(false);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(false);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(true);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(false);
+		}
+		break;
+	case Client::CUIGroup_PlayerTalent::TAB_MISC:
+		for (auto& Button : m_pMySceneBase->Find_UI_Button())
+		{
+			if (110 == Button->Get_UI_GroupID()) // °Ë
+				Button->Set_Open_Image(false);
+			if (111 == Button->Get_UI_GroupID()) // Æ¨°Ü³»±â
+				Button->Set_Open_Image(false);
+			if (112 == Button->Get_UI_GroupID()) // È¸ÇÇ
+				Button->Set_Open_Image(false);
+			if (113 == Button->Get_UI_GroupID()) // ¹ßÅé
+				Button->Set_Open_Image(false);
+			if (114 == Button->Get_UI_GroupID()) // ±êÅÐ
+				Button->Set_Open_Image(false);
+			if (115 == Button->Get_UI_GroupID()) // Àü·«
+				Button->Set_Open_Image(true);
+		}
+		break;
+	}
+
 	if (eBefore != m_eTabCheck) // ÅÇ »óÅÂ°¡ º¯°æµÇ¾ú´Ù¸é
 	{
 		m_pText_TalentName->Set_OnOff(false);
 		m_pText_TalentDesc->Set_OnOff(false);
 		m_pText_TalentOpen->Set_OnOff(false);
-		m_pImage_Frame->Set_OnOff(false);
+		//m_pImage_Frame->Set_OnOff(false);
 		m_pImage_Desc->Set_OnOff(false);
 	}
 
@@ -384,11 +499,11 @@ void CUIGroup_PlayerTalent::Talent_Info_Setting()
 	}
 	for (auto& Image : m_pMySceneBase->Find_UI_Image())
 	{
-		if (1 == Image->Get_UI_GroupID())
+	/*	if (1 == Image->Get_UI_GroupID())
 		{
 			Image->Set_OnOff(false);
 			m_pImage_Frame = Image;
-		}
+		}*/
 		if (2 == Image->Get_UI_GroupID())
 		{
 			Image->Set_OnOff(false);
@@ -479,7 +594,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -489,7 +604,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 			
@@ -507,7 +622,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -517,7 +632,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 
@@ -535,7 +650,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -545,7 +660,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 
@@ -563,7 +678,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -573,7 +688,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 
@@ -591,7 +706,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -601,7 +716,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 		}
@@ -618,7 +733,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 					m_pText_TalentName->Set_OnOff(true);
 					m_pText_TalentDesc->Set_OnOff(true);
 					m_pText_TalentOpen->Set_OnOff(true);
-					m_pImage_Frame->Set_OnOff(true);
+					//m_pImage_Frame->Set_OnOff(true);
 					m_pImage_Desc->Set_OnOff(true);
 				}
 				break;
@@ -628,7 +743,7 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 				m_pText_TalentName->Set_OnOff(false);
 				m_pText_TalentDesc->Set_OnOff(false);
 				m_pText_TalentOpen->Set_OnOff(false);
-				m_pImage_Frame->Set_OnOff(false);
+				//m_pImage_Frame->Set_OnOff(false);
 				m_pImage_Desc->Set_OnOff(false);
 			}
 		}

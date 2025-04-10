@@ -204,6 +204,8 @@ HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 
 	while (true)
 	{
+		_uint iTextSort = { static_cast<CUIObject::TEXTSORT>(CUIObject::TEXTSORT::TEXT_LEFT) };
+
 		ReadFile(hFile, &fPos, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &fSize, sizeof(_float2), &dwByte, nullptr);
 		ReadFile(hFile, &fRotation, sizeof(_float3), &dwByte, nullptr);
@@ -224,7 +226,11 @@ HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iGroupID, sizeof(_uint), &dwByte, nullptr);
+		if (iUIType == UI_TEXT)
+		{
+			ReadFile(hFile, &iTextSort, sizeof(_uint), &dwByte, nullptr);
 
+		}
 		if (0 == dwByte)
 		{
 			break;
@@ -247,6 +253,8 @@ HRESULT CUIGroup_Landing::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex
 		Desc.iTexNumber = iTextureNum;
 		Desc.iGroupID = iGroupID;
 		Desc.fRotation = fRotation;
+		Desc.eTextSort = static_cast<CUIObject::TEXTSORT>(iTextSort);
+
 		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
 			return E_FAIL;
 

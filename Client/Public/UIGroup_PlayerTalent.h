@@ -54,7 +54,7 @@ private:
 	CUIObject* m_pText_TalentName = {};  
 	CUIObject* m_pText_TalentDesc = {};  
 	CUIObject* m_pText_TalentOpen = {};  
-	CUIObject* m_pImage_Frame = {};  
+	//CUIObject* m_pImage_Frame = {};  
 	CUIObject* m_pImage_Desc = {};  
 
 private:

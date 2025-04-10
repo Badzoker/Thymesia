@@ -48,6 +48,9 @@ HRESULT CUIObject::Initialize(void * pArg)
 	m_iShaderPassNum = pDesc->iShaderPassNum;
 	m_iTexNumber = pDesc->iTexNumber;
 	m_iGroupID = pDesc->iGroupID;
+
+	m_eTextSort = pDesc->eTextSort;
+
 	m_pTransformCom->Scaling(_float3(pDesc->fSizeX, pDesc->fSizeY, 1.f));
 	m_pTransformCom->Rotation(XMVectorSet(0.0f, 0.0f, 0.1f, 0.0f), pDesc->fRotation.z);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pDesc->fX - (vViewportSize.x * 0.5f), -pDesc->fY + (vViewportSize.y * 0.5f), pDesc->fZ, 1.f));
