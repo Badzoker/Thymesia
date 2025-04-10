@@ -126,6 +126,7 @@ void CCircus_Balloon::Update(_float fTimeDelta)
             if (m_fWigglingTime >= 3.1f)
             {
                 m_fWigglingTime = 0.0f;
+                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, m_pTransformCom->Get_WorldMatrix_Ptr(), m_pTransformCom->Get_WorldMatrix_Ptr());
             }
         }
     }
@@ -136,6 +137,7 @@ void CCircus_Balloon::Update(_float fTimeDelta)
         if (m_fDissolveAmount >= 1.0f)
         {
               m_bDead = true;
+              m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE);
         }
     }
 }
@@ -415,6 +417,7 @@ void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
     //   
     //}
     m_bHitted = true;
+    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 }
 
 void CCircus_Balloon::OnCollision(CGameObject* _pOther, PxContactPair _information)

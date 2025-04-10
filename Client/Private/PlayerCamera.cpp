@@ -147,6 +147,24 @@ void CPlayerCamera::Update(_float fTimeDelta)
                         {
                             dynamic_cast<CPlayer*>(m_pParent)->Set_ParentPhaseState(CPlayer::PHASE_NO_RENDER);
                         }
+#pragma region EFFECT
+                        if (!strcmp(iter.szName, "Effect_Varg_SPAttack_Dust"))
+                        {
+                            _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                            _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK, vPos, vDir);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Varg_SPAttack_Hit"))
+                        {
+                            _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                            _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
+                            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK_HIT, vPos, vDir);
+                            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_VARG_SPATTACK, vPos, vDir);
+                            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_VARG_SPATTACK, vPos, vDir);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+#pragma endregion
                     }
                 }
 

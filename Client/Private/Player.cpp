@@ -1368,6 +1368,10 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 		int a = 4;
 
+#pragma region EFFECT
+		m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_LOOP);
+#pragma endregion
+
 		/* 패링 상태 일시 */
 		if (m_iPhaseState & CPlayer::PHASE_PARRY)
 		{

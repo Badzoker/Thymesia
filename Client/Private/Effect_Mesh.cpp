@@ -78,8 +78,20 @@ void CEffect_Mesh::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Mesh::Update(_float _fTimeDelta)
 {
-	//socket 이면 위치조정 및 시간 체크 및 이제 false 가 되는지 체크
-	__super::Update(_fTimeDelta);
+	if (nullptr != m_pSocketMatrix && nullptr != m_pSettingMatrix) //소켓에 붙을 파티클
+	{
+		_matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));
+
+		if (true == m_bIsPlaying)
+			Timer_Check(_fTimeDelta);
+	}
+	else
+	{
+
+		__super::Update(_fTimeDelta);
+	}
 
 }
 

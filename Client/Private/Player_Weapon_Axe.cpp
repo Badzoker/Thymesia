@@ -178,16 +178,16 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
 
 
                 }
-                else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
-                {
-                    if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
-                    {
-                        m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
-                        iter.isPlay = false;
-                    }
-                }
-#pragma endregion
             }
+            else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+            {
+                if (!strcmp(iter.szName, "Weapon_Trail")) //Trail이 꺼져야 하는 부분
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
+                    iter.isPlay = false;
+                }
+            }
+#pragma endregion
         }
     }
 

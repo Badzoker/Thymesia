@@ -186,7 +186,7 @@ void CEffect_Sword::Calculate_Trail(_float _fTimeDelta)
     {
         Delete_Trail();
         m_dequeCenterPos.push_front(vLook_Sword);
-        m_bisCalculate = false;
+        //m_bisCalculate = false;
     }
 }
 

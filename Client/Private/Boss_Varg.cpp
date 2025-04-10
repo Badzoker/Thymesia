@@ -464,6 +464,23 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+#pragma region Effect_Intro
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Effect_Intro")) //Intro Blink
+            {
+
+                const _float4x4* pSocketMatrix = pObject->m_pModelCom->Get_BoneMatrix("Bip001-Head");
+                pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_VARG_INTRO, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), pSocketMatrix);
+
+                iter.isPlay = true;
+            }
+        }
+#pragma endregion
+    }
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::Idle_State(), pObject);
@@ -1243,6 +1260,25 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
     //항상 거리가 짧으면 바로 잡히는 애니메이션 실행 -> 콜라이더로 검사해야할듯
     if (pObject->m_Is_Catch)
     {
+#pragma region Effect_Catch
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+            {
+                if (!strcmp(iter.szName, "Effect_Catch")) //Catch Eye + Trail
+                {
+
+                    const _float4x4* pSocketMatrix = pObject->m_pModelCom->Get_BoneMatrix("Bip001-Head");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_VARG_CATCH_EYE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), pSocketMatrix);
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_SWORD_VARG_EYE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), pSocketMatrix);
+
+                    iter.isPlay = true;
+                }
+            }
+#pragma endregion
+        }
+
+
         /* 선환 추가 */
         pObject->m_pModelCom->Get_VecAnimation().at(28)->SetLerpTime(0.f);
         pObject->m_pModelCom->Set_LerpFinished(true);
@@ -1265,6 +1301,10 @@ void CBoss_Varg::Catch_State::State_Exit(CBoss_Varg* pObject)
     pObject->m_bCan_Move_Anim = false;
     pObject->m_Is_Catch = false;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+
+#pragma region Effect_Catch
+    pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_VARG_EYE);
+#pragma endregion
 }
 
 #pragma endregion

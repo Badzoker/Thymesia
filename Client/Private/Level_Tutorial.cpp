@@ -567,6 +567,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_AIR)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Varg_Intro_Blink.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_VARG_INTRO)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Varg_Catch_Eye.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_VARG_CATCH_EYE)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -876,6 +884,30 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_READY, 1)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Player_Varg_SpAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Player_Varg_SpAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_VARG_SPATTACK, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark_Player_Varg_SpAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_VARG_SPATTACK, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Player_Varg_SpAttack_Hit.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK_HIT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Spore.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_WorldGas_Spore.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, 1)))
+        return E_FAIL;
+
     //Sword Effect
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
@@ -904,6 +936,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Player_Eye.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
         EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg_Eye.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_VARG_EYE)))
         return E_FAIL;
 
     //Effect_Instancing
@@ -1712,6 +1748,12 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case 13:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Falling_World");
             break;
+        case 14:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Spark_Update");
+            break;
+        case 15:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_World_Continue_Gas");
+            break;
         }
 
         switch (_eEffectName)
@@ -1955,6 +1997,24 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLD_CHARGECLAW_READY:
             pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_ChargeClaw_Ready");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Player_Varg_SpAttack");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_VARG_SPATTACK:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Blood_Player_Varg_SpAttack");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_VARG_SPATTACK:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Spark_Player_Varg_SpAttack");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK_HIT:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Player_Varg_SpAttack_Hit");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_Dust_Spore");
+            break;
+        case Engine::EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE:
+            pDesc.szBufferName = TEXT("Prototype_Component_VIBuffer_Point_Compute_World_Continue_Gas_Spore");
             break;
         }
 #pragma endregion

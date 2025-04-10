@@ -19,8 +19,8 @@ HRESULT CSwordTrail_Buffer::Initialize_Prototype()
 
 HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
 {
-	m_iNumVertices = (2 * 64 * 2) + 2; // 네모가 128개가 필요한 vtx -> 시작점때문에 2개를 더해준다.
-	m_iNumIndices = 6 * 64 * 2; // 세모는 2개 이므로 6개의 인덱스, 네모가 128개이다.
+	m_iNumVertices = (64 * 4) + 4; // 네모가 128개가 필요한 vtx -> 시작점때문에 2개를 더해준다.
+	m_iNumIndices = 64 * 12; // 세모는 2개 이므로 6개의 인덱스, 네모가 128개이다.
 	m_iVertexStride = sizeof(VTXST);
 	m_iIndexStride = 4;
 	m_iNumVertexBuffers = 1;
@@ -95,7 +95,7 @@ HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
 HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vRight, const _float3& _vUp)
 {
 	D3D11_MAPPED_SUBRESOURCE SubSource{};
-	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubSource);
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubSource);
 
 	VTXST* pVertices = static_cast<VTXST*>(SubSource.pData);
 
@@ -103,7 +103,7 @@ HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _ui
 	_vector vDir{}, vStartPos{}, vEndPos{};
 	_float fTexcoordX = {};
 
-	for (_uint i = 0; i < 64; i++)
+	for (_uint i = 0; i < 65; i++)
 	{
 		if (i < _idequeCount)
 		{
@@ -140,9 +140,13 @@ HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _ui
 		else
 		{
 			pVertices[4 * i].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[4 * i].vPosition = vPos;
 			pVertices[(4 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+			pVertices[(4 * i) + 1].vPosition = vPos;
 			pVertices[(4 * i) + 2].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[(4 * i) + 2].vPosition = vPos;
 			pVertices[(4 * i) + 3].vTexcoord = _float2(fTexcoordX, 0.f);
+			pVertices[(4 * i) + 3].vPosition = vPos;
 		}
 	}
 
