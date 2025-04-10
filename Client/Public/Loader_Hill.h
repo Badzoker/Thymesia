@@ -23,6 +23,8 @@ public:
 private:
 	HRESULT Loading_For_Level_Hill();
 	
+private:
+	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) override;
 
 public:
 	static CLoader_Hill* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);

@@ -32,10 +32,6 @@ private:
 	virtual HRESULT Bind_Motion_Blur_ShaderResources();	
 	vector<_bool>			m_vecVisible;
 
-
-	CGameObject* m_pCamera = { nullptr };
-	_bool* m_pDitheringOnOff = { nullptr };
-
 public:
 	static CGroundObject* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	virtual CGameObject* Clone(void* _pArg) override;

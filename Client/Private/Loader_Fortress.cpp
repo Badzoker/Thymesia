@@ -1331,6 +1331,11 @@ HRESULT CLoader_Fortress::Loading_For_Level_Fortress()
 	return S_OK;
 }
 
+HRESULT CLoader_Fortress::Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix)
+{
+	return S_OK;
+}
+
 CLoader_Fortress * CLoader_Fortress::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevelID)
 {
 	CLoader_Fortress*	pInstance = new CLoader_Fortress(pDevice, pContext);

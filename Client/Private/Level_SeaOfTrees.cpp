@@ -54,7 +54,7 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     if (FAILED(Ready_Layer_Structure_Corridor(TEXT("Layer_Corrider_Map"))))
         return E_FAIL;
         
-    if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map"))))
+    if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map")))) // 테스트 안할시 주석처리
         return E_FAIL;
 
     if (FAILED(Ready_Layer_Monster()))
@@ -254,9 +254,11 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-    Load_Objects(313, pLayerTag); //Circus Map 조커 방
-    //Load_Objects(315, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
-    Load_Objects(319, pLayerTag); //Circus Map 엘레베이터 전까지 일반몹 구간
+    if (FAILED(Load_Objects(313, pLayerTag))) //Circus Map 조커 방
+        return E_FAIL;
+
+    if (FAILED(Load_Objects(319, pLayerTag))) //Circus Map 엘레베이터 전까지 일반몹 구간
+        return E_FAIL;
 
     Load_TriggerObjects(2);
 
@@ -268,7 +270,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Corridor(const _tchar* pLayerTa
     if (FAILED(Load_Objects(312, pLayerTag))) //Circus Map 엘레베이터 복도(보스전까지)
         return E_FAIL;
 
-    if (FAILED(Load_SpecificObjects(6)))
+    if (FAILED(Load_SpecificObjects(6))) // 특수 오브젝트(사다리, 엘리베이터 문등)
         return E_FAIL;
 
     return S_OK;
@@ -278,7 +280,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Boss(const _tchar* pLayerTag)
 {
     if (FAILED(Load_Objects(314, pLayerTag)))   //Circus Map 오두르 보스
         return E_FAIL;
-    //Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 
     return S_OK;
 }
@@ -577,7 +578,7 @@ HRESULT CLevel_SeaOfTrees::Load_Objects(_int iObject_Level, const _tchar* pLayer
     _ulong dwByte = {};
     _ulong dwByte2 = {};
 
-    string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+    string strDataPath = "../Bin/DataFiles/ObjectData/Level_SeaofTrees/ObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 

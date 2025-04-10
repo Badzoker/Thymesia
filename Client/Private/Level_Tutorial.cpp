@@ -256,20 +256,9 @@ HRESULT CLevel_Tutorial::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-    //현재 몬스터와 기본맵이 있는 Prototype용 맵							-> Load_Objects(16);
-    //Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
-    //튜토리얼 맵 수정 중 (크기 조절 중 98번 맵파일은 잠시 봉인합니다.		-> Load_Objects(107);
-    // 
-    //Load_Objects(140); //Tutorial Map
-    //Load_Objects(142); //Tutorial Map
-    //if (FAILED(Load_Objects(145)))
-    if (FAILED(Load_Objects(151)))
-        return E_FAIL;//Tutorial Map
-    //Load_Objects(301); //Circus Map
-    //Load_Objects(303); //Circus Map
+    if (FAILED(Load_Objects(151)))//Tutorial Map
+        return E_FAIL;
 
-
-    //Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
     if (FAILED(Load_TriggerObjects(2)))// 이제 보스 입구 쪽에 심어져있는 파일임.
         return E_FAIL;
 
@@ -1148,7 +1137,7 @@ HRESULT CLevel_Tutorial::Load_Objects(_int iObject_Level)
     _ulong dwByte = {};
     _ulong dwByte2 = {};
 
-    string strDataPath = "../Bin/DataFiles/ObjectData/ObjectData";
+    string strDataPath = "../Bin/DataFiles/ObjectData/Level_Tutorial/ObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 
@@ -1206,67 +1195,6 @@ HRESULT CLevel_Tutorial::Load_Objects(_int iObject_Level)
 
     vector<_int> vecBoxSize;
     _int vectorBoxSize = {};
-
-    /*for (_uint i = 0; i < iSize2; ++i)
-    {
-        _uint iVecInstanceDataSize = 0;
-        ReadFile(hFile, &iVecInstanceDataSize, sizeof(_uint), &dwByte2, nullptr);
-
-        vector<VTX_MODEL_INSTANCE> vecInstanceData = {};
-        vecInstanceData.resize(iVecInstanceDataSize);
-
-        for (_uint i = 0; i < iVecInstanceDataSize; ++i)
-        {
-            ReadFile(hFile, &vecInstanceData[i].InstanceMatrix, sizeof(XMFLOAT4X4), &dwByte2, nullptr);
-        }
-    }
-
-    _uint iInstancedGroundObjectNumSize = 0;
-    ReadFile(hFile, &iInstancedGroundObjectNumSize, sizeof(_uint), &dwByte2, nullptr);
-
-
-    vector<_float3>                         vecInstancedGroundObjectPos;
-    vector<_float3>                         vecInstancedGroundObjectScale;
-    vector<_float3>                         vecInstancedGroundObjectRotation;
-
-    vecInstancedGroundObjectPos.resize(iInstancedGroundObjectNumSize);
-    vecInstancedGroundObjectScale.resize(iInstancedGroundObjectNumSize);
-    vecInstancedGroundObjectRotation.resize(iInstancedGroundObjectNumSize);
-
-    for (size_t i = 0; i < vecInstancedGroundObjectPos.size(); i++)
-    {
-        _float3 fGroundObjectPos;
-        ReadFile(hFile, &fGroundObjectPos, sizeof(_float3), &dwByte2, nullptr);
-        vecInstancedGroundObjectPos[i] = (fGroundObjectPos);
-        Desc.vecInstancePosition.push_back(fGroundObjectPos);
-    }
-
-    for (size_t i = 0; i < vecInstancedGroundObjectScale.size(); i++)
-    {
-        _float3 fGroundObjectScale;
-        ReadFile(hFile, &fGroundObjectScale, sizeof(_float3), &dwByte2, nullptr);
-        vecInstancedGroundObjectScale[i] = (fGroundObjectScale);
-        Desc.vecInstanceScale.push_back(fGroundObjectScale);
-    }
-
-    for (size_t i = 0; i < vecInstancedGroundObjectRotation.size(); i++)
-    {
-        _float3 fGroundObjectRotation;
-        ReadFile(hFile, &fGroundObjectRotation, sizeof(_float3), &dwByte2, nullptr);
-        vecInstancedGroundObjectRotation[i] = (fGroundObjectRotation);
-        Desc.vecInstanceRotation.push_back(fGroundObjectRotation);
-    }
-
-    for (size_t i = 0; i < iSize2; i++)
-    {
-        _char szLoadName[MAX_PATH] = {};
-
-        ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
-        Desc.ObjectName = szLoadName;
-
-        if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_TUTORIAL, TEXT("Layer_GroundObject"), &Desc)))
-            return E_FAIL;
-    }*/
 
     for (_uint i = 0; i < iSize2; ++i)
     {

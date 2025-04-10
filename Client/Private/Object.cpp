@@ -31,6 +31,8 @@ HRESULT CObject::Initialize(void* pArg)
 
 	m_pTransformCom->Rotation(pDesc->fRotation.x, pDesc->fRotation.y, pDesc->fRotation.z, pDesc->fRotation.w);
 
+	m_pDitheringOnOff = m_pGameInstance->Get_Dithering_Ptr();
+
 	return S_OK;
 }
 

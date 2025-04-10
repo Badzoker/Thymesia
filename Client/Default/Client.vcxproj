@@ -233,8 +233,11 @@
     <ClInclude Include="..\Public\Elevator_Door.h" />
     <ClInclude Include="..\Public\Elite_Grace.h" />
     <ClInclude Include="..\Public\Elite_Punch_Man.h" />
+    <ClInclude Include="..\Public\Emissive_GroundObject.h" />
+    <ClInclude Include="..\Public\Emissive_StaticObject.h" />
     <ClInclude Include="..\Public\GameItem.h" />
     <ClInclude Include="..\Public\GhostAisemy.h" />
+    <ClInclude Include="..\Public\Glass_StaticObject.h" />
     <ClInclude Include="..\public\HArmorLV1_Execution.h" />
     <ClInclude Include="..\Public\HArmorLV2.h" />
     <ClInclude Include="..\public\HurtKnockBack.h" />
@@ -430,6 +433,7 @@
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="..\public\Varg_Catched.h" />
+    <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon_Cane.h" />
     <ClInclude Include="..\Public\Weapon_Dagger.h" />
     <ClInclude Include="..\Public\Weapon_Axe.h" />
@@ -511,8 +515,11 @@
     <ClCompile Include="..\Private\Elevator_Door.cpp" />
     <ClCompile Include="..\Private\Elite_Grace.cpp" />
     <ClCompile Include="..\Private\Elite_Punch_Man.cpp" />
+    <ClCompile Include="..\Private\Emissive_GroundObject.cpp" />
+    <ClCompile Include="..\Private\Emissive_StaticObject.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
     <ClCompile Include="..\Private\GhostAisemy.cpp" />
+    <ClCompile Include="..\Private\Glass_StaticObject.cpp" />
     <ClCompile Include="..\private\HArmorLV1_Execution.cpp" />
     <ClCompile Include="..\Private\HArmorLV2.cpp" />
     <ClCompile Include="..\private\HurtKnockBack.cpp" />
@@ -707,6 +714,7 @@
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="..\private\Varg_Catched.cpp" />
+    <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon_Cane.cpp" />
     <ClCompile Include="..\Private\Weapon_Dagger.cpp" />
     <ClCompile Include="..\Private\Weapon_Axe.cpp" />

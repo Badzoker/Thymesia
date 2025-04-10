@@ -239,19 +239,31 @@ void CLoader::SetUp_WindowText()
 }
 #endif
 
+vector<string> CLoader::GetFBXFileNames(const string& folderPath)
+{
+	vector<string> fbxFiles;
 
-//CLoader * CLoader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevelID)
-//{
-//	CLoader*	pInstance = new CLoader(pDevice, pContext);
-//
-//	if (FAILED(pInstance->Initialize(eNextLevelID)))
-//	{
-//		MSG_BOX("Failed To Created : CLoader");
-//		Safe_Release(pInstance);
-//	}
-//
-//	return pInstance;
-//}
+	string searchPath = folderPath + "\\*.fbx";
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findData);
+
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			string filename = findData.cFileName;
+			size_t dot = filename.find_last_of('.');
+			if (dot != string::npos)
+				filename = filename.substr(0, dot);
+
+			fbxFiles.push_back(filename);
+		} while (FindNextFileA(hFind, &findData) != 0);
+
+		FindClose(hFind);
+	}
+
+	return fbxFiles;
+}
 
 void CLoader::Free()
 {

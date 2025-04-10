@@ -59,12 +59,12 @@ _bool CFrustum::isIn_WorldSpace(_fvector vWorldPoint, _float fRange, FRUSTUM_TYP
 	switch (_eType)
 	{
 	case Engine::FRUSTUM_TYPE::FRUSTUM_OBJECT:
-		break;
 		for (_uint i = 0; i < 6; i++)
 		{
 			if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vWorld_Planes[i]), vWorldPoint)))
 				return false;
 		}
+		break;
 	case Engine::FRUSTUM_TYPE::FRUSTUM_MONSTER:
 		for (_uint i = 0; i < 6; i++)
 		{

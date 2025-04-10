@@ -24,6 +24,9 @@ private:
 	HRESULT Loading_For_Level_Static();
 	HRESULT Loading_For_Level_Logo();
 
+private:
+	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) override;
+
 public:
 	static CLoader_Static_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);
 	virtual void Free() override;

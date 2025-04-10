@@ -2,21 +2,34 @@
 
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
+float4x4 g_ReflectionView;
 
-Texture2D g_DiffuseTexture;
+float g_fTime;
+float g_WaveSpeed;
+float g_WaveFrequency;
+float g_WaveAmplitude;
 
+float g_WaveHeight;
 
-float g_fTimeDelta;
+float4 g_vCamPosition;
 
-/* 파도 */
-float g_fTime; // 시간 (CPU에서 전달) 
-float g_fAmplitude; // 파동의 높이   
-float g_fWavelength; // 파동의 주기
-float g_fSpeed; // 파동의 속도   
+float2 g_WindDirection;
 
-/* 물 높낮이 조절  */
-float g_Height; 
+Texture2D g_RefractionTexture;
+Texture2D g_NormalTexture;
+Texture2D g_ReflectionTexture;
 
+int g_FresnelMode;
+
+float xDrawMode;
+
+float g_dullBlendFactor;
+
+float specPerturb;
+float specPower;
+
+float3 g_LightDir;
+ 
 
 struct VS_IN
 {
@@ -28,247 +41,167 @@ struct VS_IN
 struct VS_OUT
 {
     float4 vPosition : SV_POSITION;
-    float4 vNormal : NORMAL;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vWorldPos : TEXCOORD1;
-    float4 vProjPos  : TEXCOORD2;
-
+    float4 vNormal : TEXCOORD0;
+    float4 ReflectionMapSamplingPos : TEXCOORD1;
+    float2 BumpMapSamplingPos : TEXCOORD2;
+    float4 RefractionMapSamplingPos : TEXCOORD3;
+    float4 wPosition : TEXCOORD4;
+    float4 vProjPos : TEXCOORD5;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out = (VS_OUT) 0;
     
- //   float waveX = g_fAmplitude * sin((In.vPosition.x + g_fTime * 10.f) / g_fWavelength);
- //   float waveZ = g_fAmplitude * cos((In.vPosition.z + g_fTime * 10.f) / g_fWavelength);
-	////pVertices[i].vPosition.y = waveX  + waveZ;	
+    //float wave = sin(In.vPosition.x * g_WaveFrequency + g_fTime * g_WaveSpeed) + 
+    //cos(In.vPosition.z * g_WaveFrequency + g_fTime * g_WaveSpeed);
     
- //   In.vPosition.y = waveX + waveZ; 
-
-    //float wave1 = g_fAmplitude * sin((In.vPosition.x + g_fTime * g_fSpeed) / g_fWavelength);
-    //float wave2 = g_fAmplitude * 0.5f * sin((In.vPosition.z - g_fTime * g_fSpeed * 0.5f) / (g_fWavelength * 2.0f));
-    //float wave3 = g_fAmplitude * 0.3f * sin((In.vPosition.x + In.vPosition.z + g_fTime * g_fSpeed * 0.8f) / (g_fWavelength * 1.5f));
-    //In.vPosition.y = wave1 + wave2 + wave3;
+    //wave *= 0.5f * g_WaveAmplitude;
     
-    float waveValueA = sin(g_fTime * g_fSpeed + In.vPosition.x * g_fWavelength) * g_fAmplitude;
-    float waveValueB = cos(g_fTime * g_fSpeed + In.vPosition.y * g_fWavelength) * g_fAmplitude;
+    float4 displacedPos = float4(In.vPosition, 1.f);
+    //displacedPos.y += wave;
     
-    float waveValueC = sin(g_fTime * 1.5 + (In.vPosition.z + In.vPosition.y) * g_fWavelength) * g_fAmplitude;
-    float waveValueD = cos(g_fTime * 1.5 + (In.vPosition.z + In.vPosition.y) * g_fWavelength) * g_fAmplitude;
-
-    float waveValueE = sin(g_fTime * 0.5 + (In.vPosition.z + In.vPosition.x) * g_fWavelength * 0.3) * g_fAmplitude;
-    float waveValueF = cos(g_fTime * 0.5 + (In.vPosition.z + In.vPosition.x) * g_fWavelength * 0.3) * g_fAmplitude;
-
+    float dhdx = cos(displacedPos.x * g_WaveFrequency + g_fTime * g_WaveSpeed) * g_WaveFrequency * g_WaveAmplitude;
+    float dhdz = -sin(displacedPos.z * g_WaveFrequency + g_fTime * g_WaveFrequency) * g_WaveFrequency * g_WaveAmplitude;
     
-    float3 VMove = float3(In.vPosition.x + waveValueA, In.vPosition.y + waveValueB, In.vPosition.z);
-
-    VMove = VMove + float3(In.vPosition.x + waveValueC, In.vPosition.y + waveValueD, In.vPosition.z);
-
-    VMove = VMove + float3(In.vPosition.x + waveValueF, In.vPosition.y + waveValueE, In.vPosition.z);
-
-    In.vPosition.xyz = VMove;
+    float3 tangentX = normalize(float3(1, dhdx, 0));
+    float3 tangentZ = normalize(float3(0, dhdz, 1));
+    Out.vNormal = float4(normalize(cross(tangentZ, tangentX)), 1.f);
     
-    Out.vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vPosition = mul(Out.vPosition, g_ViewMatrix);
-    Out.vPosition = mul(Out.vPosition, g_ProjMatrix);
-
+    float4x4 VP = mul(g_ViewMatrix, g_ProjMatrix);
+    float4x4 WVP = mul(g_WorldMatrix, VP);
+    float4x4 RVP = mul(g_ReflectionView, g_ProjMatrix);
+    float4x4 WRVP = mul(g_WorldMatrix, RVP);
     
-    //Out.vNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
+    Out.vPosition = mul(displacedPos, WVP);
+    Out.wPosition = mul(displacedPos, g_WorldMatrix);
+    Out.ReflectionMapSamplingPos = mul(displacedPos, WRVP);
+    Out.RefractionMapSamplingPos = mul(displacedPos, WVP);
     
-    In.vTexcoord.x = In.vTexcoord.x - g_fTimeDelta * 0.4f;
-    In.vTexcoord.y = In.vTexcoord.y - g_fTimeDelta * 0.2f;
+    float2 absoluteTexCoords = In.vTexcoord;
+    float4 rotatedTexCoords = float4(absoluteTexCoords, 0.f, 1.f);
+    float2 moveVector = float2(0.f, 1.f);
     
-
-    Out.vTexcoord = In.vTexcoord;
-    //Out.vTexcoord.x = In.vTexcoord.x + g_fTimeDelta;
-    //Out.vTexcoord.y = In.vTexcoord.y;
-    
-    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    Out.BumpMapSamplingPos = rotatedTexCoords.xy / g_WaveFrequency + (g_fTime * g_WaveSpeed) * g_WaveAmplitude * moveVector.xy;
     Out.vProjPos = Out.vPosition;
-
+    
     return Out;
 }
-
-
-
-VS_OUT VS_MAIN_STAGE_WATER(VS_IN In)
-{
-    VS_OUT Out = (VS_OUT) 0;
-    
- //   float waveX = g_fAmplitude * sin((In.vPosition.x + g_fTime * 10.f) / g_fWavelength);
- //   float waveZ = g_fAmplitude * cos((In.vPosition.z + g_fTime * 10.f) / g_fWavelength);
-	////pVertices[i].vPosition.y = waveX  + waveZ;	
-    
- //   In.vPosition.y = waveX + waveZ; 
-
-    //float wave1 = g_fAmplitude * sin((In.vPosition.x + g_fTime * g_fSpeed) / g_fWavelength);
-    //float wave2 = g_fAmplitude * 0.5f * sin((In.vPosition.z - g_fTime * g_fSpeed * 0.5f) / (g_fWavelength * 2.0f));
-    //float wave3 = g_fAmplitude * 0.3f * sin((In.vPosition.x + In.vPosition.z + g_fTime * g_fSpeed * 0.8f) / (g_fWavelength * 1.5f));
-    //In.vPosition.y = wave1 + wave2 + wave3;
-    
-    float waveValueA = sin(g_fTime * g_fSpeed + In.vPosition.x * g_fWavelength) * g_fAmplitude;
-    float waveValueB = cos(g_fTime * g_fSpeed + In.vPosition.y * g_fWavelength) * g_fAmplitude;
-    
-    float waveValueC = sin(g_fTime * 1.5 + (In.vPosition.z + In.vPosition.y) * g_fWavelength) * g_fAmplitude;
-    float waveValueD = cos(g_fTime * 1.5 + (In.vPosition.z + In.vPosition.y) * g_fWavelength) * g_fAmplitude;
-
-    float waveValueE = sin(g_fTime * 0.5 + (In.vPosition.z + In.vPosition.x) * g_fWavelength * 0.3) * g_fAmplitude;
-    float waveValueF = cos(g_fTime * 0.5 + (In.vPosition.z + In.vPosition.x) * g_fWavelength * 0.3) * g_fAmplitude;
-
-    
-    float3 VMove = float3(In.vPosition.x + waveValueA, In.vPosition.y + waveValueB, In.vPosition.z);
-
-    VMove = VMove + float3(In.vPosition.x + waveValueC, In.vPosition.y + waveValueD, In.vPosition.z);
-
-    VMove = VMove + float3(In.vPosition.x + waveValueF, In.vPosition.y + waveValueE, In.vPosition.z);
-
-    In.vPosition.xyz = VMove;
-    
-    Out.vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vPosition = mul(Out.vPosition, g_ViewMatrix);
-    Out.vPosition = mul(Out.vPosition, g_ProjMatrix);
-    Out.vPosition.y += Out.vPosition.y + g_Height;  
-
-    
-    //Out.vNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
-    
-    In.vTexcoord.x = In.vTexcoord.x - g_fTimeDelta * 0.4f;
-    In.vTexcoord.y = In.vTexcoord.y - g_fTimeDelta * 0.2f;
-    
-
-    Out.vTexcoord = In.vTexcoord;
-    //Out.vTexcoord.x = In.vTexcoord.x + g_fTimeDelta;
-    //Out.vTexcoord.y = In.vTexcoord.y;
-    
-    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vProjPos = Out.vPosition;
-
-    return Out;
-}
-//struct GS_OUT
-//{
-//    float4 vPosition : SV_POSITION;
-//    float4 vNormal   : NORMAL;
-//    float2 vTexcoord : TEXCOORD0;
-//    float4 vWorldPos : TEXCOORD1;
-//
-//};
-//
-//[maxvertexcount(3)] // 최대 출력 정점 수   
-//void GS_MAIN(triangle VS_OUT input[3], inout TriangleStream<GS_OUT> OutputStream)
-//{
-//  
-//    // 삼각형의 정점 가져오기
-//    float3 v0 = input[0].vPosition.xyz;
-//    float3 v1 = input[1].vPosition.xyz;
-//    float3 v2 = input[2].vPosition.xyz;
-//
-//    // 삼각형의 노멀 계산
-//    float3 edge1 = v1 - v0;
-//    float3 edge2 = v2 - v0;
-//    float4 normal = float4(normalize(cross(edge1, edge2)), 0.f);
-//
-//    // 각 정점에 노멀을 기록
-//    for (int i = 0; i < 3; ++i)
-//    {
-//        GS_OUT output = (GS_OUT) 0;
-//        output.vPosition = input[i].vPosition;
-//        output.vNormal = normal;
-//        //output.vNormal = mul(output.vNormal, g_WorldMatrix);
-//        output.vTexcoord = input[i].vTexcoord;
-//        output.vWorldPos = input[i].vWorldPos;
-//        OutputStream.Append(output);
-//    }
-//}
 
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-    float4 vNormal : NORMAL;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vWorldPos : TEXCOORD1;
-    float4 vProjPos  : TEXCOORD2;
-    
+    float4 vNormal : TEXCOORD0;
+    float4 ReflectionMapSamplingPos : TEXCOORD1;
+    float2 BumpMapSamplingPos : TEXCOORD2;
+    float4 RefractionMapSamplingPos : TEXCOORD3;
+    float4 wPosition : TEXCOORD4;
+    float4 vProjPos : TEXCOORD5;
 };
 
 struct PS_OUT
 {
-    float4 vColor  : SV_TARGET0;
-    //float4 vNormal : SV_TARGET1;    
-    float4 vDepth  : SV_TARGET2; 
-    //float vWorldPos : SV_TARGET1;
+    float4 vColor : SV_TARGET0;
+    float4 vDepth : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
+    
+    float2 projectedTexCoords;
+    projectedTexCoords.x = In.ReflectionMapSamplingPos.x / In.ReflectionMapSamplingPos.w / 2.0f + 0.5f;
+    projectedTexCoords.y = -In.ReflectionMapSamplingPos.y / In.ReflectionMapSamplingPos.w / 2.0f + 0.5f;
+ 
+    float2 bumpUV1 = In.BumpMapSamplingPos;
+    
+    float4 bumpColor1 = g_NormalTexture.Sample(LinearSampler, bumpUV1);
+    
+    float4 bumpColor = bumpColor1;
 
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector purpleTint = vector(1.0f, 0.0f, 1.0f, 1.0f);
+
+    //  Perturbating the color
+    float2 perturbation = g_WaveHeight * (bumpColor.rg - 0.5f);
     
-    //vNormal = normalize(mul(vNormal, WorldMatrix)); 
+    //  Final texture coordinates
+    float2 perturbatedTexCoords = projectedTexCoords + perturbation;
     
-    Out.vColor = vMtrlDiffuse * purpleTint; 
-    //Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
-    //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    float4 reflectiveColor = g_ReflectionTexture.Sample(LinearSampler, perturbatedTexCoords);
+
+    float2 projectedRefrTexCoords;
+    projectedRefrTexCoords.x = In.RefractionMapSamplingPos.x / In.RefractionMapSamplingPos.w / 2.0f + 0.5f;
+    projectedRefrTexCoords.y = -In.RefractionMapSamplingPos.y / In.RefractionMapSamplingPos.w / 2.0f + 0.5f;
+    float2 perturbatedRefrTexCoords = projectedRefrTexCoords + perturbation;
+    
+    float3 eyeVector = normalize(g_vCamPosition - In.wPosition);
+    
+    float3 normalVector = float3(0.f, 1.f, 0.f);
+    float4 refractiveColor = g_RefractionTexture.Sample(LinearSampler, perturbatedRefrTexCoords);
+    
+    float fresnelTerm = (float) 0;
+
+    if (g_FresnelMode == 1)
+    {
+        fresnelTerm = 0.02 + 0.97f * pow((1 - dot(eyeVector, normalVector)), 5);
+    }
+    else if (g_FresnelMode == 0)
+    {
+        fresnelTerm = 1 - dot(eyeVector, normalVector) * 1.3f;
+    }
+    else if (g_FresnelMode == 2)
+    {
+        float fangle = 1.0f + dot(eyeVector, normalVector);
+        fangle = pow(fangle, 5);
+        fresnelTerm = 1 / fangle;
+    }
+    else
+    {
+        fresnelTerm = 0.02 + 0.97f * pow((1 - dot(eyeVector, normalVector)), 5);
+    }
+    
+     fresnelTerm = fresnelTerm * xDrawMode;
+    
+   // Out.vColor = float4(fresnelTerm, 0.f, 0.f, 1.f);
+    fresnelTerm = saturate(fresnelTerm);
+
+    //  Create the combined color
+    float4 combinedColor = refractiveColor * (1 - fresnelTerm) + reflectiveColor * (fresnelTerm);
+    
+    float waveFactor = saturate(length(perturbation) * 5.0f); // tweak scale
+    float brightness = lerp(0.5f, 1.0f, 1.0f - waveFactor);
+    float4 dullColor = float4(0.5f, 0.f, 0.f, 1.0f);
+	    
+    float dullBlendFactor = g_dullBlendFactor;
+    
+    float dullBrightBlendFactor = g_dullBlendFactor * brightness;
+    
+    Out.vColor = (dullBrightBlendFactor * dullColor + (1 - dullBlendFactor) * combinedColor);
+    
+    float4 speccolor;
+
+    float3 lightSourceDir = normalize(float3(0.1f, 0.6f, 0.5f));
+
+    float3 halfvec = normalize(eyeVector +   + float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
+	
+    float3 temp = 0;
+
+    temp.x = pow(dot(halfvec, normalVector), specPower);
+	
+    speccolor = float4(0.98, 0.97, 0.7, 0.6);
+	
+    speccolor = speccolor * temp.x;
+
+    speccolor = float4(speccolor.x * speccolor.w, speccolor.y * speccolor.w, speccolor.z * speccolor.w, 0);
+    
+    Out.vColor += speccolor;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-
-    //vector fShade = max(dot(normalize(g_vLightDir) * -1.f,
-	//	normalize(In.vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient);
-    //
-    //vector vReflect = reflect(normalize(g_vLightDir), normalize(In.vNormal)); /* 로컬끼리해준거 */
-    //vector vLook = In.vWorldPos - g_vCamPosition;
-    //
-    //float fSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 50.f);
-    //
-    ////Out.vColor = (g_vLightDiffuse * vMtrlDiffuse) + fSpecular * (g_vLightSpecular * g_vMtrlSpecular); //* saturate(fShade);
-    //////+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
-    //Out.vColor = (g_vLightDiffuse * vMtrlDiffuse) * saturate(fShade);
-    //+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
-    
-    
-    
-    //Out.vWorldPos.x = In.vWorldPos; 
-    
-    return Out;
-}
-
-
-
-
-PS_OUT PS_MAIN_STAGE_WATER(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord); 
-    vector purpleTint = vector(1.0f, 0.0f, 1.0f, 1.0f); 
-    
-    Out.vColor = vMtrlDiffuse;  
-    
-    //vector fShade = max(dot(normalize(g_vLightDir) * -1.f,
-	//	normalize(In.vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient);
-    //
-    //vector vReflect = reflect(normalize(g_vLightDir), normalize(In.vNormal)); /* 로컬끼리해준거 */
-    //vector vLook = In.vWorldPos - g_vCamPosition;
-    //
-    //float fSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 50.f);
-    //
-    ////Out.vColor = (g_vLightDiffuse * vMtrlDiffuse) + fSpecular * (g_vLightSpecular * g_vMtrlSpecular); //* saturate(fShade);
-    //////+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
-    //Out.vColor = (g_vLightDiffuse * vMtrlDiffuse) * saturate(fShade);
-    //+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
-    
-    
-    
-    //Out.vWorldPos.x = In.vWorldPos; 
-    
     return Out;
 }
 
 
 technique11 DefaultTechnique
 {
-    pass DefaultPass
+    pass WaterCaustic
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -277,16 +210,5 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
-    }
-
-    pass StageWater
-    {
-        SetRasterizerState(RS_Default); 
-        SetDepthStencilState(DSS_Default, 0);   
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);  
-   
-        VertexShader = compile vs_5_0 VS_MAIN_STAGE_WATER();    
-        GeometryShader = NULL;  
-        PixelShader = compile ps_5_0 PS_MAIN_STAGE_WATER();     
     }
 }

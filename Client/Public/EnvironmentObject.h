@@ -15,6 +15,11 @@ BEGIN(Client)
 class CEnvironmentObject abstract : public CGameObject
 {
 public:
+    enum ENV_TYPE {
+        ENV_DEFAULT = 0x00000001,
+        ENV_EMISSIVE = 0x00000002,
+    };
+
     struct ENVIRONMENT_OBJECT_DESC : public CGameObject::GAMEOBJECT_DESC
     {
         _float fFrustumRadius = { 0.f };
@@ -40,6 +45,8 @@ public:
         _uint                       iPassIndex = { 0 };
 
         LEVELID                     eLevelID = { LEVEL_TUTORIAL }; // 현재 레벨 확인용
+
+        _uint                       iInstanceType = { ENV_DEFAULT };
     };
 
 public:
@@ -101,7 +108,12 @@ protected:
 
     _bool               m_bCullingObject = { false };
 
-    LEVELID		   m_eCurrentLevel = { LEVEL_TUTORIAL };
+    LEVELID		        m_eCurrentLevel = { LEVEL_TUTORIAL };
+
+    _uint               m_iInstanceType = { ENV_DEFAULT };
+
+    CGameObject*        m_pCamera = { nullptr };
+    _bool*              m_pDitheringOnOff = { nullptr };
 protected:
     vector<VTX_MODEL_INSTANCE> m_vecInstanceData;
     _uint m_iNumInstance = {};

@@ -27,9 +27,6 @@ HRESULT CStaticObject::Initialize(void* pArg)
 
 	m_iObjectType = OBJECT_DEFAULT;
 
-
-	m_pDitheringOnOff = m_pGameInstance->Get_Dithering_Ptr();
-
 	return S_OK;
 }
 
@@ -73,7 +70,6 @@ HRESULT CStaticObject::Render()
 			m_pModelCom->Render(i);
 		}
 	}
-
 	else
 	{
 		for (_uint i = 0; i < iNumMeshes; i++)

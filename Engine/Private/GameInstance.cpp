@@ -403,6 +403,11 @@ void CGameInstance::Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix 
 	return m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+void CGameInstance::Set_Reflection_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix TransformMatrix)
+{
+	return m_pPipeLine->Set_Reflection_Transform(eState, TransformMatrix);
+}
+
 _float4x4 CGameInstance::Get_PreTransform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_PreTransform_Float4x4(eState);
@@ -431,6 +436,31 @@ void CGameInstance::Set_Zoom_Blur_Center(_float2 _fPos)
 _float2 CGameInstance::Get_Zoom_Blur_Center()
 {
 	return  m_pPipeLine->Get_Zoom_Blur_Center();	
+}
+
+_float4x4 CGameInstance::Get_Reflection_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return  m_pPipeLine->Get_Reflection_Transform_Float4x4(eState);
+}
+
+_matrix CGameInstance::Get_Reflection_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_Reflection_Transform_Matrix(eState);
+}
+
+_float4x4 CGameInstance::Get_Reflection_Transform_Float4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_Reflection_Transform_Float4x4_Inverse(eState);
+}
+
+_matrix CGameInstance::Get_Reflection_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE eState) const
+{
+	return m_pPipeLine->Get_Reflection_Transform_Matrix_Inverse(eState);
+}
+
+_float4 CGameInstance::Get_Reflection_CamPosition() const
+{
+	return m_pPipeLine->Get_Reflection_CamPosition();
 }
 
 #pragma endregion

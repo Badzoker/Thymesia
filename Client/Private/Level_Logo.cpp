@@ -181,7 +181,7 @@ HRESULT CLevel_Logo::Load_Objects(_int iObject_Level)
     _ulong dwByte = {};
     _ulong dwByte2 = {};
 
-    string strDataPath = "../Bin/DataFiles/TitleMapObjectData/ObjectData";
+    string strDataPath = "../Bin/DataFiles/ObjectData/Level_Logo/ObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 

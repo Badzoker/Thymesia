@@ -15,7 +15,7 @@ public:
 	enum RENDERGROUP {
 		RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_OCCULUSION, RG_NONLIGHT, RG_BLEND, RG_UI, RG_FONT,
 		RG_BLUR, RG_GLOW, RG_DISTORTION, RG_MOTION_BLUR, RG_HIGHLIGHT, RG_GAUSSIAN_BLUR, RG_WEIGHTBLEND, RG_BLOOM,
-		RG_FOG,
+		RG_FOG, RG_WATER,
 		RG_END
 	};
 
@@ -106,6 +106,7 @@ private:
 	HRESULT Render_LightShaftY();
 	HRESULT Render_Fog();
 	HRESULT Render_MotionBlur_By_Velocity();
+	HRESULT Render_Water();
 
 	HRESULT Render_NonLight();
 	HRESULT Render_LightAcc();
