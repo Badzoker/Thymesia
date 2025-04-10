@@ -93,37 +93,6 @@ void CUIGroup_Skill::Update(_float fTimeDelta)
 
 		}
 		
-
-
-			
-
-
-		//if (nullptr != m_pCurrentSkill)
-		//{
-		//	dynamic_cast<CUI_Skill_Slot*>(m_pEquipSkill_1)->Set_TexIconOff(false);
-		//	dynamic_cast<CUI_Skill_Slot*>(m_pEquipSkill_1)->Set_TexSlot(2);
-		//	for (auto& EquipSkill : m_pEquipWeapon->Find_UI_Button())
-		//	{
-		//		if (EquipSkill->Get_Mouse_Select_OnOff())
-		//		{
-		//			if (1 == EquipSkill->Get_UI_GroupID())
-		//			{
-		//				EquipSkill->Set_TexNumber(m_pCurrentSkill->Get_TexNumber());
-		//			}
-
-		//		}
-		//	}
-		//}
-		//
-
-			//pButton->Set_TexIconOpen(true);
-			//pButton->Set_TexIconOff(true); // 이미지 흐리게 처리
-			//pButton->Set_TexSlot(2);
-			//pButton->Set_TexEdgeOff(true);
-			//pButton->Set_TexEdge(2);  // 이미지 랜더를 켜야 함
-			//pButton->Set_TexEffectOff(true);
-			//pButton->Set_TexEffect(2);// 이미지 랜더를 꺼야 함
-
 	}
 
 }
@@ -456,13 +425,15 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 	_wstring szFontName = {};
 	_wstring szContentText = {};
 	_wstring szSaveName = {};
-	_uint iUIType = {}; 
+	_uint iUIType = {};
 	_uint iShaderNum = {};
 	_uint iTextureNum = { 0 };
 	_uint iGroupID = {};
 
 	while (true)
 	{
+		_uint iTextSort = { static_cast<CUIObject::TEXTSORT>(CUIObject::TEXTSORT::TEXT_LEFT) };
+
 		ReadFile(hFile, &fPos, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &fSize, sizeof(_float2), &dwByte, nullptr);
 		ReadFile(hFile, &fRotation, sizeof(_float3), &dwByte, nullptr);
@@ -483,7 +454,11 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 		ReadFile(hFile, &iShaderNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iTextureNum, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, &iGroupID, sizeof(_uint), &dwByte, nullptr);
+		if (iUIType == UI_TEXT)
+		{
+			ReadFile(hFile, &iTextSort, sizeof(_uint), &dwByte, nullptr);
 
+		}
 		if (0 == dwByte)
 		{
 			break;
@@ -506,6 +481,8 @@ HRESULT CUIGroup_Skill::LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, 
 		Desc.iTexNumber = iTextureNum;
 		Desc.iGroupID = iGroupID;
 		Desc.fRotation = fRotation;
+		Desc.eTextSort = static_cast<CUIObject::TEXTSORT>(iTextSort);
+
 		if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(iLevelIndex, szSaveName, iSceneIndex, szSceneName, iUIType, &Desc)))
 			return E_FAIL;
 

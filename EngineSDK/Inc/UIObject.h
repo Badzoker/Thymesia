@@ -7,6 +7,8 @@ BEGIN(Engine)
 class ENGINE_DLL CUIObject abstract : public CGameObject
 {
 public:
+	enum TEXTSORT { TEXT_CENTER, TEXT_LEFT, TEXT_RIGHT, TEXT_END };
+public:
 	struct UIOBJECT_DESC : public CGameObject::GAMEOBJECT_DESC	
 	{
 		_float			fX, fY, fZ;
@@ -20,6 +22,7 @@ public:
 		//////////////////////////////////
 		_wstring		strFontName;
 		_wstring		strContent;
+		TEXTSORT        eTextSort;
 	};
 
 protected:
@@ -58,6 +61,13 @@ public:
 	_int Get_TexNumber() { return m_iTexNumber; }
 	virtual _uint Set_UI_ShaderPassNum(_uint iShadernum) { return m_iShaderPassNum = iShadernum; } // 쉐이더 패스 넘버 가져오기 -유빈
 
+
+public:
+	void Set_TextSort(TEXTSORT eSort) { m_eTextSort = eSort; }
+	TEXTSORT Get_TextSort() { return m_eTextSort; }
+
+protected:
+	TEXTSORT m_eTextSort = { TEXT_LEFT }; // 텍스트 정렬 기준
 
 protected:
 	HRESULT Add_UI_Object(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CGameObject** ppOut, void* pArg);

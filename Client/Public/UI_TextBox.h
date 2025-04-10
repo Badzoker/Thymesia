@@ -2,12 +2,6 @@
 #include "Client_Defines.h"
 #include "UI_Text.h"
 
-BEGIN(Engine)
-class CShader;
-class CTexture;
-class CVIBuffer_Rect;
-END
-
 BEGIN(Client)
 
 class CUI_TextBox final : public CUI_Text
