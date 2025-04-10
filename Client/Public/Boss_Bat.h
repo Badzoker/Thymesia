@@ -48,7 +48,7 @@ private:
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fSlash_Skill_CoolTime = {};
-
+	_float                           m_fAir_Delete_Time = 3.f;
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;
@@ -98,6 +98,8 @@ public:
 		void State_Enter(CBoss_Bat* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Bat* pObject) override;
 		void State_Exit(CBoss_Bat* pObject) override;
+	private:
+		_float m_fTimer = {};
 	};
 
 	class Recovery_State : public CStates<CBoss_Bat>
@@ -238,6 +240,8 @@ public:
 		void State_Enter(CBoss_Bat* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Bat* pObject) override;
 		void State_Exit(CBoss_Bat* pObject) override;
+	private:
+		_bool m_IsFired = {};
 	};
 
 	//Storm이라 되어있음 이름이 아마 폭풍..?(Index = 24)
@@ -263,6 +267,8 @@ public:
 		void State_Enter(CBoss_Bat* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Bat* pObject) override;
 		void State_Exit(CBoss_Bat* pObject) override;
+	private:
+		_bool m_bChange_Attack_Power = {};
 	};
 
 };

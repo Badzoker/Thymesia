@@ -6,6 +6,7 @@
 #include "Locked_On.h"
 #include "Player.h"
 #include "UI_Boss_HP_Bar.h"
+#include "Projectile_Air.h"
 #include "Animation.h"
 
 CBoss_Bat::CBoss_Bat(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -126,6 +127,9 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	LEVELID iLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	CBody_Bat::BODY_BAT_DESC BodyDesc{};
+	BodyDesc.pParent = this;
+	BodyDesc.iAttack = &m_iMonster_Attack_Power;
+	BodyDesc.pParentState = &m_iMonster_State;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
@@ -204,24 +208,45 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 			return E_FAIL;
 	}
 
+	CProjectile_Air::PROJECTILE_DESC ProjectileDesc = {};
+	ProjectileDesc.pParent = this;
+	ProjectileDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	ProjectileDesc.iCurLevel = iLevel;
+	ProjectileDesc.fDelete_Time = &m_fAir_Delete_Time;
+	ProjectileDesc.iDamage = &m_iMonster_Attack_Power;
+	ProjectileDesc.fSpeedPerSec = 40.f;
+	ProjectileDesc.fRotationPerSec = 0.f;
+	ProjectileDesc.fPosition = m_vSpawnPoint;
+
+	if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"), PROJECTILE_FEATHER, &ProjectileDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CBoss_Bat::PatternCreate()
 {
-	if (!m_bPatternProgress && m_bActive && !m_IsStun)
+	if (m_iPhase == PHASE_TWO && m_bActive && !m_bSpecial_Skill_Progress)
 	{
-		m_fDelayTime += 1 * m_fTimeDelta;
+		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
+	}
+
+	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_IsStun)
+	{
+		m_fDelayTime += 5 * m_fTimeDelta;
 		if (m_fDelayTime >= m_fCoolTime)
 		{
-			//if (m_fSpecial_Skill_CoolTime >= 30.f)
-			//{
-			//	m_pState_Manager->ChangeState(new CBoss_Bat::Roar_State(false), this);
-			//}
+			if (m_fSpecial_Skill_CoolTime >= 60.f && m_bCristal_Create)
+			{
+				m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Special(), this);
+			}
 			//if (m_fDistance >= 5.f)
 				//Far_Pattern_Create();
 			//else
-			Near_Pattern_Create();
+			else
+			{
+				Near_Pattern_Create();
+			}
 
 			m_fDelayTime = 0.f;
 			m_bPatternProgress = true;
@@ -231,12 +256,12 @@ void CBoss_Bat::PatternCreate()
 
 void CBoss_Bat::Near_Pattern_Create()
 {
-	_uint iRandomPattern = rand() % 7;
+	_uint iRandomPattern = rand() % 9;
 	while (true)
 	{
 		if (iRandomPattern == m_iNearPatternIndex)
 		{
-			iRandomPattern = rand() % 7;
+			iRandomPattern = rand() % 9;
 		}
 		else
 		{
@@ -244,7 +269,6 @@ void CBoss_Bat::Near_Pattern_Create()
 			break;
 		}
 	}
-
 
 	switch (m_iNearPatternIndex)
 	{
@@ -268,6 +292,12 @@ void CBoss_Bat::Near_Pattern_Create()
 		break;
 	case 6:
 		m_pState_Manager->ChangeState(new CBoss_Bat::Recovery_State(), this);
+		break;
+	case 7:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_I(), this);
+		break;
+	case 8:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_H(), this);
 		break;
 	}
 }
@@ -374,11 +404,12 @@ void CBoss_Bat::Idle_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Idle_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	//pObject->RotateDegree_To_Player();
+	pObject->RotateDegree_To_Player();
 }
 
 void CBoss_Bat::Idle_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion 
@@ -402,6 +433,7 @@ void CBoss_Bat::Move_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 
 void CBoss_Bat::Move_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion 
@@ -790,10 +822,47 @@ void CBoss_Bat::Attack_Combo_G::State_Exit(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_H::State_Enter(CBoss_Bat* pObject)
 {
+	m_iIndex = 22;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 256;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Bat::Attack_Combo_H::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	if (m_iIndex == 22 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 230.f && !m_IsFired)
+		{
+			m_IsFired = true;
+			_vector pPos = pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector pPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
+			_float fPosY = XMVectorGetY(pPos);
+			_float fPlayerPosY = XMVectorGetY(pPlayerPos);
+			fPosY += 0.5f;
+			fPlayerPosY += 0.5f;
+			pPos = XMVectorSetY(pPos, fPosY);
+			pPlayerPos = XMVectorSetY(pPlayerPos, fPlayerPosY);
+
+			pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_FEATHER, pPos, pPlayerPos);
+		}
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+
+		}
+	}
 }
 
 void CBoss_Bat::Attack_Combo_H::State_Exit(CBoss_Bat* pObject)
@@ -817,7 +886,7 @@ void CBoss_Bat::Attack_Combo_I::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_I::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 24 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		_uint iRandom = rand() % 2;
 		switch (iRandom)
@@ -843,14 +912,47 @@ void CBoss_Bat::Attack_Combo_I::State_Exit(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Special::State_Enter(CBoss_Bat* pObject)
 {
+	m_iIndex = 23;
+	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
+	pObject->m_bSpecial_Skill_Progress = true;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
+	pObject->m_iMonster_Attack_Power = 0;
+	pObject->RotateDegree_To_Player();
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
 }
 
 void CBoss_Bat::Attack_Special::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	if (m_iIndex == 23 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 275.f && !m_bChange_Attack_Power)
+		{
+			m_bChange_Attack_Power = true;
+			pObject->m_bCristal_Create = false;
+			pObject->m_iMonster_Attack_Power = 228;
+		}
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+		}
+	}
+
 }
 
 void CBoss_Bat::Attack_Special::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_bSpecial_Skill_Progress = false;
+	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 }
 
 #pragma endregion
@@ -862,6 +964,13 @@ void CBoss_Bat::Recovery_State::State_Enter(CBoss_Bat* pObject)
 	m_iIndex = 10;
 	pObject->m_fMonsterCurHP += 20.f;
 	pObject->m_fShieldHP += 20.f;
+
+	if (pObject->m_fMonsterCurHP >= 100.f || pObject->m_fShieldHP >= 100.f)
+	{
+		pObject->m_fMonsterCurHP = 100.f;
+		pObject->m_fShieldHP = 100.f;
+	}
+
 	pObject->m_bCanRecovery = true;
 	pObject->m_bCristal_Create = true;
 	pObject->Recovery_HP();

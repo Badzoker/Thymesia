@@ -36,12 +36,11 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual HRESULT Render_Bloom() override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	//CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:

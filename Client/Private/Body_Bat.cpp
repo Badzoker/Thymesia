@@ -23,8 +23,12 @@ HRESULT CBody_Bat::Initialize_Prototype()
 
 HRESULT CBody_Bat::Initialize(void* pArg)
 {
+	strcpy_s(m_szName, "MONSTER_WEAPON");
+
 	CBody_Bat::BODY_BAT_DESC* pDesc = static_cast<CBody_Bat::BODY_BAT_DESC*>(pArg);
 
+	m_pParentState = pDesc->pParentState;
+	m_iMonster_Attack = pDesc->iAttack;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -33,6 +37,33 @@ HRESULT CBody_Bat::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pModelCom->SetUp_Animation(20, true);
+
+	m_pSocketMatrix[0] = m_pModelCom->Get_BoneMatrix("ik_hand_r");
+	m_pSocketMatrix[1] = m_pModelCom->Get_BoneMatrix("ik_hand_l");
+	m_pSocketMatrix[2] = m_pModelCom->Get_BoneMatrix("ik_head");
+
+	m_pActor[COLLIDER_LEFT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_RIGHT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_MOUTH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_BODY] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 3.f,1.5f,3.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_LARGE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,1.5f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_WHOLE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 10.f,1.f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_LEFT_HAND], _fvector{ 0.f,0.f,92.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_RIGHT_HAND], _fvector{ 0.f,0.f,92.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_MOUTH], _fvector{ 0.f,0.f,92.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_BODY], _fvector{ 0.f,0.f,92.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_LARGE], _fvector{ 0.f,0.f,92.f,1.f });
+	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_WHOLE], _fvector{ 0.f,0.f,92.f,1.f });
+
+	_uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_LEFT_HAND], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_RIGHT_HAND], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_MOUTH], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_BODY], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_LARGE], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_WHOLE], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
 	return S_OK;
 }
@@ -46,6 +77,89 @@ void CBody_Bat::Update(_float fTimeDelta)
 	m_pModelCom->Play_Animation(fTimeDelta);
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
+
+	if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD)
+	{
+		for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+		{
+			if (iter.isPlay == false)
+			{
+				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
+				{
+					if (!strncmp(iter.szName, "LeftHand", strlen("LeftHand")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_LEFT_HAND]);
+					}
+					else if (!strncmp(iter.szName, "RightHand", strlen("RightHand")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_RIGHT_HAND]);
+					}
+					else if (!strncmp(iter.szName, "Bite", strlen("Bite")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_MOUTH]);
+					}
+					else if (!strncmp(iter.szName, "Body", strlen("Body")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_BODY]);
+					}
+					else if (!strncmp(iter.szName, "Large", strlen("Large")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_LARGE]);
+					}
+
+					else if (!strncmp(iter.szName, "Whole", strlen("Whole")))
+					{
+						m_pGameInstance->Add_Actor_Scene(m_pActor[COLLIDER_WHOLE]);
+					}
+					iter.isPlay = true;
+				}
+			}
+			else
+			{
+				if ((iter.eType == EVENT_COLLIDER && iter.isEventActivate == false) || m_bColliderOff == true)
+				{
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_LEFT_HAND]);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_RIGHT_HAND]);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_MOUTH]);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BODY]);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_LARGE]);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_WHOLE]);
+
+					m_bColliderOff = false;
+					if (!iter.isEventActivate)
+						iter.isPlay = false;
+				}
+			}
+		}
+	}
+	else
+	{
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_LEFT_HAND]);
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_RIGHT_HAND]);
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_MOUTH]);
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BODY]);
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_LARGE]);
+		m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_WHOLE]);
+	}
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_LEFT_HAND])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_LEFT_HAND], XMLoadFloat4x4(m_pSocketMatrix[1]) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_RIGHT_HAND])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_RIGHT_HAND], XMLoadFloat4x4(m_pSocketMatrix[0]) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_MOUTH])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_MOUTH], XMLoadFloat4x4(m_pSocketMatrix[2]) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_BODY])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_BODY], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_LARGE])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_LARGE], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 500.f,0.f,1.f });
+
+	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_WHOLE])))
+		m_pGameInstance->Update_Collider(m_pActor[COLLIDER_WHOLE], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 500.f,0.f,1.f });
+
 }
 
 void CBody_Bat::Late_Update(_float fTimeDelta)
@@ -110,6 +224,22 @@ HRESULT CBody_Bat::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CBody_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
+{
+	if (!strcmp("PLAYER", _pOther->Get_Name()))
+	{
+		m_bColliderOff = true;
+	}
+}
+
+void CBody_Bat::OnCollision(CGameObject* _pOther, PxContactPair _information)
+{
+}
+
+void CBody_Bat::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
+{
 }
 
 CBody_Bat* CBody_Bat::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

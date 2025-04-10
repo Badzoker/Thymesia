@@ -12,9 +12,22 @@ BEGIN(Client)
 
 class CBody_Bat final : public CPartObject
 {
+	enum COLLIDER_CATEGORY
+	{
+		COLLIDER_LEFT_HAND,
+		COLLIDER_RIGHT_HAND,
+		COLLIDER_MOUTH,
+		COLLIDER_BODY,
+		COLLIDER_LARGE,
+		COLLIDER_WHOLE,
+		COLLIDER_END
+	};
+
 public:
 	struct BODY_BAT_DESC : public CPartObject::PARTOBJECT_DESC
 	{
+		const _uint* pParentState = { nullptr };
+		_uint* iAttack = { nullptr };
 	};
 
 private:
@@ -34,13 +47,21 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
+	PxRigidDynamic* m_pActor[COLLIDER_END] = { nullptr };
+	const _float4x4* m_pSocketMatrix[3] = { nullptr };
 private:
 	_bool* m_bDead = {};
+	_bool  m_bColliderOff = {};
 	_uint m_iPassNum = {};
+	const _uint* m_pParentState = {};
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+
+public:
+	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
 	static CBody_Bat* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
