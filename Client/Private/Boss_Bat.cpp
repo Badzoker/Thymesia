@@ -214,7 +214,7 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	ProjectileDesc.iCurLevel = iLevel;
 	ProjectileDesc.fDelete_Time = &m_fAir_Delete_Time;
 	ProjectileDesc.iDamage = &m_iMonster_Attack_Power;
-	ProjectileDesc.fSpeedPerSec = 40.f;
+	ProjectileDesc.fSpeedPerSec = 30.f;
 	ProjectileDesc.fRotationPerSec = 0.f;
 	ProjectileDesc.fPosition = m_vSpawnPoint;
 

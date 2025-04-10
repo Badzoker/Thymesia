@@ -56,7 +56,14 @@ void CProjectile_Air::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+	{
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });
+#pragma region EFFECT
+		for (_uint i = 0; i < 3; i++)
+			m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_BAT_AIR, m_pTransformCom->Get_WorldMatrix_Ptr());
+
+#pragma endregion
+	}
 }
 
 void CProjectile_Air::Late_Update(_float fTimeDelta)
@@ -83,6 +90,8 @@ void CProjectile_Air::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+		for (_uint i = 0; i < 3; i++)
+			m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_BAT_AIR);
 	}
 }
 

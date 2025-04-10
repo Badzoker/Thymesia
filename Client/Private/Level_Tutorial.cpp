@@ -359,8 +359,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Monster()
             if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"), CATEGORY_BOSS, &pDesc)))
                 return E_FAIL;
 
-            if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
-                return E_FAIL;
+            //if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
+            //    return E_FAIL;
             break;
         default:
             break;
@@ -562,6 +562,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_PlayerChargeClaw.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PLAYER_CHARGECLAW)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_Air_InSphere.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_AIR)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_Air_OutSphere.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_AIR)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_Air_Sonic_Distortion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_AIR)))
         return E_FAIL;
 
     //Particle Effect

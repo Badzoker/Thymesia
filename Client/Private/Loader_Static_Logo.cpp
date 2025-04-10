@@ -1767,17 +1767,17 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Diffuse*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Diffuse"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Diffuse/texDiffuse%d.dds"), 45))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Diffuse/texDiffuse%d.dds"), 46))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 39))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 40))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Mask*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 51))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 53))))
 		return E_FAIL;
 
 
