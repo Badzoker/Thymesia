@@ -206,7 +206,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_BackGround(const _tchar * pLayerTag)
         return E_FAIL;
 
 	CWater::WATERINFO pWaterInfo = {};
-	pWaterInfo.fPosition = _float4(-26.9196987f, 10.0f, -135.658707f, 1.0f);
+	pWaterInfo.fPosition = _float4(-107.261f, 13.7f, -134.121f, 1.0f);
 	pWaterInfo.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Water"), LEVEL_ROYALGARDEN, pLayerTag, &pWaterInfo)))

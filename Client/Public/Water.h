@@ -44,7 +44,7 @@ private:
 	_float							m_fAspect = { 0.f };
 
 	_float							m_fTime = { 0.f };
-	_float							m_fWaveSpeed = { 0.3f };
+	_float							m_fWaveSpeed = { 0.05f };
 	_float							m_fWaveFrequency = { 0.3f };
 	_float							m_fWaveAmplitude = { 0.3f };
 
@@ -60,8 +60,8 @@ private:
 
 	_float							m_fDullBlendFactor = { 1.f };
 
-	_float							m_fSpecPerturb = { 5.f };
-	_float							m_fSpecPower = { 30.f };
+	_float							m_fSpecPerturb = { 2.f };
+	_float							m_fSpecPower = { 100.f };
 
 public:
 	HRESULT Ready_Components(void* _pArg);

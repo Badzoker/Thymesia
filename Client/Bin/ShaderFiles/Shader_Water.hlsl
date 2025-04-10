@@ -28,7 +28,7 @@ float g_dullBlendFactor;
 float specPerturb;
 float specPower;
 
-float3 g_LightDir;
+//float3 g_LightDir;
  
 
 struct VS_IN
@@ -53,13 +53,7 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out = (VS_OUT) 0;
     
-    //float wave = sin(In.vPosition.x * g_WaveFrequency + g_fTime * g_WaveSpeed) + 
-    //cos(In.vPosition.z * g_WaveFrequency + g_fTime * g_WaveSpeed);
-    
-    //wave *= 0.5f * g_WaveAmplitude;
-    
     float4 displacedPos = float4(In.vPosition, 1.f);
-    //displacedPos.y += wave;
     
     float dhdx = cos(displacedPos.x * g_WaveFrequency + g_fTime * g_WaveSpeed) * g_WaveFrequency * g_WaveAmplitude;
     float dhdz = -sin(displacedPos.z * g_WaveFrequency + g_fTime * g_WaveFrequency) * g_WaveFrequency * g_WaveAmplitude;
@@ -102,7 +96,7 @@ struct PS_IN
 struct PS_OUT
 {
     float4 vColor : SV_TARGET0;
-    float4 vDepth : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -133,7 +127,7 @@ PS_OUT PS_MAIN(PS_IN In)
     projectedRefrTexCoords.y = -In.RefractionMapSamplingPos.y / In.RefractionMapSamplingPos.w / 2.0f + 0.5f;
     float2 perturbatedRefrTexCoords = projectedRefrTexCoords + perturbation;
     
-    float3 eyeVector = normalize(g_vCamPosition - In.wPosition);
+    float3 eyeVector = normalize(g_vCamPosition - In.wPosition).xyz;
     
     float3 normalVector = float3(0.f, 1.f, 0.f);
     float4 refractiveColor = g_RefractionTexture.Sample(LinearSampler, perturbatedRefrTexCoords);
@@ -159,7 +153,7 @@ PS_OUT PS_MAIN(PS_IN In)
         fresnelTerm = 0.02 + 0.97f * pow((1 - dot(eyeVector, normalVector)), 5);
     }
     
-     fresnelTerm = fresnelTerm * xDrawMode;
+    fresnelTerm = fresnelTerm * xDrawMode;
     
    // Out.vColor = float4(fresnelTerm, 0.f, 0.f, 1.f);
     fresnelTerm = saturate(fresnelTerm);
@@ -181,7 +175,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
     float3 lightSourceDir = normalize(float3(0.1f, 0.6f, 0.5f));
 
-    float3 halfvec = normalize(eyeVector +   + float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
+    float3 halfvec = normalize(eyeVector + +float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
 	
     float3 temp = 0;
 
@@ -201,7 +195,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11 DefaultTechnique
 {
-    pass WaterCaustic
+    pass Water
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -211,4 +205,5 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
     }
+
 }
