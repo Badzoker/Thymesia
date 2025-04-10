@@ -325,10 +325,10 @@ void CBoss_Magician::Active()
 
 void CBoss_Magician::Stun()
 {
+	m_pState_Manager->ChangeState(new CBoss_Magician::Stun_State(), this);
 	m_IsStun = true;
 	m_bPatternProgress = true;
 	m_fDelayTime = 0.f;
-	m_pState_Manager->ChangeState(new CBoss_Magician::Stun_State(), this);
 }
 
 _vector CBoss_Magician::Bezier_Move(_vector _vStartPos, _vector vCurvePos, _vector vEndPos, _float fTime)

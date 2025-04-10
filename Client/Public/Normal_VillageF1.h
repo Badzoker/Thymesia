@@ -41,6 +41,12 @@ public:
 private:
 	CState_Machine<CNormal_VillageF1>* m_pState_Manager = { nullptr };
 
+private:
+	_bool m_bCanHit = true;
+	_bool m_bFirstActive = {};
+	_uint m_iHit_Motion_Index = -1;
+	_uint m_iParryReadyHits = {};
+
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
@@ -147,7 +153,7 @@ public:
 	class Hit_State : public CStates<CNormal_VillageF1>
 	{
 	public:
-		Hit_State() = default;
+		Hit_State(_uint pHitNum);
 		virtual ~Hit_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
@@ -184,11 +190,37 @@ public:
 		void State_Exit(CNormal_VillageF1* pObject) override;
 	};
 
+	class Dead_State : public CStates<CNormal_VillageF1>
+	{
+	public:
+		Dead_State() = default;
+		virtual ~Dead_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CNormal_VillageF1* pObject) override;
+		void State_Update(_float fTimeDelta, CNormal_VillageF1* pObject) override;
+		void State_Exit(CNormal_VillageF1* pObject) override;
+	};
+
 	class Return_To_SpawnPoint_State : public CStates<CNormal_VillageF1>
 	{
 	public:
 		Return_To_SpawnPoint_State() = default;
 		virtual ~Return_To_SpawnPoint_State() = default;
+	public:
+		// CBoss_State을(를) 통해 상속됨
+		void State_Enter(CNormal_VillageF1* pObject) override;
+		void State_Update(_float fTimeDelta, CNormal_VillageF1* pObject) override;
+		void State_Exit(CNormal_VillageF1* pObject) override;
+	private:
+		_bool bCheck = {};
+	};
+
+	class Parry_State : public CStates<CNormal_VillageF1>
+	{
+	public:
+		Parry_State() = default;
+		virtual ~Parry_State() = default;
 	public:
 		// CBoss_State을(를) 통해 상속됨
 		void State_Enter(CNormal_VillageF1* pObject) override;

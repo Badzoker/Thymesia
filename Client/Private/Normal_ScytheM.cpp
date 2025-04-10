@@ -274,10 +274,10 @@ void CNormal_ScytheM::Return_To_Spawn()
 
 void CNormal_ScytheM::Stun()
 {
+    m_pState_Manager->ChangeState(new CNormal_ScytheM::Stun_State(), this);
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
-    m_pState_Manager->ChangeState(new CNormal_ScytheM::Stun_State(), this);
 #pragma region Effect_Stun
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
@@ -300,7 +300,7 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
             m_fMonsterCurHP -= *m_Player_Attack / 5.f;
             m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
         }
-        else
+        else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
             m_fShieldHP -= *m_Player_Attack / 5.f;

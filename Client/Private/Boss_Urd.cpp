@@ -210,10 +210,10 @@ void CBoss_Urd::Active()
 
 void CBoss_Urd::Stun()
 {
+	m_pState_Manager->ChangeState(new CBoss_Urd::Stun_State(), this);
 	m_IsStun = true;
 	m_bPatternProgress = true;
 	m_fDelayTime = 0.f;
-	m_pState_Manager->ChangeState(new CBoss_Urd::Stun_State(), this);
 }
 
 HRESULT CBoss_Urd::Ready_Components(void* pArg)
@@ -527,6 +527,7 @@ void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Idle_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+	pObject->RotateDegree_To_Player();
 }
 
 void CBoss_Urd::Idle_State::State_Exit(CBoss_Urd* pObject)

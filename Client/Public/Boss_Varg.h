@@ -248,6 +248,7 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Varg* pObject) override;
 		void State_Exit(CBoss_Varg* pObject) override;
 	private:
+		_bool m_bOne_More_Look = {};
 		_bool m_bNeed_Look_Player = {};
 	};
 
