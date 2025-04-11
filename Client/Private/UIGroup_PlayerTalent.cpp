@@ -6,6 +6,7 @@
 #include "UI_Button.h"
 #include "UI_Text.h"
 #include "UI_Image.h"
+#include "Player.h"
 
 CUIGroup_PlayerTalent::CUIGroup_PlayerTalent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -36,6 +37,7 @@ HRESULT CUIGroup_PlayerTalent::Initialize(void* pArg)
 
 	m_pGroupLevelUp = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), "PlayerLevelUp");
 
+	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
 
 	m_pMySceneBase = m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0");
 
@@ -72,7 +74,7 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 
 		//Slot_Update_State();
 		Talent_Tab_Change();
-
+		Player_Talent_Update();
 		for (auto& Button : m_pMySceneBase->Find_UI_Button())
 		{
 			if (Button->Get_Mouse_Select_OnOff())
@@ -752,6 +754,79 @@ void CUIGroup_PlayerTalent::Talent_Mouse_Check(TABSTATE eTab)
 
 }
 
+void CUIGroup_PlayerTalent::Player_Talent_Update()
+{
+	for (auto& AttackSlot : m_mapSlot_LightAttack)
+	{
+		switch (AttackSlot.first)
+		{
+		case 201:// 검 공격 2레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_HIT_COMBO);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_HIT_COMBO);
+			break;
+		case 203:// 치유의 처형 1레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_EXECUTION_HP_MP);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_EXECUTION_HP_MP);
+			break;
+			//case 303:// 치유의 처형 2레벨
+		case 204:// 날카로운 무기 1레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_SWORD_ATTACK_DAMAGE);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_SWORD_ATTACK_DAMAGE);
+			break;
+			//case 304:// 날카로운 무기 2레벨
+		case 205:// 에너지가 깃든 무기 1레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_SWORD_MP);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_SWORD_MP);
+			break;
+			//case 305:// 에너지가 깃든 무기 2레벨
+		}
+	}
+
+	for (auto& AttackSlot : m_mapSlot_Parry)
+	{
+		switch (AttackSlot.first)
+		{
+		case 203:// 치유의 처형 1레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALNET_PARRY_MP);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALNET_PARRY_MP);
+			break;
+			//case 303:// 날카로운 무기 1레벨
+		}
+	}
+
+	
+	for (auto& AttackSlot : m_mapSlot_Claw)
+	{
+		switch (AttackSlot.first)
+		{
+		case 201:// 긴 발톱 2레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_DOUBLE_CLAW);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_DOUBLE_CLAW);
+			break;
+		case 103:// 에너지가 깃든 발톱 1레벨
+			if (AttackSlot.second.first)
+				dynamic_cast<CPlayer*>(m_pPlayer)->Set_TalentState(CPlayer::TALENT_CRAW_MP);
+			else
+				dynamic_cast<CPlayer*>(m_pPlayer)->Sub_TalentState(CPlayer::TALENT_CRAW_MP);
+			break;
+		}
+
+	}
+
+}
+
 void CUIGroup_PlayerTalent::Slot_Setting()
 {
 	/* 슬롯 정보를 따로 컨테이너에 저장한다*/
@@ -897,7 +972,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 			}
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1004,7 +1079,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1111,7 +1186,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1221,7 +1296,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1331,7 +1406,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1440,7 +1515,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State(TABSTATE eTab)
 
 			/* 포인트 조건*/
 			/* 상위 특성 해금 조건*/
-			if (pSlot->Get_Mouse_Select_OnOff())
+			if (pSlot->Get_Mouse_Select_OnOff() && 0 != pSlot->Get_TexNumber())
 			{
 				if (200 <= MySlot.first &&
 					pSlot->Get_Slot_State() == SLOT_OPEN_ON)
@@ -1550,7 +1625,7 @@ void CUIGroup_PlayerTalent::Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Fra
 		pSlotUIObj->Set_TexEffectOff(false);
 		pSlotUIObj->Set_TexEffect(0);
 		break;
-	case Client::SLOT_CLOSE_ON:
+	case Client::SLOT_CLOSE_ON:	
 		pSlotUIObj->Set_TexSlot(2);
 		pSlotUIObj->Set_TexIconOff(true); // 이미지 흐리게 처리
 		pSlotUIObj->Set_TexEdgeOff(false);

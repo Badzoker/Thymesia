@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CUI_Scene;
 END
 
+class CPlayerSkillMgr;
 BEGIN(Client)
 
 class CUIGroup_Skill final : public CUIObject
@@ -52,6 +53,7 @@ private:
 	CUI_Button* m_pCurrentSkill = { nullptr };
 	CUI_Button* m_pEquipSkill_1 = { nullptr };
 
+	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
 
 	_bool m_bEscape = { false };
 
@@ -59,7 +61,7 @@ public:
 	deque<PLAYER_SKILL>& Get_PlayerSkill_List() { return m_deqOpenSkill; }
 
 private:
-	LEVELID m_eMyLevel = {};
+	LEVELID m_eMyLevelID = {};
 	map<_uint, pair<_bool, CUI_Skill_Slot*>> m_mapSlotInfo;
 	deque<PLAYER_SKILL> m_deqOpenSkill = {}; // 해금된 스킬들을 vector에 저장한다
 

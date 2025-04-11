@@ -4,6 +4,7 @@
 #include "UIGroup_Dialogue.h"
 
 #include "UI_Button.h"
+#include "Player.h"
 
 CUIGroup_Dialogue::CUIGroup_Dialogue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -48,6 +49,8 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pGameInstance->Get_Scene_Render_State(m_pTalkScene))
 		{
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
+
 			m_fDelayTime += fTimeDelta;
 
 			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
@@ -60,6 +63,7 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 		}
 		else if (m_pGameInstance->Get_Scene_Render_State(m_pTalkScene_Boss))
 		{
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
 			m_fDelayTime += fTimeDelta;
 
 			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
@@ -127,11 +131,12 @@ void CUIGroup_Dialogue::AIsemy_Pop_Button()
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerMenu"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 			}
-			if (3 == Button->Get_UI_GroupID())
+			if (3 == Button->Get_UI_GroupID()) // 떠나기?
 			{
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, false);
+				dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 
 			}
 		}
@@ -156,11 +161,12 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 
 			}
 		
-			if (2 == Button->Get_UI_GroupID())
+			if (2 == Button->Get_UI_GroupID()) // 할일이 남아 있어!
 			{
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
+				dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 
 			}
 		}

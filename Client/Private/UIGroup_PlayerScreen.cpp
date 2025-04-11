@@ -51,6 +51,9 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItmeScreen, false);
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
+	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PlayerSkillMgr();
+	m_oPotion_Count = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Potion_Count();
+
 	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
 	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
 	
@@ -103,6 +106,12 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	case PLAYER_SKILL_CANESWORD:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(14); // 케인
 		break;
+	case PLAYER_SKILL_GREADSWORD:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(10); // 대검
+		break;
+	case PLAYER_SKILL_JAVELINSWORD:
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(20); // 투창검
+		break;
 	case PLAYER_SKILL_START:
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_TexIcon(0); // 스킬 없음
 		dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Take_Away_Skill(PLAYER_SKILL_START);
@@ -128,8 +137,16 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_SCYTHE);
 			break;
 		case PLAYER_SKILL_CANESWORD:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(14); // 단검
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(14); // 케인
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_CANESWORD);
+			break;
+		case PLAYER_SKILL_GREADSWORD:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(10); // 대검
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_GREADSWORD);
+			break;
+		case PLAYER_SKILL_JAVELINSWORD:
+			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(20); // 투창검
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_JAVELINSWORD);
 			break;
 		default:
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
@@ -149,7 +166,13 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
 				break;
 			case PLAYER_SKILL_CANESWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(14); // 단검
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(14); // 케인
+				break;
+			case PLAYER_SKILL_GREADSWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(10); // 대검
+				break;
+			case PLAYER_SKILL_JAVELINSWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(20); // 투창검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
@@ -170,7 +193,13 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
 				break;
 			case PLAYER_SKILL_CANESWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(14); // 단검
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(14); // 케인
+				break;
+			case PLAYER_SKILL_GREADSWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(10); // 대검
+				break;
+			case PLAYER_SKILL_JAVELINSWORD:
+				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(20); // 투창검
 				break;
 			default:
 				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음
@@ -268,12 +297,12 @@ void CUIGroup_PlayerScreen::Player_Info_GageBar()
 			Image->Set_Content(ChangeText);
 
 		}
-		if (10 == Image->Get_UI_GroupID()) // 물약 현재 개수 / 최대 개수
+		if (20 == Image->Get_UI_GroupID()) // 물약 현재 개수 / 최대 개수
 		{
-			wsprintf(ChangeText, CountTextDouble, 3, 3); // 플레이어 멤버 변수로 만들어달라고 하자
+			wsprintf(ChangeText, CountTextDouble, *m_oPotion_Count, 3); // 플레이어 멤버 변수로 만들어달라고 하자
 			Image->Set_Content(ChangeText);
 		}
-		if (11 == Image->Get_UI_GroupID()) // 깃털 현재 개수 / 최대 개수
+		if (21 == Image->Get_UI_GroupID()) // 깃털 현재 개수 / 최대 개수
 		{
 			wsprintf(ChangeText, CountTextDouble, 3, 3); // 깃털은 몰?루
 			Image->Set_Content(ChangeText);

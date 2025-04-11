@@ -7,6 +7,7 @@ class CUI_Text;
 END
 
 
+class CPlayerSkillMgr;
 BEGIN(Client)
 
 class CUIGroup_PlayerScreen final : public CUIObject
@@ -35,6 +36,7 @@ private:
 	CUIObject* m_pHPGageTrack = { nullptr };
 
 	CUIObject* m_pMPGageBar = { nullptr };
+	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
 
 public:
 	void Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eState, _int iNum); // 아이템 획득 시 출력되는 알림
@@ -80,6 +82,7 @@ private:
 	_float					m_fMonsterTextOnTime = {};
 	vector<UI_TextInfo>		m_TextInfo = {};
 
+	_int*					m_oPotion_Count = {};
 public:
 	static CUIGroup_PlayerScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

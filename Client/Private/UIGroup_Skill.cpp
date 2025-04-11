@@ -8,6 +8,8 @@
 #include "UI_TextBox.h"
 #include "UI_Text.h"
 #include "UI_Skill_Slot.h"
+#include "PlayerSkillMgr.h"
+#include "Player.h"
 
 CUIGroup_Skill::CUIGroup_Skill(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -33,7 +35,7 @@ HRESULT CUIGroup_Skill::Initialize(void* pArg)
 		return E_FAIL;
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
-	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
+	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
 	
 	m_pBaseScene = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill");
 	//m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
@@ -41,6 +43,9 @@ HRESULT CUIGroup_Skill::Initialize(void* pArg)
 	m_pEquipCondition = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
 	//m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipWeapon_2, false);
+
+	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER"))->Get_PlayerSkillMgr();
+
 	Slot_Setting();
 	Skill_Equip_Weapon();
 
@@ -69,9 +74,9 @@ void CUIGroup_Skill::Update(_float fTimeDelta)
 			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon, false);
 			//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipWeapon_2, false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEquipCondition, false);
-			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerSkill"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerSkill"), false);
 
-			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerMenu"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 		}
 
@@ -127,21 +132,37 @@ void CUIGroup_Skill::Slot_Setting()
 				pSlot->Set_IconChange(1);
 				pSlot->Set_Content(TEXT("도끼"));
 				pSlot->Set_MySkill(PLAYER_SKILL_AXE);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_AXE);
 				break;
 			case 2:
 				pSlot->Set_IconChange(11);
 				pSlot->Set_Content(TEXT("핼버드"));
 				pSlot->Set_MySkill(PLAYER_SKILL_HALBERD);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_HALBERD);
 				break;
 			case 3:
 				pSlot->Set_IconChange(17);
 				pSlot->Set_Content(TEXT("낫"));
 				pSlot->Set_MySkill(PLAYER_SKILL_SCYTHE);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_SCYTHE);
 				break;
 			case 4:
 				pSlot->Set_IconChange(14);
 				pSlot->Set_Content(TEXT("어둠"));
 				pSlot->Set_MySkill(PLAYER_SKILL_CANESWORD);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_CANESWORD);
+				break;
+			case 5:
+				pSlot->Set_IconChange(10);
+				pSlot->Set_Content(TEXT("대검"));
+				pSlot->Set_MySkill(PLAYER_SKILL_GREADSWORD);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_GREADSWORD);
+				break; 
+			case 6:
+				pSlot->Set_IconChange(20);
+				pSlot->Set_Content(TEXT("투창검"));
+				pSlot->Set_MySkill(PLAYER_SKILL_JAVELINSWORD);
+				static_cast<CPlayerSkillMgr*>(m_pPlayerSkillMgr)->UnLockSkill(PLAYER_SKILL_JAVELINSWORD);
 				break;
 			default:
 				pSlot->Set_Content(TEXT(""));
@@ -198,7 +219,14 @@ void CUIGroup_Skill::Slot_Update_State()
 			}
 
 
-			Condition_Text_Update(pSlot->Get_NeedItem(), SlotButton.second.first); // 스킬이 진짜 해금 되었는지에 따라 텍스트 설명 내용 변경
+			Condition_Text_Update(pSlot->Get_NeedItem(), SlotButton.second.first); // 스킬이 진짜 해금 되었는지에 따라  텍스트 설명 내용 변경
+
+			if (!lstrcmp(pSlot->Get_Content().c_str(), L""))
+			{
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
+				Condition_Text_Update(pSlot->Get_NeedItem(), true);
+
+			}
 		}
 
 
@@ -260,7 +288,7 @@ void CUIGroup_Skill::Slot_Contion_Check()
 	{
 		CUI_Skill_Slot* pSlot = dynamic_cast<CUI_Skill_Slot*>(SlotButton.second.second);
 
-		if ( 1 < pSlot->Get_Slot_State() && 3 <= m_pGameInstance->Get_Item_Count(pSlot->Get_NeedItem()))
+		if (lstrcmp(pSlot->Get_Content().c_str(), L"") && 1 < pSlot->Get_Slot_State() && 3 <= m_pGameInstance->Get_Item_Count(pSlot->Get_NeedItem()))
 			pSlot->Set_OpenContion(true); // 클릭 했을 때 스킬을 해금 할 수 있는지 여부에 대해서 체크 하는 값
 		else
 			pSlot->Set_OpenContion(false);

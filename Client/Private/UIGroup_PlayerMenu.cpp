@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "UI_ButtonHighlight.h"
 #include "UI_KeyBox_Long.h"
+#include "Player.h"
 
 CUIGroup_PlayerMenu::CUIGroup_PlayerMenu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -37,6 +38,15 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 
 void CUIGroup_PlayerMenu::Priority_Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")))
+		{
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
+
+		}
+	}
+
 }
 
 void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
@@ -60,6 +70,7 @@ void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 			m_pGameInstance->Respawn_Monster(MONSTER_CATEGORY::CATEGORY_NORMAL);
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 		}
 	}
 }
