@@ -99,6 +99,8 @@ public:
 		STATE_URD_EXECUTION,
 		STATE_STUN_EXECUTE_START_VARG, // 바그 처형 시작 모션 
 		STATE_STUN_EXECUTE_START_PUNCHMAN,
+		STATE_STUN_EXECUTE_START_BAT, // 박쥐 처형 시작 모션 
+		STATE_BAT_EXECUTION,
 
 
 		/*앉기 및 의자 상호작용 */
@@ -254,6 +256,7 @@ public:
 	_bool Get_Lockon()const { return m_bLockOn; }
 	void Can_Move();
 	void Slide_Move(CGameObject* pGameObject);
+
 	void Set_LockOnTargetMonsterPtr(CGameObject* pGameObject) { m_pTargetMonsterPtr = pGameObject; }
 	void Set_MonsterEvent(_bool _OnOff) { m_bMonsterEvent = _OnOff; }
 	void Set_MonsterFinalEvent(_bool _OnOff) { m_bMonsterFinalEvent = _OnOff; }

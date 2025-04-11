@@ -443,6 +443,12 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_HURT_MUTATION_MAGICIAN_CATCH:
         STATE_HURT_MUTATION_MAGICIAN_CATCH_Method();
         break;
+    case CPlayer::STATE_STUN_EXECUTE_START_BAT:
+        STATE_STUN_EXECUTE_START_BAT_Method();
+        break;
+    case CPlayer::STATE_BAT_EXECUTION:
+        STATE_BAT_EXECUTION_Method();
+        break;
     default:
         break;
     }
@@ -2419,6 +2425,41 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
         *m_pParentNextStateCan = true;
     }
 
+}
+
+void CBody_Player::STATE_STUN_EXECUTE_START_BAT_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+        //m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(45.f);    
+
+        *m_pParentState = CPlayer::STATE_BAT_EXECUTION;
+    }
+}
+
+void CBody_Player::STATE_BAT_EXECUTION_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(219, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(219)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+        *m_pParentNextStateCan = true;
+    }
 }
 
 void CBody_Player::STATE_MAGICIAN_Execution_Method()

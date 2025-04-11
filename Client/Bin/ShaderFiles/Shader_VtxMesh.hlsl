@@ -336,7 +336,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float dist = distance(In.vWorldPos.xyz, g_WorldCamPos.xyz);
 
     // 디더링 비율 계산 (0 = 완전 디더링, 1 = 완전 보임)
-    float alpha = saturate((dist - 0.1f) / (3.f - 0.1f));
+    float alpha = saturate((dist) / (2.5f));
 
     // 디더링 패턴 적용
     int2 pixelPos = int2(ScreenPos.xy) % 4;

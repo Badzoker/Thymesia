@@ -8,6 +8,7 @@
 #include "UI_Boss_HP_Bar.h"
 #include "Projectile_Air.h"
 #include "Animation.h"
+#include "Boss_Bat_Camera.h"
 
 CBoss_Bat::CBoss_Bat(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -166,6 +167,20 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar"), iLevel, TEXT("Layer_UIScene"), &pBoss_HP_Bar)))
 		return E_FAIL;
 
+	CBoss_Bat_Camera::CAMERA_DESC Boss_Bat_CameraDesc = {};
+
+	Boss_Bat_CameraDesc.pParent = this;
+	Boss_Bat_CameraDesc.pSocketMatrix = m_pModelCom->Get_BoneMatrix("camera");
+	Boss_Bat_CameraDesc.pParentState = &m_iMonster_State;
+	Boss_Bat_CameraDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Boss_Bat_CameraDesc.pParentModel = m_pModelCom;
+	Boss_Bat_CameraDesc.fSpeedPerSec = 0.f;
+	Boss_Bat_CameraDesc.fRotationPerSec = 0.f;
+	Boss_Bat_CameraDesc.iCurLevel = pDesc->iCurLevel;
+	Boss_Bat_CameraDesc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+	if (FAILED(__super::Add_PartObject(TEXT("Part_Bat_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat_Camera"), &Boss_Bat_CameraDesc)))
+		return E_FAIL;
 
 	_float3 fRotateDegree[6] = {};
 	_float4 fPosition[6] = {};
@@ -444,7 +459,7 @@ void CBoss_Bat::Stun_State::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 27;
 	pObject->m_iMonster_State = STATE_STUN;
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN;
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_BAT;	
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->RotateDegree_To_Player();
@@ -462,7 +477,7 @@ void CBoss_Bat::Stun_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 	}
 
-	if ((m_iIndex == 27 || m_iIndex == 26) && (*pObject->m_Player_State) == CPlayer::STATE_PUNCH_MAN_Execution)
+	if ((m_iIndex == 27 || m_iIndex == 26) && (*pObject->m_Player_State) == CPlayer::STATE_BAT_EXECUTION)	
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Execution_State(), pObject);
 	}
@@ -493,6 +508,11 @@ void CBoss_Bat::Execution_State::State_Enter(CBoss_Bat* pObject)
 	vPlayerLook = XMVector3Normalize(vPlayerLook);
 
 	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, teleportDistance));
+
+	/* 선환 추가 */
+	pObject->m_pModelCom->Get_VecAnimation().at(30)->SetLerpTime(0.f);	
+	pObject->m_pModelCom->Set_LerpFinished(true);	
+	/* =========== */
 
 	pObject->m_pTransformCom->LookAt(vPlayerPos);
 	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);

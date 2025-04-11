@@ -150,7 +150,7 @@ namespace Engine
 
 	enum MONSTER_EXECUTION_CATEGORY
 	{
-		MONSTER_START = 0,
+		MONSTER_START = 0,		
 		MONSTER_VARG,               //바그	
 		MONSTER_HARMOR,             //검병	
 		MONSTER_JOKER,              //조커	
@@ -160,6 +160,7 @@ namespace Engine
 		MONSTER_PUNCH_MAN,          // 펀치맨
 		MONSTER_GRACE,               // 그레이스
 		MONSTER_URD,				// URD 보스 
+		MONSTER_BAT,				// Bat 보스 ( 박쥐 ) 
 		MONSTER_NORMAL              //기본몬스터	
 	};
 
