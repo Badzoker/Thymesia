@@ -91,6 +91,9 @@ public:
 	void	Set_FogOnOff();
 	void	Set_GodRayOnOff();
 	void	Set_ShadowOnOff();
+	void    Set_ReverseScreenEffect(_bool _OnOff);
+	void    Set_ReverseScreenRadius(_float _Radius);
+	void	Set_ReverseEnd(_bool _OnOff, _float _ReverseEndStrength);
 #pragma endregion
 
 #pragma region PIPELINE

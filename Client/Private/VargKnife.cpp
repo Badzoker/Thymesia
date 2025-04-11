@@ -3,6 +3,7 @@
 #include "Boss_Varg.h"
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Camera_Free.h"
 
 CVargKnife::CVargKnife(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -79,6 +80,10 @@ void CVargKnife::Priority_Update(_float fTimeDelta)
         m_bColliderOff = false;
         m_iPreAnimIndex = m_pParentModelCom->Get_Current_Animation_Index();
     }
+
+    if (m_pCamera == nullptr)
+        m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+
 }
 
 void CVargKnife::Update(_float fTimeDelta)
@@ -99,6 +104,14 @@ void CVargKnife::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
+                if (iter.eType == EVENT_STATE && iter.isEventActivate == true)  
+                {
+                    if (!strcmp(iter.szName, "Camera_Shake"))   
+                    {
+                        m_pCamera->ShakeOn(600.f, 600.f, 10.f, 10.f);   
+                    }   
+                }   
+
                 if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER 부분      
                 {
                     // 그 구간에서는 계속 진행 

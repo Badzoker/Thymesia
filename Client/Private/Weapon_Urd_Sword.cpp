@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Boss_Urd.h"
+#include "Camera_Free.h"
 
 CWeapon_Urd_Sword::CWeapon_Urd_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -60,6 +61,24 @@ HRESULT CWeapon_Urd_Sword::Initialize(void* pArg)
 
 void CWeapon_Urd_Sword::Priority_Update(_float fTimeDelta)
 {
+    _vector vWorldPos = { m_CombinedWorldMatrix._41,m_CombinedWorldMatrix._42,m_CombinedWorldMatrix._43,1.f };
+
+
+    _vector vViewPos = XMVector4Transform(vWorldPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
+    _vector vClipPos = XMVector4Transform(vViewPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ));
+
+
+    // 클립 공간 → NDC (정규화 디바이스 좌표)
+    vClipPos /= vClipPos.m128_f32[3];
+
+    //NDC → 화면 좌표(0~1 UV)
+    m_fObject_UV_Pos.x = vClipPos.m128_f32[0] * 0.5f + 0.5f;
+    m_fObject_UV_Pos.y = -vClipPos.m128_f32[1] * 0.5f + 0.5f + 0.05f;
+
+
+    if (m_pCamera == nullptr)
+        m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+
 }
 
 void CWeapon_Urd_Sword::Update(_float fTimeDelta)
@@ -84,6 +103,74 @@ void CWeapon_Urd_Sword::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
+
+                if (iter.eType == EVENT_STATE && iter.isEventActivate)
+                {
+                    if (!strcmp(iter.szName, "Reverse_Screen"))
+                    {
+                        m_pGameInstance->Set_ReverseScreenEffect(true);
+                        m_fReverseRadius += fTimeDelta * 0.1f;
+                        m_pGameInstance->Set_ReverseScreenRadius(m_fReverseRadius * 0.15f);
+
+                        m_fZoomBlurStrength += fTimeDelta;
+
+                        if (m_fReverseRadius > 0.1f)
+                        {
+                            m_fReverseRadius += fTimeDelta * 30.f;
+                        }
+
+                        m_pGameInstance->Set_Zoom_Blur_Center(m_fObject_UV_Pos);
+
+
+                        if (m_fZoomBlurStrength >= 2.f)
+                            m_fZoomBlurStrength = 2.f;
+
+                        m_pCamera->ShakeOn(800.f, 800.f, 6.f, 6.f);
+
+                        m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurStrength * 0.15f);
+
+                    }
+
+
+                }
+
+                if (iter.eType == EVENT_STATE && !iter.isEventActivate)
+                {
+                    if (!strcmp(iter.szName, "Reverse_Screen"))
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                        {
+                            //m_pGameInstance->Set_ReverseScreenEffect(false);
+
+                            m_pGameInstance->Set_ReverseEnd(true, m_fReverseEndTime);
+
+                            m_fReverseEndTime -= fTimeDelta * 0.5f;
+
+                            m_fZoomBlurStrength -= fTimeDelta;
+                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurStrength * 0.075f);
+
+                            if (m_fZoomBlurStrength <= 0.f)
+                            {
+                                m_pGameInstance->Set_ZoomBlur_Option(false, 0.0f);
+                                m_fReverseRadius = 0.f;
+
+                            }
+
+
+                            if (m_fReverseEndTime <= 0.f)
+                            {
+                                m_pGameInstance->Set_ReverseEnd(false, 0.f);
+                                m_pGameInstance->Set_ReverseScreenEffect(false);
+                                m_fReverseEndTime = 1.f;
+                                iter.isPlay = true;
+                            }
+
+
+                        }
+                    }
+
+
+                }
                 //내가 넣은 콜라이더 시간에 진입했을때
                 if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
                 {

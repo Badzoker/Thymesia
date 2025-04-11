@@ -13,6 +13,8 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
+
 class CWeapon_Urd_Sword final : public CPartObject
 {
 public:
@@ -54,6 +56,13 @@ private:
 	_uint m_iPassNum = {};
 
 	_float			   m_fTimeDelta = { 0.f };
+
+	_float			   m_fReverseRadius = { 0.f };
+	_float			   m_fZoomBlurStrength = { 0.f };
+	_float			   m_fReverseEndTime = { 1.f };
+
+	CCamera_Free* m_pCamera = { nullptr };
+
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

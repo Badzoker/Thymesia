@@ -116,7 +116,7 @@ void CBoss_Urd::State_Update(_float fTimeDelta)
 
 void CBoss_Urd::PatternCreate()
 {
-	if (m_iPhase == PHASE_TWO)
+	/*if (m_iPhase == PHASE_TWO)
 		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
 
 	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
@@ -199,7 +199,39 @@ void CBoss_Urd::PatternCreate()
 			else
 				Near_Pattern_Create();
 		}
+	}*/
+
+
+
+	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
+	{
+		if (m_iStep_Count < m_iCheck_Step_Num)
+		{
+			if (m_fDistance > 3.f)
+			{
+				m_pState_Manager->ChangeState(new CBoss_Urd::Step_Front_State(), this);
+			}
+			else
+			{
+				_uint iRandom = rand() % 2;
+				switch (iRandom)
+				{
+				case 0:
+					m_pState_Manager->ChangeState(new CBoss_Urd::Step_Right_State(), this);
+					break;
+				case 1:
+					m_pState_Manager->ChangeState(new CBoss_Urd::Step_Left_State(), this);
+					break;
+				}
+			}
+		}
+		else
+		{
+			m_iStep_Count = 0;
+			m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Special_Skill(), this);
+		}
 	}
+	
 }
 
 void CBoss_Urd::Active()

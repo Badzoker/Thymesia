@@ -13,6 +13,8 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
+
 class CVargKnife final : public CPartObject
 {
 	enum COLLIDER_CATEGORY
@@ -62,6 +64,8 @@ private:
 	_float			   m_fTimeDelta = { 0.f };
 	_uint			   m_iPreAnimIndex = -1;
 	_float4x4          m_HandWorldMatrix = {};	
+
+	CCamera_Free* m_pCamera = { nullptr };
 
 private:
 	const _uint* m_pParentState = { nullptr };

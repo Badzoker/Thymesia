@@ -2,6 +2,7 @@
 #include "Body_Bat.h"
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Camera_Free.h"
 
 CBody_Bat::CBody_Bat(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CPartObject(pDevice, pContext)
@@ -70,6 +71,10 @@ HRESULT CBody_Bat::Initialize(void* pArg)
 
 void CBody_Bat::Priority_Update(_float fTimeDelta)
 {
+	//테스트 용 현재 튜토리얼 맵에서만 소환되므로 LEVEL_TUTORIAL -> 왕실정원이면 저거 LEVEL_RoyalGarden 으로 바꿔야함 ! 
+	if (m_pCamera == nullptr)
+		m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+
 }
 
 void CBody_Bat::Update(_float fTimeDelta)
@@ -84,6 +89,15 @@ void CBody_Bat::Update(_float fTimeDelta)
 		{
 			if (iter.isPlay == false)
 			{
+				if (iter.eType == EVENT_STATE && iter.isEventActivate == true)	
+				{
+					if (!strncmp(iter.szName, "Camera_Shake", 12))	
+					{
+						m_pCamera->ShakeOn(600.f, 600.f, 15.f, 15.f);	
+					}
+				}	
+
+
 				if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true)
 				{
 					if (!strncmp(iter.szName, "LeftHand", strlen("LeftHand")))

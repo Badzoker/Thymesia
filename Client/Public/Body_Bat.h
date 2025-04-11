@@ -10,6 +10,8 @@ END
 
 BEGIN(Client)
 
+class CCamera_Free;
+
 class CBody_Bat final : public CPartObject
 {
 	enum COLLIDER_CATEGORY
@@ -54,6 +56,9 @@ private:
 	_bool  m_bColliderOff = {};
 	_uint m_iPassNum = {};
 	const _uint* m_pParentState = {};
+
+	CCamera_Free* m_pCamera = { nullptr };	
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

@@ -373,6 +373,21 @@ void CGameInstance::Set_ShadowOnOff()
 	m_pRenderer->Set_ShadowOnOff();
 }
 
+void CGameInstance::Set_ReverseScreenEffect(_bool _OnOff)
+{
+	m_pRenderer->Set_ReverseScreenEffect(_OnOff);
+}
+
+void CGameInstance::Set_ReverseScreenRadius(_float _Radius)
+{
+	m_pRenderer->Set_ReverseScreenRadius(_Radius);
+}
+
+void CGameInstance::Set_ReverseEnd(_bool _OnOff, _float _ReverseEndStrength)
+{
+	m_pRenderer->Set_ReverseEnd(_OnOff, _ReverseEndStrength);	
+}
+
 _float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState) const
 {
 	return m_pPipeLine->Get_Transform_Float4x4(eState);

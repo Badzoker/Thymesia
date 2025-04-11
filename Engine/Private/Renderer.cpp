@@ -1199,6 +1199,22 @@ HRESULT CRenderer::Render_Zoom_Blur()
 	if (FAILED(m_pShader->Bind_RawValue("g_bZoomBlurStrength", &m_fZoomBlurStrength, sizeof(_float))))
 		return E_FAIL;
 
+
+	if (FAILED(m_pShader->Bind_RawValue("g_bReverseScreenEffect", &m_bScreenReverseEffect_OnOff, sizeof(_bool))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_ScreenReverseRadius", &m_fScreenReverseRadius, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_bReverseEnd", &m_bReverseEnd, sizeof(_bool))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fReverseEndStrength", &m_fReverseEndStrength, sizeof(_float))))
+		return E_FAIL;
+
+
+
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
