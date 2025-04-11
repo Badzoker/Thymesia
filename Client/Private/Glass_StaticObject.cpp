@@ -74,7 +74,7 @@ HRESULT CGlass_StaticObject::Render()
 				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0);
 				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
-				m_pShaderCom->Begin(0);
+				m_pShaderCom->Begin(m_iPassIndex);
 				m_pModelCom->Render(i);
 			}
 		}

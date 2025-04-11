@@ -68,7 +68,7 @@ void CDoorManager::Update(_float fTimeDelta)
 
             m_fOpenTime = 3.f;
         }
-    }
+    }/*
     else if (!m_bOpened && (m_fOpenTime > 0.f && m_fOpenTime < 3.f))
     {
         m_fOpenTime -= fTimeDelta;
@@ -80,7 +80,7 @@ void CDoorManager::Update(_float fTimeDelta)
 
             m_fOpenTime = 0.f;
         }
-    }
+    }*/
 
 
 
@@ -128,30 +128,32 @@ void CDoorManager::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         m_bFadingIn = true;
         m_bFadingOut = false;*/
     }
-    else if(m_bOpened)
-    {
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("´Ý±â"));
-        m_pButton->Activate_Button(true);
-        m_bInteractOn = true;/*
-        m_bFadingIn = true;
-        m_bFadingOut = false;*/
-        //m_pDoorLeft->Set_Open();
+    //else if(m_bOpened)
+    //{
+    //    m_pButton->Set_ButtonText(TEXT("E"), TEXT("´Ý±â"));
+    //    m_pButton->Activate_Button(true);
+    //    m_bInteractOn = true;/*
+    //    m_bFadingIn = true;
+    //    m_bFadingOut = false;*/
+    //    //m_pDoorLeft->Set_Open();
 
-       // m_bOpened = false;
-    }
+    //   // m_bOpened = false;
+    //}
 }
 
 void CDoorManager::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
-    if (m_pGameInstance->isKeyEnter(DIK_E) && !m_bOpened && !(m_fOpenTime > 0.f && m_fOpenTime < 3.f))
+    if (m_pGameInstance->isKeyEnter(DIK_E) && !m_bOpened && !(m_fOpenTime > 0.f && m_fOpenTime < 3.f) && m_pGameInstance->Get_Item_Count(ITEM_TYPE::ITEM_KEY2))
     {
+        m_pGameInstance->Use_Item(ITEM_TYPE::ITEM_KEY2, 1);
+
         m_pDoorLeft->Set_Open();
         m_pDoorRight->Set_Open();
 
         m_fOpenTime += 0.001f;
 
         m_bOpened = true;
-    }
+    }/*
     else if (m_pGameInstance->isKeyEnter(DIK_E) && m_bOpened && !(m_fOpenTime > 0.f && m_fOpenTime < 3.f))
     {
         m_pDoorLeft->Set_Close();
@@ -160,7 +162,7 @@ void CDoorManager::OnCollision(CGameObject* _pOther, PxContactPair _information)
         m_fOpenTime -= 0.001f;
 
         m_bOpened = false;
-    }
+    }*/
 }
 
 void CDoorManager::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
