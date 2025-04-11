@@ -1194,21 +1194,24 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
         else if (iter.eType == EVENT_STATE && iter.isEventActivate == false && iter.isPlay == false)
         {
-            if (!strcmp(iter.szName, "Zoom_Blur"))
+            if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
             {
-                m_fRoarBlurStrength -= fTimeDelta;
-
-                if (m_fRoarBlurStrength <= 0.f)
+                if (!strcmp(iter.szName, "Zoom_Blur"))
                 {
-                    m_fRoarBlurStrength = 0.f;
+                    m_fRoarBlurStrength -= fTimeDelta;
+
+                    if (m_fRoarBlurStrength <= 0.f)
+                    {
+                        m_fRoarBlurStrength = 0.f;
+                    }
+
+                    else
+                        m_pCamera->ShakeOn(400.f, 400.f, 5.f, 5.f);
+
+                    pObject->Set_Object_UV_Pos(pObject->Get_Object_UV_Pos());
+                    pObject->m_pGameInstance->Set_Zoom_Blur_Center(pObject->Get_Object_UV_Pos());
+                    pObject->m_pGameInstance->Set_ZoomBlur_Option(true, m_fRoarBlurStrength * 0.2f);
                 }
-
-                else
-                    m_pCamera->ShakeOn(400.f, 400.f, 5.f, 5.f);
-
-                pObject->Set_Object_UV_Pos(pObject->Get_Object_UV_Pos());
-                pObject->m_pGameInstance->Set_Zoom_Blur_Center(pObject->Get_Object_UV_Pos());
-                pObject->m_pGameInstance->Set_ZoomBlur_Option(true, m_fRoarBlurStrength * 0.2f);
             }
         }
 #pragma endregion 

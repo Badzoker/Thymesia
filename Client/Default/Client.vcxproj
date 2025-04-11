@@ -203,6 +203,7 @@
     <ClInclude Include="..\Public\Body_VillageM0.h" />
     <ClInclude Include="..\Public\Body_VillageM1.h" />
     <ClInclude Include="..\Public\Boss_Bat.h" />
+    <ClInclude Include="..\public\Boss_Bat_Camera.h" />
     <ClInclude Include="..\Public\Boss_Magician2.h" />
     <ClInclude Include="..\public\Boss_Magician_Camera.h" />
     <ClInclude Include="..\public\Boss_Mutation_Magician_Camera.h" />
@@ -280,6 +281,7 @@
     <ClInclude Include="..\public\LockOn_Evade_L.h" />
     <ClInclude Include="..\public\LockOn_Evade_R.h" />
     <ClInclude Include="..\public\Magician_LV1_Catched.h" />
+    <ClInclude Include="..\public\Magician_LV2_Catched.h" />
     <ClInclude Include="..\Public\Monster_HP_Bar.h" />
     <ClInclude Include="..\Public\Monster_HP_Bar_Effect.h" />
     <ClInclude Include="..\Public\Monster_HP_Gage.h" />
@@ -495,6 +497,7 @@
     <ClCompile Include="..\Private\Body_VillageM0.cpp" />
     <ClCompile Include="..\Private\Body_VillageM1.cpp" />
     <ClCompile Include="..\Private\Boss_Bat.cpp" />
+    <ClCompile Include="..\private\Boss_Bat_Camera.cpp" />
     <ClCompile Include="..\Private\Boss_Magician2.cpp" />
     <ClCompile Include="..\private\Boss_Magician_Camera.cpp" />
     <ClCompile Include="..\private\Boss_Mutation_Magician_Camera.cpp" />
@@ -572,6 +575,7 @@
     <ClCompile Include="..\private\LockOn_Evade_L.cpp" />
     <ClCompile Include="..\private\LockOn_Evade_R.cpp" />
     <ClCompile Include="..\private\Magician_LV1_Catched.cpp" />
+    <ClCompile Include="..\private\Magician_LV2_Catched.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Bar.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Bar_Effect.cpp" />
     <ClCompile Include="..\Private\Monster_HP_Gage.cpp" />

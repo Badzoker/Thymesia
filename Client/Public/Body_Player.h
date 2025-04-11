@@ -149,7 +149,8 @@ public:
 	void STATE_Varg_Execution_Method();
 	void STATE_STUN_EXECUTE_START_URD_Method();
 	void STATE_URD_EXECUTION_Method();
-
+	void STATE_STUN_EXECUTE_START_BAT_Method();
+	void STATE_BAT_EXECUTION_Method();
 	/* ------------------------------- */
 
 	/* 의자 관련 모션 */

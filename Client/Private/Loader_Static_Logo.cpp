@@ -24,6 +24,7 @@
 #include "Boss_Magician_Camera.h"	
 #include "Boss_Mutation_Magician_Camera.h"
 #include "Boss_Urd_Camera.h"	
+#include "Boss_Bat_Camera.h"
 
 #include "Weapon_Cane.h"
 #include "Weapon_Magician_Sword.h"
@@ -643,6 +644,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Urd_Camera::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
 
+	//보스 Bat  카메라	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat_Camera"),
+		CBoss_Bat_Camera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	//보스 HP바

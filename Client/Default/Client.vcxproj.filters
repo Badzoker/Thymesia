@@ -979,6 +979,12 @@
     <Filter Include="02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative">
       <UniqueIdentifier>{65ef2c4c-5886-4d76-a167-77447bb03d64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Boss_Bat\Boss_Bat_Camera">
+      <UniqueIdentifier>{1bb07557-3415-4798-9faa-bba9ebfe065d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\Magician_LV2_Catched">
+      <UniqueIdentifier>{f685762b-68a4-4db4-9cb7-99e28a779088}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1845,6 +1851,12 @@
     <ClInclude Include="..\Public\Decorative_Mutation2.h">
       <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Boss_Bat_Camera.h">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Boss_Bat_Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Magician_LV2_Catched.h">
+      <Filter>02.GameObject\Player\State\Hurt\Magician_LV2_Catched</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2701,6 +2713,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Decorative_Mutation2.cpp">
       <Filter>02.GameObject\Monster\00. Normal\Male\VillageM1\Decorative</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Bat_Camera.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Boss_Bat\Boss_Bat_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Magician_LV2_Catched.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\Magician_LV2_Catched</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

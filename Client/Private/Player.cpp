@@ -230,6 +230,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_URD:
 				m_iState = STATE_STUN_EXECUTE_START_URD;
 				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_BAT:	
+				m_iState = STATE_STUN_EXECUTE_START_BAT;	
+				break;	
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
@@ -488,7 +491,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		switch (m_iSkill_Eqip_1st)
 		{
 		case PLAYER_SKILL::PLAYER_SKILL_AXE:
-			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_AXE;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
@@ -497,7 +500,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(1)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(1)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_CANE_SWORD_SP02;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
@@ -506,7 +509,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(2)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(2)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_GREATSWORD;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
@@ -515,7 +518,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(3)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(3)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_HALBERDS_B;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
@@ -524,7 +527,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(4)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(4)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_JAVELIN_SWORD;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
@@ -533,7 +536,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
-			if (m_pPlayerSkillMgr->Get_VecState().at(5)->Priority_Update(this, fTimeDelta))
+			if (m_pPlayerSkillMgr->Get_VecState().at(5)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
 			{
 				m_iState = STATE_SCYTHE_B;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
@@ -543,6 +546,56 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			break;
 		}
 
+	}
+
+
+	if ((m_pGameInstance->isKeyEnter(DIK_2))
+		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
+		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
+		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
+		&& !(m_iPhaseState & CPlayer::PHASE_EXECUTION)
+		&& !(m_iPhaseState & CPlayer::PHASE_PARRY)
+		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)
+		&& m_iState != STATE_DEAD)
+	{
+		switch (m_iTake_Away_Skill)
+		{
+		case PLAYER_SKILL::PLAYER_SKILL_AXE:
+			m_iState = STATE_AXE;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
+			m_iState = STATE_CANE_SWORD_SP02;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_iCurrentMp -= 20;
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
+			m_iState = STATE_GREATSWORD;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_iCurrentMp -= 20;
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
+			m_iState = STATE_HALBERDS_B;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_iCurrentMp -= 20;
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
+			m_iState = STATE_JAVELIN_SWORD;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_iCurrentMp -= 20;
+			break;
+		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
+			m_iState = STATE_SCYTHE_B;
+			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
+			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_iCurrentMp -= 20;
+			break;
+		}
 	}
 
 
@@ -1624,6 +1677,29 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 	{
 		m_bMove = false;
 	}
+
+	if (!strncmp("SM_Door_Left", _pOther->Get_Name(), 12))
+	{
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장				
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3  dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+
+	}
+
+	if (!strncmp("SM_Door_Right", _pOther->Get_Name(), 13))
+	{
+
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장					
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+
+	}
 }
 
 // 한개 더 분류 
@@ -1652,6 +1728,34 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 
 	Player_Interaction(_pOther);
+
+
+
+	if (!strncmp("SM_Door_Left", _pOther->Get_Name(), 12))
+	{
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장			
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
+
+
+	}
+
+	if (!strncmp("SM_Door_Right", _pOther->Get_Name(), 13))
+	{
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장				
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
+	}
 
 }
 
