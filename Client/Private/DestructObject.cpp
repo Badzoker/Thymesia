@@ -50,7 +50,11 @@ HRESULT CDestructObject::Initialize(void* pArg)
 
     m_pTransformCom->Rotation(pDesc->fRotation.x, pDesc->fRotation.y, pDesc->fRotation.z, pDesc->fRotation.w);
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 1.0f, 1.0f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    if (!strcmp(m_szIndivisualName, "barrel") || !strcmp(m_szIndivisualName, "Rock"))
+        m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.5f,0.5f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    else
+        m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.5f,0.2f, 1.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER_WEAPON;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::DESTRUCT, iSettingColliderGroup);
@@ -81,7 +85,7 @@ void CDestructObject::Update(_float fTimeDelta)
         }
 
         if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f,0.f,1.f });
+            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 30.f,0.f,1.f });
     }
 
     if (m_bUpdating)
@@ -235,3 +239,6 @@ void CDestructObject::Free()
     Safe_Release(m_pModelCom);
     Safe_Release(m_pTextureCom);
 }
+
+
+
