@@ -143,7 +143,7 @@ void CUIGroup_Landing::Map_Name()
 		case LEVEL_ROYALGARDEN:
 			Image->Set_TexNumber(8);
 			break;
-		case LEVEL_FORTRESS:
+		case LEVEL_OCEAN:
 			Image->Set_TexNumber(9);
 			break;
 		}

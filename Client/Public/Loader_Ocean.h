@@ -9,11 +9,11 @@ END
 
 BEGIN(Client)
 
-class CLoader_Fortress final : public CLoader
+class CLoader_Ocean final : public CLoader
 {
 private:
-	CLoader_Fortress(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual ~CLoader_Fortress() = default;
+	CLoader_Ocean(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLoader_Ocean() = default;
 
 
 public:
@@ -21,13 +21,13 @@ public:
 	virtual HRESULT Start_Loading() override;
 
 private:
-	HRESULT Loading_For_Level_Fortress();
+	HRESULT Loading_For_Level_Ocean();
 	
 private:
 	HRESULT Load_BinaryModels(const _char* pFilePath, _matrix PreTransformMatrix) override;
 
 public:
-	static CLoader_Fortress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);
+	static CLoader_Ocean* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID);
 	virtual void Free() override;
 };
 

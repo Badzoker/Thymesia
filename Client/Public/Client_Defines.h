@@ -15,7 +15,7 @@ namespace Client
 		LEVEL_TUTORIAL, // 튜토맵
 		LEVEL_SEAOFTREES, // 나무바다(서커스)
 		LEVEL_ROYALGARDEN, // 왕실정원
-		LEVEL_FORTRESS, // 헤르메스성채
+		LEVEL_OCEAN, // 헤르메스성채
 		LEVEL_HILL, //철학자의 집
 		LEVEL_END,
 	};

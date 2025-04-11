@@ -93,7 +93,7 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 					if (3 == Button->Get_UI_GroupID()) // 헤르메스 요새
 					{
 						m_pPoptitle = L"정말 헤르메스 지도를 선택하시겠습니까?";
-						m_eNextLevel = LEVEL_FORTRESS;
+						m_eNextLevel = LEVEL_OCEAN;
 					}
 					if (4 == Button->Get_UI_GroupID()) // 기억의 대양
 					{

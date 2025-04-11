@@ -5,11 +5,11 @@
 
 BEGIN(Client)
 
-class CLevel_Fortress final : public CLevel
+class CLevel_Ocean final : public CLevel
 {
 private:
-	CLevel_Fortress(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual ~CLevel_Fortress() = default;
+	CLevel_Ocean(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLevel_Ocean() = default;
 
 public:
 	typedef struct MonsterSpawnInfo
@@ -71,7 +71,7 @@ private:
 	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos;
 
 public:
-	static CLevel_Fortress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLevel_Ocean* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 };
 

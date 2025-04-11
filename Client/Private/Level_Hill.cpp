@@ -155,7 +155,7 @@ void CLevel_Hill::Update(_float fTimeDelta)
 		case LEVEL_ROYALGARDEN:
 			iLoadingImage = 3;
 			break;
-		case LEVEL_FORTRESS:
+		case LEVEL_OCEAN:
 			iLoadingImage = 4;
 			break;
 		}

@@ -1,5 +1,5 @@
 #include "pch.h" 
-#include "Level_Fortress.h"
+#include "Level_Ocean.h"
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "Layer.h"	
@@ -20,15 +20,15 @@
 
 
 
-CLevel_Fortress::CLevel_Fortress(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLevel_Ocean::CLevel_Ocean(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
 {
 	
 }
 
-HRESULT CLevel_Fortress::Initialize()
+HRESULT CLevel_Ocean::Initialize()
 {
-	m_iCurrentLevel = LEVEL_FORTRESS;
+	m_iCurrentLevel = LEVEL_OCEAN;
 
 	m_pGameInstance->Set_Level_ForEventManager(m_iCurrentLevel);
 
@@ -89,21 +89,21 @@ HRESULT CLevel_Fortress::Initialize()
 
 
 	// 플레이어 화면 키기
-	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), true);
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 	m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.8f);
 
 	/* 맵 이름 알림*/
-	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_Landing"), true);
+	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_Landing"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 
 	return S_OK;
 }
 
-void CLevel_Fortress::Update(_float fTimeDelta)
+void CLevel_Ocean::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isKeyEnter(DIK_TAB))
 	{
@@ -114,18 +114,18 @@ void CLevel_Fortress::Update(_float fTimeDelta)
 
 				m_bStopMenuOpen = false;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerInventory"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerInventory"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 			}
 			else
 			{
 				m_bStopMenuOpen = true;
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerInventory"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerInventory"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")), true);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_FORTRESS, TEXT("Layer_PlayerScreen"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 			}
 		}
@@ -138,7 +138,7 @@ void CLevel_Fortress::Update(_float fTimeDelta)
 	}
 }
 
-HRESULT CLevel_Fortress::Render() 
+HRESULT CLevel_Ocean::Render() 
 {
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
@@ -147,9 +147,9 @@ HRESULT CLevel_Fortress::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Lights()
+HRESULT CLevel_Ocean::Ready_Lights()
 {
-	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_FORTRESS, TEXT("Layer_Camera"), TEXT("Com_Transform")));
+	CTransform* pCamTransform = static_cast<CTransform*>(m_pGameInstance->Find_Component(LEVEL_OCEAN, TEXT("Layer_Camera"), TEXT("Com_Transform")));
 
 	_matrix matView = XMLoadFloat4x4(&m_pGameInstance->Get_Transform_Float4x4_Inverse(CPipeLine::D3DTS_VIEW));
 	_vector vCamInfo = { 60.f, 16.f / 9.f , 0.1f, 800.f };
@@ -159,7 +159,7 @@ HRESULT CLevel_Fortress::Ready_Lights()
 		, matView, vCamInfo, pCamTransform)))
 		return E_FAIL;
 
-	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+	CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
 
 	LIGHT_DESC LightDesc{};
 	/* 2월 8일 빛 */
@@ -187,22 +187,22 @@ HRESULT CLevel_Fortress::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_BackGround(const _tchar * pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
 
 	pDesc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Terrain"), LEVEL_FORTRESS, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Terrain"), LEVEL_OCEAN, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 	//for (size_t i = 0; i < 3; i++)
 	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_ForkLift"), LEVEL_FORTRESS, pLayerTag, nullptr)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_ForkLift"), LEVEL_OCEAN, pLayerTag, nullptr)))
 	//		return E_FAIL;
 	//}
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Sky"), LEVEL_FORTRESS, pLayerTag, &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Sky"), LEVEL_OCEAN, pLayerTag, &pDesc)))
 		return E_FAIL;
 
 
@@ -210,7 +210,7 @@ HRESULT CLevel_Fortress::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_Structure(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
 	//현재 몬스터와 기본맵이 있는 Prototype용 맵							-> Load_Objects(16);
 	//Map Tool 기능 및 Test용 맵											-> Load_Objects(87);
@@ -252,7 +252,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Structure(const _tchar* pLayerTag)
 
 	//	/* 이제 TRANSFORM만 건들면 될듯함.*/
 	//	//int b = 4;
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, Translate_wchar, LEVEL_FORTRESS, Layer_Name)))
+	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, Translate_wchar, LEVEL_OCEAN, Layer_Name)))
 	//		return E_FAIL;
 
 	//	//CTransform* pTrasnform = dynamic_cast<CTransform*>(
@@ -260,14 +260,14 @@ HRESULT CLevel_Fortress::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//	// 구분할 수 있는 방법을 생각해봐야할듯.
 	//	map<const _wstring, class CLayer*>* Level_Layers = m_pGameInstance->Get_Layers();		
 
-	//	auto& Level_Fortress = Level_Layers[3];
+	//	auto& LEVEL_OCEAN = Level_Layers[3];
 
-	//	for (auto& Layers : Level_Fortress)
+	//	for (auto& Layers : LEVEL_OCEAN)
 	//	{
-	//		//auto& iter = find(Level_Fortress.begin(), Level_Fortress.end(), Layer_Name);	
-	//		auto iter = Level_Fortress.find(Layer_Name);
+	//		//auto& iter = find(LEVEL_OCEAN.begin(), LEVEL_OCEAN.end(), Layer_Name);	
+	//		auto iter = LEVEL_OCEAN.find(Layer_Name);
 
-	//		if (iter == Level_Fortress.end())
+	//		if (iter == LEVEL_OCEAN.end())
 	//			return E_FAIL;
 
 	//		else
@@ -284,7 +284,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Structure(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_Player(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Player(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 
@@ -299,13 +299,13 @@ HRESULT CLevel_Fortress::Ready_Layer_Player(const _tchar* pLayerTag)
 
 	Desc._fPosition = vTestPosition;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;	
 
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_Camera(const _tchar * pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CCamera_Free::FREE_CAMERA_DESC		Desc = {};
 
@@ -321,17 +321,17 @@ HRESULT CLevel_Fortress::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_Monster()
+HRESULT CLevel_Ocean::Ready_Layer_Monster()
 {
 
 	Load_MonsterIndex(3);
@@ -397,39 +397,39 @@ HRESULT CLevel_Fortress::Ready_Layer_Monster()
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_NPC(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_NPC(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 	Desc.fSpeedPerSec = 1.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_OCEAN, pLayerTag, &Desc)))
 	//	return E_FAIL;
 
 	return S_OK;
 }
 
 
-HRESULT CLevel_Fortress::Ready_Layer_Fade(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Fade(const _tchar* pLayerTag)
 {
 	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_FORTRESS, pLayerTag, &BlackScreenDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_OCEAN, pLayerTag, &BlackScreenDesc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
 
-HRESULT CLevel_Fortress::Ready_Layer_Button(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Button(const _tchar* pLayerTag)
 {
 	CButton::BUTTON_DESC ButtonDesc = {};
 
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_FORTRESS, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_OCEAN, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
@@ -437,7 +437,7 @@ HRESULT CLevel_Fortress::Ready_Layer_Button(const _tchar* pLayerTag)
 
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_Item(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_Item(const _tchar* pLayerTag)
 {
 	char* m_strObjectNames[256] =
 	{
@@ -499,66 +499,66 @@ HRESULT CLevel_Fortress::Ready_Layer_Item(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_FORTRESS, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_OCEAN, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_FORTRESS, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_OCEAN, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
-{
-	CGameObject::GAMEOBJECT_DESC        Desc{};
-	Desc.iCurLevel = m_iCurrentLevel;
-
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_FORTRESS, pLayerTag, &Desc)))
-		return E_FAIL;
-	return S_OK;
-}
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_FORTRESS, pLayerTag, &Desc, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_OCEAN, pLayerTag, &Desc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_OCEAN, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
 
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_FORTRESS, pLayerTag, &Desc, "Inventory")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_OCEAN, pLayerTag, &Desc, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag)
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_FORTRESS, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
+HRESULT CLevel_Ocean::Load_Objects(_int iObject_Level)
 {
 	_ulong dwByte = {};
 	_ulong dwByte2 = {};
@@ -605,12 +605,12 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 
 		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_FORTRESS, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_OCEAN, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_FORTRESS, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_OCEAN, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -678,7 +678,7 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte2, nullptr);
 		Desc.ObjectName = szLoadName;
 
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_FORTRESS, TEXT("Layer_GroundObject"), &Desc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_OCEAN, TEXT("Layer_GroundObject"), &Desc)))
 			return E_FAIL;
 	}*/
 
@@ -734,7 +734,7 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 		Desc.vecInstanceRotation = vecInstanceRotation;
 		Desc.vecBoxSize = vecBoxSize;
 
-		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_FORTRESS, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_FORTRESS, TEXT("Layer_GroundObject"), &Desc));
+		CEnvironmentObject* pEnvironment = reinterpret_cast<CEnvironmentObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_OCEAN, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_OCEAN, TEXT("Layer_GroundObject"), &Desc));
 
 		if (nullptr == pEnvironment)
 			return E_FAIL;
@@ -763,7 +763,7 @@ HRESULT CLevel_Fortress::Load_Objects(_int iObject_Level)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Load_TriggerObjects(_int iObject_Level)
+HRESULT CLevel_Ocean::Load_TriggerObjects(_int iObject_Level)
 {
 	string strDataPath = "../Bin/DataFiles/TriggerData/TriggerObject";
 
@@ -798,7 +798,7 @@ HRESULT CLevel_Fortress::Load_TriggerObjects(_int iObject_Level)
 		ReadFile(hFile, &Desc.fRotation, sizeof(_float3), &dwByte, nullptr);
 		ReadFile(hFile, &Desc.fScale, sizeof(_float3), &dwByte, nullptr);
 
-		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_FORTRESS, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_FORTRESS, TEXT("Layer_TriggerObject"), &Desc));
+		CTriggerObject* pTriggerObject = reinterpret_cast<CTriggerObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_OCEAN, TEXT("Prototype_GameObject_TriggerObject"), LEVEL_OCEAN, TEXT("Layer_TriggerObject"), &Desc));
 
 		if (nullptr != pTriggerObject)
 			vecTriggerObject.push_back(pTriggerObject);
@@ -809,7 +809,7 @@ HRESULT CLevel_Fortress::Load_TriggerObjects(_int iObject_Level)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Load_InstancingObjects(_int iObject_Level)
+HRESULT CLevel_Ocean::Load_InstancingObjects(_int iObject_Level)
 {
 	_ulong dwByte = {};
 
@@ -836,7 +836,7 @@ HRESULT CLevel_Fortress::Load_InstancingObjects(_int iObject_Level)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Load_Height(_int iObject_Level)
+HRESULT CLevel_Ocean::Load_Height(_int iObject_Level)
 {
 	_ulong dwByte = {};
 
@@ -864,7 +864,7 @@ HRESULT CLevel_Fortress::Load_Height(_int iObject_Level)
 	return S_OK;
 }
 
-HRESULT CLevel_Fortress::Load_MonsterIndex(_int iMonsterIndex_Level)
+HRESULT CLevel_Ocean::Load_MonsterIndex(_int iMonsterIndex_Level)
 {
 	string strDataPath = "../Bin/DataFiles/SpawnPoint/SpawnPoint";
 
@@ -916,13 +916,13 @@ HRESULT CLevel_Fortress::Load_MonsterIndex(_int iMonsterIndex_Level)
 }
 
 
-CLevel_Fortress * CLevel_Fortress::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLevel_Ocean * CLevel_Ocean::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CLevel_Fortress*	pInstance = new CLevel_Fortress(pDevice, pContext);
+	CLevel_Ocean*	pInstance = new CLevel_Ocean(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Failed To Created : CLevel_Fortress");
+		MSG_BOX("Failed To Created : CLevel_Ocean");
 		Safe_Release(pInstance);
 	}
 
@@ -930,7 +930,7 @@ CLevel_Fortress * CLevel_Fortress::Create(ID3D11Device * pDevice, ID3D11DeviceCo
 }
 
 
-void CLevel_Fortress::Free()
+void CLevel_Ocean::Free()
 {
 	__super::Free();
 

@@ -469,9 +469,6 @@
     <Filter Include="01.Level\04.RoyalGarden">
       <UniqueIdentifier>{199c6789-e366-4357-a729-e7744ec2c8f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Level\05.Fortress">
-      <UniqueIdentifier>{300a955e-06be-400a-8ed0-5aa3d1217a28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Level\06.Philosophre%27s Hill">
       <UniqueIdentifier>{29246cb2-d06f-4770-9dff-035920484e04}</UniqueIdentifier>
     </Filter>
@@ -486,9 +483,6 @@
     </Filter>
     <Filter Include="01.Level\99.Loading\Loader\03.RoyalGarden">
       <UniqueIdentifier>{75bf9035-c9a4-41dd-8034-5f5c58f9314f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Level\99.Loading\Loader\04.Fortress">
-      <UniqueIdentifier>{f02e4460-1311-4920-97b2-17b068e617e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Level\99.Loading\Loader\05.Hill">
       <UniqueIdentifier>{eca1f72c-dd44-416b-b01e-873a0c9a5eda}</UniqueIdentifier>
@@ -984,6 +978,12 @@
     </Filter>
     <Filter Include="02.GameObject\Player\State\Hurt\Magician_LV2_Catched">
       <UniqueIdentifier>{f685762b-68a4-4db4-9cb7-99e28a779088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\99.Loading\Loader\04.Ocean">
+      <UniqueIdentifier>{f02e4460-1311-4920-97b2-17b068e617e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Level\05.Ocean">
+      <UniqueIdentifier>{300a955e-06be-400a-8ed0-5aa3d1217a28}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1551,9 +1551,6 @@
     <ClInclude Include="..\Public\Loader_SeaOfTrees.h">
       <Filter>01.Level\99.Loading\Loader\02.SeaOfTrees</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Loader_Fortress.h">
-      <Filter>01.Level\99.Loading\Loader\04.Fortress</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Loader_Hill.h">
       <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
     </ClInclude>
@@ -1562,9 +1559,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Hill.h">
       <Filter>01.Level\06.Philosophre%27s Hill</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Fortress.h">
-      <Filter>01.Level\05.Fortress</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DeadBranch.h">
       <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
@@ -1856,6 +1850,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Magician_LV2_Catched.h">
       <Filter>02.GameObject\Player\State\Hurt\Magician_LV2_Catched</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Ocean.h">
+      <Filter>01.Level\99.Loading\Loader\04.Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Ocean.h">
+      <Filter>01.Level\05.Ocean</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2411,9 +2411,6 @@
     <ClCompile Include="..\Private\Loader_SeaOfTrees.cpp">
       <Filter>01.Level\99.Loading\Loader\02.SeaOfTrees</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Loader_Fortress.cpp">
-      <Filter>01.Level\99.Loading\Loader\04.Fortress</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Loader_Hill.cpp">
       <Filter>01.Level\99.Loading\Loader\05.Hill</Filter>
     </ClCompile>
@@ -2422,9 +2419,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Hill.cpp">
       <Filter>01.Level\06.Philosophre%27s Hill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Fortress.cpp">
-      <Filter>01.Level\05.Fortress</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DeadBranch.cpp">
       <Filter>02.GameObject\InteractionObject\DeadBranch</Filter>
@@ -2719,6 +2713,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Magician_LV2_Catched.cpp">
       <Filter>02.GameObject\Player\State\Hurt\Magician_LV2_Catched</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Ocean.cpp">
+      <Filter>01.Level\99.Loading\Loader\04.Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Ocean.cpp">
+      <Filter>01.Level\05.Ocean</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

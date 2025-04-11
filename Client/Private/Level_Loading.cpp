@@ -8,14 +8,14 @@
 #include "Loader_Tutorial.h"
 #include "Loader_SeaOfTrees.h"
 #include "Loader_RoyalGarden.h"
-#include "Loader_Fortress.h"
+#include "Loader_Ocean.h"
 #include "Loader_Hill.h"
 
 #include "Level_Logo.h"
 #include "Level_Tutorial.h"
 #include "Level_SeaOfTrees.h"
 #include "Level_RoyalGarden.h"
-#include "Level_Fortress.h"
+#include "Level_Ocean.h"
 #include "Level_Hill.h"
 
 
@@ -88,9 +88,9 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 			return E_FAIL;
 
 		break;
-	case Client::LEVEL_FORTRESS:
+	case Client::LEVEL_OCEAN:
 
-		m_pLoader = CLoader_Fortress::Create(m_pDevice, m_pContext, eNextLevelID);
+		m_pLoader = CLoader_Ocean::Create(m_pDevice, m_pContext, eNextLevelID);
 		if (nullptr == m_pLoader)
 			return E_FAIL;
 
@@ -193,8 +193,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_RoyalGarden::Create(m_pDevice, m_pContext));
 					break;
 
-				case Client::LEVEL_FORTRESS:
-					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Fortress::Create(m_pDevice, m_pContext));
+				case Client::LEVEL_OCEAN:
+					m_pGameInstance->Open_Level(m_eNextLevelID, CLevel_Ocean::Create(m_pDevice, m_pContext));
 					break;
 
 				case Client::LEVEL_HILL:
