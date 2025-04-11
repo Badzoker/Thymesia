@@ -191,8 +191,8 @@ void CUIGroup_GameIntro::Button_Check()
 
 			if (5 == Button->Get_UI_GroupID()) // 제작진
 			{
-				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
-				//m_pGameInstance->Set_NextLevel_Open(true, LEVEL_OCEAN); //Tutorial로 가라
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_OCEAN); //Tutorial로 가라
 			}
 
 			if (6 == Button->Get_UI_GroupID()) // 종료

@@ -244,13 +244,13 @@ HRESULT CLoader_RoyalGarden::Loading_For_Level_RoyalGarden()
 
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_VIBuffer_Terrain")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/TerrainHeight20.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/Royal_Garden/TerrainHeight20.txt")))))
 		return E_FAIL;
 
 
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_VIBuffer_Water")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr, TEXT("../Bin/DataFiles/HeightData/TerrainHeight11.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 200, 200, 1, nullptr, TEXT("../Bin/DataFiles/HeightData/Royal_Garden/TerrainHeight21.txt")))))
 		return E_FAIL;
 	/*
 
@@ -296,11 +296,11 @@ HRESULT CLoader_RoyalGarden::Loading_For_Level_RoyalGarden()
 
 	// 03.19 네비 Tutorial Map 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation30.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation45.txt")))))
 		return E_FAIL;
 
 	
-	
+		
 
 #pragma endregion 
 
