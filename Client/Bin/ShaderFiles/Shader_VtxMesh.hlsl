@@ -241,7 +241,7 @@ struct PS_OUT
     float4 vDepth : SV_TARGET2;
     float fSpecular : SV_TARGET3;
     float fRoughness : SV_TARGET4;
-    float4 vEmissive : SV_TARGET5;
+   // float4 vEmissive : SV_TARGET5;
 };
 
 struct PS_OUT_DISTORTION
@@ -1035,13 +1035,13 @@ PS_OUT PS_MAIN_EMISSIVE_NO_DITHERING(PS_IN In)
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vNormal = normalize(mul(vNormal, WorldMatrix));
     
-    Out.vDiffuse = 0.05f;
+    Out.vDiffuse = vEmissive * g_vEmissiveColor;
     //float4(vDiffuse, 0.5f);
     Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 1.f;
     Out.fRoughness = vRoughness.r;
-    Out.vEmissive = vEmissive * g_vEmissiveColor;
+    //Out.vEmissive = vEmissive * g_vEmissiveColor;
     return Out;
 }
 
@@ -1063,13 +1063,13 @@ PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
     vNormal = normalize(mul(vNormal, WorldMatrix));
     
    
-    Out.vDiffuse = 0.05f;
+    Out.vDiffuse = vEmissive * g_vEmissiveColor;
     //float4(vDiffuse, 0.5f);
     Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 1.f;
     Out.fRoughness = vRoughness.r;
-    Out.vEmissive = vEmissive * g_vEmissiveColor;
+   // Out.vEmissive = vEmissive * g_vEmissiveColor;
     
     float2 ScreenPos;
 
