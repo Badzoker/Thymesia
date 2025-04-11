@@ -39,6 +39,7 @@ public:
 	void Talent_Mouse_Check(TABSTATE eTab);
 
 public:
+	void Player_Talent_Update();
 	void Slot_Setting();
 	void Slot_Update_State(TABSTATE eTab); //
 	void Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Frame* pSlotUIObj );
@@ -46,6 +47,7 @@ public:
 private:
 	CGameObject* m_pGroupLevelUp = { nullptr };
 	LEVELID		m_eMyLevelID = {};
+	class CGameObject* m_pPlayer = { nullptr };
 
 	_int m_iTalentPoint = {0};
 	_bool m_bNotFindConditionID = false;

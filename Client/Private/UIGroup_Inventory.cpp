@@ -715,6 +715,7 @@ void CUIGroup_Inventory::ItemType_PopUP_Open(ITEM_TYPE eItemType, _float3 fSetPo
 
 	
 }
+
 void CUIGroup_Inventory::ItemType_PopUP_State(_bool bOpen)
 {
 
