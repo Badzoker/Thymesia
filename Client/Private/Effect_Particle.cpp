@@ -43,9 +43,27 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
+    CVIBuffer_Point_Compute::PARTICLE_COMPUTE_DESC Desc = {};
+
+    Desc.iNumInstance = pDesc->iNumInstance;
+    Desc.vRange = pDesc->vRange;
+    Desc.vCenter = pDesc->vCenter;
+    Desc.vSize = pDesc->vSize;
+    Desc.vSpeed = pDesc->vSpeed;
+    Desc.vLifeTime = pDesc->vLifeTime;
+    Desc.vPivot = pDesc->vPivot;
+    Desc.bReverse_XYZ[0] = pDesc->bReverse_XYZ[0];
+    Desc.bReverse_XYZ[1] = pDesc->bReverse_XYZ[1];
+    Desc.bReverse_XYZ[2] = pDesc->bReverse_XYZ[2];
+    Desc.vSpeed_Weight = pDesc->vSpeed_Weight;
+    Desc.vScale_Weight = pDesc->vScale_Weight;
+    Desc.iParticle_Initialize_Type = pDesc->iParticle_Initialize_Type;
+    Desc.vDelayTime = pDesc->vDelayTime;
+
+
     /* Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szBufferName,
-        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom))))
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute"),
+        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom), &Desc)))
         return E_FAIL;
 
     m_pTransformCom->Scaling(pDesc->vScale);

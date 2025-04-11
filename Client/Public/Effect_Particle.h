@@ -15,7 +15,6 @@ class CEffect_Particle final : public CEffect
 public:
 	struct EFFECT_PARTICLE_DESC : public CEffect::EFFECT_DESC
 	{
-		wstring szBufferName;
 		wstring szShaderName;
 		_uint iParticle_Count = {};
 		_uint iShaderPass = {};
@@ -24,6 +23,20 @@ public:
 		_float3 vRot = {};
 		_float3 vTranslation = {};
 		_float fAlpha_Amount = { 0.1f };
+
+		_uint		iNumInstance = {};
+		_float3     vRange = {};
+		_float3     vCenter = {};
+		_float2     vSize = {};
+		_float2     vSpeed = {};
+		_float2     vLifeTime = {};
+		_float3		vPivot = {};
+		_bool		bReverse_XYZ[3] = { false, false, false };
+		_float3		vSpeed_Weight; //속도 가중치
+		_float3		vScale_Weight; //Scale 가중치
+
+		_uint		iParticle_Initialize_Type = { 0 }; // Particle 시작위치가 원점기준이냐(0), 중심기준 원모양이냐(1), 중심기준 구모양이냐(2)
+		_float2		vDelayTime = _float2(0.f, 0.f);
 	};
 
 private:

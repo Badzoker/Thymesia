@@ -34,7 +34,7 @@ private:
 	virtual ~CVIBuffer_Point_Compute() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _tchar* _pParticleDataFile);
+	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Bind_InputAssembler() override;
 	virtual HRESULT Render() override;
@@ -72,7 +72,7 @@ private:
 	HRESULT CameraCopyBuffer();
 
 public:
-	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, const _tchar* _pParticleDataFile);
+	static CVIBuffer_Point_Compute* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	virtual CComponent* Clone(void* _pArg) override;
 	virtual void Free() override;
 };
