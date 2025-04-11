@@ -30,7 +30,14 @@ public:
 	void Set_MotionBlur(_bool _bOnOff) { m_bMotionBlurOnOff = _bOnOff; }
 	void Set_ZoomBlur_Option(_bool _bOnOff, _float _fStrength);
 	void Set_Dithering(_bool _OnOff) { m_bDitheringOnOff = _OnOff; }	
-	_bool* Get_Dithering_Ptr() { return  &m_bDitheringOnOff; }	
+	void Set_ReverseScreenEffect(_bool _OnOff) { m_bScreenReverseEffect_OnOff = _OnOff; }
+	void Set_ReverseScreenRadius(_float _Radius) { m_fScreenReverseRadius = _Radius; }
+	void Set_ReverseEnd(_bool _OnOff, _float _ReverseEndStrength)
+	{
+		m_bReverseEnd = _OnOff;
+		m_fReverseEndStrength = _ReverseEndStrength;
+	};
+	_bool* Get_Dithering_Ptr() { return  &m_bDitheringOnOff; }		
 	void Set_FogColor(_float4 vFogColor);
 	void Set_LightShaftValue(_float4 _vLightShatValue);
 	void Set_FogFactors(FOGPARAMS _ParamDesc) {
@@ -67,11 +74,15 @@ private:
 
 	_uint					m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
-	_bool					m_bMotionBlurOnOff = { false };
-	_bool					m_bZoomBlurOnOff = { false };
-	_bool					m_bDitheringOnOff = { true };
+	_bool					m_bMotionBlurOnOff = { false };	
+	_bool					m_bZoomBlurOnOff = { false };	
+	_bool					m_bDitheringOnOff = { true };	
+	_bool					m_bScreenReverseEffect_OnOff = { false };	
+	_bool					m_bReverseEnd = { false };	
 
-	_float					m_fZoomBlurStrength = { 0.f };
+	_float					m_fScreenReverseRadius = { 0.f };	
+	_float					m_fZoomBlurStrength    = { 0.f };	
+	_float					m_fReverseEndStrength  = { 0.f };	
 
 	vector<unsigned char>							noiseData;
 

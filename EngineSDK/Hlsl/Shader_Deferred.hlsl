@@ -131,6 +131,12 @@ bool g_bZoomBlurOnOff;
 float2 g_ZoomBlurCenter;
 float g_bZoomBlurStrength;
 
+bool  g_bReverseScreenEffect;
+float g_ScreenReverseRadius;
+bool  g_bReverseEnd;
+float g_fReverseEndStrength;
+
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -774,6 +780,31 @@ PS_OUT PS_MAIN_ZOOM_BLUR(PS_IN In)
     else
     {
         Out.vColor = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord);
+    }
+    
+    
+    
+    if (g_bReverseScreenEffect)
+    {
+        float2 center = g_ZoomBlurCenter;
+        float dist = distance(In.vTexcoord, center);
+        
+        if (g_ScreenReverseRadius >= dist)  
+            Out.vColor.rgb = 1.0f - Out.vColor.rgb;
+        
+    }
+    
+    
+    if (g_bReverseEnd)
+    {
+        
+        
+        float strength = saturate(g_fReverseEndStrength); // 0 → 정상 / 1 → 완전 반전 
+        
+        float3 inverted = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord);
+        
+        Out.vColor.rgb = lerp(inverted, Out.vColor.rgb, strength);
+
     }
        
     return Out;

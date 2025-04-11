@@ -1888,6 +1888,9 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 				m_iAttackPower += m_iBonus_Sword_Attack_Power;  // 의자에서 일어날 때가 특성 적용 타이밍 
 
+				m_iPotionCount = 3;	
+				m_iCurrentHp = m_iFullHp;	
+				m_iCurrentMp = m_iFullMp;	
 			}
 		}
 	}
