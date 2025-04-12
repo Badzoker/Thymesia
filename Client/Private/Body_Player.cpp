@@ -2311,6 +2311,33 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     m_pModelCom->SetUp_Animation(222, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+#pragma region Effect_HArmor_Execution
+    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Start1"))
+                {
+                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_1, m_pParentWorldMatrix, matWeapon_r);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+                else if (!strcmp(iter.szName, "Effect_Start2"))
+                {
+                    _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                    _vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD, m_pParentWorldMatrix, matWeapon_r);
+                    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_SPARK, vPos, vDir);
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_pModelCom->Get_VecAnimation().at(222)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2584,7 +2611,7 @@ void CBody_Player::STATE_GRACE_Execution_Method()
     {
         if (iter.isPlay == false)
         {
-            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
             {
                 if (!strcmp(iter.szName, "Effect_Grace_Execution_Kick"))
                 {
@@ -2627,8 +2654,29 @@ void CBody_Player::STATE_STUN_EXECUTE_START_PUNCHMAN_Method()
 
 void CBody_Player::STATE_PUNCH_MAN_Execution_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f); //이종한 0412 추가 <- 아마 Lerp중이여서 안되는문제 해결용
+    m_pModelCom->Set_LerpFinished(true); //이종한 0412 추가
+
     m_pModelCom->SetUp_Animation(224, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+#pragma region Effect_Punch_Execution
+    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Start"))
+                {
+                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_EXECUTION, m_pParentWorldMatrix, matWeapon_r);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
 
     if (m_pModelCom->Get_VecAnimation().at(224)->isAniMationFinish())
     {

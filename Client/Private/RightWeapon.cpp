@@ -186,26 +186,48 @@ void CRightWeapon::Update(_float fTimeDelta)
                 {
                     if (iter.isEventActivate == true)
                     {
-                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
-#pragma region Effect0321수정
+#pragma region Effect0412수정
                         if (!strcmp(iter.szName, "LAttack1_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                        }
                         else if (!strcmp(iter.szName, "LAttack2_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;
+                        }
                         else if (!strcmp(iter.szName, "LAttack3_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD3, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;
+                        }
                         else if (!strcmp(iter.szName, "LAttack4_1_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_1, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;
+                        }
                         else if (!strcmp(iter.szName, "LAttack4_2_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD4_2, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;
+                        }
                         else if (!strcmp(iter.szName, "LAttack5_Start"))
+                        {
                             m_pGameInstance->Play_Effect_Speed_Matrix(EFFECT_NAME::EFFECT_PLAYER_SWORD5, m_pParentWorldMatrix, &m_pParentModelCom->Get_CurAnimation_FinalSpeed());
+                            iter.isPlay = true;
+                        }
                         else if (!strcmp(iter.szName, "LAttack5_Dust"))
                         {
                             _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
                             _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
                             m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYERATTACK_5_DUST_EXPLOSION, vPos, vDir);
+                            iter.isPlay = true;
+                        }
+                        else if (!strcmp(iter.szName, "Effect_Punch_Execution"))
+                        {
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_EXECUTION, m_pParentWorldMatrix, m_pSocketMatrix);
+                            iter.isPlay = true;
                         }
                     }
 #pragma endregion

@@ -81,7 +81,7 @@ void CEffect_Particle::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Particle::Update(_float _fTimeDelta)
 {
-    if (6 == m_iShaderPass) //소켓에 붙을 파티클
+    if (6 == m_iShaderPass || 7 == m_iShaderPass) //소켓에 붙을 파티클
     {
         _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
@@ -132,6 +132,10 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
     case 6:
         m_pGameInstance->Add_RenderGroup(CRenderer::RG_WEIGHTBLEND, this); //World
         break;
+
+    case 7:
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this); //World_Blood
+        break;
     }
 }
 
@@ -140,7 +144,7 @@ HRESULT CEffect_Particle::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    if (3 == m_iShaderPass) //BLOOD
+    if (3 == m_iShaderPass || 7 == m_iShaderPass) //BLOOD
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
             return E_FAIL;
@@ -225,7 +229,7 @@ HRESULT CEffect_Particle::Ready_Components()
 
 HRESULT CEffect_Particle::Bind_ShaderResources()
 {
-    if (6 == m_iShaderPass)
+    if (6 == m_iShaderPass || 7 == m_iShaderPass)
     {
         if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
             return E_FAIL;

@@ -180,6 +180,51 @@ void GS_MAIN_BLOOD(point GS_IN In[1], inout TriangleStream<GS_OUT> DataStream)
 {
     GS_OUT Out[4];
 
+    //float3 vLook = In[0].vLook * (In[0].fPSize * 0.5f);
+    //float fLength_Look = length(vLook);
+    //float3 vRight = In[0].vRight * (In[0].fPSize * 0.5f);
+    //float fLength_Right = length(vRight);
+    //float3 vUp = In[0].vUp * (In[0].fPSize * 0.5f);
+    //float fLength_Up = length(vUp);
+    //
+    //vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz) * fLength_Look;
+    //vUp = normalize(cross(vLook, vRight)) * fLength_Up;
+    //vRight = normalize(cross(vUp, vLook)) * fLength_Right;
+    //
+    //float4x4 matVP = mul(g_ViewMatrix, g_ProjMatrix);
+    //
+    //Out[0].vPosition = float4(In[0].vPosition.xyz + vRight + vUp, 1.f);
+    //Out[0].vPosition = mul(Out[0].vPosition, matVP);
+    //Out[0].vTexcoord = float2(0.f, 0.f);
+    //Out[0].vLifeTime = In[0].vLifeTime;
+    //
+    //Out[1].vPosition = float4(In[0].vPosition.xyz - vRight + vUp, 1.f);
+    //Out[1].vPosition = mul(Out[1].vPosition, matVP);
+    //Out[1].vTexcoord = float2(1.f, 0.f);
+    ////Out[1].vTexcoord = float2(1.f, 0.f);
+    //Out[1].vLifeTime = In[0].vLifeTime;
+    //
+    //Out[2].vPosition = float4(In[0].vPosition.xyz - vRight - vUp, 1.f);
+    //Out[2].vPosition = mul(Out[2].vPosition, matVP);
+    //Out[2].vTexcoord = float2(1.f, 1.f);
+    ////Out[2].vTexcoord = float2(1.f, 1.f);
+    //Out[2].vLifeTime = In[0].vLifeTime;
+    //
+    //Out[3].vPosition = float4(In[0].vPosition.xyz + vRight - vUp, 1.f);
+    //Out[3].vPosition = mul(Out[3].vPosition, matVP);
+    //Out[3].vTexcoord = float2(0.f, 1.f);
+    //Out[3].vLifeTime = In[0].vLifeTime;
+    //
+    //DataStream.Append(Out[0]);
+    //DataStream.Append(Out[1]);
+    //DataStream.Append(Out[2]);
+    //DataStream.RestartStrip();
+    //
+    //DataStream.Append(Out[0]);
+    //DataStream.Append(Out[2]);
+    //DataStream.Append(Out[3]);
+    //DataStream.RestartStrip();
+    
     float3 vLook = In[0].vLook * (In[0].fPSize * 0.5f);
     float fLength_Look = length(vLook);
     float3 vRight = In[0].vRight * (In[0].fPSize * 0.5f);
@@ -203,7 +248,7 @@ void GS_MAIN_BLOOD(point GS_IN In[1], inout TriangleStream<GS_OUT> DataStream)
     Out[1].vTexcoord = float2(1.f, 0.f);
     //Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
-
+    
     Out[2].vPosition = float4(In[0].vPosition.xyz - vRight - vUp, 1.f);
     Out[2].vPosition = mul(Out[2].vPosition, matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
@@ -490,5 +535,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_MAIN_DUST();
         PixelShader = compile ps_5_0 PS_MAIN_DUST();
+    }
+
+    pass Blood_World // 7 ¹ø 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN_BLOOD();
+        PixelShader = compile ps_5_0 PS_MAIN_BLOOD();
     }
 }

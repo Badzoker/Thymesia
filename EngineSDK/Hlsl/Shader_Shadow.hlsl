@@ -133,7 +133,7 @@ PS_OUT PS_MAIN(PS_IN In)
         if (vDepthDesc.x <= LightEndClipSpace[d])
         {
             float s = CalcCascadeShadowFactor(d, LightPos[d]);
-            fShadow = max(fShadow, s);
+            fShadow = max(fShadow, s); // 3가지의 그림자 값 중 가장 큰수 적용
         }
     }
     
