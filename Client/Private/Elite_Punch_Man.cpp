@@ -585,6 +585,45 @@ void CElite_Punch_Man::Attack_ComboB::State_Enter(CElite_Punch_Man* pObject)
 
 void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
+#pragma region Effect_Combo_B
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT
+        {
+            if (!strcmp(iter.szName, "Effect_Strong"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_SPARK_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run1"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run2"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run3"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Punch"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_SMALL, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PUNCH_DISTORTION, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex != 2)
     {
         pObject->RotateDegree_To_Player();
@@ -644,6 +683,45 @@ void CElite_Punch_Man::Attack_ComboC::State_Enter(CElite_Punch_Man* pObject)
 
 void CElite_Punch_Man::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
+#pragma region Effect_Combo_B
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT
+        {
+            if (!strcmp(iter.szName, "Effect_Strong"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_SPARK_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run1"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run2"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Run3"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_RUN, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Effect_Punch"))
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_SMALL, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PUNCH_DISTORTION, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     pObject->RotateDegree_To_Player();
     if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 65.f)
     {

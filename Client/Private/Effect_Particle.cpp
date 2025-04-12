@@ -70,6 +70,7 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z)); //이부분은 Tool이랑 뭔가 이상함
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vTranslation), 1.f));
 
+    m_pBufferCom->Compute_Shader_Reset(m_pShaderCom, 1, 1, 1);
 
     return S_OK;
 }

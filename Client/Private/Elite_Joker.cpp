@@ -713,6 +713,22 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
+#pragma region Effect_Execution
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // ¿©±â°¡ EVENT_EFFECT
+        {
+            if (!strcmp(iter.szName, "Effect_Execution")) 
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_JOKER_EXECUTION, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 22 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 21;

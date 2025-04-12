@@ -2508,6 +2508,25 @@ void CBody_Player::STATE_GRACE_Execution_Method()
     m_pModelCom->SetUp_Animation(221, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+#pragma region Effect
+    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Grace_Execution_Kick"))
+                {
+                    _float4x4 matLeftFoot = {};
+                    XMStoreFloat4x4(&matLeftFoot, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("Bip001-L-Foot")) * XMLoadFloat4x4(m_pParentWorldMatrix));
+                    m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_KICK, matLeftFoot);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_pModelCom->Get_VecAnimation().at(221)->isAniMationFinish())
     {
         *m_pParentState = CPlayer::STATE_IDLE;

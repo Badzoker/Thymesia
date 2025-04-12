@@ -611,6 +611,22 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
 
 void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace* pObject)
 {
+#pragma region Effect_Execution
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // ¿©±â°¡ EVENT_EFFECT
+        {
+            if (!strcmp(iter.szName, "Effect_Blood")) 
+            {
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_iMonster_State = STATE_DEAD;
