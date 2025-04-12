@@ -111,7 +111,7 @@ void CChannel::Update_TransformationMatrix(_float fCurrentTrackPosition, _uint* 
 void CChannel::Update_Reverse_TransformationMatrix(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, const vector<class CBone*>& Bones)
 {
     if (0.f >= fCurrentTrackPosition)
-        *pCurrentKeyFrameIndex = 0;
+        *pCurrentKeyFrameIndex = 1; //0412 이종한
 
     /* 현재 재생위치에 맞는 상태를 구한다. */
     _vector   vScale, vRotation, vTranslation;
