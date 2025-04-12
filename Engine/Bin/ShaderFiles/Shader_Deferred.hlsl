@@ -503,15 +503,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     vector vWater = g_WaterTexture.Sample(LinearSampler, In.vTexcoord);
     vector vWaterDepth = g_WaterDepthTexture.Sample(LinearSampler, In.vTexcoord);
-
-    if(vDepth.r < vWaterDepth.r)
-    {
-        Out.vColor = vWater * vLight + vSpecular + vEmissive;
-    }
-    else
-    {
-        Out.vColor = vDiffuse * vLight + vSpecular + vEmissive;
-    }
+    
+    Out.vColor = vDiffuse * vLight + vSpecular + vEmissive;
 	
     return Out;
 }

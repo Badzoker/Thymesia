@@ -64,7 +64,7 @@ HRESULT CGlass_StaticObject::Render()
 		{
 			if (i == m_iGlassObject)
 			{
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_SHININESS, "g_MaskTexture", 0);
+				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
 				m_pShaderCom->Begin(22);
 				m_pModelCom->Render(i);
@@ -85,7 +85,7 @@ HRESULT CGlass_StaticObject::Render()
 		{
 			if (i == m_iGlassObject)
 			{
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_SHININESS, "g_MaskTexture", 0);
+				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
 				m_pShaderCom->Begin(23);
 				m_pModelCom->Render(i);
@@ -142,7 +142,7 @@ HRESULT CGlass_StaticObject::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	_float4 vGlassColor = _float4(0.08f, 0.087f, 0.1f, 0.8f);
+	_float4 vGlassColor = _float4(1.f, 1.f, 1.f, 0.8f);
 	_float4 vBaseColor = _float4(0.037f, 0.047f, 0.34f, 0.1f);
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vGlassBaseColor", &vBaseColor, sizeof(_float4))))
