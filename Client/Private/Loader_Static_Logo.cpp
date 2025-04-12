@@ -31,6 +31,7 @@
 #include "Weapon_Magician2_Sword.h"
 #include "Weapon_Urd_Sword.h"
 #include "Stand_Stack_Sword.h"
+#include "Bat_Spike.h"
 
 #include "Projectile_Card.h"
 #include "Projectile_Intro_Card.h"
@@ -621,6 +622,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"),
 		CProjectile_Air::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Bat_Spike"),
+		CBat_Spike::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//보스 바그 카메라 

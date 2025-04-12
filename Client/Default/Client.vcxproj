@@ -183,6 +183,7 @@
     <ClInclude Include="..\public\Attack_LongClaw_2.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\BarrierScreen.h" />
+    <ClInclude Include="..\Public\Bat_Spike.h" />
     <ClInclude Include="..\Public\BillBoardObject.h" />
     <ClInclude Include="..\Public\BlackScreen.h" />
     <ClInclude Include="..\Public\Body_Aisemy.h" />
@@ -477,6 +478,7 @@
     <ClCompile Include="..\private\Attack_LongClaw_2.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\BarrierScreen.cpp" />
+    <ClCompile Include="..\Private\Bat_Spike.cpp" />
     <ClCompile Include="..\Private\BillBoardObject.cpp" />
     <ClCompile Include="..\Private\BlackScreen.cpp" />
     <ClCompile Include="..\Private\Body_Aisemy.cpp" />

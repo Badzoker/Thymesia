@@ -37,8 +37,12 @@ HRESULT CDecorative_Spike::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMConvertToRadians(pDesc->pRotate_Degree->x), XMConvertToRadians(pDesc->pRotate_Degree->y), XMConvertToRadians(pDesc->pRotate_Degree->z));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(pDesc->pPosition));
 
-	m_fMaxScale = { 0.4f,0.4f,0.4f };
-	m_fMyScale = { 0.4f,0.001f,0.4f };
+	m_fMaxScale = { 0.25f,0.4f,0.25f };
+	m_fMyScale = { 0.25f,0.001f,0.25f };
+
+
+	_vector vPos = { 1.f,1.5f,1.f,1.f };
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	return S_OK;
 }
@@ -55,9 +59,6 @@ void CDecorative_Spike::Priority_Update(_float fTimeDelta)
 		m_fLinear = 0.f;
 
 	_float3 fNewScale = {};
-	_vector vTest = XMLoadFloat3(&m_fMaxScale);
-	_vector vCurrentScale = XMLoadFloat3(&m_pTransformCom->Compute_Scaled());
-
 	_vector vNewScale = XMVectorLerp(XMLoadFloat3(&m_fMyScale), XMLoadFloat3(&m_fMaxScale), m_fLinear);
 	XMStoreFloat3(&fNewScale, vNewScale);
 	m_pTransformCom->Scaling(fNewScale);

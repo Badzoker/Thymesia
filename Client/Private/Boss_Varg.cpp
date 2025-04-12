@@ -31,7 +31,7 @@ HRESULT CBoss_Varg::Initialize_Prototype()
 
 HRESULT CBoss_Varg::Initialize(void* pArg)
 {
-
+    m_Is_Boss = true;
     m_fRootDistance = 1.5f;
     m_fSpawn_Distance_Max = 15.f;
     m_fActive_Distance = 15.f;
@@ -194,7 +194,7 @@ HRESULT CBoss_Varg::Ready_PartObjects(void* pArg)
     pBoss_HP_Bar.fMaxHP = &m_fMonsterMaxHP;
     pBoss_HP_Bar.fCurHP = &m_fMonsterCurHP;
     pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
-    pBoss_HP_Bar.bBossActive = &m_bActive;
+    pBoss_HP_Bar.bBoss_HP_Bar_Active = &m_bHP_Bar_Active;
     pBoss_HP_Bar.bBossDead = &m_bDead;
     pBoss_HP_Bar.iPhase = &m_iPhase;
     pBoss_HP_Bar.iCurLevel = iLevel;
@@ -315,12 +315,12 @@ void CBoss_Varg::Near_Pattern_Create()
 
 void CBoss_Varg::Far_Pattern_Create()
 {
-    _uint iRandomPattern = rand() % 3;
+    _uint iRandomPattern = rand() % 4;
     while (true)
     {
         if (iRandomPattern == m_iFarPatternIndex)
         {
-            iRandomPattern = rand() % 3;
+            iRandomPattern = rand() % 4;
         }
         else
         {
@@ -328,7 +328,7 @@ void CBoss_Varg::Far_Pattern_Create()
             break;
         }
     }
-    m_iFarPatternIndex = 3;
+      
     switch (m_iFarPatternIndex)
     {
     case 0:
@@ -489,6 +489,7 @@ void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 
 void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
 {
+    pObject->m_bHP_Bar_Active = true;
 }
 
 #pragma endregion
@@ -517,7 +518,7 @@ void CBoss_Varg::Idle_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
 void CBoss_Varg::Idle_State::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -647,7 +648,7 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
 void CBoss_Varg::Walk_State::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -1318,6 +1319,7 @@ void CBoss_Varg::Dead_State::State_Enter(CBoss_Varg* pObject)
 {
     m_iIndex = 37;
     pObject->m_bCan_Move_Anim = true;
+    pObject->m_bHP_Bar_Active = false;
     pObject->m_iMonster_State = STATE_DEAD;
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);

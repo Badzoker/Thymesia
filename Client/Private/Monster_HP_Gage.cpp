@@ -34,6 +34,10 @@ HRESULT CMonster_HP_Gage::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Scaling(_float3(0.8f, 0.5f, 0.1f));
+
+	m_fOffsetZ = 0.99f;
+
 	return S_OK;
 }
 
@@ -43,7 +47,7 @@ void CMonster_HP_Gage::Priority_Update(_float fTimeDelta)
 
 void CMonster_HP_Gage::Update(_float fTimeDelta)
 {
-
+	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 }
 
 void CMonster_HP_Gage::Late_Update(_float fTimeDelta)
@@ -58,10 +62,16 @@ HRESULT CMonster_HP_Gage::Render()
 		_float pCurHP = {};
 		if (i == 4)
 		{
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos = XMVectorSetZ(vPos, m_fOffsetZ - 0.1f);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 			pCurHP = *m_fCurHP / *m_fMaxHP;
 		}
 		else
 		{
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos = XMVectorSetZ(vPos, m_fOffsetZ);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 			pCurHP = *m_fShieldHP / *m_fMaxHP;
 		}
 		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", i)))
@@ -107,7 +117,7 @@ HRESULT CMonster_HP_Gage::Ready_Components()
 HRESULT CMonster_HP_Gage::Bind_ShaderResources()
 {
 
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pParentWorldMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;

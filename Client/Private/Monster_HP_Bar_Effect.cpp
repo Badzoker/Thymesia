@@ -33,8 +33,9 @@ HRESULT CMonster_HP_Bar_Effect::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaling(_float3(0.9f, 0.5f, 1.f));
-	_vector vPos = { 0.f,0.f,-1.f,1.f };
+	m_pTransformCom->Scaling(_float3(0.8f, 0.5f, 1.f));
+	_vector vPos = { 0.f,0.f,0.f,1.f };
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	return S_OK;
 }
@@ -59,7 +60,7 @@ void CMonster_HP_Bar_Effect::Update(_float fTimeDelta)
 	{
 		m_fFlashTime = 0.f;
 	}
-	m_pTransformCom->Scaling(_float3(1.f + (m_fFlashTime * 0.5f), 1.f, 1.f));
+	m_pTransformCom->Scaling(_float3(0.6f + (m_fFlashTime * 0.5f), 0.5f + (m_fFlashTime * 0.1f), 1.f));
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 }
 

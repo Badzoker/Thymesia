@@ -444,7 +444,7 @@ void CHArmorLV2::Idle_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -457,7 +457,7 @@ void CHArmorLV2::Idle_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
 
 void CHArmorLV2::Idle_State::State_Exit(CHArmorLV2* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -489,7 +489,7 @@ void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -553,6 +553,7 @@ void CHArmorLV2::Run_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 
 void CHArmorLV2::Run_State::State_Exit(CHArmorLV2* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 #pragma endregion
 
@@ -976,8 +977,6 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_pTransformCom->LookAt(vPlayerPos);
 
 
-
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
 }
@@ -1054,7 +1053,7 @@ void CHArmorLV2::Return_To_SpawnPoint_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -1081,6 +1080,7 @@ void CHArmorLV2::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, CHA
 
 void CHArmorLV2::Return_To_SpawnPoint_State::State_Exit(CHArmorLV2* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }
 

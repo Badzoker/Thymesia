@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "UI_Boss_HP_Bar.h"
 #include "Projectile_Air.h"
+#include "Bat_Spike.h"
 #include "Animation.h"
 #include "Boss_Bat_Camera.h"
 
@@ -30,9 +31,12 @@ HRESULT CBoss_Bat::Initialize_Prototype()
 
 HRESULT CBoss_Bat::Initialize(void* pArg)
 {
+	m_Is_Boss = true;
 	m_fRotateSpeed = 180.f;
 	m_fRootDistance = 4.5f;
 	m_fActive_Distance = 15.f;
+
+	Load_Spike_SpawnPoints();
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -158,7 +162,7 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	pBoss_HP_Bar.fMaxHP = &m_fMonsterMaxHP;
 	pBoss_HP_Bar.fCurHP = &m_fMonsterCurHP;
 	pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
-	pBoss_HP_Bar.bBossActive = &m_bActive;
+	pBoss_HP_Bar.bBoss_HP_Bar_Active = &m_bHP_Bar_Active;
 	pBoss_HP_Bar.bBossDead = &m_bDead;
 	pBoss_HP_Bar.iPhase = &m_iPhase;
 	pBoss_HP_Bar.iCurLevel = iLevel;
@@ -235,6 +239,37 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 
 	if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"), PROJECTILE_FEATHER, &ProjectileDesc)))
 		return E_FAIL;
+
+	_uint iRandom = rand() % 3;
+	switch (iRandom)
+	{
+	case 0:
+		m_vSpike_Positions = m_vSpike_Spawn_Positions_To_Three[0];
+		break;
+	case 1:
+		m_vSpike_Positions = m_vSpike_Spawn_Positions_To_Three[1];
+		break;
+	case 2:
+		m_vSpike_Positions = m_vSpike_Spawn_Positions_To_Three[2];
+		break;
+	}
+
+	for (_uint i = 0; i < 10; i++)
+	{
+		wstring strName = L"Part_Bat_Spike" + to_wstring(i);
+		CBat_Spike::BAT_SPIKE_DESC Spike_Desc{};
+		Spike_Desc.fPosition = _float4(1.f, 1.f, 1.f, 1.f);
+		Spike_Desc.fScaling = _float3(0.0025f, 0.0025f, 0.0025f);
+		Spike_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		Spike_Desc.pParentState = &m_iMonster_State;
+		Spike_Desc.bRender = &m_bSummon_Spike;
+		Spike_Desc.pPivot_Position = &m_vSpike_Positions[i];
+		Spike_Desc.fSpeedPerSec = 0.f;
+		Spike_Desc.fRotationPerSec = 0.f;
+
+		if (FAILED(__super::Add_PartObject(strName.c_str(), LEVEL_STATIC, TEXT("Prototype_GameObject_Bat_Spike"), &Spike_Desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -314,7 +349,53 @@ void CBoss_Bat::Near_Pattern_Create()
 	case 8:
 		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_H(), this);
 		break;
+	case 9:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_F(), this);
+		break;
 	}
+}
+
+void CBoss_Bat::Load_Spike_SpawnPoints()
+{
+	string strDataPath = "../Bin/DataFiles/SpawnPoint/Spawn_Bat_Spike.txt";
+	_tchar		szLastPath[MAX_PATH] = {};
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load SpawnPoint File!");
+		return;
+	}
+
+	DWORD dwByte = 0;
+	_uint iSize = {};
+
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	for (size_t i = 0; i < iSize; i++)
+	{
+		_float4 vMonsterPos = {};
+		ReadFile(hFile, &vMonsterPos, sizeof(_float4), &dwByte, nullptr);
+		m_vSpike_Spawn_Positions.push_back(vMonsterPos);
+	}
+
+	CloseHandle(hFile);
+
+	_uint iTest = {};
+	m_vSpike_Spawn_Positions_To_Three[0].resize(10);
+	m_vSpike_Spawn_Positions_To_Three[1].resize(10);
+	m_vSpike_Spawn_Positions_To_Three[2].resize(10);
+
+	for (_uint i = 0; i < 3; i++)
+	{
+		for (_uint j = 0; j < 10; j++)
+		{
+			m_vSpike_Spawn_Positions_To_Three[i][j] = m_vSpike_Spawn_Positions[iTest];
+			iTest += 1;
+		}
+	}
+
 }
 
 void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
@@ -401,6 +482,7 @@ void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 
 void CBoss_Bat::Intro_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_bHP_Bar_Active = true;
 }
 
 #pragma endregion 
@@ -500,7 +582,7 @@ void CBoss_Bat::Execution_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 
-	_float teleportDistance = 1.f;
+	_float teleportDistance = 5.5f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
 	_vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
 	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
@@ -543,7 +625,7 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 	m_iIndex = 29;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_iMonster_State = STATE_DEAD;
-
+	pObject->m_bHP_Bar_Active = false;
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -775,10 +857,51 @@ void CBoss_Bat::Attack_Combo_E::State_Exit(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_F::State_Enter(CBoss_Bat* pObject)
 {
+	_uint iRandom = rand() % 3;
+	switch (iRandom)
+	{
+	case 0:
+		pObject->m_vSpike_Positions = pObject->m_vSpike_Spawn_Positions_To_Three[0];
+		break;
+	case 1:
+		pObject->m_vSpike_Positions = pObject->m_vSpike_Spawn_Positions_To_Three[1];
+		break;
+	case 2:
+		pObject->m_vSpike_Positions = pObject->m_vSpike_Spawn_Positions_To_Three[2];
+		break;
+	}
+
+	m_iIndex = 13;
+	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 0;
+	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF; //임시 나중에 무슨 칼드는모션?으로 나오게해야함
+	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Bat::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	if (m_iIndex == 13 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 430.f && !pObject->m_bSummon_Spike)
+		{
+			pObject->m_bSummon_Spike = true;
+		}
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+
+		}
+	}
 }
 
 void CBoss_Bat::Attack_Combo_F::State_Exit(CBoss_Bat* pObject)

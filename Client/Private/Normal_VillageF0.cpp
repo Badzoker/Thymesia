@@ -327,7 +327,7 @@ void CNormal_VillageF0::Intro_State::State_Enter(CNormal_VillageF0* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bPatternProgress = true;
 
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -367,7 +367,7 @@ void CNormal_VillageF0::Idle_State::State_Update(_float fTimeDelta, CNormal_Vill
 
 void CNormal_VillageF0::Idle_State::State_Exit(CNormal_VillageF0* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -470,8 +470,7 @@ void CNormal_VillageF0::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageF0::Run_State::State_Exit(CNormal_VillageF0* pObject)
 {
-    if (m_iIndex == 35)
-        pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 #pragma endregion
 
@@ -484,7 +483,6 @@ void CNormal_VillageF0::Run_Attack::State_Enter(CNormal_VillageF0* pObject)
     pObject->m_bCanHit = false;
     pObject->m_iMonster_Attack_Power = 66;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(3.f);
 }
@@ -728,7 +726,7 @@ void CNormal_VillageF0::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageF
     pObject->m_fDelayTime = 0.f;
     pObject->m_bPatternProgress = true;
     pObject->m_iMonster_State = STATE_MOVE;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -755,5 +753,6 @@ void CNormal_VillageF0::Return_To_SpawnPoint_State::State_Update(_float fTimeDel
 
 void CNormal_VillageF0::Return_To_SpawnPoint_State::State_Exit(CNormal_VillageF0* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }

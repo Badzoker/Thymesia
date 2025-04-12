@@ -40,11 +40,20 @@ public:
 public:
 	void Near_Pattern_Create();
 private:
+	void Load_Spike_SpawnPoints();
+
+private:
+	vector<_float4>                  m_vSpike_Spawn_Positions;
+	vector<_float4>                  m_vSpike_Spawn_Positions_To_Three[3];
+	vector<_float4>					 m_vSpike_Positions;
+
+private:
 	_bool						     m_bCan_Hit_Motion = {};
 	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bSpecial_Skill_Progress = {};
 	_bool                            m_bCatch_Special_Attack = {};
 	_bool                            m_bCristal_Create = {};
+	_bool							 m_bSummon_Spike = {};
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
 	_float                           m_fSlash_Skill_CoolTime = {};

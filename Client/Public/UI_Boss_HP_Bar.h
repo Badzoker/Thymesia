@@ -16,7 +16,7 @@ class CUI_Boss_HP_Bar final : public CUI_Image
 public:
 	struct UI_BOSS_HP_BAR_DESC : CUIObject::UIOBJECT_DESC
 	{
-		_bool* bBossActive = {};
+		_bool* bBoss_HP_Bar_Active = {};
 		_bool* bBossDead = {};
 		_float* fMaxHP = {};
 		_float* fCurHP = {};
@@ -38,7 +38,7 @@ public:
 private:
 	_float* m_fBoss_Cur_HP = {};
 	_float* m_fBoss_Max_HP = {};
-	_bool* m_bBossActive = {};
+	_bool* m_bBoss_HP_Bar_Active = {};
 	_bool* m_bBossDead = {};
 	wstring m_sBossName = {};
 

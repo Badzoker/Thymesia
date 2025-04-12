@@ -36,7 +36,7 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(90.f);
 
-	m_bBossActive = pDesc->bBossActive;
+	m_bBoss_HP_Bar_Active = pDesc->bBoss_HP_Bar_Active;
 	m_bBossDead = pDesc->bBossDead;
 	m_sBossName = pDesc->sBossName;
 
@@ -45,12 +45,6 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_UIObject_To_UIScene(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage_Effect"), LEVEL_TUTORIAL, TEXT("Layer_UIScene"), UI_IMAGE, pArg)))
-	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Boss_HP_Bar_Gage"), pDesc->iCurLevel, TEXT("Layer_UIScene"), pArg)))
 		return E_FAIL;
@@ -66,14 +60,13 @@ HRESULT CUI_Boss_HP_Bar::Initialize(void* pArg)
 
 void CUI_Boss_HP_Bar::Priority_Update(_float fTimeDelta)
 {
-
-	if (!(*m_bBossActive))
+	if (!(*m_bBoss_HP_Bar_Active))
 		return;
 }
 
 void CUI_Boss_HP_Bar::Update(_float fTimeDelta)
 {
-	if (!(*m_bBossActive))
+	if (!(*m_bBoss_HP_Bar_Active))
 		return;
 }
 
@@ -81,7 +74,7 @@ void CUI_Boss_HP_Bar::Late_Update(_float fTimeDelta)
 {
 	if (*m_bBossDead)
 		m_pGameInstance->Add_DeadObject(TEXT("Layer_UIScene"), this);
-	if (!(*m_bBossActive))
+	if (!(*m_bBoss_HP_Bar_Active))
 		return;
 
 	m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
@@ -89,7 +82,7 @@ void CUI_Boss_HP_Bar::Late_Update(_float fTimeDelta)
 
 HRESULT CUI_Boss_HP_Bar::Render()
 {
-	if (!(*m_bBossActive))
+	if (!(*m_bBoss_HP_Bar_Active))
 		return S_OK;
 
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
@@ -110,7 +103,7 @@ HRESULT CUI_Boss_HP_Bar::Render()
 
 	_float3 vpos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
 
-	m_pGameInstance->Render_Font(TEXT("Font_NotoSansKR18"), m_sBossName.c_str(), { vpos.x - 330.f, vpos.y + 5.f},{ 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, vpos.z);
+	m_pGameInstance->Render_Font(TEXT("Font_NotoSansKR18"), m_sBossName.c_str(), { vpos.x - 330.f, vpos.y + 5.f }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 0.8f, vpos.z);
 
 	return S_OK;
 }

@@ -37,7 +37,7 @@ HRESULT CMonster_HP_Gage_Effect::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	_vector vPos = { 0.f,0.f,-1.f,1.f };
+	_vector vPos = { 0.f,0.f,0.f,1.f };
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	return S_OK;
@@ -53,7 +53,7 @@ void CMonster_HP_Gage_Effect::Priority_Update(_float fTimeDelta)
 	if (m_bActive)
 	{
 		m_fTimeDelta += fTimeDelta * 2;
-		m_pTransformCom->Scaling(_float3(1.f, 1.f * (1 + (m_fTimeDelta * 2.f)), 1.f));
+		m_pTransformCom->Scaling(_float3(0.8f, 0.5f * (1 + (m_fTimeDelta * 2.f)), 0.1f));
 		XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pParentWorldMatrix));
 	}
 }

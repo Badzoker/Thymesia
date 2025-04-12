@@ -47,7 +47,7 @@ private:
 
 	_float            m_fPreCurHP = {};
 	_float            m_fShieldPreHP = {};
-
+	_float            m_fOffsetZ = {};
 
 private:
 	const _uint* m_pParentState = { nullptr };

@@ -256,6 +256,8 @@ public:
 		void State_Enter(CBoss_Magician2* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician2* pObject) override;
 		void State_Exit(CBoss_Magician2* pObject) override;
+	private:
+		_bool m_bNeed_Move = {};
 	};
 
 };

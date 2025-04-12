@@ -30,6 +30,7 @@ HRESULT CBoss_Magician2::Initialize_Prototype()
 
 HRESULT CBoss_Magician2::Initialize(void* pArg)
 {
+	m_Is_Boss = true;
 	m_fRotateSpeed = 180.f;
 	m_fRootDistance = 1.f;
 	m_fActive_Distance = 15.f;
@@ -212,7 +213,7 @@ HRESULT CBoss_Magician2::Ready_PartObjects(void* pArg)
 	pBoss_HP_Bar.fMaxHP = &m_fMonsterMaxHP;
 	pBoss_HP_Bar.fCurHP = &m_fMonsterCurHP;
 	pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
-	pBoss_HP_Bar.bBossActive = &m_bActive;
+	pBoss_HP_Bar.bBoss_HP_Bar_Active = &m_bHP_Bar_Active;
 	pBoss_HP_Bar.bBossDead = &m_bDead;
 	pBoss_HP_Bar.iPhase = &m_iPhase;
 	pBoss_HP_Bar.iCurLevel = iLevel;
@@ -439,6 +440,7 @@ void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magicia
 
 void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 {
+	pObject->m_bHP_Bar_Active = true;
 	pObject->Delete_PartObject(TEXT("Part_Decorative_Tonic"));
 }
 
@@ -448,7 +450,7 @@ void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
 	pObject->m_iMonster_State = STATE_IDLE;
 	pObject->m_bPatternProgress = false;
 	pObject->m_fDelayTime = 0.f;
-	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -481,7 +483,7 @@ void CBoss_Magician2::Idle_State::State_Update(_float fTimeDelta, CBoss_Magician
 
 void CBoss_Magician2::Idle_State::State_Exit(CBoss_Magician2* pObject)
 {
-	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
@@ -551,6 +553,7 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 	{
 		//사실 여기로 들어오면 그냥 죽은거임 ㅇㅇ	
 		pObject->m_iMonster_State = STATE_DEAD;
+		pObject->m_bHP_Bar_Active = false;
 #pragma region Boss죽을시효과+UI
 		pObject->m_pGameInstance->Set_Boss_Dead(true);
 		pObject->m_pGameInstance->Set_Boss_Active(false);
@@ -603,7 +606,7 @@ void CBoss_Magician2::Run_State::State_Update(_float fTimeDelta, CBoss_Magician2
 
 void CBoss_Magician2::Run_State::State_Exit(CBoss_Magician2* pObject)
 {
-	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CBoss_Magician2::Attack_ComboA::State_Enter(CBoss_Magician2* pObject)
@@ -1000,6 +1003,7 @@ void CBoss_Magician2::Attack_Special::State_Enter(CBoss_Magician2* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
 	pObject->m_iMonster_Attack_Power = 0;
+	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bSpecial_Skill_Progress = true;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_MUTATION_MAGICIAN_CATCH;	
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1028,15 +1032,18 @@ void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magi
 
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
-		if (pObject->m_bCatch_Special_Attack)
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 145.f)
+			pObject->RotateDegree_To_Player();
+
+		if (pObject->m_bCatch_Special_Attack && *pObject->m_Player_State == CPlayer::STATE_HURT_MUTATION_MAGICIAN_CATCH)
 		{
-			//잡혔을때
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Catch_State(), pObject);
 		}
 		else if (pObject->m_pModelCom->GetAniFinish())
 		{
 			//안잡히고 끝났을때
 			pObject->m_bSpecial_Skill_Progress = false;
+			pObject->m_bCan_Move_Anim = false;
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 		}
 	}
@@ -1049,16 +1056,35 @@ void CBoss_Magician2::Attack_Special::State_Exit(CBoss_Magician2* pObject)
 void CBoss_Magician2::Catch_State::State_Enter(CBoss_Magician2* pObject)
 {
 	m_iIndex = 20;
-	//pObject->m_bCan_Move_Anim = true;
 	pObject->m_iMonster_Attack_Power = 238;
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK2;
-	//pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_CATCH;
+
+	_float offsetRight = 0.7f;
+	_float offsetBack = 0.4f;
+
+	// 1. 플레이어 위치에서 오른쪽으로 이동
+	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerRight = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT));
+	_vector vNewPos = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerRight, offsetRight));
+
+	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+	pObject->m_pTransformCom->LookAt(vPlayerPos);
+
+
+	_vector vPlayerLook = XMVector3Normalize(pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+	vNewPos = XMVectorAdd(vNewPos, XMVectorScale(vPlayerLook, -offsetBack));
+	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
+
+	_vector vFocusPoint = XMVectorAdd(vPlayerPos, XMVectorScale(vPlayerLook, -offsetBack));
+	pObject->m_pTransformCom->LookAt(vFocusPoint);
+
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Magician2::Catch_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	if (m_iIndex == 20 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
@@ -1069,7 +1095,9 @@ void CBoss_Magician2::Catch_State::State_Update(_float fTimeDelta, CBoss_Magicia
 
 void CBoss_Magician2::Catch_State::State_Exit(CBoss_Magician2* pObject)
 {
+	pObject->m_bCatch_Special_Attack = false;
 	pObject->m_bSpecial_Skill_Progress = false;
+	pObject->m_bCan_Move_Anim = false;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 }
