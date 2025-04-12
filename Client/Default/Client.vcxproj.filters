@@ -985,6 +985,9 @@
     <Filter Include="01.Level\05.Ocean">
       <UniqueIdentifier>{300a955e-06be-400a-8ed0-5aa3d1217a28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Bat">
+      <UniqueIdentifier>{40743c90-e44b-4a8f-87e9-701fe509cde3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1857,6 +1860,9 @@
     <ClInclude Include="..\Public\Level_Ocean.h">
       <Filter>01.Level\05.Ocean</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bat_Spike.h">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Bat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2719,6 +2725,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Ocean.cpp">
       <Filter>01.Level\05.Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bat_Spike.cpp">
+      <Filter>02.GameObject\Monster\02. Boss\Weapon\Bat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

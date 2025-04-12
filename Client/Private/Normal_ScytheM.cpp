@@ -383,7 +383,7 @@ void CNormal_ScytheM::Intro_State::State_Enter(CNormal_ScytheM* pObject)
     pObject->m_bPatternProgress = true;
 
     pObject->m_iMonster_State = STATE_INTRO;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -409,7 +409,7 @@ void CNormal_ScytheM::Idle_State::State_Enter(CNormal_ScytheM* pObject)
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -423,7 +423,7 @@ void CNormal_ScytheM::Idle_State::State_Update(_float fTimeDelta, CNormal_Scythe
 
 void CNormal_ScytheM::Idle_State::State_Exit(CNormal_ScytheM* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 #pragma endregion
 
@@ -451,7 +451,7 @@ void CNormal_ScytheM::Move_State::State_Enter(CNormal_ScytheM* pObject)
     pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -514,7 +514,7 @@ void CNormal_ScytheM::Run_State::State_Update(_float fTimeDelta, CNormal_ScytheM
 
 void CNormal_ScytheM::Run_State::State_Exit(CNormal_ScytheM* pObject)
 {
-
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 #pragma endregion
 
@@ -635,7 +635,7 @@ void CNormal_ScytheM::Return_To_SpawnPoint_State::State_Enter(CNormal_ScytheM* p
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -662,6 +662,7 @@ void CNormal_ScytheM::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta
 
 void CNormal_ScytheM::Return_To_SpawnPoint_State::State_Exit(CNormal_ScytheM* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }
 #pragma endregion
@@ -692,6 +693,7 @@ void CNormal_ScytheM::NotActive_Idle::State_Update(_float fTimeDelta, CNormal_Sc
 
 void CNormal_ScytheM::NotActive_Idle::State_Exit(CNormal_ScytheM* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion

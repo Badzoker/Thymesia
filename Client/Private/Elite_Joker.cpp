@@ -827,7 +827,7 @@ void CElite_Joker::Return_To_SpawnPoint_State::State_Enter(CElite_Joker* pObject
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -853,5 +853,6 @@ void CElite_Joker::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, C
 
 void CElite_Joker::Return_To_SpawnPoint_State::State_Exit(CElite_Joker* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }

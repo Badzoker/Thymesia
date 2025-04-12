@@ -67,6 +67,8 @@ HRESULT CElite_Punch_Man::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    m_pTransformCom->Scaling(_float3(0.003f, 0.003f, 0.003f));
+
     return S_OK;
 }
 
@@ -204,8 +206,6 @@ void CElite_Punch_Man::PatternCreate()
         m_fDelayTime += m_fTimeDelta;
         if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
         {
-            m_pState_Manager->ChangeState(new CElite_Punch_Man::Attack_ComboC(), this);
-
             if (m_fDistance >= 3.f)
                 Far_Pattern_Create();
             else
@@ -341,18 +341,20 @@ void CElite_Punch_Man::Idle_State::State_Enter(CElite_Punch_Man* pObject)
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CElite_Punch_Man::Idle_State::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
     pObject->RotateDegree_To_Player();
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+        pObject->m_pState_Manager->ChangeState(new CElite_Punch_Man::Move_State(), pObject);
 }
 
 void CElite_Punch_Man::Idle_State::State_Exit(CElite_Punch_Man* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CElite_Punch_Man::Move_State::State_Enter(CElite_Punch_Man* pObject)
@@ -360,7 +362,7 @@ void CElite_Punch_Man::Move_State::State_Enter(CElite_Punch_Man* pObject)
     m_iIndex = 17;
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_MOVE;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -373,7 +375,7 @@ void CElite_Punch_Man::Move_State::State_Update(_float fTimeDelta, CElite_Punch_
 
 void CElite_Punch_Man::Move_State::State_Exit(CElite_Punch_Man* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CElite_Punch_Man::Stun_State::State_Enter(CElite_Punch_Man* pObject)
@@ -452,7 +454,7 @@ void CElite_Punch_Man::Execution_State::State_Enter(CElite_Punch_Man* pObject)
     pObject->m_bHP_Bar_Active = false;
     pObject->m_bExecution_Start = false;
 
-    _float teleportDistance = 1.f;
+    _float teleportDistance = 1.5f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
     _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
@@ -468,7 +470,6 @@ void CElite_Punch_Man::Execution_State::State_Enter(CElite_Punch_Man* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -490,7 +491,7 @@ void CElite_Punch_Man::Return_To_SpawnPoint_State::State_Enter(CElite_Punch_Man*
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 
 }
@@ -518,6 +519,7 @@ void CElite_Punch_Man::Return_To_SpawnPoint_State::State_Update(_float fTimeDelt
 
 void CElite_Punch_Man::Return_To_SpawnPoint_State::State_Exit(CElite_Punch_Man* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }
 

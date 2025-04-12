@@ -41,9 +41,9 @@ HRESULT CMonster_HP_Bar::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects(pDesc)))
 		return E_FAIL;
 
-	_vector vHPBar_Offset = { 0.f,*m_fHeight,0.f,1.f };
+	_vector vHPBar_Offset = { 0.f,*m_fHeight,1.f, 1.f };
 
-	m_pTransformCom->Scaling(_float3(229.f, 15.f, 1.f));
+	m_pTransformCom->Scaling(_float3(286.f, 23.f, 1.f));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vHPBar_Offset);
 

@@ -73,6 +73,7 @@ protected:
 	_float4                          m_vPlayerPos = {};
 	_float4                          m_vSpawnPoint = {};
 
+	_bool							 m_Is_Boss = {};
 	_bool                            m_bIsClosest = {};
 	_bool							 m_bNot_Need_Root = {};
 	_bool                            m_bActive = {};

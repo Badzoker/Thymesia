@@ -33,7 +33,7 @@ HRESULT CMonster::Initialize(void* pArg)
     m_fMonsterMaxHP = 100.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
-    m_fRotateSpeed = 180.f;
+    m_fRotateSpeed = 10.f;
     m_fCoolTime = 1.f;
     CGameObject::GAMEOBJECT_DESC* Desc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
@@ -70,7 +70,7 @@ void CMonster::Priority_Update(_float fTimeDelta)
         Active();
     }
     //스폰포인트로부터 거리가 멀고 패턴이 진행중이지않으며 돌아갈수있을떄 돌아가라
-    if (m_fSpawn_Distance >= m_fSpawn_Distance_Max && !m_bPatternProgress && !Is_Player_Near())
+    if (m_fSpawn_Distance >= m_fSpawn_Distance_Max && !m_bPatternProgress && !Is_Player_Near() && !m_Is_Boss)
     {
         Return_To_Spawn();
     }
@@ -79,10 +79,10 @@ void CMonster::Priority_Update(_float fTimeDelta)
     {
         Stun();
     }
-    if (m_bHP_Bar_Active)
+    if (m_bHP_Bar_Active && !m_Is_Boss)
     {
         m_fHP_Bar_Active_Timer += fTimeDelta;
-        if (m_fHP_Bar_Active_Timer >= 15.f)
+        if (m_fHP_Bar_Active_Timer >= 10.f)
         {
             m_fHP_Bar_Active_Timer = 0.f;
             m_bHP_Bar_Active = false;
@@ -184,6 +184,7 @@ void CMonster::Stun()
 
 void CMonster::RotateDegree_To_Player()
 {
+    m_bNeed_Rotation = false;
     _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     _vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
     _vector vLook2 = XMLoadFloat4(&m_vPlayerPos) - vPos;
@@ -219,8 +220,7 @@ void CMonster::Rotation_To_Player()
     vTargetDir = XMVector3Normalize(vTargetDir);
     vMyLook = XMVector3Normalize(vMyLook);
 
-    _float fLerpSpeed = 5.f; // 회전 속도 조절
-    _vector vNewLook = XMVectorLerp(vMyLook, vTargetDir, fLerpSpeed * m_fTimeDelta);
+    _vector vNewLook = XMVectorLerp(vMyLook, vTargetDir, m_fRotateSpeed * m_fTimeDelta);
     vNewLook = XMVector3Normalize(vNewLook);
 
     m_pTransformCom->Look(vNewLook);

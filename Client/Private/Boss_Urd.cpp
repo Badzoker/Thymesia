@@ -30,6 +30,7 @@ HRESULT CBoss_Urd::Initialize_Prototype()
 
 HRESULT CBoss_Urd::Initialize(void* pArg)
 {
+	m_Is_Boss = true;
 	m_fRotateSpeed = 180.f;
 	m_fRootDistance = 1.f;
 	m_fActive_Distance = 15.f;
@@ -338,7 +339,7 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 	pBoss_HP_Bar.fMaxHP = &m_fMonsterMaxHP;
 	pBoss_HP_Bar.fCurHP = &m_fMonsterCurHP;
 	pBoss_HP_Bar.fShieldHP = &m_fShieldHP;
-	pBoss_HP_Bar.bBossActive = &m_bActive;
+	pBoss_HP_Bar.bBoss_HP_Bar_Active = &m_bHP_Bar_Active;
 	pBoss_HP_Bar.bBossDead = &m_bDead;
 	pBoss_HP_Bar.iPhase = &m_iPhase;
 	pBoss_HP_Bar.iCurLevel = iLevel;
@@ -543,6 +544,7 @@ void CBoss_Urd::Intro_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 
 void CBoss_Urd::Intro_State::State_Exit(CBoss_Urd* pObject)
 {
+	pObject->m_bHP_Bar_Active = true;
 }
 
 void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
@@ -553,7 +555,6 @@ void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bNeed_Decide_Step_Num = true;
 	pObject->m_bCan_Hit_Motion = true;
 	pObject->m_fDelayTime = 0.f;
-	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -564,7 +565,7 @@ void CBoss_Urd::Idle_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 
 void CBoss_Urd::Idle_State::State_Exit(CBoss_Urd* pObject)
 {
-	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CBoss_Urd::Stun_State::State_Enter(CBoss_Urd* pObject)
@@ -1286,6 +1287,7 @@ void CBoss_Urd::Dead_State::State_Enter(CBoss_Urd* pObject)
 {
 	m_iIndex = 10;
 	pObject->m_bCan_Move_Anim = true;
+	pObject->m_bHP_Bar_Active = false;
 	pObject->m_iMonster_State = STATE_DEAD;
 
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);

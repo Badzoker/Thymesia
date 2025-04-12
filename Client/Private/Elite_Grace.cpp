@@ -431,7 +431,6 @@ void CElite_Grace::Idle_State::State_Enter(CElite_Grace* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bCanHit = true;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -444,7 +443,7 @@ void CElite_Grace::Idle_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
 
 void CElite_Grace::Idle_State::State_Exit(CElite_Grace* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion
@@ -499,7 +498,7 @@ void CElite_Grace::Move_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
 
 void CElite_Grace::Move_State::State_Exit(CElite_Grace* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 #pragma endregion
 
@@ -605,7 +604,6 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -647,7 +645,7 @@ void CElite_Grace::Return_To_SpawnPoint_State::State_Enter(CElite_Grace* pObject
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -674,6 +672,7 @@ void CElite_Grace::Return_To_SpawnPoint_State::State_Update(_float fTimeDelta, C
 
 void CElite_Grace::Return_To_SpawnPoint_State::State_Exit(CElite_Grace* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }
 
@@ -681,8 +680,10 @@ void CElite_Grace::Return_To_SpawnPoint_State::State_Exit(CElite_Grace* pObject)
 
 void CElite_Grace::Run_State::State_Enter(CElite_Grace* pObject)
 {
-    m_iIndex = 33;
+    m_iIndex = 18;
     pObject->m_iMonster_State = STATE_RUN;
+    pObject->m_bPatternProgress = true;
+    pObject->m_bNot_Need_Root = true;
     m_pPlayerNavi = static_cast<CNavigation*>(pObject->m_pPlayer->Find_Component(TEXT("Com_Navigation")));
     pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
@@ -694,22 +695,29 @@ void CElite_Grace::Run_State::State_Update(_float fTimeDelta, CElite_Grace* pObj
     {
         pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
     }
+    else
+    {
+        pObject->Near_Pattern_Create();
+        return;
+    }
 
     _vector vDir = XMVectorSetY(pObject->m_pNavigationCom->MoveAstar(pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), bCheck), 0.f);
     if (bCheck)
     {
         pObject->m_pTransformCom->LookAt_Astar(vDir);
-        pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 2.f, pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Straight_Astar(fTimeDelta * 5.f, pObject->m_pNavigationCom);
     }
     else
     {
         pObject->RotateDegree_To_Player();
-        pObject->m_pTransformCom->Go_Straight(fTimeDelta * 2.f, pObject->m_pNavigationCom);
+        pObject->m_pTransformCom->Go_Straight(fTimeDelta * 5.f, pObject->m_pNavigationCom);
     }
 }
 
 void CElite_Grace::Run_State::State_Exit(CElite_Grace* pObject)
 {
+    pObject->m_bNot_Need_Root = false;
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 void CElite_Grace::Attack_ComboA::State_Enter(CElite_Grace* pObject)
@@ -890,7 +898,7 @@ void CElite_Grace::Parry_State::State_Enter(CElite_Grace* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 

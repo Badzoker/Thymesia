@@ -496,7 +496,7 @@ void CNormal_VillageM1::Run_State::State_Update(_float fTimeDelta, CNormal_Villa
 
 void CNormal_VillageM1::Run_State::State_Exit(CNormal_VillageM1* pObject)
 {
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
 }
 
 #pragma endregion 
@@ -760,7 +760,6 @@ void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = STATE_PARRY;
     pObject->RotateDegree_To_Player();
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -781,7 +780,7 @@ void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Enter(CNormal_VillageM
     pObject->m_fDelayTime = 0.f;
     pObject->m_iMonster_State = STATE_MOVE;
     pObject->m_bPatternProgress = true;
-    pObject->m_pModelCom->Set_Continuous_Ani(true);
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
 }
 
@@ -807,5 +806,6 @@ void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Update(_float fTimeDel
 
 void CNormal_VillageM1::Return_To_SpawnPoint_State::State_Exit(CNormal_VillageM1* pObject)
 {
+    pObject->m_pModelCom->Set_LerpFinished(true);
     pObject->m_bActive = false;
 }

@@ -18,15 +18,6 @@ public:
 		_int	iMonsterIndex = { 0 };
 	}MONSTERSPAWNINFO;
 
-	enum Monster_Catergory
-	{
-		NORMAL_VILLAGE_M1,
-		NORMAL_VILLAGE_M0,
-		NORMAL_SYTHEM,
-		NORMAL_VILLAGE_F0,
-		ELITE_PUNCH_MAN
-	};
-
 public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
@@ -70,7 +61,7 @@ private:
 private:
 	_bool m_bStopMenuOpen = { false }; // À¯ºó
 
-	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos;
+	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos[2];
 
 public:
 	static CLevel_SeaOfTrees* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

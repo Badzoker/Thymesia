@@ -40,8 +40,6 @@ namespace Client
 		ELITE_PUNCH_MAN,   //¿¤¸®Æ® ÆÝÄ¡¸Ç
 		ELITE_GRACE,       //¿¤¸®Æ® ±×·¹ÀÌ½º
 		ELITE_JOKER,       //¿¤¸®Æ® Á¶Ä¿
-		ELITE_DUAL_KNIFE,  //¿¤¸®Æ® ½ÖÄ®
-		ELITE_HALBERD,     //¿¤¸®Æ® ÇÏ¹öµå
 		ELITE_REACHER,     //¿¤¸®Æ® ¸®Ã³
 		BOSS_VARG,         //º¸½º ¹Ù±×
 		BOSS_ORD,          //º¸½º ¿ÀµÎ¸£
