@@ -28,7 +28,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize_Prototype()
 HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_WEAPON");
+    strcpy_s(m_szName, "PLAYER_PLAGUE_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 

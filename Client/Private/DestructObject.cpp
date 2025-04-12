@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DestructObject.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CDestructObject::CDestructObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{ pDevice, pContext }
@@ -55,7 +56,7 @@ HRESULT CDestructObject::Initialize(void* pArg)
     else
         m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.5f,0.2f, 1.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
-    _uint iSettingColliderGroup = GROUP_TYPE::PLAYER_WEAPON;
+    _uint iSettingColliderGroup = GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::PLAYER;   
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::DESTRUCT, iSettingColliderGroup);
     m_pGameInstance->Add_Actor_Scene(m_pActor);
@@ -192,7 +193,14 @@ HRESULT CDestructObject::Bind_ShaderResources()
 
 void CDestructObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    m_bHitted = true;
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))  
+        m_bHitted = true;       
+
+    if (!strcmp("PLAYER", _pOther->Get_Name()))
+    {
+        if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_DASH) 
+            m_bHitted = true;   
+    }
 }
 
 void CDestructObject::OnCollision(CGameObject* _pOther, PxContactPair _information)

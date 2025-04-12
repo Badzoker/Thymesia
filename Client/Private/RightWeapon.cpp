@@ -65,6 +65,7 @@ HRESULT CRightWeapon::Initialize(void* pArg)
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
     return S_OK;
 
@@ -227,9 +228,11 @@ void CRightWeapon::Update(_float fTimeDelta)
             && !(m_pSet_GreadSword_Weapon_States->count(curState))
             && !(m_pSet_JavelinSword_Weapon_States->count(curState))
             && !(m_pSet_Claw_Weapon_States->count(curState))
-            && !(m_pSet_Player_Camera_States->count(curState)))
+            && !(m_pSet_Player_Camera_States->count(curState))
+            && !(m_pSet_Cane_Weapon_States->count(curState))
+            )
         {
-
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         }
     }
 #pragma endregion  

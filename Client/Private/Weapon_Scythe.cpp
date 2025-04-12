@@ -28,7 +28,7 @@ HRESULT CWeapon_Scythe::Initialize_Prototype()
 HRESULT CWeapon_Scythe::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_WEAPON");
+    strcpy_s(m_szName, "PLAYER_PLAGUE_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -50,7 +50,7 @@ HRESULT CWeapon_Scythe::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::DESTRUCT;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
@@ -66,6 +66,7 @@ HRESULT CWeapon_Scythe::Initialize(void* pArg)
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
     return S_OK;
 
@@ -187,10 +188,14 @@ void CWeapon_Scythe::Update(_float fTimeDelta)
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Halberd_Weapon_States->count(curState))
             && !(m_pSet_GreadSword_Weapon_States->count(curState))
-            && !(m_pSet_JavelinSword_Weapon_States->count(curState)))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState))
+            && !(m_pSet_Cane_Weapon_States->count(curState))
+            )
         {
             /* 카메라 관련 */
             m_pCamera->ResetZoomInCameraPos(10.f);
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         }
     }
 

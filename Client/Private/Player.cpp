@@ -63,7 +63,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
-	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM | GROUP_TYPE::OBJECT;
+	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM | GROUP_TYPE::OBJECT | GROUP_TYPE::DESTRUCT;
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
@@ -216,7 +216,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_iState = STATE_LIGHT_EXECUTION_R;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MAGICIAN:
-				m_iState = STATE_MAGICIAN_Execution;
+				m_iState = STATE_STUN_EXECUTE_START_MAGICIAN;
+				//m_iState = STATE_MAGICIAN_Execution;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN:
 				m_iState = STATE_MAGICIAN_MUTATION_Execution;
@@ -230,9 +231,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_URD:
 				m_iState = STATE_STUN_EXECUTE_START_URD;
 				break;
-			case MONSTER_EXECUTION_CATEGORY::MONSTER_BAT:	
-				m_iState = STATE_STUN_EXECUTE_START_BAT;	
-				break;	
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_BAT:
+				m_iState = STATE_STUN_EXECUTE_START_BAT;
+				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
@@ -330,6 +331,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_iPhaseState |= PHASE_FIGHT;
 				m_iPhaseState &= ~PHASE_PARRY;
 
+				m_iTake_Away_Skill = PLAYER_SKILL_SCYTHE; // ui 스킬 사용 테스트를 위해 테스트용으로 추가 - 유빈
 			}
 
 		}
@@ -1582,7 +1584,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					m_pStateMgr->Get_VecState().at(37)->Set_MonsterLookDir(fMonsterLookDir);
 
 					m_pStateMgr->Get_VecState().at(37)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-					m_pModel->Set_Continuous_Ani(true);
+					//m_pModel->Set_Continuous_Ani(true);
 					break;
 
 				case Player_Hitted_State::PLAYER_HURT_REBOUND:
@@ -1642,8 +1644,20 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					/* 몬스터 공격 방향 */
 					m_pStateMgr->Get_VecState().at(65)->Set_MonsterLookDir(fMonsterLookDir);
 
-					_float4 FinalPos = { -42.2f,m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1],-100.46f,1.f };
+
+					_float4 FinalPos = { -42.f,m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1],-100.46f,1.f };
 					m_pStateMgr->Get_VecState().at(65)->Set_GetMonsterPos(FinalPos);
+
+					//_float4x4 newPosition = {}; 
+					//_matrix fixedPosition = {};
+					//fixedPosition.r[0] = { 0.00249777804f, 0.00000000f, -0.000105359715f, 0.00000000f };
+					//fixedPosition.r[1] = { 0.0f, 0.00249999994f, 0.0f, 0.0f };
+					//fixedPosition.r[2] = { 0.000105359715f, 0.0f, 0.00249777804f, 0.0f };
+					//fixedPosition.r[3] = { -42.f, m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1], -100.46f, 1.0f };	
+
+					//XMStoreFloat4x4(&newPosition, fixedPosition);	
+					//m_pTransformCom->Set_WorldMatrix(newPosition);	
+
 
 					m_pStateMgr->Get_VecState().at(65)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
@@ -1685,7 +1699,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		PxVec3  dir = contactPoints[0].normal;
 		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
 
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
 
+		m_bMove = false;
 	}
 
 	if (!strncmp("SM_Door_Right", _pOther->Get_Name(), 13))
@@ -1697,6 +1713,21 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		PxVec3 dir = contactPoints[0].normal;
 		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
 
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
+
+		m_bMove = false;
+	}
+
+
+	if (!strcmp("DESTRUCT", _pOther->Get_Name()))
+	{
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장							
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
 
 	}
 }
@@ -1741,7 +1772,7 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
 
-
+		m_bMove = false;
 	}
 
 	if (!strncmp("SM_Door_Right", _pOther->Get_Name(), 13))
@@ -1754,8 +1785,20 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 
 		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
+
+		m_bMove = false;
 	}
 
+	if (!strcmp("DESTRUCT", _pOther->Get_Name()))
+	{
+		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장								
+		_information.extractContacts(contactPoints, 1);
+
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
+
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
+	}
 }
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
@@ -1887,9 +1930,9 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 				m_iAttackPower += m_iBonus_Sword_Attack_Power;  // 의자에서 일어날 때가 특성 적용 타이밍 
 
-				m_iPotionCount = 3;	
-				m_iCurrentHp = m_iFullHp;	
-				m_iCurrentMp = m_iFullMp;	
+				m_iPotionCount = 3;
+				m_iCurrentHp = m_iFullHp;
+				m_iCurrentMp = m_iFullMp;
 			}
 		}
 	}
@@ -2053,6 +2096,8 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_STUN_EXECUTE_START_VARG,
 		STATE_STUN_EXECUTE_START_PUNCHMAN,
 		STATE_PUNCH_MAN_Execution,
+		STATE_STUN_EXECUTE_START_MAGICIAN,
+		STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN,
 	};
 #pragma endregion 
 #pragma region Player Camera State

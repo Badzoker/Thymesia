@@ -26,7 +26,7 @@ HRESULT CPlayer_Weapon_Axe::Initialize_Prototype()
 HRESULT CPlayer_Weapon_Axe::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_WEAPON");
+    strcpy_s(m_szName, "PLAYER_PLAGUE_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -64,6 +64,9 @@ HRESULT CPlayer_Weapon_Axe::Initialize(void* pArg)
     m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
     m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
     return S_OK;
@@ -200,9 +203,13 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
             && !(m_pSet_Halberd_Weapon_States->count(curState))
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Scythe_Weapon_States->count(curState))
-            && !(m_pSet_Body_States->count(curState)))
+            && !(m_pSet_Body_States->count(curState))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+            && !(m_pSet_GreadSword_Weapon_States->count(curState))
+            && !(m_pSet_Cane_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState)))
         {
-
+            m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
         }
     }
 
