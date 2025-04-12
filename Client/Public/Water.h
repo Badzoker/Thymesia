@@ -18,6 +18,7 @@ public:
 	typedef struct WaterInfo : public CGameObject::GAMEOBJECT_DESC
 	{
 		_float4 vWaterInfo = { 30.0f, 10.0f, -150.0f, 1.0f };
+		_float fDullBlendFactor = { 1.f };
 	}WATERINFO;
 
 private:
@@ -44,19 +45,19 @@ private:
 	_float							m_fAspect = { 0.f };
 
 	_float							m_fTime = { 0.f };
-	_float							m_fWaveSpeed = { 0.02f };
-	_float							m_fWaveFrequency = { 0.15f };
+	_float							m_fWaveSpeed = { 0.08f };
+	_float							m_fWaveFrequency = { 0.05f };
 	_float							m_fWaveAmplitude = { 0.3f };
 
-	_float							m_fWaveHeight = { 2.f };
+	_float							m_fWaveHeight = { 0.5f };
 
 	_float4x4						m_matReflectionView = { };
 
 	_float2							m_fWindDirection = { 0.5f, 0.5f };
-	_float							m_fWindDirDebug[2] = {0.5f, 0.5f};
+	_float							m_fWindDirDebug[2] = { 0.5f, 0.5f };
 
 	_int							m_iFresnelMode = { 0 };
-	_float							m_iDrawMode = { 0 };
+	_float							m_iDrawMode = { 0.f };
 
 	_float							m_fDullBlendFactor = { 1.f };
 

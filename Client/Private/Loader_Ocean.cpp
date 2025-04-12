@@ -75,6 +75,7 @@
 #pragma region 환경요소 
 #include "Sky.h"
 #include "Terrain.h"
+#include "Water.h"
 #pragma endregion 
 
 #pragma region Effect
@@ -171,6 +172,10 @@ HRESULT CLoader_Ocean::Loading_For_Level_Ocean()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_Component_Texture_TerrainMask"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/MaskData0.dds"), 1))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_Component_Texture_Water"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Water/T_Water_%d.png"), 3))))
+		return E_FAIL;
 	//이전 Height
 	//lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_Component_VIBuffer_Terrain")
@@ -182,9 +187,9 @@ HRESULT CLoader_Ocean::Loading_For_Level_Ocean()
 		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/Memory_Ocean/TerrainHeight20.txt")))))
 		return E_FAIL;
 
-	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
+	lstrcpyW(m_szLoadingText, TEXT("물 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_Component_VIBuffer_Water")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 200, 200, 1, nullptr, TEXT("../Bin/DataFiles/HeightData/Memory_Ocean/TerrainHeight21.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 200, 200, 1, nullptr, TEXT("../Bin/DataFiles/HeightData/Memory_Ocean/TerrainHeight23.txt")))))
 		return E_FAIL;
 
 
@@ -192,6 +197,11 @@ HRESULT CLoader_Ocean::Loading_For_Level_Ocean()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_GameObject_Terrain"),	
 		CTerrain::Create(m_pDevice, m_pContext))))		
 		return E_FAIL;	
+
+	/* For.Prototype_GameObject_Water */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_GameObject_Water"),
+		CWater::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion 
 
 

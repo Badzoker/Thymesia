@@ -60,6 +60,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Water"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse_Copy"), m_iOriginalViewportWidth, m_iOriginalViewportHeight, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
 	CShader_Compute_Deferred::LIGHTSHAFTPARAMS LightShaftDesc = {};
 
 	LightShaftDesc.g_LightShaftValue = _float4(1.f, 0.97f, 1.f, 1.f);
@@ -595,6 +599,15 @@ HRESULT CRenderer::Render_NonBlend()
 	}
 
 	m_RenderObjects[RG_NONBLEND].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Copy_RTV(TEXT("Target_Diffuse"), TEXT("Target_Diffuse_Copy")))) // MRT를 사용중엔 MRT에 바인딩  되어있는 타겟들을 사용하지 못하므로 MRT가 끝난 이후 값을 그대로 복사해와 사용한다.
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), false)))
+		return E_FAIL;
 
 	for (auto& pRenderObject : m_RenderObjects[RG_WATER])
 	{

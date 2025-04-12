@@ -610,6 +610,11 @@ HRESULT CGameInstance::Clear_RTV(const _wstring& strRenderTargetTag)
 	return m_pTarget_Manager->Clear_RTV(strRenderTargetTag);
 }
 
+HRESULT CGameInstance::Copy_RTV(const _wstring& strRenderTargetTag, const _wstring& strRenderTargetTagToCopy)
+{
+	return m_pTarget_Manager->Copy_RTV(strRenderTargetTag, strRenderTargetTagToCopy);
+}
+
 #ifdef _DEBUG
 #endif // _DEBUG
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)

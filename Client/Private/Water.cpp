@@ -31,10 +31,10 @@ HRESULT CWater::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	WATERINFO* pDesc = static_cast<WATERINFO*>(pArg);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->fPosition));
-
+	m_fDullBlendFactor = pDesc->fDullBlendFactor;
 
 	_uint2		vViewportSize = m_pGameInstance->Get_ViewportSize();
 	m_fAspect = vViewportSize.x / _float(vViewportSize.y);
@@ -82,7 +82,7 @@ void CWater::Update(_float fTimeDelta)
 	m_pGameInstance->Set_Reflection_Transform(CPipeLine::D3DTS_VIEW, XMLoadFloat4x4(&m_matReflectionView));
 	m_pGameInstance->Set_Reflection_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), m_fAspect, 0.1f, 800.f));
 
-	_float4 vCamPos = m_pGameInstance->Get_Reflection_CamPosition();
+	_float4 vCamPos = m_pGameInstance->Get_Reflection_CamPosition(); // 반사 카메라 행렬 계산.. Priority에서 하는게 맞을듯함
 }
 
 void CWater::Late_Update(_float fTimeDelta)
@@ -108,7 +108,7 @@ HRESULT CWater::Render_Reflection()
 
 	m_pVIBufferCom->Render();
 
-	return S_OK;	
+	return S_OK;
 }
 
 HRESULT CWater::Ready_Components(void* _pArg)
@@ -145,13 +145,13 @@ HRESULT CWater::Bind_ShaderResources()
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow_Final"), m_pShaderCom, "g_RefractionTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse_Copy"), m_pShaderCom, "g_RefractionTexture")))
 		return E_FAIL;
 
-	if(FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Reflection"), m_pShaderCom, "g_ReflectionTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Reflection"), m_pShaderCom, "g_ReflectionTexture")))
 		return E_FAIL;
 
-	if(FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectionView", &m_pGameInstance->Get_Reflection_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
