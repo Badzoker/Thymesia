@@ -2321,7 +2321,7 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
                 if (!strcmp(iter.szName, "Effect_Start1"))
                 {
                     const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_1, m_pParentWorldMatrix, matWeapon_r);
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_1, m_pParentWorldMatrix, matWeapon_r);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
                 else if (!strcmp(iter.szName, "Effect_Start2"))
@@ -2330,7 +2330,7 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
                     _vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로
                     const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD, m_pParentWorldMatrix, matWeapon_r);
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_2, m_pParentWorldMatrix, matWeapon_r);
                     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_SPARK, vPos, vDir);
                 }
             }
