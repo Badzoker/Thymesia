@@ -202,6 +202,25 @@ HRESULT CTarget_Manager::Clear_RTV(const _wstring& strRenderTargetTag)
 
     return S_OK;
 }
+
+HRESULT CTarget_Manager::Copy_RTV(const _wstring& strRenderTargetTag, const _wstring& strRenderTargetTagToCopy)
+{
+    CRenderTarget* pSrvRenderTarget = Find_RenderTarget(strRenderTargetTag);
+
+    if (pSrvRenderTarget == nullptr)
+        return E_FAIL;
+
+    CRenderTarget* pDstRenderTarget = Find_RenderTarget(strRenderTargetTagToCopy);
+
+    if (pDstRenderTarget == nullptr)
+        return E_FAIL;
+
+    if (FAILED(pDstRenderTarget->Copy_Resource(pSrvRenderTarget->Get_Texture2D())))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 #ifdef _DEBUG
 #endif
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)

@@ -112,12 +112,12 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 	m_cascadeEnd[1] = 30.f;
 	m_cascadeEnd[2] = 90.f;
 	m_cascadeEnd[3] = farZ;*/
-	 for (int i = 0; i < 3; i++)
-	 {
-		 float logDepth = nearZ * powf(farZ / nearZ, (float)(i + 1) / 3);
-		 float uniformDepth = nearZ + (farZ - nearZ) * (float)(i + 1) / 3;
-		 m_cascadeEnd[i + 1] = 0.9f * logDepth + (1.0f - 0.9f) * uniformDepth;
-	 }
+	for (int i = 0; i < 3; i++)
+	{
+		float logDepth = nearZ * powf(farZ / nearZ, (float)(i + 1) / 3);
+		float uniformDepth = nearZ + (farZ - nearZ) * (float)(i + 1) / 3;
+		m_cascadeEnd[i + 1] = 0.9f * logDepth + (1.0f - 0.9f) * uniformDepth;
+	}
 
 	for (size_t i = 0; i < 3; ++i)
 	{
@@ -162,11 +162,9 @@ HRESULT CShadow::SetUp_ShadowLight(_fvector vEye, _fvector vAt, _float fLightAng
 
 		radius = std::ceil(radius * 16.0f) / 16.0f;
 
-		// using radius ,  we made aabb box
 		_vector maxExtents = XMVectorSet(radius, radius, radius, 1.f);
 		_vector minExtents = -maxExtents;
 
-		//_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_LightPos);
 		_vector vDir = XMLoadFloat4(&m_LightDir);
 
 		_float3 shadowCamPos;
@@ -227,6 +225,8 @@ void CShadow::Update()
 				radius = max(radius, distance);
 			}
 
+			float fTexelSize = (radius * 2.f) / g_iMaxWidth;
+
 			radius = std::ceil(radius * 16.0f) / 16.0f;
 
 			// using radius ,  we made aabb box
@@ -246,9 +246,23 @@ void CShadow::Update()
 
 			_vector cascadeExtents = maxExtents - minExtents;
 
-			XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.1f, XMVectorGetZ(maxExtents) * 1.5f));
-		
-		
+			_matrix lightOrthoMatrix = XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.1f, XMVectorGetZ(maxExtents) * 1.5f);
+
+			_vector shadowOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+			shadowOrigin = XMVector3TransformCoord(shadowOrigin, lightMatrix * lightOrthoMatrix);
+			shadowOrigin = shadowOrigin * ((_float)g_iMaxHeight / 2.0f);
+
+			_vector roundedOrigin = XMVectorSet(round(XMVectorGetX(shadowOrigin)), round(XMVectorGetY(shadowOrigin)), round(XMVectorGetZ(shadowOrigin)), round(XMVectorGetW(shadowOrigin)));
+			_vector roundOffset = roundedOrigin - shadowOrigin;
+
+			roundOffset = roundOffset * 2.0f / (_float)g_iMaxHeight;
+			roundOffset.m128_f32[2] = 0.0f;
+			roundOffset.m128_f32[3] = 0.0f;
+
+			lightOrthoMatrix.r[3] += roundOffset;
+			XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * lightOrthoMatrix);
+
+			//XMStoreFloat4x4(&m_shadowOrthoProj[i], lightMatrix * XMMatrixOrthographicOffCenterLH(XMVectorGetX(minExtents), XMVectorGetX(maxExtents), XMVectorGetY(minExtents), XMVectorGetY(maxExtents), 0.1f, XMVectorGetZ(maxExtents) * 1.5f));
 		}
 	}
 }
@@ -277,7 +291,7 @@ HRESULT CShadow::Delete_Shadow(CTransform* pTransform)
 		Safe_Release(m_pPlayerTransform);
 		m_pPlayerTransform = nullptr;
 	}
-			
+
 	return S_OK;
 }
 
@@ -315,5 +329,4 @@ void CShadow::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
-	//Safe_Release(m_pPlayerTransform);
 }

@@ -19,7 +19,7 @@
 #include "Effect_Particle.h"
 
 #include "Terrain.h"
-
+#include "Water.h"
 
 CLevel_Ocean::CLevel_Ocean(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
@@ -214,16 +214,16 @@ HRESULT CLevel_Ocean::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Terrain"), LEVEL_OCEAN, pLayerTag, &pInfo)))
 		return E_FAIL;
 
-	//for (size_t i = 0; i < 3; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_ForkLift"), LEVEL_OCEAN, pLayerTag, nullptr)))
-	//		return E_FAIL;
-	//}
-
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Sky"), LEVEL_OCEAN, pLayerTag, &pDesc)))
 		return E_FAIL;
 
+	CWater::WATERINFO pWaterInfo = {};
+	pWaterInfo.fPosition = _float4(-73.2218552f, 8.6f, -42.0986443f, 1.0f);
+	pWaterInfo.fDullBlendFactor = 0.f;
+	pWaterInfo.iCurLevel = m_iCurrentLevel;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Water"), LEVEL_OCEAN, pLayerTag, &pWaterInfo)))
+		return E_FAIL;
 
 	return S_OK;
 }

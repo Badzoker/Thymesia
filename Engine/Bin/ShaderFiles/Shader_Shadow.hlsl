@@ -125,16 +125,15 @@ PS_OUT PS_MAIN(PS_IN In)
     }
     
     //float fShadowFactor[3];
-    float fShadow = 0.f;
+    float fShadow = { 0.f }; //,   0.f, 0.f};
     
     [unroll]
     for (int d = 0; d < 3; ++d)
     {
         if (vDepthDesc.x <= LightEndClipSpace[d])
         {
-            fShadow = CalcCascadeShadowFactor(d, LightPos[d]);
-            //debugColor = checkcolor[j];
-            break;
+            float s = CalcCascadeShadowFactor(d, LightPos[d]);
+            fShadow = max(fShadow, s); // 3가지의 그림자 값 중 가장 큰수 적용
         }
     }
     

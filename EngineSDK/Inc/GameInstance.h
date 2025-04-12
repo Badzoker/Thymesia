@@ -161,6 +161,7 @@ public:
 	
 	HRESULT Clear_RTV(const _wstring& strRenderTargetTag);
 
+	HRESULT Copy_RTV(const _wstring& strRenderTargetTag, const _wstring& strRenderTargetTagToCopy);
 #ifdef _DEBUG
 #endif
 public:
