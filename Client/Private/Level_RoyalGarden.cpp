@@ -212,7 +212,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_BackGround(const _tchar * pLayerTag)
         return E_FAIL;
 
 	CWater::WATERINFO pWaterInfo = {};
-	pWaterInfo.fPosition = _float4(-167.819336f, 13.8f, -148.f, 1.0f);
+	pWaterInfo.fPosition = _float4(-155.819336f, 13.8f, -148.f, 1.0f);
 	pWaterInfo.iCurLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Water"), LEVEL_ROYALGARDEN, pLayerTag, &pWaterInfo)))
@@ -245,7 +245,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
 	//Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 
-	if (FAILED(Load_SpecificObjects(1)))
+	if (FAILED(Load_SpecificObjects(3)))
 		return E_FAIL;
 
 	return S_OK;

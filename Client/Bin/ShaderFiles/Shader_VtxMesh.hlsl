@@ -244,6 +244,18 @@ struct PS_OUT
    // float4 vEmissive : SV_TARGET5;
 };
 
+
+struct PS_OUT_GLASS
+{
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
+   // float4 vDepth : SV_TARGET2;
+    float fSpecular : SV_TARGET3;
+    float fRoughness : SV_TARGET4;
+   // float4 vEmissive : SV_TARGET5;
+};
+
+
 struct PS_OUT_DISTORTION
 {
     float4 vDistortion : SV_TARGET0;
@@ -966,30 +978,30 @@ PS_OUT PS_MAIN_SPIKES(PS_IN In)
 }
 
 
-PS_OUT PS_MAIN_GLASS_NO_DITHERING(PS_IN In)
+PS_OUT_GLASS PS_MAIN_GLASS_NO_DITHERING(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_GLASS Out = (PS_OUT_GLASS) 0;
 
     float GlassFactor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord).r;
     
     Out.vDiffuse = lerp(g_vGlassBaseColor, g_vGlassColor, GlassFactor);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+   // Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 0.5f;
     
     return Out;
 }
 
 
-PS_OUT PS_MAIN_GLASS(PS_IN In)
+PS_OUT_GLASS PS_MAIN_GLASS(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_GLASS Out = (PS_OUT_GLASS) 0;
 
     float GlassFactor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord).r;
     
     Out.vDiffuse = lerp(g_vGlassBaseColor, g_vGlassColor, GlassFactor);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 0.5f;
     
     float2 ScreenPos;
@@ -1349,7 +1361,7 @@ technique11 DefaultTechnique
 
     pass Glass // 22
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_Skip_Write, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -1360,7 +1372,7 @@ technique11 DefaultTechnique
 
     pass Glass_NO_DITHERING_Pass // 23
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(Rs_Cull_NONE);
         SetDepthStencilState(DSS_Skip_Write, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

@@ -258,7 +258,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_BackGround(const _tchar* pLayerTag)
 
 HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
 {
-    if (FAILED(Load_Objects(152)))//Tutorial Map
+    if (FAILED(Load_Objects(154)))//Tutorial Map
         return E_FAIL;
 
     if (FAILED(Load_TriggerObjects(2)))// 이제 보스 입구 쪽에 심어져있는 파일임.
