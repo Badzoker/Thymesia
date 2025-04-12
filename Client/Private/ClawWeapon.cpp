@@ -26,7 +26,7 @@ HRESULT CClawWeapon::Initialize_Prototype()
 HRESULT CClawWeapon::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_WEAPON");
+    strcpy_s(m_szName, "PLAYER_PLAGUE_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -47,7 +47,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 30.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::DESTRUCT;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
@@ -63,6 +63,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
 
@@ -159,6 +160,7 @@ void CClawWeapon::Update(_float fTimeDelta)
                         {
                             *m_pbClawAppear = true;
                         }
+
                     }
 
 
@@ -168,14 +170,17 @@ void CClawWeapon::Update(_float fTimeDelta)
                         {
                             if (!strcmp(iter.szName, "Camera_Zoom_Out"))
                             {
-                                m_pCamera->ResetZoomInCameraPos(10.f);
+                                m_pCamera->ResetZoomOutCameraPos(7.5f);
 
                                 m_fAccTimeDelta -= fTimeDelta;
 
                                 if (m_fAccTimeDelta <= 0.f)
+                                {
                                     m_fAccTimeDelta = 0.f;
-
-                                m_pGameInstance->Set_ZoomBlur_Option(true, 0.3f * m_fAccTimeDelta);
+                                    m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                                }
+                                else
+                                    m_pGameInstance->Set_ZoomBlur_Option(true, 0.3f * m_fAccTimeDelta);
                             }
 
                         }
@@ -199,15 +204,15 @@ void CClawWeapon::Update(_float fTimeDelta)
                     {
 
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW1, m_pParentWorldMatrix);
-                        iter.isPlay = true;      
-                        
+                        iter.isPlay = true;
+
                     }
                     else if (!strcmp(iter.szName, "Claw2_Start"))
                     {
 
                         m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PLAYER_CLAW2, m_pParentWorldMatrix);
-                        iter.isPlay = true;    
-                        
+                        iter.isPlay = true;
+
                     }
                     else if (!strcmp(iter.szName, "Claw1_Effect"))
                     {
@@ -293,7 +298,10 @@ void CClawWeapon::Update(_float fTimeDelta)
         && !(m_pSet_Scythe_Weapon_States->count(curState))
         && !(m_pSet_Halberd_Weapon_States->count(curState))
         && !(m_pSet_GreadSword_Weapon_States->count(curState))
-        && !(m_pSet_JavelinSword_Weapon_States->count(curState)))
+        && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+        && !(m_pSet_Cane_Weapon_States->count(curState))
+        && !(m_pSet_Player_Camera_States->count(curState))
+        && !(m_pSet_Right_Weapon_States->count(curState)))
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
         m_pCamera->ResetZoomOutCameraPos(1.f);
@@ -364,9 +372,9 @@ HRESULT CClawWeapon::Bind_ShaderResources()
 HRESULT CClawWeapon::Hit_Slow()
 {
 
-    if (m_fHitStopTime < 0.1f)
+    if (m_fHitStopTime < 0.2f)
     {
-        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+        m_pCamera->ShakeOn(500.f, 500.f, 4.f, 4.f);
     }
 
     else

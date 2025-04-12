@@ -50,24 +50,26 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
-    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
-    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
-    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
-    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
-    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
-    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
-    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_Body_States                = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States         = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States      = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States        = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States       = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States          = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States       = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
-    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_GreadSword_Weapon_States   = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States         = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();    
+
 
     m_fRespawnPosPtr = dynamic_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr();
 
 
-    m_pfClawParentTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
-    m_pfClawFinishTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
+    m_pfClawParentTime  = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
+    m_pfClawFinishTime  = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
     m_pfClawAppearTimer = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearTimerPtr();
-    m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
-    m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
+    m_pbClawDeadOn      = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
+    m_pbClawAppear      = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
 
 
     return S_OK;
@@ -449,6 +451,12 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_BAT_EXECUTION:
         STATE_BAT_EXECUTION_Method();
         break;
+    case CPlayer::STATE_STUN_EXECUTE_START_MAGICIAN:    
+        STATE_STUN_EXECUTE_START_MAGICIAN_Method(); 
+        break;
+    case CPlayer::STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN:   
+        STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method();    
+        break;
     default:
         break;
     }
@@ -542,7 +550,11 @@ void CBody_Player::Update(_float fTimeDelta)
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Scythe_Weapon_States->count(curState))
             && !(m_pSet_Axe_Weapon_States->count(curState))
-            && !(m_pSet_JavelinSword_Weapon_States->count(curState)))
+            && !(m_pSet_JavelinSword_Weapon_States->count(curState))
+            && !(m_pSet_GreadSword_Weapon_States->count(curState))
+            && !(m_pSet_Cane_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState))
+            )
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
             m_fZoomBlurDeltaTime = 0.f;
@@ -2478,6 +2490,65 @@ void CBody_Player::STATE_MAGICIAN_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+    }
+}
+
+void CBody_Player::STATE_STUN_EXECUTE_START_MAGICIAN_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+
+
+        _float4x4 newPosition = {};
+        _matrix fixedPosition = {};
+        fixedPosition.r[0] = { 0.00249777804f, 0.00000000f, -0.000105359715f, 0.00000000f };
+        fixedPosition.r[1] = { 0.0f, 0.00249999994f, 0.0f, 0.0f };
+        fixedPosition.r[2] = { 0.000105359715f, 0.0f, 0.00249777804f, 0.0f };
+        fixedPosition.r[3] = { -42.f, m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION).m128_f32[1], -100.46f, 1.0f };
+        // 여기서 이제 그러면 플레이어 위치 변경해주기 
+
+        XMStoreFloat4x4(&newPosition, fixedPosition);
+
+        m_pParent->Get_Transfrom()->Set_WorldMatrix(newPosition);
+
+
+        *m_pParentState = CPlayer::STATE_MAGICIAN_Execution;
+    }
+}
+
+void CBody_Player::STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+
+
+        _float4x4 newPosition = {};
+        _matrix fixedPosition = {};
+        fixedPosition.r[0] = { 0.00249777804f, 0.00000000f, -0.000105359715f, 0.00000000f };
+        fixedPosition.r[1] = { 0.0f, 0.00249999994f, 0.0f, 0.0f };
+        fixedPosition.r[2] = { 0.000105359715f, 0.0f, 0.00249777804f, 0.0f };
+        fixedPosition.r[3] = { -42.f, m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION).m128_f32[1], -100.46f, 1.0f };
+        // 여기서 이제 그러면 플레이어 위치 변경해주기 
+
+        XMStoreFloat4x4(&newPosition, fixedPosition);
+
+        m_pParent->Get_Transfrom()->Set_WorldMatrix(newPosition);
+
+        *m_pParentState = CPlayer::STATE_MAGICIAN_MUTATION_Execution;
     }
 }
 

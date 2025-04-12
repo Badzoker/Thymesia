@@ -59,7 +59,7 @@ private:
 	_float			   m_fTime = { 0.f };
 	_float			   m_fTimeDelta = { 0.f };
 	_float			   m_fHitStopTime = { 0.f };
-	_float			   m_fZoomBlurDeltaTime = { 0.f };	
+	_float			   m_fZoomBlurDeltaTime = { 0.f };
 
 	_bool			   m_bHitStopOnOff = { false };
 	_bool              m_bCollisionOn = { false };
@@ -87,6 +87,7 @@ private:
 	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Cane_Weapon_States = { nullptr };
 
 
 	/* 던지기 코드 관련 */

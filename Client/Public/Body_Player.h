@@ -219,8 +219,10 @@ public:
 
 	/* (오두르) 매지션 LV_1 처형 컷신 */
 	void STATE_MAGICIAN_Execution_Method();
+	void STATE_STUN_EXECUTE_START_MAGICIAN_Method();
 
 	/* (변이된 오두르) 처형 컷신 */
+	void STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method();
 	void STATE_MAGICIAN_MUTATION_Execution_Method();
 
 	/* 그레이스 처형 컷신 */
@@ -298,15 +300,16 @@ private:
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
-	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States                = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States         = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States      = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States        = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States       = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States          = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States   = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States       = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Cane_Weapon_States         = { nullptr };	
 
 	_bool  m_bFirstCameraPos = { true };
 

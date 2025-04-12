@@ -28,7 +28,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize_Prototype()
 HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
 {
 
-    strcpy_s(m_szName, "PLAYER_WEAPON");
+    strcpy_s(m_szName, "PLAYER_PLAGUE_WEAPON");
 
     WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 
@@ -52,7 +52,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 2.f,0.f,0.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::MONSTER;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::DESTRUCT;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER_WEAPON, settingColliderGroup);
 
@@ -68,7 +68,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
-
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
     XMStoreFloat4x4(&m_PreTransformMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
@@ -308,11 +308,14 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
             && !(m_pSet_Right_Weapon_States->count(curState))
             && !(m_pSet_Halberd_Weapon_States->count(curState))
             && !(m_pSet_GreadSword_Weapon_States->count(curState))
-            && !(m_pSet_Scythe_Weapon_States->count(curState)))
+            && !(m_pSet_Scythe_Weapon_States->count(curState))
+            && !(m_pSet_Cane_Weapon_States->count(curState))
+            && !(m_pSet_Player_Camera_States->count(curState)))
         {
             m_pCamera->ResetZoomInCameraPos(1.f);
             //m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);   
             // 여기 조건 다 추가해야함 
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(1.f);
         }
     }
 
