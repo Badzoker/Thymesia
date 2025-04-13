@@ -441,41 +441,43 @@ HRESULT CLevel_Hill::Ready_Layer_Item(const _tchar* pLayerTag)
 
 	ItemDesc.iCurLevel = m_iCurrentLevel;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 	ItemDesc.bTaken = true;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_HILL, pLayerTag, &ItemDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
+
+	ItemDesc.iItemCount = 0;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_FIELDITEM;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
 
 	//============================================================================================
 
