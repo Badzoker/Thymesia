@@ -28,9 +28,6 @@ private:
 	_float4 m_fTextLayerDeth = {};
 	_float4 m_fTextEffect = {};
 
-
-	// 사용 폰트 이름, 텍스트 내용, 그려질 좌표(출력되는 이미지 중점기준), 컬러, 회전 , 모르겠다, 스케일, 레이어뎁스, 이펙트 
-
 public:
 	static CUI_TextBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

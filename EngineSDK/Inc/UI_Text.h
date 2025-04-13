@@ -5,9 +5,9 @@ BEGIN(Engine)
 class ENGINE_DLL CUI_Text abstract : public CUIObject
 {
 public:
-	enum TextRender
+	enum TextDrawEffect
 	{
-		FONT_DEFALUT, FONT_SHADOW, FONT_OUTLINE, FONT_END
+		TEXT_DEFALUT, TEXT_SHADOW, TEXT_OUTLINE,TEXT_TWOCOLOR, FONT_END
 };
 protected:
 	CUI_Text(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
@@ -24,11 +24,18 @@ public:
 
 public:
 	void Set_Change_TextColor(_float4 fColor) { m_fTextColor = { fColor.x / 255.f, fColor.y / 255.f,fColor.z / 255.f,fColor.w / 255.f }; }
-	void Set_TextRenderType(TextRender eType) { m_eRenderType = eType; }
+	void Set_Change_TextColor2(_float4 fColor) { m_fTextColor2 = { fColor.x / 255.f, fColor.y / 255.f,fColor.z / 255.f,fColor.w / 255.f }; }
+	void Set_TextDrawType(TextDrawEffect eType) { m_eRenderType = eType; }
+
+	void Set_Content2(const _tchar* pText) { m_strContentText2 = pText; }
 
 protected:
+	TextDrawEffect	m_eRenderType = { TEXT_DEFALUT };
+
 	_float4		m_fTextColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f };
-	TextRender	m_eRenderType = { FONT_DEFALUT };
+	_float4		m_fTextColor2 = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f };
+
+	_wstring	m_strContentText2 = {};	// Text 합성 시 사용
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

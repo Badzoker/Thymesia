@@ -59,10 +59,15 @@ void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		_tchar ChangeText[MAX_PATH] = {};
-		const _tchar* CountText = L"미사용 특성 점수 %d";
+		const _tchar* CountText1 = L"미사용 특성 점수";
+		const _tchar* CountText2 = L" %d";
 		m_iTalentPoint = dynamic_cast<CUIGroup_PlayerLevelUP*>(m_pGroupLevelUp)->Get_TalentPoint_CurrentUnspent();
-		wsprintf(ChangeText, CountText, m_iTalentPoint);
-		m_pText_TalentPoint->Set_Content(ChangeText);
+		wsprintf(ChangeText, CountText2, m_iTalentPoint);
+		m_pText_TalentPoint->Set_Content(CountText1);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Content2(ChangeText);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor(FONT_WHITE);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor2(FONT_GREEN);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_TextDrawType(CUI_Text::TEXT_TWOCOLOR);
 	}
 }
 

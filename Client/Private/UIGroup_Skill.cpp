@@ -355,7 +355,7 @@ void CUIGroup_Skill::Condition_Text_Update(ITEM_TYPE eItemtype, _bool bCheck)
 
 	for (auto& TextBox : m_pEquipCondition->Find_UI_TextBox())
 	{
-		if (1 == TextBox->Get_UI_GroupID())
+		/*if (1 == TextBox->Get_UI_GroupID())
 		{
 			if (bCheck)
 			{
@@ -373,14 +373,24 @@ void CUIGroup_Skill::Condition_Text_Update(ITEM_TYPE eItemtype, _bool bCheck)
 					TextBox->Set_Change_TextColor(FONT_RED);
 			}
 
-		}
+		}*/
 		if (2 == TextBox->Get_UI_GroupID())
 		{
 			if (bCheck)
 				TextBox->Set_OnOff(false);
 			else
+			{
 				TextBox->Set_OnOff(true);
-
+				wsprintf(ChangeText, Text, iCount);
+				TextBox->Set_TextDrawType(CUI_Text::TEXT_TWOCOLOR);
+				TextBox->Set_Content(ChangeText);
+				TextBox->Set_Content2(TEXT(" / 3")); 
+				TextBox->Set_Change_TextColor2(FONT_WHITE);
+				if (3 <= iCount)
+					TextBox->Set_Change_TextColor(FONT_GREEN);
+				else
+					TextBox->Set_Change_TextColor(FONT_RED);
+			}
 		}
 		if (3 == TextBox->Get_UI_GroupID())
 		{
