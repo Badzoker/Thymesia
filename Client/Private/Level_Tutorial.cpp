@@ -267,7 +267,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Structure(const _tchar* pLayerTag)
     if (FAILED(Load_SpecificObjects(15)))
         return E_FAIL;
 
-    if (FAILED(Load_DestructObjects(6)))
+    if (FAILED(Load_DestructObjects(8)))
         return E_FAIL;
 
 
@@ -427,7 +427,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_NPC(const _tchar* pLayerTag)
     //if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
     //	return E_FAIL;
 
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), m_iCurrentLevel, pLayerTag, &Desc)))
         return E_FAIL;
 
     return S_OK;
@@ -1092,7 +1092,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
 
     ItemDesc.iCurLevel = m_iCurrentLevel;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
     ItemDesc.bTaken = false;
@@ -1100,30 +1099,32 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
+        return E_FAIL;
+
+    ItemDesc.iItemCount = 0;
+    ItemDesc.eItemType = ITEM_TYPE::ITEM_FIELDITEM;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
@@ -1420,7 +1421,7 @@ HRESULT CLevel_Tutorial::Load_TriggerObjects(_int iObject_Level)
 
 HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
 {
-    string strDataPath = "../Bin/DataFiles/SpecificObjectData/SpecificObjectData";
+    string strDataPath = "../Bin/DataFiles/SpecificObjectData/Tuto/SpecificObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 
@@ -1975,7 +1976,7 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 
 HRESULT CLevel_Tutorial::Load_DestructObjects(_int iObject_Level)
 {
-    string strDataPath = "../Bin/DataFiles/DestructObjectData/DestructObjectData";
+    string strDataPath = "../Bin/DataFiles/DestructObjectData/Tuto/DestructObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 

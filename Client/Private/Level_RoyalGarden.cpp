@@ -10,6 +10,9 @@
 #include "TriggerObject.h"
 #include "BlackScreen.h"
 
+#include "DestructObject.h"
+#include "BarrierScreen.h"
+
 #include "UI_LeftBackground.h"
 
 #include "Button.h"
@@ -55,8 +58,8 @@ HRESULT CLevel_RoyalGarden::Initialize()
 	if (FAILED(Ready_Layer_Monster()))	
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -245,8 +248,20 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
 	//Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
 
-	if (FAILED(Load_SpecificObjects(3)))
+	if (FAILED(Load_SpecificObjects(5)))
 		return E_FAIL;
+
+	if (FAILED(Load_DestructObjects(1)))
+		return E_FAIL;
+
+	CBarrierScreen::BARRIER_SCREEN_DESC     BarrierDesc = {};
+	_float4 vBatEntrancePosition = { -7.1f, 16.2f, -38.4f, 1.f };           // 박쥐 보스방 나생문.
+	BarrierDesc._fPosition = vBatEntrancePosition;
+	BarrierDesc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_BarrierScreen"), m_iCurrentLevel, pLayerTag, &BarrierDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -255,16 +270,20 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Player(const _tchar* pLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 
-	Desc.fSpeedPerSec = 45.f;
+	Desc.fSpeedPerSec = 45.0f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	_float4 vTestPosition = { 73.27f , 13.75f, -66.235f, 1.f }; // 왕실정원 시작위치
+	_float4 vTestPosition = { 73.27f , 13.75f, -66.235f, 1.f };		// 왕실정원 시작위치
+	//_float4 vTestPosition = { 17.0f, 14.0f, -100.0f, 1.f };		// 해리포터책방두갈래길 시작위치
+	//_float4 vTestPosition = { 101.0f, 14.0f, -97.0f, 1.f };		// 엘베 밑에 있는 시작 위치(근처에 첫 번 째 의자도 있음. ) 
+	//_float4 vTestPosition = { -3.1f, 13.2f, -32.4f, 1.f };		// 보스 박쥐방 시작위치 
+	//_float4 vTestPosition = { -10.0f, 15.0f, -61.9f, 1.f };		// 두 번째 의자 박쥐 보스 방 직전.
 
 	Desc._fPosition = vTestPosition;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
-		return E_FAIL;	
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Player"), m_iCurrentLevel, pLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -285,11 +304,11 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Camera(const _tchar * pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -390,8 +409,8 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_NPC(const _tchar* pLayerTag)
 	Desc.fSpeedPerSec = 1.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), m_iCurrentLevel, pLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -401,7 +420,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Fade(const _tchar* pLayerTag)
 {
 	CBlackScreen::BLACKSCREEN_DESC BlackScreenDesc = {};
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), LEVEL_ROYALGARDEN, pLayerTag, &BlackScreenDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Black"), m_iCurrentLevel, pLayerTag, &BlackScreenDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -415,7 +434,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Button(const _tchar* pLayerTag)
 	for (_uint i = 0; i < 1; ++i)
 	{
 		ButtonDesc._iButtonTypeIndex = i;
-		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), LEVEL_ROYALGARDEN, pLayerTag, &ButtonDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_InteractionButton"), m_iCurrentLevel, pLayerTag, &ButtonDesc)))
 			return E_FAIL;
 	}
 
@@ -434,7 +453,6 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Item(const _tchar* pLayerTag)
 
 	ItemDesc.iCurLevel = m_iCurrentLevel;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
 	ItemDesc.bTaken = true;
@@ -442,30 +460,32 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Item(const _tchar* pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
 
-	//ItemDesc.GameItemName = m_strObjectNames[0];
 	ItemDesc.iItemCount = 0;
 	ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
+		return E_FAIL;
+
+	ItemDesc.iItemCount = 0;
+	ItemDesc.eItemType = ITEM_TYPE::ITEM_FIELDITEM;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
 		return E_FAIL;
@@ -487,13 +507,13 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Item(const _tchar* pLayerTag)
 
 HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_ROYALGARDEN, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), m_iCurrentLevel, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_ROYALGARDEN, pLayerTag)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), m_iCurrentLevel, pLayerTag)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -502,7 +522,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLay
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_ROYALGARDEN, pLayerTag, &Desc, "PlayerLevelUp")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), m_iCurrentLevel, pLayerTag, &Desc, "PlayerLevelUp")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -511,7 +531,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLaye
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerTalent"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -520,7 +540,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLaye
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), LEVEL_ROYALGARDEN, pLayerTag, &Desc, "PlayerScreen")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerScreen"), m_iCurrentLevel, pLayerTag, &Desc, "PlayerScreen")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -531,7 +551,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), LEVEL_ROYALGARDEN, pLayerTag, &Desc, "Inventory")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Inventory"), m_iCurrentLevel, pLayerTag, &Desc, "Inventory")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -540,7 +560,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLa
 {
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_ROYALGARDEN, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -551,7 +571,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_Skill(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Skill"), LEVEL_ROYALGARDEN, pLayerTag, &Desc, "UI_Skill")))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Skill"), m_iCurrentLevel, pLayerTag, &Desc, "UI_Skill")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -606,22 +626,22 @@ HRESULT CLevel_RoyalGarden::Load_Objects(_int iObject_Level)
 
 		if (Desc.iObjectType == CObject::OBJECT_DEFAULT)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_StaticObject"), LEVEL_ROYALGARDEN, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_StaticObject"), m_iCurrentLevel, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_BILLBOARD)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_BillBoardObject"), LEVEL_ROYALGARDEN, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_BillBoardObject"), m_iCurrentLevel, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_EMISSIVE)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_EmissiveObject"), LEVEL_ROYALGARDEN, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_EmissiveObject"), m_iCurrentLevel, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 		else if (Desc.iObjectType == CObject::OBJECT_GLASS)
 		{
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_GlassObject"), LEVEL_ROYALGARDEN, TEXT("Layer_Object"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_GlassObject"), m_iCurrentLevel, TEXT("Layer_Object"), &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -689,11 +709,11 @@ HRESULT CLevel_RoyalGarden::Load_Objects(_int iObject_Level)
 		switch (Desc.iInstanceType)
 		{
 		case CEnvironmentObject::ENV_DEFAULT:
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_GroundObject"), LEVEL_ROYALGARDEN, TEXT("Layer_GroundObject"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_GroundObject"), m_iCurrentLevel, TEXT("Layer_GroundObject"), &Desc)))
 				return E_FAIL;
 			break;
 		case CEnvironmentObject::ENV_EMISSIVE:
-			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_EmissiveGroundObject"), LEVEL_ROYALGARDEN, TEXT("Layer_GroundObject"), &Desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Prototype_GameObject_Object_EmissiveGroundObject"), m_iCurrentLevel, TEXT("Layer_GroundObject"), &Desc)))
 				return E_FAIL;
 			break;
 		}
@@ -1050,6 +1070,54 @@ HRESULT CLevel_RoyalGarden::Load_SpecificObjects(_int iObject_Level)
 			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &LadderDesc)))
 				return E_FAIL;
 			++iLadderUpNum;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_RoyalGarden::Load_DestructObjects(_int iObject_Level)
+{
+	string strDataPath = "../Bin/DataFiles/DestructObjectData/Royal_Garden/DestructObjectData";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	DWORD dwByte = 0;
+
+	_uint iSize = 0;
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CDestructObject::DestructObject_Desc Desc{};
+
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+		Desc.ObjectName = szLoadName;
+		Desc.iCurLevel = m_iCurrentLevel;
+
+		CDestructObject* pObject = nullptr;
+		if (pObject == nullptr)
+		{
+			pObject = reinterpret_cast<CDestructObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_DestructObject"), m_iCurrentLevel, TEXT("Layer_DestructObject"), &Desc));
 		}
 	}
 

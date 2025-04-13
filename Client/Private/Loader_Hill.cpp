@@ -170,7 +170,7 @@ HRESULT CLoader_Hill::Loading_For_Level_Hill()
 
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_HILL, TEXT("Prototype_Component_VIBuffer_Terrain")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/TerrainHeight18.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/Hill/TerrainHeight18.txt")))))
 		return E_FAIL;
 
 
@@ -209,7 +209,7 @@ HRESULT CLoader_Hill::Loading_For_Level_Hill()
 
 	// 03.27 네비 Hill Map 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_HILL, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/PhilosopherNavigation.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/Hill/PhilosopherNavigation.txt")))))
 		return E_FAIL;
 
 #pragma endregion 

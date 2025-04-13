@@ -69,6 +69,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float3 vGreenColor = lerp(float3(0.8, 1.0, 0.7), float3(0.5, 1.0, 0.6), float3(0.3, 1.0, 0.4));
     float3 vBlueColor = lerp(float3(0.5, 0.4, 1.0), float3(0.2, 0.6, 1.0), float3(0.4, 0.3, 1.0));
     float3 vYellowColor = lerp(float3(1.0, 1.0, 0.4), float3(1.0, 0.9, 0.2), float3(1.0, 0.8, 0.0));
+    float3 vWhiteColor = lerp(float3(0.8f, 0.8f, 0.8f), float3(0.9, 0.9, 0.9), float3(1.0, 0.8, 0.9));
     float fDistortionStrength = 1.2f;
 
     float4 FlareColor = g_Texture.Sample(LinearSampler_Clamp, vTexCoord);
@@ -81,6 +82,8 @@ PS_OUT PS_MAIN(PS_IN In)
         Out.vColor.rgb = FlareColor.rgb * vRedColor * fDistortionStrength;
     else if (g_ItemNumber == 4) // ЁК╤Ш (ITEM_FORGIVEN)
         Out.vColor.rgb = FlareColor.rgb * vYellowColor * fDistortionStrength;
+    else if (g_ItemNumber == 5) // го╬Г (ITEM_FIELD)
+        Out.vColor.rgb = FlareColor.rgb * vWhiteColor * fDistortionStrength;
     
     Out.vColor.a = FlareColor.a * 0.5f;
 

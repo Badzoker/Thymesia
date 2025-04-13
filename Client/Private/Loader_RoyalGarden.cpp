@@ -296,7 +296,7 @@ HRESULT CLoader_RoyalGarden::Loading_For_Level_RoyalGarden()
 
 	// 03.19 ³×ºñ Tutorial Map 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ROYALGARDEN, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation45.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/Royal_Garden/TestNavigation45.txt")))))
 		return E_FAIL;
 
 	

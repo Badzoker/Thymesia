@@ -170,7 +170,7 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 
 	lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_VIBuffer_Terrain")
-		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/TerrainHeight17.txt")))))
+		, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 150, 150, 1, nullptr , TEXT("../Bin/DataFiles/HeightData/Tutorial/TerrainHeight20.txt")))))
 		return E_FAIL;
 
 
@@ -211,7 +211,7 @@ HRESULT CLoader_Tutorial::Loading_For_Level_Tutorial()
 	// 04.08 튜토리얼 맵 네비 11번이 그거 예전 조커 나왓던 그 나무 큰 거 잇는데 거기 안뚫는 그 파일임;; 
 	//  난 분명 해놧는데 어느샌가! 누군가! 파일 바꿔놓은듯? 지건마렵;;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TUTORIAL, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation11.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/Tuto/TestNavigation22.txt")))))
 		return E_FAIL;
 
 #pragma endregion 

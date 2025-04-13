@@ -34,13 +34,28 @@ HRESULT CBarrierScreen::Initialize(void* pArg)
 
     m_iCurLevel = pDesc->iCurLevel;
 
-    m_pTransformCom->Scaling(_float3(0.001f, 0.0055f, 0.0055f));
+    //m_pTransformCom->Scaling(_float3(0.001f, 0.0055f, 0.0055f));
 
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->_fPosition));
 
     m_pTransformCom->Rotation(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XMConvertToRadians(90.0f));
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.2f, 0.4f, 5.5f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+    if (m_iCurLevel == LEVELID::LEVEL_SEAOFTREES)
+    {
+        m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.2f, 0.4f, 5.5f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+        m_pTransformCom->Scaling(_float3(0.001f, 0.0035f, 0.0065f));
+    }
+    else if (m_iCurLevel == LEVELID::LEVEL_TUTORIAL)
+    {
+        m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.2f, 0.4f, 5.5f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+        m_pTransformCom->Scaling(_float3(0.001f, 0.0055f, 0.0055f));
+    }
+    else if(m_iCurLevel == LEVELID::LEVEL_ROYALGARDEN)
+    {
+        m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.2f, 0.4f, 5.5f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+        m_pTransformCom->Scaling(_float3(0.001f, 0.0035f, 0.0065f));
+    }
+
     _uint iSettingColliderGroup = GROUP_TYPE::PLAYER;
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::ITEM, iSettingColliderGroup);
@@ -50,10 +65,15 @@ HRESULT CBarrierScreen::Initialize(void* pArg)
 
 void CBarrierScreen::Priority_Update(_float fTimeDelta)
 {
-    if (m_pGameInstance->Get_Boss_Active())
-    {
-        m_bActivateBarrier = true;
-    }
+     if (m_pGameInstance->Get_Boss_Active())
+     {
+         m_bActivateBarrier = true;
+     }
+
+    //if (m_pGameInstance->isKeyEnter(DIK_N))
+    //{
+    //    m_bActivateBarrier = true;
+    //}
 }
 
 void CBarrierScreen::Update(_float fTimeDelta)
