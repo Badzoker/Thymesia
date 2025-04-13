@@ -961,9 +961,13 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_2, 1)))
         return E_FAIL;
 
-    //if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Normal_Execution_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-    //    EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_2, 1)))
-    //    return E_FAIL;
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Normal_Execution_Stab.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_STAB, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Normal_Execution_Kick.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_KICK, 1)))
+        return E_FAIL;
 
     //Sword Effect
 

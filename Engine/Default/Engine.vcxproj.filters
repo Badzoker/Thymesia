@@ -297,9 +297,6 @@
     <ClInclude Include="..\Public\Engine_Typedef.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Engine_Enum.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Engine_Function.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
@@ -545,6 +542,9 @@
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Edge_Cell.h">
       <Filter>01.Utility\04.Components\VIBuffer\EdgeCell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Engine_Enum.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

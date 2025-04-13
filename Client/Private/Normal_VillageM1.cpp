@@ -717,6 +717,30 @@ void CNormal_VillageM1::Execution_State::State_Enter(CNormal_VillageM1* pObject)
 
 void CNormal_VillageM1::Execution_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
 {
+#pragma region EFFECT_EXECUTION
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Execution_1"))
+                {
+                    const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_STAB, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+                else if (!strcmp(iter.szName, "Effect_Execution_2"))
+                {
+                    const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 40;
