@@ -37,6 +37,9 @@ private:
 	CUI_Scene* m_pSceneChangePop = {};
 
 	_bool m_bChangePopOpen = { false };
+	LEVELID		m_eMyLevelID = {};
+
+	CUIObject* m_pMapImage = {};
 
 public:
 	static CUIGroup_PlayerMenu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

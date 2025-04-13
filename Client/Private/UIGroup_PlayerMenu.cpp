@@ -5,6 +5,7 @@
 #include "UI_ButtonHighlight.h"
 #include "UI_KeyBox_Long.h"
 #include "Player.h"
+#include "UI_Image.h"
 
 CUIGroup_PlayerMenu::CUIGroup_PlayerMenu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -28,10 +29,21 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 {
 	if (FAILED(Ready_UIObject()))
 		return E_FAIL;
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+
+	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
+
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu");
 	m_pSceneChangePop = m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop");
 
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (1 == Image->Get_UI_GroupID())
+		{
+			m_pMapImage = Image;
+		}
+	}
 
 	return S_OK;
 }
@@ -41,10 +53,27 @@ void CUIGroup_PlayerMenu::Priority_Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		if (m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")))
-		{
-			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
 
+		switch (m_eMyLevelID)
+		{
+		case Client::LEVEL_TUTORIAL:
+			m_pMapImage->Set_TexNumber(2);
+			break;
+		case Client::LEVEL_SEAOFTREES:
+			m_pMapImage->Set_TexNumber(0);
+			break;
+		case Client::LEVEL_ROYALGARDEN:
+			m_pMapImage->Set_TexNumber(1);
+			break;
+		case Client::LEVEL_OCEAN:
+			m_pMapImage->Set_TexNumber(3);
+			break;
+		case Client::LEVEL_HILL:
+			m_pMapImage->Set_TexNumber(4);
+			break;
 		}
+
 	}
 
 }
@@ -65,12 +94,12 @@ void CUIGroup_PlayerMenu::Update(_float fTimeDelta)
 		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))
 		{
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerScreen"), true);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 			m_pGameInstance->Respawn_Monster(MONSTER_CATEGORY::CATEGORY_NORMAL);
-			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 		}
 	}
 }
@@ -94,25 +123,25 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			if (100 == Button->Get_UI_GroupID()) // 레벨업
 			{
 				Button->Set_Mouse_Select_OnOff(false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerLevelUP"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), true);
 			}
 			if (101 == Button->Get_UI_GroupID()) // 특성 해제
 			{
 				Button->Set_Mouse_Select_OnOff(false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerTalent"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_TALENT, L"UIScene_PlayerTalent_0")), true);
 			}
 			if (102 == Button->Get_UI_GroupID()) // 역병무기
 			{
 				Button->Set_Mouse_Select_OnOff(false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerSkill"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerSkill"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill")), true);
 			}
 			if (103 == Button->Get_UI_GroupID()) // 물약
@@ -123,17 +152,21 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			}
 			if (105 == Button->Get_UI_GroupID()) //기억 되살리기 중단	
 			{
-				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), true);
-				m_bChangePopOpen = true;
+				if (m_eMyLevelID != LEVEL_HILL)
+				{
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), true);
+					m_bChangePopOpen = true;
+
+				}
 
 			}
 			if (106 == Button->Get_UI_GroupID()) // 게임 재개하기
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerScreen"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 
 			}
@@ -141,9 +174,9 @@ void CUIGroup_PlayerMenu::MenuButton_Check()
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerScreen"), true);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
-				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), false);
+				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 
 			}

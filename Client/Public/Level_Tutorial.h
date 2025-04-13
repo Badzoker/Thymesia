@@ -37,7 +37,6 @@ private:
 
 	HRESULT	Ready_Layer_Item(const _tchar* pLayerTag);
 
-	HRESULT Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag);

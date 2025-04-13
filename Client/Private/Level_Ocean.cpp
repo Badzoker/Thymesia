@@ -71,9 +71,6 @@ HRESULT CLevel_Ocean::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_UIGroup_PlayerMenu(TEXT("Layer_PlayerMenu"))))
 		return E_FAIL;
 
@@ -144,7 +141,7 @@ void CLevel_Ocean::Update(_float fTimeDelta)
 		}
 		
 	}
-	if (m_bNextLevelOpen)
+	if (m_bNextLevelOpen)// 이 코드가 항상 Update 함수 마지막에 있어야 합니다.
 	{
 		m_pGameInstance->Clear_ItemInfo();
 		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
@@ -468,15 +465,12 @@ HRESULT CLevel_Ocean::Ready_Layer_Item(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Ocean::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
-{
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_OCEAN, pLayerTag)))
-		return E_FAIL;
-	return S_OK;
-}
 HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_OCEAN, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -485,7 +479,7 @@ HRESULT CLevel_Ocean::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerTag)
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_OCEAN, pLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerLevelUP"), LEVEL_OCEAN, pLayerTag, &Desc, "PlayerLevelUp")))
 		return E_FAIL;
 	return S_OK;
 }
@@ -523,6 +517,15 @@ HRESULT CLevel_Ocean::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLayerTag
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_OCEAN, pLayerTag, &Desc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Ocean::Ready_Layer_UIGroup_Dialogue(const _tchar* pLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Dialogue"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -1057,5 +1060,6 @@ void CLevel_Ocean::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 }

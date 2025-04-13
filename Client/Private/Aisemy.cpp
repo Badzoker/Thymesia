@@ -236,6 +236,7 @@ void CAisemy::Rotation_To_Player()
 
 void CAisemy::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    int a = 10;
 }
 
 void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -286,6 +287,8 @@ CGameObject* CAisemy::Clone(void* pArg)
 void CAisemy::Free()
 {
     __super::Free();
+
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
 
     Safe_Release(m_pNavigationCom);
     Safe_Release(m_pState_Manager);

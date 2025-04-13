@@ -96,10 +96,10 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Misc, false);
 					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMySceneBase, false);
 					
-					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerTalent"), false);
+					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerTalent"), false);
 
 					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
-					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), true);
+					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
 				}
 			}
 		}

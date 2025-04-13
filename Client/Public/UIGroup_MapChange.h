@@ -36,7 +36,7 @@ private:
 	CUI_Scene* m_pMyScene = {};
 	CUI_Scene* m_pMapChangePop = {};
 	_bool m_bPopOpen = { false };
-	_tchar* m_pPoptitle = {};
+	_tchar* m_pPoptitle = {L""};
 
 
 private:
