@@ -1336,6 +1336,7 @@ void CBoss_Magician::Dissappear_Idle_State::State_Update(_float fTimeDelta, CBos
 
 void CBoss_Magician::Dissappear_Idle_State::State_Exit(CBoss_Magician* pObject)
 {
+	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_IsDissolveOff = false;
 }
 #pragma endregion
@@ -1368,6 +1369,7 @@ void CBoss_Magician::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magic
 		//스페셜스킬 잡혔을때
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 30.f && pObject->m_bCatch_Special_Attack)
 		{
+			m_bCatch_Success = true;
 			pObject->m_pState_Manager->ChangeState(new Attack_Special_Catch(), pObject);
 			return;
 		}
@@ -1404,10 +1406,13 @@ void CBoss_Magician::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magic
 
 void CBoss_Magician::Attack_Special::State_Exit(CBoss_Magician* pObject)
 {
-	pObject->m_bCan_Hit_Motion = true;
-	pObject->m_bCatch_Special_Attack = false;
-	pObject->m_bSpecial_Skill_Progress = false;
-	pObject->m_fSpecial_Skill_CoolTime = 0.f;
+	if (!m_bCatch_Success)
+	{
+		pObject->m_bCan_Hit_Motion = true;
+		pObject->m_bCatch_Special_Attack = false;
+		pObject->m_bSpecial_Skill_Progress = false;
+		pObject->m_fSpecial_Skill_CoolTime = 0.f;
+	}
 }
 #pragma endregion
 
@@ -1418,7 +1423,7 @@ void CBoss_Magician::Attack_Special_Catch::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_Attack_Power = 190;
 	pObject->m_bCan_Move_Anim = true;  // 이런거 한번 만 (선환 범승 한번 체크 부탁함 )	
 
-	float teleportDistance = 1.f;
+	_float teleportDistance = 1.f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
 	_vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
 	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
@@ -1453,7 +1458,9 @@ void CBoss_Magician::Attack_Special_Catch::State_Update(_float fTimeDelta, CBoss
 void CBoss_Magician::Attack_Special_Catch::State_Exit(CBoss_Magician* pObject)
 {
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
+	pObject->m_bSpecial_Skill_Progress = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+	pObject->m_bCan_Move_Anim = true;
 }
 #pragma endregion
 

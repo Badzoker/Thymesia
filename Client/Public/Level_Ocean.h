@@ -12,24 +12,6 @@ private:
 	virtual ~CLevel_Ocean() = default;
 
 public:
-	typedef struct MonsterSpawnInfo
-	{
-		_float4 vMonsterPos;
-		_int	iMonsterIndex = { 0 };
-	}MONSTERSPAWNINFO;
-
-	enum Monster_Catergory
-	{
-		NORMAL_VILLAGE_M0,
-		NORMAL_VILLAGE_F0,
-		ELITE_HARMORLV2,
-		NORMAL_VILLAGE_M1,
-		ELITE_JOKER,
-		BOSS_VARG,
-		NORMAL_VILLAGE_F1
-	};
-
-public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;

@@ -358,7 +358,7 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 	Boss_Urd_Camera_Desc.pParentModel = m_pModelCom;
 	Boss_Urd_Camera_Desc.fSpeedPerSec = 0.f;
 	Boss_Urd_Camera_Desc.fRotationPerSec = 0.f;
-	Boss_Urd_Camera_Desc.iCurLevel = pDesc->iCurLevel;
+	Boss_Urd_Camera_Desc.iCurLevel = iLevel;
 	Boss_Urd_Camera_Desc.pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Urd_Camera"), LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Camera"), &Boss_Urd_Camera_Desc)))

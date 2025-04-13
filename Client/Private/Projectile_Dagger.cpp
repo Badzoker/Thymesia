@@ -67,6 +67,10 @@ void CProjectile_Dagger::Late_Update(_float fTimeDelta)
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
 
+void CProjectile_Dagger::Set_Projectile_Effect()
+{
+}
+
 HRESULT CProjectile_Dagger::Render()
 {
     if (FAILED(Bind_ShaderResources()))
@@ -118,6 +122,7 @@ void CProjectile_Dagger::OnCollisionEnter(CGameObject* _pOther, PxContactPair _i
 {
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
+        Set_IsFire(false);
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 }

@@ -314,11 +314,11 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Camera(const _tchar * pLayerTag)
 HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 {
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
+	pDesc.iCurLevel = m_iCurrentLevel;
 
 	for (_uint i = 0; i < 2; i++)
 	{
  		Load_MonsterIndex(i);
-		pDesc.iCurLevel = m_iCurrentLevel;
 		for (size_t j = 0; j < m_MonsterSpawnInfos[i].size(); j++)
 		{
 			switch (m_MonsterSpawnInfos[i][j].iMonsterIndex)
@@ -369,6 +369,11 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 				if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
 					return E_FAIL;
 				break;
+			case ELITE_REASEARCHER:
+				pDesc.fPosition = m_MonsterSpawnInfos[i][j].vMonsterPos;
+				if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Researcher"), CATEGORY_ELITE, &pDesc)))
+					return E_FAIL;
+				break;
 			case BOSS_VARG:
 				pDesc.fPosition = m_MonsterSpawnInfos[i][j].vMonsterPos;
 				if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
@@ -377,7 +382,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 
 			case BOSS_ORD:
 				pDesc.fPosition = m_MonsterSpawnInfos[i][j].vMonsterPos;
-				if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"), CATEGORY_BOSS, &pDesc)))
+				if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
 					return E_FAIL;
 				break;
 
@@ -394,7 +399,6 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 				break;
 			}
 		}
-
 	}
 	return S_OK;
 }

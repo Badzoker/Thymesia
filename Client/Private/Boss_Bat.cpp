@@ -237,7 +237,7 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	ProjectileDesc.fRotationPerSec = 0.f;
 	ProjectileDesc.fPosition = m_vSpawnPoint;
 
-	if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"), PROJECTILE_FEATHER, &ProjectileDesc)))
+	if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Air"), PROJECTILE_AIR, &ProjectileDesc)))
 		return E_FAIL;
 
 	_uint iRandom = rand() % 3;
@@ -278,6 +278,7 @@ void CBoss_Bat::PatternCreate()
 {
 	if (m_iPhase == PHASE_TWO && m_bActive && !m_bSpecial_Skill_Progress)
 	{
+		m_fRecovery_Skill_CoolTime += m_fTimeDelta;
 		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
 	}
 
@@ -286,13 +287,16 @@ void CBoss_Bat::PatternCreate()
 		m_fDelayTime += 5 * m_fTimeDelta;
 		if (m_fDelayTime >= m_fCoolTime)
 		{
-			if (m_fSpecial_Skill_CoolTime >= 60.f && m_bCristal_Create)
+			if (m_fRecovery_Skill_CoolTime >= 30.f && !m_bCristal_Create)
+			{
+				m_pState_Manager->ChangeState(new CBoss_Bat::Recovery_State(), this);
+			}
+			else if (m_fSpecial_Skill_CoolTime >= 60.f && m_bCristal_Create)
 			{
 				m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Special(), this);
 			}
-			//if (m_fDistance >= 5.f)
-				//Far_Pattern_Create();
-			//else
+			else if (m_fDistance >= 10.f)
+				Far_Pattern_Create();
 			else
 			{
 				Near_Pattern_Create();
@@ -304,14 +308,65 @@ void CBoss_Bat::PatternCreate()
 	}
 }
 
+void CBoss_Bat::Far_Pattern_Create()
+{
+	_uint iRandomPattern = {};
+
+	if (m_bSummon_Spike)
+		iRandomPattern = rand() % 4;
+	else
+		iRandomPattern = rand() % 3;
+
+
+	while (true)
+	{
+		if (iRandomPattern == m_iFarPatternIndex)
+		{
+			if (m_bSummon_Spike)
+				iRandomPattern = rand() % 4;
+			else
+				iRandomPattern = rand() % 3;
+		}
+		else
+		{
+			m_iFarPatternIndex = iRandomPattern;
+			break;
+		}
+	}
+	switch (m_iFarPatternIndex)
+	{
+	case 0:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_E(), this);
+		break;
+	case 1:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_G(), this);
+		break;
+	case 2:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_H(), this);
+		break;
+	case 3:
+		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_F(), this);
+		break;
+	}
+}
+
 void CBoss_Bat::Near_Pattern_Create()
 {
-	_uint iRandomPattern = rand() % 9;
+	_uint iRandomPattern = {};
+
+	if (m_bSummon_Spike)
+		iRandomPattern = rand() % 8;
+	else
+		iRandomPattern = rand() % 9;
+
 	while (true)
 	{
 		if (iRandomPattern == m_iNearPatternIndex)
 		{
-			iRandomPattern = rand() % 9;
+			if (m_bSummon_Spike)
+				iRandomPattern = rand() % 8;
+			else
+				iRandomPattern = rand() % 9;
 		}
 		else
 		{
@@ -341,15 +396,12 @@ void CBoss_Bat::Near_Pattern_Create()
 		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_G(), this);
 		break;
 	case 6:
-		m_pState_Manager->ChangeState(new CBoss_Bat::Recovery_State(), this);
-		break;
-	case 7:
 		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_I(), this);
 		break;
-	case 8:
+	case 7:
 		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_H(), this);
 		break;
-	case 9:
+	case 8:
 		m_pState_Manager->ChangeState(new CBoss_Bat::Attack_Combo_F(), this);
 		break;
 	}
@@ -870,7 +922,7 @@ void CBoss_Bat::Attack_Combo_F::State_Enter(CBoss_Bat* pObject)
 		pObject->m_vSpike_Positions = pObject->m_vSpike_Spawn_Positions_To_Three[2];
 		break;
 	}
-
+	pObject->m_bSummon_Spike = false;
 	m_iIndex = 13;
 	pObject->RotateDegree_To_Player();
 	pObject->m_iMonster_Attack_Power = 0;
@@ -989,7 +1041,7 @@ void CBoss_Bat::Attack_Combo_H::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 			pPos = XMVectorSetY(pPos, fPosY);
 			pPlayerPos = XMVectorSetY(pPlayerPos, fPlayerPosY);
 
-			pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_FEATHER, pPos, pPlayerPos);
+			pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_AIR, pPos, pPlayerPos);
 		}
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
@@ -1139,6 +1191,7 @@ void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 
 void CBoss_Bat::Recovery_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_fRecovery_Skill_CoolTime = 0.f;
 }
 
 #pragma endregion

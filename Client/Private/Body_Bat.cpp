@@ -73,7 +73,7 @@ void CBody_Bat::Priority_Update(_float fTimeDelta)
 {
 	//테스트 용 현재 튜토리얼 맵에서만 소환되므로 LEVEL_TUTORIAL -> 왕실정원이면 저거 LEVEL_RoyalGarden 으로 바꿔야함 ! 
 	if (m_pCamera == nullptr)
-		m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+		m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Layer_Camera"), "Camera_Free"));
 
 }
 

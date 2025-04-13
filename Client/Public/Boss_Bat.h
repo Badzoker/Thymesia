@@ -39,6 +39,7 @@ public:
 
 public:
 	void Near_Pattern_Create();
+	void Far_Pattern_Create();
 private:
 	void Load_Spike_SpawnPoints();
 
@@ -56,7 +57,7 @@ private:
 	_bool							 m_bSummon_Spike = {};
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
-	_float                           m_fSlash_Skill_CoolTime = {};
+	_float                           m_fRecovery_Skill_CoolTime = {};
 	_float                           m_fAir_Delete_Time = 3.f;
 
 	_uint                            m_iNearPatternIndex = -1;

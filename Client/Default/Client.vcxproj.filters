@@ -988,6 +988,21 @@
     <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue\10.Skill">
       <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Researcher">
+      <UniqueIdentifier>{2ca62f9b-01a7-4cc8-b969-1a393b64f4aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Researcher\Body">
+      <UniqueIdentifier>{fad75d47-3dea-4db5-9ebc-ca9866cdb344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Weapon\Researcher">
+      <UniqueIdentifier>{a5295582-cb09-4ea8-8729-722d56f987a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\01. Elite\Researcher\Decorative">
+      <UniqueIdentifier>{aa10024f-0d0c-47d6-bf0c-a91a434f8f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\95. Projectile\FireBall">
+      <UniqueIdentifier>{ba9955bc-cb7e-4e65-8c50-10edcb0853e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1863,6 +1878,21 @@
     <ClInclude Include="..\Public\Bat_Spike.h">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Bat</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Projectile_FireBall.h">
+      <Filter>02.GameObject\Monster\95. Projectile\FireBall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Book.h">
+      <Filter>02.GameObject\Monster\01. Elite\Weapon\Researcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Researcher.h">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Decorative_Researcher.h">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher\Decorative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Elite_Researcher.h">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2728,6 +2758,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bat_Spike.cpp">
       <Filter>02.GameObject\Monster\02. Boss\Weapon\Bat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile_FireBall.cpp">
+      <Filter>02.GameObject\Monster\95. Projectile\FireBall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Book.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Weapon\Researcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Researcher.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decorative_Researcher.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher\Decorative</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elite_Researcher.cpp">
+      <Filter>02.GameObject\Monster\01. Elite\Researcher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

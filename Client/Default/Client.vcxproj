@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Body_Magician2.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Punch_Man.h" />
+    <ClInclude Include="..\Public\Body_Researcher.h" />
     <ClInclude Include="..\Public\Body_ScytheM.h" />
     <ClInclude Include="..\Public\Body_Urd.h" />
     <ClInclude Include="..\Public\Body_Varg.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\Public\DeadBranch.h" />
     <ClInclude Include="..\Public\Decorative_Hat.h" />
     <ClInclude Include="..\Public\Decorative_Mutation.h" />
+    <ClInclude Include="..\Public\Decorative_Researcher.h" />
     <ClInclude Include="..\Public\Decorative_Spike.h" />
     <ClInclude Include="..\Public\Decorative_Tonic.h" />
     <ClInclude Include="..\Public\DestructObject.h" />
@@ -237,6 +239,7 @@
     <ClInclude Include="..\Public\Elevator_Door.h" />
     <ClInclude Include="..\Public\Elite_Grace.h" />
     <ClInclude Include="..\Public\Elite_Punch_Man.h" />
+    <ClInclude Include="..\Public\Elite_Researcher.h" />
     <ClInclude Include="..\Public\Emissive_GroundObject.h" />
     <ClInclude Include="..\Public\Emissive_StaticObject.h" />
     <ClInclude Include="..\Public\GameItem.h" />
@@ -319,6 +322,7 @@
     <ClInclude Include="..\Public\Projectile_Air.h" />
     <ClInclude Include="..\Public\Projectile_Card.h" />
     <ClInclude Include="..\Public\Projectile_Dagger.h" />
+    <ClInclude Include="..\Public\Projectile_FireBall.h" />
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
     <ClInclude Include="..\public\SkillAxe.h" />
@@ -447,6 +451,7 @@
     <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="..\public\Varg_Catched.h" />
     <ClInclude Include="..\Public\Water.h" />
+    <ClInclude Include="..\Public\Weapon_Book.h" />
     <ClInclude Include="..\Public\Weapon_Cane.h" />
     <ClInclude Include="..\Public\Weapon_Dagger.h" />
     <ClInclude Include="..\Public\Weapon_Axe.h" />
@@ -491,6 +496,7 @@
     <ClCompile Include="..\Private\Body_Magician2.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Punch_Man.cpp" />
+    <ClCompile Include="..\Private\Body_Researcher.cpp" />
     <ClCompile Include="..\Private\Body_ScytheM.cpp" />
     <ClCompile Include="..\Private\Body_Urd.cpp" />
     <ClCompile Include="..\Private\Body_Varg.cpp" />
@@ -520,6 +526,7 @@
     <ClCompile Include="..\Private\DeadBranch.cpp" />
     <ClCompile Include="..\Private\Decorative_Hat.cpp" />
     <ClCompile Include="..\Private\Decorative_Mutation.cpp" />
+    <ClCompile Include="..\Private\Decorative_Researcher.cpp" />
     <ClCompile Include="..\Private\Decorative_Spike.cpp" />
     <ClCompile Include="..\Private\Decorative_Tonic.cpp" />
     <ClCompile Include="..\Private\DestructObject.cpp" />
@@ -532,6 +539,7 @@
     <ClCompile Include="..\Private\Elevator_Door.cpp" />
     <ClCompile Include="..\Private\Elite_Grace.cpp" />
     <ClCompile Include="..\Private\Elite_Punch_Man.cpp" />
+    <ClCompile Include="..\Private\Elite_Researcher.cpp" />
     <ClCompile Include="..\Private\Emissive_GroundObject.cpp" />
     <ClCompile Include="..\Private\Emissive_StaticObject.cpp" />
     <ClCompile Include="..\Private\GameItem.cpp" />
@@ -615,6 +623,7 @@
     <ClCompile Include="..\Private\Projectile_Air.cpp" />
     <ClCompile Include="..\Private\Projectile_Card.cpp" />
     <ClCompile Include="..\Private\Projectile_Dagger.cpp" />
+    <ClCompile Include="..\Private\Projectile_FireBall.cpp" />
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
     <ClCompile Include="..\private\SkillAxe.cpp" />
@@ -741,6 +750,7 @@
     <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="..\private\Varg_Catched.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
+    <ClCompile Include="..\Private\Weapon_Book.cpp" />
     <ClCompile Include="..\Private\Weapon_Cane.cpp" />
     <ClCompile Include="..\Private\Weapon_Dagger.cpp" />
     <ClCompile Include="..\Private\Weapon_Axe.cpp" />

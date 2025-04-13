@@ -63,7 +63,13 @@ void CProjectile::Reset_Projectile()
 
 void CProjectile::Set_Target(_vector vDir)
 {
+	Set_Projectile_Effect();
 	m_pTransformCom->Look(vDir);
+}
+
+void CProjectile::Set_Projectile_Effect()
+{
+
 }
 
 void CProjectile::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)

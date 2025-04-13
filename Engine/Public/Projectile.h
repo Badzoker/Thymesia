@@ -31,6 +31,7 @@ public:
 public:
 	void Reset_Projectile();
 	void Set_Target(_vector vDir);
+	virtual void Set_Projectile_Effect();
 protected:
 	PxRigidDynamic* m_pActor = { nullptr };
 protected:
