@@ -28,8 +28,8 @@ public:
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
-	//virtual HRESULT Render() override;
 	virtual HRESULT Render_Glow() override;
+	virtual void Set_Projectile_Effect() override;
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

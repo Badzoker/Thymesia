@@ -51,15 +51,20 @@
 #include "HArmorLV2.h"
 #include "Elite_Punch_Man.h"
 #include "Elite_Grace.h"
+#include "Elite_Researcher.h"
 
 #include "Body_Joker.h"
 #include "Body_HArmorLV2.h"
 #include "Body_Punch_Man.h"
 #include "Body_Grace.h"
+#include "Body_Researcher.h"
+#include "Decorative_Researcher.h"
 
 #include "Joker_Weapon.h"
 #include "Weapon_GreatSword.h"
+#include "Weapon_Book.h"
 #include "Projectile_Dagger.h"
+#include "Projectile_FireBall.h"
 #pragma endregion 
 
 #pragma region 일반 몬스터
@@ -759,6 +764,41 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Dagger"),
 		CProjectile_Dagger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Researcher_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Researcher/Elite_Researcher.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Decorative_Researcher"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Researcher/Decorative/Decorative_Researcher.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Weapon_Book"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Researcher/Weapon_Book.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Researcher_Body"),
+		CBody_Researcher::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Researcher"),
+		CElite_Researcher::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Book"),
+		CWeapon_Book::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_FireBall"),
+		CProjectile_FireBall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Decorative_Researcher"),
+		CDecorative_Researcher::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion 

@@ -12,13 +12,6 @@ private:
 	virtual ~CLevel_RoyalGarden() = default;
 
 public:
-	typedef struct MonsterSpawnInfo
-	{
-		_float4 vMonsterPos;
-		_int	iMonsterIndex = { 0 };
-	}MONSTERSPAWNINFO;
-
-public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
@@ -61,7 +54,7 @@ private:
 private:
 	_bool m_bStopMenuOpen = { false }; // À¯ºó
 
-	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos[3];
+	vector<MONSTERSPAWNINFO> m_MonsterSpawnInfos[2];
 
 public:
 	static CLevel_RoyalGarden* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

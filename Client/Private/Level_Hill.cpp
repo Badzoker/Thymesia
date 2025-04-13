@@ -44,9 +44,6 @@ HRESULT CLevel_Hill::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	//if (FAILED(Ready_Layer_Monster()))	
-	//	return E_FAIL;
-
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
 		return E_FAIL;
 
@@ -367,21 +364,6 @@ HRESULT CLevel_Hill::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_HILL, pLayerTag, &Desc)))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-HRESULT CLevel_Hill::Ready_Layer_Monster()
-{
-	CGameObject::GAMEOBJECT_DESC pDesc = {};
-
-	pDesc.iCurLevel = m_iCurrentLevel;
-
-	_vector vTestPosition = { -9.f,  1.f,  -17.34f, 1.f };
-	XMStoreFloat4(&pDesc.fPosition, vTestPosition);
-
-	if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
-		return E_FAIL;
-	
 	return S_OK;
 }
 
@@ -880,57 +862,6 @@ HRESULT CLevel_Hill::Load_Height(_int iObject_Level)
 
 
 
-	return S_OK;
-}
-
-HRESULT CLevel_Hill::Load_MonsterIndex(_int iMonsterIndex_Level)
-{
-	string strDataPath = "../Bin/DataFiles/SpawnPoint/SpawnPoint";
-
-	strDataPath = strDataPath + to_string(iMonsterIndex_Level) + ".txt";
-
-	_tchar		szLastPath[MAX_PATH] = {};
-
-	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
-
-	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		MSG_BOX("Failed To Load SpawnPoint File!");
-		return E_FAIL;
-	}
-
-	DWORD dwByte = 0;
-
-	_uint iSize = 0;
-
-	// 일반 오브젝트
-	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
-
-	_float4 vMonsterPos = {};
-	_int	iMonsterIndex = { -1 };
-
-	for (size_t i = 0; i < iSize; i++)
-	{
-		MONSTERSPAWNINFO SpawnInfo = {};
-
-		ReadFile(hFile, &SpawnInfo.vMonsterPos,sizeof(_float4), &dwByte, nullptr);
-		ReadFile(hFile, &SpawnInfo.iMonsterIndex, sizeof(_int), &dwByte, nullptr);
-
-		if (iMonsterIndex < -1)
-		{
-			CloseHandle(hFile);
-
-			MSG_BOX("Failed To Load SpawnPoint File!");
-			return E_FAIL;
-		}
-
-		m_MonsterSpawnInfos.push_back(SpawnInfo);
-	}
-
-	CloseHandle(hFile);
-	
 	return S_OK;
 }
 

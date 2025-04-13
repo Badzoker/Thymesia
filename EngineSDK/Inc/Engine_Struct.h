@@ -31,6 +31,11 @@ namespace Engine
 		FLOAT			fSpot;
 	};
 
+	typedef struct MonsterSpawnInfo
+	{
+		_float4 vMonsterPos = {};
+		_int	iMonsterIndex = {};
+	}MONSTERSPAWNINFO;
 
 	typedef struct FogParams
 	{

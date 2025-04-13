@@ -54,8 +54,8 @@ HRESULT CLevel_Ocean::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	//if (FAILED(Ready_Layer_Monster()))	
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Monster()))	
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
 		return E_FAIL;
@@ -298,45 +298,14 @@ HRESULT CLevel_Ocean::Ready_Layer_Camera(const _tchar * pLayerTag)
 HRESULT CLevel_Ocean::Ready_Layer_Monster()
 {
 
-	if (FAILED(Load_MonsterIndex(3)))
-		return E_FAIL;
-
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
 
+	Load_MonsterIndex(0);
 	pDesc.iCurLevel = m_iCurrentLevel;
-
-	_vector vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f };
-	XMStoreFloat4(&pDesc.fPosition, vTestPosition);
-	for (_uint i = 0; i < 20; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_Projectile(LEVEL_STATIC, TEXT("Prototype_GameObject_Projectile_Card"), PROJECTILE_CARD, &pDesc)))
-			return E_FAIL;
-	}
-	if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
-		return E_FAIL;
-	
 	for (size_t i = 0; i < m_MonsterSpawnInfos.size(); i++)
 	{
 		switch (m_MonsterSpawnInfos[i].iMonsterIndex)
 		{
-		case BOSS_VARG:
-			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
-				return E_FAIL;
-			break;
-		default:
-			break;
-		case ELITE_JOKER:
-			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
-				return E_FAIL;
-			break;
-		case ELITE_HARMORLV2:
-			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
-			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
-				return E_FAIL;
-			break;
-
 		case NORMAL_VILLAGE_M0:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
 			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"), CATEGORY_NORMAL, &pDesc)))
@@ -345,6 +314,11 @@ HRESULT CLevel_Ocean::Ready_Layer_Monster()
 		case NORMAL_VILLAGE_M1:
 			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
 			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM1"), CATEGORY_NORMAL, &pDesc)))
+				return E_FAIL;
+			break;
+		case NORMAL_SCYTHEM:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_ScytheM"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
 		case NORMAL_VILLAGE_F0:
@@ -357,8 +331,53 @@ HRESULT CLevel_Ocean::Ready_Layer_Monster()
 			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageF1"), CATEGORY_NORMAL, &pDesc)))
 				return E_FAIL;
 			break;
+		case ELITE_HARMORLV2:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_HArmorLV2"), CATEGORY_ELITE, &pDesc)))
+				return E_FAIL;
+			break;
+		case ELITE_PUNCH_MAN:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Punch_Man"), CATEGORY_ELITE, &pDesc)))
+				return E_FAIL;
+			break;
+
+		case ELITE_GRACE:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Grace"), CATEGORY_ELITE, &pDesc)))
+				return E_FAIL;
+			break;
+		case ELITE_JOKER:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Elite_Joker"), CATEGORY_ELITE, &pDesc)))
+				return E_FAIL;
+			break;
+		case BOSS_VARG:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg"), CATEGORY_BOSS, &pDesc)))
+				return E_FAIL;
+			break;
+
+		case BOSS_ORD:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
+				return E_FAIL;
+			break;
+
+		case BOSS_URD:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd"), CATEGORY_BOSS, &pDesc)))
+				return E_FAIL;
+			break;
+
+		case BOSS_BAT:
+			pDesc.fPosition = m_MonsterSpawnInfos[i].vMonsterPos;
+			if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat"), CATEGORY_BOSS, &pDesc)))
+				return E_FAIL;
+			break;
 		}
 	}
+
 	return S_OK;
 }
 
@@ -792,7 +811,7 @@ HRESULT CLevel_Ocean::Load_Height(_int iObject_Level)
 
 HRESULT CLevel_Ocean::Load_MonsterIndex(_int iMonsterIndex_Level)
 {
-	string strDataPath = "../Bin/DataFiles/SpawnPoint/SpawnPoint";
+	string strDataPath = "../Bin/DataFiles/SpawnPoint/Memory_Ocean/SpawnPoint";
 
 	strDataPath = strDataPath + to_string(iMonsterIndex_Level) + ".txt";
 

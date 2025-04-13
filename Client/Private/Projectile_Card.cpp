@@ -83,6 +83,10 @@ HRESULT CProjectile_Card::Render_Glow()
     return S_OK;
 }
 
+void CProjectile_Card::Set_Projectile_Effect()
+{
+}
+
 //HRESULT CProjectile_Card::Render()
 //{
 //    if (FAILED(Bind_ShaderResources()))
@@ -132,6 +136,11 @@ HRESULT CProjectile_Card::Bind_ShaderResources()
 
 void CProjectile_Card::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    if (!strcmp("PLAYER", _pOther->Get_Name()) || !strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
+    {
+        Set_IsFire(false);
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    }
 }
 
 void CProjectile_Card::OnCollision(CGameObject* _pOther, PxContactPair _information)

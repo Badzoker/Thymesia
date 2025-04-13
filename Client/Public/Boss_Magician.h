@@ -266,6 +266,8 @@ public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_bCatch_Success = {};
 	};
 
 	class Attack_Special_Catch : public CStates<CBoss_Magician>

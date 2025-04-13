@@ -12,13 +12,6 @@ private:
 	virtual ~CLevel_SeaOfTrees() = default;
 
 public:
-	typedef struct MonsterSpawnInfo
-	{
-		_float4 vMonsterPos;
-		_int	iMonsterIndex = { 0 };
-	}MONSTERSPAWNINFO;
-
-public:
 	virtual HRESULT Initialize() override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;

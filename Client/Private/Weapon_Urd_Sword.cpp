@@ -77,7 +77,7 @@ void CWeapon_Urd_Sword::Priority_Update(_float fTimeDelta)
 
 
     if (m_pCamera == nullptr)
-        m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_TUTORIAL, TEXT("Layer_Camera"), "Camera_Free"));
+        m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Layer_Camera"), "Camera_Free"));
 
 }
 

@@ -40,7 +40,7 @@ namespace Client
 		ELITE_PUNCH_MAN,   //엘리트 펀치맨
 		ELITE_GRACE,       //엘리트 그레이스
 		ELITE_JOKER,       //엘리트 조커
-		ELITE_REACHER,     //엘리트 리처
+		ELITE_REASEARCHER,     //엘리트 리처
 		BOSS_VARG,         //보스 바그
 		BOSS_ORD,          //보스 오두르
 		BOSS_URD,          //보스 우르드

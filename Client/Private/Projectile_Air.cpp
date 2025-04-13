@@ -70,6 +70,10 @@ void CProjectile_Air::Late_Update(_float fTimeDelta)
 {
 }
 
+void CProjectile_Air::Set_Projectile_Effect()
+{
+}
+
 HRESULT CProjectile_Air::Render()
 {
 	return S_OK;
@@ -89,6 +93,7 @@ void CProjectile_Air::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 {
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
+		Set_IsFire(false);
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
 		for (_uint i = 0; i < 3; i++)
 			m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_BAT_AIR);
