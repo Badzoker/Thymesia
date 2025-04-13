@@ -77,9 +77,6 @@ HRESULT CLevel_Tutorial::Initialize()
     if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
         return E_FAIL;
 
-    if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
-        return E_FAIL;
-
     if (FAILED(Ready_Layer_UIGroup_PlayerMenu(TEXT("Layer_PlayerMenu"))))
         return E_FAIL;
 
@@ -159,7 +156,7 @@ void CLevel_Tutorial::Update(_float fTimeDelta)
         m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
         m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), true);
     }
-    if (m_bNextLevelOpen)
+    if (m_bNextLevelOpen)// 이 코드가 항상 Update 함수 마지막에 있어야 합니다.
     {
         m_pGameInstance->Clear_ItemInfo();
         m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
@@ -1147,15 +1144,12 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     return S_OK;
 }
 
-HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
-{
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_TUTORIAL, pLayerTag)))
-        return E_FAIL;
-    return S_OK;
-}
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_TUTORIAL, pLayerTag)))
+    CGameObject::GAMEOBJECT_DESC        Desc{};
+    Desc.iCurLevel = m_iCurrentLevel;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_TUTORIAL, pLayerTag, &Desc)))
         return E_FAIL;
     return S_OK;
 }
@@ -1170,8 +1164,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerLevelUP(const _tchar* pLayerT
 }
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTag)
 {
-
-
     CGameObject::GAMEOBJECT_DESC        Desc{};
     Desc.iCurLevel = m_iCurrentLevel;
 
@@ -1181,8 +1173,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerTalent(const _tchar* pLayerTa
 }
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTag)
 {
-
-
     CGameObject::GAMEOBJECT_DESC        Desc{};
     Desc.iCurLevel = m_iCurrentLevel;
 
@@ -1193,7 +1183,6 @@ HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_PlayerScreen(const _tchar* pLayerTa
 
 HRESULT CLevel_Tutorial::Ready_Layer_UIGroup_Inventory(const _tchar* pLayerTag)
 {
-
     CGameObject::GAMEOBJECT_DESC        Desc{};
     Desc.iCurLevel = m_iCurrentLevel;
 

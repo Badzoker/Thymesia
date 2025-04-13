@@ -42,8 +42,8 @@ public:
     virtual HRESULT                 Bind_ShaderResources();
 
 private:
-    CGhostAisemy* m_pGosemy = { nullptr };
-    CBody_GhostSemy* m_pBodyGosemy = { nullptr };
+    CGhostAisemy*                   m_pGosemy = { nullptr };
+    CBody_GhostSemy*                m_pBodyGosemy = { nullptr };
     _uint                           m_iColliderCount = {};
 
 public:

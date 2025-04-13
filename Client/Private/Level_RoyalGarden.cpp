@@ -71,9 +71,6 @@ HRESULT CLevel_RoyalGarden::Initialize()
 	if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
 		return E_FAIL;
 
- 	if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_UIGroup_PlayerMenu(TEXT("Layer_PlayerMenu"))))
 		return E_FAIL;
 
@@ -145,7 +142,7 @@ void CLevel_RoyalGarden::Update(_float fTimeDelta)
 		}
 		
 	}
-	if (m_bNextLevelOpen)
+	if (m_bNextLevelOpen)// 이 코드가 항상 Update 함수 마지막에 있어야 합니다.
 	{
 		m_pGameInstance->Clear_ItemInfo();
 		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
@@ -505,15 +502,12 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Item(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
-{
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), m_iCurrentLevel, pLayerTag)))
-		return E_FAIL;
-	return S_OK;
-}
 HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), m_iCurrentLevel, pLayerTag)))
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -561,6 +555,15 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLa
 	CGameObject::GAMEOBJECT_DESC        Desc{};
 	Desc.iCurLevel = m_iCurrentLevel;
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), m_iCurrentLevel, pLayerTag, &Desc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_RoyalGarden::Ready_Layer_UIGroup_Dialogue(const _tchar* pLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC        Desc{};
+	Desc.iCurLevel = m_iCurrentLevel;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Dialogue"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -1143,5 +1146,6 @@ void CLevel_RoyalGarden::Free()
 {
 	__super::Free();
 
+	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 }

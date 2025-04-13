@@ -90,14 +90,15 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 						m_pPoptitle = L"정말 왕실 정원 지도를 선택하시겠습니까?";
 						m_eNextLevel = LEVEL_ROYALGARDEN;
 					}
-					if (3 == Button->Get_UI_GroupID()) // 헤르메스 요새
-					{
-						m_pPoptitle = L"정말 헤르메스 지도를 선택하시겠습니까?";
-						m_eNextLevel = LEVEL_OCEAN;
-					}
+					//if (3 == Button->Get_UI_GroupID()) // 헤르메스 요새
+					//{
+					//	m_pPoptitle = L"정말 헤르메스 지도를 선택하시겠습니까?";
+					//	m_eNextLevel = LEVEL_OCEAN;
+					//}
 					if (4 == Button->Get_UI_GroupID()) // 기억의 대양
 					{
 						m_pPoptitle = L"정말 기억의 대양 지도를 선택하시겠습니까?";
+						m_eNextLevel = LEVEL_OCEAN;
 					}
 					for (auto TextBox : m_pMapChangePop->Find_UI_TextBox())
 					{

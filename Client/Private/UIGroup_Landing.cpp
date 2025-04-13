@@ -88,29 +88,7 @@ void CUIGroup_Landing::Update(_float fTimeDelta)
 			}
 
 		}
-		
-		//m_fRandingTime += fTimeDelta;
-		//if (m_fRandingTime > 4)
-		//{
-		//	
-		//	m_fRandingTime = 0;
-		//	
-		//	
-		//	
-		//	//m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Landing"), false);
-		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_1Dead")), false);
-		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_2Beacon")), false);
-		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_4Memories")), false);
-		//	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), false);*/
-
-		//	//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMessage_MapName, false);
-		//	//m_bRenderOpen = false;
-		//}
-	
 	}
-
-
-
 }
 
 void CUIGroup_Landing::Late_Update(_float fTimeDelta)
@@ -144,7 +122,7 @@ void CUIGroup_Landing::Map_Name()
 			Image->Set_TexNumber(8);
 			break;
 		case LEVEL_OCEAN:
-			Image->Set_TexNumber(9);
+			Image->Set_TexNumber(10);
 			break;
 		}
 	}

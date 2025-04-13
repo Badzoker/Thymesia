@@ -174,7 +174,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
-		//m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this,100);
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)

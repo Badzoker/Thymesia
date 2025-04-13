@@ -78,9 +78,6 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
         return E_FAIL;
 
-    if (FAILED(Ready_Layer_UIGroup_GameIntro(TEXT("Layer_GameIntro"))))
-        return E_FAIL;
-
     if (FAILED(Ready_Layer_UIGroup_PlayerMenu(TEXT("Layer_PlayerMenu"))))
         return E_FAIL;
 
@@ -154,12 +151,6 @@ void CLevel_SeaOfTrees::Update(_float fTimeDelta)
         }
 
     }
-    if (m_bNextLevelOpen)
-    {
-        m_pGameInstance->Clear_ItemInfo();
-        m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
-    }
-
 
     if (m_pGameInstance->isKeyEnter(DIK_F5))
     {
@@ -175,6 +166,14 @@ void CLevel_SeaOfTrees::Update(_float fTimeDelta)
     //{
     //    m_pGameInstance->Set_GodRayOnOff();
     //}
+
+
+    if (m_bNextLevelOpen) // 이 코드가 항상 Update 함수 마지막에 있어야 합니다.
+    {
+        m_pGameInstance->Clear_ItemInfo();
+        m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
+    }
+
 }
 
 HRESULT CLevel_SeaOfTrees::Render()
@@ -548,15 +547,12 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
     return S_OK;
 }
 
-HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_GameIntro(const _tchar* pLayerTag)
-{
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_GameIntro"), LEVEL_SEAOFTREES, pLayerTag)))
-        return E_FAIL;
-    return S_OK;
-}
 HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_PlayerMenu(const _tchar* pLayerTag)
 {
-    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_SEAOFTREES, pLayerTag)))
+    CGameObject::GAMEOBJECT_DESC        Desc{};
+    Desc.iCurLevel = m_iCurrentLevel;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_PlayerMenu"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
         return E_FAIL;
     return S_OK;
 }
@@ -603,6 +599,16 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_LandingMessage(const _tchar* pLay
     CGameObject::GAMEOBJECT_DESC        Desc{};
     Desc.iCurLevel = m_iCurrentLevel;
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Landing"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
+        return E_FAIL;
+    return S_OK;
+}
+
+HRESULT CLevel_SeaOfTrees::Ready_Layer_UIGroup_Dialogue(const _tchar* pLayerTag)
+{
+
+    CGameObject::GAMEOBJECT_DESC        Desc{};
+    Desc.iCurLevel = m_iCurrentLevel;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_UIGroup_Dialogue"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
         return E_FAIL;
     return S_OK;
 }

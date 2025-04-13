@@ -126,9 +126,9 @@ void CChair::OnCollision(CGameObject* _pOther, PxContactPair _information)
     if (m_pGameInstance->isKeyEnter(DIK_E) && !strncmp(m_szName, "P_Archive_Chair01", 17))
     {
         m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), false);
+        m_pGameInstance->UIGroup_Render_OnOff(m_iCurrentLevel, TEXT("Layer_PlayerScreen"), false);
         m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
-        m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerMenu"), true);
+        m_pGameInstance->UIGroup_Render_OnOff(m_iCurrentLevel, TEXT("Layer_PlayerMenu"), true);
         m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
         m_pButton->Activate_Button(false);
     }

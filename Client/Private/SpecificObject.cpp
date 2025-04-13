@@ -25,6 +25,7 @@ HRESULT CSpecificObject::Initialize(void* pArg)
 {
     SpecificObject_Desc* pDesc = static_cast<SpecificObject_Desc*>(pArg);
 
+    m_iCurrentLevel = pDesc->iCurLevel;
     m_fFrustumRadius = pDesc->fFrustumRadius;
 
     m_fPosition = pDesc->fPosition;
