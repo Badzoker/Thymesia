@@ -438,6 +438,10 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
         }
 
     }
+
+    if (FAILED(Load_SporeObject(8)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -1148,6 +1152,47 @@ HRESULT CLevel_SeaOfTrees::Load_Height(_int iObject_Level)
 
 
 
+    return S_OK;
+}
+
+HRESULT CLevel_SeaOfTrees::Load_SporeObject(_int iObject_Level)
+{
+    _ulong dwByte = {};
+
+    string strDataPath = "../Bin/DataFiles/SpawnPoint/Sea_of_Trees/SpawnPoint";
+
+    strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+    _tchar		szLastPath[MAX_PATH] = {};
+
+    MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+    HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed To Load ObjectData File!");
+        return E_FAIL;
+    }
+
+    _uint iSize = 0;
+
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (_uint i = 0; i < iSize; i++)
+    {
+        CGameObject::GAMEOBJECT_DESC pDesc = {};
+
+        ReadFile(hFile, &pDesc._fPosition, sizeof(_float4), &dwByte, nullptr);
+
+        pDesc.fPosition = pDesc._fPosition;
+        pDesc.iCurLevel = m_iCurrentLevel;
+
+        if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_iCurrentLevel, TEXT("Layer_Monster_Building"), &pDesc)))
+            return E_FAIL;
+    }
+
+    CloseHandle(hFile);
     return S_OK;
 }
 
