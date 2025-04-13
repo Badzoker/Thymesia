@@ -56,6 +56,8 @@ private:
 	HRESULT Load_Height(_int iObject_Level);
 	HRESULT Load_MonsterIndex(_int iMonsterIndex_Level);
 	HRESULT Load_SpecificObjects(_int iObject_Level);
+
+	HRESULT	Load_DestructObjects(_int iObject_Level);
 private:
 	_bool m_bStopMenuOpen = { false }; // À¯ºó
 

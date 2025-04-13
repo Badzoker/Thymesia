@@ -74,6 +74,13 @@ void CDestructObject::Update(_float fTimeDelta)
     {
         if (m_bHitted)
         {
+            _float fY = XMVectorGetY(XMLoadFloat4(&m_fModelPos));
+            _float4 vItemPos = {};
+            XMStoreFloat4(&vItemPos, XMVectorSetY(XMLoadFloat4(&m_fModelPos), fY + 0.5f));
+
+            if (!strcmp(m_szIndivisualName, "barrel"))
+                m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_FIELDITEM, XMLoadFloat4(&vItemPos), this, 1);
+
             m_fLifeTime += fTimeDelta;
             m_pGameInstance->Sub_Actor_Scene(m_pActor);
             m_fExplosionPower += fTimeDelta * 3.0f;

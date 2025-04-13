@@ -249,7 +249,7 @@ HRESULT CLoader_SeaOfTrees::Loading_For_Level_SeaOfTrees()
 	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_SEAOFTREES, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/TestNavigation55.txt")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NavigationFiles/Sea_Tree/TestNavigation55.txt")))))
 		return E_FAIL;
 	
 

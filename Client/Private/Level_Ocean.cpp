@@ -21,6 +21,15 @@
 #include "Terrain.h"
 #include "Water.h"
 
+
+#include "Elevator_Door.h"
+#include "DoorObject.h"
+#include "DoorManager.h"
+#include "LadderObject.h"
+#include "Chair.h"
+#include "ChairLamp.h"
+
+
 CLevel_Ocean::CLevel_Ocean(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }
 {
@@ -45,11 +54,11 @@ HRESULT CLevel_Ocean::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	/*if (FAILED(Ready_Layer_Monster()))	
+	if (FAILED(Ready_Layer_Monster()))	
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -234,6 +243,10 @@ HRESULT CLevel_Ocean::Ready_Layer_Structure(const _tchar* pLayerTag)
 		return E_FAIL;
 	
 	//Load_TriggerObjects(1);			
+
+	if (FAILED(Load_SpecificObjects(0)))
+		return E_FAIL;
+
 	
 	return S_OK;
 }
@@ -358,8 +371,8 @@ HRESULT CLevel_Ocean::Ready_Layer_NPC(const _tchar* pLayerTag)
 	Desc.fSpeedPerSec = 1.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	//if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_OCEAN, pLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), m_iCurrentLevel, pLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -821,6 +834,206 @@ HRESULT CLevel_Ocean::Load_MonsterIndex(_int iMonsterIndex_Level)
 	CloseHandle(hFile);
 	
 	return S_OK;
+}
+
+HRESULT CLevel_Ocean::Load_SpecificObjects(_int iObject_Level)
+{
+	string strDataPath = "../Bin/DataFiles/SpecificObjectData/Memory_Ocean/SpecificObjectData";
+
+	strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	DWORD dwByte = 0;
+
+	_uint iSize = 0;
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+
+	_uint iChairNum = 0;
+	_uint iLampNum = 0;
+	_uint iElevatorUp = 0;
+	_uint iElevatorDown = 0;
+	for (size_t i = 0; i < iSize; i++)
+	{
+		CSpecificObject::SpecificObject_Desc Desc{};
+
+		_char szLoadName[MAX_PATH] = {};
+
+		ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+		ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+		string strName = szLoadName;
+		Desc.iCurLevel = m_iCurrentLevel;
+		CGameObject* pObject = nullptr;
+
+		_uint iLadderDownNum = { 0 };
+		_uint iLadderUpNum = { 0 };
+
+		if (strName == "P_Archive_Chair01")
+		{
+			Desc.iPairNum = iChairNum;
+			Desc.ObjectName = strName + "_" + to_string(iChairNum);
+			pObject = reinterpret_cast<CChair*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Chair"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
+			++iChairNum;
+		}
+		else if (strName == "NPCLamp")
+		{
+			Desc.iPairNum = iLampNum;
+			Desc.ObjectName = strName + "_" + to_string(iLampNum);
+			pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_ChairLamp"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &Desc));
+			++iLampNum;
+		}
+		else if (strName == "Elevator_Up")
+		{
+			if (iElevatorUp == 1)
+			{
+				CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+				CNavigation* pPlayerNavigation = reinterpret_cast<CNavigation*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Find_Component(TEXT("Com_Navigation")));
+
+				CElevator_Door::ElevatorDoorDesc ElevatorDesc;
+
+				ElevatorDesc.fPosition = Desc.fPosition;
+				ElevatorDesc.fRotation = Desc.fRotation;
+				ElevatorDesc.fScaling = Desc.fScaling;
+				ElevatorDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+				ElevatorDesc.iCurLevel = m_iCurrentLevel;
+				ElevatorDesc.isCulling = false;
+				ElevatorDesc.pCullingLayerTag = TEXT("");
+				ElevatorDesc.pLoadLayerTag = TEXT("");
+				//ElevatorDesc.iLoadIndex.push_back(314);
+				ElevatorDesc.pPlayerTransform = pPlayerTransform;
+				ElevatorDesc.pPlayerNavigation = pPlayerNavigation;
+
+				ElevatorDesc.iPairNum = iElevatorUp;
+				ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorUp);
+				pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+			}
+			else
+			{
+				CNavigation* pPlayerNavigation = reinterpret_cast<CNavigation*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Find_Component(TEXT("Com_Navigation")));
+
+				CElevator_Door::ElevatorDoorDesc ElevatorDesc;
+
+				ElevatorDesc.fPosition = Desc.fPosition;
+				ElevatorDesc.fRotation = Desc.fRotation;
+				ElevatorDesc.fScaling = Desc.fScaling;
+				ElevatorDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+				ElevatorDesc.iCurLevel = m_iCurrentLevel;
+				ElevatorDesc.isCulling = false;
+				ElevatorDesc.pCullingLayerTag = TEXT("");
+				ElevatorDesc.pLoadLayerTag = TEXT("");
+
+				ElevatorDesc.pPlayerNavigation = pPlayerNavigation;
+
+				ElevatorDesc.iPairNum = iElevatorUp;
+				ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorUp);
+				pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+			}
+			++iElevatorUp;
+
+		}
+		else if (strName == "Elevator_Down")
+		{
+			if (iElevatorDown == 0)
+			{
+				CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
+				CNavigation* pPlayerNavigation = reinterpret_cast<CNavigation*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Find_Component(TEXT("Com_Navigation")));
+
+				CElevator_Door::ElevatorDoorDesc ElevatorDesc;
+
+				ElevatorDesc.fPosition = Desc.fPosition;
+				ElevatorDesc.fRotation = Desc.fRotation;
+				ElevatorDesc.fScaling = Desc.fScaling;
+				ElevatorDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+				ElevatorDesc.iCurLevel = m_iCurrentLevel;
+				ElevatorDesc.isCulling = false;
+				//ElevatorDesc.iLoadIndex.push_back(313);
+				//ElevatorDesc.iLoadIndex.push_back(319);
+				ElevatorDesc.pCullingLayerTag = TEXT("");
+				ElevatorDesc.pLoadLayerTag = TEXT("");
+				ElevatorDesc.pPlayerTransform = pPlayerTransform;
+				ElevatorDesc.pPlayerNavigation = pPlayerNavigation;
+
+				ElevatorDesc.iPairNum = iElevatorDown;
+				ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorDown);
+				pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+			}
+			else
+			{
+				CNavigation* pPlayerNavigation = reinterpret_cast<CNavigation*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Player"), "PLAYER")->Find_Component(TEXT("Com_Navigation")));
+
+				CElevator_Door::ElevatorDoorDesc ElevatorDesc;
+
+				ElevatorDesc.fPosition = Desc.fPosition;
+				ElevatorDesc.fRotation = Desc.fRotation;
+				ElevatorDesc.fScaling = Desc.fScaling;
+				ElevatorDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+				ElevatorDesc.iCurLevel = m_iCurrentLevel;
+				ElevatorDesc.isCulling = false;
+				ElevatorDesc.pCullingLayerTag = TEXT("");
+				ElevatorDesc.pLoadLayerTag = TEXT("");
+
+				ElevatorDesc.pPlayerNavigation = pPlayerNavigation;
+
+				ElevatorDesc.iPairNum = iElevatorDown;
+				ElevatorDesc.ObjectName = strName + "_" + to_string(iElevatorDown);
+				pObject = reinterpret_cast<CChairLamp*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Elevator_Door"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &ElevatorDesc));
+			}
+			++iElevatorDown;
+
+		}
+		else if ((strName == "P_Ladder02_Down"))
+		{
+			CLadderObject::LADDER_DESC LadderDesc;
+			LadderDesc.fPosition = Desc.fPosition;
+			LadderDesc.fRotation = Desc.fRotation;
+			LadderDesc.fScaling = Desc.fScaling;
+			LadderDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+			LadderDesc.iCurLevel = m_iCurrentLevel;
+			LadderDesc.iObjectNumber = iLadderDownNum;
+			LadderDesc.ObjectName = strName + "_" + to_string(iLadderDownNum);
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &LadderDesc)))
+				return E_FAIL;
+			++iLadderDownNum;
+		}
+		else if (strName == "P_Ladder02_Up")
+		{
+			CLadderObject::LADDER_DESC LadderDesc;
+			LadderDesc.fPosition = Desc.fPosition;
+			LadderDesc.fRotation = Desc.fRotation;
+			LadderDesc.fScaling = Desc.fScaling;
+			LadderDesc.fFrustumRadius = Desc.fFrustumRadius;
+
+			LadderDesc.iCurLevel = m_iCurrentLevel;
+			LadderDesc.iObjectNumber = iLadderUpNum;
+			LadderDesc.ObjectName = strName + "_" + to_string(iLadderUpNum);
+			if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Ladder_Object"), m_iCurrentLevel, TEXT("Layer_SpecificObject"), &LadderDesc)))
+				return E_FAIL;
+			++iLadderUpNum;
+		}
+	}
+
+	return S_OK;
+
 }
 
 

@@ -68,6 +68,9 @@ HRESULT CGameItem::Initialize(void* _pArg)
     case Engine::ITEM_TYPE::ITEM_FORGIVEN:
         m_iItemTypeNumber = 4;
         break;
+    case Engine::ITEM_TYPE::ITEM_FIELDITEM:
+        m_iItemTypeNumber = 5;
+        break;
     }
 
 
@@ -282,6 +285,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
         case Engine::ITEM_TYPE::ITEM_MEMORY:
         case Engine::ITEM_TYPE::ITEM_FORGIVEN:
         case Engine::ITEM_TYPE::ITEM_SKILLPIECE:
+        case Engine::ITEM_TYPE::ITEM_FIELDITEM:
             if (m_pGameInstance->isKeyEnter(DIK_E))
             {
                 m_bStartAcquireEffect = true;

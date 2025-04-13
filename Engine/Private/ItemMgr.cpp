@@ -112,7 +112,16 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
         if (nullptr != pItems)
         {
             pItems->Set_DropItemCount(_iPopItemCount);
-            pItems->Set_BeActivated(true);
+
+            if (_eItemType == ITEM_TYPE::ITEM_FIELDITEM)
+            {
+                pItems->Set_BeActivated(true);
+                pItems->Set_BeAcquired(false);
+                pItems->Set_ColliderRender(true);
+            }
+            else
+                pItems->Set_BeActivated(true);
+
             pItems->Set_Position(_vPopPosition);
 
             break;
@@ -121,6 +130,7 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
 
     return S_OK;
 }
+
 
 void CItemMgr::Clear_ItemInfo()
 {

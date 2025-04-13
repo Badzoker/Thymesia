@@ -10,6 +10,9 @@
 #include "TriggerObject.h"
 #include "BlackScreen.h"
 
+#include "DestructObject.h"
+#include "BarrierScreen.h"
+
 #include "UI_LeftBackground.h"
 
 #include "Button.h"
@@ -262,6 +265,10 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 
     Load_TriggerObjects(2);
 
+    if (FAILED(Load_DestructObjects(9)))
+        return E_FAIL;
+
+
     return S_OK;
 }
 
@@ -270,7 +277,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Corridor(const _tchar* pLayerTa
     if (FAILED(Load_Objects(312, pLayerTag))) //Circus Map 엘레베이터 복도(보스전까지)
         return E_FAIL;
 
-    if (FAILED(Load_SpecificObjects(6))) // 특수 오브젝트(사다리, 엘리베이터 문등)
+    if (FAILED(Load_SpecificObjects(9))) // 특수 오브젝트(사다리, 엘리베이터 문등)
         return E_FAIL;
 
     return S_OK;
@@ -279,6 +286,14 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Corridor(const _tchar* pLayerTa
 HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_Boss(const _tchar* pLayerTag)
 {
     if (FAILED(Load_Objects(314, pLayerTag)))   //Circus Map 오두르 보스
+        return E_FAIL;
+
+    CBarrierScreen::BARRIER_SCREEN_DESC     BarrierDesc = {};
+    _float4 vURDEntarcePosition = { -42.05f, 103.02f, -131.04f, 1.f };           // 트페 보스방 나생문.
+    BarrierDesc._fPosition = vURDEntarcePosition;
+    BarrierDesc.iCurLevel = m_iCurrentLevel;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_BarrierScreen"), m_iCurrentLevel, pLayerTag, &BarrierDesc)))
         return E_FAIL;
 
     return S_OK;
@@ -293,11 +308,12 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 
-    //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
-    //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
-    //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
-    //_float4 vTestPosition = { -48.64215f, 48.0257f, -123.5272f, 1.00000f }; // 서커스맵 시작위칩
-    _float4 vTestPosition = { -43.f, 110.01f, -146.f, 1.f }; // 매지션 옆 위치     
+    //_float4 vTestPosition = { -35.49f, 49.99f, -132.9f, 1.f };            //시작 포인트 위치 첫 번째 의자 있음.
+    //_float4 vTestPosition = { -43.3f, 72.7f, -123.35f, 1.f };             // 보스방 가기전 통로쪽의 의자2 위치
+    //_float4 vTestPosition = { -40.0f, 46.0f, -124.0f, 1.0f };             // 통로로 가는 엘베 앞 위치 
+    //_float4 vTestPosition = { -83.0f, 52.0f, -138.0f, 1.f };              // 그레이스 방 위치,
+    //_float4 vTestPosition = { -46.64f, 34.02f, -125.5272f, 1.0f };        // 그 젤 밑바닥 층 건초더미 많은데, 
+    _float4 vTestPosition = { -43.f, 110.01f, -146.f, 1.f };                // 매지션 옆 위치     
 
     Desc._fPosition = vTestPosition;
 
@@ -428,8 +444,8 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_NPC(const _tchar* pLayerTag)
     Desc.fSpeedPerSec = 1.f;
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-    //if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_NPC_Aisemy"), LEVEL_SEAOFTREES, pLayerTag, &Desc)))
-    //	return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GhostSemy"), m_iCurrentLevel, pLayerTag, &Desc)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -477,7 +493,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
 
     ItemDesc.iCurLevel = m_iCurrentLevel;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY1;
     ItemDesc.bTaken = true;
@@ -485,33 +500,38 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_KEY2;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_FORGIVEN;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    //ItemDesc.GameItemName = m_strObjectNames[0];
     ItemDesc.iItemCount = 0;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
         return E_FAIL;
+
+
+    ItemDesc.iItemCount = 0;
+    ItemDesc.eItemType = ITEM_TYPE::ITEM_FIELDITEM;
+
+    if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), m_iCurrentLevel, pLayerTag, &ItemDesc)))
+        return E_FAIL;
+
+
 
     //============================================================================================
 
@@ -855,7 +875,7 @@ HRESULT CLevel_SeaOfTrees::Load_TriggerObjects(_int iObject_Level)
 
 HRESULT CLevel_SeaOfTrees::Load_SpecificObjects(_int iObject_Level)
 {
-    string strDataPath = "../Bin/DataFiles/SpecificObjectData/SpecificObjectData";
+    string strDataPath = "../Bin/DataFiles/SpecificObjectData/Sea_Tree/SpecificObjectData";
 
     strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
 
@@ -1167,6 +1187,54 @@ HRESULT CLevel_SeaOfTrees::Load_MonsterIndex(_int iMonsterIndex_Level)
     }
 
     CloseHandle(hFile);
+
+    return S_OK;
+}
+
+HRESULT CLevel_SeaOfTrees::Load_DestructObjects(_int iObject_Level)
+{
+    string strDataPath = "../Bin/DataFiles/DestructObjectData/Sea_Tree/DestructObjectData";
+
+    strDataPath = strDataPath + to_string(iObject_Level) + ".txt";
+
+    _tchar		szLastPath[MAX_PATH] = {};
+
+    MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+    HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed To Load ObjectData File!");
+        return E_FAIL;
+    }
+
+    DWORD dwByte = 0;
+
+    _uint iSize = 0;
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (size_t i = 0; i < iSize; i++)
+    {
+        CDestructObject::DestructObject_Desc Desc{};
+
+        _char szLoadName[MAX_PATH] = {};
+
+        ReadFile(hFile, szLoadName, MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fPosition, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fRotation, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fScaling, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &Desc.fFrustumRadius, sizeof(_float), &dwByte, nullptr);
+
+        Desc.ObjectName = szLoadName;
+        Desc.iCurLevel = m_iCurrentLevel;
+
+        CDestructObject* pObject = nullptr;
+        if (pObject == nullptr)
+        {
+            pObject = reinterpret_cast<CDestructObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_DestructObject"), m_iCurrentLevel, TEXT("Layer_DestructObject"), &Desc));
+        }
+    }
 
     return S_OK;
 }
