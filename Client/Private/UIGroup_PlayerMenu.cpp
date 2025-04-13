@@ -6,6 +6,7 @@
 #include "UI_KeyBox_Long.h"
 #include "Player.h"
 #include "UI_Image.h"
+#include "UI_Text.h"
 
 CUIGroup_PlayerMenu::CUIGroup_PlayerMenu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
@@ -44,6 +45,13 @@ HRESULT CUIGroup_PlayerMenu::Initialize(void* pArg)
 			m_pMapImage = Image;
 		}
 	}
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (107 == TextBox->Get_UI_GroupID())
+		{
+			m_pMapName = TextBox;
+		}
+	}
 
 	return S_OK;
 }
@@ -59,18 +67,23 @@ void CUIGroup_PlayerMenu::Priority_Update(_float fTimeDelta)
 		{
 		case Client::LEVEL_TUTORIAL:
 			m_pMapImage->Set_TexNumber(2);
+			m_pMapName->Set_Content(L"헤르메스 요새");
 			break;
 		case Client::LEVEL_SEAOFTREES:
 			m_pMapImage->Set_TexNumber(0);
+			m_pMapName->Set_Content(L"나무바다");
 			break;
 		case Client::LEVEL_ROYALGARDEN:
 			m_pMapImage->Set_TexNumber(1);
+			m_pMapName->Set_Content(L"왕실 정원");
 			break;
 		case Client::LEVEL_OCEAN:
 			m_pMapImage->Set_TexNumber(3);
+			m_pMapName->Set_Content(L"기억의 대양");
 			break;
 		case Client::LEVEL_HILL:
 			m_pMapImage->Set_TexNumber(4);
+			m_pMapName->Set_Content(L"철학자의 언덕");
 			break;
 		}
 

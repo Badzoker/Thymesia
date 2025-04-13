@@ -529,6 +529,9 @@ void CBoss_Magician::Intro_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 	pObject->m_pGameInstance->Set_Boss_Active(true);
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+
 }
 
 void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -551,6 +554,9 @@ void CBoss_Magician::Intro_State::State_Exit(CBoss_Magician* pObject)
 	pObject->m_bCardActive = false;
 	pObject->m_bHP_Bar_Active = true;
 	pObject->Delete_PartObject(TEXT("Part_Projectile_Intro"));
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+
 }
 #pragma endregion
 

@@ -44,7 +44,6 @@ HRESULT CUIGroup_Loading::Initialize(void* pArg)
 
 void CUIGroup_Loading::Priority_Update(_float fTimeDelta)
 {
-
 	if (m_bRenderOpen)
 	{
 		for (auto& Image : m_pMyScene->Find_UI_Image())
@@ -126,9 +125,6 @@ void CUIGroup_Loading::Texture_Num_Check()
 
 HRESULT CUIGroup_Loading::Ready_UIObject()
 {
-	/*m_pGameInstance->LoadDataFile_UIObj_Info(g_hWnd, LEVEL_STATIC, UISCENE_LOADING, L"UIScene_Loading");
-	m_pGameInstance->LoadDataFile_UIText_Info(g_hWnd, L"UIScene_Loading", m_TextInfo);*/
-	
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_LOADING, L"UIScene_Loading");
 	LoadData_UIText_Info(L"UIScene_Loading");
 	return S_OK;
