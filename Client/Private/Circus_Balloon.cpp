@@ -199,7 +199,7 @@ HRESULT CCircus_Balloon::Render_Fog_Front()
     if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
-    _float3 vBoxExtents = _float3(35.f, 4.f, 35.f); // x 길이 : 70 y 길이 5 z 길이 : 70
+    _float3 vBoxExtents = _float3(35.f, 2.5f, 35.f); // x 길이 : 70 y 길이 5 z 길이 : 70
 
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
         return E_FAIL;
@@ -260,7 +260,7 @@ HRESULT CCircus_Balloon::Render_Fog_Final(ID3D11ShaderResourceView* pNoiseSRV)
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCamPos", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
         return E_FAIL;
 
-    _float3 vBoxExtents = _float3(35.f, 4.f, 35.f);
+    _float3 vBoxExtents = _float3(35.f, 2.5f, 35.f);
 
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
         return E_FAIL;

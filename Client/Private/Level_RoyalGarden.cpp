@@ -195,6 +195,16 @@ HRESULT CLevel_RoyalGarden::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
 		return E_FAIL;
 
+	FOGPARAMS FogDesc{};
+	FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+	FogDesc.fFogStartDistance = _float2(0.04f, 8.f);
+	FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+	FogDesc.g_FogColor = _float4(246.f / 255.f, 51.f / 255.f, 85.f / 255.f, 1.f);
+
+	m_pGameInstance->Set_FogFactors(FogDesc);
+
+	m_pGameInstance->Set_LightShaftValue(_float4(0.f, 0.f, 0.f, 0.f));
+
 	return S_OK;
 }
 

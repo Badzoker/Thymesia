@@ -50,6 +50,7 @@ private:
 	HRESULT Load_SpecificObjects(_int iObject_Level);
 	HRESULT Load_InstancingObjects(_int iObject_Level);
 	HRESULT Load_Height(_int iObject_Level);
+	HRESULT Load_SporeObject(_int iObject_Level);
 	HRESULT Load_MonsterIndex(_int iMonsterIndex_Level);
 
 	HRESULT	Load_DestructObjects(_int iObject_Level);

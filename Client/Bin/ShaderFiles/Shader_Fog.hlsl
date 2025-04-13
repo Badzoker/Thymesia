@@ -452,29 +452,31 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             
             float stepSize = rayLength / float(numSteps);
         
-            float3 centerPos = (backPos + frontPos) / 2.f;
-        
             float totalDensity = 0.f;
         
             float radius = g_vCubeExtents.x / 2.f;
+            float Height = g_vCubeExtents.y / 2.f;
         
             float totalFade = 0.0f;
             float totalWeight = 0.0f;
-            float3 samplepos = frontPos;
-            float MaxHeight = g_vCubePos.y + (g_vCubeExtents.y * 0.5f);
+            float3 samplepos = g_vCamPos;
         
             for (int i = 0; i < numSteps; ++i)
             {
-                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.03f, samplepos.y * 0.03f, samplepos.z * 0.03f)).r;
-                float Heightfade = 1.f - smoothstep(MaxHeight * 0.7f, MaxHeight, samplepos.y);
-                
-                totalDensity += density * stepSize * Heightfade;
-
                 samplepos += rayDir * stepSize;
-        
+                
+                float3 offset = samplepos - g_vCubePos.xyz;
+                float dist = length(offset);
+                
+                float fade = 1.0 - smoothstep(radius * 0.3, radius, dist);
+                float Heightfade = 1.f - smoothstep(Height * 0.5f, Height, length(samplepos.y - g_vCubePos.y));
+                
+                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.05f, samplepos.y * 0.05f, samplepos.z * 0.05f)).r * 0.8f;
+                
+                totalDensity += density * stepSize * fade * Heightfade;
             }
             
-            fogFactor = 1.0 - exp(-totalDensity * 0.5f);
+            fogFactor = 1.0 - exp(-totalDensity * 0.6f);
         }
         else
         {
@@ -488,6 +490,7 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             float totalDensity = 0.f;
         
             float radius = g_vCubeExtents.x / 2.f;
+            float Height = g_vCubeExtents.y / 2.f;
         
             float totalFade = 0.0f;
             float totalWeight = 0.0f;
@@ -508,14 +511,14 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
                 float dist = length(offset);
 
                 float fade = 1.0 - smoothstep(radius * 0.3, radius, dist);
-                float Heightfade = smoothstep(1.f, -1.f, (samplepos.y - g_vCubePos.y));
+                float Heightfade = 1.f - smoothstep(Height * 0.5f, Height, length(samplepos.y - g_vCubePos.y));
                 
-                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.05f, samplepos.y * 0.05f, samplepos.z * 0.05f)).r;
+                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.05f, samplepos.y * 0.05f, samplepos.z * 0.05f)).r * 0.8f;
 
                 totalDensity += density * stepSize * fade * Heightfade;
             }
             
-            fogFactor = 1.0 - exp(-totalDensity * 0.8f);
+            fogFactor = 1.0 - exp(-totalDensity * 0.6f);
         }
         
         fogFactor *= 1.f - (g_fLifeTime / 2.f);
