@@ -54,8 +54,8 @@ HRESULT CLevel_Ocean::Initialize()
 	if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))	
 		return E_FAIL;		
 
-	if (FAILED(Ready_Layer_Monster()))	
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Monster()))	
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_NPC(TEXT("Layer_NPC"))))
 		return E_FAIL;
@@ -301,7 +301,8 @@ HRESULT CLevel_Ocean::Ready_Layer_Camera(const _tchar * pLayerTag)
 HRESULT CLevel_Ocean::Ready_Layer_Monster()
 {
 
-	Load_MonsterIndex(3);
+	if (FAILED(Load_MonsterIndex(3)))
+		return E_FAIL;
 
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
 

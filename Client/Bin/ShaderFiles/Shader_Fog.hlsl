@@ -14,9 +14,10 @@ float4x4 g_ProjMatrixInv;
 float4 g_vCubePos;
 float3 g_vCubeExtents;
 float4 g_vCamPos;
-float4 g_vFogColor;
 
 Texture3D g_VolumeFogTexture;
+
+float g_fLifeTime;
 
 struct VS_OUT
 {
@@ -79,12 +80,12 @@ void GS_MAIN_FOG(point GS_IN_FOG In[1], inout TriangleStream<GS_OUT_FOG> triStre
         
     float3 v0 = center + float3(-halfSize.x, -halfhalfSize.y, -halfSize.z);
     float3 v1 = center + float3(halfSize.x, -halfhalfSize.y, -halfSize.z);
-    float3 v2 = center + float3(halfSize.x, halfhalfSize.y , -halfSize.z);
-    float3 v3 = center + float3(-halfSize.x, halfhalfSize.y , -halfSize.z);
+    float3 v2 = center + float3(halfSize.x, halfhalfSize.y, -halfSize.z);
+    float3 v3 = center + float3(-halfSize.x, halfhalfSize.y, -halfSize.z);
     float3 v4 = center + float3(-halfSize.x, -halfhalfSize.y, halfSize.z);
     float3 v5 = center + float3(halfSize.x, -halfhalfSize.y, halfSize.z);
-    float3 v6 = center + float3(halfSize.x, halfhalfSize.y , halfSize.z);
-    float3 v7 = center + float3(-halfSize.x, halfhalfSize.y , halfSize.z);
+    float3 v6 = center + float3(halfSize.x, halfhalfSize.y, halfSize.z);
+    float3 v7 = center + float3(-halfSize.x, halfhalfSize.y, halfSize.z);
         
     float minX = center.x - halfSize.x;
     float maxX = center.x + halfSize.x;
@@ -338,7 +339,7 @@ void GS_MAIN_FOG(point GS_IN_FOG In[1], inout TriangleStream<GS_OUT_FOG> triStre
 }
 
 struct PS_IN
-{ 
+{
     float4 vPosition : SV_POSITION;
     float4 vWorldPos : TEXCOORD0;
     float2 vTexcoord : TEXCOORD1;
@@ -371,10 +372,10 @@ VS_OUT_FINAL VS_MAIN_FINAL(uint id : SV_VertexID)
     
     float2 ndcPos[4] =
     {
-        float2(-1.0f, 1.0f), 
+        float2(-1.0f, 1.0f),
         float2(1.0f, 1.0f),
         float2(-1.0f, -1.0f),
-        float2(1.0f, -1.0f) 
+        float2(1.0f, -1.0f)
     };
 
     float2 uv[4] =
@@ -444,7 +445,7 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
         
         float3 rayDir, rayLength, fogFactor;
         
-        if(frontPos.x < 0.01f && frontPos.y < 0.01f && frontPos.z < 0.01f)
+        if (frontPos.x < 0.001f && frontPos.y < 0.001f && frontPos.z < 0.001f)
         {
             rayDir = normalize(backPos - g_vCamPos.xyz);
             rayLength = length(backPos - g_vCamPos.xyz);
@@ -465,17 +466,19 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             for (int i = 0; i < numSteps; ++i)
             {
                 float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.03f, samplepos.y * 0.03f, samplepos.z * 0.03f)).r;
-
-                totalDensity += density * stepSize;
+                float Heightfade = 1.f - smoothstep(MaxHeight * 0.7f, MaxHeight, samplepos.y);
+                
+                totalDensity += density * stepSize * Heightfade;
 
                 samplepos += rayDir * stepSize;
         
-                fogFactor = 1.0 - exp(-totalDensity * 0.5f);
             }
-        } 
+            
+            fogFactor = 1.0 - exp(-totalDensity * 0.5f);
+        }
         else
         {
-            rayDir= normalize(backPos - frontPos);
+            rayDir = normalize(backPos - frontPos);
             rayLength = length(backPos - frontPos);
             
             float stepSize = rayLength / float(numSteps);
@@ -489,7 +492,6 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             float totalFade = 0.0f;
             float totalWeight = 0.0f;
             float3 samplepos = frontPos;
-            float MaxHeight = g_vCubePos.y + (g_vCubeExtents.y * 0.5f);
         
             if (length(frontPos - camPos) > length(vWorldPos.xyz - camPos)) // front 텍스쳐의 깊이 체크
             {
@@ -500,29 +502,29 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
         
             for (int i = 0; i < numSteps; ++i)
             {
+                samplepos += rayDir * stepSize;
+                
                 float3 offset = samplepos - g_vCubePos.xyz;
                 float dist = length(offset);
 
-                float fade = 1.0 - smoothstep(radius * 0.5, radius, dist);
-                float Heightfade = 1.f - smoothstep(MaxHeight * 0.7f, MaxHeight * 1.5f, samplepos.y);
-
-                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.03f, samplepos.y * 0.03f, samplepos.z * 0.03f)).r;
+                float fade = 1.0 - smoothstep(radius * 0.3, radius, dist);
+                float Heightfade = smoothstep(1.f, -1.f, (samplepos.y - g_vCubePos.y));
+                
+                float density = g_VolumeFogTexture.Sample(LinearSampler, float3(samplepos.x * 0.05f, samplepos.y * 0.05f, samplepos.z * 0.05f)).r;
 
                 totalDensity += density * stepSize * fade * Heightfade;
-
-                samplepos += rayDir * stepSize;
-            
             }
             
-            fogFactor = 1.0 - exp(-totalDensity * 0.5f);
+            fogFactor = 1.0 - exp(-totalDensity * 0.8f);
         }
+        
+        fogFactor *= 1.f - (g_fLifeTime / 2.f);
         
         Out.vColor = fogFactor;
     }
- 
+    
     return Out;
-}   
-
+}
 
 technique11 DefaultTechnique
 {

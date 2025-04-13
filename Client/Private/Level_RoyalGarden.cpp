@@ -318,7 +318,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Monster()
 {
 	CGameObject::GAMEOBJECT_DESC pDesc = {};
 
-	for (_uint i = 0; i < 3; i++)
+	for (_uint i = 0; i < 2; i++)
 	{
  		Load_MonsterIndex(i);
 		pDesc.iCurLevel = m_iCurrentLevel;
@@ -830,7 +830,7 @@ HRESULT CLevel_RoyalGarden::Load_MonsterIndex(_int iMonsterIndex_Level)
 {
 	string strDataPath = "../Bin/DataFiles/SpawnPoint/Royal_Garden/SpawnPoint";
 
-	strDataPath = strDataPath + to_string(iMonsterIndex_Level + 1) + ".txt";
+	strDataPath = strDataPath + to_string(iMonsterIndex_Level) + ".txt";
 
 	_tchar		szLastPath[MAX_PATH] = {};
 
