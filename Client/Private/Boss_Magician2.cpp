@@ -404,6 +404,10 @@ void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 	pObject->m_bPatternProgress = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+
+
 }
 
 void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
@@ -438,10 +442,14 @@ void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magicia
 	}
 }
 
-void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
+void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)	
 {
 	pObject->m_bHP_Bar_Active = true;
 	pObject->Delete_PartObject(TEXT("Part_Decorative_Tonic"));
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+
+
 }
 
 void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
@@ -557,7 +565,7 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 #pragma region BossÁ×À»½ÃÈ¿°ú+UI
 		pObject->m_pGameInstance->Set_Boss_Dead(true);
 		pObject->m_pGameInstance->Set_Boss_Active(false);
-		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
+		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_Landing"), true);
 		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 #pragma endregion

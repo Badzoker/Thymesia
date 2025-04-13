@@ -460,6 +460,10 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     pObject->m_pGameInstance->Set_Boss_Active(true);
+    pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), false);
+    pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+
+    
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -490,6 +494,9 @@ void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bHP_Bar_Active = true;
+    pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
+    pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+
 }
 
 #pragma endregion
