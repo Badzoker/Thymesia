@@ -84,8 +84,8 @@ void CBoss_Urd::Priority_Update(_float fTimeDelta)
 			m_iCheck_Step_Num = (rand() % 1) + 1;
 	}
 
-	//if(m_iMonster_State != STATE_INTRO)
-	//	RotateDegree_To_Player();
+	if (m_iMonster_State != STATE_INTRO && !m_bExecution_Progress)
+		RotateDegree_To_Player();
 	
 	__super::Priority_Update(fTimeDelta);
 }
@@ -117,7 +117,7 @@ void CBoss_Urd::State_Update(_float fTimeDelta)
 
 void CBoss_Urd::PatternCreate()
 {
-	/*if (m_iPhase == PHASE_TWO)
+	if (m_iPhase == PHASE_TWO)
 		m_fSpecial_Skill_CoolTime += m_fTimeDelta;
 
 	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
@@ -200,9 +200,9 @@ void CBoss_Urd::PatternCreate()
 			else
 				Near_Pattern_Create();
 		}
-	}*/
+	}
 
-
+	/*
 
 	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
 	{
@@ -232,7 +232,7 @@ void CBoss_Urd::PatternCreate()
 			m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Special_Skill(), this);
 		}
 	}
-	
+	*/
 }
 
 void CBoss_Urd::Active()
@@ -412,7 +412,7 @@ void CBoss_Urd::Near_Pattern_Create()
 
 void CBoss_Urd::Stack_Skill_Create()
 {
-	_uint iRandom = rand() % 3;
+	_uint iRandom = rand() % 2;
 
 	switch (iRandom)
 	{
@@ -421,9 +421,6 @@ void CBoss_Urd::Stack_Skill_Create()
 		break;
 	case 1:
 		m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Stack_Skill_02(), this);
-		break;
-	case 2:
-		m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Stack_Skill_03(), this);
 		break;
 	}
 
@@ -569,7 +566,7 @@ void CBoss_Urd::Idle_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 
 void CBoss_Urd::Idle_State::State_Exit(CBoss_Urd* pObject)
 {
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CBoss_Urd::Stun_State::State_Enter(CBoss_Urd* pObject)
@@ -633,6 +630,7 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(45.f);
 	/* ============ */
 
+	pObject->m_bExecution_Progress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -694,6 +692,29 @@ void CBoss_Urd::Step_Front_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Step_Front_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STEP
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Step"))
+				{
+					const _float4x4* matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_3, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_4, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
 	pObject->RotateDegree_To_Player();
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
@@ -716,6 +737,30 @@ void CBoss_Urd::Step_Back_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Step_Back_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STEP
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Step"))
+				{
+					const _float4x4* matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_3, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_4, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	pObject->RotateDegree_To_Player();
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
@@ -741,6 +786,30 @@ void CBoss_Urd::Step_Right_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Step_Right_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STEP
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Step"))
+				{
+					const _float4x4* matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_3, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_4, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	pObject->RotateDegree_To_Player();
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
@@ -766,6 +835,30 @@ void CBoss_Urd::Step_Left_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Step_Left_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STEP
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Step"))
+				{
+					const _float4x4* matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("upperarm_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_3, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					matStep = pObject->m_pModelCom->Get_BoneMatrix("foot_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STEP_4, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matStep);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	pObject->RotateDegree_To_Player();
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
@@ -793,6 +886,26 @@ void CBoss_Urd::Attack_Combo_A::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STAB_TRIPLE
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Stab"))
+				{
+					const _float4x4* matWeapon_End = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_End);
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_iPhase == pObject->PHASE_ONE)
 	{
 		if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
@@ -862,6 +975,34 @@ void CBoss_Urd::Attack_Combo_B::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SWING_STAB
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Swing"))
+				{
+					const _float4x4* matWeapon_End = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SWING_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_End);
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Stab"))
+				{
+					const _float4x4* matWeapon_End = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2_WIDE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_End);
+					//const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_iPhase == PHASE_ONE)
 	{
 		if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
@@ -913,6 +1054,25 @@ void CBoss_Urd::Attack_Combo_C::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STAB
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Stab"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
@@ -941,6 +1101,25 @@ void CBoss_Urd::Attack_Combo_D::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_STAB
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Stab"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_iPhase == PHASE_ONE)
 	{
 		if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
@@ -1083,52 +1262,6 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Exit(CBoss_Urd* pObject)
 }
 #pragma endregion 
 
-#pragma region Attack_Stack_Skill_03 (칼 집어 던져서 땅에 꽂는 스킬)
-
-void CBoss_Urd::Attack_Stack_Skill_03::State_Enter(CBoss_Urd* pObject)
-{
-	m_iIndex = 28;
-	pObject->m_iMonster_Attack_Power = 95;
-	pObject->m_iMonster_State = STATE_ATTACK;
-	pObject->RotateDegree_To_Player();
-	pObject->m_bCan_Hit_Motion = false;
-	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
-	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-}
-
-void CBoss_Urd::Attack_Stack_Skill_03::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
-{
-	if (m_iIndex == 28 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
-	{
-		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f &&
-			pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() < 55.f)
-		{
-			//왼손으로 바껴라
-			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = true;
-		}
-		else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 55.f &&
-			pObject->m_iSword_Stack_Count < pObject->STACK_END &&
-			!m_bIsSpawn)
-		{
-			m_bIsSpawn = true;
-			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = false;
-			pObject->m_bNeed_Fly_To_Player[pObject->m_iSword_Stack_Count] = true;
-			pObject->m_iSword_Stack_Count++;
-		}
-		if (pObject->m_pModelCom->GetAniFinish())
-		{
-			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
-		}
-	}
-
-}
-
-void CBoss_Urd::Attack_Stack_Skill_03::State_Exit(CBoss_Urd* pObject)
-{
-}
-
-#pragma endregion 
-
 
 #pragma region Attack_Special_Skill(스택 3개 이상되어서 이제 터져야할 때)
 
@@ -1145,6 +1278,41 @@ void CBoss_Urd::Attack_Special_Skill::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SPECIAL
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Continue"))
+				{
+					const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SP_START, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+					const _float4x4* matWeapon_l = pObject->m_pModelCom->Get_BoneMatrix("weapon_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SP_START_CONTINUE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_l);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_SP_1"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SP_READY, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+
+				else if (!strcmp(iter.szName, "Effect_SP_2"))
+				{
+					for (_uint i = 0; i < 3; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SP_EXPLOSION, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					}
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 
@@ -1188,6 +1356,25 @@ void CBoss_Urd::Attack_Combo_E::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SWING
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Swing"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SWING_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 8 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->GetAniFinish())
@@ -1217,6 +1404,25 @@ void CBoss_Urd::Attack_Combo_F::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SWING
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Swing"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SWING_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->GetAniFinish())

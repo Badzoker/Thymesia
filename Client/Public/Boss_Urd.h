@@ -308,19 +308,6 @@ public:
 		_bool m_bIsSpawn = {};
 	};
 
-	class Attack_Stack_Skill_03 : public CStates<CBoss_Urd>
-	{
-	public:
-		Attack_Stack_Skill_03() = default;
-		virtual ~Attack_Stack_Skill_03() = default;
-	public:
-		void State_Enter(CBoss_Urd* pObject) override;
-		void State_Update(_float fTimeDelta, CBoss_Urd* pObject) override;
-		void State_Exit(CBoss_Urd* pObject) override;
-	private:
-		_bool m_bIsSpawn = {};
-	};
-
 	class Attack_Special_Skill : public CStates<CBoss_Urd>
 	{
 	public:
