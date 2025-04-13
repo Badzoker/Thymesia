@@ -884,6 +884,14 @@ HRESULT CLoader_Hill::Loading_For_Level_Hill()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Archive_Chair01/P_Archive_Chair01.fbx", CModel::MODEL_NONANIM, ObjectPreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_HILL, TEXT("Prototype_Component_Model_P_Fortress_BossDoor_Left01"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Fortress_BossDoor_Left01/P_Fortress_BossDoor_Left01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_HILL, TEXT("Prototype_Component_Model_P_Fortress_BossDoor_Right01"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/P_Fortress_BossDoor_Left01/P_Fortress_BossDoor_Right01.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_HILL, TEXT("Prototype_GameObject_Object_StaticObject"),
 		CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

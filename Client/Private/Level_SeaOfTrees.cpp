@@ -265,7 +265,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
 
     Load_TriggerObjects(2);
 
-    if (FAILED(Load_DestructObjects(9)))
+    if (FAILED(Load_DestructObjects(10)))
         return E_FAIL;
 
 

@@ -199,7 +199,7 @@ HRESULT CCircus_Balloon::Render_Fog_Front()
     if (FAILED(m_pFogShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
-    _float3 vBoxExtents = _float3(35.f, 1.5f, 35.f); // x 길이 : 70 y 길이 5 z 길이 : 70
+    _float3 vBoxExtents = _float3(35.f, 4.f, 35.f); // x 길이 : 70 y 길이 5 z 길이 : 70
 
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
         return E_FAIL;
@@ -260,23 +260,22 @@ HRESULT CCircus_Balloon::Render_Fog_Final(ID3D11ShaderResourceView* pNoiseSRV)
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCamPos", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
         return E_FAIL;
 
-    _float3 vBoxExtents = _float3(35.f, 1.5f, 35.f);
+    _float3 vBoxExtents = _float3(35.f, 4.f, 35.f);
 
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubeExtents", &vBoxExtents, sizeof(_float3))))
         return E_FAIL;
 
     _float4 vCubeCenterPos;
     _vector vCubePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    vCubePos.m128_f32[1] += vBoxExtents.y * 0.5f;
     XMStoreFloat4(&vCubeCenterPos, vCubePos);
 
     if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vCubePos", &vCubeCenterPos, sizeof(_float4))))
         return E_FAIL;
 
-    _float3 vFogColor = _float3(0.3f, 0.2f, 0.1019f);
 
-    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_vFogColor", &vFogColor, sizeof(_float3))))
+    if (FAILED(m_pFogShaderCom->Bind_RawValue("g_fLifeTime", &m_fLifeTime, sizeof(_float))))
         return E_FAIL;
+
 
     m_pFogShaderCom->Begin(2);
 
