@@ -601,7 +601,10 @@ void CUIGroup_PlayerScreen::Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eSta
 			MakeInfo.ItemDesc = L"- 기술의 파편 -";
 			iTexNum = 2;
 			break;
-
+		default:
+			MakeInfo.ItemDesc = L"- 기술의 파편 -";
+			iTexNum = 2;
+			break;
 		}
 	}
 	else if (eState == ITEM_DROP)

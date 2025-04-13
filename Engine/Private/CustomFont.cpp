@@ -89,6 +89,29 @@ HRESULT CCustomFont::Render_Outline(const _tchar* pText, const _float2& vPositio
     return S_OK;
 }
 
+HRESULT CCustomFont::Render_Color(const _tchar* pText1, const _tchar* pText2, const _float2& vPosition, _float4 vColor1, _float4 vColor2, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+
+    if (nullptr == m_pFont ||
+        nullptr == m_pBatch)
+        return E_FAIL;
+    m_pBatch->Begin(SpriteSortMode_FrontToBack);
+
+
+    m_pFont->DrawString(m_pBatch, pText1, vPosition, XMLoadFloat4(&vColor1), fRotation, vOrigin, fScale, effects, 0.0f);
+
+    _float2 fSize = { XMVectorGetX(m_pFont->MeasureString(pText1)),vPosition.y };
+
+    fSize.x += vPosition.x;
+
+    m_pFont->DrawString(m_pBatch, pText2, fSize, XMLoadFloat4(&vColor2), fRotation, vOrigin, fScale, effects, 0.0f);
+
+
+    m_pBatch->End();
+
+    return S_OK;
+}
+
 _float2 CCustomFont::Get_TextSize(const _tchar* pText)
 {
     _float2 fSize = { XMVectorGetX(m_pFont->MeasureString(pText)),XMVectorGetY(m_pFont->MeasureString(pText)) };

@@ -79,14 +79,17 @@ HRESULT CUI_TextBox::Render()
 
 		switch (m_eRenderType)
 		{
-		case Client::CUI_TextBox::FONT_DEFALUT:
+		case Client::CUI_TextBox::TEXT_DEFALUT:
 			m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f, fZ);
 			break;
-		case Client::CUI_TextBox::FONT_SHADOW:
+		case Client::CUI_TextBox::TEXT_SHADOW:
 			m_pGameInstance->Render_Shadow(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
 			break;
-		case Client::CUI_TextBox::FONT_OUTLINE:
+		case Client::CUI_TextBox::TEXT_OUTLINE:
 			m_pGameInstance->Render_Outline(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
+			break;
+		case Client::CUI_TextBox::TEXT_TWOCOLOR:
+			m_pGameInstance->Render_Color(m_strFontName, m_strContentText.c_str(), m_strContentText2.c_str(), m_fTextPosition, m_fTextColor, m_fTextColor2);
 			break;
 		}
 

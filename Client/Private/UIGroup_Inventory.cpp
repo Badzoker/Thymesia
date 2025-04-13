@@ -1161,6 +1161,12 @@ void CUIGroup_Inventory::Update_ItemInfo()
 			InvenInfo.ItemName = L"잊혀진 깃털";
 			InvenInfo.ItemDesc = L"잊혀진 깃털을 사용하면, 아이세미와 대화하거나 신호기를 사용하여\n코르버스의 레벨과 상태를 초기화할 수 있습니다.";
 			break;
+		default:
+			InvenInfo.ItemIconNum = 0;
+			InvenInfo.ItemName = L"정보 필요";
+			InvenInfo.ItemDesc = L"UIGroup_Inventory 에서 아이템 정보 기입";
+			break;
+
 		}
 	}
 	for (auto& InvenInfo : m_InvenItemSkill)
@@ -1211,6 +1217,10 @@ void CUIGroup_Inventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 	case ITEM_TYPE::ITEM_SKILLPIECE:
 		pTemp = L"기술의 파편";
 		break;
+	default:
+		pTemp = L"채워넣기";
+		break;
+
 	}
 	dynamic_cast<CUIObject*>(m_pItemTextBoxType)->Set_Content(pTemp);
 
@@ -1318,6 +1328,12 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 
 
 	SaveData.ItemType = ITEM_TYPE::ITEM_SKILLPIECE;
+	SaveData.ItemIconNum = 7;
+	SaveData.ItemName = L"단도";
+	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	SaveData.ItemType = ITEM_TYPE::ITEM_FIELDITEM;
 	SaveData.ItemIconNum = 7;
 	SaveData.ItemName = L"단도";
 	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
