@@ -129,12 +129,12 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 9: //WeaponDisappear
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
-	//case 10: //WeaponDisappear
-	//	m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
-	//	break;
-	//case 11: //WeaponDisappear
-	//	m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
-	//	break;
+	case 10: //TrailDisappear
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		break;
+	case 11: //BloodDisappear
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+		break;
 	case 12: //BLOOD_SUCKER
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		break;

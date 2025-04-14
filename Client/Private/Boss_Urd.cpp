@@ -984,6 +984,7 @@ void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 			{
 				if (!strcmp(iter.szName, "Effect_Swing"))
 				{
+					pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_URD_SWING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
 					const _float4x4* matWeapon_End = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SWING_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_End);
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
@@ -994,8 +995,9 @@ void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					const _float4x4* matWeapon_End = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_end");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2_WIDE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_End);
-					//const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
-					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					_vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1.f;
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_NARROW, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}

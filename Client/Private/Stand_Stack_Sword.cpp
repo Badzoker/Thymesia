@@ -159,6 +159,10 @@ void CStand_Stack_Sword::Store_CombinedMatrix()
     {
         *m_bNeed_Memory_Position = false;
         m_Store_CombinedMatrix = m_CombinedWorldMatrix;
+
+        _vector vPos = XMLoadFloat4x4(&m_Store_CombinedMatrix).r[3];
+        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD_SURFACE, vPos);
+        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK, &m_Store_CombinedMatrix, m_pTransformCom->Get_WorldMatrix_Ptr());
     }
 }
 

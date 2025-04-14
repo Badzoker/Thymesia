@@ -724,6 +724,27 @@ void CBoss_Bat::Attack_Combo_A::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region EFFECT_CLAW
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matClaw = pObject->m_pModelCom->Get_BoneMatrix("thumb_01_r");
+					_float4x4 matClawWorld = {};
+					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_R, matClawWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 153.f)
@@ -771,6 +792,27 @@ void CBoss_Bat::Attack_Combo_B::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region EFFECT_CLAW
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matClaw = pObject->m_pModelCom->Get_BoneMatrix("thumb_01_l");
+					_float4x4 matClawWorld = {};
+					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_L, matClawWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 306.f)
@@ -1180,6 +1222,54 @@ void CBoss_Bat::Recovery_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region EFFECT_BLOOD_SUCK
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Blood_Suck_1"))
+				{
+					const _float4x4* matMouth = pObject->m_pModelCom->Get_BoneMatrix("mouth");
+					_float4x4 matMouthWorld = {};
+					XMStoreFloat4x4(&matMouthWorld, XMLoadFloat4x4(matMouth) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, matMouthWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Blood_Suck_2"))
+				{
+					const _float4x4* matMouth = pObject->m_pModelCom->Get_BoneMatrix("mouth");
+					_float4x4 matMouthWorld = {};
+					XMStoreFloat4x4(&matMouthWorld, XMLoadFloat4x4(matMouth) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, matMouthWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Blood_Suck_3"))
+				{
+					const _float4x4* matMouth = pObject->m_pModelCom->Get_BoneMatrix("mouth");
+					_float4x4 matMouthWorld = {};
+					XMStoreFloat4x4(&matMouthWorld, XMLoadFloat4x4(matMouth) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, matMouthWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Blood_Suck_4"))
+				{
+					const _float4x4* matMouth = pObject->m_pModelCom->Get_BoneMatrix("mouth");
+					_float4x4 matMouthWorld = {};
+					XMStoreFloat4x4(&matMouthWorld, XMLoadFloat4x4(matMouth) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, matMouthWorld);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		_uint iRandom = rand() % 2;

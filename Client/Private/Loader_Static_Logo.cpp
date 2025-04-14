@@ -1840,7 +1840,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Diffuse*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Diffuse"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Diffuse/texDiffuse%d.dds"), 46))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Diffuse/texDiffuse%d.dds"), 52))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
@@ -1850,7 +1850,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_Effect_Mesh_Mask*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 53))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Mask/texMask%d.dds"), 58))))
 		return E_FAIL;
 
 
@@ -1928,6 +1928,56 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_Component_Model_Effect_Sphere */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Sphere"), //17 <- Tool 에서의 번호라고 보면됨
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_HemiShphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_HemiShphere"), //18
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_HemiShphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Cylinder */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Cylinder"), //19
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_MeshCylinder.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_1"), //20
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_1.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_2"), //21
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_2.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_3"), //22
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_3.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_4 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_4"), //23
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_4.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Cone */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Cone"), //24
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Cone.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_5 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_5"), //25
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_5.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Curve_6 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Curve_6"), //26
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Curve_6.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Effect_Urd_Cone */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Urd_Cone"), //27
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Urd_Cone.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Effect_Mesh */

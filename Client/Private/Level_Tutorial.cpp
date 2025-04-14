@@ -583,6 +583,46 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_PUNCH_DISTORTION)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_Swing.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_URD_SWING)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_Stack_Sword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_URD_STACK_SWORD)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_Explosion_Surface.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_URD_STACK_SWORD_SURFACE)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine0.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_Explosion_Surface.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_URD_STACK_SWORD_SURFACE)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_ClawAttack_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_CLAW_R)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_ClawAttack_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_CLAW_L)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -1026,6 +1066,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_SP_Continue.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SP_START_CONTINUE)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Spark_Continue.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SP_DUST)))
         return E_FAIL;
 
     //Sword Effect
@@ -1782,6 +1830,36 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case 17:
             pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Sphere");
+            break;
+        case 18:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_HemiShphere");
+            break;
+        case 19:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Cylinder");
+            break;
+        case 20:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_1");
+            break;
+        case 21:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_2");
+            break;
+        case 22:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_3");
+            break;
+        case 23:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_4");
+            break;
+        case 24:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Cone");
+            break;
+        case 25:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_5");
+            break;
+        case 26:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Curve_6");
+            break;
+        case 27:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Urd_Cone");
             break;
         }
 #pragma endregion
