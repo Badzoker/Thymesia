@@ -34,6 +34,35 @@ HRESULT CBody_Varg::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
+    m_pModelCom->Set_BoneType("Bip001-Ponytail11",   BONE_TYPE::DYNAMIC_BONE, false); 
+    m_pModelCom->Set_BoneType("Bip001-Ponytail12",   BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Ponytail13",   BONE_TYPE::DYNAMIC_BONE, false); 
+    m_pModelCom->Set_BoneType("Bip001-Ponytail14",   BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Ponytail15",   BONE_TYPE::DYNAMIC_BONE, false); 
+    m_pModelCom->Set_BoneType("Bip001-Ponytail16",   BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Ponytail17",   BONE_TYPE::DYNAMIC_BONE, false); 
+    m_pModelCom->Set_BoneType("Bip001-Ponytail1Nub", BONE_TYPE::DYNAMIC_BONE, false);   
+
+
+
+    m_pModelCom->Set_BoneType("Bip001-Xtra10",       BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra1002",     BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra1003",     BONE_TYPE::DYNAMIC_BONE, false);   
+    m_pModelCom->Set_BoneType("Bip001-Xtra11",       BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra10Nub",    BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra11Opp",    BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra1102",     BONE_TYPE::DYNAMIC_BONE, false);   
+    m_pModelCom->Set_BoneType("Bip001-Xtra11Opp02",  BONE_TYPE::DYNAMIC_BONE, false);    
+    m_pModelCom->Set_BoneType("Bip001-Xtra1103",     BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra11Opp03",  BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra1104",     BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra11Opp04",  BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra11Nub",    BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra11OppNub", BONE_TYPE::DYNAMIC_BONE, false);
+
+
+
+
     m_pModelCom->SetUp_Animation(20, false);
 
     return S_OK;

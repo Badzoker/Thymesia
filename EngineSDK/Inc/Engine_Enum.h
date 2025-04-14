@@ -8,6 +8,8 @@ namespace Engine
 
 	enum class PROTOTYPE { TYPE_GAMEOBJECT, TYPE_COMPONENT };
 
+	enum BONE_TYPE { BONE, DYNAMIC_BONE };		
+
 	enum EVENT_FRAME_TYPE	
 	{
 		EVENT_SOUND,	

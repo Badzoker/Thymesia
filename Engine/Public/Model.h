@@ -21,6 +21,7 @@ public:
 	}
 
 	_uint Get_BoneIndex(const _char* pBoneName) const;
+	void  Set_BoneType(const _char* pBoneName, BONE_TYPE _eBoneType, _bool bUpdateOnOff);	
 	const _float4x4* Get_BoneMatrix(const _char* pBoneName) const;
 	const _float4x4* Get_RootMotionMatrix(const _char* pBoneName) const;
 
