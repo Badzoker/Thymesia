@@ -790,6 +790,10 @@ HRESULT CGameInstance::Render_Color(const wstring& strFontTag, const _tchar* pTe
 {
 	return m_pFont_Manager->Render_Color(strFontTag, pText1, pText2, vPosition, vColor1, vColor2, fRotation, vOrigin, fScale, layerDepth, effects);
 }
+HRESULT CGameInstance::Render_Alpha(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	return m_pFont_Manager->Render_Alpha(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
 _float2 CGameInstance::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)
 {
 	return m_pFont_Manager->Get_TextSize(strFontTag, pText);

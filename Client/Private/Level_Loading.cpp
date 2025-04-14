@@ -133,7 +133,13 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		}
 		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Loading"), true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")), true);
-	
+
+		for (auto& Image : m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")->Find_UI_Image())
+		{
+			if (1 == Image->Get_UI_GroupID())
+				Image->Set_OnOff(true);
+		}
+
 	}
 	if (true == m_pLoader->isFinished())
 	{
@@ -154,25 +160,30 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		if (true == m_pLoader->isFinished())
 		{
 			CUI_Scene* pScene = m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading");
-			for (auto& Image : pScene->Find_UI_Image())
+			for (auto& Image : m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")->Find_UI_Image())
 			{
 				if (1 == Image->Get_UI_GroupID())
-				{
-					dynamic_cast<CUI_LoadingIcon*>(Image)->Set_OnOff(false);
-					break;
-				}
+					Image->Set_OnOff(false);
 			}
+
 			for (auto& TextBox : pScene->Find_UI_TextBox())
 			{
 				if (0 == TextBox->Get_UI_GroupID())
 
 				{
+					dynamic_cast<CUI_Text*>(TextBox)->Set_TextDrawType(Engine::TEXT_ALPHALOOP);
 					TextBox->Set_OnOff(true);
 					break;
 				}
 			}
 			if (m_pGameInstance->isAnyEnter())
 			{
+				for (auto& Image : m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")->Find_UI_Image())
+				{
+					if (1 == Image->Get_UI_GroupID())
+						dynamic_cast<CUI_LoadingIcon*>(Image)->Set_CurrentTime(0.0f);
+				}
+				
 				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.2f);
 
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기

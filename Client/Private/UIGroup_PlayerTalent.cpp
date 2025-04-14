@@ -67,7 +67,7 @@ void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Content2(ChangeText);
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor(FONT_WHITE);
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor2(FONT_GREEN);
-		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_TextDrawType(CUI_Text::TEXT_TWOCOLOR);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_TextDrawType(Engine::TEXT_TWOCOLOR);
 	}
 }
 

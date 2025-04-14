@@ -31,9 +31,11 @@ public:
 
 public:
 	void Set_Change_TextColor(_float4 fColor) { m_fTextColor = { fColor.x / 255.f, fColor.y / 255.f,fColor.z / 255.f,fColor.w / 255.f }; }
+	void Set_TextDrawType(TextDrawEffect eType) { m_eRenderType = eType; }
 
 protected:
 	_float4		m_fTextColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f };
+	TextDrawEffect	m_eRenderType = { TEXT_DEFALUT };
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

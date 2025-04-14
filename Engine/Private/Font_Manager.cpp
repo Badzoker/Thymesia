@@ -81,6 +81,16 @@ HRESULT CFont_Manager::Render_Color(const wstring& strFontTag, const _tchar* pTe
 	return pFont->Render_Color(pText1, pText2, vPosition, vColor1, vColor2, fRotation, vOrigin, fScale, layerDepth, effects);
 }
 
+HRESULT CFont_Manager::Render_Alpha(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+
+	if (nullptr == pFont)
+		return E_FAIL;
+
+	return pFont->Render_Alpha(pText, vPosition, vColor, fRotation, vOrigin, fScale, layerDepth, effects);
+}
+
 _float2 CFont_Manager::Get_TextSize(const _wstring& strFontTag, const _tchar* pText)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);

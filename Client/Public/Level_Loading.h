@@ -32,7 +32,6 @@ private:
 	class CLoader*					m_pLoader = { nullptr };
 	_uint							m_iLoadingeNum = {}; // 테스트 용도로 추가
 
-
 public:
 	static CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevelID, _uint iLoadingNum,_bool bCheck);
 	virtual void Free() override;

@@ -33,7 +33,10 @@ public:
 	HRESULT Render_Color(const wstring& strFontTag, const _tchar* pText1, const _tchar* pText2, const _float2& vPosition,
 		_float4 vColor1 = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f }, _float4 vColor2 = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f }, _float fRotation = 0.f,
 		const _float2& vOrigin = _float2(0.f, 0.f), const _float fScale = 1.f, float layerDepth = 0, SpriteEffects effects = SpriteEffects_None);
-
+	
+	HRESULT Render_Alpha(const wstring& strFontTag, const _tchar* pText, const _float2& vPosition,
+		_float4 vColor = { 255.f / 255.f, 255.f / 255.f, 255.f / 255.f, 1.0f }, _float fRotation = 0.f,
+		const _float2& vOrigin = _float2(0.f, 0.f), const _float fScale = 1.f, float layerDepth = 0, SpriteEffects effects = SpriteEffects_None);
 
 	_float2 Get_TextSize(const _wstring& strFontTag, const _tchar* pText);
 private:

@@ -58,7 +58,23 @@ void CUI_TextBox::Update(_float fTimeDelta)
 		break;
 
 	}
-	
+	if (m_eRenderType == Engine::TEXT_ALPHALOOP)
+	{
+		m_fAlpha += fTimeDelta;
+
+		if (1 <= m_fAlpha)
+		{
+			m_fAlpha *= -1.f;
+		}
+	}
+	if (m_eRenderType == Engine::TEXT_ALPHA)
+	{
+		m_fAlpha += fTimeDelta;
+		if (1 <= m_fAlpha)
+		{
+			m_fAlpha = 1.f;
+		}
+	}
 }
 
 void CUI_TextBox::Late_Update(_float fTimeDelta)
@@ -79,17 +95,25 @@ HRESULT CUI_TextBox::Render()
 
 		switch (m_eRenderType)
 		{
-		case Client::CUI_TextBox::TEXT_DEFALUT:
+		case Engine::TEXT_DEFALUT:
 			m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f, fZ);
 			break;
-		case Client::CUI_TextBox::TEXT_SHADOW:
+		case Engine::TEXT_SHADOW:
 			m_pGameInstance->Render_Shadow(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
 			break;
-		case Client::CUI_TextBox::TEXT_OUTLINE:
+		case Engine::TEXT_OUTLINE:
 			m_pGameInstance->Render_Outline(m_strFontName, m_strContentText.c_str(), m_fTextPosition, m_fTextColor);
 			break;
-		case Client::CUI_TextBox::TEXT_TWOCOLOR:
+		case Engine::TEXT_TWOCOLOR:
 			m_pGameInstance->Render_Color(m_strFontName, m_strContentText.c_str(), m_strContentText2.c_str(), m_fTextPosition, m_fTextColor, m_fTextColor2);
+			break;
+		case Engine::TEXT_ALPHALOOP:
+			m_pGameInstance->Render_Alpha(m_strFontName, m_strContentText.c_str(), m_fTextPosition,
+				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
+			break;
+		case Engine::TEXT_ALPHA:
+			m_pGameInstance->Render_Alpha(m_strFontName, m_strContentText.c_str(), m_fTextPosition,
+				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
 			break;
 		}
 
