@@ -13,6 +13,7 @@ BEGIN(Client)
 
 class CStand_Stack_Sword final : public CPartObject
 {
+	enum COLLIDER_CATEGORY { COLLIDER_SKILL, COLLIDER_SPECIAL, COLLIDER_END };
 public:
 	struct STAND_STACK_SWORD_DESC : public CPartObject::PARTOBJECT_DESC
 	{
@@ -23,7 +24,8 @@ public:
 		_bool* bNeed_Memory_Position = { nullptr };
 		_bool* bIs_Equipped_To_LeftHand = { nullptr };
 		_bool* bIs_Stand_In_Ground = { nullptr };
-		_bool* bNeed_Fly_To_Player = { nullptr };
+		_bool* bIs_Create_Collider = { nullptr };
+		_bool* bIs_Create_Large_Collider = { nullptr };
 	};
 private:
 	CStand_Stack_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,7 +43,6 @@ public:
 	HRESULT Bind_ShaderResources();
 public:
 	void Store_CombinedMatrix();
-	void Fly_To_Player(_float fTimeDelta);
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -49,6 +50,7 @@ private:
 
 	CNavigation* m_pNavigationCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
+	PxRigidDynamic* m_pLargeActor = { nullptr };
 private:
 	// 처음 우르드 허리에 있는 위치들
 	const _float4x4* m_pSocketMatrix = { nullptr };
@@ -57,21 +59,15 @@ private:
 	_float4x4 m_Store_CombinedMatrix = {};
 
 private:
+	const _uint* m_pParentState = { nullptr };
 	_float4* m_vPlayer_Position = { nullptr };
 	_bool* m_bNeed_Memory_Position = { nullptr };
 	_bool* m_bIs_Equipped_To_LeftHand = { nullptr };
 	_bool* m_bIs_Stand_In_Ground = { nullptr };
-	_bool* m_bNeed_Fly_To_Player = { nullptr };
-
-	_float4x4 m_FlyWorldMatrix = {};         // 비행 중 실제 월드 위치
-	_float4 m_vFlyTargetPos = {};            // 목표 위치
-	_bool	m_bHas_Finished_Flying = {};
-	_bool   m_bHasStartedFlying = {};
-
-	_float4 m_fStartPos = {};
-	_float4 m_fEndPos = {};
-	_float m_fSpeed = {};
-	_float m_fLinearTime = {};
+	_bool* m_bIs_Create_Collider = { nullptr };
+	_bool* m_bIs_Create_Large_Collider = { nullptr };
+private:
+	_bool m_bColliderOff = {};
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

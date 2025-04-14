@@ -13,6 +13,13 @@ BEGIN(Client)
 
 class CBody_Magician final : public CPartObject
 {
+	enum eDissolveState
+	{
+		DISSOLVE_NONE,           // 아무것도 안 하는 상태
+		DISSOLVE_ON,    // 사라지는 중
+		DISSOLVE_OFF    // 나타나는 중
+	};
+
 public:
 	struct BODY_MAGICIAN_DESC : public CPartObject::PARTOBJECT_DESC
 	{
@@ -45,11 +52,10 @@ private:
 	_bool* m_bRender = {};
 	_bool* m_bDead = {};
 private:
+	eDissolveState m_eDissolveState = DISSOLVE_NONE;
+	_float m_fDissolveTimer = 0.f; // 공용으로 사용
 	_uint m_iPassNum = {};
-	_float m_fDissolveOn_Timer = {};
-	_float m_fDissolveOff_Timer = {};
-	_float m_fDissolveOn_FinishTime = 1.f;
-	_float m_fDissolveOff_FinishTime = 1.f;
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

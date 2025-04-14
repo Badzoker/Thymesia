@@ -27,6 +27,7 @@ float g_ReverseDissolveTime;
 float g_EdgeWidth = 1.f;
 float4 g_EdgeColor = { 0.f, 0.f, 1.f, 1.f };
 float g_Time;
+bool g_NeedNormal = true;
 bool g_Dead;
 bool g_Appear;
 
@@ -883,7 +884,10 @@ PS_OUT PS_MAIN_WEAPON(PS_IN In)
 	
 
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    if (g_NeedNormal)
+    {
+        Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    }
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 0.1f;
 

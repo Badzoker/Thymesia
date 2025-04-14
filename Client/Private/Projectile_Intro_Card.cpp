@@ -29,6 +29,7 @@ HRESULT CProjectile_Intro_Card::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentActive = pDesc->bActive;
     m_pRender = pDesc->bRender;
+    m_pChangeModel = pDesc->bChangeModel;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -70,8 +71,37 @@ void CProjectile_Intro_Card::Late_Update(_float fTimeDelta)
     if (*m_pParentState != STATE_INTRO || !*m_pRender)
         return;
 
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+    if (!*m_pChangeModel)
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+    else
+        m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 }
+
+HRESULT CProjectile_Intro_Card::Render()
+{
+    if (FAILED(Bind_ShaderResources()))
+        return E_FAIL;
+
+    _bool bTest = false;
+    _uint			iNumMeshes = m_pExodia_Card_ModelCom->Get_NumMeshes();
+
+    for (_uint i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pExodia_Card_ModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+            return E_FAIL;
+
+        m_pExodia_Card_ModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_NeedNormal", &bTest, sizeof(_bool))))
+            return E_FAIL;
+
+        m_pShaderCom->Begin(17);
+        m_pExodia_Card_ModelCom->Render(i);
+    }
+
+    return S_OK;
+}
+
 
 HRESULT CProjectile_Intro_Card::Render_Glow()
 {
@@ -87,6 +117,8 @@ HRESULT CProjectile_Intro_Card::Render_Glow()
     {
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
+
+        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
 
         m_pShaderCom->Begin(15);
         m_pModelCom->Render(i);
@@ -107,6 +139,9 @@ HRESULT CProjectile_Intro_Card::Ready_Components()
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Exodia_Card"),
+        TEXT("Com_Model_Exodia"), reinterpret_cast<CComponent**>(&m_pExodia_Card_ModelCom))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -155,4 +190,5 @@ void CProjectile_Intro_Card::Free()
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pExodia_Card_ModelCom);
 }

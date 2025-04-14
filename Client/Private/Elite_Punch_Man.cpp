@@ -69,6 +69,8 @@ HRESULT CElite_Punch_Man::Initialize(void* pArg)
 
     m_pTransformCom->Scaling(_float3(0.003f, 0.003f, 0.003f));
 
+    m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_HALBERD;
+
     return S_OK;
 }
 

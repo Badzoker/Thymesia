@@ -70,6 +70,8 @@ HRESULT CBoss_Urd::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD;
+
 	return S_OK;
 }
 
@@ -290,8 +292,6 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 	Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Weapon_Desc.pParentModel = m_pModelCom;
 	Weapon_Desc.bChange_Socket = &m_bChange_Socket;
-	//Weapon_Desc.bSpecial_Skill_Progress = &m_bSpecial_Skill_Progress;
-	//Weapon_Desc.bCatch_Special_Attack = &m_bCatch_Special_Attack;
 	Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
 	Weapon_Desc.fSpeedPerSec = 0.f;
 	Weapon_Desc.fRotationPerSec = 0.f;
@@ -314,7 +314,8 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 		Stack_Sword_Desc.bNeed_Memory_Position = &m_bNeed_Memory_Position[i];
 		Stack_Sword_Desc.bIs_Equipped_To_LeftHand = &m_bIs_Equipped_To_LeftHand[i];
 		Stack_Sword_Desc.bIs_Stand_In_Ground = &m_bIs_Stand_In_Ground[i];
-		Stack_Sword_Desc.bNeed_Fly_To_Player = &m_bNeed_Fly_To_Player[i];
+		Stack_Sword_Desc.bIs_Create_Collider = &m_bCreate_Collider[i];
+		Stack_Sword_Desc.bIs_Create_Large_Collider = &m_bCreate_Large_Collider;
 		//Projectile_Desc. = &m_iMonster_Attack_Power;
 		Stack_Sword_Desc.pParentState = &m_iMonster_State;
 		Stack_Sword_Desc.fSpeedPerSec = 10.f;
@@ -577,6 +578,7 @@ void CBoss_Urd::Stun_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->RotateDegree_To_Player();
+	pObject->m_iHitCount = 0;
 
 	//pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
@@ -1185,6 +1187,7 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 			pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() < 60.f)
 		{
 			//¿Þ¼ÕÀ¸·Î ¹Ù²¸¶ó
+			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = true;
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = true;
 		}
 		else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 60.f &&
@@ -1193,6 +1196,7 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 		{
 			m_bIsSpawn = true;
 			//Ä® ²ÈÇôÀÖ´Â »óÅÂ¿¡ ÄÄ¹ÙÀÎµå¸ÅÆ®¸¯½º ±â¾ïÇØ¶ó
+			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = false;
 			pObject->m_bNeed_Memory_Position[pObject->m_iSword_Stack_Count] = true;
 			//Ä® ¿Þ¼Õ¿¡ÀÖ´Â°Å ²ô°í ¶¥¿¡ ²ÈÇôÀÖ¾î¶ó 
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = false;
@@ -1237,6 +1241,7 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 			pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() < 60.f)
 		{
 			//¿Þ¼ÕÀ¸·Î ¹Ù²¸¶ó
+			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = true;
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = true;
 		}
 		else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 60.f &&
@@ -1245,6 +1250,7 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 		{
 			m_bIsSpawn = true;
 			//Ä® ²ÈÇôÀÖ´Â »óÅÂ¿¡ ÄÄ¹ÙÀÎµå¸ÅÆ®¸¯½º ±â¾ïÇØ¶ó
+			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = false;
 			pObject->m_bNeed_Memory_Position[pObject->m_iSword_Stack_Count] = true;
 			//Ä® ¿Þ¼Õ¿¡ÀÖ´Â°Å ²ô°í ¶¥¿¡ ²ÈÇôÀÖ¾î¶ó 
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = false;
@@ -1273,6 +1279,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
 	pObject->RotateDegree_To_Player();
 	pObject->m_bCan_Hit_Motion = false;
+	pObject->m_bCreate_Large_Collider = true;
 	pObject->m_bSpecial_Skill_Progress = true;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1336,6 +1343,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd*
 
 void CBoss_Urd::Attack_Special_Skill::State_Exit(CBoss_Urd* pObject)
 {
+	pObject->m_bCreate_Large_Collider = false;
 	pObject->m_bSpecial_Skill_Progress = false;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 }

@@ -15,6 +15,13 @@ BEGIN(Client)
 
 class CWeapon_Cane final : public CPartObject
 {
+	enum eDissolveState
+	{
+		DISSOLVE_NONE,           // 아무것도 안 하는 상태
+		DISSOLVE_ON,    // 사라지는 중
+		DISSOLVE_OFF    // 나타나는 중
+	};
+
 public:
 	struct MAGICIAN_CANE_DESC : public CPartObject::PARTOBJECT_DESC
 	{
@@ -54,14 +61,10 @@ private:
 	_bool* m_bRender = { nullptr };
 	_bool* m_bCane_Collider_On = { nullptr };
 	_bool  m_bColliderOff = {};
-
+private:
+	eDissolveState m_eDissolveState = DISSOLVE_NONE;
+	_float m_fDissolveTimer = 0.f; // 공용으로 사용
 	_uint m_iPassNum = {};
-
-	_float			   m_fTimeDelta = { 0.f };
-	_float m_fDissolveOn_Timer = {};
-	_float m_fDissolveOff_Timer = {};
-	_float m_fDissolveOn_FinishTime = 1.f;
-	_float m_fDissolveOff_FinishTime = 1.f;
 private:
 	const _uint* m_pParentState = { nullptr };
 public:
