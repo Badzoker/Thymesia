@@ -1182,10 +1182,7 @@ HRESULT CLevel_SeaOfTrees::Load_SporeObject(_int iObject_Level)
     for (_uint i = 0; i < iSize; i++)
     {
         CGameObject::GAMEOBJECT_DESC pDesc = {};
-
         ReadFile(hFile, &pDesc._fPosition, sizeof(_float4), &dwByte, nullptr);
-
-        pDesc.fPosition = pDesc._fPosition;
         pDesc.iCurLevel = m_iCurrentLevel;
 
         if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_iCurrentLevel, TEXT("Layer_Monster_Building"), &pDesc)))

@@ -25,8 +25,6 @@ HRESULT CAisemy::Initialize(void* pArg)
 {
     strcpy_s(m_szName, "NPC");
 
-
-
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -36,15 +34,14 @@ HRESULT CAisemy::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects()))
         return E_FAIL;
 
-
-
     m_pNavigationCom->Set_CurrentNaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-    //m_pTransformCom->Scaling(_float3{ 0.0025f, 0.0025f, 0.0025f });
-
 
     m_pState_Manager = CState_Machine<CAisemy>::Create();
     if (m_pState_Manager == nullptr)
         return E_FAIL;
+
+    m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_HILL, TEXT("Layer_Button"), "BUTTON");
+    m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
@@ -236,7 +233,15 @@ void CAisemy::Rotation_To_Player()
 
 void CAisemy::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    int a = 10;
+    _vector vAisemyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    vAisemyPos = XMVectorSetY(vAisemyPos, XMVectorGetY(vAisemyPos) + 1.0f);
+
+    _float4 vAisemyPosition;
+    XMStoreFloat4(&vAisemyPosition, vAisemyPos);
+
+    m_pButton->Set_WorldPosition(vAisemyPosition);
+    m_pButton->Set_ButtonText(TEXT("E"), TEXT("대화"));
+    m_pButton->Activate_Button(true);
 }
 
 void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -248,6 +253,8 @@ void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
         {
             m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
 
+            m_pButton->Activate_Button(false);
+
             m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_Dialogue"), true);
             m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy")), true);
         }
@@ -256,6 +263,7 @@ void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 void CAisemy::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
+    m_pButton->Activate_Button(false);
 }
 
 CAisemy* CAisemy::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

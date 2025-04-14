@@ -3,12 +3,11 @@
 #include "Client_Defines.h"
 #include "ContainerObject.h"
 #include "State_Machine.h"
-
+#include "Button.h"
 
 BEGIN(Engine)
 class CModel;
 class CNavigation;
-
 END
 
 BEGIN(Client)
@@ -20,25 +19,24 @@ private:
 	CAisemy(const CAisemy& Prototype);
 	virtual ~CAisemy() = default;
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Priority_Update(_float fTimeDelta) override;
-	virtual void Update(_float fTimeDelta) override;
-	virtual void Late_Update(_float fTimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT					Initialize_Prototype() override;
+	virtual HRESULT					Initialize(void* pArg) override;
+	virtual void					Priority_Update(_float fTimeDelta) override;
+	virtual void					Update(_float fTimeDelta) override;
+	virtual void					Late_Update(_float fTimeDelta) override;
+	virtual HRESULT					Render() override;
 
 public:
-	HRESULT Ready_Components(void* pArg);
-	HRESULT Ready_PartObjects();
+	HRESULT							Ready_Components(void* pArg);
+	HRESULT							Ready_PartObjects();
 public:
-	void CalCulate_Distance();
-	void Culling();
+	void							CalCulate_Distance();
+	void							Culling();
 public:
-	void RootAnimation();
-	void RotateDegree_To_Player();
-	void Rotation_To_Player();
+	void							RootAnimation();
+	void							RotateDegree_To_Player();
+	void							Rotation_To_Player();
 private:
-	//_vector                          m_vPlayerPos = {};
 	_float4                          m_vPlayerPos = {};
 
 	_bool                            m_bActive = {};
@@ -54,22 +52,22 @@ private:
 	_float                           m_fTimeDelta = {};
 
 private:
-	const _float4x4* m_pRootMatrix = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
-	CState_Machine<CAisemy>* m_pState_Manager = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
+	const _float4x4*				m_pRootMatrix = { nullptr };
+	CModel*							m_pModelCom = { nullptr };
+	CNavigation*					m_pNavigationCom = { nullptr };
+	CState_Machine<CAisemy>*		m_pState_Manager = { nullptr };
+	PxRigidDynamic*					m_pActor = { nullptr };
 private:
-	class CGameObject* m_pPlayer = { nullptr };
+	class CGameObject*				m_pPlayer = { nullptr };
 public:
-	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
-	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);
-	virtual void OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
+	virtual void					OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
+	virtual void					OnCollision(CGameObject* _pOther, PxContactPair _information);
+	virtual void					OnCollisionExit(CGameObject* _pOther, PxContactPair _information);
 
 public:
-	static CAisemy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg) override;
-	virtual void Free() override;
+	static CAisemy*					Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
+	virtual void					Free() override;
 
 
 	class Idle_State : public CStates<CAisemy>
@@ -83,6 +81,11 @@ public:
 		void State_Exit(CAisemy* pObject) override;
 	};
 
+private:
+	CGameObject*					m_pButtonGameObject = { nullptr };
+	CButton*						m_pButton = { nullptr };
+
+public:
 	class Intro_State : public CStates<CAisemy>
 	{
 	public:

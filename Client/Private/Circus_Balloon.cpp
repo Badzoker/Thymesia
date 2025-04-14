@@ -30,7 +30,7 @@ HRESULT CCircus_Balloon::Initialize(void* pArg)
     pDesc->fScaling = _float3(0.1f, 0.1f, 0.1f);
 
     m_fHP_Bar_Height = 500.f;
-    m_fMonsterMaxHP = 100.f;
+    m_fMonsterMaxHP = 75.f;
     m_fMonsterCurHP = m_fMonsterMaxHP;
     m_fShieldHP = m_fMonsterMaxHP;
 
@@ -45,9 +45,6 @@ HRESULT CCircus_Balloon::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects(pDesc)))
         return E_FAIL;
 
-
-    m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-    //m_iSpawn_Cell_Index = m_pNavigationCom->Get_CurCellIndex();
     m_Player_Attack = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower_Ptr();
     m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
     m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();
@@ -69,37 +66,22 @@ HRESULT CCircus_Balloon::Initialize(void* pArg)
 
     m_fExplosionPowerOffsetValue = 1.7f;
 
+    XMStoreFloat4(&m_vModelPosition, XMLoadFloat4(&pDesc->_fPosition));
+    _float fPosY = m_vModelPosition.y;
+
+    m_fModelHeightCenterY = fPosY + 0.36f;
+
     return S_OK;
 }
 
 void CCircus_Balloon::Priority_Update(_float fTimeDelta)
 {
-    if (m_fMonsterCurHP <= 0.f && !m_bDead)
-    {
-        m_bDead = true;
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pGameInstance->Add_DeadObjects(TEXT("Layer_Monster_Building"), this, m_pGameInstance->Get_Current_Level_Index());
-        return;
-    }
 }
 
 void CCircus_Balloon::Update(_float fTimeDelta)
 {
     if (m_bDead)
         return;
-
-    _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
-    
-    XMStoreFloat4(&m_vModelPosition, vPosition);
-    _float fPosY = XMVectorGetY(vPosition);
-
-    m_fModelHeightCenterY = fPosY + 0.36f;
-
-
-    //if (m_fMonsterCurHP <= 0.0f)
-    //    m_bHitted = true;
-    ////
 
     if (!m_bUpdating)
     {
@@ -126,18 +108,21 @@ void CCircus_Balloon::Update(_float fTimeDelta)
             if (m_fWigglingTime >= 3.1f)
             {
                 m_fWigglingTime = 0.0f;
-                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, m_pTransformCom->Get_WorldMatrix_Ptr(), m_pTransformCom->Get_WorldMatrix_Ptr());
+                m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
             }
         }
     }
     else
     {
         m_fDissolveAmount += fTimeDelta * 0.6f;
-        
+
         if (m_fDissolveAmount >= 1.0f)
         {
-              m_bDead = true;
-              m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE);
+            m_bDead = true;
+            m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE);
+
+            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+            m_pGameInstance->Add_DeadObjects(TEXT("Layer_Monster_Building"), this, m_pGameInstance->Get_Current_Level_Index());
         }
     }
 }
@@ -406,17 +391,19 @@ HRESULT CCircus_Balloon::Bind_ShaderResources()
 
 void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    //if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
-    //{
-    //    m_bHP_Bar_Active = true;
-    //    m_fHP_Bar_Active_Timer = 0.f;
-    //    m_fMonsterCurHP -= *m_Player_Attack;
-    //    m_fShieldHP -= (*m_Player_Attack);
-    //
-    //   
-    //}
-    m_bHitted = true;
-    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) && m_fMonsterCurHP > 0.f)
+    {
+        m_bHP_Bar_Active = true;
+        m_fHP_Bar_Active_Timer = 0.f;
+        m_fMonsterCurHP -= *m_Player_Attack;
+        m_fShieldHP -= (*m_Player_Attack);
+    }
+
+    if (m_fMonsterCurHP <= 0.0f)
+    {
+        m_bHitted = true;
+        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    }
 }
 
 void CCircus_Balloon::OnCollision(CGameObject* _pOther, PxContactPair _information)
@@ -467,3 +454,4 @@ void CCircus_Balloon::Free()
 
     Safe_Release(m_pTextureCom);
 }
+
