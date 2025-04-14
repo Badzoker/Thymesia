@@ -599,15 +599,15 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
         return E_FAIL;
 
-    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodSuck_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
         return E_FAIL;
 
-    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodSuck_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
         return E_FAIL;
 
-    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodLine3.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Bat_BloodSuck_Front.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK)))
         return E_FAIL;
 
