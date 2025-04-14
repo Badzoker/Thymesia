@@ -89,7 +89,14 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 				}
 			}
 		}
-	
+		if (m_eRenderType == Engine::TEXT_ALPHA)
+		{
+			m_fAlpha += fTimeDelta;
+			if (1 <= m_fAlpha)
+			{
+				m_fAlpha = 1.f;
+			}
+		}
 
 	}
 }
@@ -134,7 +141,16 @@ HRESULT CUI_ButtonHighlight::Render()
 		m_fTextPosition.x = fMyPos.x - TextSize.x / 2;
 		m_fTextPosition.y = fMyPos.y - TextSize.y / 2;
 		m_fTextPosition.z = fMyPos.z;
-		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
+		switch (m_eRenderType)
+		{
+		case Engine::TEXT_DEFALUT:
+			m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, m_fTextColor, 0.0f, { 0.0f,0.0f }, 1.0f);
+			break;
+		case Engine::TEXT_ALPHA:
+			m_pGameInstance->Render_Alpha(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y },
+				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
+			break;
+		}
 	}
 
 	return S_OK;

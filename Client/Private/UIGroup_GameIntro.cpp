@@ -103,6 +103,7 @@ void CUIGroup_GameIntro::Update(_float fTimeDelta)
 			if (m_TextOpen)
 			{
 				m_pAnyKeyText->Set_OnOff(true); // 텍스트를 출력한다
+				dynamic_cast<CUI_Text*>(m_pAnyKeyText)->Set_TextDrawType(Engine::TEXT_ALPHALOOP);
 				if(m_pGameInstance->isAnyEnter())
 				{
 					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
@@ -119,17 +120,33 @@ void CUIGroup_GameIntro::Update(_float fTimeDelta)
 				_float fTime = 0.2f;
 				m_fButtonOpenTime += fTimeDelta;
 				if (fTime * 1.0f < m_fButtonOpenTime)
+				{
+					dynamic_cast<CUI_Button*>(m_pButton1)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton1->Set_OnOff(true);
+				}
 				if (fTime * 2.0f < m_fButtonOpenTime)
+				{
+					dynamic_cast<CUI_Button*>(m_pButton2)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton2->Set_OnOff(true);
+				}
 				if (fTime * 3.0f < m_fButtonOpenTime)
+				{
+					dynamic_cast<CUI_Button*>(m_pButton3)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton3->Set_OnOff(true);
+				}
 				if (fTime * 4.0f < m_fButtonOpenTime)
+				{
+					dynamic_cast<CUI_Button*>(m_pButton4)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton4->Set_OnOff(true);
+				}
 				if (fTime * 5.0f < m_fButtonOpenTime)
+				{
+					dynamic_cast<CUI_Button*>(m_pButton5)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton5->Set_OnOff(true);
+				}
 				if (fTime * 6.0f < m_fButtonOpenTime)
 				{
+					dynamic_cast<CUI_Button*>(m_pButton6)->Set_TextDrawType(Engine::TEXT_ALPHA);
 					m_pButton6->Set_OnOff(true);
 					m_ButtonOpen = false;
 					m_OpenComplete = true;

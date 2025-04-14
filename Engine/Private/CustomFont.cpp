@@ -13,6 +13,21 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
     m_pBatch = new SpriteBatch(m_pContext);
 
+    /*텍스트 알파 블렌딩*/
+    m_BlendDesc.RenderTarget->BlendEnable = true;
+    m_BlendDesc.RenderTarget->SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    m_BlendDesc.RenderTarget->DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    m_BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    m_BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    m_BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    m_BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    m_BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+
+
+
+    m_pDevice->CreateBlendState(&m_BlendDesc, &m_pBlendState);
+
     ///*폰트 깊이 버퍼 활성화 용도였는데 필요 없어서 사용X*/
     //m_Desc.DepthEnable = TRUE;
     //m_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -112,6 +127,22 @@ HRESULT CCustomFont::Render_Color(const _tchar* pText1, const _tchar* pText2, co
     return S_OK;
 }
 
+HRESULT CCustomFont::Render_Alpha(const _tchar* pText, const _float2& vPosition, _float4 vColor, _float fRotation, const _float2& vOrigin, const _float fScale, float layerDepth, SpriteEffects effects)
+{
+    if (nullptr == m_pFont ||
+        nullptr == m_pBatch)
+        return E_FAIL;
+
+
+    m_pBatch->Begin(SpriteSortMode_Deferred, m_pBlendState);
+
+    m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, 0.0f);
+
+    m_pBatch->End();
+
+    return S_OK;
+}
+
 _float2 CCustomFont::Get_TextSize(const _tchar* pText)
 {
     _float2 fSize = { XMVectorGetX(m_pFont->MeasureString(pText)),XMVectorGetY(m_pFont->MeasureString(pText)) };
@@ -140,8 +171,9 @@ void CCustomFont::Free()
     Safe_Delete(m_pBatch);
     Safe_Delete(m_pFont);
 
+    Safe_Release(m_pBlendState);
     Safe_Release(m_pContext);
-    Safe_Release(m_pDevice);
+    Safe_Release(m_pDevice); 
     //Safe_Release(m_pDepthStencil);
 
 

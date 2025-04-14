@@ -382,7 +382,7 @@ void CUIGroup_Skill::Condition_Text_Update(ITEM_TYPE eItemtype, _bool bCheck)
 			{
 				TextBox->Set_OnOff(true);
 				wsprintf(ChangeText, Text, iCount);
-				TextBox->Set_TextDrawType(CUI_Text::TEXT_TWOCOLOR);
+				TextBox->Set_TextDrawType(Engine::TEXT_TWOCOLOR);
 				TextBox->Set_Content(ChangeText);
 				TextBox->Set_Content2(TEXT(" / 3")); 
 				TextBox->Set_Change_TextColor2(FONT_WHITE);

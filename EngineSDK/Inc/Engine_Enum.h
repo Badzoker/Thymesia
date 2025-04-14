@@ -62,6 +62,16 @@ namespace Engine
 		UI_TEXTPLAYER,
 		UI_END
 	};
+	enum TextDrawEffect
+	{
+		TEXT_DEFALUT,
+		TEXT_SHADOW,
+		TEXT_OUTLINE,
+		TEXT_TWOCOLOR,
+		TEXT_ALPHA,
+		TEXT_ALPHALOOP,
+		FONT_END
+	};
 
 	enum class BINARY {
 		BINARY_SAVE,

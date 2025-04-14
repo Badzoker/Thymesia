@@ -4,11 +4,6 @@
 BEGIN(Engine)
 class ENGINE_DLL CUI_Text abstract : public CUIObject
 {
-public:
-	enum TextDrawEffect
-	{
-		TEXT_DEFALUT, TEXT_SHADOW, TEXT_OUTLINE,TEXT_TWOCOLOR, FONT_END
-};
 protected:
 	CUI_Text(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	CUI_Text(const CUI_Text& Prototype);
