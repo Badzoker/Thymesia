@@ -83,7 +83,17 @@ void CBone::Update_CombinedTransformationMatrix(const vector<class CBone*>& Bone
 			XMVECTOR gravity = XMVectorSet(0.f, -9.8f, 0.f, 0.f);
 
 			/* Verlet 적분 */
-			_vector vNext = XMLoadFloat4x4(&m_matrixFirstCombine).r[3] + (XMLoadFloat4x4(&m_CombinedTransformationMatrix).r[3] - XMLoadFloat4x4(&m_matrixFirstCombine).r[3]) * 0.1f + gravity * fTimeDelta * fTimeDelta;// *fTimeDelta;	
+			_vector vNext = XMLoadFloat4x4(&m_matrixFirstCombine).r[3] + (XMLoadFloat4x4(&m_CombinedTransformationMatrix).r[3] - XMLoadFloat4x4(&m_matrixFirstCombine).r[3]) * 0.1f + gravity * fTimeDelta * fTimeDelta;// *fTimeDelta;	;	
+
+			_vector delta = vNext - XMLoadFloat4x4(&Bones[m_iParentBoneIndex]->m_CombinedTransformationMatrix).r[3];
+			float dist = XMVectorGetX(XMVector3Length(delta));
+
+			if (dist > 10.f)
+			{
+				XMVECTOR dir = XMVector3Normalize(delta);
+				float diff = dist - m_fDistanceWithParent;
+				vNext -= dir * diff;
+			}
 
 			m_matrixFirstCombine._41 = vNext.m128_f32[0];
 			m_matrixFirstCombine._42 = vNext.m128_f32[1];
@@ -91,18 +101,18 @@ void CBone::Update_CombinedTransformationMatrix(const vector<class CBone*>& Bone
 			m_matrixFirstCombine._44 = 1.f;
 			test.r[3] = vNext;
 
-			//망토가 늘어지는 경우를 어떻게하지..
+			//망토가 늘어지는 경우를 어떻게하지..		
 
 			XMStoreFloat4x4(&m_CombinedTransformationMatrix, test);
 
 		}
 		else
 		{
-			XMStoreFloat4x4(&m_PreCombinedTransformationMatrix, XMLoadFloat4x4(&m_CombinedTransformationMatrix));	// 이전 컴바인 저장 
+
+			XMStoreFloat4x4(&m_PreCombinedTransformationMatrix, XMLoadFloat4x4(&m_CombinedTransformationMatrix));	// 이전 컴바인 저장	
 
 			XMStoreFloat4x4(&m_CombinedTransformationMatrix,
 				XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&Bones[m_iParentBoneIndex]->m_CombinedTransformationMatrix));
-
 
 		}
 	}
@@ -156,9 +166,6 @@ HRESULT CBone::Load_Bone(istream& os)
 	os.read(m_szName, sizeof(_char) * MAX_PATH);
 	os.read((char*)&m_iParentBoneIndex, sizeof(_int));
 	os.read((char*)&m_TransformationMatrix, sizeof(_float4x4));
-
-	//if (!strcmp(m_szName, "Bip001-Xtra05Opp"))
-	//	int a = 4; 
 
 	return S_OK;
 }

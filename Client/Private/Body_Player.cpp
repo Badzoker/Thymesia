@@ -687,6 +687,12 @@ HRESULT CBody_Player::STATE_NORMAL_Render()
                 return E_FAIL;
 
 
+            if (i == 2)
+            {
+                m_pShaderCom->Begin(9);
+                m_pModelCom->Render(i);
+            }
+
             m_pShaderCom->Begin(0);
             m_pModelCom->Render(i);
         }
@@ -765,6 +771,12 @@ HRESULT CBody_Player::STATE_ATTACK_LONG_CLAW_Render()
 
             if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네 
                 return E_FAIL;
+
+            if (i == 2)
+            {
+                m_pShaderCom->Begin(9);
+                m_pModelCom->Render(i);
+            }
 
             m_pShaderCom->Begin(0);
             m_pModelCom->Render(i);

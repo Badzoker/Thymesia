@@ -104,6 +104,12 @@ HRESULT CBody_Varg::Render()
         if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네
             return E_FAIL;
 
+        if (i == 3)
+        {
+            m_pShaderCom->Begin(9);
+            m_pModelCom->Render(i);
+        }
+
         m_pShaderCom->Begin(0);
         m_pModelCom->Render(i);
     }
