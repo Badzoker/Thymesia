@@ -197,14 +197,14 @@ void CGhostAisemy::Culling()
 
 void CGhostAisemy::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    _vector vItemPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    vItemPos = XMVectorSetY(vItemPos, XMVectorGetY(vItemPos) + 1.0f);
+    _vector vGhosemyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    vGhosemyPos = XMVectorSetY(vGhosemyPos, XMVectorGetY(vGhosemyPos) + 1.0f);
 
-    _float4 vItemPosition;
-    XMStoreFloat4(&vItemPosition, vItemPos);
+    _float4 vGhosemyPosition;
+    XMStoreFloat4(&vGhosemyPosition, vGhosemyPos);
 
-    m_pButton->Set_WorldPosition(vItemPosition);
-    m_pButton->Set_ButtonText(TEXT("E"), TEXT("작업걸기"));
+    m_pButton->Set_WorldPosition(vGhosemyPosition);
+    m_pButton->Set_ButtonText(TEXT("E"), TEXT("대화"));
     m_pButton->Activate_Button(true);
 }
 
@@ -235,54 +235,29 @@ void CGhostAisemy::Setting_Approach(_float _fTimeDelta)
 {
     m_pLamp->LightUp_Lamp(false);
 
-    //m_fApproachTime -= _fTimeDelta;
-
-    //if (m_fApproachTime <= 0.0f)
-    //{
-    //    m_fApproachTime = 2.0f;
-
-    //}
-
     if (m_pBody_GhoSemy->IsAnimationFinish())
         m_iState = STATE_GOSEMY_LIGHT_ON;
 }
 
 void CGhostAisemy::Setting_LightOn(_float _fTimeDelta)
 {
-    //m_fLightOnTime -= _fTimeDelta;
-
-    //if (m_fLightOnTime <= 0.0f)
-    //{
-    //    m_fLightOnTime = 2.0f;
-
-    //}
     m_iState = STATE_GOSEMY_LIGHT_LOOP;
 }
 
 void CGhostAisemy::Setting_LightOff(_float _fTimeDelta)
 {
-    //m_iState = STATE_GOSEMY_LIGHT_OFF;
-
     m_bColliderOn = true;
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     m_pLamp->LightUp_Lamp(false);
-
 }
 
 void CGhostAisemy::Setting_LightLoop(_float _fTimeDelta)
 {
-    //m_pBody_GhoSemy->Set_AnimationStop(true);
-
     m_bColliderOn = false;
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
-
-
     m_iState = STATE_GOSEMY_LIGHT_LOOP;
-
-
     m_pLamp->LightUp_Lamp(true);
-
 }
 
 CGhostAisemy* CGhostAisemy::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)

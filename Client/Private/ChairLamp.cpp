@@ -95,7 +95,7 @@ void CChairLamp::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         XMStoreFloat4(&vLampPosition, vLampPos);
 
         m_pButton->Set_WorldPosition(vLampPosition);
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("서나나만져줘"));
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("비콘 활성화"));
         m_pButton->Activate_Button(true);
         m_bInteractOn = true;
         m_bFadingIn = true;

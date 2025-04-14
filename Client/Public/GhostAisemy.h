@@ -60,8 +60,8 @@ public:
 	void							Setting_LightOff(_float _fTimeDelta);
 	void							Setting_LightLoop(_float _fTimeDelta);
 
-	CLamp* Get_SemyLamp()const { return m_pLamp; }
-	CBody_GhostSemy* Get_SemyBody() const { return m_pBody_GhoSemy; }
+	CLamp*							Get_SemyLamp()const { return m_pLamp; }
+	CBody_GhostSemy*				Get_SemyBody() const { return m_pBody_GhoSemy; }
 
 private:
 	_float4                         m_vPlayerPos = {};
@@ -84,25 +84,21 @@ private:
 	_uint							m_iState = {};
 	LEVELID							m_eMyLevel = {};
 private:
-	//_float							m_fLightOnTime = {};
-	//_float							m_fApproachTime = {};
-
-	CBody_GhostSemy* m_pBody_GhoSemy = { nullptr };
-	CLamp* m_pLamp = { nullptr };
+	CBody_GhostSemy*				m_pBody_GhoSemy = { nullptr };
+	CLamp*							m_pLamp = { nullptr };
 private:
-	const _float4x4* m_pRootMatrix = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
-	PxRigidDynamic* m_pActor = { nullptr };
+	const _float4x4*				m_pRootMatrix = { nullptr };
+	CModel*							m_pModelCom = { nullptr };
+	CNavigation*					m_pNavigationCom = { nullptr };
+	PxRigidDynamic*					m_pActor = { nullptr };
 
 protected:
-	CGameObject* m_pButtonGameObject = { nullptr };
-	CButton* m_pButton = { nullptr };
+	CGameObject*					m_pButtonGameObject = { nullptr };
+	CButton*						m_pButton = { nullptr };
 
 public:
-	static CGhostAisemy* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CGameObject* Clone(void* pArg) override;
+	static CGhostAisemy*			Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
 	virtual void					Free() override;
-
 };
 END

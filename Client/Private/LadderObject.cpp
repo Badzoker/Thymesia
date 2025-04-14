@@ -98,7 +98,7 @@ void CLadderObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
 
     if (!strncmp(m_szName, "P_Ladder02_Up", 13))
     {
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("내려갈래"));
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("내려가기"));
         m_pButton->Activate_Button(true);
         m_bInteractOn = true;
         m_bFadingIn = true;
@@ -106,7 +106,7 @@ void CLadderObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
     }
     else if (!strncmp(m_szName, "P_Ladder02_Down", 15))
     {
-        m_pButton->Set_ButtonText(TEXT("E"), TEXT("올라갈래"));
+        m_pButton->Set_ButtonText(TEXT("E"), TEXT("올라가기"));
         m_pButton->Activate_Button(true);
         m_bInteractOn = true;
         m_bFadingIn = true;
