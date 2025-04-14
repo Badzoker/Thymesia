@@ -129,7 +129,35 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 9: //WeaponDisappear
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
+	//case 10: //WeaponDisappear
+	//	m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+	//	break;
+	//case 11: //WeaponDisappear
+	//	m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
+	//	break;
+	case 12: //BLOOD_SUCKER
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		break;
 	}
+}
+
+HRESULT CEffect_Mesh::Render()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
+		return E_FAIL;
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Begin(m_iShaderPass);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
 }
 
 HRESULT CEffect_Mesh::Render_Distortion()
@@ -138,8 +166,6 @@ HRESULT CEffect_Mesh::Render_Distortion()
 		return E_FAIL;
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{

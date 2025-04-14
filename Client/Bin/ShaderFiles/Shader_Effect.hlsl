@@ -881,6 +881,64 @@ void GS_MAIN_MAGNITUDE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS
 }
 
 
+PS_OUT PS_MAIN_BLOODSUCKER(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    float2 vMtrlTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
+    vMtrlTexcoord.y -= 1.0f * g_TimeY;
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMtrlTexcoord) * fMask;
+    
+    float2 noiseUV = In.vTexcoord + float2(g_TimeX * 0.1f, g_TimeY * 0.1f);
+    
+    float noiseValue = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+    
+    float g_EdgeWidth = 0.3f;
+    float edgeFactor = smoothstep(g_DissolveAmount - g_EdgeWidth, g_DissolveAmount, noiseValue);
+    
+    float4 g_EdgeColor = { 1.f, 1.f, 0.f, 1.f };
+    float edgeStrength = 1.0 - edgeFactor; 
+    float4 edgeBlend = lerp(vMtrlDiffuse, g_EdgeColor, edgeStrength);
+    float4 finalColor = lerp(vMtrlDiffuse, edgeBlend, edgeStrength);
+    
+    if (noiseValue < g_DissolveAmount)
+    {
+        float alphaFactor = saturate((noiseValue - (g_DissolveAmount - g_EdgeWidth)) / g_EdgeWidth);
+        finalColor.a *= alphaFactor;
+
+        if (finalColor.a < 0.01f) 
+            clip(-1);
+    }
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    float blendFactor = 0.f; 
+    
+    float3 vRGB = float3(g_vRGB);
+
+    vMtrlDiffuse.a *= (1.0f - saturate(g_TimeX / g_fMaxTimer));
+    
+    Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f);
+    if (Out.vDiffuse.a < 0.01f || length(Out.vDiffuse.rgb) < 0.1f)
+        discard;
+    
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+	
+    return Out;
+}
+
+
 
 // ============================================================= DESTRUCT ÇÈ¼¿ ½¦ÀÌ´õ ºÎ¹® =============================================================
 
@@ -1066,6 +1124,30 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_TRAIL_DISAPPEAR();
+    }
+
+
+    pass Blood_Disappear //11 Trail_Disappear
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_TRAIL_DISAPPEAR();
+    }
+
+
+    pass BLOOD_SUCKER   //12 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BLOODSUCKER();
     }
 
 
