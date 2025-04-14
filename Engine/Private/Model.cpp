@@ -53,6 +53,24 @@ _uint CModel::Get_BoneIndex(const _char* pBoneName) const
 	return iBondeIndex;	
 }
 
+void CModel::Set_BoneType(const _char* pBoneName, BONE_TYPE _eBoneType, _bool bUpdateOnOff)
+{
+	_uint iBondeIndex = {};
+
+	auto iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool {
+		if (false == strcmp(pBone->Get_Name(), pBoneName))
+			return true;
+		++iBondeIndex;
+		return false; });
+
+	if (iter == m_Bones.end())
+	{
+		MSG_BOX("Failed to Find : Bone");
+	}
+
+	m_Bones[iBondeIndex]->Set_Dynamic_Bone(bUpdateOnOff);
+}
+
 const _float4x4* CModel::Get_BoneMatrix(const _char* pBoneName) const
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool {
@@ -277,7 +295,7 @@ _bool CModel::Play_Animation(_float fTimeDelta)
 
 		for (auto& pBone : m_Bones)
 		{
-			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix), fTimeDelta);	
 		}
 
 	}
@@ -321,7 +339,7 @@ _bool CModel::Play_Animation(_float fTimeDelta)
 
 		for (auto& pBone : m_Bones)
 		{
-			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix), fTimeDelta);	
 		}
 
 	}

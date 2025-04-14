@@ -46,6 +46,36 @@ HRESULT CBody_Player::Initialize(void* pArg)
         return E_FAIL;
 
 
+    /* 플레이어 다이나믹 본 설정하는 코드 */
+    //m_pModelCom->Set_BoneType("Bip001-Xtra04Opp",    BONE_TYPE::DYNAMIC_BONE, false);       
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp02", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp03", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp04", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp05", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp06", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp07", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp08", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Opp09", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05OppNub", BONE_TYPE::DYNAMIC_BONE, false);
+
+
+
+    //m_pModelCom->Set_BoneType("Bip001-Xtra04",    BONE_TYPE::DYNAMIC_BONE, false);  // 애만 계속 업데이트    	    
+    m_pModelCom->Set_BoneType("Bip001-Xtra05", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0502", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0503", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0504", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0505", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0506", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0507", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0508", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra0509", BONE_TYPE::DYNAMIC_BONE, false);
+    m_pModelCom->Set_BoneType("Bip001-Xtra05Nub", BONE_TYPE::DYNAMIC_BONE, false);
+
+
+
+
     m_pModelCom->SetUp_Animation(0, true);
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에

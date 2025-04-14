@@ -1503,6 +1503,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			m_iPhaseState &= ~CPlayer::PHASE_EXECUTION;	  // 3¿ù 19ÀÏ 
 			m_iPhaseState &= ~CPlayer::PHASE_HEAL;
 			m_iPhaseState &= ~CPlayer::PHASE_SPRINT;
+			m_iPhaseState &= ~CPlayer::PHASE_LADDER;	
 
 
 			if (!(m_iPhaseState & PHASE_DEAD))
@@ -1943,22 +1944,24 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 	{
 		if (m_pGameInstance->isKeyEnter(DIK_E))
 		{
+			if (m_pModel->Get_VecAnimation().at(46)->isAniMationFinish())
+			{
+				_float4 fLadderLookDir = {};
+				_float4 fLadderUpDir = {};
+				_float4 fLadderPos = {};
+				const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+				fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
+				fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
+				fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
 
-			_float4 fLadderLookDir = {};
-			_float4 fLadderUpDir = {};
-			_float4 fLadderPos = {};
-			const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
-			fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
-			fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
-			fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
+				m_pStateMgr->Get_VecState().at(59)->Set_MonsterLookDir(fLadderLookDir);
+				m_pStateMgr->Get_VecState().at(59)->Set_MonsterUpDir(fLadderUpDir);
+				m_pStateMgr->Get_VecState().at(59)->Set_GetMonsterPos(fLadderPos);
+				m_pStateMgr->Get_VecState().at(59)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 
-			m_pStateMgr->Get_VecState().at(59)->Set_MonsterLookDir(fLadderLookDir);
-			m_pStateMgr->Get_VecState().at(59)->Set_MonsterUpDir(fLadderUpDir);
-			m_pStateMgr->Get_VecState().at(59)->Set_GetMonsterPos(fLadderPos);
-			m_pStateMgr->Get_VecState().at(59)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
-
-			m_iState = STATE_LADDER_CLIMB_R_UP_REVERSE_END;
-			m_iPhaseState |= PHASE_LADDER;
+				m_iState = STATE_LADDER_CLIMB_R_UP_REVERSE_END;
+				m_iPhaseState |= PHASE_LADDER;
+			}
 		}
 	}
 
