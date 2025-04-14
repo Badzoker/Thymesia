@@ -48,6 +48,7 @@ private:
 	_bool                            m_bCardActive = {};
 	_bool							 m_bIntro_Body_Render = {};
 	_bool                            m_bIntro_Card_Render = {};
+	_bool                            m_bIntro_Card_Change = {};
 	_bool						     m_bCan_Hit_Motion = {};
 	_bool                            m_bExecution_Progress = {};
 	_bool                            m_bSpecial_Skill_Progress = {};

@@ -20,6 +20,7 @@ public:
 		CModel* pParentModel = { nullptr };
 		_bool* bActive = { nullptr };
 		_bool* bRender = { nullptr };
+		_bool* bChangeModel = { nullptr };
 	};
 private:
 	CProjectile_Intro_Card(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -31,6 +32,7 @@ public:
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 	virtual HRESULT Render_Glow() override;
 public:
 	HRESULT Ready_Components();
@@ -38,13 +40,14 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CModel* m_pExodia_Card_ModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };
 	const _float4x4* m_pSocketMatrix = { nullptr };
 private:
 	const _uint* m_pParentState = { nullptr };
 	const _bool* m_pParentActive = { nullptr };
 	const _bool* m_pRender = { nullptr };
-
+	const _bool* m_pChangeModel = { nullptr };
 public:
 	static CProjectile_Intro_Card* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg) override;

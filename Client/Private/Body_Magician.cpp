@@ -33,7 +33,6 @@ HRESULT CBody_Magician::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pModelCom->SetUp_Animation(75, true);
 
 	return S_OK;
 }
@@ -42,29 +41,36 @@ void CBody_Magician::Priority_Update(_float fTimeDelta)
 {
 	if (*m_IsDissolveOn)
 	{
-		m_fDissolveOn_Timer += fTimeDelta * 3.f;
-		m_fDissolveOn_FinishTime += fTimeDelta * 3.f;
+		m_eDissolveState = DISSOLVE_ON;
+	}
+	else if (*m_IsDissolveOff)
+	{
+		m_eDissolveState = DISSOLVE_OFF;
 	}
 	else
 	{
-		m_fDissolveOn_Timer = 0.f;
-		m_fDissolveOn_FinishTime = 0.f;
+		m_eDissolveState = DISSOLVE_NONE;
 	}
 
-	if (*m_IsDissolveOff)
+	switch (m_eDissolveState)
 	{
-		m_fDissolveOff_Timer -= fTimeDelta * 3.f;
-		m_fDissolveOff_FinishTime -= fTimeDelta * 3.f;
-		if (m_fDissolveOff_Timer <= 0.f)
+	case eDissolveState::DISSOLVE_ON:
+		m_fDissolveTimer += fTimeDelta * 2.f;
+		m_fDissolveTimer = min(m_fDissolveTimer, 1.5f);
+		break;
+
+	case eDissolveState::DISSOLVE_OFF:
+		m_fDissolveTimer -= fTimeDelta * 2.f;
+		m_fDissolveTimer = max(m_fDissolveTimer, 0.f);
+
+		if (m_fDissolveTimer <= 0.f)
 		{
-			m_fDissolveOff_Timer = 0.f;
-			m_fDissolveOff_FinishTime = 0.f;
+			m_eDissolveState = eDissolveState::DISSOLVE_NONE;
 		}
-	}
-	else
-	{
-		m_fDissolveOff_Timer = 1.f;
-		m_fDissolveOff_FinishTime = 1.f;
+		break;
+
+	case eDissolveState::DISSOLVE_NONE:
+		break;
 	}
 
 }
@@ -112,34 +118,24 @@ HRESULT CBody_Magician::Render()
 		if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, i, "g_BoneMatrices")))   // 여기서 이동값을 없애줘야겟네
 			return E_FAIL;
 
-		if (*m_IsDissolveOn)
+
+		if (m_eDissolveState != eDissolveState::DISSOLVE_NONE)
 		{
 			m_iPassNum = 5;
-			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 13)))
 				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOn_Timer, sizeof(_float))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveTimer, sizeof(_float))))
 				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOn_FinishTime, sizeof(_float))))
-				return E_FAIL;
-		}
-		else if (*m_IsDissolveOff)
-		{
-			m_iPassNum = 5;
-			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
-				return E_FAIL;
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDissolveOff_Timer, sizeof(_float))))
-				return E_FAIL;
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveOff_FinishTime, sizeof(_float))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolveTimer, sizeof(_float))))
 				return E_FAIL;
 		}
 		else
+		{
 			m_iPassNum = 0;
-
-
+		}
 
 		m_pShaderCom->Begin(m_iPassNum);
 		m_pModelCom->Render(i);

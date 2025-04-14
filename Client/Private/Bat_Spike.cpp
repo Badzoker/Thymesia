@@ -38,11 +38,11 @@ HRESULT CBat_Spike::Initialize(void* pArg)
         return E_FAIL;
 
 
-    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.8f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER_WEAPON;
 
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 
@@ -57,6 +57,7 @@ void CBat_Spike::Priority_Update(_float fTimeDelta)
 {
     if (*m_pRender)
     {
+        m_pGameInstance->Add_Actor_Scene(m_pActor);
         m_fLinear += fTimeDelta * 0.2f;
         if (m_fLinear >= 1.f)
             m_fLinear = 1.f;
@@ -71,12 +72,17 @@ void CBat_Spike::Priority_Update(_float fTimeDelta)
         }
     }
     else
+    {
+        m_bFirst = false;
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
         m_fLinear = 0.f;
-
+    }
 }
 
 void CBat_Spike::Update(_float fTimeDelta)
 {
+    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });
 }
 
 void CBat_Spike::Late_Update(_float fTimeDelta)
@@ -142,6 +148,11 @@ HRESULT CBat_Spike::Bind_ShaderResources()
 
 void CBat_Spike::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+    if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
+    {
+        //추가예정.
+
+    }
 }
 
 void CBat_Spike::OnCollision(CGameObject* _pOther, PxContactPair _information)

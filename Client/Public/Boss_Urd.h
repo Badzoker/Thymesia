@@ -45,7 +45,8 @@ private:
 	_bool                            m_bNeed_Memory_Position[STACK_END] = {};
 	_bool							 m_bIs_Equipped_To_LeftHand[STACK_END] = {};
 	_bool							 m_bIs_Stand_In_Ground[STACK_END] = {};
-	_bool							 m_bNeed_Fly_To_Player[STACK_END] = {};
+	_bool						     m_bCreate_Collider[STACK_END] = {};
+	_bool						     m_bCreate_Large_Collider = {};
 
 private:
 	_bool							 m_bPattern70 = {};
@@ -62,7 +63,6 @@ private:
 	_bool							 m_bNeed_Decide_Step_Num = { true };
 
 	_float                           m_fSpecial_Skill_CoolTime = {};
-	_float                           m_fSlash_Skill_CoolTime = {};
 
 	_uint                            m_iNearPatternIndex = -1;
 	_uint                            m_iFarPatternIndex = -1;

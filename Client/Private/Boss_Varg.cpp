@@ -72,6 +72,8 @@ HRESULT CBoss_Varg::Initialize(void* pArg)
 
     m_pGameObjectModel = m_pModelCom;
 
+    m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_GREADSWORD;
+
     return S_OK;
 }
 

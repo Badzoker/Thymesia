@@ -498,6 +498,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Card/Projectile_Card.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Exodia_Card"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Card/Exodia.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician_Body"),
 		CBody_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -964,7 +969,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	//몬스터용 노이즈 텍스쳐 /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise6.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 19))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Emissive"),

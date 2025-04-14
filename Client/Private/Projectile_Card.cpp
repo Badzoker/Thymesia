@@ -76,6 +76,9 @@ HRESULT CProjectile_Card::Render_Glow()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
             return E_FAIL;
 
+        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+
         m_pShaderCom->Begin(15);
         m_pModelCom->Render(i);
     }

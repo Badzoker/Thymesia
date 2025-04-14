@@ -73,6 +73,8 @@ HRESULT CBoss_Magician::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_CANESWORD;
+
 	return S_OK;
 }
 
@@ -233,6 +235,7 @@ HRESULT CBoss_Magician::Ready_PartObjects(void* pArg)
 	Projectile_Intro_Desc.pParent = this;
 	Projectile_Intro_Desc.bActive = &m_bActive;
 	Projectile_Intro_Desc.bRender = &m_bIntro_Card_Render;
+	Projectile_Intro_Desc.bChangeModel = &m_bIntro_Card_Change;
 	Projectile_Intro_Desc.pParentModel = m_pModelCom;
 	Projectile_Intro_Desc.pParentState = &m_iMonster_State;
 	Projectile_Intro_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -538,6 +541,13 @@ void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician
 {
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 180.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 210.f)
+		{
+			pObject->m_bIntro_Card_Change = true;
+		}
+		else
+			pObject->m_bIntro_Card_Change = false;
+
 
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 300.f && !pObject->m_bIntro_Body_Render)
 		{
@@ -596,7 +606,6 @@ void CBoss_Magician::Move_State::State_Enter(CBoss_Magician* pObject)
 	else if (pObject->m_fDistance <= 1.5f)
 	{
 		iRandomMove = rand() % 3;
-		iRandomMove = 1;
 		switch (iRandomMove)
 		{
 		case 0:
@@ -653,6 +662,7 @@ void CBoss_Magician::Stun_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_STUN;
 	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_MAGICIAN;
 	pObject->m_bCan_Move_Anim = true;
+	pObject->m_iHitCount = 0;
 	pObject->RotateDegree_To_Player();
 
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
@@ -968,6 +978,7 @@ void CBoss_Magician::Attack_ComboC::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_Attack_Power = 48;
 	pObject->m_iPlayer_Hitted_State = PLAYER_HURT_HURTMFL;
 	pObject->RotateDegree_To_Player();
+	pObject->m_bCane_Collider_On = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -977,6 +988,7 @@ void CBoss_Magician::Attack_ComboC::State_Update(_float fTimeDelta, CBoss_Magici
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 150.f)
 		{
+			pObject->m_bCane_Collider_On = false;
 			pObject->RotateDegree_To_Player();
 			pObject->m_iMonster_State = STATE_KICK_ATTACK;
 			pObject->m_iPlayer_Hitted_State = PLAYER_HURT_KnockBackF;
@@ -1147,10 +1159,16 @@ void CBoss_Magician::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Magi
 {
 	if (m_iIndex == 63 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
+		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 150.f && !pObject->m_IsDissolveOn)
+		{
+			pObject->m_IsDissolveOn = true;
+		}
+
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
 			if (pObject->m_iPhase == PHASE_ONE)
 			{
+				pObject->m_pTransformCom->LookAt(XMLoadFloat4(&pObject->m_vPlayerPos));
 				pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 				pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 				pObject->m_pState_Manager->ChangeState(new Phase_Change_State(), pObject);
@@ -1233,18 +1251,22 @@ void CBoss_Magician::Dissappear_Move_State::State_Enter(CBoss_Magician* pObject)
 	case 0:
 		//앞으로 이동
 		m_iIndex = 70;
+		pObject->m_bCan_Move_Anim = false;
 		break;
 	case 1:
 		//뒤로 이동
 		m_iIndex = 68;
+		pObject->m_bCan_Move_Anim = true;
 		break;
 	case 2:
 		//왼쪽 이동
 		m_iIndex = 72;
+		pObject->m_bCan_Move_Anim = true;
 		break;
 	case 3:
 		//오른쪽으로 이동
 		m_iIndex = 74;
+		pObject->m_bCan_Move_Anim = true;
 		break;
 	default:
 		break;
@@ -1253,7 +1275,6 @@ void CBoss_Magician::Dissappear_Move_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_IsDissolveOn = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-	pObject->m_bCan_Move_Anim = true;
 }
 
 void CBoss_Magician::Dissappear_Move_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -1451,13 +1472,21 @@ void CBoss_Magician::Attack_Special_Catch::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_Special_Catch::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
-	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 290.f)
+	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
-		pObject->Is_Change_Sword_Bone = false;
-	}
-	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
-	{
-		pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Dissappear_Move_State(1), pObject);
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 290.f)
+		{
+			pObject->Is_Change_Sword_Bone = false;
+		}
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 380.f)
+		{
+			pObject->m_IsDissolveOn = true;
+		}
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			pObject->m_pTransformCom->LookAt(XMLoadFloat4(&pObject->m_vPlayerPos));
+			pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Dissappear_Move_State(1), pObject);
+		}
 	}
 }
 
@@ -1466,7 +1495,8 @@ void CBoss_Magician::Attack_Special_Catch::State_Exit(CBoss_Magician* pObject)
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 	pObject->m_bSpecial_Skill_Progress = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-	pObject->m_bCan_Move_Anim = true;
+	pObject->m_bCan_Move_Anim = false;
+	pObject->m_bCatch_Special_Attack = false;
 }
 #pragma endregion
 
@@ -1748,11 +1778,6 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 		{
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Dissappear_Move_State(1), pObject);
 		}
-
-		/*if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
-		{
-
-		}*/
 	}
 }
 

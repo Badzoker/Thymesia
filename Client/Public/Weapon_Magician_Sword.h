@@ -24,6 +24,13 @@ class CWeapon_Magician_Sword final : public CPartObject
 		COLLIDER_BURST,
 		COLLIDER_END
 	};
+
+	enum eDissolveState
+	{
+		DISSOLVE_NONE,           // 아무것도 안 하는 상태
+		DISSOLVE_ON,    // 사라지는 중
+		DISSOLVE_OFF    // 나타나는 중
+	};
 public:
 	struct MAGICIAN_SWORD_DESC : public CPartObject::PARTOBJECT_DESC
 	{
@@ -72,13 +79,10 @@ private:
 	_bool* m_bSpecial_Skill_Progress = { nullptr };
 	_bool* m_bCatch_Special_Attack = { nullptr };
 	_bool  m_bColliderOff = {};
-	_uint  m_iPassNum = {};
-
-	_float m_fTimeDelta = { 0.f };
-	_float m_fDissolveOn_Timer = {};
-	_float m_fDissolveOff_Timer = {};
-	_float m_fDissolveOn_FinishTime = 1.f;
-	_float m_fDissolveOff_FinishTime = 1.f;
+private:
+	eDissolveState m_eDissolveState = DISSOLVE_NONE;
+	_float m_fDissolveTimer = 0.f; // 공용으로 사용
+	_uint m_iPassNum = {};
 private:
 	const _uint* m_pParentState = { nullptr };
 public:

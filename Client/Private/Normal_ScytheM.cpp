@@ -67,6 +67,8 @@ HRESULT CNormal_ScytheM::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_SCYTHE;
+
     return S_OK;
 
 }

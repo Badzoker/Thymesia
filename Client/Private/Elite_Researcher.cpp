@@ -72,6 +72,9 @@ HRESULT CElite_Researcher::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+
+    m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_CANESWORD;
+
     return S_OK;
 }
 

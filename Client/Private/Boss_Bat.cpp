@@ -34,7 +34,7 @@ HRESULT CBoss_Bat::Initialize(void* pArg)
 	m_Is_Boss = true;
 	m_fRotateSpeed = 180.f;
 	m_fRootDistance = 4.5f;
-	m_fActive_Distance = 15.f;
+	m_fActive_Distance = 25.f;
 
 	Load_Spike_SpawnPoints();
 
@@ -65,6 +65,8 @@ HRESULT CBoss_Bat::Initialize(void* pArg)
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
 
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_SCYTHE;
 
 	return S_OK;
 }

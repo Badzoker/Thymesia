@@ -73,6 +73,8 @@ HRESULT CBoss_Magician2::Initialize(void* pArg)
 
 	m_fCoolTime = 0.2f;
 
+	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_CANESWORD;
+
 	return S_OK;
 }
 
