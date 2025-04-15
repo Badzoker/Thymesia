@@ -1048,6 +1048,8 @@ PS_OUT PS_MAIN_GASBOOMBOOM(PS_IN In)
     
     float3 vRGB = float3(g_vRGB);
 
+    vRGB *= saturate((g_TimeX / g_fMaxTimer)) * 1.4f;
+    
     vMtrlDiffuse.a *= (1.0f - saturate(g_TimeX / g_fMaxTimer));
     
     Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f);
@@ -1056,6 +1058,7 @@ PS_OUT PS_MAIN_GASBOOMBOOM(PS_IN In)
     
     Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.vDiffuse.a = 0.0f;
 	
     return Out;
 }
