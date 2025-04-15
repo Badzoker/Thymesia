@@ -280,6 +280,9 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\EdgeCell">
       <UniqueIdentifier>{9f8079ec-a35b-4399-826a-bdce903704fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\18.Ripple">
+      <UniqueIdentifier>{6edf93ca-1935-4bda-9872-c122069ecc97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -546,6 +549,9 @@
     <ClInclude Include="..\Public\Engine_Enum.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RippleManager.h">
+      <Filter>01.Utility\18.Ripple</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -796,6 +802,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UIObject.cpp">
       <Filter>01.Utility\03.GameObject\UIObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RippleManager.cpp">
+      <Filter>01.Utility\18.Ripple</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,7 @@
 #include "GameObject.h"
 #include "PhysX_Manager.h"
 #include "TriggerManager.h"
+#include "RippleManager.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -126,6 +127,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC & EngineDesc, _Inout_
 	if (nullptr == m_pPhysX_Manager)	
 		return E_FAIL;	
 
+	m_pRipple_Manager = CRippleManager::Create(*ppDevice, *ppContext);
+	if (nullptr == m_pRipple_Manager)
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -171,6 +176,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pEvent_Manager->Update();   //  객체의 삭제와 생성에 대한 매니저. 
 	m_pShadow->Update();	      //  그림자를 비출 광원의 위치 업데이트를 위한 것.  ( 해당 기능은 거의 필요 없을거로 보임 ) 
+	m_pRipple_Manager->Update(fTimeDelta);
 }
 
 HRESULT CGameInstance::Render_Begin(const _float4& vClearColor)
@@ -1088,8 +1094,6 @@ void CGameInstance::Set_Boss_Active(_bool bCheck)
 
 #pragma endregion
 
-#pragma endregion
-
 #pragma region PROJECTILE_MANAGER
 HRESULT CGameInstance::Add_Projectile(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, PROJECTILE_CATEGORY _eCategory, void* _pArg)
 {
@@ -1105,6 +1109,26 @@ HRESULT CGameInstance::Fire_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector 
 	return m_pProjectile_Manager->Fire_Projectile(_eCategory, vStartPos, vEndPos);
 }
 
+#pragma endregion
+
+#pragma region WATER_MANAGER
+
+void CGameInstance::Add_RippleInfo(_float2 vPos, _float fRippleRange)
+{
+	return m_pRipple_Manager->Add_RippleInfo(vPos, fRippleRange);
+}
+
+void CGameInstance::Set_WaterPos(_float2 vWaterPos)
+{
+	return m_pRipple_Manager->Set_WaterPos(vWaterPos);
+}
+
+HRESULT CGameInstance::Bind_RippleSRV(CShader* pShader)
+{
+	return m_pRipple_Manager->Bind_RippleSRV(pShader);
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {
@@ -1122,6 +1146,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pEvent_Manager);	
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pProjectile_Manager);
+	Safe_Release(m_pRipple_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pItemMgr);	

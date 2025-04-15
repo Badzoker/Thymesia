@@ -18,6 +18,7 @@ float2 g_WindDirection;
 Texture2D g_RefractionTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ReflectionTexture;
+Texture2D g_RippleTexture;
 
 int g_FresnelMode;
 
@@ -28,8 +29,14 @@ float g_dullBlendFactor;
 float specPerturb;
 float specPower;
 
-//float3 g_LightDir;
- 
+struct Ripple
+{
+    float2 g_RippleCenter;
+    float2 g_Ripplefactor;
+};
+
+StructuredBuffer<Ripple> g_Ripples;
+int g_RippleCount;
 
 struct VS_IN
 {
@@ -47,6 +54,7 @@ struct VS_OUT
     float4 RefractionMapSamplingPos : TEXCOORD3;
     float4 wPosition : TEXCOORD4;
     float4 vProjPos : TEXCOORD5;
+    float2 vNoiseSamplingPos : TEXCOORD6;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -55,12 +63,12 @@ VS_OUT VS_MAIN(VS_IN In)
     
     float4 displacedPos = float4(In.vPosition, 1.f);
     
-    float dhdx = cos(displacedPos.x * g_WaveFrequency + g_fTime * g_WaveSpeed) * g_WaveFrequency * g_WaveAmplitude;
-    float dhdz = -sin(displacedPos.z * g_WaveFrequency + g_fTime * g_WaveFrequency) * g_WaveFrequency * g_WaveAmplitude;
+    //float dhdx = cos(displacedPos.x * g_WaveFrequency + g_fTime * g_WaveSpeed) * g_WaveFrequency * g_WaveAmplitude;
+    //float dhdz = -sin(displacedPos.z * g_WaveFrequency + g_fTime * g_WaveFrequency) * g_WaveFrequency * g_WaveAmplitude;
     
-    float3 tangentX = normalize(float3(1, dhdx, 0));
-    float3 tangentZ = normalize(float3(0, dhdz, 1));
-    Out.vNormal = float4(normalize(cross(tangentZ, tangentX)), 1.f);
+    //float3 tangentX = normalize(float3(1, dhdx, 0));
+    //float3 tangentZ = normalize(float3(0, dhdz, 1));
+    //Out.vNormal = float4(normalize(cross(tangentZ, tangentX)), 1.f);
     
     float4x4 VP = mul(g_ViewMatrix, g_ProjMatrix);
     float4x4 WVP = mul(g_WorldMatrix, VP);
@@ -78,6 +86,7 @@ VS_OUT VS_MAIN(VS_IN In)
     
     Out.BumpMapSamplingPos = rotatedTexCoords.xy / g_WaveFrequency + (g_fTime * g_WaveSpeed) * g_WaveAmplitude * moveVector.xy;
     Out.vProjPos = Out.vPosition;
+    Out.vNoiseSamplingPos = In.vTexcoord;
     
     return Out;
 }
@@ -91,6 +100,7 @@ struct PS_IN
     float4 RefractionMapSamplingPos : TEXCOORD3;
     float4 wPosition : TEXCOORD4;
     float4 vProjPos : TEXCOORD5;
+    float2 vNoiseSamplingPos : TEXCOORD6;
 };
 
 struct PS_OUT
@@ -113,24 +123,42 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float4 bumpColor = bumpColor1;
 
-
+    float2 totalPerturb = float2(1.f, 1.f);
     //  Perturbating the color
-    float2 perturbation = g_WaveHeight * (bumpColor.rg - 0.5f);
+    float2 baseperturbation = g_WaveHeight * (bumpColor.rg - 0.5f);
+    
+    for (int i = 0; i < g_RippleCount; ++i)
+    {
+        float2 diff = In.vNoiseSamplingPos - g_Ripples[i].g_RippleCenter.xy;
+        float d = length(diff);
+        
+        if (d <= g_Ripples[i].g_Ripplefactor.y)
+        {
+            float2 TextureUV = (In.vNoiseSamplingPos.xy - float2(g_Ripples[i].g_RippleCenter.x - g_Ripples[i].g_Ripplefactor.y, g_Ripples[i].g_RippleCenter.y - g_Ripples[i].g_Ripplefactor.y)) / (g_Ripples[i].g_Ripplefactor.y * 2.f);
+            
+            float4 rippleColor = g_RippleTexture.Sample(LinearSampler, TextureUV);
+            
+            totalPerturb -= (rippleColor.r * (1.5f - g_Ripples[i].g_Ripplefactor.x)) * 5.f;
+        }
+    }
+    
+    float2 totalperturbation = baseperturbation * totalPerturb;
     
     //  Final texture coordinates
-    float2 perturbatedTexCoords = projectedTexCoords + perturbation;
+    float2 perturbatedTexCoords = projectedTexCoords + totalperturbation;
     
     float4 reflectiveColor = g_ReflectionTexture.Sample(LinearSampler, perturbatedTexCoords);
 
     float2 projectedRefrTexCoords;
     projectedRefrTexCoords.x = In.RefractionMapSamplingPos.x / In.RefractionMapSamplingPos.w / 2.0f + 0.5f;
     projectedRefrTexCoords.y = -In.RefractionMapSamplingPos.y / In.RefractionMapSamplingPos.w / 2.0f + 0.5f;
-    float2 perturbatedRefrTexCoords = projectedRefrTexCoords + perturbation;
+    float2 perturbatedRefrTexCoords = projectedRefrTexCoords + totalperturbation;
     
     float3 eyeVector = normalize(g_vCamPosition - In.wPosition).xyz;
     
     float3 normalVector = float3(0.f, 1.f, 0.f);
     float4 refractiveColor = g_RefractionTexture.Sample(LinearSampler, perturbatedRefrTexCoords);
+   
     
     float fresnelTerm = (float) 0;
 
@@ -161,7 +189,7 @@ PS_OUT PS_MAIN(PS_IN In)
     //  Create the combined color
     float4 combinedColor = refractiveColor * (1 - fresnelTerm) + reflectiveColor * (fresnelTerm);
     
-    float waveFactor = saturate(length(perturbation) * 5.0f); // tweak scale
+    float waveFactor = saturate(length(totalperturbation) * 5.0f); // tweak scale
     float brightness = lerp(0.5f, 1.0f, 1.0f - waveFactor);
     float4 dullColor = float4(0.5f, 0.f, 0.f, 1.0f);
 	    
@@ -175,7 +203,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
     float3 lightSourceDir = normalize(float3(0.5f, 0.5f, 0.5f));
 
-    float3 halfvec = normalize(eyeVector + lightSourceDir + float3(perturbation.x * specPerturb, perturbation.y * specPerturb, 0));
+    float3 halfvec = normalize(eyeVector + lightSourceDir + float3(totalperturbation.x * specPerturb, totalperturbation.y * specPerturb, 0));
     
     float3 temp = 0.1f;
 
@@ -185,7 +213,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	
     speccolor = speccolor * abs(temp.x);
 
-    speccolor = float4(speccolor.x * speccolor.w, speccolor.y * speccolor.w, speccolor.z * speccolor.w, 0);
+    speccolor = float4(speccolor.x * speccolor.w, speccolor.y * speccolor.w, speccolor.z * speccolor.w, 0.f);
     
     Out.vColor += speccolor;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);

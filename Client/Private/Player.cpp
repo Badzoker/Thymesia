@@ -1051,6 +1051,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 	_vector		vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
+	/*if (m_pGameInstance->isKeyEnter(DIK_P))
+	{
+		m_pGameInstance->Add_RippleInfo(_float2(XMVectorGetX(vCurPosition), XMVectorGetZ(vCurPosition)), 1.f);
+	}*/ // 파동 추가코드
+
 	// 각 state 변경되면 한번 bool값으로 조절하고 해당 스테이트에서 저게 발생했다 하면 움직이지 않도록 더이상 
 
 

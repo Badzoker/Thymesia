@@ -83,6 +83,12 @@ namespace Engine
 		_tchar* ItemDesc = {};
 		_uint ItemCount = {};
 	};
+	
+	typedef struct RippleInfo
+	{
+		_float2 g_RippleCenter; // x, z 월드 위치
+		_float2 g_Ripplefactor; // x 시간 y 반지름
+	}RIPPLEINFO;
 
 	struct ENGINE_DLL Skill_Information
 	{

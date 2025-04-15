@@ -342,6 +342,13 @@ public:
 	HRESULT Fire_Multi_Projectile(PROJECTILE_CATEGORY _eCategory, _fvector vStartPos, _fvector vEndPos, _uint iCount, _bool bReverse = false);
 #pragma endregion
 
+#pragma region RIPPLE
+	void Add_RippleInfo(_float2 vPos, _float fRippleRange);
+	void Set_WaterPos(_float2 vWaterPos);
+
+	HRESULT  Bind_RippleSRV(class CShader* pShader);
+#pragma endregion
+
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
 
@@ -369,6 +376,7 @@ private:
 	class CMonster_Manager*				m_pMonster_Manager	  = { nullptr };
 	//범승 나중에 추가예정.(투사체 매니저)
 	class CProjectile_Manager*			m_pProjectile_Manager = { nullptr };
+	class CRippleManager*				m_pRipple_Manager = { nullptr };
 public:
 
 public:
