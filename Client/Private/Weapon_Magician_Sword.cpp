@@ -211,6 +211,29 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor[COLLIDER_BURST]);
     }
 
+    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+        {
+            if (!strncmp(iter.szName, "Weapon_Trail_Sword", strlen("Weapon_Trail_Sword"))) //Trail 시작해야하는 부분
+            {
+                if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime && false == iter.isPlay)
+                {
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                    m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD, &m_CombinedWorldMatrix);
+                }
+            }
+        }
+        else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+        {
+            if (!strncmp(iter.szName, "Weapon_Trail_Sword", strlen("Weapon_Trail_Sword"))) //Trail이 꺼져야 하는 부분
+            {
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD);
+                iter.isPlay = false;
+            }
+        }
+    }
+
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SWORD])))
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SWORD], XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ -100.f, 0.f, 0.f,1.f });
 

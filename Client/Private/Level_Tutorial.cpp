@@ -1132,6 +1132,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_VARG_EYE)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Magician_Sword.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Magician_Cane.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),
+        EFFECT_TYPE::EFFECT_TYPE_SWORD, EFFECT_NAME::EFFECT_SWORD_MAGICIAN_CANE)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/ParticleEffect_Projectile.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_SWORD_PROJECTILE, 16)))
+        return E_FAIL;
+
     //Effect_Instancing
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Rock.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
         EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, 3)))

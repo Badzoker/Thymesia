@@ -94,65 +94,149 @@ HRESULT CSwordTrail_Buffer::Initialize(void* pArg)
 
 HRESULT CSwordTrail_Buffer::Set_Trail_Local(deque<_float3>& _dequeCenterPos, _uint _idequeCount, const _float3& _vRight, const _float3& _vUp)
 {
+	//D3D11_MAPPED_SUBRESOURCE SubSource{};
+	//m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubSource);
+
+	//VTXST* pVertices = static_cast<VTXST*>(SubSource.pData);
+
+	//_float3 vPos = {};
+	//_vector vDir{}, vStartPos{}, vEndPos{};
+	//_float fTexcoordX = {};
+
+	//for (_uint i = 0; i < 65; i++)
+	//{
+	//	if (i < _idequeCount)
+	//	{
+	//		vDir = XMLoadFloat3(&_vRight);
+	//		vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir);
+
+	//		XMStoreFloat3(&vPos, vStartPos);
+	//		pVertices[4 * i].vPosition = vPos; // 시작점
+
+	//		vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir);
+
+	//		XMStoreFloat3(&vPos, vEndPos);
+	//		pVertices[(4 * i) + 1].vPosition = vPos; // 끝점
+
+	//		vDir = XMLoadFloat3(&_vUp);
+	//		vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir);
+
+	//		XMStoreFloat3(&vPos, vStartPos);
+	//		pVertices[4 * i + 2].vPosition = vPos; // 시작점
+
+	//		vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir);
+
+	//		XMStoreFloat3(&vPos, vEndPos);
+	//		pVertices[(4 * i) + 3].vPosition = vPos; // 끝점
+
+	//		fTexcoordX = 1.f - static_cast<_float>(i) / (_idequeCount - 1);
+
+	//		pVertices[4 * i].vTexcoord = _float2(fTexcoordX, 1.f);
+	//		pVertices[(4 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+	//		pVertices[(4 * i) + 2].vTexcoord = _float2(fTexcoordX, 1.f);
+	//		pVertices[(4 * i) + 3].vTexcoord = _float2(fTexcoordX, 0.f);
+
+	//	}
+	//	else
+	//	{
+	//		pVertices[4 * i].vTexcoord = _float2(fTexcoordX, 1.f);
+	//		pVertices[4 * i].vPosition = vPos;
+	//		pVertices[(4 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+	//		pVertices[(4 * i) + 1].vPosition = vPos;
+	//		pVertices[(4 * i) + 2].vTexcoord = _float2(fTexcoordX, 1.f);
+	//		pVertices[(4 * i) + 2].vPosition = vPos;
+	//		pVertices[(4 * i) + 3].vTexcoord = _float2(fTexcoordX, 0.f);
+	//		pVertices[(4 * i) + 3].vPosition = vPos;
+	//	}
+	//}
+
+	//m_pContext->Unmap(m_pVB, 0);
+
+	//return S_OK;
+
+	// 1. Catmull-Rom 보간을 통한 위치 생성
+	vector<_float3> interpolatedPoints;
+	for (size_t i = 1; i < _idequeCount - 2; ++i)
+	{
+		_vector V0 = XMLoadFloat3(&_dequeCenterPos[i - 1]);
+		_vector V1 = XMLoadFloat3(&_dequeCenterPos[i]);
+		_vector V2 = XMLoadFloat3(&_dequeCenterPos[i + 1]);
+		_vector V3 = XMLoadFloat3(&_dequeCenterPos[i + 2]);
+
+		for (float t = 0.f; t <= 1.f; t += 0.25f) // 조절 가능 (0.25f -> 5개 구간)
+		{
+			_vector interpolated = XMVectorCatmullRom(V0, V1, V2, V3, t);
+
+			_float3 pos;
+			XMStoreFloat3(&pos, interpolated);
+			interpolatedPoints.push_back(pos);
+		}
+	}
+
+	// 최대 65 포인트 제한 (그래픽스 버퍼 상수?)
+	_uint finalPointCount = static_cast<_uint>(interpolatedPoints.size());
+	if (finalPointCount > 65)
+		finalPointCount = 65;
+
+	// 2. Vertex 버퍼 매핑
 	D3D11_MAPPED_SUBRESOURCE SubSource{};
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubSource);
-
 	VTXST* pVertices = static_cast<VTXST*>(SubSource.pData);
 
 	_float3 vPos = {};
 	_vector vDir{}, vStartPos{}, vEndPos{};
 	_float fTexcoordX = {};
 
-	for (_uint i = 0; i < 65; i++)
+	for (_uint i = 0; i < 65; ++i)
 	{
-		if (i < _idequeCount)
+		if (i < finalPointCount)
 		{
+			const _float3& center = interpolatedPoints[i];
+
+			// Right 방향 트레일
 			vDir = XMLoadFloat3(&_vRight);
-			vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir);
-
+			vStartPos = XMLoadFloat3(&center) - vDir;
 			XMStoreFloat3(&vPos, vStartPos);
-			pVertices[4 * i].vPosition = vPos; // 시작점
+			pVertices[4 * i + 0].vPosition = vPos;
 
-			vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir);
-
+			vEndPos = XMLoadFloat3(&center) + vDir;
 			XMStoreFloat3(&vPos, vEndPos);
-			pVertices[(4 * i) + 1].vPosition = vPos; // 끝점
+			pVertices[4 * i + 1].vPosition = vPos;
 
+			// Up 방향 트레일
 			vDir = XMLoadFloat3(&_vUp);
-			vStartPos = XMLoadFloat3(&_dequeCenterPos[i]) - (vDir);
-
+			vStartPos = XMLoadFloat3(&center) - vDir;
 			XMStoreFloat3(&vPos, vStartPos);
-			pVertices[4 * i + 2].vPosition = vPos; // 시작점
+			pVertices[4 * i + 2].vPosition = vPos;
 
-			vEndPos = XMLoadFloat3(&_dequeCenterPos[i]) + (vDir);
-
+			vEndPos = XMLoadFloat3(&center) + vDir;
 			XMStoreFloat3(&vPos, vEndPos);
-			pVertices[(4 * i) + 3].vPosition = vPos; // 끝점
+			pVertices[4 * i + 3].vPosition = vPos;
 
-			fTexcoordX = 1.f - static_cast<_float>(i) / (_idequeCount - 1);
-
-			pVertices[4 * i].vTexcoord = _float2(fTexcoordX, 1.f);
-			pVertices[(4 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
-			pVertices[(4 * i) + 2].vTexcoord = _float2(fTexcoordX, 1.f);
-			pVertices[(4 * i) + 3].vTexcoord = _float2(fTexcoordX, 0.f);
-
+			fTexcoordX = 1.f - static_cast<_float>(i) / (finalPointCount - 1);
+			pVertices[4 * i + 0].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[4 * i + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+			pVertices[4 * i + 2].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[4 * i + 3].vTexcoord = _float2(fTexcoordX, 0.f);
 		}
 		else
 		{
-			pVertices[4 * i].vTexcoord = _float2(fTexcoordX, 1.f);
-			pVertices[4 * i].vPosition = vPos;
-			pVertices[(4 * i) + 1].vTexcoord = _float2(fTexcoordX, 0.f);
-			pVertices[(4 * i) + 1].vPosition = vPos;
-			pVertices[(4 * i) + 2].vTexcoord = _float2(fTexcoordX, 1.f);
-			pVertices[(4 * i) + 2].vPosition = vPos;
-			pVertices[(4 * i) + 3].vTexcoord = _float2(fTexcoordX, 0.f);
-			pVertices[(4 * i) + 3].vPosition = vPos;
+			// 남은 영역은 공백 처리
+			pVertices[4 * i + 0].vPosition = vPos;
+			pVertices[4 * i + 0].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[4 * i + 1].vPosition = vPos;
+			pVertices[4 * i + 1].vTexcoord = _float2(fTexcoordX, 0.f);
+			pVertices[4 * i + 2].vPosition = vPos;
+			pVertices[4 * i + 2].vTexcoord = _float2(fTexcoordX, 1.f);
+			pVertices[4 * i + 3].vPosition = vPos;
+			pVertices[4 * i + 3].vTexcoord = _float2(fTexcoordX, 0.f);
 		}
 	}
 
 	m_pContext->Unmap(m_pVB, 0);
 
 	return S_OK;
+
 }
 
 HRESULT CSwordTrail_Buffer::Set_Trail_Reset()

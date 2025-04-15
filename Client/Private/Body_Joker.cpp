@@ -101,7 +101,7 @@ HRESULT CBody_Joker::Render()
         if (*m_pParentState == STATE_DEAD || *m_pParentState == STATE_INTRO)
         {
             m_iPassNum = 5;
-            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 6)))
                 return E_FAIL;
 
             if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))

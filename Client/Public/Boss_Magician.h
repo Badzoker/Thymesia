@@ -39,7 +39,8 @@ public:
 public:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_PartObjects(void* pArg);
-
+private:
+	HRESULT Load_SporeObject();
 public:
 	void Near_Pattern_Create();
 	void Far_Pattern_Create();

@@ -42,6 +42,8 @@ HRESULT CProjectile_Dagger::Initialize(void* pArg)
 
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+    XMStoreFloat4x4(&m_Test, XMMatrixIdentity());
+
     return S_OK;
 }
 
@@ -69,6 +71,12 @@ void CProjectile_Dagger::Late_Update(_float fTimeDelta)
 
 void CProjectile_Dagger::Set_Projectile_Effect()
 {
+    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_SWORD_PROJECTILE, m_pTransformCom->Get_WorldMatrix_Ptr(), &m_Test);
+}
+
+void CProjectile_Dagger::Stop_Projectile_Effect()
+{
+    // m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PROJECTILE);
 }
 
 HRESULT CProjectile_Dagger::Render()

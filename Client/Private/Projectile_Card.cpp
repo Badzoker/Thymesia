@@ -88,6 +88,12 @@ HRESULT CProjectile_Card::Render_Glow()
 
 void CProjectile_Card::Set_Projectile_Effect()
 {
+    //m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_PROJECTILE, m_pTransformCom->Get_WorldMatrix_Ptr());
+}
+
+void CProjectile_Card::Stop_Projectile_Effect()
+{
+    //m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PROJECTILE);
 }
 
 //HRESULT CProjectile_Card::Render()

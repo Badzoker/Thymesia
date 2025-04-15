@@ -261,7 +261,7 @@ HRESULT CWeapon_Magician2_Sword::Render()
         if (*m_pParentState == STATE_DEAD)
         {
             m_iPassNum = 9;
-            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 6)))
                 return E_FAIL;
 
             if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
