@@ -69,6 +69,9 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
+
+    m_fSkill_AttackPower = 30.f;
+
     return S_OK;
 
 }

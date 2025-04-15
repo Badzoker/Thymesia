@@ -49,7 +49,7 @@ HRESULT CBoss_Magician2::Initialize(void* pArg)
 	m_Player_Phase = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PhaseState_Ptr();
 	m_Player_State = dynamic_cast<CPlayer*>(m_pPlayer)->Get_State_Ptr();
 
-	m_pTransformCom->Scaling(_float3{ 0.003f,0.003f,0.003f });
+	m_pTransformCom->Scaling(_float3{ 0.0025f,0.0025f,0.0025f });	
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 	m_pState_Manager = CState_Machine<CBoss_Magician2>::Create();
@@ -538,7 +538,7 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 
-	_float teleportDistance = 1.f;
+	_float teleportDistance = 1.3f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
 	_vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
 	_vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
@@ -553,6 +553,11 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
+
+	/* 선환 추가 */
+	pObject->m_pModelCom->Get_VecAnimation().at(0)->SetLerpTime(0.f);	
+	pObject->m_pModelCom->Set_LerpFinished(true);	
+	/* ============ */
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

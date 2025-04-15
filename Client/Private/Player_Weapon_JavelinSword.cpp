@@ -72,6 +72,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
 
     XMStoreFloat4x4(&m_PreTransformMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
+    m_fSkill_AttackPower = 50.f;
 
     return S_OK;
 

@@ -120,7 +120,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 #pragma region Mouse_Input
 
-	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO))
+	if (!(m_iPhaseState & PHASE_INTERACTION) && !(m_iPhaseState & PHASE_START) && !(m_iPhaseState & PHASE_BOSS_INTRO) && !m_bUI_End)
 	{	 // 의자 관련 
 		Mouse_section(fTimeDelta);
 #pragma endregion 
@@ -204,7 +204,6 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			switch (m_iMonster_Execution_Category)
 			{
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_VARG:
-				//m_iState = STATE_VARG_RUN_EXECUTION;
 				m_iState = STATE_STUN_EXECUTE_START_VARG;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL:
@@ -212,7 +211,6 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MAGICIAN:
 				m_iState = STATE_STUN_EXECUTE_START_MAGICIAN;
-				//m_iState = STATE_MAGICIAN_Execution;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MUTATION_MAGICIAN:
 				m_iState = STATE_MAGICIAN_MUTATION_Execution;
@@ -1812,6 +1810,11 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
 		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
 	}
+
+	/*if (!strcmp("NPC", _pOther->Get_Name()))
+	{
+
+	}*/
 }
 
 void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
@@ -1937,11 +1940,11 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 		if (m_iPhaseState & PHASE_INTERACTION)
 		{
-			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE))//m_bUI_End)	
+			if (m_pGameInstance->isKeyEnter(DIK_ESCAPE) && !m_bUI_End)		 // !m_bUI_End  유빈이가 false일때가 ui 가 꺼지는 거라고 함..
 			{
 				m_iState = STATE_ARCHIVE_SIT_GETUP;
 
-				m_iAttackPower += m_iBonus_Sword_Attack_Power;  // 의자에서 일어날 때가 특성 적용 타이밍 
+				m_iAttackPower += m_iBonus_Sword_Attack_Power;  // 의자에서 일어날 때가 특성 적용 타이밍	
 
 				m_iPotionCount = 3;
 				m_iCurrentHp = m_iFullHp;

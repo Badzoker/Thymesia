@@ -68,6 +68,9 @@ HRESULT CPlayer_Weapon_GreadSword::Initialize(void* pArg)
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
+
+    m_fSkill_AttackPower = 75.f;
+
     return S_OK;
 }
 
