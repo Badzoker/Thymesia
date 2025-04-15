@@ -44,8 +44,8 @@ HRESULT CBat_Spike::Initialize(void* pArg)
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER_WEAPON;
 
-    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
-
+    //m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
+    m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::DESTRUCT, settingColliderGroup);
 
     m_fMaxScale = { 0.003f,0.003f,0.003f };
     m_fMyScale = { 0.003f,0.00001f,0.003f };
@@ -69,6 +69,9 @@ void CBat_Spike::Priority_Update(_float fTimeDelta)
         {
             m_bFirst = true;
             m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(m_pPivot_Position));
+
+            XMStoreFloat4(&m_fModelPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+            m_fModelHeightCenterY = m_fModelPos.y + 0.76f;
         }
     }
     else
@@ -81,8 +84,26 @@ void CBat_Spike::Priority_Update(_float fTimeDelta)
 
 void CBat_Spike::Update(_float fTimeDelta)
 {
-    if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
-        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });
+   /* if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+        m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });*/
+
+    if (!m_bUpdating)
+    {
+        if (m_bHitted)
+        {
+            m_fLifeTime += fTimeDelta;
+            m_pGameInstance->Sub_Actor_Scene(m_pActor);
+            m_fExplosionPower += fTimeDelta * 3.0f;
+            m_fFallingTime += fTimeDelta;
+
+            if (m_fLifeTime >= 4.0f)
+            {
+                m_bUpdating = true;
+            }
+        }
+        if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
+            m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 0.f, 0.f,1.f });
+    }
 }
 
 void CBat_Spike::Late_Update(_float fTimeDelta)
@@ -108,7 +129,8 @@ HRESULT CBat_Spike::Render()
         if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_EmissiveTexture", 0)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(21);
+        //m_pShaderCom->Begin(21);
+        m_pShaderCom->Begin(4);
         m_pModelCom->Render(i);
     }
 
@@ -118,7 +140,13 @@ HRESULT CBat_Spike::Render()
 HRESULT CBat_Spike::Ready_Components()
 {
     /* Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
+    //if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxMesh"),
+    //    TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    //    return E_FAIL;
+
+
+    /* Com_Shader */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxDestructMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
@@ -143,6 +171,27 @@ HRESULT CBat_Spike::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
+
+    // =========================== 지메쉐로 드가자아잇 ===========================
+    // 얼마나 세게
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fExplosionPower", &m_fExplosionPower, sizeof(_float))))
+        return E_FAIL;
+
+    // 얼마나 오래 떨어질꺼?
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fFallingTime", &m_fFallingTime, sizeof(_float))))
+        return E_FAIL;
+
+    // 모델의 위치점 (처음 피킹 배치 될 때 그 x y z 를 지메쉐에서 나눠서 쓸 꺼임
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_ModelPosition", &m_fModelPos, sizeof(_float4))))
+        return E_FAIL;
+
+    // 모델의 y 중심점 (등분 할 때 쓸꺼임) 
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fModelHeightCenterY", &m_fModelHeightCenterY, sizeof(_float))))
+        return E_FAIL;
+
+
+
+
     return S_OK;
 }
 
@@ -151,7 +200,7 @@ void CBat_Spike::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
     if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
     {
         //추가예정.
-
+        m_bHitted = true;
     }
 }
 
