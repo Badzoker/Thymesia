@@ -3,6 +3,7 @@
 float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_OldViewMatrix, g_OldWorldMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
+Texture2D g_EmissiveTexture;
 
 Texture2D g_DissolveTexture;
 
@@ -323,14 +324,14 @@ void GS_MAIN_PARTICLE(triangle GS_IN_DESTRUCT input[3], inout TriangleStream<GS_
     float3 vMoveDir = HashDirection(input[0].vWorldPos.xyz);
 
     float fRandomPerlinNoiseSeedNum = frac(sin(dot(input[0].vWorldPos.xyz, float3(12.9898, 78.233, 45.164))) * 43758.5453);
-    float fMoveScale = lerp(0.8f, 1.5f, fRandomPerlinNoiseSeedNum) * 0.25f;
+    float fMoveScale = lerp(0.8f, 1.5f, fRandomPerlinNoiseSeedNum) * 2.5f;
 
     float3 vMoveValue = vMoveDir * (g_fExplosionPower * fMoveScale);
 
     float fFallingTime = g_fFallingTime;
     float fGravityPower = -9.8f;
     
-    float fInitialPopVelocity = 0.35f;
+    float fInitialPopVelocity = 0.45f;
 
     float fFallingValue = (fInitialPopVelocity * fFallingTime) + (0.4f) * (fGravityPower * fFallingTime * fFallingTime);
     vMoveValue.y += fFallingValue;
@@ -514,10 +515,44 @@ PS_OUT_DESTRUCT PS_MAIN_DESTRUCT(PS_IN_DESTRUCT In)
     return Out;
 }
 
+PS_OUT_DESTRUCT PS_MAIN_DESTRUCT_SPIKES(PS_IN_DESTRUCT In)
+{
+    PS_OUT_DESTRUCT Out = (PS_OUT_DESTRUCT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float fPower = 3.f;
+ 
+    
+    float2 vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + 0.08);
+
+    float fEmissionStrength = g_EmissiveTexture.Sample(LinearSampler, vTexcoord).a;
+    
+    float3 vEmissionColor = float3(1.0f, 0.07f, 0.07f);
+    float3 vEmission = vEmissionColor * fEmissionStrength * fPower;
+
+    float3 finalColor = vMtrlDiffuse.rgb + vEmission;
+
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+    
+    Out.vDiffuse.rgb = finalColor;
+    Out.vDiffuse.a = vMtrlDiffuse.a;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 1.f;
+
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {
-    pass BarrelFencePass
+    pass BarrelFencePass // 0 
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -528,7 +563,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
     }
 
-    pass RockPass
+    pass RockPass // 1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -539,7 +574,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
     }
 
-    pass SporePass
+    pass SporePass // 2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -550,7 +585,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT();
     }
 
-    pass PartSporePass
+    pass PartSporePass // 3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -559,5 +594,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass BatSpikeType2Pass // 4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_DESTRUCT();
+        GeometryShader = compile gs_5_0 GS_MAIN_PARTICLE();
+        PixelShader = compile ps_5_0 PS_MAIN_DESTRUCT_SPIKES();
     }
 }

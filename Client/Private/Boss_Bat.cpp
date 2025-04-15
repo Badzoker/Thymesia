@@ -1001,7 +1001,6 @@ void CBoss_Bat::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
 				break;
 			}
-
 		}
 	}
 }

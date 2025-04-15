@@ -57,6 +57,18 @@ private:
 	_uint m_iPassNum = {};
 private:
 	const _uint* m_pParentState = { nullptr };
+
+private:
+	_float4                         m_fModelPos = {};
+	_float                          m_fModelHeightCenterY = {};
+
+	_float                          m_fExplosionPower = {};
+	_float                          m_fFallingTime = {};
+	_float                          m_fLifeTime = {};
+
+	_bool                           m_bHitted = { false };
+	_bool                           m_bUpdating = { false };
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
