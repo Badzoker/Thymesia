@@ -118,6 +118,9 @@
 #include "PlayerSprint.h"	
 #pragma endregion 
 
+#pragma region 리서처에게 잡혔을 때의 상황 
+#include "Researcher_Cathced.h"
+#pragma endregion 
 
 
 CStateMgr::CStateMgr()
@@ -444,6 +447,13 @@ HRESULT CStateMgr::Initialize()
 	CMagician_LV2_Catched* pMagician_LV2_Catched = CMagician_LV2_Catched::Create();
 	m_vecState.push_back(pMagician_LV2_Catched);
 #pragma endregion
+
+
+#pragma region 리서처에게 잡힘 당했을 때의 모션 
+	/* 66번 리서처에게 잡힘 당했을 때의 모션 */
+	CResearcher_Cathced* pResearcher_Cathced = CResearcher_Cathced::Create();
+	m_vecState.push_back(pResearcher_Cathced);
+#pragma endregion 
 
 	return S_OK;
 }

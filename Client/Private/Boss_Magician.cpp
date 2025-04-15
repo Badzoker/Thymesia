@@ -1150,6 +1150,13 @@ void CBoss_Magician::ExeCution_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
 	pObject->m_pTransformCom->LookAt(vPlayerPos);
 
+
+	/* 선환 추가 */
+	pObject->m_pModelCom->Get_VecAnimation().at(63)->SetLerpTime(0.f);	
+	pObject->m_pModelCom->Set_LerpFinished(true);
+	/* ============ */
+
+
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 

@@ -80,26 +80,26 @@ HRESULT CBody_Player::Initialize(void* pArg)
 
     m_iCurrentLevel = static_cast<LEVELID>(pDesc->iCurLevel); //종한 추가 Level 전환때문에
 
-    m_pSet_Body_States                = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
-    m_pSet_Claw_Weapon_States         = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
-    m_pSet_Halberd_Weapon_States      = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
-    m_pSet_Right_Weapon_States        = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
-    m_pSet_Scythe_Weapon_States       = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
-    m_pSet_Axe_Weapon_States          = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
-    m_pSet_Player_Camera_States       = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
+    m_pSet_Body_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Body_State();
+    m_pSet_Claw_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Claw_Weapon_State();
+    m_pSet_Halberd_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Halberd_State();
+    m_pSet_Right_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Right_Weapon_State();
+    m_pSet_Scythe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Scythe_State();
+    m_pSet_Axe_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Axe_State();
+    m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
-    m_pSet_GreadSword_Weapon_States   = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
-    m_pSet_Cane_Weapon_States         = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();    
+    m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
+    m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
     m_fRespawnPosPtr = dynamic_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr();
 
 
-    m_pfClawParentTime  = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
-    m_pfClawFinishTime  = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
+    m_pfClawParentTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawTimePtr();
+    m_pfClawFinishTime = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawFinishTimePtr();
     m_pfClawAppearTimer = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearTimerPtr();
-    m_pbClawDeadOn      = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
-    m_pbClawAppear      = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
+    m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
+    m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
 
 
     return S_OK;
@@ -481,11 +481,20 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_BAT_EXECUTION:
         STATE_BAT_EXECUTION_Method();
         break;
-    case CPlayer::STATE_STUN_EXECUTE_START_MAGICIAN:    
-        STATE_STUN_EXECUTE_START_MAGICIAN_Method(); 
+    case CPlayer::STATE_STUN_EXECUTE_START_MAGICIAN:
+        STATE_STUN_EXECUTE_START_MAGICIAN_Method();
         break;
-    case CPlayer::STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN:   
-        STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method();    
+    case CPlayer::STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN:
+        STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method();
+        break;
+    case CPlayer::STATE_STUN_EXECUTE_START_RESEARCHER:
+        STATE_STUN_EXECUTE_START_RESEARCHER_Method();
+        break;
+    case CPlayer::STATE_RESEARCHER_EXECUTION:
+        STATE_RESEARCHER_EXECUTION_Method();
+        break;
+    case CPlayer::STATE_HURT_RESEARCHER_CATCHED:
+        STATE_HURT_RESEARCHER_CATCHED_Method();
         break;
     default:
         break;
@@ -862,6 +871,8 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
 
     if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 80.f)
     {
+
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
 
@@ -869,6 +880,8 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
 
     if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(279)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -936,6 +949,8 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
 #pragma region 스킬 연계기   
@@ -948,6 +963,8 @@ void CBody_Player::STATE_ATTACK_L1_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(3)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -967,6 +984,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                /* 4월 14일 여기다가 hitstop 애니메이션 스피드 이거 1.f로 설정해야할듯*/
 
             }
 
@@ -1066,12 +1084,16 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L2 && m_pModelCom->Get_VecAnimation().at(4)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -1189,12 +1211,16 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L3 && m_pModelCom->Get_VecAnimation().at(5)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -1311,12 +1337,16 @@ void CBody_Player::STATE_ATTACK_L4_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L4 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L4 && m_pModelCom->Get_VecAnimation().at(276)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -1435,12 +1465,16 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L5 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
     }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L5 && m_pModelCom->Get_VecAnimation().at(277)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -1566,6 +1600,8 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_VecAnimation().at(0)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -1692,6 +1728,8 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_VecAnimation().at(1)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;
         *m_pParentNextStateCan = true;
@@ -2543,6 +2581,42 @@ void CBody_Player::STATE_BAT_EXECUTION_Method()
     }
 }
 
+void CBody_Player::STATE_STUN_EXECUTE_START_RESEARCHER_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+        //m_pModelCom->Get_VecAnimation().at(298)->Set_StartOffSetTrackPosition(45.f);    
+
+        *m_pParentState = CPlayer::STATE_RESEARCHER_EXECUTION;
+    }
+
+}
+
+void CBody_Player::STATE_RESEARCHER_EXECUTION_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(216, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(216)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+        *m_pParentNextStateCan = true;
+    }
+}
+
 void CBody_Player::STATE_MAGICIAN_Execution_Method()
 {
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
@@ -2743,11 +2817,15 @@ void CBody_Player::STATE_MAGICIAN_CATCH_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(227)->isAniMationFinish())
     {
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
-        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
-        *m_pParentNextStateCan = true;
 
-        *m_pParentState = STATE_IDLE;
+        *m_pParentState = CPlayer::STATE_WEAK_GETUP_F;
+
+        ///* 여기 수정 작업 ㄱㄱ 싱*/
+        //*m_pParentPhsaeState &= ~CPlayer::PHASE_HITTED;
+        //*m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        //*m_pParentNextStateCan = true;
+
+        //*m_pParentState = STATE_IDLE;
     }
 }
 
@@ -2781,6 +2859,7 @@ void CBody_Player::STATE_GREATSWORD_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(103)->isAniMationFinish())
     {
+
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
@@ -3049,6 +3128,29 @@ void CBody_Player::STATE_HURT_MUTATION_MAGICIAN_CATCH_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(212)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
+        *m_pParentState = CPlayer::STATE::STATE_GET_UP;
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+    }
+}
+
+void CBody_Player::STATE_HURT_RESEARCHER_CATCHED_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+
+    m_pModelCom->SetUp_Animation(218, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
+
+    if (m_pModelCom->Get_VecAnimation().at(218)->isAniMationFinish())
+    {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+        //m_pModelCom->Set_LerpFinished(false);      
+
         *m_pParentState = CPlayer::STATE::STATE_GET_UP;
         m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
     }
@@ -3824,6 +3926,8 @@ void CBody_Player::STATE_CATCHED_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(233)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
         *m_pParentState = CPlayer::STATE::STATE_GET_UP;
         m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
     }

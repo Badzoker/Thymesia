@@ -575,7 +575,7 @@ void CElite_Researcher::Stun_State::State_Enter(CElite_Researcher* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
 
-    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_GRACE;
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_RESEARCHER;    
 }
 
 void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Researcher* pObject)
@@ -592,7 +592,7 @@ void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Resea
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
         //플레이어 엑스큐전 상태가져오기
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION)   
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Researcher::Execution_State(), pObject);
             return;
@@ -600,7 +600,7 @@ void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Resea
     }
     else if (m_iIndex == 17 && CurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION)   
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Researcher::Execution_State(), pObject);
             return;
@@ -985,7 +985,7 @@ void CElite_Researcher::Attack_Special::State_Enter(CElite_Researcher* pObject)
     pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
     pObject->m_bSpecial_Skill_Progress = true;
     pObject->m_bCanHit = false;
-    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_MAGICIAN_CATCH;
+    pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_RESEARCH_CATCH;  
     pObject->m_iMonster_Attack_Power = 0;
     pObject->RotateDegree_To_Player();
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);

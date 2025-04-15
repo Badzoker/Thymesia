@@ -33,6 +33,7 @@ public:
 	PLAYER_SKILL       Get_Skill_Name() { return m_eSkill_Name; }
 	void               Set_Skill_UnLock(_bool _OnOff) { m_bSkill_Unlocked = _OnOff; }
 	Skill_Information* Get_Skill_Information() { return m_pSkill_information; }
+	_bool			   Check_UnLocked() { return m_bSkill_Unlocked; }	
 
 protected:
 

@@ -103,6 +103,8 @@ public:
 		STATE_STUN_EXECUTE_START_PUNCHMAN,
 		STATE_STUN_EXECUTE_START_BAT, // 박쥐 처형 시작 모션 
 		STATE_BAT_EXECUTION,
+		STATE_STUN_EXECUTE_START_RESEARCHER, // 리서처 처형 시작 모션.	
+		STATE_RESEARCHER_EXECUTION, // 리서처 처형.	
 
 
 		/*앉기 및 의자 상호작용 */
@@ -182,6 +184,8 @@ public:
 		/* 플레이어 변종 오두르에게 스킬 당할 때의 모션 */
 		STATE_HURT_MUTATION_MAGICIAN_CATCH,
 
+		/* 플레이어 리서처에게 잡혔을 때의 모션 */
+		STATE_HURT_RESEARCHER_CATCHED,
 
 	};
 
@@ -401,6 +405,9 @@ private:
 	/* 포션 회복량 */
 	_int								m_iPotion_Heal_Amount = { 100 };
 
+	/* 스킬 쿨타임 */
+	_bool								m_bPlayerSkill_CoolTime = { false };
+
 
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
@@ -435,6 +442,10 @@ public:
 	void     Set_Bonus_Execution_Hp(_int _BonusExecutionHp) { m_iBonus_Execution_Hp = _BonusExecutionHp; }
 	void     Set_Bonus_Execution_Mp(_int _BonusExecutionMp) { m_iBonus_Execution_Mp = _BonusExecutionMp; }
 
+
+	// 4월 15일
+
+	void	 Set_Skill_CoolTime(_bool _OnOff) { m_bPlayerSkill_CoolTime = _OnOff; }
 
 	/* --------------------- */
 

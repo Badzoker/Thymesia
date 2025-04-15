@@ -45,9 +45,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 {
 	strcpy_s(m_szName, "PLAYER");
 
-
-
-
 	m_pStateMgr = CStateMgr::Create();
 	if (m_pStateMgr == nullptr)
 	{
@@ -59,7 +56,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	{
 		MSG_BOX("Failed to Created : PlayerSkillMgr");
 	}
-
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
@@ -76,7 +72,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartObjects(pArg)))
 		return E_FAIL;
-
 
 
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
@@ -174,7 +169,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this,100);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this, 100);
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
@@ -233,6 +228,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_BAT:
 				m_iState = STATE_STUN_EXECUTE_START_BAT;
+				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_RESEARCHER:
+				m_iState = STATE_STUN_EXECUTE_START_RESEARCHER;
 				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
@@ -492,57 +490,63 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		switch (m_iSkill_Eqip_1st)
 		{
 		case PLAYER_SKILL::PLAYER_SKILL_AXE:
-			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_AXE;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(1)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(1)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_CANE_SWORD_SP02;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(2)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(2)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_GREATSWORD;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(3)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(3)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_HALBERDS_B;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
-			if (m_pPlayerSkillMgr->Get_VecState().at(4)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(4)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_JAVELIN_SWORD;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
-			if (m_pPlayerSkillMgr->Get_VecState().at(5)->Priority_Update(this, fTimeDelta) && m_iCurrentMp > 20 )
+			if (m_pPlayerSkillMgr->Get_VecState().at(5)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
 			{
 				m_iState = STATE_SCYTHE_B;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
+				m_bPlayerSkill_CoolTime = false;
 			}
 			break;
 		}
@@ -550,7 +554,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 	}
 
 
-	if ((m_pGameInstance->isKeyEnter(DIK_2))
+	if ((m_pGameInstance->isKeyEnter(DIK_2) && m_bPlayerSkill_CoolTime)
 		&& !(m_iPhaseState & CPlayer::PHASE_FIGHT)
 		&& !(m_iPhaseState & CPlayer::PHASE_HITTED)
 		&& !(m_iPhaseState & CPlayer::PHASE_HEAL)
@@ -565,36 +569,42 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iState = STATE_AXE;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
 			m_iState = STATE_CANE_SWORD_SP02;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
 			m_iState = STATE_GREATSWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
 			m_iState = STATE_HALBERDS_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
 			m_iState = STATE_JAVELIN_SWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
 			m_iState = STATE_SCYTHE_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
+			m_bPlayerSkill_CoolTime = false;
 			break;
 		}
 	}
@@ -1051,10 +1061,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 	_vector		vCurPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
+
 	/*if (m_pGameInstance->isKeyEnter(DIK_P))
 	{
 		m_pGameInstance->Add_RippleInfo(_float2(XMVectorGetX(vCurPosition), XMVectorGetZ(vCurPosition)), 1.f);
 	}*/ // 파동 추가코드
+
 
 	// 각 state 변경되면 한번 bool값으로 조절하고 해당 스테이트에서 저게 발생했다 하면 움직이지 않도록 더이상 
 
@@ -1098,7 +1110,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	__super::Update(fTimeDelta);
 
-	m_pPlayerSkillMgr->Update_Skill_CoolTime(this, fTimeDelta);
+	//m_pPlayerSkillMgr->Update_Skill_CoolTime(this, fTimeDelta);  Ui쪽에서 다루기로 함 ( 4/15 )  
 
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
 		m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()), _vector{ 0.f, 250.f,0.f,1.f });
@@ -1508,7 +1520,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			m_iPhaseState &= ~CPlayer::PHASE_EXECUTION;	  // 3월 19일 
 			m_iPhaseState &= ~CPlayer::PHASE_HEAL;
 			m_iPhaseState &= ~CPlayer::PHASE_SPRINT;
-			m_iPhaseState &= ~CPlayer::PHASE_LADDER;	
+			m_iPhaseState &= ~CPlayer::PHASE_LADDER;
 
 
 			if (!(m_iPhaseState & PHASE_DEAD))
@@ -1650,25 +1662,20 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 					/* 몬스터 공격 방향 */
 					m_pStateMgr->Get_VecState().at(65)->Set_MonsterLookDir(fMonsterLookDir);
 
-
 					_float4 FinalPos = { -42.f,m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1],-100.46f,1.f };
 					m_pStateMgr->Get_VecState().at(65)->Set_GetMonsterPos(FinalPos);
-
-					//_float4x4 newPosition = {}; 
-					//_matrix fixedPosition = {};
-					//fixedPosition.r[0] = { 0.00249777804f, 0.00000000f, -0.000105359715f, 0.00000000f };
-					//fixedPosition.r[1] = { 0.0f, 0.00249999994f, 0.0f, 0.0f };
-					//fixedPosition.r[2] = { 0.000105359715f, 0.0f, 0.00249777804f, 0.0f };
-					//fixedPosition.r[3] = { -42.f, m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1], -100.46f, 1.0f };	
-
-					//XMStoreFloat4x4(&newPosition, fixedPosition);	
-					//m_pTransformCom->Set_WorldMatrix(newPosition);	
-
 
 					m_pStateMgr->Get_VecState().at(65)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 					m_pGameInstance->Sub_Actor_Scene(m_pActor);
 					break;
 				}
+				case Player_Hitted_State::PLAYER_HURT_RESEARCH_CATCH:
+					m_iState = CPlayer::STATE_HURT_RESEARCHER_CATCHED;  // 66													
+					/* 몬스터 공격 방향 */
+					m_pStateMgr->Get_VecState().at(66)->Set_MonsterLookDir(fMonsterLookDir);
+					m_pStateMgr->Get_VecState().at(66)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+					m_pGameInstance->Sub_Actor_Scene(m_pActor);
+					break;
 				default:
 					_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
 					m_iState = CPlayer::STATE_HurtMFR_R;  // 22			
@@ -1949,24 +1956,24 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 	{
 		if (m_pGameInstance->isKeyEnter(DIK_E))
 		{
-			if (m_pModel->Get_VecAnimation().at(46)->isAniMationFinish())
-			{
-				_float4 fLadderLookDir = {};
-				_float4 fLadderUpDir = {};
-				_float4 fLadderPos = {};
-				const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
-				fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
-				fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
-				fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
+			/*if (m_pModel->Get_VecAnimation().at(46)->isAniMationFinish())*/
+			//{
+			_float4 fLadderLookDir = {};
+			_float4 fLadderUpDir = {};
+			_float4 fLadderPos = {};
+			const _float4x4* LadderWolrdMatrix = _pOther->Get_Transfrom()->Get_WorldMatrix_Ptr();
+			fLadderLookDir = { LadderWolrdMatrix->_31,LadderWolrdMatrix->_32,LadderWolrdMatrix->_33,0.f };
+			fLadderUpDir = { LadderWolrdMatrix->_21,LadderWolrdMatrix->_22,LadderWolrdMatrix->_23,0.f };
+			fLadderPos = { LadderWolrdMatrix->_41,LadderWolrdMatrix->_42,LadderWolrdMatrix->_43,1.f };
 
-				m_pStateMgr->Get_VecState().at(59)->Set_MonsterLookDir(fLadderLookDir);
-				m_pStateMgr->Get_VecState().at(59)->Set_MonsterUpDir(fLadderUpDir);
-				m_pStateMgr->Get_VecState().at(59)->Set_GetMonsterPos(fLadderPos);
-				m_pStateMgr->Get_VecState().at(59)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
+			m_pStateMgr->Get_VecState().at(59)->Set_MonsterLookDir(fLadderLookDir);
+			m_pStateMgr->Get_VecState().at(59)->Set_MonsterUpDir(fLadderUpDir);
+			m_pStateMgr->Get_VecState().at(59)->Set_GetMonsterPos(fLadderPos);
+			m_pStateMgr->Get_VecState().at(59)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 
-				m_iState = STATE_LADDER_CLIMB_R_UP_REVERSE_END;
-				m_iPhaseState |= PHASE_LADDER;
-			}
+			m_iState = STATE_LADDER_CLIMB_R_UP_REVERSE_END;
+			m_iPhaseState |= PHASE_LADDER;
+			//}
 		}
 	}
 
@@ -2106,6 +2113,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_PUNCH_MAN_Execution,
 		STATE_STUN_EXECUTE_START_MAGICIAN,
 		STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN,
+		STATE_STUN_EXECUTE_START_RESEARCHER,
 	};
 #pragma endregion 
 #pragma region Player Camera State
@@ -2126,15 +2134,8 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_URD_EXECUTION,
 		STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START,
 		STATE_HURT_MUTATION_MAGICIAN_CATCH,
-		///
-		//STATE_HARMOR_EXECUTION,
-		//STATE_LV1Villager_M_Execution,
-		//STATE_Joker_Execution,
-		//STATE_Varg_Execution,
-		//STATE_STUN_EXECUTE,
-		//STATE_CATCHED,
-		//STATE_VARG_RUN_EXECUTION,
-		//STATE_HURT_MUTATION_MAGICIAN_CATCH,	
+		STATE_RESEARCHER_EXECUTION,
+
 	};
 #pragma endregion 
 #pragma region Halberd Weapon State

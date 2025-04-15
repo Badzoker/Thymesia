@@ -325,6 +325,7 @@
     <ClInclude Include="..\Public\Projectile_FireBall.h" />
     <ClInclude Include="..\Public\Projectile_Intro_Card.h" />
     <ClInclude Include="..\public\Rebound_R.h" />
+    <ClInclude Include="..\public\Researcher_Cathced.h" />
     <ClInclude Include="..\public\SkillAxe.h" />
     <ClInclude Include="..\public\SkillCane.h" />
     <ClInclude Include="..\public\SkillGreadSword.h" />
@@ -626,6 +627,7 @@
     <ClCompile Include="..\Private\Projectile_FireBall.cpp" />
     <ClCompile Include="..\Private\Projectile_Intro_Card.cpp" />
     <ClCompile Include="..\private\Rebound_R.cpp" />
+    <ClCompile Include="..\private\Researcher_Cathced.cpp" />
     <ClCompile Include="..\private\SkillAxe.cpp" />
     <ClCompile Include="..\private\SkillCane.cpp" />
     <ClCompile Include="..\private\SkillGreadSword.cpp" />
