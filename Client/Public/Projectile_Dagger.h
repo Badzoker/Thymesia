@@ -24,6 +24,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void Set_Projectile_Effect() override;
+	virtual void Stop_Projectile_Effect() override;
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
@@ -31,7 +32,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
-
+	_float4x4 m_Test = {};
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

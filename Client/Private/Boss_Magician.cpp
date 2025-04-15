@@ -133,6 +133,44 @@ HRESULT CBoss_Magician::Ready_Components(void* pArg)
 	return S_OK;
 }
 
+HRESULT CBoss_Magician::Load_SporeObject()
+{
+	_ulong dwByte = {};
+
+	string strDataPath = "../Bin/DataFiles/SpawnPoint/Sea_of_Trees/SpawnPoint";
+
+	strDataPath = strDataPath + to_string(8) + ".txt";
+
+	_tchar		szLastPath[MAX_PATH] = {};
+
+	MultiByteToWideChar(CP_ACP, 0, strDataPath.c_str(), static_cast<_int>(strlen(strDataPath.c_str())), szLastPath, MAX_PATH);
+
+	HANDLE hFile = CreateFile(szLastPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MSG_BOX("Failed To Load ObjectData File!");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+
+	ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iSize; i++)
+	{
+		CGameObject::GAMEOBJECT_DESC pDesc = {};
+		ReadFile(hFile, &pDesc._fPosition, sizeof(_float4), &dwByte, nullptr);
+		pDesc.iCurLevel = m_pGameInstance->Get_Current_Level_Index();
+
+		if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Building_Circus_Balloon"), m_pGameInstance->Get_Current_Level_Index(), TEXT("Layer_Monster_Building"), &pDesc)))
+			return E_FAIL;
+	}
+
+	CloseHandle(hFile);
+	return S_OK;
+}
+
 HRESULT CBoss_Magician::Ready_PartObjects(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
@@ -1738,11 +1776,12 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 			if (!m_Is_Spawn)
 			{
 				m_Is_Spawn = true;
-				CGameObject::GAMEOBJECT_DESC pDesc = {};
-				pDesc.iCurLevel = LEVEL_SEAOFTREES;
-				pDesc.fPosition = pObject->m_vSpawnPoint;
-				if (FAILED(pObject->m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
-					return;
+				pObject->Load_SporeObject();
+				//CGameObject::GAMEOBJECT_DESC pDesc = {};
+				//pDesc.iCurLevel = LEVEL_SEAOFTREES;
+				//pDesc.fPosition = pObject->m_vSpawnPoint;
+				//if (FAILED(pObject->m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+				//	return;
 			}
 			pObject->m_bDead = true;
 			pObject->m_bActive = false;

@@ -124,10 +124,10 @@ void CElite_Grace::Return_To_Spawn()
 
 void CElite_Grace::Stun()
 {
+    m_pState_Manager->ChangeState(new CElite_Grace::Stun_State(), this);
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
-    m_pState_Manager->ChangeState(new CElite_Grace::Stun_State(), this);
 #pragma region Effect_Stun
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion

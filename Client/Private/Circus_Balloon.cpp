@@ -402,6 +402,7 @@ void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
     if (m_fMonsterCurHP <= 0.0f)
     {
         m_bHitted = true;
+        m_bHP_Bar_Active = false;
         m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
     }
 }

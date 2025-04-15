@@ -30,6 +30,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render_Glow() override;
 	virtual void Set_Projectile_Effect() override;
+	virtual void Stop_Projectile_Effect() override;
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
