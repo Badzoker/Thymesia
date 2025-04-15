@@ -100,10 +100,18 @@ void CGhostAisemy::Update(_float _fTimeDelta)
     }
 
 
-    // Test
-    _float4 vPos = { 112.0f, 15.6f, -30.0f ,1.0f };
     if (m_pGameInstance->Get_Boss_Dead())
     {
+        _float4 vPos = {};
+        if (m_eMyLevel == LEVEL_TUTORIAL)
+            vPos = { 112.0f, 15.6f, -30.0f ,1.0f };
+        else if (m_eMyLevel == LEVEL_SEAOFTREES)
+            vPos = { -42.4256f, 100.8f, -95.475f, 1.0f };
+        else if (m_eMyLevel == LEVEL_ROYALGARDEN)
+            vPos = { 12.1903f, 13.6913f, -19.276f,1.0f };
+        else
+            vPos = { 14.913f, 8.50871f, 12.7244f,1.0f };
+
         Spawn_Conversation_Gosemy(vPos, true);
         return;
     }
