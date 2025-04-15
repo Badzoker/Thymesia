@@ -19,6 +19,7 @@ public:
 	{
 		_float4 vWaterInfo = { 30.0f, 10.0f, -150.0f, 1.0f };
 		_float fDullBlendFactor = { 1.f };
+		_float fWaveFrequency = { 0.05f };
 	}WATERINFO;
 
 private:
@@ -38,14 +39,14 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-	CTexture* m_pMouseTextureCom = { nullptr };
+	CTexture* m_pRippleTextureCom = { nullptr };
 	CVIBuffer_Terrain* m_pVIBufferCom = { nullptr };
 
 private:
 	_float							m_fAspect = { 0.f };
 
 	_float							m_fTime = { 0.f };
-	_float							m_fWaveSpeed = { 0.08f };
+	_float							m_fWaveSpeed = { 0.05f };
 	_float							m_fWaveFrequency = { 0.05f };
 	_float							m_fWaveAmplitude = { 0.3f };
 
@@ -61,8 +62,8 @@ private:
 
 	_float							m_fDullBlendFactor = { 1.f };
 
-	_float							m_fSpecPerturb = { 3.f };
-	_float							m_fSpecPower = { 100.f };
+	_float							m_fSpecPerturb = { 4.f };
+	_float							m_fSpecPower = { 150.f };
 
 public:
 	HRESULT Ready_Components(void* _pArg);

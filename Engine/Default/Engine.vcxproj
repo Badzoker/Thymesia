@@ -230,6 +230,7 @@ call UpdateLib_Release.bat</Command>
     <ClInclude Include="..\public\Prototype_Manager.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
+    <ClInclude Include="..\Public\RippleManager.h" />
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\Public\Shader_Compute.h" />
     <ClInclude Include="..\Public\Shader_Compute_Deferred.h" />
@@ -314,6 +315,7 @@ call UpdateLib_Release.bat</Command>
     <ClCompile Include="..\private\Prototype_Manager.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\RenderTarget.cpp" />
+    <ClCompile Include="..\Private\RippleManager.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
     <ClCompile Include="..\Private\Shader_Compute.cpp" />
     <ClCompile Include="..\Private\Shader_Compute_Deferred.cpp" />

@@ -35,9 +35,14 @@ HRESULT CWater::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->fPosition));
 	m_fDullBlendFactor = pDesc->fDullBlendFactor;
+	m_fWaveFrequency = pDesc->fWaveFrequency;
 
 	_uint2		vViewportSize = m_pGameInstance->Get_ViewportSize();
 	m_fAspect = vViewportSize.x / _float(vViewportSize.y);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	m_pGameInstance->Set_WaterPos(_float2(XMVectorGetX(vPosition), XMVectorGetZ(vPosition)));
 
 	return S_OK;
 }
@@ -122,6 +127,11 @@ HRESULT CWater::Ready_Components(void* _pArg)
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* Com_Noise_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Diffuse"),
+		TEXT("Com_Ripple_Texture"), reinterpret_cast<CComponent**>(&m_pRippleTextureCom))))
+		return E_FAIL;
+
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Water"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -151,7 +161,10 @@ HRESULT CWater::Bind_ShaderResources()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Reflection"), m_pShaderCom, "g_ReflectionTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 3)))
+		return E_FAIL;
+
+	if (FAILED(m_pRippleTextureCom->Bind_ShaderResource(m_pShaderCom, "g_RippleTexture", 43)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectionView", &m_pGameInstance->Get_Reflection_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -191,6 +204,9 @@ HRESULT CWater::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("specPower", &m_fSpecPower, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RippleSRV(m_pShaderCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -233,7 +249,7 @@ void CWater::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTextureCom);/*
-	Safe_Release(m_pTextureNormalCom);
-	Safe_Release(m_pTextureORMCom);*/
+	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pRippleTextureCom);
+	//Safe_Release(m_pTextureORMCom);
 }

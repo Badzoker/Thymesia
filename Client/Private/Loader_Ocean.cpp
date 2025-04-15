@@ -174,7 +174,7 @@ HRESULT CLoader_Ocean::Loading_For_Level_Ocean()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_OCEAN, TEXT("Prototype_Component_Texture_Water"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Water/T_Water_%d.png"), 3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Water/T_Water_%d.png"), 4))))
 		return E_FAIL;
 	//이전 Height
 	//lstrcpyW(m_szLoadingText, TEXT("터레인 컴포넌트 생성"));

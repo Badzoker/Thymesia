@@ -226,6 +226,7 @@ HRESULT CLevel_Ocean::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	pWaterInfo.fPosition = _float4(-73.2218552f, 8.6f, -42.0986443f, 1.0f);
 	pWaterInfo.fDullBlendFactor = 0.f;
 	pWaterInfo.iCurLevel = m_iCurrentLevel;
+	pWaterInfo.fWaveFrequency = 0.1f;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_OCEAN, TEXT("Prototype_GameObject_Water"), LEVEL_OCEAN, pLayerTag, &pWaterInfo)))
 		return E_FAIL;
