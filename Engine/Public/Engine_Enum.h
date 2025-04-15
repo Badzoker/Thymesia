@@ -113,6 +113,7 @@ namespace Engine
 		PLAYER_HURT_CATCH,                   // 몬스터한테 잡혔을 때
 		PLAYER_HURT_MAGICIAN_CATCH,          // 마술사의 스킬에 당할 때	
 		PLAYER_HURT_MUTATION_MAGICIAN_CATCH, // 변이 마술사에게 스킬을 당할 때	
+		PLAYER_HURT_RESEARCH_CATCH,          // 리서처에게 잡혔을 때		
 		PLAYER_HURT_END,
 	};
 
@@ -173,6 +174,7 @@ namespace Engine
 		MONSTER_GRACE,               // 그레이스
 		MONSTER_URD,				// URD 보스 
 		MONSTER_BAT,				// Bat 보스 ( 박쥐 ) 
+		MONSTER_RESEARCHER,         // 리서처 엘리트 몹	
 		MONSTER_NORMAL              //기본몬스터	
 	};
 

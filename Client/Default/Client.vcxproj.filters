@@ -1003,6 +1003,9 @@
     <Filter Include="02.GameObject\Monster\95. Projectile\FireBall">
       <UniqueIdentifier>{ba9955bc-cb7e-4e65-8c50-10edcb0853e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\State\Hurt\Researcher_Cathced">
+      <UniqueIdentifier>{76ccadae-0b02-46d8-9f41-6eb48a4e04a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1893,6 +1896,9 @@
     <ClInclude Include="..\Public\Elite_Researcher.h">
       <Filter>02.GameObject\Monster\01. Elite\Researcher</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Researcher_Cathced.h">
+      <Filter>02.GameObject\Player\State\Hurt\Researcher_Cathced</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2773,6 +2779,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Elite_Researcher.cpp">
       <Filter>02.GameObject\Monster\01. Elite\Researcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Researcher_Cathced.cpp">
+      <Filter>02.GameObject\Player\State\Hurt\Researcher_Cathced</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

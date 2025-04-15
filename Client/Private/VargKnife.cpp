@@ -261,20 +261,19 @@ HRESULT CVargKnife::Render()
 
     _uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (_uint i = 0; i < iNumMeshes; i++)
-    {
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
-            return E_FAIL;
+    //for (_uint i = 0; i < iNumMeshes; i++)
+    //{
 
-        m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+    if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, 0, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
+        return E_FAIL;
 
-
-        m_pShaderCom->Begin(17);    
-        m_pModelCom->Render(i);
-    }
+    m_pShaderCom->Begin(17);
+    m_pModelCom->Render(0);
+    //}
 
     return S_OK;
 }
+
 
 HRESULT CVargKnife::Ready_Components()
 {

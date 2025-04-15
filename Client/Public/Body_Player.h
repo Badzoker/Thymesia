@@ -151,6 +151,8 @@ public:
 	void STATE_URD_EXECUTION_Method();
 	void STATE_STUN_EXECUTE_START_BAT_Method();
 	void STATE_BAT_EXECUTION_Method();
+	void STATE_STUN_EXECUTE_START_RESEARCHER_Method();
+	void STATE_RESEARCHER_EXECUTION_Method();
 	/* ------------------------------- */
 
 	/* 의자 관련 모션 */
@@ -251,6 +253,11 @@ public:
 	/* 변이 오두르에게 당할 때 */
 	void STATE_HURT_MUTATION_MAGICIAN_CATCH_Method();
 
+	/* 리서처에게 잡혔을 때 */
+	void STATE_HURT_RESEARCHER_CATCHED_Method();
+
+
+
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -300,16 +307,16 @@ private:
 
 	_uint m_iCurrentLevel = {}; //종한 추가 Level전환때문에
 
-	unordered_set<CPlayer::STATE>* m_pSet_Body_States                = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States         = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States      = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States        = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States       = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States          = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States   = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Halberd_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Right_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Scythe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Axe_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_GreadSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States       = { nullptr };
-	unordered_set<CPlayer::STATE>* m_pSet_Cane_Weapon_States         = { nullptr };	
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Cane_Weapon_States = { nullptr };
 
 	_bool  m_bFirstCameraPos = { true };
 
