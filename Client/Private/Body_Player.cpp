@@ -871,7 +871,7 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
 
     if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 80.f)
     {
-
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
 
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState |= CPlayer::PHASE_IDLE;
@@ -881,6 +881,7 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
     if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_VecAnimation().at(279)->isAniMationFinish())
     {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
+
 
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentState = STATE_IDLE;

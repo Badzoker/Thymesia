@@ -66,6 +66,8 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
     m_pSet_Player_Camera_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Player_Camera_State();
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
+    m_fSkill_AttackPower = 200.f;
+
     return S_OK;
 
 }
