@@ -386,7 +386,7 @@ private:
 	_uint								m_iSkill_Eqip_2st = {};
 
 	/*플레이어가 약탈한 스킬 */
-	_uint								m_iTake_Away_Skill = { PLAYER_SKILL_SCYTHE }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
+	_uint								m_iTake_Away_Skill = { }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
 
 	/* UI 종료 관련 */
 	_bool								m_bUI_End = { false };
@@ -406,7 +406,7 @@ private:
 	_int								m_iPotion_Heal_Amount = { 100 };
 
 	/* 스킬 쿨타임 */
-	_bool								m_bPlayerSkill_CoolTime = { false };
+	_bool								m_bPlayerSkill_CoolTime = { true };
 
 
 public:
@@ -446,6 +446,7 @@ public:
 	// 4월 15일
 
 	void	 Set_Skill_CoolTime(_bool _OnOff) { m_bPlayerSkill_CoolTime = _OnOff; }
+	_bool	 Get_Skill_CoolTime() {return m_bPlayerSkill_CoolTime; }
 
 	_bool    Get_UI_End() { return m_bUI_End; }	
 	/* --------------------- */

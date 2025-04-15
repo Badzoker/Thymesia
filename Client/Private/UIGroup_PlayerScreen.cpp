@@ -684,14 +684,18 @@ void CUIGroup_PlayerScreen::Item_In_Out_Pop()
 void CUIGroup_PlayerScreen::Button_Skill()
 {
 
-	if (m_pGameInstance->isKeyEnter(DIK_1))
+	if (m_pGameInstance->isKeyEnter(DIK_1)
+		&& !m_bSkillUSe
+		&& !dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime())
 	{
 		/* 고정 스킬*/
 		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
+		m_bSkillUSe = true;
 		
 	}
 	if (dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_EffectOn())
 	{
+		m_bSkillUSe = false;
 		m_pEffectSkill_2->Set_OnOff(true);
 		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_EffectOn(false);
 		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
@@ -702,20 +706,33 @@ void CUIGroup_PlayerScreen::Button_Skill()
 
 			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_fIcon_CreativeTime(0.0f);
 			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_fIcon_CreativeTime(0.0f);
+			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Skill_CoolTime(true);
 
 		}
 	}
 
-	if (m_pGameInstance->isKeyEnter(DIK_2))
+	if (m_pGameInstance->isKeyEnter(DIK_2)
+		&& !m_bSkillUSe
+		&& !dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime())
 	{
 		/* 약탈 스킬*/
-		if (!dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_SkillOn())
+		if (PLAYER_SKILL_START != dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill()
+			&& !dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_SkillOn())
 		{
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_SkillOn(true);
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Take_Away_Skill(PLAYER_SKILL_START);
+			m_bSkillUSe = true;
 
 		}
 	}
+	if (dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_EffectOn())
+	{
+		m_bSkillUSe = false;
+		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_EffectOn(false);
+		dynamic_cast<CPlayer*>(m_pPlayer)->Set_Skill_CoolTime(true);
+
+	}
+
 	if (m_pGameInstance->isKeyEnter(DIK_C) && 
 		!dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillUpdate()&& 
 		!dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillChange())

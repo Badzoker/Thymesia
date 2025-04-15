@@ -326,8 +326,6 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_pStateMgr->Get_VecState().at(52)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iPhaseState |= PHASE_FIGHT;
 				m_iPhaseState &= ~PHASE_PARRY;
-
-				m_iTake_Away_Skill = PLAYER_SKILL_SCYTHE; // ui 스킬 사용 테스트를 위해 테스트용으로 추가 - 유빈
 			}
 
 		}

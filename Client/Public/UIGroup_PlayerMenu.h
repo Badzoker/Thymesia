@@ -36,7 +36,7 @@ private:
 	CUI_Scene* m_pMyScene = {};
 	CUI_Scene* m_pSceneChangePop = {};
 
-	_bool m_bChangePopOpen = { false };
+	_bool		m_bChangePopOpen = { false };
 	LEVELID		m_eMyLevelID = {};
 
 	CUIObject* m_pMapImage = {};

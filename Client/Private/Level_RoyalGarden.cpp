@@ -13,8 +13,6 @@
 #include "DestructObject.h"
 #include "BarrierScreen.h"
 
-#include "UI_LeftBackground.h"
-
 #include "Button.h"
 #include "GameItem.h"
 #include "DeadBranch.h"

@@ -10,8 +10,6 @@
 #include "TriggerObject.h"
 #include "BlackScreen.h"
 
-#include "UI_LeftBackground.h"
-
 #include "Button.h"
 #include "GameItem.h"
 #include "DeadBranch.h"
@@ -28,7 +26,6 @@
 #include "LadderObject.h"
 #include "Chair.h"
 #include "ChairLamp.h"
-
 
 CLevel_Ocean::CLevel_Ocean(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel { pDevice, pContext }

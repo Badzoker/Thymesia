@@ -75,8 +75,7 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		/*마우스 커서 위치에 따른 호버 이미지 이펙트 이미지 반응*/
-
+		
 		//Slot_Update_State();
 		Talent_Tab_Change();
 		Player_Talent_Update();
@@ -87,23 +86,41 @@ void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 				if (40 == Button->Get_UI_GroupID()) // ESC
 				{
 					Button->Set_Mouse_Select_OnOff(false);
-					
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_LightAttack, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Parry, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Dodge, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Claw, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Feather, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Misc, false);
-					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMySceneBase, false);
-					
-					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerTalent"), false);
+					m_bEscape = true;
 
-					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
-					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_LightAttack, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Parry, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Dodge, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Claw, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Feather, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Misc, false);
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMySceneBase, false);
+					//
+					//m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerTalent"), false);
+
+					//m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+					//m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
 				}
 			}
 		}
 
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE) || m_bEscape)
+		{
+			m_bEscape = false;
+
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_LightAttack, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Parry, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Dodge, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Claw, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Feather, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pSlot_Misc, false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMySceneBase, false);
+
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerTalent"), false);
+
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
+		}
 
 	}
 

@@ -73,6 +73,7 @@ private:
 	CUI_Scene* m_pSlot_Claw = {}; //น฿ล้
 	CUI_Scene* m_pSlot_Feather = {}; //ฑ๊ละ
 	CUI_Scene* m_pSlot_Misc = {}; //ภüทซ
+	_bool m_bEscape = { false };
 
 private:
 	map<_uint, pair<_bool, CUI_Frame*>> m_mapSlot_LightAttack;
