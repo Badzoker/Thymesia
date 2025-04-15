@@ -312,6 +312,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
                 case 4:
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_WHITE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
                     break;
                 }
             }

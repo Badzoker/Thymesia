@@ -768,6 +768,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, 2)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Hurricane_Item_Get_White.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_WHITE, 2)))
+        return E_FAIL;
+
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_DustDelay_Mutation_Burst.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST, 1)))
         return E_FAIL;
@@ -1074,6 +1078,22 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Dust.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SP_DUST)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Spark_Falling.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_WORLD)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Spark_Hurricane.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Spark_Slow.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Urd_Skill_Explosion.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3)))
         return E_FAIL;
 
     //Sword Effect

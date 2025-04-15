@@ -598,7 +598,7 @@ PS_OUT_GLOW PS_MAIN_GLOW_DISAPPEAR(PS_IN In)
 	
     vMtrlDiffuse *= vector(vRGB, 1.f - saturate(g_TimeX / g_fMaxTimer));
     
-    if (vMtrlDiffuse.a < 0.001f)
+    if (vMtrlDiffuse.a < 0.1f)
         discard;
     
     Out.vGlow = vMtrlDiffuse;

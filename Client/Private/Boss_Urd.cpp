@@ -1181,6 +1181,36 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SKILL
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_URD_STACK_SWORD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_WORLD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Explosion"))
+				{
+					_vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_1, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD);
+
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 26 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f &&
@@ -1235,6 +1265,35 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_SKILL
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_URD_STACK_SWORD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_WORLD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Explosion"))
+				{
+					_vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_1, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD);
+
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f &&
