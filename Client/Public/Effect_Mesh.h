@@ -59,6 +59,7 @@ public:
 	virtual HRESULT	Render() override;
 	virtual HRESULT Render_Distortion() override;
 	virtual HRESULT Render_Glow() override;
+	virtual HRESULT Render_WeightBlend() override;
 
 public:
 	HRESULT Ready_Components();

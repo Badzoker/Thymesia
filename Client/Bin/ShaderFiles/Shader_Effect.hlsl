@@ -195,6 +195,11 @@ struct PS_OUT_MOTIONBLUR
     float4 vMotionBlur : SV_TARGET0;
 };
 
+struct PS_OUT_WEIGHTBLEND
+{
+    float4 vDiffuse : SV_TARGET0;
+};
+
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -1063,6 +1068,61 @@ PS_OUT PS_MAIN_GASBOOMBOOM(PS_IN In)
     return Out;
 }
 
+PS_OUT_WEIGHTBLEND PS_MAIN_WEIGHTBLEND(PS_IN In) // 여기 값 조정 하고 Deferred 에서 제대로 받아서 누적 이란 느낌으로 해야함
+{
+    PS_OUT_WEIGHTBLEND Out = (PS_OUT_WEIGHTBLEND) 0;
+
+    float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
+    
+    vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
+    float fMask = vMask.r;
+    
+    float2 vMtrlTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMtrlTexcoord) * fMask;
+    
+    float2 noiseUV = In.vTexcoord + float2(g_TimeX * 0.1f, g_TimeY * 0.1f);
+    
+    float noiseValue = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+    
+    float g_EdgeWidth = 0.3f;
+    float edgeFactor = smoothstep(g_DissolveAmount - g_EdgeWidth, g_DissolveAmount, noiseValue);
+    
+    float4 g_EdgeColor = { 1.f, 1.f, 0.f, 1.f };
+    float edgeStrength = 1.0 - edgeFactor;
+    float4 edgeBlend = lerp(vMtrlDiffuse, g_EdgeColor, edgeStrength);
+    float4 finalColor = lerp(vMtrlDiffuse, edgeBlend, edgeStrength);
+    
+    if (noiseValue < g_DissolveAmount)
+    {
+        float alphaFactor = saturate((noiseValue - (g_DissolveAmount - g_EdgeWidth)) / g_EdgeWidth);
+        finalColor.a *= alphaFactor;
+
+        if (finalColor.a < 0.01f) 
+            clip(-1);
+    }
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    float blendFactor = 0.f;
+    
+    float3 vRGB = float3(g_vRGB);
+
+    vMtrlDiffuse.a *= (1.0f - saturate(g_TimeX / g_fMaxTimer));
+    
+    float fWeight = saturate(max(1e-2, In.vProjPos.w / g_fWeightX));
+    Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f) * fWeight;
+    if (Out.vDiffuse.a < 0.01f || length(Out.vDiffuse.rgb) < 0.1f)
+        discard;
+    Out.vDiffuse.a = g_fWeightY; //Weight Blend 는 a값이 필요가 없음 형식상 넣어둠
+    
+    return Out;
+}
 
 
 // ============================================================= DESTRUCT 픽셀 쉐이더 부문 =============================================================
@@ -1286,6 +1346,16 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_GASBOOMBOOM();
     }
 
+    pass WeightBlend // 14 번 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_WeightBlend, 0);
+        SetBlendState(BS_WeightBlend_Client, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
+    }
 
     //pass Pompeii // 10 폼페이 화산 폭발 돌굴라가유 쉐이더 
     //{
