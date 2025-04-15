@@ -17,13 +17,11 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
     m_BlendDesc.RenderTarget->BlendEnable = true;
     m_BlendDesc.RenderTarget->SrcBlend = D3D11_BLEND_SRC_ALPHA;
     m_BlendDesc.RenderTarget->DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-    m_BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-    m_BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    m_BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-    m_BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-    m_BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-
+    m_BlendDesc.RenderTarget->BlendOp = D3D11_BLEND_OP_ADD;
+    m_BlendDesc.RenderTarget->SrcBlendAlpha = D3D11_BLEND_ONE;
+    m_BlendDesc.RenderTarget->DestBlendAlpha = D3D11_BLEND_ZERO;
+    m_BlendDesc.RenderTarget->BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    m_BlendDesc.RenderTarget->RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 
     m_pDevice->CreateBlendState(&m_BlendDesc, &m_pBlendState);

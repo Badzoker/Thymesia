@@ -26,9 +26,7 @@ float g_fGageBar_Max;
 float g_fGageBar_Current;
 float g_fGageBar_Delay;
 
-bool g_bIconEffectClose; // 아이콘이 디졸브 효과로 스르ㅡㄹ 사라짐
-bool g_bIconEffectOpen; // 아이콘이 디졸브 효과로 스르ㅡㄹ 나타남
-
+bool g_bIconChange;
 
 struct VS_IN
 {
@@ -334,54 +332,62 @@ PS_OUT PS_Thymesia_UI_Image_SKill1st(PS_IN In)
     
     float4 vBackColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     float4 vEffectColor = g_TexEffect.Sample(LinearSampler, In.vTexcoord);
-    float4 vFrontColor;
-    if (0 == g_SlotNum) 
-        vFrontColor = g_TexIcon.Sample(LinearSampler, ChangeUV);
-    else
-        vFrontColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
-    
+    float4 vFrontColor = g_TexIcon.Sample(LinearSampler, ChangeUV);
+  
     if (!g_bIconOn) // 스킬 이미지가 없으면 
+    {
         vFrontColor.a = 0.0f; // 아이콘 투명하게
-
-   
-    if (g_bSkillOn) // 현재 스킬이 켜져 있으면 
-    {
-        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
-        vFrontColor.rgb = ((vFrontColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; //딤드처리
     }
-    if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
+    if(g_bSkillOn)
     {
-        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; //
+        vFrontColor.rgb = ((vFrontColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
+        vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5;
     }
     
-
+    
+    
+     /*끝나면 알파가 0.0f가 되어 안보임 */
     float fBase = smoothstep(g_fTImeAlpha / 5.0f, 0.0f, 1.0 - In.vTexcoord.y); // 1.0 - In.vTexcoord.y 아래에서 부터 위로
     float fBase2 = pow(fBase, 0.1f); // 자연스럽게 곡선으로 올라오겠끔  설정
-    float fAlpha = fBase2 * vEffectColor.a; // * 0.9f;
+    vEffectColor.a *= fBase2; 
    
-    vBackColor = lerp(vBackColor, vEffectColor, fAlpha);
-    Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
+    if (g_bIconChange)
+    {
+        float fIconBase = smoothstep(0.0f, 1.f, (g_fTimeDelta / 2) - (In.vTexcoord.y)); // 1.0 - In.vTexcoord.y 아래에서 부터 위로
+        float fIconBase2 = pow(fIconBase, 0.1f); // 자연스럽게 곡선으로 올라오겠끔  설정
+        vFrontColor.a *= fIconBase2; // * 0.9f;
+   
+        vBackColor = lerp(vBackColor, vEffectColor, vEffectColor.a);
+        Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
   
-    return Out;
-}
-
-PS_OUT PS_Thymesia_UI_Image_SKill2st(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    /*  약탈 스킬 효과*/
-    
+    }
+    else
+    {
+        float fIconBase = smoothstep(0.0f, 1.f, g_fTimeDelta - (In.vTexcoord.x + In.vTexcoord.y)); // 1.0 - In.vTexcoord.y 아래에서 부터 위로
+        float fIconBase2 = pow(fIconBase, 0.1f); // 자연스럽게 곡선으로 올라오겠끔  설정
+        vFrontColor.a *= fIconBase2; // * 0.9f;
    
+        vBackColor = lerp(vBackColor, vEffectColor, vEffectColor.a);
+        Out.vColor = lerp(vBackColor, vFrontColor, vFrontColor.a);
+  
+    }
     
-    //Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
-    //if (true == g_bImageLoopOn;) // 루프 값이 켜졌을 때
-    //{
-    //    Out.vColor.a *= abs(g_fTImeAlpha);
+   //// g_fTimeDelta;
+   // if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
+   // {
+   // }
+    
+   // if (g_bSkillOn) // 현재 스킬이 켜져 있으면 
+   // {
+   //     vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
+   // }
+  
+   
+        return Out;
+    }
 
-    //}
-    return Out;
-}
 technique11 DefaultTechnique
 {
   // 0번

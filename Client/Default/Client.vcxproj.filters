@@ -1006,6 +1006,12 @@
     <Filter Include="02.GameObject\Player\State\Hurt\Researcher_Cathced">
       <UniqueIdentifier>{76ccadae-0b02-46d8-9f41-6eb48a4e04a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot">
+      <UniqueIdentifier>{85d0ffe1-5811-45b9-8acb-c2645e641ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\FixSlot">
+      <UniqueIdentifier>{f95f1c7d-7616-40d0-9091-a88cb4d333c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1250,9 +1256,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Potion_DefaultType.h">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_Potion_DefaultType</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_PlunderSlotFrame.h">
-      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_NewHint.h">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_NewHint</Filter>
@@ -1899,6 +1902,12 @@
     <ClInclude Include="..\public\Researcher_Cathced.h">
       <Filter>02.GameObject\Player\State\Hurt\Researcher_Cathced</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_FixSlotFrame.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\FixSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_PlunderSlotFrame.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2134,9 +2143,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Potion_DefaultType.cpp">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_Potion_DefaultType</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_PlunderSlotFrame.cpp">
-      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_NewHint.cpp">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_NewHint</Filter>
@@ -2782,6 +2788,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Researcher_Cathced.cpp">
       <Filter>02.GameObject\Player\State\Hurt\Researcher_Cathced</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_FixSlotFrame.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\FixSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PlunderSlotFrame.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

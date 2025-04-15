@@ -9,6 +9,7 @@
 #include "UI_ItemBackground.h"
 #include "UIGroup_Inventory.h"
 #include "UI_PlunderSlotFrame.h"
+#include "UI_FixSlotFrame.h"
 #include "UI_HPBar3_MainBar.h"
 #include "UI_MPBar3_MainBar.h"
 #include "UI_HPBar5_Track.h"
@@ -125,31 +126,31 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 		switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(0))
 		{
 		case PLAYER_SKILL_AXE:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(1); // 도끼
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(1); // 도끼
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_AXE);
 			break;
 		case PLAYER_SKILL_HALBERD:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(11); // 핼버드
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(11); // 핼버드
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_HALBERD);
 			break;
 		case PLAYER_SKILL_SCYTHE:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(17); // 낫
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(17); // 낫
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_SCYTHE);
 			break;
 		case PLAYER_SKILL_CANESWORD:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(14); // 케인
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(14); // 케인
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_CANESWORD);
 			break;
 		case PLAYER_SKILL_GREADSWORD:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(10); // 대검
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(10); // 대검
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_GREADSWORD);
 			break;
 		case PLAYER_SKILL_JAVELINSWORD:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(20); // 투창검
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(20); // 투창검
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Skill_1st(PLAYER_SKILL_JAVELINSWORD);
 			break;
 		default:
-			dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_TexIcon(0); // 스킬 없음
 			break;
 		}
 		if (2 <= pSkill->Get_PlayerSkill_List().size())
@@ -157,25 +158,25 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(1))
 			{
 			case PLAYER_SKILL_AXE:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(1); // 도끼
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(1); // 도끼
 				break;
 			case PLAYER_SKILL_HALBERD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(11); // 핼버드
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(11); // 핼버드
 				break;
 			case PLAYER_SKILL_SCYTHE:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(17); // 낫
 				break;
 			case PLAYER_SKILL_CANESWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(14); // 케인
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(14); // 케인
 				break;
 			case PLAYER_SKILL_GREADSWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(10); // 대검
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(10); // 대검
 				break;
 			case PLAYER_SKILL_JAVELINSWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(20); // 투창검
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(20); // 투창검
 				break;
 			default:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_TexIcon(0); // 스킬 없음
 				break;
 			}
 		}
@@ -184,25 +185,25 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			switch (dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().at(2))
 			{
 			case PLAYER_SKILL_AXE:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(1); // 도끼
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(1); // 도끼
 				break;
 			case PLAYER_SKILL_HALBERD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(11); // 핼버드
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(11); // 핼버드
 				break;
 			case PLAYER_SKILL_SCYTHE:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(17); // 낫
 				break;
 			case PLAYER_SKILL_CANESWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(14); // 케인
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(14); // 케인
 				break;
 			case PLAYER_SKILL_GREADSWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(10); // 대검
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(10); // 대검
 				break;
 			case PLAYER_SKILL_JAVELINSWORD:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(20); // 투창검
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(20); // 투창검
 				break;
 			default:
-				dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음
+				dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_TexIcon(0); // 스킬 없음
 				break;
 			}
 		}
@@ -686,12 +687,23 @@ void CUIGroup_PlayerScreen::Button_Skill()
 	if (m_pGameInstance->isKeyEnter(DIK_1))
 	{
 		/* 고정 스킬*/
-		dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
+		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
+		
 	}
-	if (dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Get_EffectOn())
+	if (dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_EffectOn())
 	{
 		m_pEffectSkill_2->Set_OnOff(true);
-		dynamic_cast<CUI_PlunderSlotFrame*>(m_pRevolvingSkill_2)->Set_EffectOn(false);
+		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_EffectOn(false);
+		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
+		{
+			PLAYER_SKILL eSave = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().pop_front();
+			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().push_back(eSave);
+
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_fIcon_CreativeTime(0.0f);
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_fIcon_CreativeTime(0.0f);
+
+		}
 	}
 
 	if (m_pGameInstance->isKeyEnter(DIK_2))
@@ -704,14 +716,26 @@ void CUIGroup_PlayerScreen::Button_Skill()
 
 		}
 	}
-	if (m_pGameInstance->isKeyEnter(DIK_C))
+	if (m_pGameInstance->isKeyEnter(DIK_C) && 
+		!dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillUpdate()&& 
+		!dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillChange())
+	{
+		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillChange(true);
+		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_SkillChange(true);
+		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_SkillChange(true);
+		
+	}
+	if (dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillUpdate()
+		&& dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_SkillChange())
 	{
 		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
 		{
 			PLAYER_SKILL eSave = dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().front();
 			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().pop_front();
 			dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().push_back(eSave);
-
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillChange(false);
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_SkillChange(false);
+			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_SkillChange(false);
 		}
 	}
 
