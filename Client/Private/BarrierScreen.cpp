@@ -95,7 +95,6 @@ void CBarrierScreen::Update(_float fTimeDelta)
 
 void CBarrierScreen::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
 HRESULT CBarrierScreen::Render()
@@ -170,6 +169,7 @@ void CBarrierScreen::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 
 void CBarrierScreen::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
+    m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
 void CBarrierScreen::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)

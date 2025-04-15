@@ -160,6 +160,7 @@ HRESULT CLevel_Logo::Ready_Lights()
     LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
     LightDesc.vPosition = _float4(-379.520233f, 9.962774f, 62.532284f, 1.f);
     LightDesc.fRange = 70.f;
+    LightDesc.iCurrentLevel = m_iCurrentLevel;
 
     if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
         return E_FAIL;
@@ -320,4 +321,5 @@ void CLevel_Logo::Free()
 {
 	__super::Free();
 
+    m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }
