@@ -232,7 +232,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition; // 캠에서 해당 물체를 바라보는 look 방향을 구한거 .
 	
-    Out.vSpecular = ((g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)));
+    Out.vSpecular = ((g_vLightSpecular * vMtrlSpecular.r) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)));
     
     return Out;
 
@@ -284,7 +284,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
     vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
 
-    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)) * fAtt;
+    Out.vSpecular = (g_vLightSpecular * vMtrlSpecular.r) * pow(max(dot(normalize(vReflect * -1.f), normalize(vLook)), 0.f), lerp(128.f, 4.f, vRoughness.r)) * fAtt;
     
     return Out;
 }
@@ -823,7 +823,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_SKip_Z, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Blend_Second, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL();
@@ -833,7 +833,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_SKip_Z, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Blend_Second, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_POINT();

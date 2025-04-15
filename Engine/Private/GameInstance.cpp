@@ -164,13 +164,13 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pProjectile_Manager->Update(fTimeDelta);
 	m_pEffect_Manager->Update(fTimeDelta);
 	m_pUI_Manager->Update(fTimeDelta);
+	m_pLight_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pMonster_Manager->Late_Update(fTimeDelta);
 	m_pProjectile_Manager->Late_Update(fTimeDelta);
 	m_pEffect_Manager->Late_Update(fTimeDelta);	
 	m_pUI_Manager->Late_Update(fTimeDelta);
-
 
 	m_pPhysX_Manager->Update(fTimeDelta);	// PhysX 충돌 매니저 
 
@@ -544,7 +544,7 @@ _bool CGameInstance::isMouseRelease(_uint _iKey)
 
 #pragma region LIGHT_MANAGER
 
-const LIGHT_DESC * CGameInstance::Get_LightDesc(_uint iIndex) const
+const LIGHT_DESC* CGameInstance::Get_LightDesc(_uint iIndex) const
 {
 	return m_pLight_Manager->Get_LightDesc(iIndex);
 }
@@ -553,6 +553,14 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc, class CTransform* 
 {
 	return m_pLight_Manager->Add_Light(LightDesc, pTransform);
 }
+HRESULT CGameInstance::Add_Light_Range(const LIGHT_DESC& LightDesc, _float fMAXRange, _float fRangeSpeed)
+{
+	return m_pLight_Manager->Add_Light_Range(LightDesc, fMAXRange, fRangeSpeed);
+}
+HRESULT CGameInstance::Add_Light_MINRange(const LIGHT_DESC& LightDesc, _float fMINRange, _float fRangeSpeed)
+{
+	return m_pLight_Manager->Add_Light_Range_MINUS(LightDesc, fMINRange, fRangeSpeed);
+}
 void CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	return m_pLight_Manager->Render_Lights(pShader, pVIBuffer);
@@ -560,6 +568,14 @@ void CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 HRESULT CGameInstance::Delete_Dynamic_Light(CTransform* pTransform)
 {
 	return m_pLight_Manager->Delete_Dynamic_Light(pTransform);
+}
+HRESULT CGameInstance::Delete_Static_Light(_uint iCurrentLevel)
+{
+	return m_pLight_Manager->Delete_Static_Light(iCurrentLevel);
+}
+HRESULT CGameInstance::Delete_Light_Type(LIGHT_DESC::TYPE _eType)
+{
+	return m_pLight_Manager->Delete_Light_Type(_eType);
 }
 #pragma endregion
 

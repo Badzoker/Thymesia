@@ -29,6 +29,8 @@ namespace Engine
 
 		FLOAT			fRange;
 		FLOAT			fSpot;
+
+		_uint			iCurrentLevel;
 	};
 
 	typedef struct MonsterSpawnInfo
@@ -89,6 +91,24 @@ namespace Engine
 		_float2 g_RippleCenter; // x, z 월드 위치
 		_float2 g_Ripplefactor; // x 시간 y 반지름
 	}RIPPLEINFO;
+
+
+	struct LIGHT_RANGE_DESC
+	{
+		class CLight* pDesc;
+
+		FLOAT		fMAXRange;
+		FLOAT		fRangeSpeed;
+	};
+
+
+	struct LIGHT_RANGE_DESC_MINUS
+	{
+		class CLight* pDesc;
+
+		FLOAT		fMINRange;
+		FLOAT		fRangeSpeed;
+	};
 
 	struct ENGINE_DLL Skill_Information
 	{

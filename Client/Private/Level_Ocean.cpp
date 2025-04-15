@@ -178,6 +178,7 @@ HRESULT CLevel_Ocean::Ready_Lights()
 	LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.iCurrentLevel = m_iCurrentLevel;
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
@@ -1081,4 +1082,6 @@ void CLevel_Ocean::Free()
 
 	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
+
+	m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }

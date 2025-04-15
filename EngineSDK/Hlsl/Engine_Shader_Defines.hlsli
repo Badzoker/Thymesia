@@ -137,6 +137,20 @@ BlendState BS_Blend
 	*/
 };
 
+
+BlendState BS_Blend_Second
+{
+    BlendEnable[0] = TRUE;
+    BlendOp[0] = Add;
+    SrcBlend[0] = ONE;
+    DestBlend[0] = ONE;
+
+    BlendEnable[1] = TRUE;
+    BlendOp[1] = Add;
+    SrcBlend[1] = ONE;
+    DestBlend[1] = ONE;
+};
+
 SamplerComparisonState ShadowSampler
 {
     Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;

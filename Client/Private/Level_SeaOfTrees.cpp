@@ -209,7 +209,8 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
     LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
     LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-    LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+    LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+    LightDesc.iCurrentLevel = m_iCurrentLevel;
 
     if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
         return E_FAIL;
@@ -222,6 +223,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
     LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
     LightDesc.fRange = 3.f;
+    LightDesc.iCurrentLevel = m_iCurrentLevel;
 
     if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
         return E_FAIL;
@@ -439,8 +441,8 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
 
     }
 
-    if (FAILED(Load_SporeObject(8)))
-        return E_FAIL;
+   /* if (FAILED(Load_SporeObject(8)))
+        return E_FAIL;*/
 
     return S_OK;
 }
@@ -1312,4 +1314,6 @@ void CLevel_SeaOfTrees::Free()
     __super::Free();
     m_pGameInstance->Delete_All_Monster();
     m_pGameInstance->Reset_Effect();
+
+    m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }

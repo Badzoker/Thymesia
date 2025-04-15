@@ -143,8 +143,12 @@ public:
 #pragma region LIGHT_MANAGER
 	const LIGHT_DESC* Get_LightDesc(_uint iIndex) const;
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc, class CTransform* pTransform = nullptr);
-	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);	
+	HRESULT Add_Light_Range(const LIGHT_DESC& LightDesc, _float fMAXRange, _float fRangeSpeed);
+	HRESULT Add_Light_MINRange(const LIGHT_DESC& LightDesc, _float fMINRange, _float fRangeSpeed);
+	void Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	HRESULT Delete_Dynamic_Light(class CTransform* pTransform);
+	HRESULT Delete_Static_Light(_uint iCurrentLevel);
+	HRESULT Delete_Light_Type(LIGHT_DESC::TYPE _eType);
 #pragma endregion
 
 #pragma region TARGET_MANAGER

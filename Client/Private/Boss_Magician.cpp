@@ -75,6 +75,21 @@ HRESULT CBoss_Magician::Initialize(void* pArg)
 
 	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_CANESWORD;
 
+
+	LIGHT_DESC LightDesc{};
+	ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+	LightDesc.fRange = 3.f;
+	LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc, m_pTransformCom)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1748,6 +1763,34 @@ void CBoss_Magician::Phase_Change_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_iMonster_State = STATE_MOVE;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+	pObject->m_pGameInstance->Delete_Light_Type(LIGHT_DESC::TYPE_DIRECTIONAL);
+	pObject->m_pGameInstance->Delete_Light_Type(LIGHT_DESC::TYPE_SPOT);
+	pObject->m_pGameInstance->Delete_Dynamic_Light(pObject->m_pTransformCom);
+
+	FOGPARAMS FogDesc{};
+	FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+	FogDesc.fFogStartDistance = _float2(0.005f, 8.f);
+	FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+	FogDesc.g_FogColor = _float4(0., 0.f, 0.f, 1.f);
+
+	pObject->m_pGameInstance->Set_FogFactors(FogDesc);
+
+
+	LIGHT_DESC LightDesc{};
+
+	ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vPosition = _float4(-43.540661, 95.240334f, -103.446053f, 1.f);
+	LightDesc.fRange = 200.f;
+	LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+
+	pObject->m_pGameInstance->Add_Light_MINRange(LightDesc, 0.1f, 100.f);
 }
 
 void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -1773,6 +1816,23 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 		}
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
+			if (pObject->m_IsDissolveOff == true)
+			{
+				LIGHT_DESC LightDesc{};
+				ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+				LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+				LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+				LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+				LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+				LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+				LightDesc.fRange = 5.f;
+				LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+
+				pObject->m_pGameInstance->Add_Light(LightDesc, pObject->m_pTransformCom);
+			}
+
+
 			pObject->m_IsDissolveOff = false;
 			m_iIndex = 42;
 			pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1784,6 +1844,21 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Dissappear_Move_State(1), pObject);
+
+			LIGHT_DESC LightDesc{};
+
+			ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+			LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+			LightDesc.vDiffuse = _float4(200.f / 255.f, 200.f / 255.f, 200.f / 255.f, 1.f);
+			LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+			LightDesc.vSpecular = _float4(0.6f, 0.6f, 0.6f, 1.f);
+			LightDesc.vPosition = _float4(-43.540661, 95.240334f, -103.446053f, 1.f);
+			LightDesc.fRange = 5.f;
+			LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+
+			pObject->m_pGameInstance->Add_Light_Range(LightDesc, 50.f, 30.f);
+
 		}
 	}
 }
