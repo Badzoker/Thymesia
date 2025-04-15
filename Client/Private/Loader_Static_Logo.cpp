@@ -207,6 +207,7 @@
 #include "UI_MPBar2_BG.h"
 #include "UI_MPBar3_MainBar.h"
 #include "UI_PlunderSlotFrame.h"
+#include "UI_FixSlotFrame.h"
 #include "UI_Potion_DefaultType.h"
 #include "UI_DialogBackground.h"
 
@@ -1562,6 +1563,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UI_PlunderSlotFrame */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_PlunderSlotFrame"),
 		CUI_PlunderSlotFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_FixSlotFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_FixSlotFrame"),
+		CUI_FixSlotFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_UI_Potion_DefaultType*/

@@ -406,6 +406,7 @@
     <ClInclude Include="..\Public\UI_Feather_Icon.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_FixSlotFrame.h" />
     <ClInclude Include="..\Public\UI_Frame.h" />
     <ClInclude Include="..\Public\UI_GameLogoImage.h" />
     <ClInclude Include="..\Public\UI_HightlightBar.h" />
@@ -706,6 +707,7 @@
     <ClCompile Include="..\Private\UI_Feather_Icon.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_FixSlotFrame.cpp" />
     <ClCompile Include="..\Private\UI_Frame.cpp" />
     <ClCompile Include="..\Private\UI_GameLogoImage.cpp" />
     <ClCompile Include="..\Private\UI_HightlightBar.cpp" />
