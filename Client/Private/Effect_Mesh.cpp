@@ -140,7 +140,7 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 		break;
 
 	case 13: //GAS_BOOMBOOM
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLEND, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
 	}
 }
