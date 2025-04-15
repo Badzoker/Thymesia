@@ -138,6 +138,10 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 12: //BLOOD_SUCKER
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		break;
+
+	case 13: //GAS_BOOMBOOM
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLEND, this);
+		break;
 	}
 }
 
