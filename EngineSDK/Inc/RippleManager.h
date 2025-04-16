@@ -19,9 +19,11 @@ public:
     void				                    Set_WaterPos(_float2 vWaterPos) { m_vWaterPos = vWaterPos; }
 
     HRESULT                                 Bind_RippleSRV(class CShader* pShader);
+
+    _bool                                   IsInWater(_float2 vPos);
 private:
     vector<RippleInfo>                      m_RippleInfos;
-    _float2                                 m_vWaterPos;
+    _float2                                 m_vWaterPos = { -1000.f, -1000.f };
 
 
     ID3D11Buffer*                           m_pRippleBuffer = { nullptr };

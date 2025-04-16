@@ -68,7 +68,6 @@ void CWater::Update(_float fTimeDelta)
 	float reflectionCamYCoord = -XMVectorGetY(vCamPosition) + 2 * XMVectorGetY(vPos);
 	_vector reflectionCamPos = XMVectorSet(XMVectorGetX(vCamPosition), reflectionCamYCoord, XMVectorGetZ(vCamPosition), 1.f);
 
-	//	Update values for reflection rendering
 	float reflectionTargetYCoord = -XMVectorGetY(vCamLook) + 2 * XMVectorGetY(vPos);
 	_vector reflectionCamTarget = XMVectorSet(XMVectorGetX(vCamLook), reflectionTargetYCoord, XMVectorGetZ(vCamLook), 1.f);
 
@@ -79,8 +78,6 @@ void CWater::Update(_float fTimeDelta)
 	float yCam = XMVectorGetY(vCamPosition);
 	float yWater = XMVectorGetY(vPos);
 	float yReflected = reflectionCamYCoord;
-
-	//std::cout << "Cam Y: " << yCam << ", Water Y: " << yWater << ", Reflection Y: " << yReflected << std::endl;
 
 	XMStoreFloat4x4(&m_matReflectionView, XMMatrixLookAtLH(reflectionCamPos, reflectionCamTarget, reflectionCamUp));
 
