@@ -87,6 +87,7 @@ void CStand_Stack_Sword::Priority_Update(_float fTimeDelta)
      //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
      //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
      //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
+	 // m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK);
      //	iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
      //}
 
