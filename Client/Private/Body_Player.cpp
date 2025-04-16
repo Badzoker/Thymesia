@@ -90,7 +90,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pSet_JavelinSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_JavelinSword_State();
     m_pSet_GreadSword_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_GreadSword_State();
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
-
+    m_pSet_Player_Skill_State = dynamic_cast<CPlayer*>(m_pParent)->Get_PlayerSkill_State();
 
     m_fRespawnPosPtr = dynamic_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr();
 
@@ -101,6 +101,10 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
     m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
 
+
+    /* 파동을 위한 포인터 주소 저장 */
+    m_mRightFootBoneMartix = m_pModelCom->Get_BoneMatrix("Bip001-R-Toe0");
+    m_mLeftFootBoneMartix = m_pModelCom->Get_BoneMatrix("Bip001-L-Toe0");
 
     return S_OK;
 }
@@ -115,8 +119,12 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
 
     if (*m_pParentState == CPlayer::STATE_DEAD)
+    {
         m_fDeadStartTimer += fTimeDelta;
-
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_LOCKON;
+        /* 락온 풀기 */
+        static_cast<CPlayer*>(m_pParent)->Set_Lockon(false);
+    }
 
 
     if (*m_pParentState == CPlayer::STATE_DEAD && m_fDeadStartTimer > 1.f)
@@ -135,12 +143,12 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
         m_pCamera->Target_Reset();
 
-        if (m_fDeadTimer >= 4.0f)
+        if (m_fDeadTimer >= 2.5f)
         {
             m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_DEADBRANCH, m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), this, dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment());
             dynamic_cast<CPlayer*>(m_pParent)->Increase_MemoryFragment(-(dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment()));
 
-
+            *m_pParentPhsaeState = 0;
             *m_pParentState = CPlayer::STATE_START_WALK;
             *m_pParentPhsaeState = CPlayer::PHASE_START;
             *m_pPreParentState = CPlayer::STATE_DEAD;
@@ -153,9 +161,19 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
             m_fDeadStartTimer = 0.f;
 
             // 시작 위치 
-            //m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _fvector{ 83.19f, 6.3f, -117.26f, 1.0f });
-            //m_pCamera->Get
+
+
             m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&m_pCamera->Get_FirstCamDir()));
+
+            _vector respawnPos = XMLoadFloat4(static_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr());
+            _vector OffSetRespawnPos = XMVectorSetY(respawnPos, respawnPos.m128_f32[1] + 3.f);
+
+
+            m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, OffSetRespawnPos);
+
+
+            /* 락온 풀기 */
+            //static_cast<CPlayer*>(m_pParent)->Set_Lockon(false);    
 
         }
     }
@@ -580,8 +598,11 @@ void CBody_Player::Update(_float fTimeDelta)
 
     else
     {
+
+
         if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION)
             m_pGameInstance->Add_Actor_Scene(m_pParentActor);
+
 
         if (*m_pParentPhsaeState != CPlayer::PHASE_EXECUTION
             && !(m_pSet_Claw_Weapon_States->count(curState))
@@ -602,6 +623,20 @@ void CBody_Player::Update(_float fTimeDelta)
     }
 
 #pragma endregion  
+
+
+    if (m_pGameInstance->isKeyEnter(DIK_J))//m_iCurrentLevel == LEVEL_ROYALGARDEN || m_iCurrentLevel == LEVEL_OCEAN)    
+    {
+        _matrix OffSetMartix = XMMatrixIdentity();
+        OffSetMartix.r[3] = { 0.f, 0.f, 0.f,1.f };
+
+        _matrix RightFootMatrix = OffSetMartix * XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+        _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+        m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+    } // 파동 추가코드
+
 
 
 }
@@ -1949,6 +1984,7 @@ void CBody_Player::STATE_PARRY_L_Method()
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
@@ -3527,7 +3563,7 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
 
     m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
 
-    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished())
+    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish()) //&& m_pModelCom->Get_LerpFinished())
     {
 
         *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
@@ -3539,6 +3575,14 @@ void CBody_Player::STATE_CLAW_CHARGE_LOOP_Method()
 {
     m_pModelCom->SetUp_Animation(142, true);
     m_iRenderState = STATE_CLAW_RENDER;
+
+    //if(m_pGameInstance->isMouseRelease(DIM_RB))  
+    //{   
+    //    *m_pParentState = CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK;   
+    //
+    //    //static_cast<CPlayer*>(m_pParent)->Reset_ChargeTime();   
+    //	//m_fChrageTime = 0.f;    
+    //}
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
@@ -3548,11 +3592,13 @@ void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
 
     m_pModelCom->Get_VecAnimation().at(145)->Set_StartOffSetTrackPosition(36.f);
 
-    if (m_pModelCom->Get_VecAnimation().at(145)->isAniMationFinish())
+    if (m_pModelCom->Get_VecAnimation().at(145)->isAniMationFinish() && m_pModelCom->Get_Current_Animation_Index() == 145)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        //static_cast<CPlayer*>(m_pParent)->Reset_ChargeTime();
 
     }
 }

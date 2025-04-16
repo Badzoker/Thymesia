@@ -78,6 +78,13 @@ void CBoss_Bat::Priority_Update(_float fTimeDelta)
 
 void CBoss_Bat::Update(_float fTimeDelta)
 {
+	if (m_iMonster_State == STATE_INTRO)	
+		m_fNaviOffset = 1.f;	
+
+	else
+		m_fNaviOffset = 0.f;	
+	
+
 	__super::Update(fTimeDelta);
 
 	if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
