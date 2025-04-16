@@ -317,9 +317,13 @@ private:
 	unordered_set<CPlayer::STATE>* m_pSet_JavelinSword_Weapon_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Player_Camera_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Cane_Weapon_States = { nullptr };
+	unordered_set<CPlayer::STATE>* m_pSet_Player_Skill_State = { nullptr };
 
 	_bool  m_bFirstCameraPos = { true };
 
+
+	const _float4x4* m_mRightFootBoneMartix = { nullptr };
+	const _float4x4* m_mLeftFootBoneMartix = { nullptr };
 
 public:
 	HRESULT Ready_Components();

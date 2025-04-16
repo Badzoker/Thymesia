@@ -145,7 +145,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, _bool isWindowed, _uint iWin
 	SwapChain.BufferCount = 1;
 
 	/*스왑하는 형태 : 모니터 주사율에 따라 조절해도 됨. */
-	SwapChain.BufferDesc.RefreshRate.Numerator = 120;
+	SwapChain.BufferDesc.RefreshRate.Numerator = 144;
 	SwapChain.BufferDesc.RefreshRate.Denominator = 1;
 
 	/* 멀티샘플링 : 안티얼라이징 (계단현상방지) */

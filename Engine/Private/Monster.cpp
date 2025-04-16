@@ -104,7 +104,7 @@ void CMonster::Update(_float fTimeDelta)
         Rotation_To_Player();
 
     _vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition)));
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(vPosition, m_pNavigationCom->Compute_Height(vPosition) + m_fNaviOffset)); // Navi OffSet Ãß°¡
 
     __super::Update(fTimeDelta);
 }
