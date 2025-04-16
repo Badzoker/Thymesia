@@ -66,7 +66,7 @@ void CSMain_Particle_Drop(int3 dispatchThreadID : SV_DispatchThreadID, uint grou
     sharedParticles[groupIndex].vUp = tInput.vUp * 1.f;
     sharedParticles[groupIndex].vLook = tInput.vLook * 1.f;
     sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
-    sharedParticles[groupIndex].vTranslation.y -= tInput.vSpeed.y * 0.0167f;
+    sharedParticles[groupIndex].vTranslation.xyz -= tInput.vSpeed.xyz * 0.0167f;
     sharedParticles[groupIndex].vTranslation.w = 1.f;
     sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
     
