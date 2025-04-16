@@ -71,14 +71,16 @@ void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 	
 	if (m_bRenderOpen)
 	{
+
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
 		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
 
 	}
-	else
+	else if(!m_pGameInstance->UIGroup_Render_State(LEVEL_STATIC, TEXT("Layer_Mouse")))
 	{
+		m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
 		m_bItemUsePopOpen = false; // 아이템 사용/버리기 팝업 off
 		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemUsePopUp, false);
 		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItemTypePopUp, false);

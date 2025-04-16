@@ -352,6 +352,7 @@
     <ClInclude Include="..\Public\UI_Arrow.h" />
     <ClInclude Include="..\Public\UI_Arrow_Long.h" />
     <ClInclude Include="..\Public\UI_Attribute_Slot_Active.h" />
+    <ClInclude Include="..\Public\UI_Bar_Poison.h" />
     <ClInclude Include="..\Public\UI_BaseTalentIndicator.h" />
     <ClInclude Include="..\Public\UI_BlackBar.h" />
     <ClInclude Include="..\Public\UI_Boss_HP_Bar_Gage.h" />
@@ -408,6 +409,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_FixSlotFrame.h" />
     <ClInclude Include="..\Public\UI_Frame.h" />
+    <ClInclude Include="..\Public\UI_Frame_Poison.h" />
     <ClInclude Include="..\Public\UI_GameLogoImage.h" />
     <ClInclude Include="..\Public\UI_HightlightBar.h" />
     <ClInclude Include="..\Public\UI_HPBar1_Border.h" />
@@ -437,6 +439,7 @@
     <ClInclude Include="..\Public\UI_NextLineHint.h" />
     <ClInclude Include="..\Public\UI_PlunderSlotFrame.h" />
     <ClInclude Include="..\Public\UI_Potion_DefaultType.h" />
+    <ClInclude Include="..\Public\UI_QuestBackground.h" />
     <ClInclude Include="..\Public\UI_RightBackground.h" />
     <ClInclude Include="..\Public\UI_SceneAboveBackground.h" />
     <ClInclude Include="..\Public\UI_SceneBackground.h" />
@@ -655,6 +658,7 @@
     <ClCompile Include="..\Private\UI_Arrow.cpp" />
     <ClCompile Include="..\Private\UI_Arrow_Long.cpp" />
     <ClCompile Include="..\Private\UI_Attribute_Slot_Active.cpp" />
+    <ClCompile Include="..\Private\UI_Bar_Poison.cpp" />
     <ClCompile Include="..\Private\UI_BaseTalentIndicator.cpp" />
     <ClCompile Include="..\Private\UI_BlackBar.cpp" />
     <ClCompile Include="..\Private\UI_Boss_HP_Bar_Gage.cpp" />
@@ -709,6 +713,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_FixSlotFrame.cpp" />
     <ClCompile Include="..\Private\UI_Frame.cpp" />
+    <ClCompile Include="..\Private\UI_Frame_Poison.cpp" />
     <ClCompile Include="..\Private\UI_GameLogoImage.cpp" />
     <ClCompile Include="..\Private\UI_HightlightBar.cpp" />
     <ClCompile Include="..\Private\UI_HPBar1_Border.cpp" />
@@ -738,6 +743,7 @@
     <ClCompile Include="..\Private\UI_NextLineHint.cpp" />
     <ClCompile Include="..\Private\UI_PlunderSlotFrame.cpp" />
     <ClCompile Include="..\Private\UI_Potion_DefaultType.cpp" />
+    <ClCompile Include="..\Private\UI_QuestBackground.cpp" />
     <ClCompile Include="..\Private\UI_RightBackground.cpp" />
     <ClCompile Include="..\Private\UI_SceneAboveBackground.cpp" />
     <ClCompile Include="..\Private\UI_SceneBackground.cpp" />
