@@ -867,7 +867,7 @@ void CElite_Researcher::Parry_Attack_A::State_Update(_float fTimeDelta, CElite_R
             pObject->m_iMonster_State = MONSTER_STATE::STATE_ATTACK;
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
-            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_FIREBALL, vStartPos, vEndPos);
         }
         if (pObject->m_pModelCom->GetAniFinish())
         {
@@ -914,7 +914,7 @@ void CElite_Researcher::Parry_Attack_B::State_Update(_float fTimeDelta, CElite_R
             pObject->m_iMonster_State = MONSTER_STATE::STATE_ATTACK;
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTLF;
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
-            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_FIREBALL, vStartPos, vEndPos);
         }
         if (pObject->m_pModelCom->GetAniFinish())
         {
@@ -957,7 +957,7 @@ void CElite_Researcher::Shoot_Attack_A::State_Update(_float fTimeDelta, CElite_R
             _vector vStartPos, vEndPos = {};
             m_bIs_Fired = true;
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
-            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+            pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_FIREBALL, vStartPos, vEndPos);
         }
         if (pObject->m_pModelCom->GetAniFinish())
         {

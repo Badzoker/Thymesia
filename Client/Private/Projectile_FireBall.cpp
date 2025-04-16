@@ -39,6 +39,8 @@ HRESULT CProjectile_FireBall::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Actor_Scene(m_pActor);
 
+	XMStoreFloat4x4(&m_Test, XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -77,6 +79,7 @@ HRESULT CProjectile_FireBall::Render()
 
 void CProjectile_FireBall::Set_Projectile_Effect()
 {
+	m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE, m_pTransformCom->Get_WorldMatrix_Ptr(), &m_Test);
 }
 
 HRESULT CProjectile_FireBall::Ready_Components()
