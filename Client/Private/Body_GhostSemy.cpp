@@ -46,13 +46,13 @@ void CBody_GhostSemy::Priority_Update(_float _fTimeDelta)
         if (*m_pParentState == 1)
         {
             m_pModelCom->SetUp_Animation(0, false);
-            m_pModelCom->Get_VecAnimation().at(0)->Set_AnimationSpeed(2.f);
+            m_pModelCom->Get_VecAnimation().at(0)->Set_AnimationSpeed(2.5f);
 
         }
         if (*m_pParentState == 2)
         {
             m_pModelCom->SetUp_Animation(1, false);
-            m_pModelCom->Get_VecAnimation().at(1)->Set_AnimationSpeed(2.f);
+            m_pModelCom->Get_VecAnimation().at(1)->Set_AnimationSpeed(2.5f);
         }
         if (*m_pParentState == 3)
         {
@@ -62,7 +62,7 @@ void CBody_GhostSemy::Priority_Update(_float _fTimeDelta)
         if (*m_pParentState == 4)
         {
             m_pModelCom->SetUp_Animation(3, true);
-            m_pModelCom->Get_VecAnimation().at(3)->Set_AnimationSpeed(2.f);
+            m_pModelCom->Get_VecAnimation().at(3)->Set_AnimationSpeed(2.5f);
         }
 
         m_iPreAnimationState = *m_pParentState;
@@ -76,25 +76,15 @@ void CBody_GhostSemy::Update(_float _fTimeDelta)
     if (!m_bActivate)
         return;
 
-    if (m_fDissolveAmount < 1.0f)
-    {
-        m_fDissolveAmount += _fTimeDelta * 0.5f;
-        if (m_fDissolveAmount > 1.0f)
-            m_fDissolveAmount = 1.0f;
-    }
+    m_fDissolveAmount += m_bReverse ? _fTimeDelta * 0.9f : -_fTimeDelta;
 
-    //m_fDissolveAmount += m_bReverse ? -_fTimeDelta * 0.25f : _fTimeDelta * 0.25f;
-    //
-    //if (m_fDissolveAmount >= 1.0f)
-    //{
-    //    m_fDissolveAmount = 1.0f;
-    //    m_bReverse = true;
-    //}
-    //else if (m_fDissolveAmount <= 0.0f)
-    //{
-    //    m_fDissolveAmount = 0.0f;
-    //    m_bReverse = false;
-    //}
+    if (m_fDissolveAmount >= 1.0f)
+    {
+        m_fDissolveAmount = 1.0f;
+      
+        if (*m_pParentState == 4 )
+            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTCLE_GHOSEMY_DUST, m_pParentWorldMatrix, m_pModelCom->Get_BoneMatrix("Bone_Skirts19"));
+    }
 }
 
 void CBody_GhostSemy::Late_Update(_float _fTimeDelta)
@@ -102,7 +92,6 @@ void CBody_GhostSemy::Late_Update(_float _fTimeDelta)
     if (!m_bActivate)
         return;
 
-    //m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
     m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 }
 
@@ -171,6 +160,7 @@ HRESULT CBody_GhostSemy::Render_Glow()
 void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate)
 {
     m_bActivate = _bActivate;
+    m_bReverse = true;
 
     m_fDissolveAmount = 0.0f;
 }

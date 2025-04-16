@@ -45,6 +45,9 @@ public:
 
 	void							Spawn_Gosemy(_float4 _vPos, _bool _bFirstAppear = true);
 	void							Spawn_Conversation_Gosemy(_float4 _vPos, _bool _bColliderOn);
+
+	void							Set_AnimState(_uint _iAnimStateNum) { m_iState = _iAnimStateNum; }
+
 public:
 	HRESULT							Ready_Components();
 	HRESULT							Ready_PartObjects();
