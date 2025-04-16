@@ -71,7 +71,7 @@ void CRippleManager::Add_RippleInfo(_float2 vPos, _float fRippleRange)
 
     RippleInfo Info = {};
 
-    Info.g_RippleCenter = { (vPos.x - m_vWaterPos.x) / 200.f,  (vPos.y - m_vWaterPos.y) / 200.f };
+    Info.g_RippleCenter = { (vPos.x - m_vWaterPos.x) / 199.f,  (vPos.y - m_vWaterPos.y) / 199.f };
     Info.g_Ripplefactor.x = 0;
     Info.g_Ripplefactor.y = fRippleRange * 0.001f;
 

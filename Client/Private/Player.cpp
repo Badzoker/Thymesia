@@ -318,7 +318,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_fChrageTime += fTimeDelta;
 		m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 
-		if (m_fChrageTime > 0.15f) // 이거 조금만 더 짧게 해보자 
+		if (m_fChrageTime > 0.3f) // 이거 조금만 더 짧게 해보자	
 		{
 			if (m_iState != STATE_CLAW_CHARGE_START)
 			{
@@ -368,7 +368,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.	
 		}
 
-		else
+		else if (m_iState == STATE_CLAW_CHARGE_LOOP)
 		{
 			m_iState = STATE_CLAW_CHARGE_FULL_ATTACK;
 		}
@@ -382,6 +382,13 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_pStateMgr->Get_VecState().at(53)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 	}
 
+
+
+	/* 차지 안할 때 즉 생략되었을 때 다시 m_fChrageTime = 0.f; 으로 만들기 */
+	if (!m_pGameInstance->isMousePressed(DIM_RB))
+	{
+		m_fChrageTime = 0.f;
+	}
 }
 
 void CPlayer::Keyboard_section(_float fTimeDelta)
@@ -494,7 +501,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
@@ -504,7 +511,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
@@ -514,7 +521,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
@@ -524,7 +531,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
@@ -534,7 +541,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
@@ -544,7 +551,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				m_bPlayerSkill_CoolTime = false;
+
 			}
 			break;
 		}
@@ -567,42 +574,38 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iState = STATE_AXE;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
-			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
 			m_iState = STATE_CANE_SWORD_SP02;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
 			m_iState = STATE_GREATSWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
 			m_iState = STATE_HALBERDS_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			m_bPlayerSkill_CoolTime = false;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
 			m_iState = STATE_JAVELIN_SWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			m_bPlayerSkill_CoolTime = false;
+
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
 			m_iState = STATE_SCYTHE_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			m_bPlayerSkill_CoolTime = false;
+
 			break;
 		}
 	}
@@ -1833,12 +1836,12 @@ void CPlayer::OnCollision(CGameObject* _pOther, PxContactPair _information)
 	if (!strcmp("BARRIERSCREEN", _pOther->Get_Name()))
 	{
 		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장									
-		_information.extractContacts(contactPoints, 1);	
+		_information.extractContacts(contactPoints, 1);
 
-		PxVec3 dir = contactPoints[0].normal;	
-		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });	
+		PxVec3 dir = contactPoints[0].normal;
+		_vector Dir = XMVector3Normalize({ dir.x, dir.y, dir.z });
 
-		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);	
+		m_pTransformCom->Go_Dir(Dir, m_pNavigationCom, m_fTimeDelta * 0.075f);
 	}
 }
 
@@ -1846,7 +1849,7 @@ void CPlayer::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
 	m_bMove = true;
 
-	//m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;	 // 이 부분 고민 좀 해봐야 할 거 같다. 
+	//m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;	 // 이 부분 고민 좀 해봐야 할 거 같다.	
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -2074,8 +2077,6 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 			m_pStateMgr->Get_VecState().at(62)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 		}
 	}
-
-
 
 }
 

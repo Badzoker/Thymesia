@@ -58,7 +58,7 @@ HRESULT CNormal_VillageF0::Initialize(void* pArg)
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
-    settingColliderGroup = GROUP_TYPE::PLAYER;
+    settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;  
     m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
 
@@ -635,7 +635,7 @@ void CNormal_VillageF0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             m_iIndex = 28;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2)
+        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))    
         {
             pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
             return;
@@ -643,7 +643,7 @@ void CNormal_VillageF0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
     }
     else if (m_iIndex == 31 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2)
+        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))    
         {
             pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
             return;

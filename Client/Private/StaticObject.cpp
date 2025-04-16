@@ -82,12 +82,14 @@ HRESULT CStaticObject::Render()
 				return E_FAIL;
 
 			if (m_iPassIndex == 0)
-				m_iPassIndex = 19;
+			{
+				m_pShaderCom->Begin(19);
+			}
 			else if (m_iPassIndex == 10)
-				m_iPassIndex = 20;
+			{
+				m_pShaderCom->Begin(20);
+			}
 
-
-			m_pShaderCom->Begin(m_iPassIndex);
 			m_pModelCom->Render(i);
 		}
 	}

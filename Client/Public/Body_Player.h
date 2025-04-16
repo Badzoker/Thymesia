@@ -280,6 +280,7 @@ private:
 	_uint* m_pPreParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
 	_bool* m_pParentNextStateCan = { nullptr };
+	_bool* m_pParentSkillCoolTime = { nullptr };
 	_uint  m_iRenderState = {};
 
 	_int* m_pParentHp = { nullptr };

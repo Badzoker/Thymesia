@@ -106,6 +106,9 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_mRightFootBoneMartix = m_pModelCom->Get_BoneMatrix("Bip001-R-Toe0");
     m_mLeftFootBoneMartix = m_pModelCom->Get_BoneMatrix("Bip001-L-Toe0");
 
+    /* 스킬 쿨타임을 다루기 위한 변수*/
+    m_pParentSkillCoolTime = static_cast<CPlayer*>(m_pParent)->Get_Skill_CoolTime_Ptr();
+
     return S_OK;
 }
 
@@ -534,58 +537,73 @@ void CBody_Player::Update(_float fTimeDelta)
         {
             if (iter.isPlay == false)
             {
-                if ((iter.eType == EVENT_COLLIDER || iter.eType == EVENT_STATE)
-                    && iter.isEventActivate == true) // EVENT_COLLIDER 부분       
+                switch (iter.eType)
                 {
-
-                    if (!strcmp(iter.szName, "Camera_Shake"))
+                case EVENT_COLLIDER:
+                    if (iter.isEventActivate == true)
                     {
-                        // 카메라 포인터 가져오고 싶다.
+                        if (!strcmp(iter.szName, "Evade"))
+                        {
+                            if (*m_pParentState != CPlayer::STATE_NORMAL_EVADE_F)
+                                m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+                        }
+                    }
+                    break;
+                case EVENT_STATE:
+                    if (iter.isEventActivate == true)
+                    {
+                        if (!strcmp(iter.szName, "Camera_Shake"))
+                        {
+                            // 카메라 포인터 가져오고 싶다.
 
-                        m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+                            m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
+                        }
+
+                        if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
+                        {
+                            m_pCamera->Set_Camera_ZoomInSpeed(10.f);
+                            m_pCamera->ZoomIn();
+                        }
+
+                        if (!strcmp(iter.szName, "Zoom_In_Blur"))
+                        {
+                            m_fZoomBlurDeltaTime += fTimeDelta;
+                            m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f);
+                            m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
+                            m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
+                        }
                     }
 
-                    if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
+                    else
                     {
-                        m_pCamera->Set_Camera_ZoomInSpeed(10.f);
-                        m_pCamera->ZoomIn();
-                    }
+                        if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                        {
+                            if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
+                            {
+                                // 카메라 포인터 가져오고 싶다.     
+                                m_pCamera->ResetZoomInCameraPos(10.f);
+                            }
 
-                    if (!strcmp(iter.szName, "Zoom_In_Blur"))
+                            if (!strcmp(iter.szName, "Zoom_In_Blur"))
+                            {
+                                m_fZoomBlurDeltaTime = 0.f;
+                                m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
+                            }
+                        }
+                    }
+                    break;
+                case EVENT_EFFECT:
+                    if (iter.isEventActivate)
                     {
-                        m_fZoomBlurDeltaTime += fTimeDelta;
-                        m_pCamera->ShakeOn(400.f, 400.f, 2.f, 2.f);
-                        m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
-                        m_pGameInstance->Set_ZoomBlur_Option(true, m_fZoomBlurDeltaTime * 0.3f);
+                        iter.isPlay = true;
                     }
-
-                    if (!strcmp(iter.szName, "Evade"))
+                    break;
+                case EVENT_SOUND:
+                    if (iter.isEventActivate)
                     {
-                        if (*m_pParentState != CPlayer::STATE_NORMAL_EVADE_F)
-                            m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+                        iter.isPlay = true;
                     }
-                }
-
-                else
-                {
-                    if (!strcmp(iter.szName, "Camera_Parry_Zoom_In"))
-                    {
-                        // 카메라 포인터 가져오고 싶다. 
-                        m_pCamera->ResetZoomInCameraPos(10.f);
-                    }
-
-                    if (!strcmp(iter.szName, "Zoom_In_Blur"))
-                    {
-                        m_fZoomBlurDeltaTime = 0.f;
-                        m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
-                    }
-                }
-
-                if ((iter.eType == EVENT_SOUND || iter.eType == EVENT_EFFECT)
-                    && iter.isEventActivate == true
-                    && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-                {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로   
+                    break;
                 }
             }
 
@@ -625,17 +643,17 @@ void CBody_Player::Update(_float fTimeDelta)
 #pragma endregion  
 
 
-    if (m_pGameInstance->isKeyEnter(DIK_J))//m_iCurrentLevel == LEVEL_ROYALGARDEN || m_iCurrentLevel == LEVEL_OCEAN)    
-    {
-        _matrix OffSetMartix = XMMatrixIdentity();
-        OffSetMartix.r[3] = { 0.f, 0.f, 0.f,1.f };
+    //if (m_pGameInstance->isKeyEnter(DIK_J))//m_iCurrentLevel == LEVEL_ROYALGARDEN || m_iCurrentLevel == LEVEL_OCEAN)    
+    //{
+    //    _matrix OffSetMartix = XMMatrixIdentity();
+    //    OffSetMartix.r[3] = { 0.f, 0.f, 0.f,1.f };
 
-        _matrix RightFootMatrix = OffSetMartix * XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+    //    _matrix RightFootMatrix =  XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);   
 
-        _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+    //    _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] }; 
 
-        m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
-    } // 파동 추가코드
+    //    m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+    //} // 파동 추가코드
 
 
 
@@ -885,6 +903,61 @@ void CBody_Player::STATE_RUN_Method()
 {
     m_pModelCom->SetUp_Animation(9, true);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 9)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                        {
+                            _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                            _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                            m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            //iter.isPlay = true;     
+                        }
+
+                        if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                        {
+                            _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                            _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                            m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            //iter.isPlay = true; 
+                        }
+
+                        if (!strcmp(iter.szName, "Walk_After_Effect_Left"))
+                        {
+
+                        }
+
+                        else if (!strcmp(iter.szName, "Walk_After_Effect_Right"))
+                        {
+
+                        }
+
+
+
+                    }
+                }
+                break;
+
+                }
+            }
+        }
+    }
 
     /* 3월 8일 추가 */
     *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
@@ -2572,23 +2645,28 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
     m_pModelCom->SetUp_Animation(232, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-#pragma region Effect_Urd_Execution
-    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+
+#pragma region Effect_Urd_Execution  
+    if(m_pModelCom->Get_Current_Animation_Index() == 232)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(232)->Get_vecEvent())     
         {
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.isPlay == false)      
             {
-                if (!strcmp(iter.szName, "Effect_Spark"))
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분     
                 {
-                    const _float4x4* matWeapon = m_pModelCom->Get_BoneMatrix("weapon_l");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_SPARK, m_pParentWorldMatrix, matWeapon);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-                }
+                    if (!strcmp(iter.szName, "Effect_Spark"))   
+                    {
+                        const _float4x4* matWeapon = m_pModelCom->Get_BoneMatrix("weapon_l");   
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_SPARK, m_pParentWorldMatrix, matWeapon); 
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
+                    }   
+                }   
             }
-        }
+        }   
     }
 #pragma endregion
+    // 박쥐, 변이된 오두르 칼 
 
     if (m_pModelCom->Get_VecAnimation().at(232)->isAniMationFinish())
     {
@@ -2899,6 +2977,13 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
     m_pModelCom->SetUp_Animation(88, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    if (m_pModelCom->Get_Current_Animation_Index() == 88)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
+
+
     if (m_pModelCom->Get_VecAnimation().at(88)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
@@ -2911,6 +2996,13 @@ void CBody_Player::STATE_GREATSWORD_Method()
 {
     m_pModelCom->SetUp_Animation(103, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 103)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(103)->isAniMationFinish())
     {
@@ -3028,6 +3120,13 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
 {
     m_pModelCom->SetUp_Animation(135, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 135)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(135)->isAniMationFinish())
     {
@@ -3571,18 +3670,17 @@ void CBody_Player::STATE_START_WALK_Method()
     if (m_pModelCom->Get_VecAnimation().at(14)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
-        const _float4x4* matRoot = m_pModelCom->Get_BoneMatrix("RootNode");
-        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF, m_pParentWorldMatrix, matRoot);
-        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST, m_pParentWorldMatrix, matRoot);
     }
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_START_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(144)->SetLerpTime(0.15f);
+
     m_pModelCom->SetUp_Animation(144, false);
     m_iRenderState = STATE_CLAW_RENDER;
 
-    m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
+    //m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
 
     if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish()) //&& m_pModelCom->Get_LerpFinished())
     {
@@ -3632,6 +3730,11 @@ void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
 
     m_pModelCom->Get_VecAnimation().at(147)->Set_StartOffSetTrackPosition(3.f);
 
+    if (m_pModelCom->Get_Current_Animation_Index() == 147)
+    {
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
@@ -3644,6 +3747,12 @@ void CBody_Player::STATE_HALBERDS_B_Method()
 {
     m_pModelCom->SetUp_Animation(107, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 107)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())
     {
@@ -3760,6 +3869,14 @@ void CBody_Player::STATE_SCYTHE_B_Method()
     m_pModelCom->SetUp_Animation(122, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 122)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
+
+
     if (m_pModelCom->Get_VecAnimation().at(122)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
@@ -3875,11 +3992,18 @@ void CBody_Player::STATE_AXE_Method()
     m_pModelCom->SetUp_Animation(69, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    if (m_pModelCom->Get_Current_Animation_Index() == 69)
+    {
+        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+        *m_pParentSkillCoolTime = false;
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+
     }
 #pragma region 락온 상태  O 타격 중  회피 
     if (*m_pParentState == CPlayer::STATE_AXE
