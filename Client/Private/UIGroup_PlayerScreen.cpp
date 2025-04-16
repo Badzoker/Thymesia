@@ -48,14 +48,21 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pMyScene = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
+	
 	m_pItmeScreen = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pItmeScreen, false);
+
+
+	m_pPoisonScreen = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison");
+	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPoisonScreen, true);
+	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pPoisonScreen, false);
+
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
 	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PlayerSkillMgr();
 	m_oPotion_Count = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Potion_Count();
-
-	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerInventory"), "Inventory");
+	m_pPlayerSkillCoolTime = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime_Ptr();
+	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerInventory"), "Inventory");	
 	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
 	
 	for (auto& Textbox : m_pMyScene->Find_UI_TextBox())
@@ -91,7 +98,14 @@ void CUIGroup_PlayerScreen::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 {
-	Button_Skill(); // 현재 임의로 키다운 시 스킬 실행
+	if (m_pGameInstance->isKeyEnter(DIK_0))
+	{
+		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pPoisonScreen, true);
+	}
+
+
+
+
 
 	switch (dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill())
 	{
@@ -209,6 +223,7 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 		}
 	}
 
+	Button_Skill(); // 현재 임의로 키다운 시 스킬 실행
 	Player_Info_GageBar();// 플레이어 정보를 출력하기에 상시 업데이트
 
 	UI_Direction_HPBar(); // bar 연출
@@ -685,17 +700,21 @@ void CUIGroup_PlayerScreen::Button_Skill()
 {
 
 	if (m_pGameInstance->isKeyEnter(DIK_1)
-		&& !m_bSkillUSe
-		&& !dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime())
+		&& !m_bSkillUse_Fix
+		&& !m_bSkillUSe_Plunder
+		&& 0 != dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_TexIcon()
+		&& false == *m_pPlayerSkillCoolTime)
 	{
 		/* 고정 스킬*/
 		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_SkillOn(true);
-		m_bSkillUSe = true;
-		
+		m_bSkillUse_Fix = true;
+	
+		printf("UIGroup_PlayerScreen 고정 스킬 : m_pPlayerSkillCoolTime => FALSE\n");
+
 	}
 	if (dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_EffectOn())
 	{
-		m_bSkillUSe = false;
+		m_bSkillUse_Fix = false;
 		m_pEffectSkill_2->Set_OnOff(true);
 		dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Set_EffectOn(false);
 		if (!dynamic_cast<CUIGroup_Skill*>(m_pGroupSkill)->Get_PlayerSkill_List().empty())
@@ -707,29 +726,34 @@ void CUIGroup_PlayerScreen::Button_Skill()
 			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_1)->Set_fIcon_CreativeTime(0.0f);
 			dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_3)->Set_fIcon_CreativeTime(0.0f);
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Skill_CoolTime(true);
+			printf("UIGroup_PlayerScreen 고정 스킬 : m_pPlayerSkillCoolTime => TRUE\n");
 
 		}
 	}
 
 	if (m_pGameInstance->isKeyEnter(DIK_2)
-		&& !m_bSkillUSe
-		&& !dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime())
+		&& !m_bSkillUse_Fix
+		&& !m_bSkillUSe_Plunder
+		&& 0 != dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_TexIcon()
+		&& false == *m_pPlayerSkillCoolTime)
 	{
 		/* 약탈 스킬*/
 		if (PLAYER_SKILL_START != dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill()
 			&& !dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_SkillOn())
 		{
+			printf("UIGroup_PlayerScreen 약탈 스킬 : m_pPlayerSkillCoolTime => FALSE\n");
 			dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_SkillOn(true);
 			dynamic_cast<CPlayer*>(m_pPlayer)->Set_Player_Take_Away_Skill(PLAYER_SKILL_START);
-			m_bSkillUSe = true;
+			m_bSkillUSe_Plunder = true;
 
 		}
 	}
 	if (dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_EffectOn())
 	{
-		m_bSkillUSe = false;
+		m_bSkillUSe_Plunder = false;
 		dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Set_EffectOn(false);
 		dynamic_cast<CPlayer*>(m_pPlayer)->Set_Skill_CoolTime(true);
+		printf("UIGroup_PlayerScreen 약탈 스킬 : m_pPlayerSkillCoolTime => TRUE\n");
 
 	}
 
@@ -766,6 +790,7 @@ HRESULT CUIGroup_PlayerScreen::Ready_UIObject()
 {
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen_1");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison");
 
 	return S_OK;
 }

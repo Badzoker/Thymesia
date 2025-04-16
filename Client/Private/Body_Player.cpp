@@ -2994,6 +2994,7 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 케인 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3014,6 +3015,7 @@ void CBody_Player::STATE_GREATSWORD_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 대검 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3138,6 +3140,7 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 투창검 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3765,6 +3768,8 @@ void CBody_Player::STATE_HALBERDS_B_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 핼버드 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
+
     }
 
     if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())
@@ -3887,6 +3892,7 @@ void CBody_Player::STATE_SCYTHE_B_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 낫 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -4009,6 +4015,8 @@ void CBody_Player::STATE_AXE_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+        printf("Player 도끼 스킬 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
+       
     }
 
     if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())

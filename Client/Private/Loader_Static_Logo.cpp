@@ -1,11 +1,11 @@
-#include "pch.h" 
+ï»¿#include "pch.h" 
 #include "Loader_Static_Logo.h"
 #include "Body_Player.h"
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "BackGround.h"
 
-#pragma region º¸½º 
+#pragma region ë³´ìŠ¤ 
 #include "Boss_Varg.h"
 #include "Boss_Magician.h"
 #include "Boss_Magician2.h"
@@ -46,7 +46,7 @@
 #include "UI_Boss_HP_Phase.h"
 #pragma endregion 
 
-#pragma region ¿¤¸®Æ® ¸ó½ºÅÍ
+#pragma region ì—˜ë¦¬íŠ¸ ëª¬ìŠ¤í„°
 #include "Elite_Joker.h"
 #include "HArmorLV2.h"
 #include "Elite_Punch_Man.h"
@@ -67,7 +67,7 @@
 #include "Projectile_FireBall.h"
 #pragma endregion 
 
-#pragma region ÀÏ¹İ ¸ó½ºÅÍ
+#pragma region ì¼ë°˜ ëª¬ìŠ¤í„°
 #include "Normal_VillageM0.h"
 #include "Normal_VillageM1.h"
 #include "Normal_VillageF0.h"
@@ -106,7 +106,7 @@
 
 #pragma endregion
 
-#pragma region ÇÃ·¹ÀÌ¾î °ü·Ã 
+#pragma region í”Œë ˆì´ì–´ ê´€ë ¨ 
 #include "Player.h"
 #include "LeftWeapon.h"
 #include "RightWeapon.h"
@@ -122,7 +122,7 @@
 #include "Player_Weapon_JavelinSword.h"
 #pragma endregion 
 
-#pragma region È¯°æ¿ä¼Ò 
+#pragma region í™˜ê²½ìš”ì†Œ 
 #include "Sky.h"
 #include "Terrain.h"
 #pragma endregion 
@@ -136,7 +136,7 @@
 
 #pragma endregion
 
-#pragma region Å×½ºÆ®¿ë »ç´Ù¸®
+#pragma region í…ŒìŠ¤íŠ¸ìš© ì‚¬ë‹¤ë¦¬
 #include "Ladder.h"
 #pragma endregion
 
@@ -227,15 +227,19 @@
 #include "UI_DialogueTalkBackground.h"
 #include "UI_DialogueWindowBackground.h"
 #include "UI_NextLineHint.h"
+
+#include "UI_Bar_Poison.h"
+#include "UI_Frame_Poison.h"
+#include "UI_QuestBackground.h"
 #pragma endregion
 
-#pragma region ¿ÀºêÁ§Æ®
-#include "StaticObject.h"		// (¾Æ´Ò ºñ)ÀÎ½ºÅÏ½Ì¿ë °ÔÀÓ¿ÀºêÁ§Æ®
-#include "BillBoardObject.h"		// (¾Æ´Ò ºñ)ÀÎ½ºÅÏ½Ì¿ë °ÔÀÓ¿ÀºêÁ§Æ®
-#include "GroundObject.h"		// ÀÎ½ºÅÏ½Ì¿ë °ÔÀÓ¿ÀºêÁ§Æ®
-#include "TriggerObject.h"		// Æ®¸®°Å¿ë °ÔÀÓ¿ÀºêÁ§Æ®
+#pragma region ì˜¤ë¸Œì íŠ¸
+#include "StaticObject.h"		// (ì•„ë‹ ë¹„)ì¸ìŠ¤í„´ì‹±ìš© ê²Œì„ì˜¤ë¸Œì íŠ¸
+#include "BillBoardObject.h"		// (ì•„ë‹ ë¹„)ì¸ìŠ¤í„´ì‹±ìš© ê²Œì„ì˜¤ë¸Œì íŠ¸
+#include "GroundObject.h"		// ì¸ìŠ¤í„´ì‹±ìš© ê²Œì„ì˜¤ë¸Œì íŠ¸
+#include "TriggerObject.h"		// íŠ¸ë¦¬ê±°ìš© ê²Œì„ì˜¤ë¸Œì íŠ¸
 #include "BlackScreen.h"
-#include "SpecificObject.h"		//	¸Ê ¾îµğ¼­µç ´Ù ¾²ÀÏ ¿ÀºêÁ§Æ® ¾ê°¡ ÁøÂ¥ »ç´Ù¸® ÀÇÀÚ ÀÌ·±°Å °ü¸®ÇÔ ¤»
+#include "SpecificObject.h"		//	ë§µ ì–´ë””ì„œë“  ë‹¤ ì“°ì¼ ì˜¤ë¸Œì íŠ¸ ì–˜ê°€ ì§„ì§œ ì‚¬ë‹¤ë¦¬ ì˜ì ì´ëŸ°ê±° ê´€ë¦¬í•¨ ã…‹
 
 #include "Chair.h"
 #include "ChairLamp.h"
@@ -246,17 +250,18 @@
 
 #include "DestructObject.h"
 #include "BarrierScreen.h"
+
 #pragma endregion
 
-#pragma region »óÈ£ÀÛ¿ë ¿ÀºêÁ§Æ® 
-#include "GameItem.h"			// ÀÎ°ÔÀÓ ¼Ó,(µå¶ø¾ÆÀÌÅÛ) °ÔÀÓ¿ÀºêÁ§Æ® 
-#include "Button.h"				// »óÈ£ÀÛ¿ëÇÒ ¶§ ³ª¿Ã UI ¿ÀºêÁ§Æ®(¾ÆÀÌÅÛ / ÀÇÀÚ / »ç´Ù¸® etc..)
-#include "DeadBranch.h"			// ÇÃ·¹ÀÌ¾î »ç¸Á ÈÄ, ÇØ´ç »ç¸ÁÇÑ ÀÚ¸®¿¡¼­ ³ª¿Ã °ÔÀÓ¿ÀºêÁ§Æ®.
+#pragma region ìƒí˜¸ì‘ìš© ì˜¤ë¸Œì íŠ¸ 
+#include "GameItem.h"			// ì¸ê²Œì„ ì†,(ë“œëì•„ì´í…œ) ê²Œì„ì˜¤ë¸Œì íŠ¸ 
+#include "Button.h"				// ìƒí˜¸ì‘ìš©í•  ë•Œ ë‚˜ì˜¬ UI ì˜¤ë¸Œì íŠ¸(ì•„ì´í…œ / ì˜ì / ì‚¬ë‹¤ë¦¬ etc..)
+#include "DeadBranch.h"			// í”Œë ˆì´ì–´ ì‚¬ë§ í›„, í•´ë‹¹ ì‚¬ë§í•œ ìë¦¬ì—ì„œ ë‚˜ì˜¬ ê²Œì„ì˜¤ë¸Œì íŠ¸.
 
 #include "LockLine.h"
 #pragma endregion
 
-#pragma region ·Î°í Ä«¸Ş¶ó
+#pragma region ë¡œê³  ì¹´ë©”ë¼
 #include "Camera_Logo.h"
 #pragma endregion
 
@@ -301,12 +306,12 @@ HRESULT CLoader_Static_Logo::Start_Loading()
 
 HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 {
-	// ÃÊ±â ¼³Á¤À» À§ÇÑ Æ®·£½ºÆû 
+	// ì´ˆê¸° ì„¤ì •ì„ ìœ„í•œ íŠ¸ëœìŠ¤í¼ 
 	_matrix PreTransformMatrix = XMMatrixIdentity();	
-#pragma region Ä«¸Ş¶ó 
+#pragma region ì¹´ë©”ë¼ 
 	/* For.Prototype_GameObject_Camera_Free */
 
-	lstrcpyW(m_szLoadingText, TEXT("Ä«¸Ş¶ó »ı¼ºÁß"));
+	lstrcpyW(m_szLoadingText, TEXT("ì¹´ë©”ë¼ ìƒì„±ì¤‘"));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"),	
 		CCamera_Free::Create(m_pDevice, m_pContext))))	
@@ -319,8 +324,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 
-#pragma region Æ¼¸Ş½Ã¾Æ Ä³¸¯ÅÍ 
-	lstrcpyW(m_szLoadingText, TEXT("Æ¼¸Ş½Ã¾Æ ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í‹°ë©”ì‹œì•„ ìºë¦­í„° 
+	lstrcpyW(m_szLoadingText, TEXT("í‹°ë©”ì‹œì•„ ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	/* For.Prototype_Component_Model_Kaku*/
 	PreTransformMatrix = /*XMMatrixScaling(0.015f, 0.015f, 0.015f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));	
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corner"),
@@ -339,8 +344,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion 
 
-#pragma region Æ¼¸Ş½Ã¾Æ Ä³¸¯ÅÍ ¿À¸¥¼Õ ¹«±â ¸ğµ¨ 
-	lstrcpyW(m_szLoadingText, TEXT("ÁÖÀÎ°ø ¿À¸¥¼Õ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í‹°ë©”ì‹œì•„ ìºë¦­í„° ì˜¤ë¥¸ì† ë¬´ê¸° ëª¨ë¸ 
+	lstrcpyW(m_szLoadingText, TEXT("ì£¼ì¸ê³µ ì˜¤ë¥¸ì† ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Right_Weapon"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Right_Weapon/Corvus_Right_Weapon.fbx", CModel::MODEL_NONANIM))))
 		return E_FAIL;
@@ -353,8 +358,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion 
 
 
-#pragma region Æ¼¸Ş½Ã¾Æ Ä³¸¯ÅÍ ¿Ş¼Õ ¹«±â ¸ğµ¨ 
-	lstrcpyW(m_szLoadingText, TEXT("ÁÖÀÎ°ø ¿Ş¼Õ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í‹°ë©”ì‹œì•„ ìºë¦­í„° ì™¼ì† ë¬´ê¸° ëª¨ë¸ 
+	lstrcpyW(m_szLoadingText, TEXT("ì£¼ì¸ê³µ ì™¼ì† ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Left_Weapon"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Left_Weapon/Corvus_Left_Weapon.fbx", CModel::MODEL_NONANIM))))
 		return E_FAIL;
@@ -366,17 +371,17 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region Æ¼¸Ş½Ã¾Æ ¼ÕÅé °¥Äû °ø°İ 
+#pragma region í‹°ë©”ì‹œì•„ ì†í†± ê°ˆí€´ ê³µê²© 
 	///* For.Prototype_GameObject_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"),
 		CClawWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region Æ¼¸Ş½Ã¾Æ ÇÒ¹öµå ¹«±â 
+#pragma region í‹°ë©”ì‹œì•„ í• ë²„ë“œ ë¬´ê¸° 
 	PreTransformMatrix = XMMatrixIdentity();
 
-	lstrcpyW(m_szLoadingText, TEXT("ÁÖÀÎ°ø ÇÒ¹öµå ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì£¼ì¸ê³µ í• ë²„ë“œ ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Halberd"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Halberd/Halberd.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -388,10 +393,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion 
 
 
-#pragma region Æ¼¸Ş½Ã¾Æ ³´ ¹«±â	
+#pragma region í‹°ë©”ì‹œì•„ ë‚« ë¬´ê¸°	
 	PreTransformMatrix = XMMatrixIdentity();
 
-	lstrcpyW(m_szLoadingText, TEXT("ÁÖÀÎ°ø ³´ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì£¼ì¸ê³µ ë‚« ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Scythe"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Scythe/Scythe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -402,10 +407,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region Æ¼¸Ş½Ã¾Æ µµ³¢ ¹«±â	
+#pragma region í‹°ë©”ì‹œì•„ ë„ë¼ ë¬´ê¸°	
 	PreTransformMatrix = XMMatrixIdentity();
 
-	lstrcpyW(m_szLoadingText, TEXT("ÁÖÀÎ°ø µµ³¢ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì£¼ì¸ê³µ ë„ë¼ ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Axe"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Axe/Weapon_Axe.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -416,8 +421,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region ÇÃ·¹ÀÌ¾î ÁöÆÎÀÌ ¹«±â 
-	lstrcpyW(m_szLoadingText, TEXT("ÁöÆÎÀÌ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í”Œë ˆì´ì–´ ì§€íŒ¡ì´ ë¬´ê¸° 
+	lstrcpyW(m_szLoadingText, TEXT("ì§€íŒ¡ì´ ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Cane"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Cane/Weapon_Cane.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -429,8 +434,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion 
 
 
-#pragma region ÇÃ·¹ÀÌ¾î ÁöÆÎÀÌ °Ë ¹«±â	
-	lstrcpyW(m_szLoadingText, TEXT("ÁöÆÎÀÌ ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í”Œë ˆì´ì–´ ì§€íŒ¡ì´ ê²€ ë¬´ê¸°	
+	lstrcpyW(m_szLoadingText, TEXT("ì§€íŒ¡ì´ ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Cane_Sword"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Cane_Sword/Weapon_Cane_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -441,8 +446,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region ÇÃ·¹ÀÌ¾î ´ë°Ë ¹«±â	
-	lstrcpyW(m_szLoadingText, TEXT("´ë°Ë ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í”Œë ˆì´ì–´ ëŒ€ê²€ ë¬´ê¸°	
+	lstrcpyW(m_szLoadingText, TEXT("ëŒ€ê²€ ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_GreadSword"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_GreadSword/Weapon_GreadSword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -453,8 +458,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region ÇÃ·¹ÀÌ¾î ÀÚº§¸° ¹«±â		
-	lstrcpyW(m_szLoadingText, TEXT("ÀÚº§¸° ¹«±â ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region í”Œë ˆì´ì–´ ìë²¨ë¦° ë¬´ê¸°		
+	lstrcpyW(m_szLoadingText, TEXT("ìë²¨ë¦° ë¬´ê¸° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Corvus_Javelin_Sword"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Corvus_Javelin_Sword/Weapon_Javelin_Sword.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -467,18 +472,18 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 
-#pragma region Æ¼¸Ş½Ã¾Æ Ä«¸Ş¶ó 
+#pragma region í‹°ë©”ì‹œì•„ ì¹´ë©”ë¼ 
 	///* For.Prototype_GameObject_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_PlayerCamera"),
 		CPlayerCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region Æ¼¸Ş½Ã¾Æ º¸½º
+#pragma region í‹°ë©”ì‹œì•„ ë³´ìŠ¤
 
-	lstrcpyW(m_szLoadingText, TEXT("º¸½º ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ë³´ìŠ¤ ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 
-	//¿ÀµÎ¸£
+	//ì˜¤ë‘ë¥´
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Boss_Magician/Boss_Magician.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -528,7 +533,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Magician::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//º¯ÀÌ ¿ÀµÎ¸£
+	//ë³€ì´ ì˜¤ë‘ë¥´
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Magician2_Body"),
@@ -556,7 +561,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Magician2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¹Ù±×
+	//ë°”ê·¸
 
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Varg_Body"),
@@ -579,7 +584,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Varg::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¿ì¸£µå
+	//ìš°ë¥´ë“œ
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Urd_Body"),
@@ -607,7 +612,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBoss_Urd::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¸Å´Ş¸° ¿©¿Õ
+	//ë§¤ë‹¬ë¦° ì—¬ì™•
 	//Decorative_Spikes
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Bat_Body"),
@@ -639,34 +644,34 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBat_Spike::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//º¸½º ¹Ù±× Ä«¸Ş¶ó 
+	//ë³´ìŠ¤ ë°”ê·¸ ì¹´ë©”ë¼ 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Varg_Camera"),	
 		CBoss_Varg_Camera::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
 
 
-	//º¸½º ¸ÅÁö¼Ç1 (¿ÀµÎ¸£)  Ä«¸Ş¶ó 
+	//ë³´ìŠ¤ ë§¤ì§€ì…˜1 (ì˜¤ë‘ë¥´)  ì¹´ë©”ë¼ 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician_Camera"),
 		CBoss_Magician_Camera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//º¸½º º¯Á¾ ¿ÀµÎ¸£ LV2   Ä«¸Ş¶ó 
+	//ë³´ìŠ¤ ë³€ì¢… ì˜¤ë‘ë¥´ LV2   ì¹´ë©”ë¼ 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Mutation_Magician_Camera"),
 		CBoss_Mutation_Magician_Camera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//º¸½º Urd   Ä«¸Ş¶ó 
+	//ë³´ìŠ¤ Urd   ì¹´ë©”ë¼ 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Urd_Camera"),	
 		CBoss_Urd_Camera::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;	
 
-	//º¸½º Bat  Ä«¸Ş¶ó	
+	//ë³´ìŠ¤ Bat  ì¹´ë©”ë¼	
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Bat_Camera"),
 		CBoss_Bat_Camera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
-	//º¸½º HP¹Ù
+	//ë³´ìŠ¤ HPë°”
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss_HP"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Boss_HP/BossHP%d.png"), 5))))
@@ -690,9 +695,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion 
 
-#pragma region ¿¤¸®Æ® ¸ó½ºÅÍ
+#pragma region ì—˜ë¦¬íŠ¸ ëª¬ìŠ¤í„°
 
-	lstrcpyW(m_szLoadingText, TEXT("¿¤¸®Æ® ¸ó½ºÅÍ ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì—˜ë¦¬íŠ¸ ëª¬ìŠ¤í„° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Elite_Joker_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Elite/Elite_Joker/Elite_Joker.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -809,8 +814,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion 
 
-#pragma region ÀÏ¹İ ¸ó½ºÅÍ
-	lstrcpyW(m_szLoadingText, TEXT("ÀÏ¹İ ¸ó½ºÅÍ ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region ì¼ë°˜ ëª¬ìŠ¤í„°
+	lstrcpyW(m_szLoadingText, TEXT("ì¼ë°˜ ëª¬ìŠ¤í„° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Normal_VillageM0_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Normal/Normal_VillageM0/Normal_VillageM0.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -872,7 +877,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 
-	//¸ó½ºÅÍ Body
+	//ëª¬ìŠ¤í„° Body
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0_Body"),
 		CBody_VillageM0::Create(m_pDevice, m_pContext))))
@@ -906,7 +911,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CDecorative_Mutation2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¸ó½ºÅÍ Weapon
+	//ëª¬ìŠ¤í„° Weapon
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Weapon_Axe"),
 		CWeapon_Axe::Create(m_pDevice, m_pContext))))
@@ -924,7 +929,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CWeapon_Monster_Scythe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¸ó½ºÅÍ °´Ã¼
+	//ëª¬ìŠ¤í„° ê°ì²´
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Normal_VillageM0"),
 		CNormal_VillageM0::Create(m_pDevice, m_pContext))))
@@ -946,7 +951,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CNormal_ScytheM::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¸ó½ºÅÍ HP¹Ù
+	//ëª¬ìŠ¤í„° HPë°”
 	/* For.Prototype_Component_Texture_Monster_HP*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_HP"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Monster_HP/MonsterHP%d.dds"), 6))))
@@ -968,7 +973,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CLocked_On::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//¸ó½ºÅÍ¿ë ³ëÀÌÁî ÅØ½ºÃÄ /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
+	//ëª¬ìŠ¤í„°ìš© ë…¸ì´ì¦ˆ í…ìŠ¤ì³ /* For.Prototype_Component_Texture_Effect_Mesh_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Mesh_Noise/texNoise%d.dds"), 19))))
 		return E_FAIL;
@@ -982,8 +987,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion 
 
-#pragma region °Ç¹° ¸ó½ºÅÍ
-	lstrcpyW(m_szLoadingText, TEXT("°Ç¹° ¸ó½ºÅÍ ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region ê±´ë¬¼ ëª¬ìŠ¤í„°
+	lstrcpyW(m_szLoadingText, TEXT("ê±´ë¬¼ ëª¬ìŠ¤í„° ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Building_Circus_Balloon"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Monster/Building/Circus_Balloon/Circus_Balloon.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
@@ -1000,8 +1005,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion
 
-#pragma region NPC / °í¼¼¹Ì
-	lstrcpyW(m_szLoadingText, TEXT("NPC ¸ğµ¨À» »ı¼ºÇÑ´Ù."));
+#pragma region NPC / ê³ ì„¸ë¯¸
+	lstrcpyW(m_szLoadingText, TEXT("NPC ëª¨ë¸ì„ ìƒì„±í•œë‹¤."));
 	PreTransformMatrix = /*XMMatrixScaling(0.002f, 0.002f, 0.002f) **/ XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_NPC_Aisemy_Body"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/NPC/NPC_Aisemy.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
@@ -1015,7 +1020,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CBody_Aisemy::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpyW(m_szLoadingText, TEXT("±Í½Å ¹öÁ¯ NPC »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ê·€ì‹  ë²„ì ¼ NPC ìƒì„±í•œë‹¤."));
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_GhoSemy_Body"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/GhoSemy/ghostsemy2.fbx", CModel::MODEL_ANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -1029,7 +1034,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_GhostSemyNoise"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/GhostSemy/T_TilingNoise16.png"), 1))))
 		return E_FAIL;
 
-	lstrcpyW(m_szLoadingText, TEXT("°í¼¼¹Ì ·¥ÇÁ »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ê³ ì„¸ë¯¸ ë¨í”„ ìƒì„±í•œë‹¤."));
 	/* For.Prototype_GameObject_Lamp */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Lamp"), CLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1045,7 +1050,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 #pragma region BlackScreen
-	lstrcpyW(m_szLoadingText, TEXT("Fade ¿ë Object »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("Fade ìš© Object ìƒì„±í•œë‹¤."));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Black"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/BlackScreen/Fade2.png"), 1))))
 		return E_FAIL;
@@ -1059,7 +1064,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 #pragma region ITEM / SOULBRANCH
-	lstrcpyW(m_szLoadingText, TEXT("ITEM »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ITEM ìƒì„±í•œë‹¤."));
 
 	/* For.Prototype_GameObject_GameItem */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), CGameItem::Create(m_pDevice, m_pContext))))
@@ -1098,9 +1103,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 
-#pragma region ¼ÎÀÌ´õ
+#pragma region ì…°ì´ë”
 
-	lstrcpyW(m_szLoadingText, TEXT("¼ÎÀÌ´õ ¿øÇüÀ» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì…°ì´ë” ì›í˜•ì„ ìƒì„±í•œë‹¤."));
 
 
 	/* For.Prototype_Component_Shader_VtxCube */
@@ -1175,10 +1180,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 
-#pragma region UI ÅØ½ºÃÄ
-	lstrcpyW(m_szLoadingText, TEXT("UI »ı¼ºÇÑ´Ù."));
+#pragma region UI í…ìŠ¤ì³
+	lstrcpyW(m_szLoadingText, TEXT("UI ìƒì„±í•œë‹¤."));
 
-	//====================================================================================================================================== °ÔÀÓ ÀÎÆ®·Î
+	//====================================================================================================================================== ê²Œì„ ì¸íŠ¸ë¡œ
 	/* For.Prototype_Component_Texture_UI_GameLogoImage*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_GameLogoImage"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_GameLogoImage.dds"), 1))))
@@ -1200,7 +1205,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 
-	//====================================================================================================================================== ÀÌÆåÆ®
+	//====================================================================================================================================== ì´í™íŠ¸
 	/* For.Prototype_Component_Texture_UI_Effect_Frame*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Effect_Frame"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Effect_Frame_%d.dds"), 3))))
@@ -1231,7 +1236,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_SkillIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//====================================================================================================================================== Å°º¸µå ÅØ½ºÃ³
+	//====================================================================================================================================== í‚¤ë³´ë“œ í…ìŠ¤ì²˜
 	/* For.Prototype_Component_Texture_UI_KeyBox_Long*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_KeyBox_Long"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_KeyBox_Long.dds"), 1))))
@@ -1241,14 +1246,14 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_KeyBox_Long"),
 		CUI_KeyBox_Long::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//====================================================================================================================================== ÅØ½ºÆ® ¹Ú½º
+	//====================================================================================================================================== í…ìŠ¤íŠ¸ ë°•ìŠ¤
 
 	/* For.Prototype_GameObject_UI_TextBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_TextBox"),
 		CUI_TextBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//====================================================================================================================================== °ø¿ë ²Ù¹Ò ÅØ½ºÃ³
+	//====================================================================================================================================== ê³µìš© ê¾¸ë°ˆ í…ìŠ¤ì²˜
 	/* For.Prototype_Component_Texture_UI_DecorationLine*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_DecorationLine"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_DecorationLine_%d.dds"), 2))))
@@ -1258,7 +1263,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DecorationLine"),
 		CUI_DecorationLine::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//====================================================================================================================================== ³ÓÁö ÅØ½ºÃ³
+	//====================================================================================================================================== ë„›ì§€ í…ìŠ¤ì²˜
 	/* For.Prototype_Component_Texture_UI_DiamondIcon_01*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_DiamondIcon_01"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_DiamondIcon_01.dds"), 1))))
@@ -1294,7 +1299,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_NewHint"),
 		CUI_NewHint::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//==================================================================================================================================== ÇÃ·¹ÀÌ¾î ¸Ş´ºÃ¢(ÀÇÀÚÂø¼®)
+	//==================================================================================================================================== í”Œë ˆì´ì–´ ë©”ë‰´ì°½(ì˜ìì°©ì„)
 		/* For.Prototype_Component_Texture_UI_HighlightBar*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_HighlightBar"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_HighlightBar_0%d.dds"), 2))))
@@ -1330,7 +1335,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_LevelImage"),
 		CUI_LevelImage::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//==================================================================================================================================== ÇÃ·¹ÀÌ¾î Æ¯¼º Ã¢
+	//==================================================================================================================================== í”Œë ˆì´ì–´ íŠ¹ì„± ì°½
 
 	/* For.Prototype_Component_Texture_UI_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Arrow"),
@@ -1421,7 +1426,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_UnderLine"),
 		CUI_UnderLine::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//==================================================================================================================================== ÇÃ·¹ÀÌ¾î ·¹º§ ¾÷ Ã¢
+	//==================================================================================================================================== í”Œë ˆì´ì–´ ë ˆë²¨ ì—… ì°½
 
 		/* For.Prototype_Component_Texture_UI_Arrow_Long*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Arrow_Long"),
@@ -1468,7 +1473,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_TitleBackgroundBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//==================================================================================================================================== ÇÃ·¹ÀÌ¾î ±âº» È­¸é
+	//==================================================================================================================================== í”Œë ˆì´ì–´ ê¸°ë³¸ í™”ë©´
 
 	/* For.Prototype_Component_Texture_UI_Feather_Icon*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Feather_Icon"),
@@ -1588,7 +1593,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_LandingScreen::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//====================================================================================================================================== ÀÎº¥Åä¸®
+	//====================================================================================================================================== ì¸ë²¤í† ë¦¬
 
 	/* For.Prototype_Component_Texture_UI_ItemBackground*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ItemBackground"),
@@ -1634,7 +1639,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DialogBackground"),
 		CUI_DialogBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//====================================================================================================================================·ÎµùÃ¢
+	//====================================================================================================================================ë¡œë”©ì°½
 	/* For.Prototype_Component_Texture_UI_LoadingScreen */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_LoadingScreen"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 7))))
@@ -1675,7 +1680,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 
-	//====================================================================================================================================== ¸Ê?
+	//====================================================================================================================================== ë§µ?
 
 	/* For.Prototype_Component_Texture_UI_MapEntryFrame*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MapEntryFrame"),
@@ -1704,13 +1709,13 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUI_MediaFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//====================================================================================================================================== ½ºÅ³
+	//====================================================================================================================================== ìŠ¤í‚¬
 		/* For.Prototype_GameObject_UI_Skill_Slot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Skill_Slot"),
 		CUI_Skill_Slot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//====================================================================================================================================== ¾ÆÀÌ¼¼¹Ì ´ëÈ­
+	//====================================================================================================================================== ì•„ì´ì„¸ë¯¸ ëŒ€í™”
 
 
 	/* For.Prototype_Component_Texture_UI_DialogueTalkBackground*/
@@ -1746,6 +1751,55 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 /* For.Prototype_Component_Texture_UI_CloudNoise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_CloudNoise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Noise/UI_CloudNoise.dds"), 1))))
+		return E_FAIL;
+	//====================================================================================================================================== ë… í€˜ìŠ¤íŠ¸ ë°”
+
+
+
+/* For.Prototype_Component_Texture_UI_QuestBackground*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuestBackground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_QuestBackground.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Bar_Poison*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Bar_Poison"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Bar_Poison.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Frame_Poison*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Frame_Poison"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Frame_Poison.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Icon_Poison*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Icon_Poison"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Icon_Poison.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Bar_Noise*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Bar_Noise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_Bar_Noise.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_BarGlow_Poison*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BarGlow_Poison"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_BarGlow_Poison.dds"), 1))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UI_QuestBackground */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_QuestBackground"),
+		CUI_QuestBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Bar_Poison */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Bar_Poison"),
+		CUI_Bar_Poison::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Frame_Poison */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Frame_Poison"),
+		CUI_Frame_Poison::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//====================================================================================================================================
@@ -1808,10 +1862,10 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CUIGroup_Dialogue::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
-#pragma region UI ÅØ½ºÃÄ
-	lstrcpyW(m_szLoadingText, TEXT("UI »ı¼ºÇÑ´Ù."));
+#pragma region UI í…ìŠ¤ì³
+	lstrcpyW(m_szLoadingText, TEXT("UI ìƒì„±í•œë‹¤."));
 
-	//==================================================================================================================================== ¿ùµå »óÈ£ ÀÛ¿ë ui
+	//==================================================================================================================================== ì›”ë“œ ìƒí˜¸ ì‘ìš© ui
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InteractionButton"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_InteractableIndicator.dds"), 1))))
@@ -1824,8 +1878,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 
-#pragma region ÇÃ·¹ÀÌ¾î ¶ô¿Â ¼± 
-	lstrcpyW(m_szLoadingText, TEXT("ÇÃ·¹ÀÌ¾î ¶ô¿Â ¼±"));
+#pragma region í”Œë ˆì´ì–´ ë½ì˜¨ ì„  
+	lstrcpyW(m_szLoadingText, TEXT("í”Œë ˆì´ì–´ ë½ì˜¨ ì„ "));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Line"), CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Line/LockOn0.dds"), 1))))
 		return E_FAIL;
 
@@ -1839,9 +1893,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 
 #pragma region Effect_Mesh
-	lstrcpyW(m_szLoadingText, TEXT("Effect_Mesh »ı¼ºÁß"));
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Mesh ìƒì„±ì¤‘"));
 
-	_matrix PreTransformMatrix_Effect = XMMatrixIdentity(); //Effect Àü¿ë Matrix
+	_matrix PreTransformMatrix_Effect = XMMatrixIdentity(); //Effect ì „ìš© Matrix
 	PreTransformMatrix_Effect = XMMatrixScaling(0.005f, 0.005f, 0.005f);
 
 	/* For.Prototype_Component_Shader_Effect */
@@ -1937,7 +1991,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Effect_Sphere */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Sphere"), //17 <- Tool ¿¡¼­ÀÇ ¹øÈ£¶ó°í º¸¸éµÊ
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Effect_Sphere"), //17 <- Tool ì—ì„œì˜ ë²ˆí˜¸ë¼ê³  ë³´ë©´ë¨
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Effect_Mesh_Sphere.fbx", CModel::MODEL_NONANIM, PreTransformMatrix_Effect))))
 		return E_FAIL;
 
@@ -2000,9 +2054,9 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 #pragma region Effect_Particle
-	lstrcpyW(m_szLoadingText, TEXT("Effect_Particle »ı¼ºÁß"));
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Particle ìƒì„±ì¤‘"));
 
-	//Particle Compute Shader »ı¼º ½ÃÀÛ
+	//Particle Compute Shader ìƒì„± ì‹œì‘
 
 	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Drop */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop"),
@@ -2104,7 +2158,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Dust_Continue", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
-	//Particle Compute Shader »ı¼º ³¡
+	//Particle Compute Shader ìƒì„± ë
 
 	/* For.Prototype_Component_VIBuffer_Point_Compute */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute"),
@@ -2123,7 +2177,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 #pragma region Sword
-	lstrcpyW(m_szLoadingText, TEXT("Effect_Sword »ı¼ºÁß"));
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Sword ìƒì„±ì¤‘"));
 	/* For.Prototype_Component_Shader_Effect_Sword */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Sword"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect_Sword.hlsl"), VTXST::Elements, VTXST::iNumElements))))
@@ -2147,7 +2201,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 #pragma region Mesh_Instancing
-	lstrcpyW(m_szLoadingText, TEXT("Effect_Instancing »ı¼ºÁß"));
+	lstrcpyW(m_szLoadingText, TEXT("Effect_Instancing ìƒì„±ì¤‘"));
 	/* For.Prototype_Component_Shader_Effect_Instancing */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Instancing"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Effect_Instancing.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
@@ -2165,7 +2219,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion
 
-#pragma region Ç×»ó ÀÖ´Â ¿ÀºêÁ§Æ®(ÀÇÀÚ³ª »ç´Ù¸® ·¥ÇÁ °°Àº°Å)
+#pragma region í•­ìƒ ìˆëŠ” ì˜¤ë¸Œì íŠ¸(ì˜ìë‚˜ ì‚¬ë‹¤ë¦¬ ë¨í”„ ê°™ì€ê±°)
 
 	_matrix SpecificPreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_P_Archive_Chair01"),
@@ -2187,7 +2241,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	;
 
-	SpecificPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f)); // ¸ÊÅø°ú ¶È°°ÀÌ pretransform Àû¿ë
+	SpecificPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f)); // ë§µíˆ´ê³¼ ë˜‘ê°™ì´ pretransform ì ìš©
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Specific_Door"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/SM_Fences/SM_fence_07.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
@@ -2223,7 +2277,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region ºÎ¼ú ¼ö ÀÖ´Â ¿ÀºêÁ§Æ® 
+#pragma region ë¶€ìˆ  ìˆ˜ ìˆëŠ” ì˜¤ë¸Œì íŠ¸ 
 
 	_matrix DestructPreTransformMatrix = XMMatrixIdentity();
 	DestructPreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -2254,7 +2308,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 #pragma endregion
 
-#pragma region ³ª»ı¹® ¿ÀºêÁ§Æ® ( º¸½º ¹æ Æ¯¼ö ¹æº® )
+#pragma region ë‚˜ìƒë¬¸ ì˜¤ë¸Œì íŠ¸ ( ë³´ìŠ¤ ë°© íŠ¹ìˆ˜ ë°©ë²½ )
 	PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Model_BarrierScreen"), CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/BarrierScreen/BarrierScreen.fbx", CModel::MODEL_NONANIM, PreTransformMatrix))))
 		return E_FAIL;
@@ -2267,8 +2321,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 #pragma endregion
 
 
-	/* ·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.*/
-	lstrcpyW(m_szLoadingText, TEXT("·Îµù³¡."));
+	/* ë¡œë”©ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.*/
+	lstrcpyW(m_szLoadingText, TEXT("ë¡œë”©ë."));
 	m_isFinished = true;
 
 	return S_OK;
@@ -2278,13 +2332,13 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 {
 	m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.1f);
 #pragma region Logo 
-	lstrcpyW(m_szLoadingText, TEXT("ÅØ½ºÃÄ ¿øÇüÀ» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("í…ìŠ¤ì³ ì›í˜•ì„ ìƒì„±í•œë‹¤."));
 	/* For.Prototype_Component_Texture_BackGround */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGround"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/LoadingScreen/LoadingScreen_%d.dds"), 7))))
 		return E_FAIL;
 
-	lstrcpyW(m_szLoadingText, TEXT("¼ÎÀÌ´õ ¿øÇüÀ» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ì…°ì´ë” ì›í˜•ì„ ìƒì„±í•œë‹¤."));
 	//D3D11_INPUT_ELEMENT_DESC	VertexElements[] = {
 	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0 },			
@@ -2296,13 +2350,13 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 		return E_FAIL;
 
 
-	lstrcpyW(m_szLoadingText, TEXT("¸ğµ¨ ¿øÇüÀ» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ëª¨ë¸ ì›í˜•ì„ ìƒì„±í•œë‹¤."));
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_VIBuffer_Rect"),
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpyW(m_szLoadingText, TEXT("°´Ã¼ ¿øÇüÀ» »ı¼ºÇÑ´Ù."));
+	lstrcpyW(m_szLoadingText, TEXT("ê°ì²´ ì›í˜•ì„ ìƒì„±í•œë‹¤."));
 
 	/* For.Prototype_GameObject_BackGround */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_GameObject_BackGround"),
@@ -2353,8 +2407,8 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Logo()
 		return E_FAIL;
 
 #pragma endregion
-	/* ·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.*/
-	lstrcpyW(m_szLoadingText, TEXT("·Îµù³¡."));
+	/* ë¡œë”©ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.*/
+	lstrcpyW(m_szLoadingText, TEXT("ë¡œë”©ë."));
 	m_isFinished = true;
 
 

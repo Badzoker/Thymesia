@@ -25,6 +25,7 @@ public:
 	virtual HRESULT Render() override;
 
 	void Set_TexIcon(_uint iNum) { m_iTexicon = iNum; }
+	_uint Get_TexIcon() { return  m_iTexicon; }
 
 	void Set_SkillOn(_bool bUse) { m_bSkillOn = bUse; }
 	_bool Get_SkillOn() {return  m_bSkillOn; }

@@ -409,7 +409,7 @@ private:
 	_int								m_iPotion_Heal_Amount = { 100 };
 
 	/* 스킬 쿨타임 */
-	_bool								m_bPlayerSkill_CoolTime = { false };
+	_bool								m_bPlayerSkill_CoolTime = { true };
 
 
 public:

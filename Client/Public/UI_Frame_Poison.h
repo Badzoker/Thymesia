@@ -28,7 +28,10 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
+	CTexture* m_pTexIconCom = { nullptr };
+	CTexture* m_pTexNoiseCom = { nullptr };
 
+	_bool m_bIconOn = { true };
 
 public:
 	HRESULT Ready_Components();

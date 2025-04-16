@@ -44,7 +44,8 @@ void CUI_Frame_Poison::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
+		if (m_bOpen)
+			m_pGameInstance->Add_RenderGroup(CRenderer::RG_UI, this);
 	}
 }
 
@@ -59,9 +60,17 @@ HRESULT CUI_Frame_Poison::Render()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;
+	if (FAILED(m_pTexIconCom->Bind_ShaderResource(m_pShaderCom, "g_TexIcon", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pTexNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_TexNoise", 0)))
+		return E_FAIL;
 
 
-	m_pShaderCom->Begin(m_iShaderPassNum);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIconOn", &m_bIconOn, sizeof(_bool))))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(4); 
 
 	m_pVIBufferCom->Bind_InputAssembler();
 
@@ -77,6 +86,16 @@ HRESULT CUI_Frame_Poison::Ready_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Icon_Poison"),
+		TEXT("Com_TexIcon"), reinterpret_cast<CComponent**>(&m_pTexIconCom))))
+		return E_FAIL;
+	
+	/* Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BarGlow_Poison"),
+		TEXT("Com_TexGlow"), reinterpret_cast<CComponent**>(&m_pTexNoiseCom))))
+		return E_FAIL;
+	
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -86,7 +105,6 @@ HRESULT CUI_Frame_Poison::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -124,4 +142,6 @@ void CUI_Frame_Poison::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTexIconCom);
+	Safe_Release(m_pTexNoiseCom);
 }

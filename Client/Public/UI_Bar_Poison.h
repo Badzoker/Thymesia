@@ -25,10 +25,19 @@ public:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
+	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pTexNoiseCom = { nullptr };
+	CTexture* m_pTexGlowCom = { nullptr };
+public:
+	_bool Get_DeadSet() { return m_bDeadSet; }
 
+private:
+	_float m_fPoisonTime = {};
+	_float m_fDeadTime = {60.f};
+	_bool m_bDeadSet = { false };
+	_float m_fTimeDelta = {};
 
 public:
 	HRESULT Ready_Components();

@@ -133,35 +133,8 @@
     <Filter Include="02.GameObject\InstancingObject\GroundObject">
       <UniqueIdentifier>{2c5d2e7c-bc30-4bd1-95de-828ebca2ce0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject">
-      <UniqueIdentifier>{23be136b-4af7-4c9f-9830-2afe78e32ad9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\State\Run\RockOn\Rock_On_Run_F">
       <UniqueIdentifier>{d125fb7d-b677-4a68-92a8-978b9bf00ddd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass">
-      <UniqueIdentifier>{420a30ad-8a10-42b2-bcc7-ddad3d6fef83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup">
-      <UniqueIdentifier>{02e749bc-62e0-434e-8e0c-3182d79925b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\1.MouseCursor">
-      <UniqueIdentifier>{6cf7f293-1672-40cc-916d-5ca1e9e3ac88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\2.PlayerMenu">
-      <UniqueIdentifier>{e6584cb6-17d9-4a02-a60c-e1945c22baa4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\3.PlayerLevelUP">
-      <UniqueIdentifier>{e9ce4b6c-45aa-49a9-b27f-30ee59d452ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\1.GameIntro">
-      <UniqueIdentifier>{c2905f62-423f-4e1a-9c72-f91cb5ec2ee8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\4.PlayerTalent">
-      <UniqueIdentifier>{e35de4db-75f7-494a-9e59-2eaa9ee43d87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\5.PlayerScreen">
-      <UniqueIdentifier>{3a27189b-9b7f-4729-bce5-97923dad244b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\Player\State\Evade">
       <UniqueIdentifier>{fa098d4f-62ce-4010-84fc-d1e95fb3f5e4}</UniqueIdentifier>
@@ -189,9 +162,6 @@
     </Filter>
     <Filter Include="02.GameObject\Player\State\Parry\Parry_L">
       <UniqueIdentifier>{de2b90d0-3152-4400-8465-1bdc41330777}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\3.UI_TextBox">
-      <UniqueIdentifier>{47e6b493-8620-4827-995b-8ec7780f7838}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\Player\State\Hurt">
       <UniqueIdentifier>{7500683d-3fbf-4856-be74-af249368c0c6}</UniqueIdentifier>
@@ -276,9 +246,6 @@
     </Filter>
     <Filter Include="02.GameObject\TriggerObject">
       <UniqueIdentifier>{d166a712-dcfc-4af1-aa57-4e9c647bd87e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\6.ESC_Inventory">
-      <UniqueIdentifier>{9dea9966-a4c3-4318-ab3d-47743cd5acc4}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\Player\State\Attack\Attack_LButton_4">
       <UniqueIdentifier>{e1a176e7-71a3-4d8d-9d6c-b8fc88b9f729}</UniqueIdentifier>
@@ -505,9 +472,6 @@
     <Filter Include="02.GameObject\Player\State\Attack\ClawCommon_ChargeStart">
       <UniqueIdentifier>{4b74af5d-cca8-4f48-9dab-84c0a4d73ba1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\8.LandingMessages">
-      <UniqueIdentifier>{ae3f58ba-b5d2-4f60-ab75-de6635f530ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\NPCs">
       <UniqueIdentifier>{7e052f1e-0136-498e-b756-a68f1142641a}</UniqueIdentifier>
     </Filter>
@@ -531,180 +495,6 @@
     </Filter>
     <Filter Include="02.GameObject\Player\Weapon\Scythe">
       <UniqueIdentifier>{206a5ffe-733a-4967-9f75-93e2a843fe32}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image">
-      <UniqueIdentifier>{0b358063-f72a-4f58-b5b1-9d6bb463c3cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button">
-      <UniqueIdentifier>{a77a730a-d1dd-4349-935f-22511da55235}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_MapEntryFrame">
-      <UniqueIdentifier>{677d3880-4eac-455b-b109-9ae93235abd2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Map_Save_Image">
-      <UniqueIdentifier>{25a00e11-9551-44e3-b6fa-188b054e2f32}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MediaFrame">
-      <UniqueIdentifier>{6747fb1c-42fb-42ce-b134-18126d8b0c9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Arrow">
-      <UniqueIdentifier>{33cf037a-d388-4611-bc33-dd5fc6235b7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Arrow_Long">
-      <UniqueIdentifier>{1ab08e7b-3bff-4468-9669-451120748f68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Attribute_Slot_Active">
-      <UniqueIdentifier>{8690b71b-040e-41ef-af18-025db00c51f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_BaseTalentIndicator">
-      <UniqueIdentifier>{e3cfb31b-dd95-4244-8fb0-7747330b0401}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_BlackBar">
-      <UniqueIdentifier>{0edba770-596e-4f5c-b7a6-99e4b5d20fc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_ButtonBackground">
-      <UniqueIdentifier>{1da24ee1-2c2a-4ea0-8f1c-3f79ad91698d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_ButtonHighlight">
-      <UniqueIdentifier>{b284783b-bc96-4e7e-b501-22277dd1d693}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_ContentBackground">
-      <UniqueIdentifier>{e55b978d-188c-48ac-93bf-17eb4b9f741e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DecorationFrame">
-      <UniqueIdentifier>{1795f77d-d6c7-4ca3-918c-1d723e043de5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DecorationLine">
-      <UniqueIdentifier>{3cb58a39-7e4a-4a56-8705-cf683c0dd41f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DescBackground">
-      <UniqueIdentifier>{29b4be22-8695-450c-99de-9abe4420c23f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogBackground">
-      <UniqueIdentifier>{0a406aac-3f6b-468b-ab56-3b745e622e9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DiamondIcon">
-      <UniqueIdentifier>{b68334f5-1f8d-4e66-8f8f-3905a6f5d7ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Effect_Frame">
-      <UniqueIdentifier>{2a5fe71b-64fe-45e5-ba3b-fcada5f06c23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Effect_SlotFrame">
-      <UniqueIdentifier>{a68dc9b7-5c86-428b-ad45-d9b3e556e715}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Frame">
-      <UniqueIdentifier>{cde64f65-18ff-432f-9e28-eb62d4c3bb45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_GameLogoImage">
-      <UniqueIdentifier>{9eb57d39-5aee-4f82-a7dd-180bffaf0276}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HightlightBar">
-      <UniqueIdentifier>{fb7e5aa4-2109-408f-9e1d-aef3aa9d1e69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar1_Border">
-      <UniqueIdentifier>{0f4d113e-6d6c-4385-8b29-ee94460bf908}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar2_BG">
-      <UniqueIdentifier>{2a6b4131-6e68-4b96-a75e-9db70a3264fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar3_MainBar">
-      <UniqueIdentifier>{9659b653-ec67-4f1e-8519-afc2af4ca174}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar5_Track">
-      <UniqueIdentifier>{b248c142-2f80-4ead-b80a-6c64034512df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar1_Border">
-      <UniqueIdentifier>{85a50a9e-19e2-4663-905c-82e317d9646f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar2_BG">
-      <UniqueIdentifier>{af44de0e-3d46-46c4-85b6-fa589b5f3350}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar3_MainBar">
-      <UniqueIdentifier>{93a9c60a-3332-4365-b4e8-dc229dd07def}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_RightBackground">
-      <UniqueIdentifier>{f497481b-c87a-4e08-873d-37e9810767e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneAboveBackground">
-      <UniqueIdentifier>{97cb2c5f-ca11-4985-8297-ec7ce9ff96a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneBackground">
-      <UniqueIdentifier>{9806784c-6146-45a1-afd1-c7e5a0c4d768}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneUnderBackground">
-      <UniqueIdentifier>{429de6b8-e544-425e-af37-8ca65ab758bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_ItemBackground">
-      <UniqueIdentifier>{ee172a84-16b3-48ad-9856-866a0237a89a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Item_Icon">
-      <UniqueIdentifier>{d76b443d-8993-4d8b-92a0-eaa2d4dfe15c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_KeyBox_Long">
-      <UniqueIdentifier>{9ac1a550-a18e-4832-9d32-9e449530cb7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LeftBackground">
-      <UniqueIdentifier>{6e26da76-080e-4ea0-80b2-ac54a2b2fc44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LandingScreen">
-      <UniqueIdentifier>{54cb8ceb-54ea-467e-ad2e-49c60c5a5792}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LevelImage">
-      <UniqueIdentifier>{6c2d158c-72c5-4e7f-9a62-2708645296af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LoadingIcon">
-      <UniqueIdentifier>{b84166d4-0f85-42cd-834a-3b05804a2f7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LoadingScreen">
-      <UniqueIdentifier>{eab023f6-50fb-42c8-ae74-0d4af48b4f96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LockedIcon">
-      <UniqueIdentifier>{b911bfa7-d1ad-4287-bb3d-609a0955bcea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LootNotifyBackground">
-      <UniqueIdentifier>{7ec6a342-df91-4e62-82d0-72b4ad8bc7d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MemoryShardsIcon">
-      <UniqueIdentifier>{cc5ddeda-96f3-4511-892b-c3fe801226c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_NewHint">
-      <UniqueIdentifier>{84c62468-5301-46aa-a446-56df9915eab7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Potion_DefaultType">
-      <UniqueIdentifier>{db8771dc-a06c-4fd9-b507-cd0609e2e07c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SkillIcon">
-      <UniqueIdentifier>{12dcfc01-34bd-4807-b887-d994606f51d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SquareFrame">
-      <UniqueIdentifier>{c9e972f9-4829-4303-944f-ebf1fc1fc967}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SquareFrame_Hover">
-      <UniqueIdentifier>{eb821192-f38c-44cb-be15-b1909738766c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Talent_Icon">
-      <UniqueIdentifier>{2ac67d3d-9287-4232-abdb-919731e52fb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_TitleBackgroundBar">
-      <UniqueIdentifier>{89944104-e242-4736-8d80-1a3264f9f29f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame">
-      <UniqueIdentifier>{d3d7fae1-19b0-48a7-be91-b09645c709bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Indicator_Selected">
-      <UniqueIdentifier>{9ac74fcc-bbed-4b6b-b598-e00af5b9a12c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_UnderLine">
-      <UniqueIdentifier>{1c8c589c-3888-46df-a712-e0ff9b985b3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Feather_Icon">
-      <UniqueIdentifier>{412bd048-8d9e-445f-b675-23af1a6d7727}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\7.Loading">
-      <UniqueIdentifier>{6baf2a65-efd6-4b5e-9f43-12444af93610}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\9.MapChange">
-      <UniqueIdentifier>{b5d3d3be-b43e-4577-941f-9a89462027df}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\SpecificObject">
       <UniqueIdentifier>{480b9a3c-e2d5-4d05-9f66-b0d91896c326}</UniqueIdentifier>
@@ -730,23 +520,8 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera">
       <UniqueIdentifier>{360c0e16-a0f8-4cf6-8f4e-462860449364}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Skill_Slot">
-      <UniqueIdentifier>{48f445ad-aaf5-4b4c-8784-afa2190dbfd2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\Weapon\Axe">
       <UniqueIdentifier>{6f855e84-d6aa-45ef-9cbd-12d45f80009e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueTalkBackground">
-      <UniqueIdentifier>{7b962ed5-aba0-4de0-ab66-4a00ada19eba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueWindowBackground">
-      <UniqueIdentifier>{3dee33b9-a643-492b-92f2-27d06e06459f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_NextLineHint">
-      <UniqueIdentifier>{fff60fbc-3255-45ce-9696-535c5baf1405}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue">
-      <UniqueIdentifier>{5e4044ac-6e39-4750-bf54-689260a2359f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\SpecificObject\Chair">
       <UniqueIdentifier>{78eaaeee-a940-4f8e-ab06-dc1375452a1b}</UniqueIdentifier>
@@ -825,15 +600,6 @@
     </Filter>
     <Filter Include="02.GameObject\SpecificObject\ElevatorDoor">
       <UniqueIdentifier>{e2e5630d-fa07-4971-84ca-3b347e5c84bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\3.Button">
-      <UniqueIdentifier>{f8f29f6e-bd5f-4190-a779-613a64f5f002}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\3.Button\0.Button">
-      <UniqueIdentifier>{f7d0d441-ee38-4668-8376-7e9cd5811837}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\3.Button\1.LockLine">
-      <UniqueIdentifier>{85213942-3037-419a-9c03-bfc026bc3ca6}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\SpecificObject\LadderObject">
       <UniqueIdentifier>{95e82e62-1cdf-47b4-89aa-fd58698a1723}</UniqueIdentifier>
@@ -1003,26 +769,260 @@
     <Filter Include="02.GameObject\Player\State\Hurt\Researcher_Cathced">
       <UniqueIdentifier>{76ccadae-0b02-46d8-9f41-6eb48a4e04a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject">
+      <UniqueIdentifier>{23be136b-4af7-4c9f-9830-2afe78e32ad9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass">
+      <UniqueIdentifier>{420a30ad-8a10-42b2-bcc7-ddad3d6fef83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\1.MouseCursor">
+      <UniqueIdentifier>{6cf7f293-1672-40cc-916d-5ca1e9e3ac88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\3.UI_TextBox">
+      <UniqueIdentifier>{47e6b493-8620-4827-995b-8ec7780f7838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image">
+      <UniqueIdentifier>{0b358063-f72a-4f58-b5b1-9d6bb463c3cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Map_Save_Image">
+      <UniqueIdentifier>{25a00e11-9551-44e3-b6fa-188b054e2f32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MediaFrame">
+      <UniqueIdentifier>{6747fb1c-42fb-42ce-b134-18126d8b0c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Arrow_Long">
+      <UniqueIdentifier>{1ab08e7b-3bff-4468-9669-451120748f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_BaseTalentIndicator">
+      <UniqueIdentifier>{e3cfb31b-dd95-4244-8fb0-7747330b0401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_BlackBar">
+      <UniqueIdentifier>{0edba770-596e-4f5c-b7a6-99e4b5d20fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_ButtonBackground">
+      <UniqueIdentifier>{1da24ee1-2c2a-4ea0-8f1c-3f79ad91698d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_ContentBackground">
+      <UniqueIdentifier>{e55b978d-188c-48ac-93bf-17eb4b9f741e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DecorationFrame">
+      <UniqueIdentifier>{1795f77d-d6c7-4ca3-918c-1d723e043de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DecorationLine">
+      <UniqueIdentifier>{3cb58a39-7e4a-4a56-8705-cf683c0dd41f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DescBackground">
+      <UniqueIdentifier>{29b4be22-8695-450c-99de-9abe4420c23f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogBackground">
+      <UniqueIdentifier>{0a406aac-3f6b-468b-ab56-3b745e622e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DiamondIcon">
+      <UniqueIdentifier>{b68334f5-1f8d-4e66-8f8f-3905a6f5d7ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Effect_Frame">
+      <UniqueIdentifier>{2a5fe71b-64fe-45e5-ba3b-fcada5f06c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Effect_SlotFrame">
+      <UniqueIdentifier>{a68dc9b7-5c86-428b-ad45-d9b3e556e715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_GameLogoImage">
+      <UniqueIdentifier>{9eb57d39-5aee-4f82-a7dd-180bffaf0276}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HightlightBar">
+      <UniqueIdentifier>{fb7e5aa4-2109-408f-9e1d-aef3aa9d1e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar1_Border">
+      <UniqueIdentifier>{0f4d113e-6d6c-4385-8b29-ee94460bf908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar2_BG">
+      <UniqueIdentifier>{2a6b4131-6e68-4b96-a75e-9db70a3264fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar3_MainBar">
+      <UniqueIdentifier>{9659b653-ec67-4f1e-8519-afc2af4ca174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_HPBar5_Track">
+      <UniqueIdentifier>{b248c142-2f80-4ead-b80a-6c64034512df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar1_Border">
+      <UniqueIdentifier>{85a50a9e-19e2-4663-905c-82e317d9646f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar2_BG">
+      <UniqueIdentifier>{af44de0e-3d46-46c4-85b6-fa589b5f3350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MPBar3_MainBar">
+      <UniqueIdentifier>{93a9c60a-3332-4365-b4e8-dc229dd07def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_RightBackground">
+      <UniqueIdentifier>{f497481b-c87a-4e08-873d-37e9810767e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneAboveBackground">
+      <UniqueIdentifier>{97cb2c5f-ca11-4985-8297-ec7ce9ff96a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneBackground">
+      <UniqueIdentifier>{9806784c-6146-45a1-afd1-c7e5a0c4d768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SceneUnderBackground">
+      <UniqueIdentifier>{429de6b8-e544-425e-af37-8ca65ab758bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Item_Icon">
+      <UniqueIdentifier>{d76b443d-8993-4d8b-92a0-eaa2d4dfe15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LeftBackground">
+      <UniqueIdentifier>{6e26da76-080e-4ea0-80b2-ac54a2b2fc44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LandingScreen">
+      <UniqueIdentifier>{54cb8ceb-54ea-467e-ad2e-49c60c5a5792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LevelImage">
+      <UniqueIdentifier>{6c2d158c-72c5-4e7f-9a62-2708645296af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LoadingIcon">
+      <UniqueIdentifier>{b84166d4-0f85-42cd-834a-3b05804a2f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LoadingScreen">
+      <UniqueIdentifier>{eab023f6-50fb-42c8-ae74-0d4af48b4f96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LockedIcon">
+      <UniqueIdentifier>{b911bfa7-d1ad-4287-bb3d-609a0955bcea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_LootNotifyBackground">
+      <UniqueIdentifier>{7ec6a342-df91-4e62-82d0-72b4ad8bc7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_MemoryShardsIcon">
+      <UniqueIdentifier>{cc5ddeda-96f3-4511-892b-c3fe801226c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_NewHint">
+      <UniqueIdentifier>{84c62468-5301-46aa-a446-56df9915eab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Potion_DefaultType">
+      <UniqueIdentifier>{db8771dc-a06c-4fd9-b507-cd0609e2e07c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SkillIcon">
+      <UniqueIdentifier>{12dcfc01-34bd-4807-b887-d994606f51d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SquareFrame">
+      <UniqueIdentifier>{c9e972f9-4829-4303-944f-ebf1fc1fc967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_SquareFrame_Hover">
+      <UniqueIdentifier>{eb821192-f38c-44cb-be15-b1909738766c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Talent_Icon">
+      <UniqueIdentifier>{2ac67d3d-9287-4232-abdb-919731e52fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_TitleBackgroundBar">
+      <UniqueIdentifier>{89944104-e242-4736-8d80-1a3264f9f29f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame">
+      <UniqueIdentifier>{d3d7fae1-19b0-48a7-be91-b09645c709bc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot">
       <UniqueIdentifier>{85d0ffe1-5811-45b9-8acb-c2645e641ed4}</UniqueIdentifier>
     </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\FixSlot">
       <UniqueIdentifier>{f95f1c7d-7616-40d0-9091-a88cb4d333c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Indicator_Selected">
+      <UniqueIdentifier>{9ac74fcc-bbed-4b6b-b598-e00af5b9a12c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_Feather_Icon">
+      <UniqueIdentifier>{412bd048-8d9e-445f-b675-23af1a6d7727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueTalkBackground">
+      <UniqueIdentifier>{7b962ed5-aba0-4de0-ab66-4a00ada19eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_DialogueWindowBackground">
+      <UniqueIdentifier>{3dee33b9-a643-492b-92f2-27d06e06459f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_NextLineHint">
+      <UniqueIdentifier>{fff60fbc-3255-45ce-9696-535c5baf1405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button">
+      <UniqueIdentifier>{a77a730a-d1dd-4349-935f-22511da55235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_MapEntryFrame">
+      <UniqueIdentifier>{677d3880-4eac-455b-b109-9ae93235abd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Arrow">
+      <UniqueIdentifier>{33cf037a-d388-4611-bc33-dd5fc6235b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Attribute_Slot_Active">
+      <UniqueIdentifier>{8690b71b-040e-41ef-af18-025db00c51f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_ButtonHighlight">
+      <UniqueIdentifier>{b284783b-bc96-4e7e-b501-22277dd1d693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Frame">
+      <UniqueIdentifier>{cde64f65-18ff-432f-9e28-eb62d4c3bb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_ItemBackground">
+      <UniqueIdentifier>{ee172a84-16b3-48ad-9856-866a0237a89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_KeyBox_Long">
+      <UniqueIdentifier>{9ac1a550-a18e-4832-9d32-9e449530cb7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_UnderLine">
+      <UniqueIdentifier>{1c8c589c-3888-46df-a712-e0ff9b985b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Button\UI_Skill_Slot">
+      <UniqueIdentifier>{48f445ad-aaf5-4b4c-8784-afa2190dbfd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\PoisonQuest">
+      <UniqueIdentifier>{316bb1a5-f39b-434b-97a5-8862a8b3506f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\PoisonQuest\UI_Bar_Poison">
+      <UniqueIdentifier>{a1ecf877-3fc2-44a2-8f5e-5624e9dff1c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\PoisonQuest\UI_QuestBackground">
+      <UniqueIdentifier>{d3229752-3bfc-433f-a30e-76014a7d1260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\PoisonQuest\UI_Frame_Poison">
+      <UniqueIdentifier>{07022566-2091-4c06-abbd-36b92323b2f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup">
+      <UniqueIdentifier>{02e749bc-62e0-434e-8e0c-3182d79925b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\2.PlayerMenu">
+      <UniqueIdentifier>{e6584cb6-17d9-4a02-a60c-e1945c22baa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\3.PlayerLevelUP">
+      <UniqueIdentifier>{e9ce4b6c-45aa-49a9-b27f-30ee59d452ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\1.GameIntro">
+      <UniqueIdentifier>{c2905f62-423f-4e1a-9c72-f91cb5ec2ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\4.PlayerTalent">
+      <UniqueIdentifier>{e35de4db-75f7-494a-9e59-2eaa9ee43d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\5.PlayerScreen">
+      <UniqueIdentifier>{3a27189b-9b7f-4729-bce5-97923dad244b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\6.ESC_Inventory">
+      <UniqueIdentifier>{9dea9966-a4c3-4318-ab3d-47743cd5acc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\8.LandingMessages">
+      <UniqueIdentifier>{ae3f58ba-b5d2-4f60-ab75-de6635f530ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\7.Loading">
+      <UniqueIdentifier>{6baf2a65-efd6-4b5e-9f43-12444af93610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\9.MapChange">
+      <UniqueIdentifier>{b5d3d3be-b43e-4577-941f-9a89462027df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue">
+      <UniqueIdentifier>{5e4044ac-6e39-4750-bf54-689260a2359f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03.UIObject\2.UIObjGroup\10.Skill">
       <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest">
-      <UniqueIdentifier>{316bb1a5-f39b-434b-97a5-8862a8b3506f}</UniqueIdentifier>
+    <Filter Include="03.UIObject\3.Button">
+      <UniqueIdentifier>{f8f29f6e-bd5f-4190-a779-613a64f5f002}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison">
-      <UniqueIdentifier>{a1ecf877-3fc2-44a2-8f5e-5624e9dff1c1}</UniqueIdentifier>
+    <Filter Include="03.UIObject\3.Button\0.Button">
+      <UniqueIdentifier>{f7d0d441-ee38-4668-8376-7e9cd5811837}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground">
-      <UniqueIdentifier>{d3229752-3bfc-433f-a30e-76014a7d1260}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison">
-      <UniqueIdentifier>{07022566-2091-4c06-abbd-36b92323b2f4}</UniqueIdentifier>
+    <Filter Include="03.UIObject\3.Button\1.LockLine">
+      <UniqueIdentifier>{85213942-3037-419a-9c03-bfc026bc3ca6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1921,13 +1921,13 @@
       <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Frame_Poison.h">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_Frame_Poison</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_QuestBackground.h">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_QuestBackground</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Bar_Poison.h">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_Bar_Poison</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2817,13 +2817,13 @@
       <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Frame_Poison.cpp">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_Frame_Poison</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Bar_Poison.cpp">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_Bar_Poison</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_QuestBackground.cpp">
-      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground</Filter>
+      <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_QuestBackground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

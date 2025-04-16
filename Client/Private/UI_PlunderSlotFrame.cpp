@@ -43,7 +43,7 @@ void CUI_PlunderSlotFrame::Update(_float fTimeDelta)
 	{
 		m_fSkill_CoolTime += fTimeDelta;
 		m_fEffect_Alpha += fTimeDelta;
-		if (m_fSkill_CoolTime > 5)
+		if (m_fSkill_CoolTime > 2.5f)
 		{
 			m_fSkill_CoolTime = 0.0f;
 			m_fEffect_Alpha = 0.0f;
