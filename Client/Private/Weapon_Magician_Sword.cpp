@@ -221,6 +221,7 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
                 {
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
                     m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD, &m_CombinedWorldMatrix);
+                    m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWORD_DUST, &m_CombinedWorldMatrix);
                 }
             }
         }
@@ -229,6 +230,7 @@ void CWeapon_Magician_Sword::Update(_float fTimeDelta)
             if (!strncmp(iter.szName, "Weapon_Trail_Sword", strlen("Weapon_Trail_Sword"))) //Trail이 꺼져야 하는 부분
             {
                 m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD);
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWORD_DUST);
                 iter.isPlay = false;
             }
         }

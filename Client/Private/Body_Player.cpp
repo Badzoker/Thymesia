@@ -2572,6 +2572,24 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
     m_pModelCom->SetUp_Animation(232, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+#pragma region Effect_Urd_Execution
+    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Spark"))
+                {
+                    const _float4x4* matWeapon = m_pModelCom->Get_BoneMatrix("weapon_l");
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_SPARK, m_pParentWorldMatrix, matWeapon);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_pModelCom->Get_VecAnimation().at(232)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -3553,6 +3571,9 @@ void CBody_Player::STATE_START_WALK_Method()
     if (m_pModelCom->Get_VecAnimation().at(14)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
+        const _float4x4* matRoot = m_pModelCom->Get_BoneMatrix("RootNode");
+        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF, m_pParentWorldMatrix, matRoot);
+        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST, m_pParentWorldMatrix, matRoot);
     }
 }
 
