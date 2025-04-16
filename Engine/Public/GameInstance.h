@@ -200,6 +200,7 @@ public:
 	HRESULT Reset_Effect();
 	HRESULT Play_Effect_Matrix_OneMoment(EFFECT_NAME _eEffectName, _float4x4 _matMatrix);
 	HRESULT Play_Effect_Matrix_With_Socket(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix);
+	HRESULT Play_Effect_Matrix_With_Socket_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix, _fvector _vDir);
 
 #pragma endregion
 

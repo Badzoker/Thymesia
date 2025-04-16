@@ -118,6 +118,10 @@ protected:
 	/* 몬스터 약탈 스킬 */
 	_uint							 m_iMonsterSkill = {};	
 
+
+	/* 몬스터 네비 오프셋 */
+	_float							 m_fNaviOffset = {};
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

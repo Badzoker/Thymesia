@@ -8,6 +8,7 @@
 BEGIN(Engine)
 class CModel;
 class CShader;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -51,16 +52,18 @@ public:
 
 private:
     _bool                           m_bFirstTouch = { false };
-    CChair* m_pChair = { nullptr };
-    CLamp* m_pLamp = { nullptr };
-    CGhostAisemy* m_pGosemy = { nullptr };
+    _bool                           m_bActivateChairLamp = { false };
+    CChair*                         m_pChair = { nullptr };
+    CLamp*                          m_pLamp = { nullptr };
+    CGhostAisemy*                   m_pGosemy = { nullptr };
 
+    CTexture*                       m_pNoiseTextureCom = { nullptr };
+    _float                          m_fDissolveValue = {};
 
 public:
-    static                          CChairLamp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual CGameObject* Clone(void* pArg) override;
+    static CChairLamp*              Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual CGameObject*            Clone(void* pArg) override;
     virtual void                    Free() override;
-
 };
 
 END

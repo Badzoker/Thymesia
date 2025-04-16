@@ -284,6 +284,7 @@ public:
 	unordered_set<STATE>* Get_Cane_State() { return &m_set_Cane_Weapon_States; }
 	unordered_set<STATE>* Get_GreadSword_State() { return &m_set_GreadSword_Weapon_States; }
 	unordered_set<STATE>* Get_JavelinSword_State() { return &m_set_JavelinSword_Weapon_States; }
+	unordered_set<STATE>* Get_PlayerSkill_State() { return &m_set_Player_Skill_State; }
 
 
 	_float4* Get_RespawnPosPtr() { return &m_fRespawnArea; }
@@ -296,6 +297,7 @@ public:
 	_bool* Get_ClawDeadOnPtr() { return &m_bClawDeadOn; }
 	_bool* Get_ClawAppearPtr() { return &m_bClawAppear; }
 
+	void   Reset_ChargeTime() { m_fChrageTime = 0.f; }
 
 private:
 	void Player_Interaction(CGameObject* _pOther);
@@ -345,6 +347,7 @@ private:
 	unordered_set<STATE> m_set_GreadSword_Weapon_States = {};
 	unordered_set<STATE> m_set_JavelinSword_Weapon_States = {};
 	unordered_set<STATE> m_set_Player_Camera_States = {};
+	unordered_set<STATE> m_set_Player_Skill_State = {};
 
 
 	/* 손톱 디졸브 관련 */
@@ -386,7 +389,7 @@ private:
 	_uint								m_iSkill_Eqip_2st = {};
 
 	/*플레이어가 약탈한 스킬 */
-	_uint								m_iTake_Away_Skill = { }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
+	_uint								m_iTake_Away_Skill = { PLAYER_SKILL_SCYTHE }; // ui 테스트용으로 임의 enum값 세팅 - 유빈
 
 	/* UI 종료 관련 */
 	_bool								m_bUI_End = { false };
@@ -406,7 +409,7 @@ private:
 	_int								m_iPotion_Heal_Amount = { 100 };
 
 	/* 스킬 쿨타임 */
-	_bool								m_bPlayerSkill_CoolTime = { true };
+	_bool								m_bPlayerSkill_CoolTime = { false };
 
 
 public:
@@ -446,41 +449,41 @@ public:
 	// 4월 15일
 
 	void	 Set_Skill_CoolTime(_bool _OnOff) { m_bPlayerSkill_CoolTime = _OnOff; }
-	_bool	 Get_Skill_CoolTime() {return m_bPlayerSkill_CoolTime; }
+	_bool	 Get_Skill_CoolTime() { return m_bPlayerSkill_CoolTime; }	
 
-	_bool    Get_UI_End() { return m_bUI_End; }	
+	_bool    Get_UI_End() { return m_bUI_End; }
 	/* --------------------- */
 
-	_uint    Get_Player_Skill_1st()       { return m_iSkill_Eqip_1st; }
-	_uint    Get_Player_Skill_2st()       { return m_iSkill_Eqip_2st; }
+	_uint    Get_Player_Skill_1st() { return m_iSkill_Eqip_1st; }
+	_uint    Get_Player_Skill_2st() { return m_iSkill_Eqip_2st; }
 	_uint    Get_Player_Take_Away_Skill() { return m_iTake_Away_Skill; }
 
-	_int    Get_Level()     { return m_iLevel; }
+	_int    Get_Level() { return m_iLevel; }
 
-	_int    Get_FullHp()    { return m_iFullHp; }
+	_int    Get_FullHp() { return m_iFullHp; }
 	_int    Get_CurrentHp() { return m_iCurrentHp; }
 
-	_int    Get_FullMp()    { return m_iFullMp; }
+	_int    Get_FullMp() { return m_iFullMp; }
 	_int    Get_CurrentMp() { return m_iCurrentMp; }
 
 	_int    Get_AttackPower() { return m_iAttackPower; }
 
 	_uint* Get_AttackPower_Ptr() { return &m_iAttackPower; }
-	_uint* Get_PhaseState_Ptr()  { return &m_iPhaseState; }
-	_uint* Get_State_Ptr()       { return &m_iState; }
+	_uint* Get_PhaseState_Ptr() { return &m_iPhaseState; }
+	_uint* Get_State_Ptr() { return &m_iState; }
 	_int    Get_ClawAttacPower() { return m_iClawAttackPower; }
 
 	_int    Get_MemoryFragment() { return m_iMemoryFragment; }
 
-	_int* Get_Potion_Count()     { return &m_iPotionCount; }
+	_int* Get_Potion_Count() { return &m_iPotionCount; }
 
 
 	/* 새로 추가 된 것들 UI 연동  */
 	_int* Get_Bonus_Sword_Power() { return &m_iBonus_Sword_Attack_Power; }
 
 	_int* Get_Bonus_Sword_Attack_Mp() { return &m_iBonus_Sword_Attack_Mp; }
-	_int* Get_Bonus_Claw_Attack_Mp()  { return &m_iBonus_Claw_Attack_Mp; }
-	_int* Get_Bonus_Parry_Mp()        { return &m_iBonus_Parry_Mp; }
+	_int* Get_Bonus_Claw_Attack_Mp() { return &m_iBonus_Claw_Attack_Mp; }
+	_int* Get_Bonus_Parry_Mp() { return &m_iBonus_Parry_Mp; }
 
 	_int* Get_Bonus_Execution_Hp() { return &m_iBonus_Execution_Hp; }
 	_int* Get_Bonus_Execution_Mp() { return &m_iBonus_Execution_Mp; }

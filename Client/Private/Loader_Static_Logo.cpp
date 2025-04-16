@@ -2094,6 +2094,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Round_Hurricane", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxPointInstance_Compute_Falling_World_Axis */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Falling_World_Axis"),
+		CShader_Compute::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance_Compute.hlsl"), "CSMain_Particle_Falling_World_Axis", COMPUTE_POINT_INSTANCE::Elements, COMPUTE_POINT_INSTANCE::iNumElements))))
+		return E_FAIL;
+
 	//Particle Compute Shader »ý¼º ³¡
 
 	/* For.Prototype_Component_VIBuffer_Point_Compute */
@@ -2168,6 +2173,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_SM_Woods"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_ChairLamp*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ChairLamp"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Destruct/T_Noise_Small.png"), 1))))
 		return E_FAIL;
 
 	;

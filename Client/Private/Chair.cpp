@@ -27,9 +27,19 @@ HRESULT CChair::Initialize(void* pArg)
     string chairName = "P_Archive_Chair01_" + to_string(pDesc->iPairNum);
 
     m_iCurrentLevel = pDesc->iCurLevel;
-    //m_vRotation = pDesc->fRotation;
 
     if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
+
+    LIGHT_DESC LightDesc{};
+    LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+    LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+    LightDesc.vAmbient = _float4(0.9f, 0.9f, 0.9f, 1.f);
+    LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+    LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+    LightDesc.fRange = 2.f;
+
+    if (FAILED(m_pGameInstance->Add_Light(LightDesc, m_pTransformCom)))
         return E_FAIL;
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 0.6f, 0.6f, 0.1f }, _float3{ 0.f,0.f,1.f }, 90.f, this);

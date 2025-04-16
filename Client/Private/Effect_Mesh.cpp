@@ -28,6 +28,7 @@ HRESULT CEffect_Mesh::Initialize(void* _pArg)
 	m_iDiffuse = pDesc->iDiffuse;
 	m_iNoise = pDesc->iNoise;
 	m_iMask = pDesc->iMask;
+	m_iNormal = pDesc->iNormal;
 	m_fMaxTimer = pDesc->fMaxTimer;
 	m_fDissolve_Speed = pDesc->fDissolve_Speed;
 	m_fTimer_SpeedX = pDesc->fTimer_SpeedX;
@@ -158,6 +159,9 @@ HRESULT CEffect_Mesh::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
 		return E_FAIL;
 
+	if (FAILED(m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", m_iNormal)))
+		return E_FAIL;
+
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pShaderCom->Begin(m_iShaderPass);
@@ -241,6 +245,11 @@ HRESULT CEffect_Mesh::Ready_Components()
 	/* Com_MaskTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
 		TEXT("Com_Mask"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_MASK]))))
+		return E_FAIL;
+
+	/* Com_NormalTexture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
+		TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_NORMAL]))))
 		return E_FAIL;
 
     return S_OK;

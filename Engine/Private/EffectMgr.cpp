@@ -156,6 +156,23 @@ HRESULT CEffectMgr::Play_Effect_Matrix_With_Socket(EFFECT_NAME _eEffectName, con
     return S_OK;
 }
 
+HRESULT CEffectMgr::Play_Effect_Matrix_With_Socket_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix, _fvector _vDir)
+{
+    for (auto& iter : m_vecEffect[(_uint)_eEffectName])
+    {
+        if (false == iter->Get_IsPlaying())
+        {
+            iter->Set_IsPlaying(true);
+            iter->Set_SettingMatrix(_pMatrix);
+            iter->Set_SocketMatrix(_pSocketMatrix);
+            iter->Set_Direction(_vDir);
+            m_dequePlayingEffect.push_back(iter);
+            break;
+        }
+    }
+    return S_OK;
+}
+
 HRESULT CEffectMgr::Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir)
 {
     for (auto& iter : m_vecEffect[(_uint)_eEffectName])

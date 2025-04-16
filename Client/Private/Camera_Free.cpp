@@ -272,13 +272,13 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 			if (!m_bCamLockOnOff)
 			{
 
-				if (m_pGameInstance->isKeyEnter(DIK_TAB))
+				/*if (m_pGameInstance->isKeyEnter(DIK_TAB))
 				{
 					if (m_bStop)
 						m_bStop = false;
 					else
 						m_bStop = true;
-				}
+				}*/
 
 				if (!m_bStop)
 				{
