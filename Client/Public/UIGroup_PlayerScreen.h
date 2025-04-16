@@ -65,6 +65,7 @@ private:
 	CUIObject*				m_pEffectSkill_2= { nullptr };
 	CUIObject*				m_pRevolvingSkill_3 = { nullptr };
 
+	_bool                   m_bSkillUSe = { false };
 private:
 	CGameObject*			m_pGroupInven = { nullptr };
 	CUI_Scene*				m_pItmeScreen = {}; //¾ÆÀÌÅÛ È¹µæ, ¹ö¸®±â ÆË¾÷

@@ -67,13 +67,15 @@ HRESULT CUIGroup_Inventory::Initialize(void* pArg)
 
 void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 {
-
 	// 그룹에서 가장 메인이 되는 씬이 켜지는 경우 다른 것들도 켜지도록 => 해당 씬들의 업데이트를 켠다는 것
-	if (m_pMyBaseScene->Get_Scene_Render_State())
+	
+	if (m_bRenderOpen)
 	{
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemScene, true);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, true); // 자동으로 uiobj를 가진 scene 랜더도 오픈되도록 함수가 있음
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, true);
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
+
 	}
 	else
 	{
@@ -84,12 +86,12 @@ void CUIGroup_Inventory::Priority_Update(_float fTimeDelta)
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemUsePopUp, false);
 		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pItemTypePopUp, false);
 		m_iMouseOnLastSlot = 0; // 끄는 시점에 값 초기화
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 	}
 }
 
 void CUIGroup_Inventory::Update(_float fTimeDelta)
 {
-
 	if (m_bRenderOpen)
 	{
 		for (auto& EscapeButton : m_pMyBaseScene->Find_UI_Button())
@@ -105,6 +107,7 @@ void CUIGroup_Inventory::Update(_float fTimeDelta)
 					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), true);
 					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+					dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 
 				}
 				break;
@@ -156,6 +159,7 @@ void CUIGroup_Inventory::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
+		
 	}
 }
 

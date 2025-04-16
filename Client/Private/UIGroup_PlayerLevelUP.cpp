@@ -78,6 +78,7 @@ void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 			m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
 			m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
 		}
+		
 	}
 }
 
@@ -85,12 +86,12 @@ void CUIGroup_PlayerLevelUP::Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
-		m_iCurrentMemoryNeed = (500 + (30 * (m_iNextLevel-1)));
+		m_iCurrentMemoryNeed = (500 + (30 * (m_iNextLevel - 1)));
 		m_iNextMemoryNeed = (500 + (30 * m_iNextLevel));
 
-
-
 		Button_Input_Check();
+		LevelUP_Apply_Button();
+
 		Button_Render_Check();
 		Button_Image_On_Check();
 		Button_Render_Check();
@@ -98,8 +99,7 @@ void CUIGroup_PlayerLevelUP::Update(_float fTimeDelta)
 		LevelUP_Status_Check();
 		LevelUP_Status_Info_Check();
 		LevelUP_TalentPoint_Check();
-
-		LevelUP_Apply_Button();
+		
 		LevelUP_Reset_Button();
 
 	}
@@ -109,6 +109,12 @@ void CUIGroup_PlayerLevelUP::Late_Update(_float fTimeDelta)
 {
 	if (m_bRenderOpen)
 	{
+		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE) || m_bEscapeCheck)
+		{
+			m_bEscapeCheck = true;
+			m_bResetOn = true;
+
+		} 
 	}
 }
 
@@ -268,11 +274,8 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_bEscapeCheck = true;
-				m_bResetOn = true;
-				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), false);
-				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
-				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
-				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
+				//m_bResetOn = true;
+				
 			}
 		}
 	}
@@ -687,6 +690,10 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset_Button()
 			LevelUP_Reset();
 			m_bResetOn = false;
 			m_bEscapeCheck = false;
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerLevelUP"), false);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP")), false);
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevelID, TEXT("Layer_PlayerMenu"), true);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 		}
 		else
 		{

@@ -985,9 +985,6 @@
     <Filter Include="02.GameObject\Monster\02. Boss\Weapon\Bat">
       <UniqueIdentifier>{40743c90-e44b-4a8f-87e9-701fe509cde3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.UIObject\2.UIObjGroup\11.Dialogue\10.Skill">
-      <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Monster\01. Elite\Researcher">
       <UniqueIdentifier>{2ca62f9b-01a7-4cc8-b969-1a393b64f4aa}</UniqueIdentifier>
     </Filter>
@@ -1011,6 +1008,9 @@
     </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\FixSlot">
       <UniqueIdentifier>{f95f1c7d-7616-40d0-9091-a88cb4d333c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\2.UIObjGroup\10.Skill">
+      <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1663,7 +1663,7 @@
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_Skill.h">
-      <Filter>03.UIObject\2.UIObjGroup\11.Dialogue\10.Skill</Filter>
+      <Filter>03.UIObject\2.UIObjGroup\10.Skill</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Skill_Slot.h">
       <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
@@ -2547,7 +2547,7 @@
       <Filter>02.GameObject\Monster\02. Boss\Boss_Varg\Boss_Varg_Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Skill.cpp">
-      <Filter>03.UIObject\2.UIObjGroup\11.Dialogue\10.Skill</Filter>
+      <Filter>03.UIObject\2.UIObjGroup\10.Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Skill_Slot.cpp">
       <Filter>03.UIObject\1.UIObjClass\Button\UI_Skill_Slot</Filter>
