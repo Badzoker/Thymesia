@@ -47,7 +47,7 @@ namespace Client
 		BOSS_BAT,          //보스 박쥐
 	};
 
-	enum TEXTURE_EFFECT { TEXTURE_DIFFUSE,	TEXTURE_NOISE, TEXTURE_MASK, TEXTURE_END }; //종한 Effect용도
+	enum TEXTURE_EFFECT { TEXTURE_DIFFUSE,	TEXTURE_NOISE, TEXTURE_MASK, TEXTURE_NORMAL, TEXTURE_END }; //종한 Effect용도
 
 	/* 컬링 거리 */
 	const float g_fCullingDistance = 30.f;

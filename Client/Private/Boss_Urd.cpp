@@ -943,6 +943,7 @@ void CBoss_Urd::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_CHARGE_FAST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
 		}
@@ -1047,6 +1048,7 @@ void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_CHARGE_FAST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
 		}
@@ -1114,7 +1116,9 @@ void CBoss_Urd::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				if (!strcmp(iter.szName, "Effect_Stab"))
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
-					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					_float4x4 matWeapon_Calculate = {};
+					XMStoreFloat4x4(&matWeapon_Calculate, XMLoadFloat4x4(matWeapon) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, matWeapon_Calculate);
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
@@ -1122,6 +1126,7 @@ void CBoss_Urd::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_CHARGE_FAST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
 		}
@@ -1166,7 +1171,9 @@ void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				if (!strcmp(iter.szName, "Effect_Stab_Long"))
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
-					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					_float4x4 matWeapon_Calculate = {};
+					XMStoreFloat4x4(&matWeapon_Calculate, XMLoadFloat4x4(matWeapon) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_URD_STAB_2, matWeapon_Calculate);
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_ATTACK_SMOKE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
@@ -1174,6 +1181,7 @@ void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("weapon_r");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_CHARGE_FAST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
 		}

@@ -1815,6 +1815,8 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
 
         ReadFile(hFile, &pDesc.bMinus_Y, sizeof(_bool), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.bGray, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.iNormal, sizeof(_uint), &dwByte, nullptr);
+
 
 #pragma region Switch For Mesh Model Name
         switch (iNumber_Mesh_Effect) //이거 Tool에서의 순서 기반임
@@ -2015,6 +2017,9 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case 17:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Round_Hurricane");
+            break;
+        case 18:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Falling_World_Axis");
             break;
         }
 #pragma endregion

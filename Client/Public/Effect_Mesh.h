@@ -40,6 +40,7 @@ public:
 		_bool bMinus_X = { false };	
 		_bool bMinus_Y = { false };	
 		_bool bGray = { false };	
+		_uint iNormal = { 0 };
 
 		_float3 vScale = {};
 		_float3 vRot = {};
@@ -76,6 +77,7 @@ private:
 	_uint m_iDiffuse = {};
 	_uint m_iNoise = {};
 	_uint m_iMask = {};
+	_uint m_iNormal = {};
 
 	_float m_fWeightX = {};
 	_float m_fWeightY = {};

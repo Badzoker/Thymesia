@@ -754,6 +754,11 @@ HRESULT CGameInstance::Play_Effect_Matrix_With_Socket(EFFECT_NAME _eEffectName, 
 	return m_pEffect_Manager->Play_Effect_Matrix_With_Socket(_eEffectName, _pMatrix, _pSocketMatrix);
 }
 
+HRESULT CGameInstance::Play_Effect_Matrix_With_Socket_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix, _fvector _vDir)
+{
+	return m_pEffect_Manager->Play_Effect_Matrix_With_Socket_Dir(_eEffectName, _pMatrix, _pSocketMatrix, _vDir);
+}
+
 #pragma endregion 
 
 #pragma region Sound Manager 

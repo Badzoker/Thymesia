@@ -28,6 +28,7 @@ public:
 	HRESULT Play_Effect_Speed_Matrix(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float* _pAnimation_Speed);
 	HRESULT Play_Effect_With_Timer_Matrix(EFFECT_NAME _eEffectName, _float _fDuration, const _float4x4* _pMatrix);
 	HRESULT Play_Effect_Matrix_With_Socket(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix);
+	HRESULT Play_Effect_Matrix_With_Socket_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, const _float4x4* _pSocketMatrix, _fvector _vDir);
 
 	HRESULT Play_Effect_Dir(EFFECT_NAME _eEffectName, _fvector _vPos, _fvector _vDir);
 	HRESULT Play_Effect_Matrix_Dir(EFFECT_NAME _eEffectName, const _float4x4* _pMatrix, _fvector _vDir);
