@@ -53,6 +53,17 @@ void CChairLamp::Priority_Update(_float fTimeDelta)
 
 void CChairLamp::Update(_float fTimeDelta)
 {
+    if (m_bFirstTouch)
+    {
+        m_fDissolveValue += fTimeDelta * 0.5f;
+
+        if (m_fDissolveValue > 1.0f)
+        {
+            m_fDissolveValue = 1.0f;
+            m_bActivateChairLamp = true;
+        }
+    }
+
     __super::Update(fTimeDelta);
 }
 
@@ -63,8 +74,15 @@ void CChairLamp::Late_Update(_float fTimeDelta)
 
 HRESULT CChairLamp::Render()
 {
-    if (m_bFirstTouch)
+    //if (m_bFirstTouch)
+    if (m_bActivateChairLamp)
         return S_OK;
+
+    if (FAILED(m_pNoiseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture", 0)))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveValue", &m_fDissolveValue, sizeof(_float))))
+        return E_FAIL;
 
     if (FAILED(__super::Render()))
         return E_FAIL;
@@ -74,7 +92,8 @@ HRESULT CChairLamp::Render()
 
 HRESULT CChairLamp::Render_Glow()
 {
-    if (m_bFirstTouch)
+    //if (m_bFirstTouch)
+    if (m_bActivateChairLamp)
         return S_OK;
 
     if (FAILED(__super::Render_Glow()))
@@ -108,7 +127,7 @@ void CChairLamp::OnCollision(CGameObject* _pOther, PxContactPair _information)
     if (m_pGameInstance->isKeyEnter(DIK_E) && !strncmp(m_szName, "NPCLamp", 7))
     {
         m_pButton->Activate_Button(false);
-
+        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
         if (!m_bFirstTouch)
         {
             /* 신호기 발견 알림*/
@@ -145,6 +164,9 @@ void CChairLamp::OnCollisionExit(CGameObject* _pOther, PxContactPair _informatio
 
 HRESULT CChairLamp::Ready_Components()
 {
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ChairLamp"), TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pNoiseTextureCom))))
+        return E_FAIL;
+
     if (FAILED(__super::Ready_Components()))
         return E_FAIL;
 
@@ -190,4 +212,6 @@ void CChairLamp::Free()
     __super::Free();
 
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+    Safe_Release(m_pNoiseTextureCom);
 }
