@@ -31,7 +31,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	PxRigidDynamic* m_pActor = { nullptr };
-
+	_float4x4 m_Test = {};
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);
 	virtual void OnCollision(CGameObject* _pOther, PxContactPair _information);

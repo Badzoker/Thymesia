@@ -1147,6 +1147,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
             return E_FAIL;
     }
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Researcher_Projectile_Smoke.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE, 1)))
+        return E_FAIL;
+			//ParticleEffect_World_Researcher_Projectile_Smoke
+
     //Sword Effect
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),

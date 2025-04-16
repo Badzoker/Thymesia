@@ -413,7 +413,7 @@ namespace Engine
 		EFFECT_PARTICLE_MAGICIAN_EXECUTION_DUST_2,
 
 		//¿”ªÛ«ı √ﬂ∞° Effect
-
+		EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE,
 		//«—¿Ø¿Œ √ﬂ∞° Effect
 
 		//±Ë¿Ø∫Û √ﬂ∞° Effect 
