@@ -6,6 +6,7 @@ Texture2D g_TexIcon;
 Texture2D g_TexEdge;
 Texture2D g_TexEffect;
 Texture2D g_TexNoise;
+Texture2D g_TexGlow;
 
 bool g_bIconOn; // 아이콘 이미지  onoff
 bool g_bSkillOn; // 아이템 슬롯 이미지 열고 닫기
@@ -373,20 +374,49 @@ PS_OUT PS_Thymesia_UI_Image_SKill1st(PS_IN In)
   
     }
     
-    
-   //// g_fTimeDelta;
-   // if (!g_bIconOn && !g_bSkillOn) // 스킬 이미지가 없고 , 스킬 쿨이 돌고 있지 않다면  
-   // {
-   // }
-    
-   // if (g_bSkillOn) // 현재 스킬이 켜져 있으면 
-   // {
-   //     vBackColor.rgb = ((vBackColor.rgb - 0.5) * 0.5) + 0.5; // 각각 딤드처리
-   // }
-  
-   
         return Out;
     }
+
+
+PS_OUT PS_Thymesia_UI_Image_PoisonBar(PS_IN In) // HP Bar 감소
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float4 vBarColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float2 fNoiseUV = In.vTexcoord * 2.0 + g_fTimeDelta;
+    
+    float fNoise = g_TexNoise.Sample(LinearSampler, fNoiseUV).r;
+    
+    float fShineing = 0.5f + 0.5f * sin(g_fTimeDelta * 1.2f);
+    
+    
+    
+    float fRate = clamp(g_fGageBar_Current / g_fGageBar_Max, 0.0f, 1.0f);
+    
+    if (In.vTexcoord.x > fRate)
+        vBarColor.rgb *= 0.1f;
+    
+    vBarColor.a *= saturate(fNoise + g_fTimeDelta);
+    
+    
+    //float4 vGlowColor = (1.0f, 1.0f, 1.0f, 1.0f);
+    
+    ////if (In.vTexcoord.x >= 0.9 && In.vTexcoord.x <= 1.0)
+    ////{
+    ////    vBarColor.rgb += vGlowColor.rgb * 0.1f;
+    ////}
+    
+    
+    
+    //float Percent = clamp(g_fGageBar_Current / g_fGageBar_Max, 0.0f, 1.0f);
+    
+    //if (In.vTexcoord.x > Percent)
+    //    discard;
+    
+    Out.vColor = vBarColor;
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -542,6 +572,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_MPBar();
+    }
+    
+    pass Thymesia_UI_Image_PoisonBar // 14번
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Thymasia_UI, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_Thymesia_UI_Image_PoisonBar();
     }
     
 }

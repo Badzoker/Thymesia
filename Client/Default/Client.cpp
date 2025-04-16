@@ -221,6 +221,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;  
         }
         break;
+#ifdef _DEBUG
+    //case WM_CREATE:
+    //    AllocConsole();
+    //    SetConsoleTitle(TEXT("테스트용 콘솔"));
+    //    /*AllocConsole 함수를 호출하여 콘솔창을 띄웠다면 freopen 함수로 기본 입출력 위치를 지정해야 합니다.*/
+    //    FILE* fp;  // 파일 포인터 선언
+    //    _wfreopen_s(&fp, L"CONOUT$", L"w", stdout);  // stdout 연결
+    //    _wfreopen_s(&fp, L"CONERR$", L"w", stderr);  // stderr 연결
+    //    _wfreopen_s(&fp, L"CONIN$", L"r", stdin);    // stdin 연결
+
+    //    /* setlocale 함수로 기본 입출력에 대한 로케일을 설정합니다. */
+    //    _tsetlocale(LC_ALL, _T(""));
+
+    //    break;
+#endif
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

@@ -65,7 +65,9 @@ private:
 	CUIObject*				m_pEffectSkill_2= { nullptr };
 	CUIObject*				m_pRevolvingSkill_3 = { nullptr };
 
-	_bool                   m_bSkillUSe = { false };
+	_bool                   m_bSkillUse_Fix = { false };
+	_bool                   m_bSkillUSe_Plunder = { false };
+	_bool*					m_pPlayerSkillCoolTime = { nullptr };
 private:
 	CGameObject*			m_pGroupInven = { nullptr };
 	CUI_Scene*				m_pItmeScreen = {}; //¾ÆÀÌÅÛ È¹µæ, ¹ö¸®±â ÆË¾÷
@@ -84,6 +86,11 @@ private:
 	vector<UI_TextInfo>		m_TextInfo = {};
 
 	_int*					m_oPotion_Count = {};
+
+private:
+	CUI_Scene*				m_pPoisonScreen = {}; //µ¶ Äù½ºÆ® È­¸é
+
+
 public:
 	static CUIGroup_PlayerScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
