@@ -91,6 +91,14 @@ HRESULT CRippleManager::Bind_RippleSRV(CShader* pShader)
     return S_OK;
 }
 
+_bool CRippleManager::IsInWater(_float2 vPos)
+{
+    if ((vPos.x > m_vWaterPos.x + 199.f || vPos.x < m_vWaterPos.x) || (vPos.y > m_vWaterPos.y + 199.f || vPos.x < m_vWaterPos.y)) 
+        return false;
+
+    return true;
+}
+
 CRippleManager* CRippleManager::Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
 {
     CRippleManager* pInstance = new CRippleManager(_pDevice, _pContext);

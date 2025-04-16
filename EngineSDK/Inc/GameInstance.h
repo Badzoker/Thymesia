@@ -352,6 +352,8 @@ public:
 	void Set_WaterPos(_float2 vWaterPos);
 
 	HRESULT  Bind_RippleSRV(class CShader* pShader);
+
+	_bool   IsInWater(_float2 vPos);
 #pragma endregion
 
 private:

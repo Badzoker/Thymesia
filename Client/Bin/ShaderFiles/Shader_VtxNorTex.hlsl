@@ -122,8 +122,7 @@ PS_OUT PS_MASKING_MAIN(PS_IN In)
     
     vector vMtrlNormal = vector(vDestNormal.xyz * 0.5f + 0.5f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 0.5f + 0.5f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
      
-    vMtrlNormal.y *= -1.f;
-    /* vector vNormal = vNormalDesc.xyz * 2.0f - 1.0f; */
+    vector vNormal = vMtrlNormal * 0.5f + 0.5f;
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vMtrlNormal;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);

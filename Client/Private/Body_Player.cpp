@@ -916,39 +916,52 @@ void CBody_Player::STATE_RUN_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
                         {
-                            _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
 
-                            _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
 
-                            m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
 
-                            //iter.isPlay = true;     
+                                //iter.isPlay = true;     
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                                //iter.isPlay = true; 
+                            }
                         }
-
-                        if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                        else
                         {
-                            _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+                            if (!strcmp(iter.szName, "Walk_After_Effect_Left"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
 
-                            _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
 
-                            m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+                                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_FOOT_SMOKE_R, m_pParentWorldMatrix, m_mRightFootBoneMartix);
 
-                            //iter.isPlay = true; 
+                            }
+
+                            else if (!strcmp(iter.szName, "Walk_After_Effect_Right"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_FOOT_SMOKE_L, m_pParentWorldMatrix, m_mLeftFootBoneMartix);
+                            }
+
                         }
-
-                        if (!strcmp(iter.szName, "Walk_After_Effect_Left"))
-                        {
-
-                        }
-
-                        else if (!strcmp(iter.szName, "Walk_After_Effect_Right"))
-                        {
-
-                        }
-
-
 
                     }
                 }
