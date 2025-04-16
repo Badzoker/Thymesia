@@ -122,14 +122,17 @@ PS_OUT PS_MASKING_MAIN(PS_IN In)
     
     vector vMtrlNormal = vector(vDestNormal.xyz * 0.5f + 0.5f, 0.f) * vMaskTexture + vector(vSourNormal.xyz * 0.5f + 0.5f, 0.f) * (1.f - vMaskTexture); // vMaskTexture;
      
-    vector vNormal = vMtrlNormal * 0.5f + 0.5f;
+    
+    float3 vNormal = vMtrlNormal.xyz * 2.f - 1.f;
+    
+    vMtrlNormal = vector(vNormal.xyz * 0.5f + 0.5f, 1.f);
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vMtrlNormal;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     //Out.fSpecular = ((1 - vDestORM.b) * 0.5f + (vDestORM.b * 1.f)) * (1 - vDestORM.g) * vMaskTexture // Dest의 specular 계산
     //+ ((1 - vSourORM.b) * 0.5f + (vSourORM.b * 1.f)) * (1 - vSourORM.g) * (1.f - vMaskTexture); // Sour의 specular 계산
 	
-    Out.fSpecular = 0.2f;
+    Out.fSpecular = 0.f;
     
     return Out;
 }

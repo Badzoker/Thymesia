@@ -30,6 +30,7 @@ private:
 
 private:
 	_uint	m_iGlassObject = { 0 };
+	_bool   m_bAllGlass = { false };
 
 public:
 	static CGlass_StaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
