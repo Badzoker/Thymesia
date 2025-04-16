@@ -86,10 +86,13 @@ private:
 	vector<UI_TextInfo>		m_TextInfo = {};
 
 	_int*					m_oPotion_Count = {};
-
+public:
+	void Set_QuestCount_UP(_int iCount) { m_iQuestMonsterDeadCount += iCount; }
+	_int Get_QuestCount() { return m_iQuestMonsterDeadCount; }
 private:
 	CUI_Scene*				m_pPoisonScreen = {}; //독 퀘스트 화면
-
+	CUIObject*				m_pPoisonQuestDesc = { nullptr };
+	_int                    m_iQuestMonsterDeadCount = {};
 
 public:
 	static CUIGroup_PlayerScreen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

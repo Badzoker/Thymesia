@@ -38,6 +38,13 @@ void CUI_QuestBackground::Priority_Update(_float fTimeDelta)
 
 void CUI_QuestBackground::Update(_float fTimeDelta)
 {
+	_tchar ChangeText[MAX_PATH] = {};
+	//const _tchar* CountText = L"%d";
+	const _tchar* CountTextDouble = L"[%d / %d]";
+
+	wsprintf(ChangeText, CountTextDouble, m_iMonsterCount, 4);
+	m_strContentText = L"포자 터트리기 ";
+	m_strContentText2 = ChangeText;
 }
 
 void CUI_QuestBackground::Late_Update(_float fTimeDelta)
@@ -67,6 +74,7 @@ HRESULT CUI_QuestBackground::Render()
 	m_pVIBufferCom->Bind_InputAssembler();
 
 	m_pVIBufferCom->Render();
+
 	if (lstrcmp(m_strContentText.c_str(), TEXT("UI 기본 출력 값")))
 	{
 		_float3 fMyPos = m_pTransformCom->Get_State_UIObj(CTransform::STATE_POSITION);
@@ -75,7 +83,9 @@ HRESULT CUI_QuestBackground::Render()
 		m_fTextPosition.x = fMyPos.x - TextSize.x / 2;
 		m_fTextPosition.y = fMyPos.y - TextSize.y / 2;
 		m_fTextPosition.z = fMyPos.z;
-		m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
+
+		m_pGameInstance->Render_Color(L"Font_NotoSansKR18", m_strContentText.c_str(), m_strContentText2.c_str(), {m_fTextPosition.x,m_fTextPosition.y}, FONT_WHITE, FONT_RED);
+		//m_pGameInstance->Render_Font(m_strFontName, m_strContentText.c_str(), { m_fTextPosition.x,m_fTextPosition.y }, { 1.f,1.f,1.f,1.f }, 0.0f, { 0.0f,0.0f }, 1.0f, m_fTextPosition.z);
 	}
 
 	return S_OK;

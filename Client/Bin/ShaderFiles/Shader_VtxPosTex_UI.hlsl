@@ -383,11 +383,11 @@ PS_OUT PS_Thymesia_UI_Image_PoisonBar(PS_IN In) // HP Bar 감소
     PS_OUT Out = (PS_OUT) 0;
     
     float4 vBarColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    float2 fNoiseUV = In.vTexcoord * 2.0 + g_fTimeDelta;
+   // float2 fNoiseUV = In.vTexcoord * 2.0 + g_fTimeDelta;
     
-    float fNoise = g_TexNoise.Sample(LinearSampler, fNoiseUV).r;
+   // float fNoise = g_TexNoise.Sample(LinearSampler, fNoiseUV).r;
     
-    float fShineing = 0.5f + 0.5f * sin(g_fTimeDelta * 1.2f);
+   // float fShineing = 0.5f + 0.5f * sin(g_fTimeDelta * 1.2f);
     
     
     
@@ -396,7 +396,7 @@ PS_OUT PS_Thymesia_UI_Image_PoisonBar(PS_IN In) // HP Bar 감소
     if (In.vTexcoord.x > fRate)
         vBarColor.rgb *= 0.1f;
     
-    vBarColor.a *= saturate(fNoise + g_fTimeDelta);
+    //vBarColor.a *= saturate(fNoise + g_fTimeDelta);
     
     
     //float4 vGlowColor = (1.0f, 1.0f, 1.0f, 1.0f);

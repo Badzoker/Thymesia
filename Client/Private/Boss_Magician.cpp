@@ -1786,6 +1786,8 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 
 				pObject->m_pGameInstance->Set_FogFactors(FogDesc);
 
+				pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);
+				pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);
 				//CGameObject::GAMEOBJECT_DESC pDesc = {};
 				//pDesc.iCurLevel = LEVEL_SEAOFTREES;
 				//pDesc.fPosition = pObject->m_vSpawnPoint;
