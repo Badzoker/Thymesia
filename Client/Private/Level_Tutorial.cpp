@@ -1152,6 +1152,22 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 			//ParticleEffect_World_Researcher_Projectile_Smoke
 
+
+        //========================================= UWIN PARTICLE =========================================
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Ghosemy_Drop.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTCLE_GHOSEMY_DUST, 1)))
+        return E_FAIL;
+
+
+
+
+
+
+
+
+
+
+
     //Sword Effect
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Sword/SwordEffect_Varg.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Sword"),

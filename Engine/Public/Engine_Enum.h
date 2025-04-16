@@ -415,6 +415,12 @@ namespace Engine
 		//¿”ªÛ«ı √ﬂ∞° Effect
 		EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE,
 		//«—¿Ø¿Œ √ﬂ∞° Effect
+		EFFECT_PARTCLE_GHOSEMY_DUST,
+
+
+
+
+
 
 		//±Ë¿Ø∫Û √ﬂ∞° Effect 
 

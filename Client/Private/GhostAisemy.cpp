@@ -41,9 +41,6 @@ HRESULT CGhostAisemy::Initialize(void* pArg)
 
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
-    //m_fApproachTime = 2.0f;
-    //m_fLightOnTime = 2.0f;
-
     m_pButtonGameObject = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Button"), "BUTTON");
     m_pButton = static_cast<CButton*>(m_pButtonGameObject);
 

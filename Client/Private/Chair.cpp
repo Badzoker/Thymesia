@@ -147,6 +147,10 @@ void CChair::OnCollision(CGameObject* _pOther, PxContactPair _information)
 void CChair::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
     m_pButton->Activate_Button(false);
+
+    m_pGosemy->Set_AnimState(2);
+    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTCLE_GHOSEMY_DUST);
+
     m_bInteractOn = false;
     m_bFadingIn = false;
     m_bFadingOut = true;
