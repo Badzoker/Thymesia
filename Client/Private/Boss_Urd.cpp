@@ -674,6 +674,30 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+#pragma region EFFECT_EXECUTION
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Blood_1"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_BLOOD_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Blood_2"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_BLOOD_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->GetAniFinish())

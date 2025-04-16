@@ -79,6 +79,19 @@ void CStand_Stack_Sword::Priority_Update(_float fTimeDelta)
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
         m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
         m_pGameInstance->Add_Actor_Scene(m_pLargeActor);
+
+        //else if (!strcmp(iter.szName, "Effect_StackSword_1"))
+     //{
+     //  _float4 vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+     //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD_SURFACE, XMLoadFloat4(&vPos));
+     //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
+     //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
+     //  m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION, XMLoadFloat4(&vPos));
+     //	iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+     //}
+
+
+
     }
     else
     {
