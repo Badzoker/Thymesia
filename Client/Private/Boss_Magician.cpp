@@ -139,7 +139,7 @@ HRESULT CBoss_Magician::Load_SporeObject()
 
 	string strDataPath = "../Bin/DataFiles/SpawnPoint/Sea_of_Trees/SpawnPoint";
 
-	strDataPath = strDataPath + to_string(8) + ".txt";
+	strDataPath = strDataPath + to_string(9) + ".txt";
 
 	_tchar		szLastPath[MAX_PATH] = {};
 
@@ -1777,6 +1777,15 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 			{
 				m_Is_Spawn = true;
 				pObject->Load_SporeObject();
+
+				FOGPARAMS FogDesc{};
+				FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
+				FogDesc.fFogStartDistance = _float2(0.005f, 8.f);
+				FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
+				FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
+
+				pObject->m_pGameInstance->Set_FogFactors(FogDesc);
+
 				//CGameObject::GAMEOBJECT_DESC pDesc = {};
 				//pDesc.iCurLevel = LEVEL_SEAOFTREES;
 				//pDesc.fPosition = pObject->m_vSpawnPoint;

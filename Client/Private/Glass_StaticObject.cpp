@@ -33,6 +33,9 @@ HRESULT CGlass_StaticObject::Initialize(void* pArg)
 
 	m_iGlassObject = pDesc->iGlassNum;
 	
+	if (m_iGlassObject >= 10)
+		m_bAllGlass = true;
+
 	return S_OK;
 }
 
@@ -47,7 +50,7 @@ void CGlass_StaticObject::Update(_float fTimeDelta)
 void CGlass_StaticObject::Late_Update(_float fTimeDelta)
 {
 	if(m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_fFrustumRadius))
-		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
+		m_pGameInstance->Add_RenderGroup(CRenderer::RG_BLEND, this);
 
 }
 
@@ -62,7 +65,7 @@ HRESULT CGlass_StaticObject::Render()
 	{
 		for (_uint i = 0; i < iNumMeshes; i++)
 		{
-			if (i == m_iGlassObject)
+			if (m_bAllGlass)
 			{
 				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
@@ -71,11 +74,21 @@ HRESULT CGlass_StaticObject::Render()
 			}
 			else
 			{
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0);
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+				if (i == m_iGlassObject)
+				{
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
-				m_pShaderCom->Begin(m_iPassIndex);
-				m_pModelCom->Render(i);
+					m_pShaderCom->Begin(22);
+					m_pModelCom->Render(i);
+				}
+				else
+				{
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0);
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+					m_pShaderCom->Begin(m_iPassIndex);
+					m_pModelCom->Render(i);
+				}
 			}
 		}
 	}
@@ -83,20 +96,30 @@ HRESULT CGlass_StaticObject::Render()
 	{
 		for (_uint i = 0; i < iNumMeshes; i++)
 		{
-			if (i == m_iGlassObject)
+			if (m_bAllGlass)
 			{
 				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
-				m_pShaderCom->Begin(23);
+				m_pShaderCom->Begin(22);
 				m_pModelCom->Render(i);
 			}
 			else
 			{
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0);
-				m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+				if (i == m_iGlassObject)
+				{
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, "g_MaskTexture", 0);
 
-				m_pShaderCom->Begin(19);
-				m_pModelCom->Render(i);
+					m_pShaderCom->Begin(23);
+					m_pModelCom->Render(i);
+				}
+				else
+				{
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0);
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
+
+					m_pShaderCom->Begin(19);
+					m_pModelCom->Render(i);
+				}
 			}
 		}
 	}

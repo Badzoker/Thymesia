@@ -250,7 +250,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	if (FAILED(Load_Objects(2)))// 도서관
 		return E_FAIL;
 
-	if (FAILED(Load_Objects(3)))// 정원 보스맵
+	if (FAILED(Load_Objects(4)))// 정원 보스맵
 		return E_FAIL;
 
 	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일

@@ -39,6 +39,7 @@ HRESULT CRenderTarget::Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixe
     if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV)))
         return E_FAIL;
 
+
     m_vClearColor = vClearColor;
 
     return S_OK;

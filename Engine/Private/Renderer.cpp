@@ -415,6 +415,9 @@ HRESULT CRenderer::Render()
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
 
+	if (FAILED(Render_Blend()))
+		return E_FAIL;
+
 	if (FAILED(Render_Occulsion()))
 		return E_FAIL;
 
@@ -479,9 +482,6 @@ HRESULT CRenderer::Render()
 		return E_FAIL;
 
 	if (FAILED(Render_NonLight()))
-		return E_FAIL;
-
-	if (FAILED(Render_Blend()))
 		return E_FAIL;
 
 	if (FAILED(Render_UI()))
@@ -1247,6 +1247,9 @@ HRESULT CRenderer::Render_Zoom_Blur()
 
 HRESULT CRenderer::Render_Blend()
 {
+	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), false)))
+		return E_FAIL;
+
 	for (auto& pRenderObject : m_RenderObjects[RG_BLEND])
 	{
 		if (FAILED(pRenderObject->Render()))
@@ -1256,6 +1259,9 @@ HRESULT CRenderer::Render_Blend()
 	}
 
 	m_RenderObjects[RG_BLEND].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
 
 	return S_OK;
 }
