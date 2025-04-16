@@ -1012,6 +1012,18 @@
     <Filter Include="03.UIObject\2.UIObjGroup\10.Skill">
       <UniqueIdentifier>{82fc7a97-ea63-4fbb-bea5-9da7e803df50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest">
+      <UniqueIdentifier>{316bb1a5-f39b-434b-97a5-8862a8b3506f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison">
+      <UniqueIdentifier>{a1ecf877-3fc2-44a2-8f5e-5624e9dff1c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground">
+      <UniqueIdentifier>{d3229752-3bfc-433f-a30e-76014a7d1260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison">
+      <UniqueIdentifier>{07022566-2091-4c06-abbd-36b92323b2f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1908,6 +1920,15 @@
     <ClInclude Include="..\Public\UI_PlunderSlotFrame.h">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Frame_Poison.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QuestBackground.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Bar_Poison.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2794,6 +2815,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_PlunderSlotFrame.cpp">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_PlunderSlotFrame\PlunderSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Frame_Poison.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Frame_Poison</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Bar_Poison.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_Bar_Poison</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QuestBackground.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\PoisonQuest\UI_QuestBackground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
