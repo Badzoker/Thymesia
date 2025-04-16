@@ -1114,6 +1114,58 @@ PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_CHAIR_LAMP(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    if (vMtrlDiffuse.a < 0.1f)
+        discard;
+	
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+	
+    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (fDissolveValue < g_DissolveValue - 0.01f)
+    {
+        clip(-1);
+    }
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = 0.3f;
+    
+    float2 ScreenPos;
+
+    ScreenPos.x = In.vPosition.x;
+    ScreenPos.y = In.vPosition.y;
+    
+    float dist = distance(In.vWorldPos.xyz, g_WorldCamPos.xyz);
+
+    float alpha = saturate((dist) / (2.5f));
+
+    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    
+    int index = pixelPos.y * 4 + pixelPos.x; 
+
+    float threshold = Dither4x4[index];
+
+    if (alpha < 1.f)
+    {
+        if (alpha * 0.1f < threshold)
+            discard; 
+    }
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass //0
@@ -1406,4 +1458,17 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_EMISSIVE();
     }
+
+
+    pass ChairLampPass //26
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_CHAIR_LAMP();
+    }
+
 }

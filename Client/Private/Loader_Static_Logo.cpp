@@ -2175,6 +2175,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Objects/Ladder/Ladder.fbx", CModel::MODEL_NONANIM, SpecificPreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_ChairLamp*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ChairLamp"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Destruct/T_Noise_Small.png"), 1))))
+		return E_FAIL;
+
 	;
 
 	SpecificPreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f)); // 맵툴과 똑같이 pretransform 적용
