@@ -1825,7 +1825,7 @@ void CBoss_Magician::Phase_Change_State::State_Enter(CBoss_Magician* pObject)
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vPosition = _float4(-43.540661, 95.240334f, -103.446053f, 1.f);
+	LightDesc.vPosition = _float4(-43.540661f, 95.240334f, -103.446053f, 1.f);
 	LightDesc.fRange = 200.f;
 	LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
 
@@ -1892,7 +1892,7 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 			LightDesc.vDiffuse = _float4(200.f / 255.f, 200.f / 255.f, 200.f / 255.f, 1.f);
 			LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 			LightDesc.vSpecular = _float4(0.6f, 0.6f, 0.6f, 1.f);
-			LightDesc.vPosition = _float4(-43.540661, 95.240334f, -103.446053f, 1.f);
+			LightDesc.vPosition = _float4(-43.540661f, 95.240334f, -103.446053f, 1.f);
 			LightDesc.fRange = 5.f;
 			LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
 
