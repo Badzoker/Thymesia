@@ -267,6 +267,12 @@ private:
 	CCamera_Free* m_pCamera = { nullptr };
 	CGameObject* m_pParent = { nullptr };
 
+	/* ORM 텍스처 관련 */
+	CTexture* m_pORM_HeadTexture = { nullptr };
+	CTexture* m_pORM_BodyTexture = { nullptr };
+	CTexture* m_pORM_LegTexture = { nullptr };
+	CTexture* m_pORM_ClockTexture = { nullptr };
+
 	_float							m_fAnimSpeed = 1.f;
 	_float						    m_fTimeDelta = {};
 	_float							m_fZoomBlurDeltaTime = {};

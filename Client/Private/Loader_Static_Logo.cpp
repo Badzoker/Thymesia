@@ -342,6 +342,28 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* 캐릭터 ORM 머리 텍스처  */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Head"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Corvus/T_C_CorvusHead01_ORM.dds"), 1))))
+		return E_FAIL;
+
+	/* 캐릭터 ORM 몸통 텍스처  */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Body"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Corvus/T_C_CorvusBody01_ORM.dds"), 1))))
+		return E_FAIL;
+
+	/* 캐릭터 ORM 다리 텍스처  */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Leg"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Corvus/T_C_CorvusLegs01_ORM.dds"), 1))))
+		return E_FAIL;
+
+	/* 캐릭터 ORM 망토 텍스처  */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Clock"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Corvus/T_C_CorvusCloak02_ORM.dds"), 1))))
+		return E_FAIL;
+
+
+
 #pragma endregion 
 
 #pragma region 티메시아 캐릭터 오른손 무기 모델 

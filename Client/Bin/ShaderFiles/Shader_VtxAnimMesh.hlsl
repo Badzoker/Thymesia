@@ -35,6 +35,10 @@ bool g_Dead;
 float g_ReverseDissolveTime;
 
 
+/* ORM 텍스처 관련 */ 
+Texture2D g_ORM_Texture;
+
+
 struct VS_IN
 {
 	float3			vPosition :   POSITION;	
@@ -227,6 +231,38 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT PS_ORM_MAIN(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vMtrlDiffuse.a < 0.1f)  
+        discard;
+   
+    
+    
+    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	
+    /* 탄젠트 스페이스에 존재하는 노멀이다. 지금 (0~1 ) UnNormal로 저장 되어 있음 */  
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+   /* 월드 스페이스상의 노말로 변환하자. */
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = normalize(mul(vNormal, WorldMatrix));
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+    //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+    Out.fSpecular = g_ORM_Texture.Sample(LinearSampler, In.vTexcoord).b;
+    
+    Out.fRoughness = g_ORM_Texture.Sample(LinearSampler, In.vTexcoord).g;
+
+    return Out;
+}
 
 
 PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
@@ -702,5 +738,27 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass ORM_TEXTURE_DefaultPass // 10 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_ORM_MAIN();
+    }
+
+    pass NON_CULL_ORM_TEXTURE_DefaultPass // 11 
+    {
+        SetRasterizerState(Rs_Cull_NONE);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_ORM_MAIN();
     }
 }
