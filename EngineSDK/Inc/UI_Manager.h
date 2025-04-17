@@ -11,11 +11,22 @@ public:
 	struct PLAYER_SAVE_STATE // 플레이어 기본 능력치
 	{
 		_int iLevel; // 레벨
+
+		_int iPower; // 힘 수치
+		_int iVitality; // 활력 수치
+		_int iPlague; // 역병 수치
+
+		_int iAttackPower; // 공격 대미지
+		_int iAmountOfWounds; // 상처 수
+		_int iClawAttackPower; // 발톱 대미지
 		_int iFullHP; // 최대 체력 
 		_int iFullMP; // 최대 에너지
-		_int iAttackPower; // 공격 대미지
-		_int iClawAttackPower; // 발톱 공격 대미지
-		_int iMemoryFragment; // 보유 기억의 파편 개수                                                                               
+
+		_int iTalentPoint; // 특성 포인트
+		_int iUnspent; // 미사용 특성 포인트
+		
+		_int iMemoryFragment; // 캐릭터 보유 기억의 파편 개수         
+		_int iMemoryTotalUse; //지금까지 사용한 개수 저장인데...모르겠당         
 	
 	};
 
@@ -44,7 +55,12 @@ public:
 		map<_uint, _bool> mapSlot_Feather;		// 특성 : 깃털
 		map<_uint, _bool> mapSlot_Misc;			// 특성 : 전략
 
-		_int iUnspentPoint;
+	};
+	struct UI_SAVE_SKILL // ui 특성 창 내용 저장
+	{
+		/*SKILL GroupID , 활성화 여부*/
+		map<_uint, _bool> mapSlotInfo;	// 특성 : 검 
+		_uint			 iTake_Away_Skill;// 약탈 스킬 저장
 
 	};
 
@@ -82,7 +98,6 @@ public:
 	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut); // 텍스트 데이터 로드
 
 public:
-
 	const PLAYER_SAVE_STATE& Get_Player_State_SaveData() const { return m_PlayerStat; }
 	void Set_Player_State_SaveData(const PLAYER_SAVE_STATE& PlayerData) { m_PlayerStat = PlayerData; }
 
@@ -92,11 +107,15 @@ public:
 	const UI_SAVE_TALENT& Get_UI_Talent_SaveData() const { return m_UITalent; }
 	void Set_UI_Talent_SaveData(const UI_SAVE_TALENT& PlayerData) { m_UITalent = PlayerData; }
 
+	const UI_SAVE_SKILL& Get_UI_Skill_SaveData() const { return m_UISkill; }
+	void Set_UI_Skill_SaveData(const UI_SAVE_SKILL& PlayerData) { m_UISkill = PlayerData; }
+
 private:
 
 	PLAYER_SAVE_STATE m_PlayerStat = {};
 	PLAYER_SAVE_TALENT m_PlayerTalent = {};
 	UI_SAVE_TALENT m_UITalent = {};
+	UI_SAVE_SKILL  m_UISkill = {};
 
 private:
 	map<const _wstring, class CUI_Scene*>*	m_pScenes = { nullptr };
