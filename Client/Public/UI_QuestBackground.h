@@ -23,6 +23,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Set_MonsterCount(_int iCount) { m_iMonsterCount = iCount; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
@@ -30,7 +31,8 @@ private:
 
 	_float3 m_fTextPosition = {};
 
-
+	_int m_iMonsterCount = {};
+	_wstring m_strContentText2 = {};
 public:
 	HRESULT Ready_Components();
 

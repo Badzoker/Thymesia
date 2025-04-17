@@ -418,7 +418,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Monster()
                 break;
 
             case BOSS_ORD:
-                pDesc.fPosition = m_MonsterSpawnInfos[i][j].vMonsterPos;
+                pDesc.fPosition = m_MonsterSpawnInfos[i][j].vMonsterPos; 
                 if (FAILED(m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician"), CATEGORY_BOSS, &pDesc)))
                     return E_FAIL;
                 break;

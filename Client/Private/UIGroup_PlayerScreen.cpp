@@ -19,6 +19,8 @@
 #include "UI_LootNotifyBackground.h"
 #include "UI_Item_Icon.h"
 
+#include "UI_QuestBackground.h"
+
 CUIGroup_PlayerScreen::CUIGroup_PlayerScreen(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
@@ -54,9 +56,15 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 
 
 	m_pPoisonScreen = m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison");
-	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPoisonScreen, true);
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pPoisonScreen, false);
 
+	for (auto& Image : m_pPoisonScreen->Find_UI_Image())
+	{
+		if (3 == Image->Get_UI_GroupID())
+		{
+			m_pPoisonQuestDesc = Image;
+		}
+	}
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
 	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PlayerSkillMgr();
@@ -103,8 +111,27 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 		m_pGameInstance->Set_All_UIObject_Condition_Open(m_pPoisonScreen, true);
 	}
 
+	if (m_pGameInstance->Get_Scene_Render_State(m_pPoisonScreen))
+	{
+		// 카운트 증가되는거 ui에서 실시간으로 확인
+		dynamic_cast<CUI_QuestBackground*>(m_pPoisonQuestDesc)->Set_MonsterCount(m_iQuestMonsterDeadCount);
+		if (4 == m_iQuestMonsterDeadCount)
+		{
+			CGameObject::GAMEOBJECT_DESC pDesc = {};
+			pDesc.iCurLevel = m_eMyLevelID;
+			pDesc.fPosition = { -42.87f,100.59f,-100.27f,1.0f };
+			m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc);
 
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPoisonScreen, false);
+			m_pGameInstance->Set_All_UIObject_Condition_Open(m_pPoisonScreen, false);
+		}
+	}
+	else
+	{
+		m_iQuestMonsterDeadCount = 0;
+	}
 
+	//if (FAILED(m_pGameInstance->Add_Monster(m_eMyLevelID, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
 
 
 	switch (dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill())

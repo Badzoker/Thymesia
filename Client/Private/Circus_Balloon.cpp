@@ -5,6 +5,8 @@
 #include "Monster_HP_Bar.h"
 #include "GameInstance.h"
 
+#include "UIGroup_PlayerScreen.h"
+
 CCircus_Balloon::CCircus_Balloon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CContainerObject(pDevice, pContext)
 {
@@ -119,6 +121,9 @@ void CCircus_Balloon::Update(_float fTimeDelta)
         if (m_fDissolveAmount >= 1.0f)
         {
             m_bDead = true;
+            
+           dynamic_cast<CUIGroup_PlayerScreen*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), "PlayerScreen"))->Set_QuestCount_UP(1);
+
             m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE);
 
             m_pGameInstance->Sub_Actor_Scene(m_pActor);
