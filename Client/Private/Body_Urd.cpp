@@ -32,7 +32,7 @@ HRESULT CBody_Urd::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_Animation(20, false);
+	m_pModelCom->SetUp_Animation(19, false);
 
 	return S_OK;
 }

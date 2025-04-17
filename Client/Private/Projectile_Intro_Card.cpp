@@ -38,6 +38,7 @@ HRESULT CProjectile_Intro_Card::Initialize(void* pArg)
         return E_FAIL;
 
     //m_pTransformCom->Scaling(_float3{ 10.4f,10.4f, 10.4f });
+    m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 
     return S_OK;
 }
@@ -47,7 +48,6 @@ void CProjectile_Intro_Card::Priority_Update(_float fTimeDelta)
     if (*m_pParentState != STATE_INTRO || !*m_pRender)
         return;
 
-    m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 }
 
 

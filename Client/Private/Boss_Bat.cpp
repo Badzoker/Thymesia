@@ -473,8 +473,8 @@ void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		}
 		else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
 		{
-			m_fMonsterCurHP -= (*m_Player_Attack / 10.f) * 1.5f;
-			m_fShieldHP -= *m_Player_Attack / 10.f;
+			m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
+			m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
 		}
 	}
 }
@@ -1177,6 +1177,25 @@ void CBoss_Bat::Attack_Special::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Special::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+
+#pragma region EFFECT_SPECIAL
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Special"))
+				{
+					const _float4x4* matWeapon = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BAT_SPECIAL_ATTACK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 23 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 275.f && !m_bChange_Attack_Power)

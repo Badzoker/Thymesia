@@ -337,8 +337,8 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         }
         else if(!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
-            m_fMonsterCurHP -= (*m_Player_Attack / 5.f) * 1.5f;
-            m_fShieldHP -= *m_Player_Attack / 5.f;
+            m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
+            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
         }
 
         if (m_bCanHit &&

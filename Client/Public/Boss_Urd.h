@@ -45,8 +45,8 @@ private:
 	_bool                            m_bNeed_Memory_Position[STACK_END] = {};
 	_bool							 m_bIs_Equipped_To_LeftHand[STACK_END] = {};
 	_bool							 m_bIs_Stand_In_Ground[STACK_END] = {};
-	_bool						     m_bCreate_Collider[STACK_END] = {};
-	_bool						     m_bCreate_Large_Collider = {};
+	_bool							 m_bStand_Stack_Sword_ColliderOn = {};
+
 
 private:
 	_bool							 m_bPattern70 = {};

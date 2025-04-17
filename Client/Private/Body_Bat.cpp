@@ -43,12 +43,12 @@ HRESULT CBody_Bat::Initialize(void* pArg)
 	m_pSocketMatrix[1] = m_pModelCom->Get_BoneMatrix("ik_hand_l");
 	m_pSocketMatrix[2] = m_pModelCom->Get_BoneMatrix("ik_head");
 
-	m_pActor[COLLIDER_LEFT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pActor[COLLIDER_RIGHT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pActor[COLLIDER_MOUTH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pActor[COLLIDER_BODY] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 3.f,1.5f,3.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pActor[COLLIDER_LARGE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 5.f,1.5f,5.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pActor[COLLIDER_WHOLE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 10.f,1.f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_LEFT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.5f,1.f,2.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_RIGHT_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.5f,1.f,2.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_MOUTH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.5f,1.f,2.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_BODY] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 4.f,1.5f,4.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_LARGE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 7.f,1.5f,7.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+	m_pActor[COLLIDER_WHOLE] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 20.f,1.f,20.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
 	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_LEFT_HAND], _fvector{ 0.f,0.f,92.f,1.f });
 	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_RIGHT_HAND], _fvector{ 0.f,0.f,92.f,1.f });
@@ -57,7 +57,7 @@ HRESULT CBody_Bat::Initialize(void* pArg)
 	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_LARGE], _fvector{ 0.f,0.f,92.f,1.f });
 	m_pGameInstance->Set_GlobalPos(m_pActor[COLLIDER_WHOLE], _fvector{ 0.f,0.f,92.f,1.f });
 
-	_uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
+	_uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::DESTRUCT;
 
 	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_LEFT_HAND], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
 	m_pGameInstance->Set_CollisionGroup(m_pActor[COLLIDER_RIGHT_HAND], GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);

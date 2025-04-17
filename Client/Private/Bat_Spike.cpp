@@ -42,9 +42,8 @@ HRESULT CBat_Spike::Initialize(void* pArg)
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
 
-    _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER_WEAPON;
+    _uint settingColliderGroup = GROUP_TYPE::MONSTER_WEAPON;
 
-    //m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER_WEAPON, settingColliderGroup);
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::DESTRUCT, settingColliderGroup);
 
     m_fMaxScale = { 0.003f,0.003f,0.003f };
@@ -56,30 +55,9 @@ HRESULT CBat_Spike::Initialize(void* pArg)
 void CBat_Spike::Priority_Update(_float fTimeDelta)
 {
     if (*m_pRender)
-    {
-        m_pGameInstance->Add_Actor_Scene(m_pActor);
-        m_fLinear += fTimeDelta * 0.2f;
-        if (m_fLinear >= 1.f)
-            m_fLinear = 1.f;
-        _float3 fNewScale = {};
-        _vector vNewScale = XMVectorLerp(XMLoadFloat3(&m_fMyScale), XMLoadFloat3(&m_fMaxScale), m_fLinear);
-        XMStoreFloat3(&fNewScale, vNewScale);
-        m_pTransformCom->Scaling(fNewScale);
-        if (!m_bFirst)
-        {
-            m_bFirst = true;
-            m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(m_pPivot_Position));
-
-            XMStoreFloat4(&m_fModelPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-            m_fModelHeightCenterY = m_fModelPos.y + 0.76f;
-        }
-    }
+        Spawn(fTimeDelta);
     else
-    {
-        m_bFirst = false;
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_fLinear = 0.f;
-    }
+        Reset(fTimeDelta);
 }
 
 void CBat_Spike::Update(_float fTimeDelta)
@@ -135,6 +113,41 @@ HRESULT CBat_Spike::Render()
     }
 
     return S_OK;
+}
+
+void CBat_Spike::Spawn(_float fTimeDelta)
+{
+    m_pGameInstance->Add_Actor_Scene(m_pActor);
+    m_fLinear += fTimeDelta * 0.2f;
+    if (m_fLinear >= 1.f)
+        m_fLinear = 1.f;
+    _float3 fNewScale = {};
+    _vector vNewScale = XMVectorLerp(XMLoadFloat3(&m_fMyScale), XMLoadFloat3(&m_fMaxScale), m_fLinear);
+    XMStoreFloat3(&fNewScale, vNewScale);
+    m_pTransformCom->Scaling(fNewScale);
+    if (!m_bFirst)
+    {
+        m_bFirst = true;
+        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(m_pPivot_Position));
+
+        XMStoreFloat4(&m_fModelPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+        m_fModelHeightCenterY = m_fModelPos.y + 0.76f;
+    }
+}
+
+void CBat_Spike::Reset(_float fTimeDelta)
+{
+    m_bFirst = false;
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
+    m_fLinear = 0.f;
+    m_fLifeTime = 0.f;
+    m_fExplosionPower = 0.f;
+    m_fFallingTime = 0.f;
+    m_bHitted = false;
+    _float3 fNewScale = {};
+    _vector vNewScale = XMVectorLerp(XMLoadFloat3(&m_fMyScale), XMLoadFloat3(&m_fMaxScale), m_fLinear);
+    XMStoreFloat3(&fNewScale, vNewScale);
+    m_pTransformCom->Scaling(fNewScale);
 }
 
 HRESULT CBat_Spike::Ready_Components()
