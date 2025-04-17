@@ -6,7 +6,7 @@
 #include "UI_Button.h"
 #include "UI_Image.h"
 #include "UI_TextBox.h"
-
+#include "Player.h"
 CUIGroup_MapChange::CUIGroup_MapChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
@@ -62,6 +62,10 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel,TEXT("Layer_MapChange"),false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
+			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+			m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), true);
+			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 		}
 
 		if (!m_bPopOpen && m_bRenderOpen)
@@ -70,7 +74,7 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 
 			for (auto& Button : m_pMyScene->Find_UI_Button())
 			{
-				if (Button->Get_Mouse_Select_OnOff())
+				if (Button->Get_Mouse_Select_OnOff() && 10 !=Button->Get_UI_GroupID())
 				{
 					Button->Set_Mouse_Select_OnOff(false);
 					m_bPopOpen = true;
@@ -104,6 +108,16 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 					{
 						TextBox->Set_Content(m_pPoptitle);
 					}
+				}
+				else if (Button->Get_Mouse_Select_OnOff() && 10 == Button->Get_UI_GroupID())
+				{
+					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_MapChange"), false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
+					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false); // 마우스 이미지 끄기
+					m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), true);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+					dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
 				}
 			}
 		}

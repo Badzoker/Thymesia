@@ -50,7 +50,7 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 	m_pResetPopUp = m_pGameInstance->Find_UIScene(UISCENE_LEVELUP, L"UIScene_PlayerLevelUP_3");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
 
-	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(3000);
+	//dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(3000);
 	Setting_Default_Status_Value();
 
 
@@ -134,48 +134,96 @@ HRESULT CUIGroup_PlayerLevelUP::Render()
 
 void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 {
-	// 레벨
-	m_iCurrentLevel = { 1 };
-	m_iNextLevel = { 1 };
+
+	if (0 == m_pGameInstance->Get_Player_State_SaveData().iLevel)
+	{
+		// 레벨
+		m_iCurrentLevel = { 1 };
+		m_iNextLevel = { 1 };
 
 
-	// 캐릭터 능력치 변수
-	m_iCurrentPower = { 1 }; // 힘 수치
-	m_iNextPower = { 1 }; // 힘 수치
+		// 캐릭터 능력치 변수
+		m_iCurrentPower = { 1 }; // 힘 수치
+		m_iNextPower = { 1 }; // 힘 수치
 
-	m_iCurrentVitality = { 1 }; // 활력 수치
-	m_iNextVitality = { 1 }; // 활력 수치
+		m_iCurrentVitality = { 1 }; // 활력 수치
+		m_iNextVitality = { 1 }; // 활력 수치
 
-	m_iCurrentPlague = { 1 }; // 역병 수치
-	m_iNextPlague = { 1 }; // 역병 수치
+		m_iCurrentPlague = { 1 }; // 역병 수치
+		m_iNextPlague = { 1 }; // 역병 수치
 
-	// 캐릭터 상태 변수
-	m_iCurrentAttackPower = { 25 }; // 공격 대미지 
-	m_iNextAttackPower = { 25 }; // 공격 대미지
+		// 캐릭터 상태 변수
+		m_iCurrentAttackPower = { 25 }; // 공격 대미지 
+		m_iNextAttackPower = { 25 }; // 공격 대미지
 
-	m_iCurrentAmountOfWounds = { 75 }; // 상처 수
-	m_iNextAmountOfWounds = { 75 }; // 상처 수
+		m_iCurrentAmountOfWounds = { 75 }; // 상처 수
+		m_iNextAmountOfWounds = { 75 }; // 상처 수
 
-	m_iCurrentClawAttackPower = { 200 }; // 발톱대미지
-	m_iNextClawAttackPower = { 200 }; // 발톱대미지
+		m_iCurrentClawAttackPower = { 200 }; // 발톱대미지
+		m_iNextClawAttackPower = { 200 }; // 발톱대미지
 
-	m_iCurrentFullHp = { 300 }; // 체력
-	m_iNextFullHp = { 300 }; // 체력
+		m_iCurrentFullHp = { 300 }; // 체력
+		m_iNextFullHp = { 300 }; // 체력
 
-	m_iCurrentFullMp = { 150 }; // 에너지
-	m_iNextFullMp = { 150 }; // 에너지
-
-
-	m_iCurrentTalentPoint = { 0 };
-	m_iNextTalentPoint = { 0 };
-
-	m_iCurrentUnspent = { 0 };
-	m_iNextUnspent = { 0 };
-
-	m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
-	m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+		m_iCurrentFullMp = { 150 }; // 에너지
+		m_iNextFullMp = { 150 }; // 에너지
 
 
+		m_iCurrentTalentPoint = { 0 };
+		m_iNextTalentPoint = { 0 };
+
+		m_iCurrentUnspent = { 0 };
+		m_iNextUnspent = { 0 };
+
+		m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
+		m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+
+	}
+	else
+	{
+		CUI_Manager::PLAYER_SAVE_STATE GetData = m_pGameInstance->Get_Player_State_SaveData();
+
+		// 레벨
+		m_iCurrentLevel = GetData.iLevel;
+		m_iNextLevel = GetData.iLevel;
+
+
+		// 캐릭터 능력치 변수
+		m_iCurrentPower = GetData.iPower; // 힘 수치
+		m_iNextPower = GetData.iPower; // 힘 수치
+
+		m_iCurrentVitality = GetData.iVitality; // 활력 수치
+		m_iNextVitality = GetData.iVitality; // 활력 수치
+
+		m_iCurrentPlague = GetData.iPlague; // 역병 수치
+		m_iNextPlague = GetData.iPlague; // 역병 수치
+
+		// 캐릭터 상태 변수
+		m_iCurrentAttackPower = GetData.iAttackPower; // 공격 대미지 
+		m_iNextAttackPower = GetData.iAttackPower; // 공격 대미지
+
+		m_iCurrentAmountOfWounds = GetData.iAmountOfWounds; // 상처 수
+		m_iNextAmountOfWounds = GetData.iAmountOfWounds; // 상처 수
+
+		m_iCurrentClawAttackPower = GetData.iClawAttackPower; // 발톱대미지
+		m_iNextClawAttackPower = GetData.iClawAttackPower; // 발톱대미지
+
+		m_iCurrentFullHp = GetData.iFullHP; // 체력
+		m_iNextFullHp = GetData.iFullHP; // 체력
+
+		m_iCurrentFullMp = GetData.iFullMP; // 에너지
+		m_iNextFullMp = GetData.iFullMP; // 에너지
+
+
+		m_iCurrentTalentPoint = GetData.iTalentPoint;
+		m_iNextTalentPoint = GetData.iTalentPoint;
+
+		m_iCurrentUnspent = GetData.iUnspent;
+		m_iNextUnspent = GetData.iUnspent;
+
+		m_iMemoryCurrentCount = GetData.iMemoryFragment;
+		m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+	}
 
 	for (auto& Image : m_pMyScene->Find_UI_Image())
 	{
@@ -957,6 +1005,50 @@ CGameObject* CUIGroup_PlayerLevelUP::Clone(void* pArg)
 
 void CUIGroup_PlayerLevelUP::Free()
 {
+	CUI_Manager::PLAYER_SAVE_STATE SetData = {};
+
+	// 레벨
+	SetData.iLevel = m_iCurrentLevel;
+	SetData.iLevel = m_iNextLevel;
+
+
+	// 캐릭터 능력치 변수
+	SetData.iPower = m_iCurrentPower; // 힘 수치
+	SetData.iPower = m_iNextPower; // 힘 수치
+
+	SetData.iVitality = m_iCurrentVitality; // 활력 수치
+	SetData.iVitality = m_iNextVitality; // 활력 수치
+
+	SetData.iPlague = m_iCurrentPlague; // 역병 수치
+	SetData.iPlague = m_iNextPlague ; // 역병 수치
+
+	// 캐릭터 상태 변수
+	SetData.iAttackPower = m_iCurrentAttackPower; // 공격 대미지 
+	SetData.iAttackPower = m_iNextAttackPower; // 공격 대미지
+
+	SetData.iAmountOfWounds = m_iCurrentAmountOfWounds; // 상처 수
+	SetData.iAmountOfWounds = m_iNextAmountOfWounds; // 상처 수
+
+	SetData.iClawAttackPower = m_iCurrentClawAttackPower; // 발톱대미지
+	SetData.iClawAttackPower = m_iNextClawAttackPower; // 발톱대미지
+
+	SetData.iFullHP = m_iCurrentFullHp; // 체력
+	SetData.iFullHP = m_iNextFullHp; // 체력
+
+	SetData.iFullMP = m_iCurrentFullMp; // 에너지
+	SetData.iFullMP = m_iNextFullMp; // 에너지
+
+
+	SetData.iTalentPoint = m_iCurrentTalentPoint;
+	SetData.iTalentPoint = m_iNextTalentPoint;
+
+	SetData.iUnspent = m_iCurrentUnspent;
+	SetData.iUnspent = m_iNextUnspent;
+
+	SetData.iMemoryFragment = m_iMemoryCurrentCount;
+	SetData.iMemoryFragment = m_iMemoryNextCount; // 유저꺼 만큼 복사
+
+	m_pGameInstance->Set_Player_State_SaveData(SetData);
 	__super::Free();
 	m_pGameInstance->UIScene_Clear(UISCENE_LEVELUP);
 }

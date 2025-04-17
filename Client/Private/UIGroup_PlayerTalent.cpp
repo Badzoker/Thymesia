@@ -51,6 +51,120 @@ HRESULT CUIGroup_PlayerTalent::Initialize(void* pArg)
 	Slot_Setting();
 	Talent_Info_Setting();
 
+	CUI_Manager::UI_SAVE_TALENT stGetDate = { };
+
+	if (m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Claw.empty())
+	{
+		/* 최초에 UIgroupID를 매니저 컨테이너에 저장한다*/
+		for (auto& SlotUpdate : m_mapSlot_LightAttack)
+			stGetDate.mapSlot_LightAttack.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+		for (auto& SlotUpdate : m_mapSlot_Parry)
+			stGetDate.mapSlot_Parry.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+		for (auto& SlotUpdate : m_mapSlot_Dodge)
+			stGetDate.mapSlot_Dodge.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+		for (auto& SlotUpdate : m_mapSlot_Claw)
+			stGetDate.mapSlot_Claw.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+		for (auto& SlotUpdate : m_mapSlot_Feather)
+			stGetDate.mapSlot_Feather.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+		for (auto& SlotUpdate : m_mapSlot_Misc)
+			stGetDate.mapSlot_Misc.emplace(SlotUpdate.first, SlotUpdate.second.first);
+		
+		m_pGameInstance->Set_UI_Talent_SaveData(stGetDate);
+
+	}
+	else // 컨테이너에서 저장된 값을 가져온다
+	{
+		stGetDate.mapSlot_LightAttack = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_LightAttack;
+		stGetDate.mapSlot_Parry = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Parry;
+		stGetDate.mapSlot_Dodge = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Dodge;
+		stGetDate.mapSlot_Claw = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Claw;
+		stGetDate.mapSlot_Feather = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Feather;
+		stGetDate.mapSlot_Misc = m_pGameInstance->Get_UI_Talent_SaveData().mapSlot_Misc;
+		
+		for (auto& SlotUpdate : m_mapSlot_LightAttack)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_LightAttack)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+		for (auto& SlotUpdate : m_mapSlot_Parry)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_Parry)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+		for (auto& SlotUpdate : m_mapSlot_Dodge)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_Dodge)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+		for (auto& SlotUpdate : m_mapSlot_Claw)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_Claw)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+		for (auto& SlotUpdate : m_mapSlot_Feather)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_Feather)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+		for (auto& SlotUpdate : m_mapSlot_Misc)
+		{
+			for (auto& SlotData : stGetDate.mapSlot_Misc)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if (SlotUpdate.second.first)
+						dynamic_cast<CUI_Frame*>(SlotUpdate.second.second)->Set_Slot_State(SLOT_OPEN_OFF);
+					break;
+				}
+			}
+		}
+	}
 	return S_OK;
 }
 
@@ -65,7 +179,7 @@ void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 		wsprintf(ChangeText, CountText2, m_iTalentPoint);
 		m_pText_TalentPoint->Set_Content(CountText1);
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Content2(ChangeText);
-		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor(FONT_WHITE);
+		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor(FONT_WHITE);	
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_Change_TextColor2(FONT_GREEN);
 		dynamic_cast<CUI_Text*>(m_pText_TalentPoint)->Set_TextDrawType(Engine::TEXT_TWOCOLOR);
 	}
@@ -73,12 +187,12 @@ void CUIGroup_PlayerTalent::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_PlayerTalent::Update(_float fTimeDelta)
 {
+	Player_Talent_Update();
+
 	if (m_bRenderOpen)
 	{
-		
 		//Slot_Update_State();
 		Talent_Tab_Change();
-		Player_Talent_Update();
 		for (auto& Button : m_pMySceneBase->Find_UI_Button())
 		{
 			if (Button->Get_Mouse_Select_OnOff())
@@ -1676,25 +1790,6 @@ void CUIGroup_PlayerTalent::Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Fra
 
 }
 
-void CUIGroup_PlayerTalent::Talent_Active(TABSTATE eTab)
-{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
 CUIGroup_PlayerTalent* CUIGroup_PlayerTalent::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUIGroup_PlayerTalent* pInstance = new CUIGroup_PlayerTalent(pDevice, pContext);
@@ -1723,6 +1818,29 @@ CGameObject* CUIGroup_PlayerTalent::Clone(void* pArg)
 
 void CUIGroup_PlayerTalent::Free()
 {
+	CUI_Manager::UI_SAVE_TALENT stSatDate = { };
+
+	for (auto& SlotUpdate : m_mapSlot_LightAttack)
+		stSatDate.mapSlot_LightAttack.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	for (auto& SlotUpdate : m_mapSlot_Parry)
+		stSatDate.mapSlot_Parry.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	for (auto& SlotUpdate : m_mapSlot_Dodge)
+		stSatDate.mapSlot_Dodge.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	for (auto& SlotUpdate : m_mapSlot_Claw)
+		stSatDate.mapSlot_Claw.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	for (auto& SlotUpdate : m_mapSlot_Feather)
+		stSatDate.mapSlot_Feather.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	for (auto& SlotUpdate : m_mapSlot_Misc)
+		stSatDate.mapSlot_Misc.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	m_pGameInstance->Set_UI_Talent_SaveData(stSatDate);
+
+
 	__super::Free();
 	m_pGameInstance->UIScene_Clear(UISCENE_TALENT);
 }

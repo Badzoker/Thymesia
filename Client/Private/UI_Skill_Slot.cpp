@@ -79,6 +79,9 @@ void CUI_Skill_Slot::Update(_float fTimeDelta)
 				m_bOpenContion = false;
 			}
 		}
+		if(m_eSlotState == SKILL_OPEN_OFF)
+			m_iTexNumber = m_iIconChange;
+
 		m_fCurrentTime += fTimeDelta;
 
 		if (1 <= m_fCurrentTime)

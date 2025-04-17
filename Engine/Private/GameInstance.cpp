@@ -981,6 +981,26 @@ void CGameInstance::Set_Player_Talent_SaveData(const CUI_Manager::PLAYER_SAVE_TA
 	return m_pUI_Manager->Set_Player_Talent_SaveData(PlayerData);
 }
 
+const CUI_Manager::UI_SAVE_TALENT& CGameInstance::Get_UI_Talent_SaveData()
+{
+	return m_pUI_Manager->Get_UI_Talent_SaveData();
+}
+
+void CGameInstance::Set_UI_Talent_SaveData(const CUI_Manager::UI_SAVE_TALENT& PlayerData)
+{
+	return m_pUI_Manager->Set_UI_Talent_SaveData(PlayerData);
+}
+
+const CUI_Manager::UI_SAVE_SKILL& CGameInstance::Get_UI_Skill_SaveData()
+{
+	return m_pUI_Manager->Get_UI_Skill_SaveData();
+}
+
+void CGameInstance::Set_UI_Skill_SaveData(const CUI_Manager::UI_SAVE_SKILL& PlayerData)
+{
+	return m_pUI_Manager->Set_UI_Skill_SaveData(PlayerData);
+}
+
 HRESULT CGameInstance::LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	return m_pUI_Manager->LoadDataFile_UIObj_Info(hWnd, iLevelIndex, iSceneIndex, szSceneName);
@@ -1012,8 +1032,6 @@ HRESULT CGameInstance::Sub_Actor_Scene(PxRigidDynamic* pActor)
 {
 	return m_pPhysX_Manager->Sub_Actor_Scene(pActor);	
 }
-
-
 
 HRESULT CGameInstance::Update_Collider(PxRigidDynamic* Actor, _matrix _WorldMatrix, _vector _vOffSet)
 {

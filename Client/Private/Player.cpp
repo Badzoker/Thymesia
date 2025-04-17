@@ -106,6 +106,30 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* 플레이어 파츠별 사용하는 애니메이션 분류 */
 	Player_Setting_PartAni();
 
+	/*플레이어 정보 저장되어 있는거 받아오기*/
+#pragma region UIDATA
+	CUI_Manager::PLAYER_SAVE_STATE stGetData = {};
+
+	stGetData = m_pGameInstance->Get_Player_State_SaveData();
+	if (stGetData.iLevel != 0)
+	{
+		m_iLevel = stGetData.iLevel;
+
+		m_iFullHp = stGetData.iFullHP;
+		m_iCurrentHp = stGetData.iFullHP;
+
+		m_iFullMp = stGetData.iFullMP;
+		m_iCurrentMp = stGetData.iFullMP;
+
+		m_iAttackPower = stGetData.iAttackPower;
+		m_iClawAttackPower = stGetData.iClawAttackPower;
+
+		m_iMemoryFragment = stGetData.iMemoryFragment;
+	}
+
+#pragma endregion UIDATA
+
+
 	return S_OK;
 }
 

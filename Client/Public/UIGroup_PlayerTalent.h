@@ -43,7 +43,6 @@ public:
 	void Slot_Setting();
 	void Slot_Update_State(TABSTATE eTab); //
 	void Slot_Update_State_Value(SLOTSTATE eSteteNum, CUI_Frame* pSlotUIObj );
-	void Talent_Active(TABSTATE eTab);
 private:
 	CGameObject* m_pGroupLevelUp = { nullptr };
 	LEVELID		m_eMyLevelID = {};

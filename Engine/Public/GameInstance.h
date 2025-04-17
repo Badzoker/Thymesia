@@ -297,7 +297,12 @@ public:
 
 	const CUI_Manager::PLAYER_SAVE_TALENT& Get_Player_Talent_SaveData();// const { return m_PlayerTalent; }
 	void Set_Player_Talent_SaveData(const CUI_Manager::PLAYER_SAVE_TALENT& PlayerData);// { m_PlayerTalent = PlayerData; }
+	
+	const CUI_Manager::UI_SAVE_TALENT& Get_UI_Talent_SaveData();// const { return m_PlayerTalent; }
+	void Set_UI_Talent_SaveData(const CUI_Manager::UI_SAVE_TALENT& PlayerData);// { m_PlayerTalent = PlayerData; }
 
+	const CUI_Manager::UI_SAVE_SKILL& Get_UI_Skill_SaveData();// const { return m_UISkill; }
+	void Set_UI_Skill_SaveData(const CUI_Manager::UI_SAVE_SKILL& PlayerData);// { m_UISkill = PlayerData; }
 
 
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);

@@ -38,16 +38,48 @@ HRESULT CUIGroup_Skill::Initialize(void* pArg)
 	m_eMyLevelID = static_cast<LEVELID>(pDesc->iCurLevel);
 	
 	m_pBaseScene = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill");
-	//m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
-	//m_pEquipWeapon_2 = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip2");
 	m_pEquipCondition = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Condition");
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipCondition, false);
-	//m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipWeapon_2, false);
 
 	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER"))->Get_PlayerSkillMgr();
 
 	Slot_Setting();
-	Skill_Equip_Weapon();
+
+
+	CUI_Manager::UI_SAVE_SKILL stGetDate = { };
+	if (m_pGameInstance->Get_UI_Skill_SaveData().mapSlotInfo.empty())
+	{
+		/* 최초에 UIgroupID를 매니저 컨테이너에 저장한다*/
+		for (auto& SlotUpdate : m_mapSlotInfo)
+			stGetDate.mapSlotInfo.emplace(SlotUpdate.first, SlotUpdate.second.first);
+		m_pGameInstance->Set_UI_Skill_SaveData(stGetDate);
+
+	}
+	else
+	{
+		stGetDate.mapSlotInfo = m_pGameInstance->Get_UI_Skill_SaveData().mapSlotInfo;
+
+		for (auto& SlotUpdate : m_mapSlotInfo)
+		{
+			for (auto& SlotData : stGetDate.mapSlotInfo)
+			{
+				if (SlotUpdate.first == SlotData.first)
+				{
+					SlotUpdate.second.first = SlotData.second;
+					if(SlotUpdate.second.first)
+						dynamic_cast<CUI_Skill_Slot*>(SlotUpdate.second.second)->Set_Slot_State(SKILL_OPEN_OFF);
+					break;
+				}
+			}
+		}
+
+	}
+
+
+	//m_pEquipWeapon = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip");
+	//m_pEquipWeapon_2 = m_pGameInstance->Find_UIScene(UISCENE_SKILL, L"UIScene_PlayerSkill_1Equip2");
+	//m_pGameInstance->Set_All_UIObject_Condition_Open(m_pEquipWeapon_2, false);
+	//Skill_Equip_Weapon();
 
 	return S_OK; 
 }
@@ -64,6 +96,7 @@ void CUIGroup_Skill::Priority_Update(_float fTimeDelta)
 
 void CUIGroup_Skill::Update(_float fTimeDelta)
 {
+	Slot_Update_State();
 	if (m_bRenderOpen)
 	{
 		if (m_pGameInstance->isKeyEnter(DIK_ESCAPE) || m_bEscape)
@@ -80,7 +113,6 @@ void CUIGroup_Skill::Update(_float fTimeDelta)
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), true);
 		}
 
-		Slot_Update_State();
 		Slot_Contion_Check();
 
 		for (auto& EscapeButton : m_pBaseScene->Find_UI_Button())
@@ -624,6 +656,13 @@ CGameObject* CUIGroup_Skill::Clone(void* pArg)
 
 void CUIGroup_Skill::Free()
 {
+	CUI_Manager::UI_SAVE_SKILL stSatDate = { };
+
+	for (auto& SlotUpdate : m_mapSlotInfo)
+		stSatDate.mapSlotInfo.emplace(SlotUpdate.first, SlotUpdate.second.first);
+
+	m_pGameInstance->Set_UI_Skill_SaveData(stSatDate);
+
 	__super::Free();
 	m_pGameInstance->UIScene_Clear(UISCENE_SKILL);
 }
