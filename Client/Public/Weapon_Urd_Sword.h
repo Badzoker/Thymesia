@@ -25,6 +25,7 @@ public:
 		const _uint* pParentState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_bool* bChange_Socket = { nullptr };
+		_bool* bCollider_Change = { nullptr };
 		_uint* iAttack = { nullptr };
 	};
 private:
@@ -52,6 +53,7 @@ private:
 private:
 	_bool  m_bColliderOff = {};
 	_bool* m_bChange_Socket = { nullptr };
+	_bool* m_bCollider_Change = { nullptr };
 
 	_uint m_iPassNum = {};
 

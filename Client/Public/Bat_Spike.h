@@ -37,6 +37,10 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	void Spawn(_float fTimeDelta);
+	void Reset(_float fTimeDelta);
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CModel* m_pParentModelCom = { nullptr };

@@ -24,8 +24,9 @@ public:
 		_bool* bNeed_Memory_Position = { nullptr };
 		_bool* bIs_Equipped_To_LeftHand = { nullptr };
 		_bool* bIs_Stand_In_Ground = { nullptr };
-		_bool* bIs_Create_Collider = { nullptr };
-		_bool* bIs_Create_Large_Collider = { nullptr };
+		_bool* bCollider_Change = { nullptr };
+		_uint* iCurrent_StackCount = { nullptr };
+		_uint iStack_Number = {};
 	};
 private:
 	CStand_Stack_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -64,9 +65,10 @@ private:
 	_bool* m_bNeed_Memory_Position = { nullptr };
 	_bool* m_bIs_Equipped_To_LeftHand = { nullptr };
 	_bool* m_bIs_Stand_In_Ground = { nullptr };
-	_bool* m_bIs_Create_Collider = { nullptr };
-	_bool* m_bIs_Create_Large_Collider = { nullptr };
+	_bool* m_bCollider_Change = { nullptr };
+	_uint* m_iCurrent_StackCount = { nullptr };
 private:
+	_uint m_iStack_Number = {};
 	_bool m_bColliderOff = {};
 public:
 	virtual void OnCollisionEnter(CGameObject* _pOther, PxContactPair _information);

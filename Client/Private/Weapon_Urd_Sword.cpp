@@ -35,7 +35,7 @@ HRESULT CWeapon_Urd_Sword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_iMonster_Attack = pDesc->iAttack;
     m_bChange_Socket = pDesc->bChange_Socket;
-
+    m_bCollider_Change = pDesc->bCollider_Change;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -172,7 +172,7 @@ void CWeapon_Urd_Sword::Update(_float fTimeDelta)
 
                 }
                 //내가 넣은 콜라이더 시간에 진입했을때
-                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate && !*m_bCollider_Change)
                 {
                     m_pGameInstance->Add_Actor_Scene(m_pActor);
                     iter.isPlay = true;
@@ -181,7 +181,7 @@ void CWeapon_Urd_Sword::Update(_float fTimeDelta)
             else
             {
                 //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
-                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate && !*m_bCollider_Change) || m_bColliderOff)
                 {
                     m_pGameInstance->Sub_Actor_Scene(m_pActor);
                     m_bColliderOff = false;

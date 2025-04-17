@@ -831,12 +831,13 @@ PS_OUT_GLOW PS_WEAPON_GLOW(PS_IN In)
 }
 
 
-PS_OUT PS_Card(PS_IN In)
+PS_OUT_GLOW PS_Card(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
-    Out.vDiffuse.a = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord).r;
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
     
-    Out.vDiffuse.rgb = float3(0.78f, 0.5f, 0.2f);
+    Out.vGlow.a = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord).r;
+    
+    Out.vGlow.rgb = float3(0.78f, 0.5f, 0.2f);
  
     return Out;
 }
@@ -888,6 +889,11 @@ PS_OUT PS_MAIN_WEAPON(PS_IN In)
     {
         Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
     }
+    else
+    {
+        Out.vNormal = 0.f;
+    }
+    
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
     Out.fSpecular = 0.1f;
 

@@ -292,6 +292,7 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 	Weapon_Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Weapon_Desc.pParentModel = m_pModelCom;
 	Weapon_Desc.bChange_Socket = &m_bChange_Socket;
+	Weapon_Desc.bCollider_Change = &m_bStand_Stack_Sword_ColliderOn;
 	Weapon_Desc.iAttack = &m_iMonster_Attack_Power;
 	Weapon_Desc.fSpeedPerSec = 0.f;
 	Weapon_Desc.fRotationPerSec = 0.f;
@@ -303,6 +304,7 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 	{
 		wstring strName = L"Part_Stack_Sword" + to_wstring(i);
 		string SocketName = string("SK_W_UrdSword0") + to_string(i + 2) + "_Point";
+		_uint iStackNum = i;
 
 		CStand_Stack_Sword::STAND_STACK_SWORD_DESC		Stack_Sword_Desc{};
 		Stack_Sword_Desc.iCurLevel = iLevel;
@@ -314,8 +316,9 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 		Stack_Sword_Desc.bNeed_Memory_Position = &m_bNeed_Memory_Position[i];
 		Stack_Sword_Desc.bIs_Equipped_To_LeftHand = &m_bIs_Equipped_To_LeftHand[i];
 		Stack_Sword_Desc.bIs_Stand_In_Ground = &m_bIs_Stand_In_Ground[i];
-		Stack_Sword_Desc.bIs_Create_Collider = &m_bCreate_Collider[i];
-		Stack_Sword_Desc.bIs_Create_Large_Collider = &m_bCreate_Large_Collider;
+		Stack_Sword_Desc.iStack_Number = iStackNum;
+		Stack_Sword_Desc.iCurrent_StackCount = &m_iSword_Stack_Count;
+		Stack_Sword_Desc.bCollider_Change = &m_bStand_Stack_Sword_ColliderOn;
 		//Projectile_Desc. = &m_iMonster_Attack_Power;
 		Stack_Sword_Desc.pParentState = &m_iMonster_State;
 		Stack_Sword_Desc.fSpeedPerSec = 10.f;
@@ -447,8 +450,8 @@ void CBoss_Urd::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		}
 		else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
 		{
-			m_fMonsterCurHP -= (*m_Player_Attack / 10.f) * 1.5f;
-			m_fShieldHP -= *m_Player_Attack / 10.f;
+			m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
+			m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
 		}
 
 		if (m_bCan_Hit_Motion &&
@@ -1262,6 +1265,7 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_Attack_Power = 95;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->RotateDegree_To_Player();
+	pObject->m_bStand_Stack_Sword_ColliderOn = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1306,7 +1310,6 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 			pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() < 60.f)
 		{
 			//¿Þ¼ÕÀ¸·Î ¹Ù²¸¶ó
-			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = true;
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = true;
 		}
 		else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 60.f &&
@@ -1315,7 +1318,6 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 		{
 			m_bIsSpawn = true;
 			//Ä® ²ÈÇôÀÖ´Â »óÅÂ¿¡ ÄÄ¹ÙÀÎµå¸ÅÆ®¸¯½º ±â¾ïÇØ¶ó
-			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = false;
 			pObject->m_bNeed_Memory_Position[pObject->m_iSword_Stack_Count] = true;
 			//Ä® ¿Þ¼Õ¿¡ÀÖ´Â°Å ²ô°í ¶¥¿¡ ²ÈÇôÀÖ¾î¶ó 
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = false;
@@ -1332,6 +1334,7 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 
 void CBoss_Urd::Attack_Stack_Skill_01::State_Exit(CBoss_Urd* pObject)
 {
+	pObject->m_bStand_Stack_Sword_ColliderOn = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 }
 
@@ -1346,6 +1349,7 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iMonster_Attack_Power = 75;
 	pObject->RotateDegree_To_Player();
+	pObject->m_bStand_Stack_Sword_ColliderOn = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KNOCKDOWN;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1391,7 +1395,6 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 			pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() < 60.f)
 		{
 			//¿Þ¼ÕÀ¸·Î ¹Ù²¸¶ó
-			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = true;
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = true;
 		}
 		else if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 60.f &&
@@ -1400,7 +1403,6 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 		{
 			m_bIsSpawn = true;
 			//Ä® ²ÈÇôÀÖ´Â »óÅÂ¿¡ ÄÄ¹ÙÀÎµå¸ÅÆ®¸¯½º ±â¾ïÇØ¶ó
-			pObject->m_bCreate_Collider[pObject->m_iSword_Stack_Count] = false;
 			pObject->m_bNeed_Memory_Position[pObject->m_iSword_Stack_Count] = true;
 			//Ä® ¿Þ¼Õ¿¡ÀÖ´Â°Å ²ô°í ¶¥¿¡ ²ÈÇôÀÖ¾î¶ó 
 			pObject->m_bIs_Equipped_To_LeftHand[pObject->m_iSword_Stack_Count] = false;
@@ -1416,6 +1418,7 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 
 void CBoss_Urd::Attack_Stack_Skill_02::State_Exit(CBoss_Urd* pObject)
 {
+	pObject->m_bStand_Stack_Sword_ColliderOn = false;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 }
 #pragma endregion 
@@ -1429,7 +1432,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
 	pObject->RotateDegree_To_Player();
 	pObject->m_bCan_Hit_Motion = false;
-	pObject->m_bCreate_Large_Collider = true;
+	pObject->m_bStand_Stack_Sword_ColliderOn = true;
 	pObject->m_bSpecial_Skill_Progress = true;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1493,7 +1496,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd*
 
 void CBoss_Urd::Attack_Special_Skill::State_Exit(CBoss_Urd* pObject)
 {
-	pObject->m_bCreate_Large_Collider = false;
+	pObject->m_bStand_Stack_Sword_ColliderOn = false;
 	pObject->m_bSpecial_Skill_Progress = false;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
 }

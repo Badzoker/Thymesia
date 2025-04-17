@@ -30,11 +30,12 @@ HRESULT CStand_Stack_Sword::Initialize(void* pArg)
     m_bNeed_Memory_Position = pDesc->bNeed_Memory_Position;
     m_bIs_Equipped_To_LeftHand = pDesc->bIs_Equipped_To_LeftHand;
     m_bIs_Stand_In_Ground = pDesc->bIs_Stand_In_Ground;
+    m_bCollider_Change = pDesc->bCollider_Change;
     m_pParentState = pDesc->pParentState;
-    m_bIs_Create_Collider = pDesc->bIs_Create_Collider;
-    m_bIs_Create_Large_Collider = pDesc->bIs_Create_Large_Collider;
     m_pSocketMatrix = pDesc->pSocketMatrix;
     m_pParentModelCom = pDesc->pParentModel;
+    m_iCurrent_StackCount = pDesc->iCurrent_StackCount;
+    m_iStack_Number = pDesc->iStack_Number;
 
     m_pLeft_SocketMatrix = m_pParentModelCom->Get_BoneMatrix("weapon_l");
 
@@ -51,7 +52,7 @@ HRESULT CStand_Stack_Sword::Initialize(void* pArg)
 
 
     m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.3f,0.3f,0.15f }, _float3{ 1.f,0.f,0.f }, 0.f, this);
-    m_pLargeActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 3.f,3.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pLargeActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,100.f,1.f });
     m_pGameInstance->Set_GlobalPos(m_pLargeActor, _fvector{ 0.f,0.f,100.f,1.f });
@@ -68,18 +69,6 @@ HRESULT CStand_Stack_Sword::Initialize(void* pArg)
 
 void CStand_Stack_Sword::Priority_Update(_float fTimeDelta)
 {
-    if (*m_bIs_Create_Collider)
-    {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
-        m_pGameInstance->Add_Actor_Scene(m_pActor);
-    }
-    else if (*m_bIs_Create_Large_Collider)
-    {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
-        m_pGameInstance->Add_Actor_Scene(m_pLargeActor);
-
         //else if (!strcmp(iter.szName, "Effect_StackSword_1"))
      //{
      //  _float4 vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
@@ -90,15 +79,6 @@ void CStand_Stack_Sword::Priority_Update(_float fTimeDelta)
 	 // m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK);
      //	iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
      //}
-
-
-
-    }
-    else
-    {
-        m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
-    }
 }
 
 void CStand_Stack_Sword::Update(_float fTimeDelta)
@@ -131,6 +111,82 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
         //땅에 박혀 있어야할때 땅에 박혀있었을때의 컴바인드 넣어
         m_CombinedWorldMatrix = m_Store_CombinedMatrix;
     }
+
+    if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCollider_Change)
+    {
+        for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                //내가 넣은 콜라이더 시간에 진입했을때
+                if (iter.eType == EVENT_COLLIDER && iter.isEventActivate)
+                {
+                    if (!strncmp(iter.szName, (string("Special_Collider") + to_string(m_iStack_Number)).c_str(), strlen((string("Special_Collider") + to_string(m_iStack_Number)).c_str())))
+                    {
+                        iter.isPlay = true;
+                        m_pGameInstance->Add_Actor_Scene(m_pLargeActor);
+                    }
+                    //스킬 콜라이더이고, 현재 우르드가 꽂아야하는 칼 인덱스랑 내 칼인덱스랑 같을때이며, 땅에 꽂혀있지 않을때
+                    else if (!strncmp(iter.szName, "Skill_Collider", strlen("Skill_Collider")) &&
+                        m_iStack_Number == *m_iCurrent_StackCount &&
+                        !*m_bIs_Stand_In_Ground)
+                    {
+                        iter.isPlay = true;
+                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    }
+                }
+            }
+            else
+            {
+                //내가 넣은 콜라이더 시간이 끝났을때나 플레이어한테 닿아서 데미지를 입혔을경우. 콜라이더를 꺼라.
+                if ((iter.eType == EVENT_COLLIDER && !iter.isEventActivate) || m_bColliderOff)
+                {
+                    if (!strncmp(iter.szName, (string("Special_Collider") + to_string(m_iStack_Number)).c_str(),
+                        strlen((string("Special_Collider") + to_string(m_iStack_Number)).c_str())))
+                    {
+                        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+                        m_bColliderOff = false;
+                        if (!iter.isEventActivate)
+                        {
+                            iter.isPlay = false;
+                        }
+                    }
+
+                    else if (!strncmp(iter.szName, "Skill_Collider", strlen("Skill_Collider")) &&
+                        m_iStack_Number == *m_iCurrent_StackCount)
+                    {
+                        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+                        m_bColliderOff = false;
+                        if (!iter.isEventActivate)
+                        {
+                            iter.isPlay = false;
+                        }
+                    }
+                }
+            }
+#pragma region Effect
+
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
+            {
+
+            }
+            else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
+            {
+
+            }
+
+#pragma endregion
+        }
+    }
+    else
+    {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+        m_pGameInstance->Sub_Actor_Scene(m_pLargeActor);
+    }
+
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor)))
         m_pGameInstance->Update_Collider(m_pActor, XMLoadFloat4x4(&m_CombinedWorldMatrix), _vector{ 0.f, 0.f, 0.f,1.f });
