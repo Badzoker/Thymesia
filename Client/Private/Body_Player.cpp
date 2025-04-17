@@ -2787,6 +2787,29 @@ void CBody_Player::STATE_BAT_EXECUTION_Method()
     m_pModelCom->SetUp_Animation(219, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+#pragma region Effect_Bat_Execution
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 219)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(219)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                {
+                    if (!strcmp(iter.szName, "Effect_Start1"))
+                    {
+                        const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BAT_EXECUTION_BLOOD_3, m_pParentWorldMatrix, matWeapon_r);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_pModelCom->Get_VecAnimation().at(219)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
