@@ -1346,6 +1346,38 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 
 
+
+
+
+    // BOSS ODUR MUTATION
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Odur_Combo_F.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_F, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Odur_Combo_B.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_B, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Odur_Combo_J.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_J, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Odur_SpAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_SP_ATTACK, 3)))
+        return E_FAIL;
+
+
+
+    // BOSS URD 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Urd_Skill.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_URD_NORMAL_DAGGER_SKILL, 4)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Urd_SpSkill.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_URD_SPECIAL_SKILL, 3)))
+        return E_FAIL;
+
+
     //==================================================================================================
 
 

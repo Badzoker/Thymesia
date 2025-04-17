@@ -730,6 +730,8 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_B, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				iter.isPlay = true;
 			}
 		}
@@ -842,6 +844,9 @@ void CBoss_Magician2::Attack_ComboF::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboF::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+	//pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_F, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
@@ -995,6 +1000,8 @@ void CBoss_Magician2::Attack_ComboJ::State_Update(_float fTimeDelta, CBoss_Magic
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_FALLING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_J, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				iter.isPlay = true;
 			}
 		}
@@ -1037,6 +1044,8 @@ void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magi
 				for (_uint i = 0; i < 5; i++)
 				{
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_VARG_ROAR, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+
+					//pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_SP_ATTACK, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				}
 				iter.isPlay = true;
 			}
