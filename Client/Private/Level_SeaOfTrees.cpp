@@ -202,7 +202,7 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     CTransform* pPlayerTransform = m_pGameInstance->Get_GameObject_To_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Player"), "PLAYER")->Get_Transfrom();
 
     LIGHT_DESC LightDesc{};
-    /* 2¿ù 8ÀÏ ºû */
+    /* 2¿ù 8ÀÏ ºû *//*
     LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
     LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
     LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
@@ -211,16 +211,16 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     LightDesc.iCurrentLevel = m_iCurrentLevel;
 
     if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-        return E_FAIL;
+        return E_FAIL;*/
 
     ZeroMemory(&LightDesc, sizeof(LightDesc));
 
     LightDesc.eType = LIGHT_DESC::TYPE_POINT;
     LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-    LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+    LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
     LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
-    LightDesc.fRange = 3.f;
+    LightDesc.fRange = 7.f;
     LightDesc.iCurrentLevel = m_iCurrentLevel;
 
     if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
@@ -232,7 +232,8 @@ HRESULT CLevel_SeaOfTrees::Ready_Lights()
     FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
     FogDesc.fFogStartDistance = _float2(0.04f, 8.f);
     FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
-    FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
+    FogDesc.g_FogColor = _float4(0.f, 0.f, 0.f, 1.f);
+   // FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
 
     m_pGameInstance->Set_FogFactors(FogDesc);
 
