@@ -747,6 +747,7 @@ void CBoss_Bat::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_R, matClawWorld);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_RIGHT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
@@ -815,6 +816,7 @@ void CBoss_Bat::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_L, matClawWorld);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}
