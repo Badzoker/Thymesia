@@ -325,6 +325,8 @@ void CClawWeapon::Update(_float fTimeDelta)
             *m_pfClawFinishTime = 0.f;
             *m_pfClawAppearTimer = 0.f;
         }
+
+        m_pGameInstance->Sub_Actor_Scene(m_pActor); 
     }
 
     if (m_bHitStopOnOff)

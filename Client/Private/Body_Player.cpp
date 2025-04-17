@@ -749,14 +749,44 @@ HRESULT CBody_Player::STATE_NORMAL_Render()
                 return E_FAIL;
 
 
-            if (i == 2)
+            switch (i)
             {
-                m_pShaderCom->Begin(9);
+            case 0:
+                if (FAILED(m_pORM_HeadTexture->Bind_ShaderResource(m_pShaderCom, "g_ORM_Texture", 0)))
+                    return E_FAIL;
+
+                m_pShaderCom->Begin(10);
                 m_pModelCom->Render(i);
+                break;
+            case 1:
+                if (FAILED(m_pORM_BodyTexture->Bind_ShaderResource(m_pShaderCom, "g_ORM_Texture", 0)))
+                    return E_FAIL;
+
+                m_pShaderCom->Begin(10);
+                m_pModelCom->Render(i);
+                break;
+            case 2:
+                if (FAILED(m_pORM_ClockTexture->Bind_ShaderResource(m_pShaderCom, "g_ORM_Texture", 0)))
+                    return E_FAIL;
+
+                m_pShaderCom->Begin(11);
+                m_pModelCom->Render(i);
+                break;
+            case 3:
+                if (FAILED(m_pORM_LegTexture->Bind_ShaderResource(m_pShaderCom, "g_ORM_Texture", 0)))
+                    return E_FAIL;
+
+                m_pShaderCom->Begin(10);
+                m_pModelCom->Render(i);
+                break;
+
+            default:
+                m_pShaderCom->Begin(0);
+                m_pModelCom->Render(i);
+                break;
             }
 
-            m_pShaderCom->Begin(0);
-            m_pModelCom->Render(i);
+
         }
     }
 
@@ -1710,6 +1740,8 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 
 void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(0, false);
 
 
@@ -1967,41 +1999,57 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
 
 void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(6, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(7, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(8, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(10, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(11, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(12, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(13, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(18, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2016,6 +2064,8 @@ void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(17, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2029,6 +2079,7 @@ void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(19, false);
     m_iRenderState = STATE_NORMAL_RENDER;
@@ -2043,6 +2094,8 @@ void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(20, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2070,6 +2123,7 @@ void CBody_Player::STATE_PARRY_L_Method()
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
@@ -2106,6 +2160,8 @@ void CBody_Player::STATE_PARRY_R_Method()
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
@@ -2145,6 +2201,8 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
 
@@ -2160,6 +2218,8 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
 
@@ -2191,6 +2251,8 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 }
 void CBody_Player::STATE_HurtMFR_L_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(31, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2207,6 +2269,8 @@ void CBody_Player::STATE_HurtMFR_L_Method()
 }
 void CBody_Player::STATE_HurtMFR_R_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(32, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2223,6 +2287,9 @@ void CBody_Player::STATE_HurtMFR_R_Method()
 
 void CBody_Player::STATE_HURT_LF_Method()
 {
+
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
+
     m_pModelCom->SetUp_Animation(30, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -2515,26 +2582,29 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
 #pragma region Effect_HArmor_Execution
-    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    if (m_pModelCom->Get_Current_Animation_Index() == 222)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(222)->Get_vecEvent())
         {
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.isPlay == false)
             {
-                if (!strcmp(iter.szName, "Effect_Start1"))
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_1, m_pParentWorldMatrix, matWeapon_r);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-                }
-                else if (!strcmp(iter.szName, "Effect_Start2"))
-                {
-                    _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
-                    _vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로
-                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_2, m_pParentWorldMatrix, matWeapon_r);
-                    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_SPARK, vPos, vDir);
+                    if (!strcmp(iter.szName, "Effect_Start1"))
+                    {
+                        const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_1, m_pParentWorldMatrix, matWeapon_r);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    }
+                    else if (!strcmp(iter.szName, "Effect_Start2"))
+                    {
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
+                        _vector vDir = { m_pParentWorldMatrix->_31 * -1.f, m_pParentWorldMatrix->_32 * -1.f, m_pParentWorldMatrix->_33 * -1.f, 0.f };
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로
+                        const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_BLOOD_2, m_pParentWorldMatrix, matWeapon_r);
+                        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_HARMOR_EXECUTION_SPARK, vPos, vDir);
+                    }
                 }
             }
         }
@@ -2660,23 +2730,23 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
 
 
 #pragma region Effect_Urd_Execution  
-    if(m_pModelCom->Get_Current_Animation_Index() == 232)
+    if (m_pModelCom->Get_Current_Animation_Index() == 232)
     {
-        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(232)->Get_vecEvent())     
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(232)->Get_vecEvent())
         {
-            if (iter.isPlay == false)      
+            if (iter.isPlay == false)
             {
                 if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분     
                 {
-                    if (!strcmp(iter.szName, "Effect_Spark"))   
+                    if (!strcmp(iter.szName, "Effect_Spark"))
                     {
-                        const _float4x4* matWeapon = m_pModelCom->Get_BoneMatrix("weapon_l");   
-                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_SPARK, m_pParentWorldMatrix, matWeapon); 
+                        const _float4x4* matWeapon = m_pModelCom->Get_BoneMatrix("weapon_l");
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_URD_EXECUTION_SPARK, m_pParentWorldMatrix, matWeapon);
                         iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
-                    }   
-                }   
+                    }
+                }
             }
-        }   
+        }
     }
 #pragma endregion
     // 박쥐, 변이된 오두르 칼 
@@ -2869,18 +2939,22 @@ void CBody_Player::STATE_GRACE_Execution_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
 #pragma region Effect
-    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 221)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(221)->Get_vecEvent())
         {
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.isPlay == false)
             {
-                if (!strcmp(iter.szName, "Effect_Grace_Execution_Kick"))
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    _float4x4 matLeftFoot = {};
-                    XMStoreFloat4x4(&matLeftFoot, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("Bip001-L-Foot")) * XMLoadFloat4x4(m_pParentWorldMatrix));
-                    m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_KICK, matLeftFoot);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    if (!strcmp(iter.szName, "Effect_Grace_Execution_Kick"))
+                    {
+                        _float4x4 matLeftFoot = {};
+                        XMStoreFloat4x4(&matLeftFoot, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("Bip001-L-Foot")) * XMLoadFloat4x4(m_pParentWorldMatrix));
+                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_KICK, matLeftFoot);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    }
                 }
             }
         }
@@ -2923,17 +2997,20 @@ void CBody_Player::STATE_PUNCH_MAN_Execution_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
 #pragma region Effect_Punch_Execution
-    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    if (m_pModelCom->Get_Current_Animation_Index() == 224)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.isPlay == false)
             {
-                if (!strcmp(iter.szName, "Effect_Start"))
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
-                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_EXECUTION, m_pParentWorldMatrix, matWeapon_r);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    if (!strcmp(iter.szName, "Effect_Start"))
+                    {
+                        const _float4x4* matWeapon_r = m_pModelCom->Get_BoneMatrix("weapon_r");
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_EXECUTION, m_pParentWorldMatrix, matWeapon_r);
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                    }
                 }
             }
         }
@@ -2994,7 +3071,6 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 케인 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3015,7 +3091,6 @@ void CBody_Player::STATE_GREATSWORD_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 대검 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3140,7 +3215,6 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 투창검 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -3634,24 +3708,27 @@ void CBody_Player::STATE_HEAL_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
 #pragma region Effect
-    for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    if (m_pModelCom->Get_Current_Animation_Index() == 237)
     {
-        if (iter.isPlay == false)
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            if (iter.isPlay == false)
             {
-                iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
-                if (!strcmp(iter.szName, "Effect_Start"))
+                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
-                    _float4x4 matLeftHand = {};
-                    XMStoreFloat4x4(&matLeftHand, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("weapon_l")) * XMLoadFloat4x4(m_pParentWorldMatrix));
-                    for (_uint i = 0; i < 2; i++)
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+                    if (!strcmp(iter.szName, "Effect_Start"))
                     {
-                        m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PLAYER_HEAL, matLeftHand);
+                        _float4x4 matLeftHand = {};
+                        XMStoreFloat4x4(&matLeftHand, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("weapon_l")) * XMLoadFloat4x4(m_pParentWorldMatrix));
+                        for (_uint i = 0; i < 2; i++)
+                        {
+                            m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PLAYER_HEAL, matLeftHand);
+                        }
+                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42 , m_pParentWorldMatrix->_43 , 1.f };
+                        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL, vPos);
                     }
-                    _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42 , m_pParentWorldMatrix->_43 , 1.f };
-                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL, vPos);
                 }
             }
         }
@@ -3691,14 +3768,14 @@ void CBody_Player::STATE_START_WALK_Method()
 
 void CBody_Player::STATE_CLAW_CHARGE_START_Method()
 {
-    m_pModelCom->Get_VecAnimation().at(144)->SetLerpTime(0.15f);
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(144, false);
     m_iRenderState = STATE_CLAW_RENDER;
 
     //m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
 
-    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish()) //&& m_pModelCom->Get_LerpFinished())
+    if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished())
     {
 
         *m_pParentState = CPlayer::STATE::STATE_CLAW_CHARGE_LOOP;
@@ -3768,8 +3845,6 @@ void CBody_Player::STATE_HALBERDS_B_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 핼버드 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
-
     }
 
     if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())
@@ -3892,7 +3967,6 @@ void CBody_Player::STATE_SCYTHE_B_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 낫 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
     }
 
 
@@ -4015,8 +4089,6 @@ void CBody_Player::STATE_AXE_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
-        printf("Player 도끼 스킬 스킬 사용되었다 : m_pPlayerSkillCoolTime => FALSE\n");
-       
     }
 
     if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())
@@ -4040,6 +4112,7 @@ void CBody_Player::STATE_AXE_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
 
             }
 
@@ -4047,18 +4120,21 @@ void CBody_Player::STATE_AXE_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
             }
 
             *m_pParentNextStateCan = false;
@@ -4186,10 +4262,34 @@ HRESULT CBody_Player::Ready_Components()
         return E_FAIL;
 
     /* Com_Dissolve_Noise*/
-
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDissolveNoiseTextureCom))))
         return E_FAIL;
+
+
+    /* ORM 텍스처 관련 */
+
+    /* ORM 머리 */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Head"),
+        TEXT("Com_ORM_Head_Texture"), reinterpret_cast<CComponent**>(&m_pORM_HeadTexture))))
+        return E_FAIL;
+
+    /* ORM 몸통 */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Body"),
+        TEXT("Com_ORM_Body_Texture"), reinterpret_cast<CComponent**>(&m_pORM_BodyTexture))))
+        return E_FAIL;
+
+    /* ORM 다리 */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Leg"),
+        TEXT("Com_ORM_Leg_Texture"), reinterpret_cast<CComponent**>(&m_pORM_LegTexture))))
+        return E_FAIL;
+
+    /* ORM 망토 */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_ORM_Texture_Corvus_Clock"),
+        TEXT("Com_ORM_Clock_Texture"), reinterpret_cast<CComponent**>(&m_pORM_ClockTexture))))
+        return E_FAIL;
+
+
 
     return S_OK;
 }
@@ -4239,5 +4339,15 @@ void CBody_Player::Free()
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pTextureCom);
+
+    /*ORM Texture 삭제 */
+    Safe_Release(m_pORM_HeadTexture);
+    Safe_Release(m_pORM_BodyTexture);
+    Safe_Release(m_pORM_LegTexture);
+    Safe_Release(m_pORM_ClockTexture);
+
     Safe_Release(m_pDissolveNoiseTextureCom);
+
+
+
 }
