@@ -101,20 +101,20 @@ namespace Engine
 
     enum Player_Hitted_State
     {
-        PLAYER_HURT_KNOCKDOWN,			     // 캐릭터 넉다운
-        PLAYER_HURT_HURTMFL,			     // 조금 뒤로 이동하면서 휘청 
-        PLAYER_HURT_HURTSF,				     // 아주 조금 뒤로 이동하면서 휘청 
-        PLAYER_HURT_HURTSL,				     // 아주 조금 뒤로 이동하면서 휘청 
-        PLAYER_HURT_HURTLF,				     // 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇음	
-        PLAYER_HURT_HURXXLF,			     // 보통 길게 뒤로 이동하면서 휘청 하면서 무릎 꿇는 시간 조금 김 
-        PLAYER_HURT_KnockBackF,			     // 길게 뒤로 밀리면서 한손으로 땅짚고 일어남
-        PLAYER_HURT_FallDown,			     // 공중에 띄워지면서 날라감
-        PLAYER_HURT_STUN,			         // 스턴걸기
-        PLAYER_HURT_REBOUND,                 // 몬스터가 패링했을때
-        PLAYER_HURT_CATCH,                   // 몬스터한테 잡혔을 때
-        PLAYER_HURT_MAGICIAN_CATCH,          // 마술사의 스킬에 당할 때	
-        PLAYER_HURT_MUTATION_MAGICIAN_CATCH, // 변이 마술사에게 스킬을 당할 때	
-        PLAYER_HURT_RESEARCH_CATCH,          // 리서처에게 잡혔을 때		
+        PLAYER_HURT_KNOCKDOWN,			     // ĳ���� �˴ٿ�
+        PLAYER_HURT_HURTMFL,			     // ���� �ڷ� �̵��ϸ鼭 ��û 
+        PLAYER_HURT_HURTSF,				     // ���� ���� �ڷ� �̵��ϸ鼭 ��û 
+        PLAYER_HURT_HURTSL,				     // ���� ���� �ڷ� �̵��ϸ鼭 ��û 
+        PLAYER_HURT_HURTLF,				     // ���� ��� �ڷ� �̵��ϸ鼭 ��û �ϸ鼭 ���� ����	
+        PLAYER_HURT_HURXXLF,			     // ���� ��� �ڷ� �̵��ϸ鼭 ��û �ϸ鼭 ���� �ݴ� �ð� ���� �� 
+        PLAYER_HURT_KnockBackF,			     // ��� �ڷ� �и��鼭 �Ѽ����� ��¤�� �Ͼ
+        PLAYER_HURT_FallDown,			     // ���߿� ������鼭 ����
+        PLAYER_HURT_STUN,			         // ���ϰɱ�
+        PLAYER_HURT_REBOUND,                 // ���Ͱ� �и�������
+        PLAYER_HURT_CATCH,                   // �������� ������ ��
+        PLAYER_HURT_MAGICIAN_CATCH,          // �������� ��ų�� ���� ��	
+        PLAYER_HURT_MUTATION_MAGICIAN_CATCH, // ���� �����翡�� ��ų�� ���� ��	
+        PLAYER_HURT_RESEARCH_CATCH,          // ����ó���� ������ ��		
         PLAYER_HURT_END,
     };
 
@@ -158,25 +158,25 @@ namespace Engine
         STATE_INTRO,
         STATE_SPECIAL_ATTACK,
         STATE_SPECIAL_ATTACK2,
-        STATE_KICK_ATTACK, //나중에 킥이 아닌 무기가 아닌 걸로 공격한걸로 의미하는걸로 바꿔야할듯
+        STATE_KICK_ATTACK, //���߿� ű�� �ƴ� ���Ⱑ �ƴ� �ɷ� �����Ѱɷ� �ǹ��ϴ°ɷ� �ٲ���ҵ�
         STATE_END
     };
 
     enum MONSTER_EXECUTION_CATEGORY
     {
         MONSTER_START = 0,
-        MONSTER_VARG,               //바그	
-        MONSTER_HARMOR,             //검병	
-        MONSTER_JOKER,              //조커	
-        MONSTER_VILLAGEM1,          //방패병
-        MONSTER_MAGICIAN,           // 오두르	
-        MONSTER_MUTATION_MAGICIAN,	// 변이된 오두르
-        MONSTER_PUNCH_MAN,          // 펀치맨
-        MONSTER_GRACE,               // 그레이스
-        MONSTER_URD,				// URD 보스 
-        MONSTER_BAT,				// Bat 보스 ( 박쥐 ) 
-        MONSTER_RESEARCHER,         // 리서처 엘리트 몹	
-        MONSTER_NORMAL              //기본몬스터	
+        MONSTER_VARG,               //�ٱ�	
+        MONSTER_HARMOR,             //�˺�	
+        MONSTER_JOKER,              //��Ŀ	
+        MONSTER_VILLAGEM1,          //���к�
+        MONSTER_MAGICIAN,           // ���θ�	
+        MONSTER_MUTATION_MAGICIAN,	// ���̵� ���θ�
+        MONSTER_PUNCH_MAN,          // ��ġ��
+        MONSTER_GRACE,               // �׷��̽�
+        MONSTER_URD,				// URD ���� 
+        MONSTER_BAT,				// Bat ���� ( ���� ) 
+        MONSTER_RESEARCHER,         // ����ó ����Ʈ ��	
+        MONSTER_NORMAL              //�⺻����	
     };
 
     enum MONSTER_CATEGORY
@@ -263,7 +263,6 @@ namespace Engine
         EFFECT_URD_SWING,
         EFFECT_URD_STACK_SWORD,
         EFFECT_URD_STACK_SWORD_SURFACE,
-
         EFFECT_BAT_BLOOD_SUCK,
         EFFECT_BAT_CLAW_R,
         EFFECT_BAT_CLAW_L,
@@ -384,7 +383,6 @@ namespace Engine
         EFFECT_PARTICLE_URD_SP_START_CONTINUE,
         EFFECT_PARTICLE_URD_SP_READY,
         EFFECT_PARTICLE_URD_SP_EXPLOSION,
-
         EFFECT_PARTICLE_URD_SKILL_SPARK,
         EFFECT_PARTICLE_URD_SP_DUST,
         EFFECT_PARTICLE_URD_SKILL_WORLD,
@@ -392,29 +390,50 @@ namespace Engine
         EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2,
         EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3,
         EFFECT_PARTICLE_URD_SKILL_EXPLOSION_4,
-
         EFFECT_PARTICLE_URD_CHARGE,
         EFFECT_PARTICLE_URD_CHARGE_FAST,
         EFFECT_PARTICLE_URD_INTRO_DUST,
-
         EFFECT_PARTICLE_URD_EXECUTION_SPARK,
-
         EFFECT_PARTICLE_ENVIRONMENT_LEAF,
         EFFECT_PARTICLE_ENVIRONMENT_DUST,
-
         EFFECT_PARTICLE_MAGICIAN_SWORD_DUST,
-
         EFFECT_PARTICLE_URD_EXECUTION_BLOOD_1,
         EFFECT_PARTICLE_URD_EXECUTION_BLOOD_2,
         EFFECT_PARTICLE_URD_STACKSWORD_EXPLOSION,
 
-        //강범승 추가Effect
+        EFFECT_PARTICLE_MAGICIAN_SWING_DUST,
+        EFFECT_PARTICLE_MAGICIAN_FIRSTSWING_DUST,
+        EFFECT_PARTICLE_MAGICIAN_TURNING_DUST,
+        EFFECT_PARTICLE_MAGICIAN_CANESTAB,
+        EFFECT_PARTICLE_MAGICIAN_KICK,
+        EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_START,
+        EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING,
+        EFFECT_PARTICLE_MAGICIAN_PARRY,
+        EFFECT_PARTICLE_MAGICIAN_BURST_1,
+        EFFECT_PARTICLE_MAGICIAN_BURST_2,
+        EFFECT_PARTICLE_MAGICIAN_STUN,
+        EFFECT_PARTICLE_MAGICIAN_SPRINKLE,
+        EFFECT_PARTICLE_MAGICIAN_SHOOT,
+        EFFECT_PARTICLE_MAGICIAN_BURST_CHARGE,
+        EFFECT_PARTICLE_MAGICIAN_SPATTACK_CHARGE,
+        EFFECT_PARTICLE_MAGICIAN_SPATTACK_FAIL,
+        EFFECT_PARTICLE_MAGICIAN_SPATTACK_SUCCESS,
+        EFFECT_PARTICLE_MAGICIAN_SPATTACK_LASTCHARGE,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_LOOP,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_1,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_2,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_3,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_4,
+        EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_5,
+
+
+        //������ �߰�Effect
         EFFECT_PARTICLE_MAGICIAN_EXECUTION_BLOOD_1,
 		EFFECT_PARTICLE_MAGICIAN_EXECUTION_BLOOD_2,
 		EFFECT_PARTICLE_MAGICIAN_EXECUTION_DUST_2,
 		EFFECT_PARTICLE_BAT_SPECIAL_ATTACK,
 
-        //임상혁 추가 Effect
+        //�ӻ��� �߰� Effect
         EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE,
         EFFECT_PARTICLE_WORLD_DAGGER_PROJECTILE_SMOKE,
         EFFECT_PARTICLE_BAT_EXECUTION_BLOOD_1,
@@ -422,17 +441,8 @@ namespace Engine
         EFFECT_PARTICLE_BAT_EXECUTION_BLOOD_3,
         EFFECT_PARTICLE_WORLD_BAT_RED_DUST_1,
         EFFECT_PARTICLE_WORLD_BAT_SALIVIA,
-        //한유인 추가 Effect
+        //������ �߰� Effect
         EFFECT_PARTCLE_GHOSEMY_DUST,
-
-
-
-
-
-
-        //김유빈 추가 Effect 
-
-        //김선환 추가 Effect
 
         //Sword
         EFFECT_SWORD_VARG,
@@ -450,7 +460,7 @@ namespace Engine
         //Mesh Instancing
         EFFECT_MESH_INSTANCING_ROCK,
 
-        // 한유인 추가 Instancing Effect
+        // ������ �߰� Instancing Effect
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT,
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_RIGHT,
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_JUMP_SMASH_CHEST_ATTACK,

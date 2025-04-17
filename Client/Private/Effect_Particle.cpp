@@ -83,6 +83,11 @@ void CEffect_Particle::Update(_float _fTimeDelta)
 {
     if (6 == m_iShaderPass || 7 == m_iShaderPass) //소켓에 붙을 파티클
     {
+        if (nullptr == m_pSocketMatrix)
+        {
+            Set_IsPlaying(false);
+            return;
+        }
         _matrix			SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
         XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));

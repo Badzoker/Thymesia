@@ -166,6 +166,41 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_VARG_SPATTACK, vPos, vDir);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
+                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_1"))
+                        {
+                            const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
+                            const _float4x4* matSpine2 = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine2");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_1, m_pParentWorldMatrix, matSpine);
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_LOOP, m_pParentWorldMatrix, matSpine2);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_2"))
+                        {
+                            const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_2, m_pParentWorldMatrix, matSpine);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_3"))
+                        {
+                            const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_3, m_pParentWorldMatrix, matSpine);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_4"))
+                        {
+                            const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_4, m_pParentWorldMatrix, matSpine);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_5"))
+                        {
+                            const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
+                            for (_uint i = 0; i < 2; i++)
+                            {
+                                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_5, m_pParentWorldMatrix, matSpine);
+                            }
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
 #pragma endregion
                     }
                 }

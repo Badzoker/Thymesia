@@ -546,11 +546,11 @@
     <ClInclude Include="..\public\VIBuffer_Edge_Cell.h">
       <Filter>01.Utility\04.Components\VIBuffer\EdgeCell</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Engine_Enum.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\RippleManager.h">
       <Filter>01.Utility\18.Ripple</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Engine_Enum.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -731,6 +731,24 @@ void CBoss_Magician::Stun_State::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+
+#pragma region Effect_Stun
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Stun"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_STUN, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
 	if (m_iIndex == 56 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 54;
@@ -765,6 +783,38 @@ void CBoss_Magician::Shoot_ComboA::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Shoot_ComboA::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Shoot
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Shoot2"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					for (_uint i = 0; i < 2; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SHOOT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+
+					}
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Shoot3"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					for (_uint i = 0; i < 2; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SHOOT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+					}
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	pObject->RotateDegree_To_Player();
 	if (m_iIndex == 34 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
@@ -839,6 +889,46 @@ void CBoss_Magician::Shoot_ComboB::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Shoot_ComboB::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Shoot
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Shoot1"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					for (_uint i = 0; i < 2; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SHOOT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+					}
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Shoot2"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					for (_uint i = 0; i < 2; i++)
+					{
+
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SHOOT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+					}
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Shoot3"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					for (_uint i = 0; i < 2; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SHOOT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+					}
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	_vector vPos = pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vPlayerPos = XMLoadFloat4(&pObject->m_vPlayerPos);
 	_float fPosY = XMVectorGetY(vPos);
@@ -941,6 +1031,40 @@ void CBoss_Magician::Attack_ComboA::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Swing + FirstSwing + CaneStab
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_FirstSwing"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_FIRSTSWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Swing"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_CaneStab"))
+				{
+					const _float4x4* matCane = pObject->m_pModelCom->Get_BoneMatrix("weapon_Cane");
+					for (_uint i = 0; i < 2; i++)
+					{
+						pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_CANESTAB, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matCane);
+					}
+
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 6 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		m_iIndex = 5;
@@ -999,6 +1123,30 @@ void CBoss_Magician::Attack_ComboB::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Kick + Turning
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Kick"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Turning"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_TURNING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 25 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->GetAniFinish())
@@ -1037,6 +1185,30 @@ void CBoss_Magician::Attack_ComboC::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_ComboC::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_FirstSwing + Kick
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_FirstSwing"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_FIRSTSWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Kick"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 150.f)
@@ -1089,6 +1261,42 @@ void CBoss_Magician::Attack_ComboD::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_ComboD::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_FirstSwing + Turning + Kick + Swing
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_FirstSwing"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_FIRSTSWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Turning"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_TURNING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Kick"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Swing"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	//아마 이쪽에서 베지어 무빙 해야할듯?
 	if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
@@ -1361,10 +1569,36 @@ void CBoss_Magician::Dissappear_Move_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_IsDissolveOn = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+#pragma region Effect_Disappear_Start
+
+	const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+	pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_START, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+
+#pragma endregion
 }
 
 void CBoss_Magician::Dissappear_Move_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Disappear_Dust
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_MovingDust"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	//앞
 	if (m_iIndex == 70 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
@@ -1469,6 +1703,37 @@ void CBoss_Magician::Attack_Special::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Charge + Fail
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Charge"))
+				{
+					const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPATTACK_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPATTACK_FAIL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Fail"))
+				{
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPATTACK_FAIL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	if (m_iIndex == 39 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 15.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 200.f)
@@ -1558,6 +1823,31 @@ void CBoss_Magician::Attack_Special_Catch::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_Special_Catch::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Loop + Final
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Loop"))
+				{
+					const _float4x4* matWeapon_l = pObject->m_pModelCom->Get_BoneMatrix("weapon_l_Sword");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPATTACK_SUCCESS, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_l);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Final"))
+				{
+					const _float4x4* matWeapon_l = pObject->m_pModelCom->Get_BoneMatrix("weapon_l_Sword");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPATTACK_LASTCHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_l);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 290.f)
@@ -1599,6 +1889,43 @@ void CBoss_Magician::Attack_Slash::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Attack_Slash::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+
+#pragma region Effect_Charge + Burst
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Charge"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_BURST_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Burst_1"))
+				{
+					for (_uint i = 0; i < 2; i++)
+					{
+						const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+						pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_BURST_1, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					}
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Burst_2"))
+				{
+					for (_uint i = 0; i < 2; i++)
+					{
+						const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+						pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_BURST_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					}
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 246.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 340.f)
@@ -1654,6 +1981,24 @@ void CBoss_Magician::Parry_Attack_A::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_A::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Parry
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	if (m_iIndex == 26 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f &&
@@ -1715,6 +2060,24 @@ void CBoss_Magician::Parry_Attack_B::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_B::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Parry
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
+
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 171.f)
@@ -1760,6 +2123,23 @@ void CBoss_Magician::Parry_Attack_C::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_C::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Parry
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician::Attack_ComboA(), pObject);
@@ -1871,6 +2251,24 @@ void CBoss_Magician::Phase_Change_State::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+#pragma region Effect_Phase_Change
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Sprinkle"))
+				{
+					const _float4x4* matHand_L = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SPRINKLE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHand_L);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 51 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 40.f)
