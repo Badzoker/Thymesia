@@ -448,7 +448,7 @@ namespace Engine
         //Mesh Instancing
         EFFECT_MESH_INSTANCING_ROCK,
 
-        //한유인 추가 Instancing Effect
+        // 한유인 추가 Instancing Effect
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT,
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_RIGHT,
         EFFECT_MESH_INSTANCING_BAT_HANDATTACK_JUMP_SMASH_CHEST_ATTACK,

@@ -540,7 +540,7 @@ technique11 DefaultTechnique
     pass Blood_World // 7 ¹ø 
     {
         SetRasterizerState(Rs_Cull_NONE);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_SKip_Z, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
