@@ -1150,8 +1150,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Researcher_Projectile_Smoke.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_RESEARCHER_PROJECTILE_SMOKE, 1)))
         return E_FAIL;
-			//ParticleEffect_World_Researcher_Projectile_Smoke
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_World_Projectile_Smoke.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLD_DAGGER_PROJECTILE_SMOKE, 16)))
+        return E_FAIL;
 
         //========================================= UWIN PARTICLE =========================================
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Ghosemy_Drop.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),

@@ -443,7 +443,9 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
         float3 camPos = g_vCamPos.xyz;
         
         
-        float3 rayDir, rayLength, fogFactor;
+        float3 rayDir;
+        
+        float rayLength, fogFactor;
         
         if (frontPos.x < 0.001f && frontPos.y < 0.001f && frontPos.z < 0.001f)
         {
@@ -459,8 +461,9 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
         
             float totalFade = 0.0f;
             float totalWeight = 0.0f;
-            float3 samplepos = g_vCamPos;
+            float3 samplepos = g_vCamPos.xyz;
         
+            [unroll]
             for (int i = 0; i < numSteps; ++i)
             {
                 samplepos += rayDir * stepSize;
@@ -503,6 +506,7 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
                 return Out;
             }
         
+            [unroll]
             for (int i = 0; i < numSteps; ++i)
             {
                 samplepos += rayDir * stepSize;

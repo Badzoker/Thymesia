@@ -71,7 +71,7 @@ void CProjectile_Dagger::Late_Update(_float fTimeDelta)
 
 void CProjectile_Dagger::Set_Projectile_Effect()
 {
-    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_SWORD_PROJECTILE, m_pTransformCom->Get_WorldMatrix_Ptr(), &m_Test);
+    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_DAGGER_PROJECTILE_SMOKE, m_pTransformCom->Get_WorldMatrix_Ptr(), &m_Test);
 }
 
 void CProjectile_Dagger::Stop_Projectile_Effect()
