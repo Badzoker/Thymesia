@@ -1226,10 +1226,115 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_SWORD_PROJECTILE, 16)))
         return E_FAIL;
 
+    //==================================================================================================
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
     //Effect_Instancing
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Rock.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
         EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_ROCK, 3)))
         return E_FAIL;
+
+    // BOSS BAT
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_HandAttack_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_HandAttack_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_RIGHT, 3)))
+        return E_FAIL;
+
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_JumpSmash_Chest.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_JUMP_SMASH_CHEST_ATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_JumpSmash_LeftAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_JUMP_SMASH_LEFT_HAND_ATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_Scratching_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_SCRACTCHING_LEFT_HAND, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Boss_Bat_Scratching_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_SCRACTCHING_RIGHT_HAND, 3)))
+        return E_FAIL;
+
+
+    // ELITE JOKER
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Joker_JumpAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_JUMP_ATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Joker_RunAttack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_RUN_ATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Joker_Turn_Attack_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_TURN_ATTACK, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Joker_ShockWave.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_SHOCKWAVE, 3)))
+        return E_FAIL;
+
+    //ELITE PUNCHMAN
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/MeshInstancing/MeshInstance_Punchman_Attack.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Instancing"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH_INSTANCING, EFFECT_NAME::EFFECT_MESH_INSTANCING_PUNCHMAN_ATTACK, 3)))
+        return E_FAIL;
+
+
+    //==================================================================================================
+
 
     return S_OK;
 }

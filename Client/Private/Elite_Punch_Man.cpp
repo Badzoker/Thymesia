@@ -599,6 +599,7 @@ void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Pun
             {
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_SPARK_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_PUNCHMAN_ATTACK, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
                 iter.isPlay = true;
             }
             else if (!strcmp(iter.szName, "Effect_Run1"))
@@ -697,6 +698,7 @@ void CElite_Punch_Man::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Pun
             {
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_SPARK_PUNCH_BIG, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_PUNCHMAN_ATTACK, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
                 iter.isPlay = true;
             }
             else if (!strcmp(iter.szName, "Effect_Run1"))
