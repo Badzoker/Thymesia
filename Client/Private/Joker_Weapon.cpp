@@ -140,6 +140,7 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 						iter.isPlay = true;      // 한 번만 재생 되어야 하므로             
 						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_JOKER_SMASH, vPos, vDir);
 						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_SMASH, vPos, vDir);
+						m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_JUMP_ATTACK, *m_pParentWorldMatrix);
 					}
 				}
 				else if (!strcmp(iter.szName, "Effect_Narrow"))
@@ -162,6 +163,7 @@ void CJoker_Weapon::Update(_float fTimeDelta)
 						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_SHOCKWAVE, vPos, vDir);
 						m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_SHOCKWAVE, vPos, vDir);
 						m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_JOKER_SHOCKWAVE, *m_pParentWorldMatrix);
+						m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_JOKER_SHOCKWAVE, *m_pParentWorldMatrix);
 					}
 				}
 				else if (!strcmp(iter.szName, "Effect_Intro"))
