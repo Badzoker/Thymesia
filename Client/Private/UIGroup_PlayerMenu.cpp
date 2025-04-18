@@ -212,6 +212,7 @@ void CUIGroup_PlayerMenu::ChangePopButton_Check()
 		{
 			if (1 == Button->Get_UI_GroupID()) // 철학자의 집으로 이동
 			{
+				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu_1ChangePop")), false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")), false);
 				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL); //철학자의 집 이동
