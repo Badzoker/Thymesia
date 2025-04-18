@@ -276,7 +276,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
     /* 여기서 디스크립션으로 넘겨주기 */
     CGameObject::GAMEOBJECT_DESC        Desc{};
 
-    Desc.fSpeedPerSec = 45.f;
+    Desc.fSpeedPerSec = 250.f;
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 

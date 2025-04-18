@@ -38,6 +38,7 @@ HRESULT CGhostAisemy::Initialize(void* pArg)
         return E_FAIL;
 
     m_iState = STATE_GOSEMY_APPROACH;
+    //m_iState = STATE_GOSEMY_LIGHT_OFF;
 
     m_pTransformCom->Scaling(_float3{ 0.002f, 0.002f, 0.002f });
 
@@ -132,7 +133,10 @@ HRESULT CGhostAisemy::Render()
 void CGhostAisemy::Spawn_Gosemy(_float4 _vPos, _bool _bFirstAppear)
 {
     if (_bFirstAppear)
+    {
+        m_pBody_GhoSemy->BindOff();
         m_iState = STATE_GOSEMY_APPROACH;
+    }
     else
         m_iState = STATE_GOSEMY_LIGHT_LOOP;
 
@@ -141,8 +145,17 @@ void CGhostAisemy::Spawn_Gosemy(_float4 _vPos, _bool _bFirstAppear)
 
 void CGhostAisemy::Spawn_Conversation_Gosemy(_float4 _vPos, _bool _bColliderOn)
 {
+    m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+    m_pBody_GhoSemy->Activate_SemyBody(true);
+
     m_iState = STATE_GOSEMY_LIGHT_OFF;
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&_vPos));
+}
+
+void CGhostAisemy::Set_AnimState(_uint _iAnimStateNum)
+{
+    m_iState = _iAnimStateNum;
 }
 
 HRESULT CGhostAisemy::Ready_Components()
@@ -228,7 +241,7 @@ void CGhostAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
             m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1")), true);
         }
     }
-    
+
 }
 
 void CGhostAisemy::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
@@ -252,7 +265,7 @@ void CGhostAisemy::Setting_LightOn(_float _fTimeDelta)
 void CGhostAisemy::Setting_LightOff(_float _fTimeDelta)
 {
     m_bColliderOn = true;
-    m_pGameInstance->Add_Actor_Scene(m_pActor);
+    //m_pGameInstance->Add_Actor_Scene(m_pActor);
 
     m_pLamp->LightUp_Lamp(false);
 }

@@ -81,9 +81,13 @@ void CBody_GhostSemy::Update(_float _fTimeDelta)
     if (m_fDissolveAmount >= 1.0f)
     {
         m_fDissolveAmount = 1.0f;
-      
-        if (*m_pParentState == 4 )
+
+        if (*m_pParentState == 4)
             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTCLE_GHOSEMY_DUST, m_pParentWorldMatrix, m_pModelCom->Get_BoneMatrix("Bone_Skirts19"));
+    }
+    else if (m_fDissolveAmount <= 0.0f)
+    {
+        m_fDissolveAmount = 0.0f;
     }
 }
 
@@ -159,10 +163,9 @@ HRESULT CBody_GhostSemy::Render_Glow()
 
 void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate)
 {
+    m_fDissolveAmount = 1.0f;
     m_bActivate = _bActivate;
     m_bReverse = true;
-
-    m_fDissolveAmount = 0.0f;
 }
 
 _bool CBody_GhostSemy::IsAnimationFinish()
@@ -170,6 +173,12 @@ _bool CBody_GhostSemy::IsAnimationFinish()
     _bool bIsAnimationFinish = m_pModelCom->GetAniFinish();
 
     return bIsAnimationFinish;
+}
+
+void CBody_GhostSemy::BindOff()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.0f);
+    m_pModelCom->Set_LerpFinished(true);
 }
 
 HRESULT CBody_GhostSemy::Ready_Components()

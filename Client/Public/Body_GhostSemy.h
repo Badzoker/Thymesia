@@ -38,15 +38,17 @@ public:
 	_bool						IsActivate() { return m_bActivate; }
 
 	_bool						IsAnimationFinish();
+	void						IsAppear(_bool _bReverse) { m_bReverse = _bReverse; };
 
-
-private:
-	CShader*					m_pShaderCom = { nullptr };
-	CModel*						m_pModelCom = { nullptr };
-	CTexture*					m_pNoiseTextureCom = { nullptr };
+	void						BindOff();
 
 private:
-	const _uint*				m_pParentState = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pNoiseTextureCom = { nullptr };
+
+private:
+	const _uint* m_pParentState = { nullptr };
 	_uint                       m_iPreAnimationState = {};
 
 private:
@@ -62,8 +64,8 @@ public:
 	HRESULT						Bind_ShaderResources();
 
 public:
-	static CBody_GhostSemy*		Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CGameObject*		Clone(void* _pArg) override;
+	static CBody_GhostSemy* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	virtual CGameObject* Clone(void* _pArg) override;
 	virtual void				Free() override;
 };
 END
