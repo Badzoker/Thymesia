@@ -143,6 +143,16 @@ void CUI_Manager::Find_TextBox_Monster_Memory(CUI_Scene* pScene,_uint iCount)
 
 }
 
+void CUI_Manager::Set_Condition(CUI_Scene* pScene, _int iCondition1, _int iCondition2)
+{
+	return pScene->Set_Condition(iCondition1, iCondition2);
+}
+
+_int CUI_Manager::Get_Condition(CUI_Scene* pScene, _uint iConditionNum)
+{
+	return pScene->Get_Condition(iConditionNum);
+}
+
 HRESULT CUI_Manager::LoadDataFile_UIObj_Info(HWND hWnd,_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	char   szDir[MAX_PATH] = "../Bin/DataFiles/UISave/";

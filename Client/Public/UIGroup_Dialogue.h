@@ -26,21 +26,34 @@ public:
 	void AIsemy_Pop_Button();
 	void AIsemy_Pop_Boss_Button();
 
-public:
-	HRESULT Ready_UIObject();
-	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
-	HRESULT LoadData_UIText_Info(const _tchar* szSceneName);
 private:
-	vector<UI_TextInfo> m_TextInfo = {};
+	vector<UI_TextInfo> m_BossTextInfo = {};
 
 	CUI_Scene* m_pTalkScene = {};
 	CUI_Scene* m_pPopScene = {};
 
 	CUI_Scene* m_pTalkScene_Boss = {}; // 철학자 세미
 	CUI_Scene* m_pPopScene_Boss = {}; // 고스트 세미
+
+	_float m_fDelayTime = {};
+
+public:
+	//void Boss_Talk_Pop(UIBOSSTALK eBoss);
+
+private:
+	CUI_Scene* m_pBossTalk = {};
+	CUIObject* m_pBossTextBox = {};
+
+	_float m_fBossTalkTime = {};
+
 private:
 	LEVELID m_eMyLevel = {};
-	_float m_fDelayTime = {};
+
+
+public:
+	HRESULT Ready_UIObject();
+	HRESULT LoadData_UIObject(_uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
+	HRESULT LoadData_UIText_Info(const _tchar* szSceneName);
 
 public:
 	static CUIGroup_Dialogue* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

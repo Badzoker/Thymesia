@@ -21,12 +21,13 @@ public:
 
 private:
 
-	_uint m_iTextID = {};
+	_uint				m_iTextID = {};
 
-	_float2 m_fTextPosition = {};
-	_float m_fTextScale = {};
-	_float4 m_fTextLayerDeth = {};
-	_float4 m_fTextEffect = {};
+	_float2				m_fTextPosition = {};
+	_float				m_fTextScale = {};
+	_float4				m_fTextLayerDeth = {};
+	_float4				m_fTextEffect = {};
+	_float				m_fAnimAlpha = { 0.0f };
 
 public:
 	static CUI_TextBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

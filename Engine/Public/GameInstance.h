@@ -305,6 +305,8 @@ public:
 	const CUI_Manager::UI_SAVE_SKILL& Get_UI_Skill_SaveData();// const { return m_UISkill; }
 	void Set_UI_Skill_SaveData(const CUI_Manager::UI_SAVE_SKILL& PlayerData);// { m_UISkill = PlayerData; }
 
+	void Set_Condition(CUI_Scene* pScene, _int iCondition1, _int iCondition2);// { m_iCondition1 = iCondition1, m_iCondition2 = iCondition2; }
+	_int Get_Condition(CUI_Scene* pScene, _uint iConditionNum);// { return m_iCondition[iConditionNum]; }
 
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName);
 	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut);

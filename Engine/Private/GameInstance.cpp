@@ -1007,6 +1007,16 @@ void CGameInstance::Set_UI_Skill_SaveData(const CUI_Manager::UI_SAVE_SKILL& Play
 	return m_pUI_Manager->Set_UI_Skill_SaveData(PlayerData);
 }
 
+void CGameInstance::Set_Condition(CUI_Scene* pScene, _int iCondition1, _int iCondition2)
+{
+	return m_pUI_Manager->Set_Condition(pScene, iCondition1, iCondition2);
+}
+
+_int CGameInstance::Get_Condition(CUI_Scene* pScene, _uint iConditionNum)
+{
+	return m_pUI_Manager->Get_Condition(pScene, iConditionNum);
+}
+
 HRESULT CGameInstance::LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName)
 {
 	return m_pUI_Manager->LoadDataFile_UIObj_Info(hWnd, iLevelIndex, iSceneIndex, szSceneName);

@@ -79,6 +79,7 @@ namespace Engine
         TEXT_TWOCOLOR,
         TEXT_ALPHA,
         TEXT_ALPHALOOP,
+        TEXT_ALPHA_ANIM,
         FONT_END
     };
 

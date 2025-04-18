@@ -93,6 +93,8 @@ public:
 	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen); // UIObj를 그리고 있지만 화면에 끄고 켜고를 설정
 	void Find_TextBox_Monster_Memory(CUI_Scene* pScene,_uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
 
+	void Set_Condition(CUI_Scene* pScene, _int iCondition1, _int iCondition2);// { m_iCondition1 = iCondition1, m_iCondition2 = iCondition2; }
+	_int Get_Condition(CUI_Scene* pScene, _uint iConditionNum);// { return m_iCondition[iConditionNum]; }
 
 	HRESULT LoadDataFile_UIObj_Info(HWND hWnd, _uint iLevelIndex, _uint iSceneIndex, const _tchar* szSceneName); // UI 오브젝트 데이터 로드
 	HRESULT LoadDataFile_UIText_Info(HWND hWnd, const _tchar* szSceneName, vector<UI_TextInfo>& pOut); // 텍스트 데이터 로드

@@ -33,6 +33,8 @@ public: // 그려진다는 건 Update를 할지 말지를 체크 하는 것
 
 	vector<class CUI_Text*> Find_UI_TextBox() { return m_TextBox; }
 
+	void Set_Condition(_int iCondition1, _int iCondition2) { m_iCondition[0] = iCondition1, m_iCondition[1] = iCondition2; }
+	_int Get_Condition(_uint iConditionNum ) { return m_iCondition[iConditionNum]; }
 
 private:
 	vector<class CUI_Button*>			m_Button;
@@ -40,6 +42,8 @@ private:
 	vector<class CUI_Text*>				m_TextBox;
 private:
 	_bool								m_SceneRender = { false }; // 기본 값 : 현재 씬은 그려지지 않고 있다
+	_int                                m_iCondition[2] = {}; // 인스턴스를 통해 값 주고 싶은 경우 용도로 사용
+
 
 public:
 	static CUI_Scene* Create();
