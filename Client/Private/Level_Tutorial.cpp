@@ -2005,7 +2005,7 @@ HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
             DoorDesc.fScaling = Desc.fScaling;
             DoorDesc.fFrustumRadius = Desc.fFrustumRadius;
             DoorDesc.iCurLevel = Desc.iCurLevel;
-            DoorDesc.fRotationPerSec = 30.f;
+            DoorDesc.fRotationPerSec = 45.f;
 
             pObject = reinterpret_cast<CDoorObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Object"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &DoorDesc));
             ++iDoorNum;
@@ -2023,7 +2023,7 @@ HRESULT CLevel_Tutorial::Load_SpecificObjects(_int iObject_Level)
             DoorDesc.fScaling = Desc.fScaling;
             DoorDesc.fFrustumRadius = Desc.fFrustumRadius;
             DoorDesc.iCurLevel = Desc.iCurLevel;
-            DoorDesc.fRotationPerSec = 30.f;
+            DoorDesc.fRotationPerSec = 45.f;
 
             pObject = reinterpret_cast<CDoorObject*>(m_pGameInstance->Add_GameObject_To_Layer_Take(LEVEL_STATIC, TEXT("Prototype_GameObject_Door_Object"), LEVEL_TUTORIAL, TEXT("Layer_SpecificObject"), &DoorDesc));
             ++iDoorNum;

@@ -57,16 +57,19 @@ void CDoorManager::Priority_Update(_float fTimeDelta)
 
 void CDoorManager::Update(_float fTimeDelta)
 {
-    if (m_bOpened && (m_fOpenTime > 0.f && m_fOpenTime < 3.f))
+    if (m_bOpened && (m_fOpenTime > 0.f && m_fOpenTime < 2.f))
     {
         m_fOpenTime += fTimeDelta;
 
-        if (m_fOpenTime >= 3.f)
+        if (m_fOpenTime >= 2.f)
         {
             m_pDoorLeft->Set_Open();
             m_pDoorRight->Set_Open();
 
-            m_fOpenTime = 3.f;
+
+            m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Metal_Latch_Door_Hit_1.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+
+            m_fOpenTime = 2.f;
         }
     }/*
     else if (!m_bOpened && (m_fOpenTime > 0.f && m_fOpenTime < 3.f))
@@ -151,6 +154,8 @@ void CDoorManager::OnCollision(CGameObject* _pOther, PxContactPair _information)
         m_pDoorRight->Set_Open();
 
         m_fOpenTime += 0.001f;
+
+        m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Large_Gate_Close02.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
 
         m_bOpened = true;
     }/*
