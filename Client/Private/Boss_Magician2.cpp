@@ -461,6 +461,11 @@ void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_C.ogg"), 0.8f);
+
+#pragma region Effect
+	const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+	pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+#pragma endregion
 }
 
 void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
@@ -574,6 +579,13 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 #pragma endregion
 
+#pragma region Effect
+		pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST);
+		pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_DEAD_BLINK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+		pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+#pragma endregion
+
 	}
 }
 
@@ -656,12 +668,19 @@ void CBoss_Magician2::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magic
 	{
 		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
 		{
-			if (!strcmp(iter.szName, "Effect_Stab")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			if (!strcmp(iter.szName, "Effect_Swing")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SWING_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Stab")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
 			{
 				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_STAB, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_STAB_DUST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 				iter.isPlay = true;
 			}
+
 		}
 	}
 
@@ -733,6 +752,24 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_B, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				iter.isPlay = true;
 			}
+			else if (!strcmp(iter.szName, "Effect_Tentacle_FallBack"))
+			{
+				const _float4x4* matTentacle = pObject->m_pModelCom->Get_BoneMatrix("Bone_Tentacle03");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_TENTACLE_FALLBACK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matTentacle);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Charge_Blue"))
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE_BLUE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Charge"))
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
 		}
 	}
 
@@ -761,6 +798,29 @@ void CBoss_Magician2::Attack_ComboC::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboC::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_SwingReverse"))
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SWINGREVERSE_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_SwingAround"))
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SWINGAROUND_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 65.f)
@@ -821,6 +881,23 @@ void CBoss_Magician2::Attack_ComboE::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboE::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Tentacle_FallBack"))
+			{
+				const _float4x4* matTentacle = pObject->m_pModelCom->Get_BoneMatrix("Bone_Tentacle04");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_TENTACLE_FALLBACK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matTentacle);
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
@@ -843,8 +920,27 @@ void CBoss_Magician2::Attack_ComboF::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboF::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	//pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_F, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+#pragma region Effect
 
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_Tentacle"))
+			{
+				const _float4x4* matTentacle = pObject->m_pModelCom->Get_BoneMatrix("Bone_Tentacle06_End");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_TENTACLE_LEAPATTACK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matTentacle);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Tentacle_Smash"))
+			{
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_F, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
 
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
@@ -884,7 +980,13 @@ void CBoss_Magician2::Attack_ComboG::State_Update(_float fTimeDelta, CBoss_Magic
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MUTATION_BURST, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				}
 				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_EXPLOSION_MUTATION_BURST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_BURST, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Charge_Blue"))
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE_BLUE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
 				iter.isPlay = true;
 			}
 		}
@@ -938,6 +1040,12 @@ void CBoss_Magician2::Attack_ComboH::State_Update(_float fTimeDelta, CBoss_Magic
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_MUTATION, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				iter.isPlay = true;
 			}
+			else if (!strcmp(iter.szName, "Effect_Charge"))
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
 		}
 	}
 
@@ -965,6 +1073,23 @@ void CBoss_Magician2::Attack_ComboI::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Attack_ComboI::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_SwingBack"))
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SWINGBACK_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
@@ -1001,6 +1126,12 @@ void CBoss_Magician2::Attack_ComboJ::State_Update(_float fTimeDelta, CBoss_Magic
 				pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_MUTATION_RISING_IMPACT, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_COMBO_J, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Charge"))
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
 				iter.isPlay = true;
 			}
 		}
@@ -1046,6 +1177,12 @@ void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magi
 
 					//pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_MUTATION_SP_ATTACK, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 				}
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_SpecialCharge"))
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SPECIALCHARGE_DUST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
 				iter.isPlay = true;
 			}
 		}
@@ -1109,6 +1246,26 @@ void CBoss_Magician2::Catch_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Catch_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+#pragma region Effect
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
+		{
+			if (!strcmp(iter.szName, "Effect_SPAttack")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+			{
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				for (_uint i = 0; i < 3; i++)
+				{
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_SPECIAL_SUCCESS, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				}
+				iter.isPlay = true;
+			}
+		}
+	}
+
+#pragma endregion
+
 	if (m_iIndex == 20 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->GetAniFinish())
