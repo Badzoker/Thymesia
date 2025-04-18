@@ -352,9 +352,9 @@ HRESULT CRightWeapon::Bind_ShaderResources()
 
 HRESULT CRightWeapon::Hit_Slow()
 {
-    if (m_fHitStopTime < 0.175f)
+    if (m_fHitStopTime < 0.125f)
     {
-        m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+        //m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
         m_pCamera->ShakeOn(400.f, 400.f, 4.f, 4.f);
 
         m_pGameInstance->Set_Zoom_Blur_Center(m_pParent->Get_Object_UV_Pos());
@@ -362,22 +362,26 @@ HRESULT CRightWeapon::Hit_Slow()
         switch (*m_pParentState)
         {
         case CPlayer::STATE_ATTACK_L1:
-            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 0.9f);
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.0f);
             break;
         case CPlayer::STATE_ATTACK_L2:
-            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 0.9f);
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.0f);
             break;
         case CPlayer::STATE_ATTACK_L3:
-            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 0.9f);
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.9f);
             break;
         case CPlayer::STATE_ATTACK_L4:
             m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.1f);
             break;
         case CPlayer::STATE_ATTACK_L5:
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta);
             m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.2f);
             break;
         case CPlayer::STATE_SPRINT_ATTACK_L1:
-            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 0.9f);
+            m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.0f);
             break;
         }
     }
@@ -391,6 +395,7 @@ HRESULT CRightWeapon::Hit_Slow()
 
     }
     m_fHitStopTime += m_fTimeDelta;//1.f / 80.f; //         
+
 
     return S_OK;
 }

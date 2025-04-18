@@ -369,8 +369,8 @@ private:
 	/* UI 관련 맴버 변수들 선언 */
 	_int								m_iLevel = { 1 };
 
-	_int								m_iFullHp = { 300 };
-	_int								m_iCurrentHp = { 300 };
+	_int								m_iFullHp = { 1000 };
+	_int								m_iCurrentHp = { 1000 };
 
 	_int								m_iFullMp = { 150 };
 	_int								m_iCurrentMp = { 150 }; //150

@@ -89,7 +89,7 @@ void CBoss_Mutation_Magician_Camera::Update(_float fTimeDelta)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.isPlay == false)
+            if (iter.isPlay == false && iter.eType == EVENT_STATE)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE 부분           
                 {
@@ -127,6 +127,31 @@ void CBoss_Mutation_Magician_Camera::Update(_float fTimeDelta)
 
                         //여기다가 플레이어는 못움직이게 세팅해야함
                         m_pPlayer->Set_ParentPhaseState(CPlayer::PHASE_BOSS_INTRO);
+
+                        if (m_bFirst)
+                        {
+
+                            _vector PlayerLook = XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                            _vector MonsterDir = XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)) * -1.f;
+
+
+                            float dotResult = XMVectorGetX(XMVector3Dot(PlayerLook, MonsterDir));
+                            dotResult = max(-1.0f, min(dotResult, 1.0f));
+                            float Radian = acosf(dotResult);
+
+                            _vector crossResult = XMVector3Cross(PlayerLook, MonsterDir);
+                            float crossY = XMVectorGetY(crossResult);
+                            if (crossY < 0.0f)
+                            {
+                                Radian = -Radian;
+                            }
+
+                            m_pPlayer->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
+                            m_pPlayer->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, _fvector{ -42.468f, 100.59f, -120.896f, 1.f });
+
+
+                            m_bFirst = false;
+                        }
 
                     }
                 }
