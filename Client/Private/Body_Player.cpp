@@ -3987,6 +3987,13 @@ void CBody_Player::STATE_START_WALK_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
     }
+
+#pragma region Effect_Environment
+    const _float4x4* matRootNode = m_pModelCom->Get_BoneMatrix("RootNode");
+    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF, m_pParentWorldMatrix, matRootNode);
+    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST, m_pParentWorldMatrix, matRootNode);
+#pragma endregion
+
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_START_Method()

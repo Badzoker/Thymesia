@@ -49,6 +49,12 @@ HRESULT CLevel_Hill::Initialize()
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	//CGameObject::GAMEOBJECT_DESC pDesc = {};
+	//pDesc.iCurLevel = m_iCurrentLevel;
+	//pDesc.fPosition = { -22.35f,1.f,-18.f,1.0f };
+	//m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc);
+
 			/*
 
 	if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))

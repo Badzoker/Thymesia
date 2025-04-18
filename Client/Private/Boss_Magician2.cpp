@@ -414,17 +414,26 @@ void CBoss_Magician2::Intro_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
+	#pragma region Effect
 	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 	{
 		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
 		{
-			if (!strcmp(iter.szName, "Intro_Effect")) //Intro Effect
+			if (!strcmp(iter.szName, "Effect_Intro_1")) //Intro Effect
 			{
-				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_INTRO_FIRST, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Intro_2")) //Intro Effect
+			{
+				const _float4x4* matRoot = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRoot);
 				iter.isPlay = true;
 			}
 		}
 	}
+#pragma endregion
 
 
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
@@ -467,19 +476,7 @@ void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
 void CBoss_Magician2::Idle_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
 
-#pragma region Effect
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
-		{
-			if (!strcmp(iter.szName, "Intro_Effect")) //Intro Effect
-			{
-				pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUSTDELAY_MUTATION_INTRO, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-				iter.isPlay = true;
-			}
-		}
-	}
-#pragma endregion
+
 
 	if (m_iIndex == 14 &&
 		pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex &&
