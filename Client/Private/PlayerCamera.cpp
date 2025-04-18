@@ -201,6 +201,20 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             }
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
+                        if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_1"))
+                        {
+                            const _float4x4* matWeapon_R = m_pParentModelCom->Get_BoneMatrix("weapon_r");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_1, m_pParentWorldMatrix, matWeapon_R);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
+                        if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_2"))
+                        {
+                            const _float4x4* matWeapon_R = m_pParentModelCom->Get_BoneMatrix("weapon_r");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_RIGHT, m_pParentWorldMatrix, matWeapon_R);
+                            const _float4x4* matWeapon_L = m_pParentModelCom->Get_BoneMatrix("weapon_l");
+                            m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_LEFT, m_pParentWorldMatrix, matWeapon_L);
+                            iter.isPlay = true; // 한 번만 재생 되어야 하므로
+                        }
 #pragma endregion
                     }
                 }

@@ -1592,9 +1592,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 
 					/* 데미지 안받기 위해 */
-					m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
-					if (m_iCurrentHp <= 0)
-						m_iCurrentHp = 0;
+					//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
+					//if (m_iCurrentHp <= 0)
+					//	m_iCurrentHp = 0;
 
 
 					switch (dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State())

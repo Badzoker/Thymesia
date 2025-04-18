@@ -925,13 +925,13 @@ void CBoss_Bat::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 			{
 				if (!strcmp(iter.szName, "Effect_Start_1"))
 				{
-					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("head");
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("mouth");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_BAT_SALIVIA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 				else if (!strcmp(iter.szName, "Effect_Start_2"))
 				{
-					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("head");
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("mouth");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_BAT_SALIVIA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
@@ -985,7 +985,7 @@ void CBoss_Bat::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
 				{
-					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("head");
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("mouth");
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_BAT_SALIVIA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로
 				}

@@ -1299,6 +1299,18 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_5, 1)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Player_Magician2_Execution_Blood_1.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_1, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Player_Magician2_Execution_Blood_2_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_LEFT, 1)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Player_Magician2_Execution_Blood_2_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_RIGHT, 1)))
+        return E_FAIL;
+
 
     //EFFECT_PARTICLE_BAT_EXECUTION_BLOOD_1
         //========================================= UWIN PARTICLE =========================================
