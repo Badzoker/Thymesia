@@ -154,7 +154,7 @@ void CPlayer_Weapon_Axe::Update(_float fTimeDelta)
                 }
                 }
 
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
                 {
 #pragma region Effect
                     if (!strcmp(iter.szName, "Weapon_Trail")) //Trail 시작해야하는 부분

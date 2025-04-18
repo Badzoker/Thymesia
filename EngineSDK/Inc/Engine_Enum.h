@@ -54,6 +54,8 @@ namespace Engine
         SOUND_ElectricEel_Collision,
         SOUND_RHINO,
         SOUND_STONE,
+        SOUND_PLAYER_ATTACK,    
+        SOUND_PLAYER_ACTION,    
         MAXCHANNEL = 32,
     };
     enum UIOBJTYPE

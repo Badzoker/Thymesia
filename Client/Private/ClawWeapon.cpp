@@ -190,13 +190,6 @@ void CClawWeapon::Update(_float fTimeDelta)
                 break;
                 }
 
-
-                if ((iter.eType == EVENT_SOUND)
-                    && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      
-                {
-                    iter.isPlay = true;  // 한 번만 재생 되어야 하므로
-                }
-
 #pragma region Effect 0316  
                 if ((iter.eType == EVENT_EFFECT)
                     && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분      

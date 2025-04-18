@@ -1099,6 +1099,24 @@ void CBody_Player::STATE_ATTACK_L1_Method()
     m_pModelCom->Set_LerpFinished(true);
     m_pModelCom->SetUp_Animation(3, false);
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 3)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(3)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_1.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (*m_pParentState == CPlayer::STATE_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 60.f)
     {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
@@ -1234,6 +1252,24 @@ void CBody_Player::STATE_ATTACK_L2_Method()
 {
     m_pModelCom->SetUp_Animation(4, false);
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 4)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(4)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_2.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (*m_pParentState == CPlayer::STATE_ATTACK_L2 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
@@ -1361,6 +1397,25 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 {
     m_pModelCom->SetUp_Animation(5, false);
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 5)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(5)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_3.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (*m_pParentState == CPlayer::STATE_ATTACK_L3 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
@@ -1486,6 +1541,33 @@ void CBody_Player::STATE_ATTACK_L3_Method()
 void CBody_Player::STATE_ATTACK_L4_Method()
 {
     m_pModelCom->SetUp_Animation(276, false);
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 276)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(276)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    if (!strcmp(iter.szName, "Attack_Sound"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    if (!strcmp(iter.szName, "Attack_Sound_2"))
+                    {
+                        //   m_pGameInstance->Play_Sound(L"Attack_4_2.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        //   iter.isPlay = true;
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L4 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 100.f)
     {
@@ -1614,6 +1696,26 @@ void CBody_Player::STATE_ATTACK_L5_Method()
 {
 
     m_pModelCom->SetUp_Animation(277, false);
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 277)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(277)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_5.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_L5 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 90.f)
     {
@@ -1744,6 +1846,23 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
 
     m_pModelCom->SetUp_Animation(0, false);
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 0)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(0)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LongClaw_01.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
@@ -1873,6 +1992,25 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
     m_pModelCom->SetUp_Animation(1, false);
 
     m_pModelCom->Get_VecAnimation().at(1)->Set_StartOffSetTrackPosition(16.f);
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 1)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(1)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LongClaw_02.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 140.f)
     {
@@ -3097,6 +3235,24 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
     }
 
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 88)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(88)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Cane_Sword.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(88)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
@@ -3114,6 +3270,33 @@ void CBody_Player::STATE_GREATSWORD_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+    }
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 103)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(103)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    if (!strcmp(iter.szName, "Attack_Sound_1"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    else if (!strcmp(iter.szName, "Attack_Sound_2"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -3240,6 +3423,23 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
         *m_pParentSkillCoolTime = false;
     }
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 135)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(135)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Javelin_Throw.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(135)->isAniMationFinish())
     {
@@ -3796,6 +3996,25 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
     m_pModelCom->SetUp_Animation(144, false);
     m_iRenderState = STATE_CLAW_RENDER;
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 144)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(144)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Charge_Start.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     //m_pModelCom->Get_VecAnimation().at(2)->SetLerpTime(0.15f);
 
     if (m_pModelCom->Get_VecAnimation().at(144)->isAniMationFinish() && m_pModelCom->Get_LerpFinished())
@@ -3826,6 +4045,25 @@ void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
     m_iRenderState = STATE_CLAW_RENDER;
 
     m_pModelCom->Get_VecAnimation().at(145)->Set_StartOffSetTrackPosition(36.f);
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 145)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(145)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_FullCharge_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(145)->isAniMationFinish() && m_pModelCom->Get_Current_Animation_Index() == 145)
     {
@@ -3868,6 +4106,39 @@ void CBody_Player::STATE_HALBERDS_B_Method()
     {
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
+    }
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 107)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(107)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    if (!strcmp(iter.szName, "Attack_Halberd_Sound_1"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    else if (!strcmp(iter.szName, "Attack_Halberd_Sound_2"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    else if (!strcmp(iter.szName, "Attack_Halberd_Sound_3"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_3.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    break;
+                }
+            }
+        }
     }
 
     if (m_pModelCom->Get_VecAnimation().at(107)->isAniMationFinish())
@@ -3992,6 +4263,33 @@ void CBody_Player::STATE_SCYTHE_B_Method()
         *m_pParentSkillCoolTime = false;
     }
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 122)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(122)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    if (!strcmp(iter.szName, "Attack_Sound_1"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    else if (!strcmp(iter.szName, "Attack_Sound_2"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        iter.isPlay = true;
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(122)->isAniMationFinish())
     {
@@ -4113,6 +4411,26 @@ void CBody_Player::STATE_AXE_Method()
         /* 스킬을 사용 했음을 UI에게 알리는 코드 */
         *m_pParentSkillCoolTime = false;
     }
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 69)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(69)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Axe.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(69)->isAniMationFinish())
     {
