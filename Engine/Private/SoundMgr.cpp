@@ -34,11 +34,11 @@ void CSoundMgr::Update(_float fTimeDelta)
 		{
 			if (!(*pChannel).bIncrease)
 			{
-				(*pChannel).pChannel->setVolume(((*pChannel).fMaxTime - (*pChannel).fTime) / (*pChannel).fMaxTime);
+				(*pChannel).pChannel->setVolume((*pChannel).fCurVolume * (((*pChannel).fMaxTime - (*pChannel).fTime) / (*pChannel).fMaxTime));
 			}
 			else
 			{
-				(*pChannel).pChannel->setVolume((*pChannel).fTime / (*pChannel).fMaxTime);
+				(*pChannel).pChannel->setVolume((*pChannel).fCurVolume * ((*pChannel).fTime / (*pChannel).fMaxTime));
 			}
 			pChannel++;
 		}
@@ -121,7 +121,7 @@ void CSoundMgr::PlayBGM(const _tchar* pSoundKey, float fVolume)
 	
 }
 
-void CSoundMgr::StopSlowly(CHANNELID eID, _float fMaxTime)
+void CSoundMgr::StopSlowly(CHANNELID eID, _float fMaxTime, _float fCurVolume)
 {
 	if (m_pChannelArr[eID])
 	{
@@ -130,6 +130,7 @@ void CSoundMgr::StopSlowly(CHANNELID eID, _float fMaxTime)
 		pDesc.pChannel = m_pChannelArr[eID];
 		pDesc.fMaxTime = fMaxTime;
 		pDesc.bIncrease = false;
+		pDesc.fCurVolume = fCurVolume;
 
 		m_vecChannels.push_back(pDesc);
 	}
