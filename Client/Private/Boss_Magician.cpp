@@ -621,7 +621,7 @@ void CBoss_Magician::Intro_State::State_Exit(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_A.ogg"), 0.8f);
+	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_A.ogg"), 0.3f);
 }
 #pragma endregion
 
@@ -2311,7 +2311,7 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 				pObject->m_pGameInstance->Add_Light(LightDesc, pObject->m_pTransformCom);
 
 
-				pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_B.ogg"), 0.8f);
+				pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_B.ogg"), 0.3f);
 			}
 
 

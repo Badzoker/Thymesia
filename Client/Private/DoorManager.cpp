@@ -67,7 +67,7 @@ void CDoorManager::Update(_float fTimeDelta)
             m_pDoorRight->Set_Open();
 
 
-            m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Metal_Latch_Door_Hit_1.ogg"), CHANNELID::SOUND_STRUCT, 1.f);
+            m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Metal_Latch_Door_Hit_1.ogg"), CHANNELID::SOUND_STRUCT, 0.3f);
 
             m_fOpenTime = 2.f;
         }

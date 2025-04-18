@@ -460,7 +460,7 @@ void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_C.ogg"), 0.8f);
+	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_C.ogg"), 0.3f);
 
 #pragma region Effect
 	const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
@@ -584,6 +584,8 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 		pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_VARG_DEAD_BLINK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
 		pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_SPARK_VARG_DEAD, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+		pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM, 1.f);
 #pragma endregion
 
 	}
@@ -595,8 +597,6 @@ void CBoss_Magician2::ExeCution_State::State_Exit(CBoss_Magician2* pObject)
 	pObject->m_bExecution_Progress = false;
 	pObject->m_IsStun = false;
 	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
-
-	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM, 1.f);
 }
 
 

@@ -13,6 +13,7 @@ private:
         FMOD::Channel* pChannel = { nullptr };
         _float fTime = { 0.f };
         _float fMaxTime = { 1.f };
+        _float fCurVolume = { 0.3f };
         _bool bIncrease = { false };
     };
 
@@ -40,7 +41,7 @@ public:
 public:
     void Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVolume); 
     void PlayBGM(const _tchar* pSoundKey, float fVolume);
-    void StopSlowly(CHANNELID eID, _float fMaxTime);
+    void StopSlowly(CHANNELID eID, _float fMaxTime, _float fCurVolume);
     void StopSound(CHANNELID eID);
     void StopAll();
     void SetChannelVolume(CHANNELID eID, float fVolume);

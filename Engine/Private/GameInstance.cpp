@@ -774,9 +774,9 @@ void CGameInstance::PlayBGM(const _tchar* pSoundKey, float fVolume)
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
 }
 
-void CGameInstance::StopSlowly(CHANNELID eID, _float fMaxTime)
+void CGameInstance::StopSlowly(CHANNELID eID, _float fMaxTime, _float fCurVolume)
 {
-	m_pSound_Manager->StopSlowly(eID, fMaxTime);
+	m_pSound_Manager->StopSlowly(eID, fMaxTime, fCurVolume);
 }
 
 void CGameInstance::StopSound(CHANNELID eID)

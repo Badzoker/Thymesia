@@ -499,7 +499,7 @@ void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
     pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
     pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-    pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Loop_Version_0625_Choir_Only_Fix.ogg"), 0.8f);
+    pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Loop_Version_0625_Choir_Only_Fix.ogg"), 0.3f);
 }
 
 #pragma endregion
@@ -1128,7 +1128,7 @@ void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
         pObject->m_bCanRecovery = true;
 
         pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-        pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Version_0806_Fix_Loudness.ogg"), 0.8f);
+        pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Version_0806_Fix_Loudness.ogg"), 0.3f);
     }
     pObject->m_bExecution_Progress = false;
     pObject->m_bCan_Move_Anim = false;

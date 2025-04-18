@@ -41,7 +41,7 @@ HRESULT CLevel_Logo::Initialize()
     if (FAILED(Ready_Lights()))
         return E_FAIL;
 
-	m_pGameInstance->PlayBGM(L"LogoSound2.ogg", 0.8f);
+	m_pGameInstance->PlayBGM(L"LogoSound2.ogg", 0.3f);
 
 	
 
