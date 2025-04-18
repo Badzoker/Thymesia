@@ -468,8 +468,8 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             {
                 samplepos += rayDir * stepSize;
 
-                if (length(samplepos - camPos) > length(vWorldPos.xyz - camPos))
-                    continue;
+                //if (length(samplepos - camPos) > length(vWorldPos.xyz - camPos))
+                //    continue;
                 
                 float3 offset = samplepos - g_vCubePos.xyz;
                 float dist = length(offset);
@@ -512,8 +512,8 @@ PS_OUT_FINAL PS_MAIN(PS_IN_FINAL In)
             [unroll]
             for (int i = 0; i < numSteps; ++i)
             {
-                if (length(samplepos - camPos) > length(vWorldPos.xyz - camPos))
-                    continue;
+                //if (length(samplepos - camPos) > length(vWorldPos.xyz - camPos))
+                //    continue;
         
                 
                 samplepos += rayDir * stepSize;
