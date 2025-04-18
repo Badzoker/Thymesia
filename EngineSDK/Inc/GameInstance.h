@@ -208,6 +208,7 @@ public:
 #pragma region SOUND MANAGER
 	void Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVolume);
 	void PlayBGM(const _tchar* pSoundKey, float fVolume);
+	void StopSlowly(CHANNELID eID, _float fMaxTime = 1.f);
 	void StopSound(CHANNELID eID);
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);

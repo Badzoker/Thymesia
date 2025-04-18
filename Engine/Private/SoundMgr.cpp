@@ -20,6 +20,31 @@ HRESULT CSoundMgr::Initialize()
 	return S_OK;
 }
 
+void CSoundMgr::Update(_float fTimeDelta)
+{
+	for (vector<ChannelSound>::iterator pChannel = m_vecChannels.begin(); pChannel != m_vecChannels.end();)
+	{
+		if (((*pChannel).fTime += fTimeDelta) > (*pChannel).fMaxTime)
+		{
+			(*pChannel).pChannel->stop();
+
+			pChannel = m_vecChannels.erase(pChannel);
+		}
+		else
+		{
+			if (!(*pChannel).bIncrease)
+			{
+				(*pChannel).pChannel->setVolume(((*pChannel).fMaxTime - (*pChannel).fTime) / (*pChannel).fMaxTime);
+			}
+			else
+			{
+				(*pChannel).pChannel->setVolume((*pChannel).fTime / (*pChannel).fMaxTime);
+			}
+			pChannel++;
+		}
+	}
+}
+
 void CSoundMgr::Release()
 {
 	for (auto& Mypair : m_mapSound)
@@ -64,7 +89,7 @@ void CSoundMgr::Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVolume
 	m_pSystem->playSound(iter->second, nullptr, false, &m_pChannelArr[eID]);
 	m_pChannelArr[eID]->setVolume(fVolume);
 
-	m_pSystem->update();
+		m_pSystem->update();
 }
 
 void CSoundMgr::PlayBGM(const _tchar* pSoundKey, float fVolume)
@@ -94,6 +119,20 @@ void CSoundMgr::PlayBGM(const _tchar* pSoundKey, float fVolume)
 	m_pSystem->update();
 
 	
+}
+
+void CSoundMgr::StopSlowly(CHANNELID eID, _float fMaxTime)
+{
+	if (m_pChannelArr[eID])
+	{
+		ChannelSound pDesc = {};
+
+		pDesc.pChannel = m_pChannelArr[eID];
+		pDesc.fMaxTime = fMaxTime;
+		pDesc.bIncrease = false;
+
+		m_vecChannels.push_back(pDesc);
+	}
 }
 
 void CSoundMgr::StopSound(CHANNELID eID)

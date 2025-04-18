@@ -528,6 +528,8 @@ void CBoss_Urd::Intro_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_pGameInstance->Set_Boss_Active(true);
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), false);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 void CBoss_Urd::Intro_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
@@ -586,6 +588,8 @@ void CBoss_Urd::Intro_State::State_Exit(CBoss_Urd* pObject)
 	pObject->m_bHP_Bar_Active = true;
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
+
+	pObject->m_pGameInstance->PlayBGM(TEXT("urd_music_2_A.ogg"), 0.8f);
 }
 
 void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
@@ -726,6 +730,9 @@ void CBoss_Urd::ExeCution_State::State_Exit(CBoss_Urd* pObject)
 		pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP;
 		pObject->m_bCanRecovery = true;
 		pObject->m_IsStun = false;
+
+		pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+		pObject->m_pGameInstance->PlayBGM(TEXT("urd_music_2_B.ogg"), 0.8f);
 	}
 }
 
@@ -1703,6 +1710,8 @@ void CBoss_Urd::Dead_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_Landing"), true);
 		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+
+		pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 #pragma endregion
 	}
 

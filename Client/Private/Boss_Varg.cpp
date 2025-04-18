@@ -465,7 +465,7 @@ void CBoss_Varg::Intro_State::State_Enter(CBoss_Varg* pObject)
     pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), false);
     pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 
-    
+    pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
@@ -499,6 +499,7 @@ void CBoss_Varg::Intro_State::State_Exit(CBoss_Varg* pObject)
     pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
     pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+    pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Loop_Version_0625_Choir_Only_Fix.ogg"), 0.8f);
 }
 
 #pragma endregion
@@ -1125,6 +1126,9 @@ void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
         pObject->m_fCoolTime = 0.1f;
         pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP;
         pObject->m_bCanRecovery = true;
+
+        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+        pObject->m_pGameInstance->PlayBGM(TEXT("Varg_Boss_Version_0806_Fix_Loudness.ogg"), 0.8f);
     }
     pObject->m_bExecution_Progress = false;
     pObject->m_bCan_Move_Anim = false;
@@ -1369,6 +1373,8 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
         pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_Landing"), true);
         pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
         pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+
+        pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 #pragma endregion
     }
 }
@@ -1376,7 +1382,6 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 void CBoss_Varg::Dead_State::State_Exit(CBoss_Varg* pObject)
 {
     pObject->m_bCan_Move_Anim = false;
-    
 }
 
 #pragma endregion

@@ -144,7 +144,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pInput_Device->Update_InputDev();
 
 	m_pLevel_Manager->Update(fTimeDelta);
-
+	m_pSound_Manager->Update(fTimeDelta);
 
 	m_pPipeLine->Priority_Update();	
 
@@ -771,6 +771,11 @@ void CGameInstance::Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVo
 void CGameInstance::PlayBGM(const _tchar* pSoundKey, float fVolume)
 {
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
+}
+
+void CGameInstance::StopSlowly(CHANNELID eID, _float fMaxTime)
+{
+	m_pSound_Manager->StopSlowly(eID, fMaxTime);
 }
 
 void CGameInstance::StopSound(CHANNELID eID)

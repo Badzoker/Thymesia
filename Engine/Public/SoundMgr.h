@@ -8,6 +8,15 @@ BEGIN(Engine)
 class ENGINE_DLL CSoundMgr : public CBase
 {
 private:
+    struct ChannelSound
+    {
+        FMOD::Channel* pChannel = { nullptr };
+        _float fTime = { 0.f };
+        _float fMaxTime = { 1.f };
+        _bool bIncrease = { false };
+    };
+
+private:
 	CSoundMgr();
 	virtual ~CSoundMgr() = default;	
 private:
@@ -20,14 +29,18 @@ private:
     FMOD::System* m_pSystem = { nullptr };
     _tchar* m_CurBGM;
 
+    vector<ChannelSound> m_vecChannels;
+
 public:
 	HRESULT Initialize();	    
+    void Update(_float fTimeDelta);
 	void Release();	    
 
 
 public:
     void Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVolume); 
     void PlayBGM(const _tchar* pSoundKey, float fVolume);
+    void StopSlowly(CHANNELID eID, _float fMaxTime);
     void StopSound(CHANNELID eID);
     void StopAll();
     void SetChannelVolume(CHANNELID eID, float fVolume);
