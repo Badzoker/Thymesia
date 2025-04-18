@@ -1455,23 +1455,53 @@ void CBoss_Bat::Attack_Special::State_Exit(CBoss_Bat* pObject)
 void CBoss_Bat::Recovery_State::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 10;
-	pObject->m_fMonsterCurHP += 20.f;
-	pObject->m_fShieldHP += 20.f;
-
 	if (pObject->m_fMonsterCurHP >= 100.f || pObject->m_fShieldHP >= 100.f)
 	{
-		pObject->m_fMonsterCurHP = 100.f;
-		pObject->m_fShieldHP = 100.f;
+		m_bFinish_Recovery = true;
 	}
+	else
+		m_fRecoveryMax = pObject->m_fMonsterCurHP + m_fRecovery_Amount;
 
-	pObject->m_bCanRecovery = true;
 	pObject->m_bCristal_Create = true;
-	pObject->Recovery_HP();
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
 void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 300.f && !m_bFinish_Recovery)
+		{
+			pObject->m_fMonsterCurHP += m_fCurrent_Recovery_Speed * fTimeDelta;
+			pObject->m_fShieldHP += m_fCurrent_Recovery_Speed * fTimeDelta;
+
+			if (pObject->m_fMonsterCurHP >= m_fRecoveryMax)
+			{
+				if (pObject->m_fMonsterCurHP >= pObject->m_fMonsterMaxHP || pObject->m_fShieldHP >= pObject->m_fMonsterMaxHP)
+				{
+					pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP;
+					pObject->m_fShieldHP = pObject->m_fMonsterMaxHP;
+				}
+				m_bFinish_Recovery = true;
+			}
+		}
+
+		if (pObject->m_pModelCom->GetAniFinish())
+		{
+			_uint iRandom = rand() % 2;
+			switch (iRandom)
+			{
+			case 0:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
+				break;
+			case 1:
+				pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
+				break;
+			}
+		}
+
+	}
+
 #pragma region EFFECT_BLOOD_SUCK
 	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
 	{
@@ -1525,20 +1555,6 @@ void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 		}
 	}
 #pragma endregion
-
-	if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
-	{
-		_uint iRandom = rand() % 2;
-		switch (iRandom)
-		{
-		case 0:
-			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Idle_State(), pObject);
-			break;
-		case 1:
-			pObject->m_pState_Manager->ChangeState(new CBoss_Bat::Move_State(), pObject);
-			break;
-		}
-	}
 }
 
 void CBoss_Bat::Recovery_State::State_Exit(CBoss_Bat* pObject)

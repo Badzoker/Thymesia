@@ -56,7 +56,9 @@ namespace Engine
         SOUND_RHINO,
         SOUND_STONE,
         SOUND_PLAYER_ATTACK,    
-        SOUND_PLAYER_ACTION,    
+        SOUND_PLAYER_ACTION,
+        SOUND_BOSS_ACTION,
+        SOUND_MONSTER_ACTION,
         MAXCHANNEL = 32,
     };
     enum UIOBJTYPE
