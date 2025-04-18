@@ -2186,7 +2186,7 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 
 				FOGPARAMS FogDesc{};
 				FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
-				FogDesc.fFogStartDistance = _float2(0.2f, 8.f);
+				FogDesc.fFogStartDistance = _float2(0.1f, 8.f);
 				FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
 				FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
 

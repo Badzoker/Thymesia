@@ -200,11 +200,34 @@ HRESULT CDestructObject::Bind_ShaderResources()
 
 void CDestructObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))  
-        m_bHitted = true;       
+    if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+    {
+        if (!strcmp(m_szIndivisualName, "barrel"))
+        {
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+        }
+        else if (!strcmp(m_szIndivisualName, "Fence2"))
+        {
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+        }
+        else if (!strcmp(m_szIndivisualName, "Rock"))
+            m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
 
+        m_bHitted = true;
+    }
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
+        if (!strcmp(m_szIndivisualName, "barrel"))
+        {
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+        }
+        else if (!strcmp(m_szIndivisualName, "Fence2"))
+        {
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+        }
+        else if (!strcmp(m_szIndivisualName, "Rock"))
+            m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_NATURAL, 0.8f);
+
         if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_DASH) 
             m_bHitted = true;   
     }
