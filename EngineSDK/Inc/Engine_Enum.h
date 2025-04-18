@@ -50,6 +50,7 @@ namespace Engine
         SOUND_MOREEFFECT,
         SOUND_SURROUNDING,
         SOUND_NATURAL,
+        SOUND_STRUCT,
         SOUND_ElectricEel,
         SOUND_ElectricEel_Collision,
         SOUND_RHINO,
