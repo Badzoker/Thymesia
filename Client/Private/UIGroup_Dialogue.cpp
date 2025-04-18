@@ -59,6 +59,7 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pTalkScene, false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, true);
 
+
 			}
 		}
 		else if (m_pGameInstance->Get_Scene_Render_State(m_pTalkScene_Boss))
@@ -109,7 +110,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Button()
 	{
 		if (Button->Get_Mouse_Select_OnOff())
 		{
-			if (1 == Button->Get_UI_GroupID())
+			if (1 == Button->Get_UI_GroupID()) // 맵 체인지
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
@@ -121,7 +122,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Button()
 				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_MAP, L"UIScene_MapChange")), true);
 
 			}
-			if (2 == Button->Get_UI_GroupID())
+			if (2 == Button->Get_UI_GroupID()) // 플레이어 메뉴
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
@@ -133,6 +134,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Button()
 			}
 			if (3 == Button->Get_UI_GroupID()) // 떠나기?
 			{
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false);
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, false);
@@ -163,6 +165,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 		
 			if (2 == Button->Get_UI_GroupID()) // 할일이 남아 있어!
 			{
+				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false);
 				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);

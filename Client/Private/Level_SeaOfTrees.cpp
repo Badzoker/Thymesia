@@ -70,8 +70,8 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     //if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))	
     //	return E_FAIL;
 
-    if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
-        return E_FAIL;
+    //if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
+    //    return E_FAIL;
 
     if (FAILED(Ready_Layer_UIGroup_Inventory(TEXT("Layer_PlayerInventory"))))
         return E_FAIL;
@@ -94,15 +94,18 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     if (FAILED(Ready_Layer_UIGroup_LandingMessage(TEXT("Layer_Landing"))))
         return E_FAIL;
 
+    if (FAILED(Ready_Layer_UIGroup_Dialogue(TEXT("Layer_Dialogue"))))
+        return E_FAIL;
+
     if (FAILED(Ready_Layer_Item(TEXT("Layer_GameItem"))))
         return E_FAIL;
 
     if (FAILED(Ready_Lights()))
         return E_FAIL;
 
-    m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
-    m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
-    m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_AUTO);
+    //m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_OUT);
+    //m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_IN);
+    //m_pGameInstance->Add_Trigger(TRIGGER_TYPE::TT_FADE_AUTO);
 
 
     // 플레이어 화면 키기

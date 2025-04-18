@@ -123,7 +123,7 @@ HRESULT CLoader_Tutorial::Start_Loading()
 	switch (m_eNextLevelID) //혹시모르니 다시한번 검사하는 느낌
 	{
 	case LEVEL_TUTORIAL:
-		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.3f);
+		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9f);
 		hr = Loading_For_Level_Tutorial();
 		break;
 	}
