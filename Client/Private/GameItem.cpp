@@ -315,7 +315,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
                     break;
                 }
 
-                m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 1.f);
+                m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 0.5f);
             }
             break;
         }

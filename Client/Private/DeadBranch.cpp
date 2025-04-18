@@ -215,6 +215,7 @@ void CDeadBranch::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
         m_bDissolving = true;
         m_pButton->Activate_Button(false);
+        m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 0.5f);
     }
 }
 

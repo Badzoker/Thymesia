@@ -1404,9 +1404,17 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_SESU, 2)))
         return E_FAIL;
 
-
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_BackSlip.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BACKSLIP, 2)))
+        return E_FAIL;
+
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_ChestSmash_Left.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CHESTATTACK_LEFT, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_ChestSmash_Right.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_CHESTATTACK_RIGHT, 2)))
         return E_FAIL;
 
 
