@@ -1340,6 +1340,34 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BAT_SPECIAL_ATTACK, 1)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Hand_Left_PangPang.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_LEFT_PYUNGTA, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Hand_Right_PangPang.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_RIGHT_PYUNGTA, 3)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Surround_Boggle.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SURROND, 2)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Sesu.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BLOOD_SESU, 2)))
+        return E_FAIL;
+
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_BackSlip.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_BACKSLIP, 2)))
+        return E_FAIL;
+
+
+
+
+
+
+
+
 
 
     //Sword Effect

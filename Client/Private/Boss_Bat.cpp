@@ -554,6 +554,14 @@ void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_BAT_RED_DUST_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
+				else if (!strcmp(iter.szName, "Effect_JumpDown"))
+				{
+					const _float4x4* matLHand = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_LEFT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matLHand);
+
+					const _float4x4* matRHand = pObject->m_pModelCom->Get_BoneMatrix("hand_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_RIGHT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRHand);
+				}
 			}
 		}
 	}
@@ -804,6 +812,12 @@ void CBoss_Bat::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_RIGHT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
+				else if (!strcmp(iter.szName, "Effect_ScratchBack"))
+				{
+					const _float4x4* matRHand = pObject->m_pModelCom->Get_BoneMatrix("hand_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_RIGHT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRHand);
+					iter.isPlay = true;
+				}
 			}
 		}
 	}
@@ -872,6 +886,12 @@ void CBoss_Bat::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_L, matClawWorld);
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_ScratchBack"))
+				{
+					const _float4x4* matLHand = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_LEFT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matLHand);
+					iter.isPlay = true;
 				}
 			}
 		}
@@ -1039,6 +1059,49 @@ void CBoss_Bat::Attack_Combo_E::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region Effect_Rush
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Rush_Right_1"))
+				{
+					const _float4x4* matRHand = pObject->m_pModelCom->Get_BoneMatrix("hand_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_RIGHT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRHand);
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+				else if (!strcmp(iter.szName, "Effect_Rush_Right_2"))
+				{
+					const _float4x4* matRHand = pObject->m_pModelCom->Get_BoneMatrix("hand_r");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_RIGHT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRHand);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Rush_Left_1"))
+				{
+					const _float4x4* matLHand = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_LEFT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matLHand);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Rush_Left_2"))
+				{
+					const _float4x4* matClaw = pObject->m_pModelCom->Get_BoneMatrix("thumb_01_l");
+					_float4x4 matClawWorld = {};
+					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_L, matClawWorld);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+
+
+					const _float4x4* matLHand = pObject->m_pModelCom->Get_BoneMatrix("hand_l");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_HAND_LEFT_PYUNGTA, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matLHand);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 9 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		_uint iRandom = rand() % 2;
@@ -1089,6 +1152,24 @@ void CBoss_Bat::Attack_Combo_F::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region Effect_Blood
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Blood"))
+				{
+					const _float4x4* matNeck = pObject->m_pModelCom->Get_BoneMatrix("neck_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_SESU, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matNeck);
+					iter.isPlay = true;      // 
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 13 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 430.f && !pObject->m_bSummon_Spike)
@@ -1147,6 +1228,28 @@ void CBoss_Bat::Attack_Combo_G::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_G::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region EFFECT_CLAW
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matClaw = pObject->m_pModelCom->Get_BoneMatrix("thumb_01_l");
+					_float4x4 matClawWorld = {};
+					XMStoreFloat4x4(&matClawWorld, XMLoadFloat4x4(matClaw) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_CLAW_L, matClawWorld);
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_LEFT, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		_uint iRandom = rand() % 2;
@@ -1236,6 +1339,24 @@ void CBoss_Bat::Attack_Combo_I::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_I::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+#pragma region Effect_Start
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)
+			{
+				if (!strcmp(iter.szName, "Effect_Start"))
+				{
+					const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_BACKSLIP, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matHead);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+#pragma endregion
+
 	if (m_iIndex == 24 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		_uint iRandom = rand() % 2;
@@ -1392,7 +1513,13 @@ void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 					XMStoreFloat4x4(&matMouthWorld, XMLoadFloat4x4(matMouth) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 					//pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matMouth);
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_BAT_BLOOD_SUCK, matMouthWorld);
-					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Effect_Blood_Start"))
+				{
+					const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_SURROND, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+					iter.isPlay = true;
 				}
 			}
 		}
