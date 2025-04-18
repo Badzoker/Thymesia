@@ -539,6 +539,20 @@ void CBoss_Urd::Intro_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Intro_01"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Intro_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Intro_02"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Intro_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Dust"))
@@ -643,6 +657,21 @@ void CBoss_Urd::Stun_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::ExeCution_State(), pObject);
 	}
 
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Stun"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Stun_Start.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 }
 
 void CBoss_Urd::Stun_State::State_Exit(CBoss_Urd* pObject)
@@ -686,6 +715,21 @@ void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Execution_01"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Execution_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Execution_02"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Execution_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Blood_1"))
@@ -769,6 +813,15 @@ void CBoss_Urd::Step_Front_State::State_Update(_float fTimeDelta, CBoss_Urd* pOb
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Step"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Step.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Step"))
@@ -814,6 +867,15 @@ void CBoss_Urd::Step_Back_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Step"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Step.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Step"))
@@ -863,6 +925,15 @@ void CBoss_Urd::Step_Right_State::State_Update(_float fTimeDelta, CBoss_Urd* pOb
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Step"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Step.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Step"))
@@ -912,6 +983,15 @@ void CBoss_Urd::Step_Left_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Step"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Step.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Step"))
@@ -963,6 +1043,15 @@ void CBoss_Urd::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack1"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Attack01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Stab"))
@@ -1058,6 +1147,15 @@ void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack5"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Attack05.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Swing"))
@@ -1145,6 +1243,14 @@ void CBoss_Urd::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack3"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Attack03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Stab"))
@@ -1200,6 +1306,23 @@ void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack2"))
+				{
+					if (pObject->m_iPhase == PHASE_ONE)
+					{
+						pObject->m_pGameInstance->Play_Sound(L"Urd_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						iter.isPlay = true;
+					}
+					else if (pObject->m_iPhase == PHASE_TWO)
+					{
+						pObject->m_pGameInstance->Play_Sound(L"Urd_Attack2_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						iter.isPlay = true;
+					}
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Stab_Long"))
@@ -1239,7 +1362,7 @@ void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 			{
 				m_iIndex = 7;
 				pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-				pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(70.f);
+				pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(80.f);
 			}
 		}
 
@@ -1285,6 +1408,15 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Skill1"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Skill1.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1372,6 +1504,15 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Skill2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Skill1.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1455,6 +1596,20 @@ void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd*
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Special_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Special_Attack.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+				else if (!strcmp(iter.szName, "Sound_Special_Attack2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Special_Attack2.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Continue"))
@@ -1536,6 +1691,16 @@ void CBoss_Urd::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack6"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Attack06.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Swing"))
@@ -1584,6 +1749,16 @@ void CBoss_Urd::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack7"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Attack07.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Swing"))
@@ -1639,6 +1814,34 @@ void CBoss_Urd::Hit_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Hit_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Hit"))
+				{
+					_uint iRandom = rand() % 3;
+					switch (iRandom)
+					{
+					case 0:
+						pObject->m_pGameInstance->Play_Sound(L"Urd_Hurt01.wav", CHANNELID::SOUND_ACTION, 0.5f);
+						break;
+					case 1:
+						pObject->m_pGameInstance->Play_Sound(L"Urd_Hurt02.wav", CHANNELID::SOUND_ACTION, 0.5f);
+						break;
+					case 2:
+						pObject->m_pGameInstance->Play_Sound(L"Urd_Hurt03.wav", CHANNELID::SOUND_ACTION, 0.5f);
+						break;
+					}
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 		pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
@@ -1659,6 +1862,21 @@ void CBoss_Urd::Parry_State::State_Enter(CBoss_Urd* pObject)
 
 void CBoss_Urd::Parry_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Sound(L"Urd_Parry.wav", CHANNELID::SOUND_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 		pObject->Near_Pattern_Create();
 }

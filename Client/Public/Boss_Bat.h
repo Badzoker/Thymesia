@@ -121,6 +121,11 @@ public:
 		void State_Enter(CBoss_Bat* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Bat* pObject) override;
 		void State_Exit(CBoss_Bat* pObject) override;
+	private:
+		_float m_fRecovery_Amount = 20.f;
+		_float m_fCurrent_Recovery_Speed = 8.f;
+		_bool m_bFinish_Recovery = {};
+		_float m_fRecoveryMax = {};
 	};
 
 	class Stun_State : public CStates<CBoss_Bat>

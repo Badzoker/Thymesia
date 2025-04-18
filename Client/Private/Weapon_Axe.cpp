@@ -45,7 +45,7 @@ HRESULT CWeapon_Axe::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
 
 	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-	m_pKickActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.3f }, _float3{ 1.f,0.f,0.f }, 90.f, this);
+	m_pKickActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 1.f,1.f,0.3f }, _float3{ 0.f,1.f,0.f }, 90.f, this);
 
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,90.f,1.f });
 	m_pGameInstance->Set_GlobalPos(m_pKickActor, _fvector{ 0.f,5.f,90.f,1.f });

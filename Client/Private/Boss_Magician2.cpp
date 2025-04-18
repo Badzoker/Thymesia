@@ -1065,8 +1065,10 @@ void CBoss_Magician2::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magi
 		else if (pObject->m_pModelCom->GetAniFinish())
 		{
 			//안잡히고 끝났을때
+			pObject->m_fSpecial_Skill_CoolTime = 0.f;
 			pObject->m_bSpecial_Skill_Progress = false;
 			pObject->m_bCan_Move_Anim = false;
+			pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);
 		}
 	}

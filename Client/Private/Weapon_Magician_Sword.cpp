@@ -63,7 +63,7 @@ HRESULT CWeapon_Magician_Sword::Initialize(void* pArg)
     m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.f));
 
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_KICK] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_KICK] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 1.f,1.f,0.3f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_CATCH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.8f,2.f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_SLASH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.4f,0.8f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_BURST] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 1.f,1.f,1.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
