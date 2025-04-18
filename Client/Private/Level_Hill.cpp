@@ -199,16 +199,16 @@ HRESULT CLevel_Hill::Ready_Lights()
 
 	ZeroMemory(&LightDesc, sizeof(LightDesc));
 
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
-	LightDesc.fRange = 3.f;
-	LightDesc.iCurrentLevel = m_iCurrentLevel;
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	//LightDesc.vPosition = _float4(85.84f, 6.3999f, -118.63f, 1.f);
+	//LightDesc.fRange = 3.f;
+	//LightDesc.iCurrentLevel = m_iCurrentLevel;
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Light(LightDesc, pPlayerTransform)))
+	//	return E_FAIL;
 
 	FOGPARAMS FogDesc{};
 	FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
