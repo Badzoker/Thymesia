@@ -460,7 +460,7 @@ void CBoss_Magician2::Intro_State::State_Exit(CBoss_Magician2* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-
+	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_C.ogg"), 0.8f);
 }
 
 void CBoss_Magician2::Idle_State::State_Enter(CBoss_Magician2* pObject)
@@ -583,6 +583,8 @@ void CBoss_Magician2::ExeCution_State::State_Exit(CBoss_Magician2* pObject)
 	pObject->m_bExecution_Progress = false;
 	pObject->m_IsStun = false;
 	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM, 1.f);
 }
 
 

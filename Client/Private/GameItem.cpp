@@ -314,6 +314,8 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_WHITE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
                     break;
                 }
+
+                m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 1.f);
             }
             break;
         }

@@ -145,7 +145,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
-
 	m_pPipeLine->Priority_Update();	
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
@@ -177,6 +176,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pEvent_Manager->Update();   //  객체의 삭제와 생성에 대한 매니저. 
 	m_pShadow->Update();	      //  그림자를 비출 광원의 위치 업데이트를 위한 것.  ( 해당 기능은 거의 필요 없을거로 보임 ) 
 	m_pRipple_Manager->Update(fTimeDelta);
+
+	m_pSound_Manager->Update(fTimeDelta);
 }
 
 HRESULT CGameInstance::Render_Begin(const _float4& vClearColor)
@@ -771,6 +772,11 @@ void CGameInstance::Play_Sound(const _tchar* pSoundKey, CHANNELID eID, float fVo
 void CGameInstance::PlayBGM(const _tchar* pSoundKey, float fVolume)
 {
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
+}
+
+void CGameInstance::StopSlowly(CHANNELID eID, _float fMaxTime)
+{
+	m_pSound_Manager->StopSlowly(eID, fMaxTime);
 }
 
 void CGameInstance::StopSound(CHANNELID eID)

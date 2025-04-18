@@ -534,6 +534,8 @@ void CBoss_Bat::Intro_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_PlayerScreen"), false);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 
+	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_Intro.ogg"), 0.8f);
 }
 
 void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
@@ -568,6 +570,8 @@ void CBoss_Bat::Intro_State::State_Exit(CBoss_Bat* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_loop.ogg"), 0.8f);
 }
 
 #pragma endregion 
@@ -686,6 +690,9 @@ void CBoss_Bat::Execution_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_pTransformCom->LookAt(vPlayerPos);
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_End.ogg"), 0.8f);
 }
 
 void CBoss_Bat::Execution_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
@@ -726,6 +733,8 @@ void CBoss_Bat::Execution_State::State_Update(_float fTimeDelta, CBoss_Bat* pObj
 void CBoss_Bat::Execution_State::State_Exit(CBoss_Bat* pObject)
 {
 	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 #pragma endregion

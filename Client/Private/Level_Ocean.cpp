@@ -104,7 +104,6 @@ HRESULT CLevel_Ocean::Initialize()
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.8f);
 
 	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
 	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_Landing"), true);
@@ -1084,5 +1083,6 @@ void CLevel_Ocean::Free()
 	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 
+	m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 	m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }

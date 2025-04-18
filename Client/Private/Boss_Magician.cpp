@@ -588,6 +588,7 @@ void CBoss_Magician::Intro_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), false);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -620,6 +621,7 @@ void CBoss_Magician::Intro_State::State_Exit(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_A.ogg"), 0.8f);
 }
 #pragma endregion
 
@@ -2191,6 +2193,7 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 				FogDesc.g_FogColor = _float4(0.223f, 0.1725f, 0.1019f, 1.f);
 
 				pObject->m_pGameInstance->Set_FogFactors(FogDesc);
+				pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 
 				pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);
 				pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);
@@ -2247,6 +2250,8 @@ void CBoss_Magician::Phase_Change_State::State_Enter(CBoss_Magician* pObject)
 	LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
 
 	pObject->m_pGameInstance->Add_Light_MINRange(LightDesc, 0.1f, 100.f);
+
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -2304,6 +2309,9 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 				LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
 
 				pObject->m_pGameInstance->Add_Light(LightDesc, pObject->m_pTransformCom);
+
+
+				pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_B.ogg"), 0.8f);
 			}
 
 

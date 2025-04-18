@@ -321,5 +321,6 @@ void CLevel_Logo::Free()
 {
 	__super::Free();
 
+    m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
     m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }
