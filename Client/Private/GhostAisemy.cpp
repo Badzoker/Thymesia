@@ -228,6 +228,8 @@ void CGhostAisemy::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
 void CGhostAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
 {
+    _uint iRandVoice = {};
+
     if (m_pGameInstance->isKeyEnter(DIK_E))
     {
         m_pButton->Activate_Button(false);
@@ -239,6 +241,26 @@ void CGhostAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
             m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), true);
             m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1")), true);
+        }
+
+        iRandVoice = rand() % 5 + 1;
+        switch (iRandVoice)
+        {
+        case 1:
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk09.ogg"), CHANNELID::SOUND_NPC, 0.3f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk08.ogg"), CHANNELID::SOUND_NPC, 0.3f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk06.ogg"), CHANNELID::SOUND_NPC, 0.3f);
+            break;
+        case 4:
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk04.ogg"), CHANNELID::SOUND_NPC, 0.3f);
+            break;
+        case 5:
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk01.ogg"), CHANNELID::SOUND_NPC, 0.3f);
+            break;
         }
     }
 

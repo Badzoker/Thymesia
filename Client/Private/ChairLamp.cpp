@@ -164,6 +164,7 @@ void CChairLamp::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
             m_pLamp->LightUp_Lamp(true);
         }
+        m_pGameInstance->Play_Sound(TEXT("TouchLamp.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
     }
 }
 

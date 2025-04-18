@@ -1254,6 +1254,9 @@ void CBoss_Bat::Attack_Combo_G::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 				else if (!strcmp(iter.szName, "Effect_Smash"))
 				{
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_BAT_HANDATTACK_JUMP_SMASH_CHEST_ATTACK, (*pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					const _float4x4* matRootNode = pObject->m_pModelCom->Get_BoneMatrix("RootNode");
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_CHESTATTACK_LEFT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
+					pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_CHESTATTACK_RIGHT, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matRootNode);
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}
 			}

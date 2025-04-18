@@ -59,6 +59,7 @@ namespace Engine
         SOUND_PLAYER_ACTION,
         SOUND_BOSS_ACTION,
         SOUND_MONSTER_ACTION,
+        SOUND_NPC,
         MAXCHANNEL = 32,
     };
     enum UIOBJTYPE
@@ -466,6 +467,8 @@ namespace Engine
         EFFECT_PARTICLE_BLOOD_SESU,
         EFFECT_PARTICLE_SURROND,
         EFFECT_PARTICLE_BACKSLIP,
+        EFFECT_PARTICLE_CHESTATTACK_LEFT,
+        EFFECT_PARTICLE_CHESTATTACK_RIGHT,
 
         //Sword
         EFFECT_SWORD_VARG,
