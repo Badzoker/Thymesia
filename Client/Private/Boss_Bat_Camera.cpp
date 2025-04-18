@@ -91,7 +91,7 @@ void CBoss_Bat_Camera::Update(_float fTimeDelta)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.isPlay == false)
+            if (iter.isPlay == false && iter.eType == EVENT_STATE)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE ºÎºÐ           
                 {
