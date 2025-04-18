@@ -128,9 +128,9 @@ void CUIGroup_Inventory::Update(_float fTimeDelta)
 				if (m_bSkillOpen) // 스킬 탭 켜져 있을 때
 					Slot_Button_MouseOn_Check(m_InvenItemSkill);
 				if (m_bStoryOpen) // 스킬 탭 켜져 있을 때
-					Slot_Button_MouseOn_Check(m_InvenItemSkill);
+					Slot_Button_MouseOn_Check(m_InvenItemStory);
 				if (m_bHerbOpen) // 스킬 탭 켜져 있을 때
-					Slot_Button_MouseOn_Check(m_InvenItemSkill);
+					Slot_Button_MouseOn_Check(m_InvenItemHerb);
 			}
 			// 마우스 On 값이 true 인 녀석을 찾아 값을 집어 넣자
 
@@ -459,10 +459,24 @@ void CUIGroup_Inventory::Itme_View_Inventory(vector<UI_Item>& vecContainer)
 	// 보여줄 아이템 순서를 정리한다
 	sort(vecContainer.begin(), vecContainer.end(), [](UI_Item a, UI_Item b) {return a.ItemType < b.ItemType; }); // 아이템 타입 기준 오름차순 정렬
 
-	// 인벤토리에 획득한 아이템들을 보여준다
 
+	// 인벤토리 슬롯 내용물 초기화
 	_int iOpenSlotCount = 100; // 슬롯 번호
+	for (auto& Slot : m_pItemScene->Find_UI_Button()) // 슬롯 가져오기
+	{
+		if (iOpenSlotCount == Slot->Get_UI_GroupID()) // 첫 번째 슬롯부터 값을 채운다
+		{
+			_tchar ChangeText[MAX_PATH] = { L"" };
 
+			dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Item_Icon_OnOff(false);
+			dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Content(ChangeText);
+			iOpenSlotCount++;
+
+		}
+	}
+	iOpenSlotCount = 100;
+
+	// 인벤토리에 획득한 아이템들을 보여준다
 	for (auto& InvenItem : vecContainer) // 아이템 정보 돌면서 슬롯에 넣기
 	{
 		for (auto& Slot : m_pItemScene->Find_UI_Button()) // 슬롯 가져오기
@@ -479,24 +493,6 @@ void CUIGroup_Inventory::Itme_View_Inventory(vector<UI_Item>& vecContainer)
 				dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Content(ChangeText);
 				iOpenSlotCount++;
 				break;
-			}
-		}
-
-	}
-	// 아이템 컨테이너 정보가 없을 때 모두 빈 슬롯으로 나오도록 설정
-	iOpenSlotCount = 100;
-	if (vecContainer.empty())
-	{
-		for (auto& Slot : m_pItemScene->Find_UI_Button()) // 슬롯 가져오기
-		{
-			if (iOpenSlotCount == Slot->Get_UI_GroupID()) // 첫 번째 슬롯부터 값을 채운다
-			{
-				_tchar ChangeText[MAX_PATH] = { L"" };
-
-				dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Item_Icon_OnOff(false);
-				dynamic_cast<CUI_ItemBackground*>(Slot)->Set_Content(ChangeText);
-				iOpenSlotCount++;
-
 			}
 		}
 	}
@@ -1122,6 +1118,7 @@ void CUIGroup_Inventory::Update_Get_ItemMgr()
 	UI_Item ItemBox = {};
 	m_InvenItemCommon.clear();
 	m_InvenItemSkill.clear();
+	m_InvenItemStory.clear();
 
 	m_ItemMgrContainerRef = m_pGameInstance->Get_Item_Info(); // 아이템 매니저에서 정보 가져오고
 
@@ -1132,10 +1129,25 @@ void CUIGroup_Inventory::Update_Get_ItemMgr()
 
 		if (0 != ItemBox.ItemCount)
 		{
-			if (ItemBox.ItemType == ITEM_TYPE::ITEM_SKILLPIECE)
-				m_InvenItemSkill.push_back(ItemBox);
-			else
+
+			switch (ItemBox.ItemType)
+			{
+			case ITEM_TYPE::ITEM_KEY1:
 				m_InvenItemCommon.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_KEY2:
+				m_InvenItemCommon.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_MEMORY:
+				m_InvenItemCommon.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_SKILLPIECE:
+				m_InvenItemSkill.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_FIELDITEM:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			}
 
 		}
 	}
@@ -1181,11 +1193,25 @@ void CUIGroup_Inventory::Update_ItemInfo()
 		{
 		case ITEM_TYPE::ITEM_SKILLPIECE:
 			InvenInfo.ItemIconNum = 7;
-			InvenInfo.ItemName = L"단도";
+			InvenInfo.ItemName = L"정제된 기술";
 			InvenInfo.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
 			break;
 		}
 	}
+	for (auto& InvenInfo : m_InvenItemStory)
+	{
+		switch (InvenInfo.ItemType)
+		{
+		case ITEM_TYPE::ITEM_FIELDITEM:
+			InvenInfo.ItemIconNum = 8;
+			InvenInfo.ItemName = L"숨겨진 이야기";
+			InvenInfo.ItemDesc = L"아이세미가 찾고 있던 책의 일부이다.\n이야기를 모아 가져다주면 특별한 일이 생길 것 같다";
+			break;
+		}
+	}
+
+	
+
 }
 
 void CUIGroup_Inventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
@@ -1222,6 +1248,9 @@ void CUIGroup_Inventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 		break;
 	case ITEM_TYPE::ITEM_SKILLPIECE:
 		pTemp = L"기술의 파편";
+		break;
+	case ITEM_TYPE::ITEM_FIELDITEM:
+		pTemp = L"특별한 아이템";
 		break;
 	default:
 		pTemp = L"채워넣기";
@@ -1299,6 +1328,7 @@ void CUIGroup_Inventory::Free()
 
 void CUIGroup_Inventory::Set_Item_Default_Info()
 {
+	/* 플레이어 스크린 => 아이템 알림 팝업이 가져가는 정보*/
 	UI_Item SaveData = {};
 	SaveData.ItemType = ITEM_TYPE::ITEM_KEY1;
 	SaveData.ItemIconNum = 1;
@@ -1332,17 +1362,17 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 
 	m_vecItemDefaultInfo.push_back(SaveData);
 
-
 	SaveData.ItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 	SaveData.ItemIconNum = 7;
-	SaveData.ItemName = L"단도";
+	SaveData.ItemName = L"정제된 기술";
 	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_FIELDITEM;
-	SaveData.ItemIconNum = 7;
-	SaveData.ItemName = L"단도";
-	SaveData.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
+	SaveData.ItemIconNum = 8;
+	SaveData.ItemName = L"숨겨진 이야기";
+	SaveData.ItemDesc = L"아이세미가 찾고 있던 책의 일부이다.\n 이야기를 모아 가져다주면 놀라운 일이 생길 것 같다";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
 }

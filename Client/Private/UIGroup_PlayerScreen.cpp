@@ -644,6 +644,10 @@ void CUIGroup_PlayerScreen::Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eSta
 			MakeInfo.ItemDesc = L"- 기술의 파편 -";
 			iTexNum = 2;
 			break;
+		case ITEM_TYPE::ITEM_FIELDITEM:
+			MakeInfo.ItemDesc = L"- 특별한 아이템 -";
+			iTexNum = 3;
+			break;
 		default:
 			MakeInfo.ItemDesc = L"- 기술의 파편 -";
 			iTexNum = 2;
