@@ -68,7 +68,7 @@ float CalcCascadeShadowFactor(int iCasecaseIndex, float4 lightspacepos)
         }
     }
     shadow /= 9.0f;
-    return shadow;
+    return shadow;  
 }
 
 

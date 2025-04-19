@@ -220,7 +220,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float alpha = saturate((dist) / (2.5f));
 
     // 디더링 패턴 적용
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
 
@@ -343,7 +343,7 @@ PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
     float alpha = saturate((dist) / (2.5f));
 
     // 디더링 패턴 적용
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
 

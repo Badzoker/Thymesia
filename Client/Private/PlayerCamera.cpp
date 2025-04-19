@@ -82,7 +82,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
     );
 
 #pragma region 이벤트 관련 작업
-       /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
+    /* 3월 6일 추가 작업 및  이 방향으로 아이디어 나가기 */
     if (*m_pParentState == CPlayer::STATE_HARMOR_EXECUTION
         || *m_pParentState == CPlayer::STATE_LV1Villager_M_Execution
         || *m_pParentState == CPlayer::STATE_Joker_Execution
@@ -98,18 +98,17 @@ void CPlayerCamera::Update(_float fTimeDelta)
         || *m_pParentState == CPlayer::STATE_MAGICIAN_LV1_SEQ_BOSS_FIGHT_START
         || *m_pParentState == CPlayer::STATE_HURT_MUTATION_MAGICIAN_CATCH
         || *m_pParentState == CPlayer::STATE_BAT_EXECUTION
-        || *m_pParentState == CPlayer::STATE_HURT_RESEARCHER_CATCHED    
-        || *m_pParentState == CPlayer::STATE_RESEARCHER_EXECUTION)  
+        || *m_pParentState == CPlayer::STATE_HURT_RESEARCHER_CATCHED
+        || *m_pParentState == CPlayer::STATE_RESEARCHER_EXECUTION)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
             if (iter.isPlay == false)
             {
-                if (iter.isEventActivate == true) // EVENT_STATE 부분           
+                switch (iter.eType)
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime     
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() < iter.fEndTime)
-
+                case EVENT_STATE:
+                    if (iter.isEventActivate == true)
                     {
                         _vector pos = { m_CombinedWorldMatrix._41,m_CombinedWorldMatrix._42,m_CombinedWorldMatrix._43,1.f };
                         _vector vRight = { m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13,0.f };
@@ -149,7 +148,29 @@ void CPlayerCamera::Update(_float fTimeDelta)
                         {
                             dynamic_cast<CPlayer*>(m_pParent)->Set_ParentPhaseState(CPlayer::PHASE_NO_RENDER);
                         }
-#pragma region EFFECT
+                    }
+
+                    else
+                    {
+                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
+                        {
+                            if (m_pCamera->Get_Execute_CamereScene() == 0)
+                                m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
+
+                            m_pGameInstance->Add_Actor_Scene(m_pParentActor);
+
+                            if (!strcmp(iter.szName, "NO_RENDER"))
+                            {
+                                dynamic_cast<CPlayer*>(m_pParent)->Sub_PhaseState(CPlayer::PHASE_NO_RENDER);
+                                iter.isPlay = true;
+                            }
+
+                        }
+                    }
+                    break;
+                case EVENT_EFFECT:
+                    if (iter.isEventActivate == true)
+                    {
                         if (!strcmp(iter.szName, "Effect_Varg_SPAttack_Dust"))
                         {
                             _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
@@ -157,7 +178,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_DUST_PLAYER_VARG_SPATTACK, vPos, vDir);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Varg_SPAttack_Hit"))
+                        else if (!strcmp(iter.szName, "Effect_Varg_SPAttack_Hit"))
                         {
                             _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42, m_pParentWorldMatrix->_43, 1.f };
                             _vector vDir = { m_pParentWorldMatrix->_31, m_pParentWorldMatrix->_32, m_pParentWorldMatrix->_33, 0.f };
@@ -166,7 +187,7 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_PLAYER_VARG_SPATTACK, vPos, vDir);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_1"))
+                        else if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_1"))
                         {
                             const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
                             const _float4x4* matSpine2 = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine2");
@@ -174,25 +195,25 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_LOOP, m_pParentWorldMatrix, matSpine2);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_2"))
+                        else if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_2"))
                         {
                             const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_2, m_pParentWorldMatrix, matSpine);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_3"))
+                        else if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_3"))
                         {
                             const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_3, m_pParentWorldMatrix, matSpine);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_4"))
+                        else if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_4"))
                         {
                             const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN_SPATTACK_BLOOD_4, m_pParentWorldMatrix, matSpine);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_5"))
+                        else if (!strcmp(iter.szName, "Effect_Magician_SPAttack_Blood_5"))
                         {
                             const _float4x4* matSpine = m_pParentModelCom->Get_BoneMatrix("Bip001-Spine");
                             for (_uint i = 0; i < 2; i++)
@@ -201,13 +222,13 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             }
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_1"))
+                        else if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_1"))
                         {
                             const _float4x4* matWeapon_R = m_pParentModelCom->Get_BoneMatrix("weapon_r");
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_1, m_pParentWorldMatrix, matWeapon_R);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-                        if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_2"))
+                        else if (!strcmp(iter.szName, "Effect_Magician2_Execution_Blood_2"))
                         {
                             const _float4x4* matWeapon_R = m_pParentModelCom->Get_BoneMatrix("weapon_r");
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_RIGHT, m_pParentWorldMatrix, matWeapon_R);
@@ -215,36 +236,14 @@ void CPlayerCamera::Update(_float fTimeDelta)
                             m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MAGICIAN2_EXECUTION_BLOOD_2_LEFT, m_pParentWorldMatrix, matWeapon_L);
                             iter.isPlay = true; // 한 번만 재생 되어야 하므로
                         }
-#pragma endregion
                     }
-                }
-
-                else
-                {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
-                    {
-                        if (m_pCamera->Get_Execute_CamereScene() == 0)  
-                            m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
-
-                        m_pGameInstance->Add_Actor_Scene(m_pParentActor);   
-
-                        if (!strcmp(iter.szName, "NO_RENDER"))
-                        {
-                            dynamic_cast<CPlayer*>(m_pParent)->Sub_PhaseState(CPlayer::PHASE_NO_RENDER);
-                            iter.isPlay = true;
-                        }
-
-                    }
-
+                    break;
                 }
             }
         }
     }
 
-    else
-    {
-        //m_pCamera->ResetZoomInCameraPos();    
-    }
+
 
 }
 

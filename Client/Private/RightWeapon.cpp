@@ -374,6 +374,7 @@ HRESULT CRightWeapon::Hit_Slow()
             m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.9f);
             break;
         case CPlayer::STATE_ATTACK_L4:
+            m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Set_HitStopTime(m_fTimeDelta * 1.5f);   
             m_pGameInstance->Set_ZoomBlur_Option(true, m_fHitStopTime * 1.1f);
             break;
         case CPlayer::STATE_ATTACK_L5:
