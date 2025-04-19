@@ -40,12 +40,33 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(LoadFont_Thymasia()))
 		return E_FAIL;
 
+	m_pSlowWord = m_pGameInstance->Get_SlowWorldPtr();
+
+
 	return S_OK;
 }
 
 void CMainApp::Update(_float fTimeDelta)
 {
-	m_pGameInstance->Update_Engine(fTimeDelta);
+	if (!(*m_pSlowWord))
+	{
+		m_pGameInstance->Update_Engine(fTimeDelta);
+	}
+
+	else
+	{
+		float fSlowRatio = 0.1f; // 슬로우 모션 비율 (20% 속도)		
+		float fTestTimeDelta = fTimeDelta * fSlowRatio;
+		m_pGameInstance->Update_Engine(fTestTimeDelta);
+
+		m_fSlowWorldEndTimer += fTimeDelta;
+
+		if (m_fSlowWorldEndTimer > 0.2f) // 0.3초 동안 진행 
+		{
+			*m_pSlowWord = false;
+			m_fSlowWorldEndTimer = 0.f;
+		}
+	}
 
 #ifdef _DEBUG
 	m_fTimerAcc += fTimeDelta;

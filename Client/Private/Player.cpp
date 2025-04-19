@@ -231,7 +231,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_iState = STATE_STUN_EXECUTE_START_VARG;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL:
-				m_iState = STATE_LIGHT_EXECUTION_R;
+				//m_iState = STATE_LIGHT_EXECUTION_R;
+				m_iState = STATE_LIGHT_EXECUTION_L;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_MAGICIAN:
 				m_iState = STATE_STUN_EXECUTE_START_MAGICIAN;
@@ -522,7 +523,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		{
 		case PLAYER_SKILL::PLAYER_SKILL_AXE:
 			if (m_pPlayerSkillMgr->Get_VecState().at(0)->Check_UnLocked() && m_bPlayerSkill_CoolTime && m_iCurrentMp > 20)
-			{	
+			{
 				m_iState = STATE_AXE;
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
@@ -1181,7 +1182,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (m_iPhaseState & PHASE_EXECUTION
 		|| m_iPhaseState & PHASE_BOSS_INTRO
 		|| m_iState == STATE_CATCHED
-		|| m_iState == STATE_MAGICIAN_CATCH)
+		|| m_iState == STATE_MAGICIAN_CATCH
+		|| m_iState == STATE_LOBBY_IDLE_01
+		|| m_iState == STATE_LOBBY_IDLE_01_END)
 	{
 		m_pGameInstance->Set_Dithering(false);
 	}
@@ -1489,28 +1492,39 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 		/* 패링 상태 일시 */
 		if (m_iPhaseState & CPlayer::PHASE_PARRY)
 		{
-			int Parry = rand() % 2;
+			//int Parry = rand() % 4;
 			_vector vHitPosition = { position.x, position.y, position.z, 1.f };
 			/* 여기서 플레이어의 특정 프레임 */
 			switch (m_iState)
 			{
 			case STATE::STATE_PARRY_L:
 			{
-				if (Parry == 0)
+				switch (m_iParryMotion)
 				{
+				case 0:
 					m_iState = STATE_PARRY_DEFLECT_L;
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
-				}
-				else
-				{
+					m_iParryMotion++;
+					break;
+				case 1:
+					m_iState = STATE_PARRY_DEFLECT_R_UP;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion++;
+					break;
+				case 2:
 					m_iState = STATE_PARRY_DEFLECT_L_UP;
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion++;
+					break;
+				case 3:
+					m_iState = STATE_PARRY_DEFLECT_R;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion = 0;
+					break;
 				}
 
 
-
-
-				if ((m_iCurrentMp + m_iBonus_Parry_Mp) > m_iFullMp) // Mp가 이미 더 클 때              
+				if ((m_iCurrentMp + m_iBonus_Parry_Mp) > m_iFullMp) // Mp가 이미 더 클 때					
 				{
 					if (m_iFullMp > m_iCurrentMp)
 						m_iCurrentMp += m_iFullMp - m_iCurrentMp;
@@ -1524,15 +1538,28 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 			}
 			break;
 			case STATE::STATE_PARRY_R:
-				if (Parry == 0)
+				switch (m_iParryMotion)
 				{
-					m_iState = STATE_PARRY_DEFLECT_R;
+				case 0:
+					m_iState = STATE_PARRY_DEFLECT_L;
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
-				}
-				else
-				{
+					m_iParryMotion++;
+					break;
+				case 1:
 					m_iState = STATE_PARRY_DEFLECT_R_UP;
 					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion++;
+					break;
+				case 2:
+					m_iState = STATE_PARRY_DEFLECT_L_UP;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion++;
+					break;
+				case 3:
+					m_iState = STATE_PARRY_DEFLECT_R;
+					m_iPhaseState &= ~CPlayer::PHASE_FIGHT;
+					m_iParryMotion = 0;
+					break;
 				}
 
 
@@ -1566,11 +1593,11 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();	
 				//if (m_iCurrentHp <= 0)	
 				//	m_iCurrentHp = 0;		
-
 			}
 
 			else
 			{
+				/* 사운드 끄는거 맞을 때 니깐 */
 				m_pGameInstance->StopSound(SOUND_PLAYER_ATTACK_1);
 				m_pGameInstance->StopSound(SOUND_PLAYER_ATTACK_2);
 				m_pGameInstance->StopSound(SOUND_PLAYER_ACTION_1);
@@ -1611,7 +1638,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 						m_pStateMgr->Get_VecState().at(42)->Set_MonsterLookDir(fMonsterLookDir);
 						m_pStateMgr->Get_VecState().at(42)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTLF:
 						m_iState = CPlayer::STATE_HURT_LF;
@@ -1620,7 +1647,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(38)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTMFL: // 31번 애니메이션 인덱스
 						m_iState = CPlayer::STATE_HurtMFR_L;  // 22		
@@ -1629,7 +1656,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(21)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTSF:
 						m_iState = CPlayer::STATE_HURT_SF;
@@ -1638,7 +1665,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(39)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTSL:
 						m_iState = CPlayer::STATE_HURT_SL;
@@ -1647,7 +1674,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(41)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURXXLF:
 						m_iState = CPlayer::STATE_HURT_HURXXLF;
@@ -1656,7 +1683,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(40)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_KnockBackF:
 						m_iState = CPlayer::STATE_HURT_KNOCKBACK;
@@ -1665,7 +1692,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(36)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_KNOCKDOWN:
 						m_iState = CPlayer::STATE_HURT_KNOCKDOWN;
@@ -1674,7 +1701,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(37)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						//m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 
 					case Player_Hitted_State::PLAYER_HURT_REBOUND:
@@ -1684,7 +1711,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-						m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
+						//m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_STUN:
 						m_iState = CPlayer::STATE_STUNNED_START;  // 47						
@@ -2190,6 +2217,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_ATTACK_L3,
 		STATE_ATTACK_L4,
 		STATE_ATTACK_L5,
+		STATE_LIGHT_EXECUTION_L,
 		STATE_LIGHT_EXECUTION_R,
 		STATE_SPRINT_ATTACK_L1,
 		STATE_STUN_EXECUTE_START_VARG,
@@ -2270,6 +2298,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_CANE_SWORD_SP02,
 		STATE_GREATSWORD,
 		STATE_JAVELIN_SWORD,
+		STATE_CLAW_LONG_PLUNDER_ATTACK2,
 	};
 #pragma endregion 
 }

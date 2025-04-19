@@ -176,7 +176,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
 
             /* 락온 풀기 */
-            //static_cast<CPlayer*>(m_pParent)->Set_Lockon(false);    
+            //static_cast<CPlayer*>(m_pParent)->Set_Lockon(false);     
 
         }
     }
@@ -402,6 +402,9 @@ void CBody_Player::Update(_float fTimeDelta)
         break;
     case CPlayer::STATE_AXE:
         STATE_AXE_Method();
+        break;
+    case CPlayer::STATE_LIGHT_EXECUTION_L:
+        STATE_LIGHT_EXECUTION_L_Method();
         break;
     case CPlayer::STATE_LIGHT_EXECUTION_R:
         STATE_LIGHT_EXECUTION_R_Method();
@@ -1647,16 +1650,16 @@ void CBody_Player::STATE_ATTACK_L4_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    if (!strcmp(iter.szName, "Attack_Sound"))
+                    if (!strcmp(iter.szName, "Attack_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
                     if (!strcmp(iter.szName, "Attack_Sound_2"))
                     {
-                        //   m_pGameInstance->Play_Sound(L"Attack_4_2.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
-                        //   iter.isPlay = true;
+                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_2, 4.f);
+                        iter.isPlay = true;
                     }
                     break;
                 }
@@ -2235,6 +2238,133 @@ void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(6, true);
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 6)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(6)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
@@ -2242,6 +2372,134 @@ void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(7, true);
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 7)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(7)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
@@ -2249,6 +2507,133 @@ void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(8, true);
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 8)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(8)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
@@ -2256,6 +2641,133 @@ void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(10, true);
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 10)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(10)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
@@ -2263,6 +2775,132 @@ void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(11, true);
+    if (m_pModelCom->Get_Current_Animation_Index() == 11)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(11)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
@@ -2270,6 +2908,132 @@ void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(12, true);
+
+    if (m_pModelCom->Get_Current_Animation_Index() == 12)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(12)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
@@ -2277,6 +3041,132 @@ void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
     m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
 
     m_pModelCom->SetUp_Animation(13, true);
+    if (m_pModelCom->Get_Current_Animation_Index() == 13)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(13)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                            }
+
+                            if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                            }
+                        }
+                    }
+                }
+                break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.5f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.5f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     m_iRenderState = STATE_NORMAL_RENDER;
 }
 void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
@@ -2285,6 +3175,24 @@ void CBody_Player::STATE_LOCK_ON_EVADE_F_Method()
 
     m_pModelCom->SetUp_Animation(18, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 18)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(18)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Lock_On_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(18)->isAniMationFinish())
     {
@@ -2302,6 +3210,23 @@ void CBody_Player::STATE_LOCK_ON_EVADE_B_Method()
     m_pModelCom->SetUp_Animation(17, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 17)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(17)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Lock_On_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(17)->isAniMationFinish())
     {
@@ -2317,6 +3242,23 @@ void CBody_Player::STATE_LOCK_ON_EVADE_L_Method()
     m_pModelCom->SetUp_Animation(19, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 19)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(19)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Lock_On_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(19)->isAniMationFinish())
     {
@@ -2332,6 +3274,23 @@ void CBody_Player::STATE_LOCK_ON_EVADE_R_Method()
     m_pModelCom->SetUp_Animation(20, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 20)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(20)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Lock_On_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(20)->isAniMationFinish())
     {
@@ -2833,6 +3792,25 @@ void CBody_Player::STATE_NORMAL_EVADE_R_Method()
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2844,6 +3822,23 @@ void CBody_Player::STATE_NORMAL_EVADE_L_Method()
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2854,6 +3849,24 @@ void CBody_Player::STATE_NORMAL_EVADE_FR_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -2867,6 +3880,24 @@ void CBody_Player::STATE_NORMAL_EVADE_FL_Method()
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2878,6 +3909,24 @@ void CBody_Player::STATE_NORMAL_EVADE_F_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -2891,6 +3940,24 @@ void CBody_Player::STATE_NORMAL_EVADE_BR_Method()
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2903,6 +3970,24 @@ void CBody_Player::STATE_NORMAL_EVADE_BL_Method()
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
         *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
@@ -2914,6 +3999,24 @@ void CBody_Player::STATE_NORMAL_EVADE_B_Method()
 {
     m_pModelCom->SetUp_Animation(257, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 257)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(257)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Evade.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(257)->isAniMationFinish())
     {
@@ -4017,6 +5120,46 @@ void CBody_Player::STATE_LIGHT_EXECUTION_R_Method()
     }
 }
 
+void CBody_Player::STATE_LIGHT_EXECUTION_L_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+
+    m_pModelCom->SetUp_Animation(209, false);
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 209)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(209)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Light_Execute_L.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+    if (m_pModelCom->Get_VecAnimation().at(209)->isAniMationFinish())
+    {
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_DASH;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_EXECUTION;
+        *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
+        *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
+        *m_pParentNextStateCan = true;
+
+    }
+}
+
 void CBody_Player::STATE_LADDER_CLIMB_START_Method()
 {
     m_pModelCom->SetUp_Animation(47, false);
@@ -4041,6 +5184,58 @@ void CBody_Player::STATE_LADDER_CLIMB_L_DOWN_Method()
     m_pModelCom->SetUp_Animation(39, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 39)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(39)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    switch (m_iLadderStepSound)
+                    {
+                    case 0:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 1:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 2:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 3:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 4:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 5:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound = 0;
+                        break;
+
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
     if (m_pModelCom->Get_VecAnimation().at(39)->isAniMationFinish())
     {
         if (m_pGameInstance->isKeyEnter(DIK_W) || m_pGameInstance->isKeyPressed(DIK_W))
@@ -4060,6 +5255,7 @@ void CBody_Player::STATE_LADDER_CLIMB_L_DOWN_END_Method()
     m_pModelCom->SetUp_Animation(40, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
     if (m_pModelCom->Get_VecAnimation().at(40)->isAniMationFinish())
     {
         *m_pParentState = CPlayer::STATE_IDLE;
@@ -4077,6 +5273,58 @@ void CBody_Player::STATE_LADDER_CLIMB_L_UP_Method()
 {
     m_pModelCom->SetUp_Animation(41, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 41)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(41)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    switch (m_iLadderStepSound)
+                    {
+                    case 0:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 1:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 2:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 3:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 4:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 5:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound = 0;
+                        break;
+
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(41)->isAniMationFinish())
     {
@@ -4096,6 +5344,7 @@ void CBody_Player::STATE_LADDER_CLIMB_L_UP_END_Method()
 {
     m_pModelCom->SetUp_Animation(42, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
 
     if (m_pModelCom->Get_VecAnimation().at(42)->isAniMationFinish())
     {
@@ -4120,6 +5369,59 @@ void CBody_Player::STATE_LADDER_CLIMB_R_DOWN_Method()
 {
     m_pModelCom->SetUp_Animation(43, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 43)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(43)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    switch (m_iLadderStepSound)
+                    {
+                    case 0:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 1:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 2:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 3:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 4:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 5:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound = 0;
+                        break;
+
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+
 
     if (m_pModelCom->Get_VecAnimation().at(43)->isAniMationFinish())
     {
@@ -4158,6 +5460,57 @@ void CBody_Player::STATE_LADDER_CLIMB_R_UP_Method()
 {
     m_pModelCom->SetUp_Animation(45, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 45)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(45)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    switch (m_iLadderStepSound)
+                    {
+                    case 0:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 1:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 2:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 3:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 4:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound++;
+                        break;
+                    case 5:
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_WoodStairA_06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                        iter.isPlay = true;
+                        m_iLadderStepSound = 0;
+                        break;
+
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(45)->isAniMationFinish())
     {
@@ -4472,7 +5825,7 @@ void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Flunder_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 50.f);
+                    m_pGameInstance->Play_Sound(L"Player_Flunder_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 40.f);
                     iter.isPlay = true;
                     break;
                 }
