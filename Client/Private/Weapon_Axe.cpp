@@ -234,6 +234,8 @@ void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
+
+		m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
 	}
 }
 
