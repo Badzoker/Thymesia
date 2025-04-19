@@ -593,6 +593,22 @@ void CBoss_Magician::Intro_State::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Intro"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Intro.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+			}
+		}
+	}
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 180.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 210.f)
@@ -688,6 +704,21 @@ void CBoss_Magician::Move_State::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Move_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Walk"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Walk.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	pObject->RotateDegree_To_Player();
 	if (m_iIndex == 69)
 	{
@@ -744,6 +775,15 @@ void CBoss_Magician::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician*
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Stun_Start"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Stun"))
@@ -795,6 +835,24 @@ void CBoss_Magician::Shoot_ComboA::State_Update(_float fTimeDelta, CBoss_Magicia
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Shoot"))
+				{
+					_uint iRandom = rand() % 2;
+					switch (iRandom)
+					{
+					case 0:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_CardShotA.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					case 1:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_CardShotB.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					}
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Shoot2"))
@@ -901,6 +959,24 @@ void CBoss_Magician::Shoot_ComboB::State_Update(_float fTimeDelta, CBoss_Magicia
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Shoot"))
+				{
+					_uint iRandom = rand() % 2;
+					switch (iRandom)
+					{
+					case 0:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_CardShotA.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					case 1:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_CardShotB.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					}
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Shoot1"))
@@ -1043,6 +1119,15 @@ void CBoss_Magician::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magici
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Attack_ComboA.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_FirstSwing"))
@@ -1079,6 +1164,7 @@ void CBoss_Magician::Attack_ComboA::State_Update(_float fTimeDelta, CBoss_Magici
 		pObject->m_iPlayer_Hitted_State = PLAYER_HURT_HURTSL;
 		pObject->RotateDegree_To_Player();
 		pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+		pObject->m_pModelCom->Get_VecAnimation().at(5)->Set_StartOffSetTrackPosition(25.f);
 	}
 
 	if (m_iIndex == 5 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
@@ -1135,6 +1221,16 @@ void CBoss_Magician::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magici
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Attack_ComboB.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Kick"))
@@ -1197,6 +1293,16 @@ void CBoss_Magician::Attack_ComboC::State_Update(_float fTimeDelta, CBoss_Magici
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Attack_ComboC.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_FirstSwing"))
@@ -1273,6 +1379,16 @@ void CBoss_Magician::Attack_ComboD::State_Update(_float fTimeDelta, CBoss_Magici
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Attack_ComboD.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_FirstSwing"))
@@ -1438,6 +1554,15 @@ void CBoss_Magician::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Magi
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Execution"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Execution.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Blood_1"))
@@ -1525,6 +1650,33 @@ void CBoss_Magician::Hit_State::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Hit_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Hurt"))
+				{
+					_uint iRandom = rand() % 3;
+					switch (iRandom)
+					{
+					case 0:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Hurt_01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					case 1:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Hurt_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					case 2:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Hurt_03.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						break;
+					}
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 		pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
@@ -1592,6 +1744,16 @@ void CBoss_Magician::Dissappear_Move_State::State_Update(_float fTimeDelta, CBos
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Walk_Dissappear"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Dissappear.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_MovingDust"))
@@ -1715,6 +1877,21 @@ void CBoss_Magician::Attack_Special::State_Update(_float fTimeDelta, CBoss_Magic
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Special_Attack_Start"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Special_Attack_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Special_Catch"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Special_Attack_Fail.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Charge"))
@@ -1835,6 +2012,15 @@ void CBoss_Magician::Attack_Special_Catch::State_Update(_float fTimeDelta, CBoss
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Special_Catch"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Special_Catch.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Loop"))
@@ -1902,6 +2088,21 @@ void CBoss_Magician::Attack_Slash::State_Update(_float fTimeDelta, CBoss_Magicia
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Slash1"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Slash01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Slash2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Slash02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Charge"))
@@ -1993,6 +2194,23 @@ void CBoss_Magician::Parry_Attack_A::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_A::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Parry_AttackA.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
+		}
+	}
+
 	if (m_iIndex == 26 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f &&
@@ -2059,6 +2277,21 @@ void CBoss_Magician::Parry_Attack_B::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_B::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Parry_AttackB.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 171.f)
@@ -2111,7 +2344,20 @@ void CBoss_Magician::Parry_Attack_C::State_Enter(CBoss_Magician* pObject)
 
 void CBoss_Magician::Parry_Attack_C::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
-
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Parry"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Parry_AttackC.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
 
 	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
@@ -2237,6 +2483,15 @@ void CBoss_Magician::Phase_Change_State::State_Update(_float fTimeDelta, CBoss_M
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Phase_Change"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Phase_Change.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Sprinkle"))
