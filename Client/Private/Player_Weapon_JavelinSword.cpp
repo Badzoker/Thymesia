@@ -488,7 +488,7 @@ void CPlayer_Weapon_JavelinSword::OnCollisionEnter(CGameObject* _pOther, PxConta
     m_bHitStopOnOff = true;
 
     /* 자벨린 히트 사운드 */
-    m_pGameInstance->Play_Sound(L"Javalien_Boom.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+    m_pGameInstance->Play_Sound(L"Player_Javalien_Boom.wav", CHANNELID::SOUND_PLAYER_ATTACK_2, 3.f);
 }
 
 void CPlayer_Weapon_JavelinSword::OnCollision(CGameObject* _pOther, PxContactPair _information)

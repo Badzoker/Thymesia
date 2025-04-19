@@ -113,7 +113,7 @@ HRESULT CLevel_SeaOfTrees::Initialize()
     m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
     m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-    m_pGameInstance->PlayBGM(L"Sea_of_Trees_Level_-_Exploration.ogg", 0.8f);
+    m_pGameInstance->PlayBGM(L"Sea_of_Trees_Level_-_Exploration.ogg", 0.15f);
 
 
     /* 맵 이름 알림*/

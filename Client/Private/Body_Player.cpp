@@ -598,12 +598,6 @@ void CBody_Player::Update(_float fTimeDelta)
                         iter.isPlay = true;
                     }
                     break;
-                case EVENT_SOUND:
-                    if (iter.isEventActivate)
-                    {
-                        iter.isPlay = true;
-                    }
-                    break;
                 }
             }
 
@@ -936,7 +930,7 @@ void CBody_Player::STATE_RUN_Method()
 
     if (m_pModelCom->Get_Current_Animation_Index() == 9)
     {
-        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(9)->Get_vecEvent())
         {
             if (iter.isPlay == false)
             {
@@ -956,7 +950,6 @@ void CBody_Player::STATE_RUN_Method()
 
                                 m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
 
-                                //iter.isPlay = true;     
                             }
 
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Left"))
@@ -967,7 +960,6 @@ void CBody_Player::STATE_RUN_Method()
 
                                 m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
 
-                                //iter.isPlay = true; 
                             }
                         }
                         else
@@ -996,7 +988,90 @@ void CBody_Player::STATE_RUN_Method()
                     }
                 }
                 break;
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
 
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
                 }
             }
         }
@@ -1019,6 +1094,26 @@ void CBody_Player::STATE_SPRINT_ATTACK_L1_Method()
     m_pModelCom->Set_LerpFinished(true);
 
     m_pModelCom->SetUp_Animation(279, false);
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 279)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(279)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_1.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
 
     if (*m_pParentState == CPlayer::STATE_SPRINT_ATTACK_L1 && m_pModelCom->Get_CurrentAnmationTrackPosition() > 80.f)
     {
@@ -1109,7 +1204,7 @@ void CBody_Player::STATE_ATTACK_L1_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_1.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_1.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -1262,7 +1357,7 @@ void CBody_Player::STATE_ATTACK_L2_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_2.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_2.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -1408,7 +1503,7 @@ void CBody_Player::STATE_ATTACK_L3_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_3.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_3.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -1554,7 +1649,7 @@ void CBody_Player::STATE_ATTACK_L4_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Sound"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_LB_Attack_4.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
@@ -1707,7 +1802,7 @@ void CBody_Player::STATE_ATTACK_L5_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_5.ogg", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LB_Attack_5.ogg", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -1856,7 +1951,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_01_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LongClaw_01.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LongClaw_01.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -2004,7 +2099,7 @@ void CBody_Player::STATE_ATTACK_LONG_CLAW_02_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_LongClaw_02.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_LongClaw_02_Real.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -2252,6 +2347,27 @@ void CBody_Player::STATE_PARRY_L_Method()
 
     m_pModelCom->SetUp_Animation(15, false);
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 15)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(15)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_L_Real.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
+
     m_iRenderState = STATE_NORMAL_RENDER;
 
     if (m_pModelCom->Get_VecAnimation().at(15)->isAniMationFinish())
@@ -2289,6 +2405,25 @@ void CBody_Player::STATE_PARRY_R_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
     m_pModelCom->Get_VecAnimation().at(16)->Set_StartOffSetTrackPosition(10.f);
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 16)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(16)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_R.wav", CHANNELID::SOUND_PLAYER_ACTION_2, 3.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(16)->isAniMationFinish())
     {
@@ -2335,7 +2470,23 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
     m_pModelCom->SetUp_Animation(56, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 56)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(56)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(56)->isAniMationFinish())
     {
@@ -2354,6 +2505,26 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
     m_pModelCom->SetUp_Animation(54, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 54)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(54)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Real.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
     if (m_pModelCom->Get_VecAnimation().at(54)->isAniMationFinish())
     {
         m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);
@@ -2368,6 +2539,24 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
     m_pModelCom->SetUp_Animation(59, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 59)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(59)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R_Up.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
 
     if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
     {
@@ -2380,6 +2569,24 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
     m_pModelCom->SetUp_Animation(58, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 58)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(58)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 20.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
     {
@@ -3218,6 +3425,158 @@ void CBody_Player::STATE_SPRINT_Method()
     m_pModelCom->SetUp_Animation(252, true);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+    if (m_pModelCom->Get_Current_Animation_Index() == 252)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(252)->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_EFFECT:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "SPRINT_AFTER_EFFECT_RIGHT"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(RightFootPos, 1.f);
+
+                                //iter.isPlay = true;     
+                            }
+
+                            if (!strcmp(iter.szName, "SPRINT_AFTER_EFFECT_LEFT"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Add_RippleInfo(LeftFootPos, 1.f);
+
+                                //iter.isPlay = true; 
+                            }
+                        }
+                        else
+                        {
+                            if (!strcmp(iter.szName, "SPRINT_AFTER_EFFECT_RIGHT"))
+                            {
+                                _matrix RightFootMatrix = XMLoadFloat4x4(m_mRightFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 RightFootPos = { RightFootMatrix.r[3].m128_f32[0],  RightFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_FOOT_SMOKE_R, m_pParentWorldMatrix, m_mRightFootBoneMartix);
+
+                            }
+
+                            else if (!strcmp(iter.szName, "SPRINT_AFTER_EFFECT_LEFT"))
+                            {
+                                _matrix LeftFootMatrix = XMLoadFloat4x4(m_mLeftFootBoneMartix) * XMLoadFloat4x4(m_pParentWorldMatrix);
+
+                                _float2 LeftFootPos = { LeftFootMatrix.r[3].m128_f32[0],  LeftFootMatrix.r[3].m128_f32[2] };
+
+                                m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_WORLD_PLAYER_FOOT_SMOKE_L, m_pParentWorldMatrix, m_mLeftFootBoneMartix);
+                            }
+
+                        }
+
+                    }
+                }
+                break;
+
+                case EVENT_SOUND:
+                {
+                    if (iter.isEventActivate == true)
+                    {
+                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_RightFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_RightFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_RightFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_LeftFootStepSound)
+                                {
+                                case true:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_LeftFootStepSound = false;
+                                    iter.isPlay = true;
+                                    break;
+                                default:
+                                    m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_LeftFootStepSound = true;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                                //iter.isPlay = true; 
+                            }
+                        }
+
+                        /* Water가 아닐 때 */
+                        else
+                        {
+                            if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                            {
+                                switch (m_iRightFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_iRightFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                                    m_iRightFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                            {
+                                switch (m_iLeftFootStepSound)
+                                {
+                                case 0:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_iLeftFootStepSound++;
+                                    iter.isPlay = true;
+                                    break;
+                                case 1:
+                                    m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_04.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 1.f);
+                                    m_iLeftFootStepSound = 0;
+                                    iter.isPlay = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+                }
+            }
+        }
+    }
+
     /* 3월 8일 추가 */
     *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
 }
@@ -3245,7 +3604,7 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Cane_Sword.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Cane_Sword.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3284,13 +3643,13 @@ void CBody_Player::STATE_GREATSWORD_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Sound_2"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Gread_Sword_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
                     break;
@@ -3433,7 +3792,7 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Javelin_Throw.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Javelin_Throw.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3937,22 +4296,36 @@ void CBody_Player::STATE_HEAL_Method()
         {
             if (iter.isPlay == false)
             {
-                if (iter.eType != EVENT_COLLIDER && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+                switch (iter.eType)
                 {
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-
-                    if (!strcmp(iter.szName, "Effect_Start"))
+                case EVENT_EFFECT:
+                    if (iter.isEventActivate == true && iter.isPlay == false)
                     {
-                        _float4x4 matLeftHand = {};
-                        XMStoreFloat4x4(&matLeftHand, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("weapon_l")) * XMLoadFloat4x4(m_pParentWorldMatrix));
-                        for (_uint i = 0; i < 2; i++)
+                        iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+                        if (!strcmp(iter.szName, "Effect_Start"))
                         {
-                            m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PLAYER_HEAL, matLeftHand);
+                            _float4x4 matLeftHand = {};
+                            XMStoreFloat4x4(&matLeftHand, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pModelCom->Get_BoneMatrix("weapon_l")) * XMLoadFloat4x4(m_pParentWorldMatrix));
+                            for (_uint i = 0; i < 2; i++)
+                            {
+                                m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PLAYER_HEAL, matLeftHand);
+                            }
+                            _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42 , m_pParentWorldMatrix->_43 , 1.f };
+                            m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL, vPos);
                         }
-                        _vector vPos = { m_pParentWorldMatrix->_41, m_pParentWorldMatrix->_42 , m_pParentWorldMatrix->_43 , 1.f };
-                        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_HEAL, vPos);
                     }
+                    break;
+                case EVENT_SOUND:
+                    if (iter.isEventActivate == true && iter.isPlay == false)
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_Potion.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        iter.isPlay = true;
+                    }
+                    break;
+
                 }
+
             }
         }
     }
@@ -3987,13 +4360,6 @@ void CBody_Player::STATE_START_WALK_Method()
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_START;
     }
-
-#pragma region Effect_Environment
-    const _float4x4* matRootNode = m_pModelCom->Get_BoneMatrix("RootNode");
-    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF, m_pParentWorldMatrix, matRootNode);
-    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST, m_pParentWorldMatrix, matRootNode);
-#pragma endregion
-
 }
 
 void CBody_Player::STATE_CLAW_CHARGE_START_Method()
@@ -4014,7 +4380,7 @@ void CBody_Player::STATE_CLAW_CHARGE_START_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Charge_Start.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Charge_Start_Real.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -4064,7 +4430,7 @@ void CBody_Player::STATE_CLAW_CHARGE_FULL_ATTACK_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_FullCharge_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_FullCharge_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -4096,6 +4462,26 @@ void CBody_Player::STATE_CLAW_LONG_PLUNDER_ATTACK2_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     }
 
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 147)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(147)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Flunder_Attack.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 50.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
+
     if (m_pModelCom->Get_VecAnimation().at(147)->isAniMationFinish())
     {
         *m_pParentNextStateCan = true;
@@ -4126,19 +4512,19 @@ void CBody_Player::STATE_HALBERDS_B_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Halberd_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Halberd_Sound_2"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Halberd_Sound_3"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_3.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_3.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
@@ -4282,13 +4668,13 @@ void CBody_Player::STATE_SCYTHE_B_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_1.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Sound_2"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_2.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                         iter.isPlay = true;
                     }
 
@@ -4430,7 +4816,7 @@ void CBody_Player::STATE_AXE_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Axe.wav", CHANNELID::SOUND_PLAYER_ATTACK, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Axe.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
                     iter.isPlay = true;
                     break;
                 }

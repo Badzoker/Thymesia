@@ -67,6 +67,13 @@ _bool CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cl
     {
         m_isFinished = true;
         *pCurrentTrackPoisiton = 0.f;
+
+        for (auto& pEvent : m_vecAnimFrameEvent)
+        {
+            pEvent.isPlay = false;
+            pEvent.isEventActivate = false;
+        }
+
     }
 
 

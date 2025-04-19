@@ -1570,6 +1570,11 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 			else
 			{
+				m_pGameInstance->StopSound(SOUND_PLAYER_ATTACK_1);
+				m_pGameInstance->StopSound(SOUND_PLAYER_ATTACK_2);
+				m_pGameInstance->StopSound(SOUND_PLAYER_ACTION_1);
+				m_pGameInstance->StopSound(SOUND_PLAYER_ACTION_2);
+
 				/* 패링 실패 시 ( 즉 맞을 때 ) */
 				m_iPhaseState &= ~CPlayer::PHASE_PARRY;	   // 3월 19일
 				m_iPhaseState &= ~CPlayer::PHASE_DASH;	   // 3월 19일 
@@ -1605,6 +1610,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 						m_pStateMgr->Get_VecState().at(42)->Set_MonsterLookDir(fMonsterLookDir);
 						m_pStateMgr->Get_VecState().at(42)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTLF:
 						m_iState = CPlayer::STATE_HURT_LF;
@@ -1613,6 +1619,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(38)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTMFL: // 31번 애니메이션 인덱스
 						m_iState = CPlayer::STATE_HurtMFR_L;  // 22		
@@ -1621,6 +1628,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(21)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit03.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTSF:
 						m_iState = CPlayer::STATE_HURT_SF;
@@ -1629,7 +1637,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(39)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
-
+						m_pGameInstance->Play_Sound(L"Player_AttackHit02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURTSL:
 						m_iState = CPlayer::STATE_HURT_SL;
@@ -1638,6 +1646,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(41)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit04.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_HURXXLF:
 						m_iState = CPlayer::STATE_HURT_HURXXLF;
@@ -1646,6 +1655,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(40)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_KnockBackF:
 						m_iState = CPlayer::STATE_HURT_KNOCKBACK;
@@ -1654,6 +1664,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(36)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_KNOCKDOWN:
 						m_iState = CPlayer::STATE_HURT_KNOCKDOWN;
@@ -1662,6 +1673,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(37)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						//m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit05.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 
 					case Player_Hitted_State::PLAYER_HURT_REBOUND:
@@ -1671,6 +1683,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 						m_pStateMgr->Get_VecState().at(46)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pModel->Set_Continuous_Ani(true);
+						m_pGameInstance->Play_Sound(L"Player_AttackHit06.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.3f);
 						break;
 					case Player_Hitted_State::PLAYER_HURT_STUN:
 						m_iState = CPlayer::STATE_STUNNED_START;  // 47						
@@ -1734,6 +1747,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 						m_pStateMgr->Get_VecState().at(66)->Set_MonsterLookDir(fMonsterLookDir);
 						m_pStateMgr->Get_VecState().at(66)->Priority_Update(this, m_pNavigationCom, m_fTimeDelta);
 						m_pGameInstance->Sub_Actor_Scene(m_pActor);
+						//m_pGameInstance->Play_Sound(L"Researcher_GrabYou_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.7f);
 						break;
 					default:
 						_uint test = dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State();
