@@ -662,6 +662,31 @@ void CElite_Researcher::Execution_State::State_Enter(CElite_Researcher* pObject)
 
 void CElite_Researcher::Execution_State::State_Update(_float fTimeDelta, CElite_Researcher* pObject)
 {
+#pragma region EFFECT_EXECUTION
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Execution_1"))
+                {
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_EXECUTION_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+                else if (!strcmp(iter.szName, "Effect_Execution_2"))
+                {
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_EXECUTION_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_EXECUTION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_iMonster_State = STATE_DEAD;
@@ -1054,6 +1079,24 @@ void CElite_Researcher::Attack_Special_Catch::State_Enter(CElite_Researcher* pOb
 
 void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CElite_Researcher* pObject)
 {
+#pragma region EFFECT_CATCH
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+            {
+                if (!strcmp(iter.szName, "Effect_Special"))
+                {
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 14 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;

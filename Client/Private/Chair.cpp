@@ -203,5 +203,6 @@ void CChair::Free()
 {
     __super::Free();
 
+    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_CHAIR);
     m_pGameInstance->Sub_Actor_Scene(m_pActor);
 }

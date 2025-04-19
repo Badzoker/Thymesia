@@ -436,7 +436,7 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         _vector vHitPosition = { position.x, position.y, position.z, 1.f };
         _vector vHitDir = { dir.x, dir.y, dir.z, 1.f };
         m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK_EXPLOSION, vHitPosition, vHitDir);
-
+        m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_MANA, vHitPosition, vHitDir);
 
     }
 #pragma endregion

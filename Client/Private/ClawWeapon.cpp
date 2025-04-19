@@ -389,6 +389,18 @@ void CClawWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
     m_bHitStopOnOff = true;
     m_bCollisionOn = false;
 
+#pragma region Effect
+    if (!strcmp("MONSTER", _pOther->Get_Name()))
+    {
+        _vector vPlayerLook = { (*m_pParentWorldMatrix)._31, (*m_pParentWorldMatrix)._32, (*m_pParentWorldMatrix)._33, 0.f };
+        _vector vPosition = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+        if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_01)
+            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_1_HOLDING, vPosition, vPlayerLook);
+        if (*m_pParentState == CPlayer::STATE_ATTACK_LONG_CLAW_02)
+            m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_2_HOLDING, vPosition, vPlayerLook);
+    }
+#pragma endregion
+
     if (*m_pParentState == CPlayer::STATE_CLAW_CHARGE_FULL_ATTACK)
     {
         *m_pParentState = CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2;

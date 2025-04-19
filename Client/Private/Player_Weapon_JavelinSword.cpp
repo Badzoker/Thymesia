@@ -489,6 +489,13 @@ void CPlayer_Weapon_JavelinSword::OnCollisionEnter(CGameObject* _pOther, PxConta
 
     /* 자벨린 히트 사운드 */
     m_pGameInstance->Play_Sound(L"Player_Javalien_Boom.wav", CHANNELID::SOUND_PLAYER_ATTACK_2, 3.f);
+
+    PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장		
+    _information.extractContacts(contactPoints, 1);
+    PxVec3 position = contactPoints[0].position;
+    PxVec3 dir = contactPoints[0].normal;
+    _vector vHitPosition = { position.x, position.y, position.z, 1.f };
+    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_PLAYER_JAVELIN_HIT, vHitPosition);
 }
 
 void CPlayer_Weapon_JavelinSword::OnCollision(CGameObject* _pOther, PxContactPair _information)

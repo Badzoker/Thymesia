@@ -60,6 +60,11 @@ private:
     CTexture*                       m_pNoiseTextureCom = { nullptr };
     _float                          m_fDissolveValue = {};
 
+
+#pragma region Effect
+    _bool                           m_bEffect = { false };
+#pragma endregion
+
 public:
     static CChairLamp*              Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject*            Clone(void* pArg) override;

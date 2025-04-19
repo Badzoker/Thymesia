@@ -69,6 +69,23 @@ void CChairLamp::Update(_float fTimeDelta)
 
 void CChairLamp::Late_Update(_float fTimeDelta)
 {
+    if (false == m_bEffect)
+    {
+        _float4 vPos{}, vLook{};
+        XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+        XMStoreFloat4(&vLook, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+        vPos.x += vLook.x;
+        vPos.y += vLook.y;
+        vPos.y -= 0.3f;
+        vPos.z += vLook.z;
+
+        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CHAIR, XMLoadFloat4(&vPos));
+
+        m_bEffect = true;
+    }
+
+
     __super::Late_Update(fTimeDelta);
 }
 

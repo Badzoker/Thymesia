@@ -112,6 +112,56 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
         m_CombinedWorldMatrix = m_Store_CombinedMatrix;
     }
 
+#pragma region Effect
+
+    for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT
+        {
+            switch (m_iStack_Number)
+            {
+            case 0:
+                if (!strcmp(iter.szName, "Effect_StackSword0"))
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK);
+
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_1, &m_Store_CombinedMatrix, m_pTransformCom->Get_WorldMatrix_Ptr());
+                    _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    iter.isPlay = true;
+                }
+                break;
+            case 1:
+                if (!strcmp(iter.szName, "Effect_StackSword1"))
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK);
+
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_1, &m_Store_CombinedMatrix, m_pTransformCom->Get_WorldMatrix_Ptr());
+                    _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    iter.isPlay = true;
+                }
+                break;
+            case 2:
+                if (!strcmp(iter.szName, "Effect_StackSword2"))
+                {
+                    m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_SPARK);
+
+                    m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_1, &m_Store_CombinedMatrix, m_pTransformCom->Get_WorldMatrix_Ptr());
+                    _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    iter.isPlay = true;
+                }
+                break;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (*m_pParentState != STATE_STUN && *m_pParentState != STATE_DEAD && *m_bCollider_Change)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
@@ -167,18 +217,6 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
                     }
                 }
             }
-#pragma region Effect
-
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT
-            {
-
-            }
-            else if (iter.eType == EVENT_EFFECT && iter.isEventActivate == false && true == iter.isPlay)
-            {
-
-            }
-
-#pragma endregion
         }
     }
     else

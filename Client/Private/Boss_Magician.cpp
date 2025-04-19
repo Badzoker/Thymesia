@@ -1997,7 +1997,7 @@ void CBoss_Magician::Parry_Attack_A::State_Update(_float fTimeDelta, CBoss_Magic
 			{
 				if (!strcmp(iter.szName, "Effect_Parry"))
 				{
-					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_PARRY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 					iter.isPlay = true;
 				}
 			}
