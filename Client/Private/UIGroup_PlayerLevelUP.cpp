@@ -153,20 +153,20 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iNextPlague = { 1 }; // 역병 수치
 
 		// 캐릭터 상태 변수
-		m_iCurrentAttackPower = { 25 }; // 공격 대미지 
-		m_iNextAttackPower = { 25 }; // 공격 대미지
+		m_iCurrentAttackPower = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower(); // 공격 대미지 
+		m_iNextAttackPower = m_iCurrentAttackPower; // 공격 대미지
 
 		m_iCurrentAmountOfWounds = { 75 }; // 상처 수
 		m_iNextAmountOfWounds = { 75 }; // 상처 수
 
-		m_iCurrentClawAttackPower = { 200 }; // 발톱대미지
-		m_iNextClawAttackPower = { 200 }; // 발톱대미지
+		m_iCurrentClawAttackPower = dynamic_cast<CPlayer*>(m_pPlayer)->Get_ClawAttacPower(); // 발톱대미지
+		m_iNextClawAttackPower = m_iCurrentClawAttackPower; // 발톱대미지
 
-		m_iCurrentFullHp = { 1000 }; // 체력
-		m_iNextFullHp = { 1000 }; // 체력
+		m_iCurrentFullHp = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp(); // 체력
+		m_iNextFullHp = m_iCurrentFullHp; // 체력
 
-		m_iCurrentFullMp = { 150 }; // 에너지
-		m_iNextFullMp = { 150 }; // 에너지
+		m_iCurrentFullMp = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp();; // 에너지
+		m_iNextFullMp = m_iCurrentFullMp; // 에너지
 
 
 		m_iCurrentTalentPoint = { 0 };

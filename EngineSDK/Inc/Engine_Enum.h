@@ -65,6 +65,7 @@ namespace Engine
         SOUND_MONSTER_VOICE,
         SOUND_MONSTER_WEAPON,
         SOUND_NPC,
+        SOUND_UI,
         MAXCHANNEL = 32,
     };
     enum UIOBJTYPE

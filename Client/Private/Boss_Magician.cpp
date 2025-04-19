@@ -1616,6 +1616,9 @@ void CBoss_Magician::ExeCution_State::State_Exit(CBoss_Magician* pObject)
 		pObject->m_IsStun = false;
 		pObject->m_fMonsterCurHP = pObject->m_fMonsterMaxHP;
 		pObject->m_bCanRecovery = true;
+
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 14);
 	}
 }
 

@@ -47,6 +47,11 @@ void CUI_Skill_Slot::Update(_float fTimeDelta)
 			if (m_eSlotState == SKILL_CLOSE_OFF)
 				m_eSlotState = SKILL_CLOSE_ON;
 			m_bImageOn = true;
+			if (m_bSoundOnOff && m_bOpen)
+			{
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Inventory_Material_Stone_UI_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
+				m_bSoundOnOff = false;
+			}
 		}
 		else
 		{
@@ -55,24 +60,17 @@ void CUI_Skill_Slot::Update(_float fTimeDelta)
 			if (m_eSlotState == SKILL_CLOSE_ON)
 				m_eSlotState = SKILL_CLOSE_OFF;
 			m_bImageOn = false;
+			if (!m_bSoundOnOff && m_bOpen)
+			{
+				m_bSoundOnOff = true;
+			}
 		}
-
-		//if(0 < m_iTexNumber && __super::Mouse_Select(g_hWnd, DIM_LB, 3)) // 해금 후
-		//{
-		//	m_bMouseSelectOn = true;
-
-		//}
-		//else
-		//{
-		//	m_bMouseSelectOn = false;
-
-		//}
-
 		if (m_bOpenContion && __super::Mouse_Select(g_hWnd, DIM_LB, 3)) // 해금 전
 		{
 			m_bMouseSelectOn = true;
 			if (m_eSlotState == SKILL_CLOSE_ON)
 			{
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 				m_eSlotState = SKILL_OPEN_ON;
 				m_iTexNumber = m_iIconChange;
 				m_pGameInstance->Use_Item(m_eNeedItem, 3);

@@ -130,6 +130,7 @@ void CLevel_SeaOfTrees::Update(_float fTimeDelta)
     {
         if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_MENU, L"UIScene_PlayerMenu")))
         {
+            m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Organic_Magic_Accept_Quest_Drum_Impact_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
             if (m_bStopMenuOpen)
             {
 

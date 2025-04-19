@@ -72,6 +72,7 @@ private:
 	_bool m_bTexIconOff = { false }; // 특성이 활성화 되어 있지 않다면 이미지를 딤드처리
 	_bool m_bTexEdgeOff = { false }; // 호버 반짝반짝
 	_bool m_bTexEffectOff = { false }; // 이펙트 이미지 그리기 여부
+	_bool m_bSoundOnOff = { true };
 
 public:
 	void Set_OpenContion(_bool bOpen) { m_bOpenContion = bOpen; }

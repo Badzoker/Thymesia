@@ -17,7 +17,7 @@ namespace Engine
 
 #define			FONT_GREEN		 _float4{30.f,255.f,185.f,255.f}
 #define			FONT_RED		 _float4{235.f,95.f,75.f,255.f}
-#define			FONT_GRAY		 _float4{179.f,179.f,179.f,255.f}
+#define			FONT_GRAY		 _float4{100.f,100.f,100.f,255.f}
 #define			FONT_WHITE		 _float4{255.f,255.f,255.f,255.f}
 
 

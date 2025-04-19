@@ -120,6 +120,7 @@ void CLevel_Tutorial::Update(_float fTimeDelta)
 {
     if (m_pGameInstance->isKeyEnter(DIK_TAB))
     {
+        m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Organic_Magic_Accept_Quest_Drum_Impact_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
         if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_INVEN, L"UIScene_EscMenuBase")))
         {
             m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기

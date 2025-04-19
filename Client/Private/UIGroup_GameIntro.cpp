@@ -107,6 +107,7 @@ void CUIGroup_GameIntro::Update(_float fTimeDelta)
 				if(m_pGameInstance->isAnyEnter())
 				{
 					m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
+					m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 
 					m_TextOpen = false;
 					m_ButtonOpen = true;

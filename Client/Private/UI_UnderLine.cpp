@@ -64,7 +64,11 @@ void CUI_UnderLine::Update(_float fTimeDelta)
 	{
 		if (m_pGameInstance->isMouseEnter(DIM_LB))
 		{
-			m_bMouseSelectOn = true; // 
+			m_bMouseSelectOn = true;
+			if (m_bOpen)
+			{
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Book_Page_Turn_1.ogg"), CHANNELID::SOUND_UI, 0.1f);
+			}
 		}
 	}
 	else

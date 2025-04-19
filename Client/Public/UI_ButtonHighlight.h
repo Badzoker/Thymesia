@@ -39,7 +39,7 @@ private:
 	_bool  m_ButtonShaderOpen = { false };
 	_float m_fCurrentTime = { 0 };
 	
-
+	_bool m_bSoundOnOff = { true };
 
 public:
 	HRESULT Ready_Components();

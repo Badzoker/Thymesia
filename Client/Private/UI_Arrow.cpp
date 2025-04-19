@@ -42,7 +42,11 @@ void CUI_Arrow::Update(_float fTimeDelta)
 	if (m_bOpen)
 	{
 		if (__super::Mouse_Select(g_hWnd, DIM_LB, 2))
+		{
 			m_bMouseSelectOn = true;
+			m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Ice_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
+
+		}
 		else
 			m_bMouseSelectOn = false;
 	}

@@ -181,7 +181,10 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				for (auto& Image : m_pGameInstance->Find_UIScene(UISCENE_LOADING, L"UIScene_Loading")->Find_UI_Image())
 				{
 					if (1 == Image->Get_UI_GroupID())
+					{
+						m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 						dynamic_cast<CUI_LoadingIcon*>(Image)->Set_CurrentTime(0.0f);
+					}
 				}
 				
 				//m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.2f);
