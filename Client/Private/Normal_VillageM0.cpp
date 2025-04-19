@@ -470,6 +470,9 @@ void CNormal_VillageM0::Stun_State::State_Enter(CNormal_VillageM0* pObject)
 
     pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_NORMAL;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+    pObject->m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트 
+    pObject->m_pGameInstance->Set_SlowWorld(true);
 }
 
 void CNormal_VillageM0::Stun_State::State_Update(_float fTimeDelta, CNormal_VillageM0* pObject)
@@ -485,7 +488,7 @@ void CNormal_VillageM0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             m_iIndex = 27;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))
+        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_L || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))
         {
             pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
             return;
@@ -493,7 +496,7 @@ void CNormal_VillageM0::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
     }
     else if (m_iIndex == 29 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_R || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))
+        if (pObject->m_bIsClosest && (*pObject->m_Player_State == CPlayer::STATE_LIGHT_EXECUTION_L || *pObject->m_Player_State == CPlayer::STATE_CLAW_LONG_PLUNDER_ATTACK2))
         {
             pObject->m_pState_Manager->ChangeState(new Dead_State(), pObject);
             return;

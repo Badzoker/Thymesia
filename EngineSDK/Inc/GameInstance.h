@@ -391,8 +391,15 @@ private:
 	class CMonster_Manager*				m_pMonster_Manager	  = { nullptr };
 	//범승 나중에 추가예정.(투사체 매니저)
 	class CProjectile_Manager*			m_pProjectile_Manager = { nullptr };
-	class CRippleManager*				m_pRipple_Manager = { nullptr };
+	class CRippleManager*				m_pRipple_Manager     = { nullptr };
+
 public:
+	void   Set_SlowWorld(_bool _OnOff) { m_bSlowWorldOnOFF = _OnOff; }	
+	_bool* Get_SlowWorldPtr()          { return &m_bSlowWorldOnOFF; }		
+
+private:
+	_bool		m_bSlowWorldOnOFF = { false };	
+
 
 public:
 	void Release_Engine();

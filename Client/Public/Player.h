@@ -363,6 +363,7 @@ private:
 	CStateMgr* m_pStateMgr = { nullptr };
 	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
 
+	_uint							    m_iParryMotion = {};
 
 #pragma region UI 관련 함수 
 private:

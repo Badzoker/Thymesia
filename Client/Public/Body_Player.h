@@ -196,6 +196,7 @@ public:
 
 	/* 노말 몬스터 처형*/
 	void STATE_LIGHT_EXECUTION_R_Method();
+	void STATE_LIGHT_EXECUTION_L_Method();
 
 
 	/* 사다리 이동 관련 */
@@ -328,11 +329,16 @@ private:
 
 	_bool  m_bFirstCameraPos = { true };
 
+	/* 발소리 관련 */
 	_bool  m_RightFootStepSound = { true };
 	_bool  m_LeftFootStepSound = { true };
 
 	_uint  m_iRightFootStepSound = { 0 };
 	_uint  m_iLeftFootStepSound = { 0 };
+
+	/* 사다리 소리 관련 */
+	_uint  m_iLadderStepSound = {};
+
 
 	const _float4x4* m_mRightFootBoneMartix = { nullptr };
 	const _float4x4* m_mLeftFootBoneMartix = { nullptr };

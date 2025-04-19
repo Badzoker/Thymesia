@@ -158,6 +158,11 @@ void CRightWeapon::Update(_float fTimeDelta)
                             m_pCamera->ZoomOut();
                         }
 
+                        if (!strcmp(iter.szName, "Camera_Shake"))
+                        {
+                            m_pCamera->ShakeOn(800.f, 800.f, 10.f, 10.f);
+                        }
+
 
                         else if (iter.isEventActivate == false && m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fEndTime)
                         {

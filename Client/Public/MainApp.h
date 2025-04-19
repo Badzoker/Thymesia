@@ -24,9 +24,12 @@ public:
 	HRESULT Render();
 
 private: /* 엔진의 기능을 이용ㅇ하기위해 게임인스튼서 클래스르 ㄱㄹ객체화 해놓았다. */
-	CGameInstance*			m_pGameInstance = { nullptr };
-	ID3D11Device*			m_pDevice = { nullptr };
-	ID3D11DeviceContext*	m_pContext = { nullptr };
+	CGameInstance*			m_pGameInstance      = { nullptr };
+	ID3D11Device*			m_pDevice            = { nullptr };
+	ID3D11DeviceContext*	m_pContext           = { nullptr };
+
+	_bool*				    m_pSlowWord          = { false };	
+	_float				    m_fSlowWorldEndTimer = {};	
 
 #ifdef _DEBUG
 private:
