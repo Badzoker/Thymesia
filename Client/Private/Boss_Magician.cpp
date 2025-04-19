@@ -1984,28 +1984,15 @@ void CBoss_Magician::Parry_Attack_A::State_Enter(CBoss_Magician* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+#pragma region Effect_Parry
+	pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
 }
 
 void CBoss_Magician::Parry_Attack_A::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
-#pragma region Effect_Parry
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Effect_Parry"))
-				{
-					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_PARRY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
-#pragma endregion
-
-
 	if (m_iIndex == 26 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f &&
@@ -2063,28 +2050,15 @@ void CBoss_Magician::Parry_Attack_B::State_Enter(CBoss_Magician* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+#pragma region Effect_Parry
+	pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
 }
 
 void CBoss_Magician::Parry_Attack_B::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
-#pragma region Effect_Parry
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Effect_Parry"))
-				{
-					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
-#pragma endregion
-
-
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 140.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 171.f)
@@ -2126,26 +2100,18 @@ void CBoss_Magician::Parry_Attack_C::State_Enter(CBoss_Magician* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+#pragma region Effect_Parry
+	pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
+
+
 }
 
 void CBoss_Magician::Parry_Attack_C::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
 {
-#pragma region Effect_Parry
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Effect_Parry"))
-				{
-					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_DISAPPEAR_MOVING, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
-#pragma endregion
+
 
 	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
