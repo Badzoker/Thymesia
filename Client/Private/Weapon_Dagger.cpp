@@ -232,6 +232,8 @@ void CWeapon_Dagger::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
+
+		m_pGameInstance->Play_Sound(L"Knife_Attack_01.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
 	}
 }
 

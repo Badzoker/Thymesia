@@ -535,7 +535,7 @@ void CBoss_Bat::Intro_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
 
 	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_Intro.ogg"), 0.3f);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_Intro.ogg"), 0.15f);
 }
 
 void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
@@ -584,7 +584,7 @@ void CBoss_Bat::Intro_State::State_Exit(CBoss_Bat* pObject)
 	pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 1, 31);
 
 	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_loop.ogg"), 0.3f);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_loop.ogg"), 0.15f);
 }
 
 #pragma endregion 
@@ -705,7 +705,7 @@ void CBoss_Bat::Execution_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
 	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_End.ogg"), 0.3f);
+	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_End.ogg"), 0.15f);
 }
 
 void CBoss_Bat::Execution_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
