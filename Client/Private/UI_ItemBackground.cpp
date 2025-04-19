@@ -37,11 +37,23 @@ void CUI_ItemBackground::Priority_Update(_float fTimeDelta)
 
 void CUI_ItemBackground::Update(_float fTimeDelta)
 {
-	if (__super::On_Mouse_UI(g_hWnd,2))
+	if (__super::On_Mouse_UI(g_hWnd, 2))
+	{
 		m_bMouseOn = true;
+		if (m_bSoundOnOff && m_bOpen)
+		{
+			m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Inventory_Material_Stone_UI_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
+			m_bSoundOnOff = false;
+		}
+	}
 	else
+	{
 		m_bMouseOn = false;
-
+		if (!m_bSoundOnOff && m_bOpen)
+		{
+			m_bSoundOnOff = true;
+		}
+	}
 	if (m_pGameInstance->isMouseEnter(DIM_RB))
 	{
 		if (__super::Mouse_Select(g_hWnd, DIM_RB,2.5))

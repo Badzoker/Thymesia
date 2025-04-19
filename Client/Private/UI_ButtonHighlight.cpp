@@ -59,45 +59,56 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 				else
 					m_fCurrentTime += fTimeDelta;
 			}
-			
 
-		}
-		if (iMyShaderPass == m_iShaderPassNum)
-		{
-			if (__super::On_Mouse_UI(g_hWnd, 3))
-			{
-				m_bImageOn = true;
-				Set_Change_TextColor(FONT_WHITE);
 
-			}
-			else
-			{
-				m_bImageOn = false;
-				Set_Change_TextColor(FONT_GRAY);
-			}
 
-			if (m_bImageOn)
+			if (iMyShaderPass == m_iShaderPassNum)
 			{
-				if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+				if (__super::On_Mouse_UI(g_hWnd, 3))
 				{
-					m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
+					m_bImageOn = true;
+					if (m_bSoundOnOff && m_bOpen)
+					{
+						m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Inventory_Material_Stone_UI_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
+						m_bSoundOnOff = false;
+					}
+					Set_Change_TextColor(FONT_WHITE);
+
 				}
 				else
 				{
-					m_bMouseSelectOn = false; // 
+					if (!m_bSoundOnOff && m_bOpen)
+					{
+						m_bSoundOnOff = true;
+					}
+					m_bImageOn = false;
+					Set_Change_TextColor(FONT_GRAY);
+				}
 
+				if (m_bImageOn)
+				{
+					if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
+					{
+
+						m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
+						m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
+					}
+					else
+					{
+						m_bMouseSelectOn = false; // 
+
+					}
+				}
+			}
+			if (m_eRenderType == Engine::TEXT_ALPHA)
+			{
+				m_fAlpha += fTimeDelta;
+				if (1 <= m_fAlpha)
+				{
+					m_fAlpha = 1.f;
 				}
 			}
 		}
-		if (m_eRenderType == Engine::TEXT_ALPHA)
-		{
-			m_fAlpha += fTimeDelta;
-			if (1 <= m_fAlpha)
-			{
-				m_fAlpha = 1.f;
-			}
-		}
-
 	}
 }
 

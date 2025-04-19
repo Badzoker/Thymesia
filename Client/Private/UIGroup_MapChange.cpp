@@ -130,15 +130,21 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 					Button->Set_Mouse_Select_OnOff(false);
 					if (1 == Button->Get_UI_GroupID())
 					{
-						m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
-						m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, false);
-						m_pGameInstance->Set_NextLevel_Open(true, m_eNextLevel);
+						m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
+						
 					}
 					if (2 == Button->Get_UI_GroupID())
 					{
 						m_bPopOpen = false;
 						m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
 					}
+				}
+
+				if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+				{
+					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMapChangePop, false);
+					m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pMyScene, false);
+					m_pGameInstance->Set_NextLevel_Open(true, m_eNextLevel);
 				}
 			}
 		}

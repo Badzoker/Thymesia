@@ -46,7 +46,8 @@ private:
 	_bool m_bMouseOn = { false };
 	_float3 m_fTextPosition = {};
 
-	
+	_bool m_bSoundOnOff = { true };
+
 
 public:
 	HRESULT Ready_Components();

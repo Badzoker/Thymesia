@@ -62,15 +62,16 @@ void CUI_Frame::Update(_float fTimeDelta)
 		if (__super::Mouse_Select(g_hWnd, DIM_LB,3))
 		{
 			m_bMouseSelectOn = true;
-			//if (200 <= m_iGroupID && m_bActive) // 100번대 ID는 재능이기에 on/off를 하지 않는다                                                                               
-			//{
-			//	if (m_eSlotState == SLOT_OPEN_ON)
-			//		m_eSlotState = SLOT_CLOSE_ON;
-			//	else if (m_eSlotState == SLOT_CLOSE_ON)
-			//		m_eSlotState = SLOT_OPEN_ON;
 
-			//}
-			
+			if (m_bOpen)
+			{
+				if (m_eSlotState == SLOT_OPEN_ON
+					|| m_eSlotState == SLOT_OPEN_OFF)
+					m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Lightning_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
+				else
+					m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Ice_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
+
+			}
 		}
 		else
 		{

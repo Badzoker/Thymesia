@@ -69,6 +69,7 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 				m_fDelayTime = 0;
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pTalkScene, false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene, true);
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 
 
 			}
@@ -83,6 +84,7 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 				m_fDelayTime = 0;
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pTalkScene_Boss, false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, true);
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 
 			}
 		}
@@ -96,6 +98,7 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 				m_fDelayTime = 0;
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingTalk, false);
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 1.5f);;
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 
 			}
 		}

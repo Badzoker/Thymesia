@@ -44,17 +44,27 @@ void CUI_MapEntryFrame::Update(_float fTimeDelta)
 		{
 			m_bImageOn = true;
 			m_iTexNumber = 1;
+			if (m_bSoundOnOff && m_bOpen)
+			{
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Inventory_Material_Stone_UI_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
+				m_bSoundOnOff = false;
+			}
 		}
 		else
 		{
 			m_bImageOn = false;
 			m_iTexNumber = 0;
+			if (!m_bSoundOnOff && m_bOpen)
+			{
+				m_bSoundOnOff = true;
+			}
 		}
 
 		if (m_bImageOn)
 		{
 			if (__super::Mouse_Select(g_hWnd, DIM_LB, 3))
 			{
+				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 				m_bMouseSelectOn = true; // 최초에 마우스 클릭이 있는지 체크
 			}
 			else

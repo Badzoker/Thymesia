@@ -780,6 +780,9 @@ void CBoss_Urd::ExeCution_State::State_Exit(CBoss_Urd* pObject)
 		pObject->m_bCanRecovery = true;
 		pObject->m_IsStun = false;
 
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 44);
+
 		pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 		pObject->m_pGameInstance->PlayBGM(TEXT("urd_music_2_B.ogg"), 0.3f);
 	}
