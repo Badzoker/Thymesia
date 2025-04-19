@@ -514,6 +514,29 @@ void CNormal_VillageF1::Run_Attack::State_Enter(CNormal_VillageF1* pObject)
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
     pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(3.f);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+#pragma region SOUND_RUN_ATTACK
+    if (m_iIndex == 6 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_Heavy_Whoosh_1")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("WhooshHeavySword_05.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Run_Attack::State_Update(_float fTimeDelta, CNormal_VillageF1* pObject)
@@ -570,6 +593,54 @@ void CNormal_VillageF1::Attack_01::State_Update(_float fTimeDelta, CNormal_Villa
         }
     }
 
+
+#pragma region SOUND_ATTACK_01_1
+    if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_Knife_Whoosh_1")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Villager_WhooshKnife_01.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Attack_06.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
+
+#pragma region SOUND_ATTACK_01_2
+    if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_Knife_Whoosh_2")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Villager_WhooshKnife_04.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Attack_03.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Attack_01::State_Exit(CNormal_VillageF1* pObject)
@@ -601,6 +672,55 @@ void CNormal_VillageF1::Attack_02::State_Update(_float fTimeDelta, CNormal_Villa
 
     if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+
+
+#pragma region SOUND_ATTACK_02_1
+    if (m_iIndex == 3 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_Knife_Whoosh_3")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Villager_WhooshKnife_02.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Attack_01.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
+
+#pragma region SOUND_ATTACK_02_2
+    if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_Knife_Whoosh_4")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Villager_WhooshKnife_05.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Attack_04.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Attack_02::State_Exit(CNormal_VillageF1* pObject)
@@ -625,6 +745,31 @@ void CNormal_VillageF1::Attack_03::State_Update(_float fTimeDelta, CNormal_Villa
 {
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+
+
+#pragma region SOUND_ATTACK_03_1
+    if (m_iIndex == 5 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Whoosh_5")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_ACTION);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Villager_WhooshKnife_03.ogg"), CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Scream_03.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.1f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Attack_03::State_Exit(CNormal_VillageF1* pObject)
@@ -666,6 +811,54 @@ void CNormal_VillageF1::Hit_State::State_Update(_float fTimeDelta, CNormal_Villa
 {
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+
+
+#pragma region SOUND_HIT_1
+    if (m_iIndex == 26 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Hurt_1")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Hurt_01.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.1f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
+
+
+#pragma region SOUND_HIT_2
+    if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Hurt_2")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Hurt_02.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.1f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+
+#pragma endregion
+
 }
 
 void CNormal_VillageF1::Hit_State::State_Exit(CNormal_VillageF1* pObject)
@@ -735,6 +928,29 @@ void CNormal_VillageF1::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
 
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
     }
+
+#pragma region SOUND_STUN
+    if (m_iIndex == 31 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Hurt_3")) //1페이즈에서 애니메이션이 스왑되기에 여기에 하나더 추가
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Hurt_01.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
+
 }
 
 void CNormal_VillageF1::Stun_State::State_Exit(CNormal_VillageF1* pObject)
@@ -877,6 +1093,28 @@ void CNormal_VillageF1::Parry_State::State_Update(_float fTimeDelta, CNormal_Vil
             break;
         }
     }
+
+
+#pragma region SOUND_PARRY_1
+    if (m_iIndex == 34 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Parry_1"))
+                    {
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Player_Parry_Deflect_L_Real.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 20.f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Parry_State::State_Exit(CNormal_VillageF1* pObject)
@@ -896,6 +1134,29 @@ void CNormal_VillageF1::Dead_State::State_Update(_float fTimeDelta, CNormal_Vill
     {
         pObject->m_iMonster_State = STATE_DEAD;
     }
+
+
+#pragma region SOUND_DEAD_1
+    if (m_iIndex == 19 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
+    {
+        for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+        {
+            if (iter.isPlay == false)
+            {
+                if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+                {
+
+                    if (!strcmp(iter.szName, "Event_VillagerF_Die_1"))
+                    {
+                        pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_MONSTER_VOICE);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("VillagerF_Voice_Die_01.ogg"), CHANNELID::SOUND_MONSTER_VOICE, 0.15f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CNormal_VillageF1::Dead_State::State_Exit(CNormal_VillageF1* pObject)
