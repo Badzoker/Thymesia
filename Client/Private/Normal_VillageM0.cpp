@@ -539,6 +539,29 @@ void CNormal_VillageM0::Attack_01_State::State_Enter(CNormal_VillageM0* pObject)
 
 void CNormal_VillageM0::Attack_01_State::State_Update(_float fTimeDelta, CNormal_VillageM0* pObject)
 {
+#pragma region SOUND_ATTACK01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "VillagerM_WhooshAxe0"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_WhooshAxe0.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "VillagerM_Voice_Attack1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Attack1.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
@@ -563,6 +586,33 @@ void CNormal_VillageM0::Attack_02_State::State_Enter(CNormal_VillageM0* pObject)
 
 void CNormal_VillageM0::Attack_02_State::State_Update(_float fTimeDelta, CNormal_VillageM0* pObject)
 {
+#pragma region SOUND_ATTACK02
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "VillagerM_WhooshAxe2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_WhooshAxe2.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "VillagerM_WhooshAxe4"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_WhooshAxe4.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "VillagerM_Voice_Attack0"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Attack0.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 5 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 99.f)
     {
         m_iIndex = 6;

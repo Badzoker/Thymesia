@@ -62,6 +62,8 @@ namespace Engine
         SOUND_MONSTER_STUN, 
         SOUND_BOSS_ACTION,
         SOUND_MONSTER_ACTION,
+        SOUND_MONSTER_VOICE,
+        SOUND_MONSTER_WEAPON,
         SOUND_NPC,
         MAXCHANNEL = 32,
     };
