@@ -1248,7 +1248,7 @@ technique11 DefaultTechnique
     pass Round //5
     {
         SetRasterizerState(Rs_Cull_NONE);
-        SetDepthStencilState(DSS_SKip_Z, 0);
+        SetDepthStencilState(DSS_WeightBlend, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
