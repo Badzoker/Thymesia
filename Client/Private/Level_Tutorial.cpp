@@ -53,6 +53,9 @@ HRESULT CLevel_Tutorial::Initialize()
     if (FAILED(Ready_Layer_Button(TEXT("Layer_Button"))))
         return E_FAIL;
 
+    if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
+        return E_FAIL;
+
     if (FAILED(Ready_Layer_Structure(TEXT("Layer_Structure"))))
         return E_FAIL;
 
@@ -63,9 +66,6 @@ HRESULT CLevel_Tutorial::Initialize()
         return E_FAIL;
 
     if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-        return E_FAIL;
-
-    if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
         return E_FAIL;
 
     //if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
@@ -2545,7 +2545,11 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         case 21:
             pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Holding_Version2");
             break;
+        case 22:
+            pDesc.szShaderName = TEXT("Prototype_Component_Shader_VtxPointInstance_Compute_Drop_Version2");
+            break;
 
+            
         }
 #pragma endregion
 

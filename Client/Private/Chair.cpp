@@ -47,6 +47,7 @@ HRESULT CChair::Initialize(void* pArg)
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::OBJECT, iSettingColliderGroup);
 
+
     return S_OK;
 }
 

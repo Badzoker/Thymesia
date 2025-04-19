@@ -1005,6 +1005,34 @@ void CSMain_Particle_Holding_Version2(int3 dispatchThreadID : SV_DispatchThreadI
     g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
 }
 
+[numthreads(256, 1, 1)]
+void CSMain_Particle_Drop_Version2(int3 dispatchThreadID : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex)
+{
+    Point_Particle tInput = g_tInput_Compute[dispatchThreadID.x];
+    
+    sharedParticles[groupIndex] = g_tOutput_Compute[dispatchThreadID.x];
+    GroupMemoryBarrierWithGroupSync();
+    
+    sharedParticles[groupIndex].vSpeed = tInput.vSpeed * 1.f;
+    sharedParticles[groupIndex].vRight = tInput.vRight * 1.f;
+    sharedParticles[groupIndex].vUp = tInput.vUp * 1.f;
+    sharedParticles[groupIndex].vLook = tInput.vLook * 1.f;
+    sharedParticles[groupIndex].vLifeTime.x = tInput.vLifeTime.x * 1.f;
+    sharedParticles[groupIndex].vTranslation.xyz -= tInput.vSpeed.xyz * 0.0167f;
+    sharedParticles[groupIndex].vTranslation.w = 1.f;
+    sharedParticles[groupIndex].vLifeTime.y += 0.0167f;
+    
+    if (tInput.vLifeTime.x < sharedParticles[groupIndex].vLifeTime.y)
+    {
+        sharedParticles[groupIndex].vLifeTime.y = 0.f;
+        sharedParticles[groupIndex].vTranslation.xyz = tInput.vTranslation.xyz * 1.f;
+    }
+    
+    GroupMemoryBarrierWithGroupSync();
+    
+    g_tOutput_Compute[dispatchThreadID.x] = sharedParticles[groupIndex];
+}
+
 
 technique11 DefaultTechnique
 {
@@ -1167,6 +1195,13 @@ technique11 DefaultTechnique
         SetVertexShader(NULL);
         SetPixelShader(NULL);
         SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Holding_Version2()));
+    }
+
+    pass Particle_Drop_Version2 //23
+    {
+        SetVertexShader(NULL);
+        SetPixelShader(NULL);
+        SetComputeShader(CompileShader(cs_5_0, CSMain_Particle_Drop_Version2()));
     }
 
 }

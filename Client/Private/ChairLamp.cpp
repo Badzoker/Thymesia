@@ -81,7 +81,6 @@ void CChairLamp::Late_Update(_float fTimeDelta)
         vPos.z += vLook.z;
 
         m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CHAIR, XMLoadFloat4(&vPos));
-
         m_bEffect = true;
     }
 
