@@ -429,6 +429,19 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_StunStart"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Stun_Start.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+
+        }
+    }
+
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;
@@ -472,6 +485,14 @@ void CBoss_Varg::Intro_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 {
     for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
     {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Intro"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Intro.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
 #pragma region Effect_Intro
         if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
         {
@@ -560,6 +581,24 @@ void CBoss_Varg::Avoid_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Avoid_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Avoid"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Avoid.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Avoid_Attack"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Avoid_Attack.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+
+        }
+    }
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         if (m_bBonusAttack)
@@ -640,6 +679,18 @@ void CBoss_Varg::Walk_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Walk"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Walk.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     pObject->RotateDegree_To_Player();
     if (m_iIndex == 47)
     {
@@ -682,6 +733,28 @@ void CBoss_Varg::Attack_Combo_A::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Attack1_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack1_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack1_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack1_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack1_3"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack1_03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     //2단
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_iIndex == 7 && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 45.f)
     {
@@ -734,6 +807,23 @@ void CBoss_Varg::Attack_Combo_B::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Attack2_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack2_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
         m_iIndex = 11;
@@ -776,16 +866,33 @@ void CBoss_Varg::Attack_Combo_C::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Attack2_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack2_2b1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
     {
-        m_iIndex = 12;
+        m_iIndex = 13;
         pObject->m_iMonster_Attack_Power = 174;
         pObject->RotateDegree_To_Player();
         pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
     }
 
-    if (m_iIndex == 12 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    if (m_iIndex == 13 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
         switch (iRandom)
@@ -818,6 +925,28 @@ void CBoss_Varg::Attack_Combo_D::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Attack1_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack1_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack2_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack2_2b"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (m_iIndex == 7 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 50.f)
     {
         m_iIndex = 10;
@@ -868,6 +997,23 @@ void CBoss_Varg::Attack_Combo_E::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Attack2_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Attack1_3"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Attack1_03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 110.f)
     {
         m_iIndex = 9;
@@ -907,6 +1053,18 @@ void CBoss_Varg::Run_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Run_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Run"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Run.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (m_iIndex == 24)
         m_fTimer += fTimeDelta;
 
@@ -941,6 +1099,18 @@ void CBoss_Varg::Raid_Attack_01::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Raid_Attack_01::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_RaidAttack1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_RaidAttack1.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
@@ -973,6 +1143,18 @@ void CBoss_Varg::Raid_Attack_02::State_Enter(CBoss_Varg* pObject)
 }
 void CBoss_Varg::Raid_Attack_02::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_RaidAttack2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_RaidAttack2.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
@@ -1092,6 +1274,32 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
     {
         for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+            {
+                if (!strcmp(iter.szName, "Sound_Execution1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Varg_Execution01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Execution2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Varg_Execution02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Execution3"))
+                {
+                    if (pObject->m_iPhase == PHASE_ONE)
+                    {
+                        pObject->m_pGameInstance->Play_Sound(L"Varg_Execution03.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                        iter.isPlay = true;
+                    }
+                    else if (pObject->m_iPhase == PHASE_TWO)
+                    {
+                        pObject->m_pGameInstance->Play_Sound(L"Varg_Dead01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                        iter.isPlay = true;
+                    }
+                }
+            }
             if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
             {
                 if (!strcmp(iter.szName, "Execution_1")) //Execution 첫번째 
@@ -1177,6 +1385,15 @@ void CBoss_Varg::Roar_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
     for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
     {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Roar"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Roar.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+
 #pragma region Effect_Roar
         if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
         {
@@ -1265,6 +1482,18 @@ void CBoss_Varg::Catch_State::State_Enter(CBoss_Varg* pObject)
 void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
     pObject->RotateDegree_To_Player();
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Catch"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Catch.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     //첫번째 잡을려하는 모션 끝내고 달려가는거 넣기
     if (m_iIndex == 30 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f && m_bFirst)
     {
@@ -1285,6 +1514,20 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
 #pragma region Effect_Catch
         for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+            {
+                if (!strcmp(iter.szName, "Sound_Catch1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Varg_Player_Catch01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Catch2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Varg_Player_Catch02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                    iter.isPlay = true;
+                }
+            }
+
             if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
             {
                 if (!strcmp(iter.szName, "Effect_Catch")) //Catch Eye + Trail
@@ -1352,6 +1595,15 @@ void CBoss_Varg::Dead_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
     for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
     {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Dead"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Dead02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+
         if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)
         {
             if (!strcmp(iter.szName, "Dead_Effect")) 
@@ -1423,6 +1675,18 @@ void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::ExeCution_Start_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Execution_Start"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Varg_Execution_Start.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
     _bool bMonster_FinalEvent = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterFinalEvent(); 
 
     if ((*pObject->m_Player_State) == CPlayer::STATE_Varg_Execution && bMonster_FinalEvent) 
