@@ -162,8 +162,8 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iCurrentClawAttackPower = { 200 }; // 발톱대미지
 		m_iNextClawAttackPower = { 200 }; // 발톱대미지
 
-		m_iCurrentFullHp = { 300 }; // 체력
-		m_iNextFullHp = { 300 }; // 체력
+		m_iCurrentFullHp = { 1000 }; // 체력
+		m_iNextFullHp = { 1000 }; // 체력
 
 		m_iCurrentFullMp = { 150 }; // 에너지
 		m_iNextFullMp = { 150 }; // 에너지
