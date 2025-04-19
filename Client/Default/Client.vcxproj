@@ -404,6 +404,7 @@
     <ClInclude Include="..\Public\UI_DiamondIcon.h" />
     <ClInclude Include="..\Public\UI_Effect_Frame.h" />
     <ClInclude Include="..\Public\UI_Effect_SlotFrame.h" />
+    <ClInclude Include="..\Public\UI_EndingScene.h" />
     <ClInclude Include="..\Public\UI_Feather_Icon.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -708,6 +709,7 @@
     <ClCompile Include="..\Private\UI_DiamondIcon.cpp" />
     <ClCompile Include="..\Private\UI_Effect_Frame.cpp" />
     <ClCompile Include="..\Private\UI_Effect_SlotFrame.cpp" />
+    <ClCompile Include="..\Private\UI_EndingScene.cpp" />
     <ClCompile Include="..\Private\UI_Feather_Icon.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
