@@ -1024,6 +1024,9 @@
     <Filter Include="03.UIObject\3.Button\1.LockLine">
       <UniqueIdentifier>{85213942-3037-419a-9c03-bfc026bc3ca6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\Image\UI_EndingScene">
+      <UniqueIdentifier>{19c22788-4eb6-4ba9-bcf4-4cd412994a59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1929,6 +1932,9 @@
     <ClInclude Include="..\Public\UI_Bar_Poison.h">
       <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_Bar_Poison</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_EndingScene.h">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_EndingScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2824,6 +2830,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QuestBackground.cpp">
       <Filter>03.UIObject\1.UIObjClass\PoisonQuest\UI_QuestBackground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_EndingScene.cpp">
+      <Filter>03.UIObject\1.UIObjClass\Image\UI_EndingScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

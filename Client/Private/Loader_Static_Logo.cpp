@@ -231,6 +231,8 @@
 #include "UI_Bar_Poison.h"
 #include "UI_Frame_Poison.h"
 #include "UI_QuestBackground.h"
+
+#include "UI_EndingScene.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -1822,6 +1824,19 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UI_Frame_Poison */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Frame_Poison"),
 		CUI_Frame_Poison::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	//====================================================================================================================================
+
+
+	/* For.Prototype_Component_Texture_UI_EndingScene*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EndingScene"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Ending/UI_EndingScene_0%d.dds"), 5))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UI_EndingScene */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_EndingScene"),
+		CUI_EndingScene::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//====================================================================================================================================

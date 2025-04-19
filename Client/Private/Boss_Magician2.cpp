@@ -571,7 +571,7 @@ void CBoss_Magician2::ExeCution_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish() && pObject->m_iMonster_State != STATE_DEAD)
 	{
 		//사실 여기로 들어오면 그냥 죽은거임 ㅇㅇ	
 		pObject->m_iMonster_State = STATE_DEAD;

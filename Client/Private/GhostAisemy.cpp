@@ -234,13 +234,29 @@ void CGhostAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
     {
         m_pButton->Activate_Button(false);
 
-        if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1"))
-            && !m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1")))
+        if (m_eMyLevel == LEVEL_OCEAN)
         {
-            m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
+            if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding"))
+                && !m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding_Image")))
+            {
+                m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
+                m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), true);
+                m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding")), true);
 
-            m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), true);
-            m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1")), true);
+            }
+
+        }
+        else
+        {
+            if (!m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1"))
+                && !m_pGameInstance->Get_Scene_Render_State(m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1")))
+            {
+                m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true); // 마우스 이미지 켜기
+
+                m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), true);
+                m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1")), true);
+            }
+
         }
 
         iRandVoice = rand() % 5 + 1;

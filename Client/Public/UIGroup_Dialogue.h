@@ -48,6 +48,9 @@ private:
 
 private:
 	LEVELID m_eMyLevel = {};
+private:
+	CUI_Scene* m_pEndingTalk = {};
+	CUI_Scene* m_pEndingImage = {};
 
 
 public:

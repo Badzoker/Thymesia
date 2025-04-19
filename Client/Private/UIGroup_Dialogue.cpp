@@ -47,6 +47,10 @@ HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 	m_pBossTextBox->Set_OnOff(false);
 	dynamic_cast<CUI_TextBox*>(m_pBossTextBox)->Set_TextDrawType(TEXT_ALPHA_ANIM);
 
+
+	m_pEndingTalk = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding");
+	m_pEndingImage = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding_Image");
+		
 	return S_OK;
 }
 
@@ -82,7 +86,25 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 
 			}
 		}
+		else if (m_pGameInstance->Get_Scene_Render_State(m_pEndingTalk))
+		{
+			dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(true);
+			m_fDelayTime += fTimeDelta;
 
+			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
+			{
+				m_fDelayTime = 0;
+				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingTalk, false);
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 1.5f);;
+
+			}
+		}
+		_bool bCheck = false;
+		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingImage, true);
+			bCheck = true;
+		}
 		if (m_pGameInstance->Get_Scene_Render_State(m_pPopScene))
 		{
 			AIsemy_Pop_Button();
@@ -91,7 +113,11 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 		{
 			AIsemy_Pop_Boss_Button();
 		}
-
+		else if (m_pGameInstance->Get_Scene_Render_State(m_pEndingImage))
+		{
+			if(bCheck)
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9f);
+		}
 	}
 }
 
@@ -250,6 +276,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 		}
 	}
 }
+
 //
 //void CUIGroup_Dialogue::Boss_Talk_Pop(UIBOSSTALK eBoss)
 //{
@@ -296,6 +323,9 @@ HRESULT CUIGroup_Dialogue::Ready_UIObject()
 	
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
+	
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding");
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding_Image");
 	
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_BossTalk");
 	LoadData_UIText_Info(L"UIScene_BossTalk");
