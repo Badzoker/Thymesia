@@ -578,6 +578,11 @@ void CBoss_Bat::Intro_State::State_Exit(CBoss_Bat* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Dialogue"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 1, 31);
+
 	pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
 	pObject->m_pGameInstance->PlayBGM(TEXT("Blood_Bat_-_loop.ogg"), 0.3f);
 }
@@ -778,6 +783,10 @@ void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);
 		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+
+
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 33);
 #pragma endregion
 	}
 }

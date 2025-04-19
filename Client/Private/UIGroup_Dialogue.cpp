@@ -4,6 +4,8 @@
 #include "UIGroup_Dialogue.h"
 
 #include "UI_Button.h"
+#include "UI_Text.h"
+#include "UI_TextBox.h"
 #include "Player.h"
 
 CUIGroup_Dialogue::CUIGroup_Dialogue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -39,6 +41,11 @@ HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 	m_pTalkScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
 	m_pPopScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
 
+	m_pBossTalk = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk");
+	for (auto& BossTextBox : m_pBossTalk->Find_UI_TextBox())
+		m_pBossTextBox = BossTextBox;
+	m_pBossTextBox->Set_OnOff(false);
+	dynamic_cast<CUI_TextBox*>(m_pBossTextBox)->Set_TextDrawType(TEXT_ALPHA_ANIM);
 
 	return S_OK;
 }
@@ -84,11 +91,79 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 		{
 			AIsemy_Pop_Boss_Button();
 		}
+
 	}
 }
 
 void CUIGroup_Dialogue::Update(_float fTimeDelta)
 {
+	if (m_bRenderOpen)
+	{
+		if (m_pBossTextBox->Get_OnOff())
+		{
+			if (m_pGameInstance->Get_Condition(m_pBossTalk, 0) == 1) // 보스 등장
+			{
+				if (m_fBossTalkTime < 3.f)
+				{
+					for (auto& BossTalk : m_BossTextInfo)
+					{
+						if (m_pGameInstance->Get_Condition(m_pBossTalk, 1) == BossTalk.iTextID)
+						{
+							m_pBossTextBox->Set_Content(BossTalk.srtTextContent.c_str());
+							break;
+						}
+					}
+				}
+				else if (m_fBossTalkTime < 6.f)
+				{
+					for (auto& BossTalk : m_BossTextInfo)
+					{
+						if (m_pGameInstance->Get_Condition(m_pBossTalk, 1) + 1 == BossTalk.iTextID)
+						{
+							m_pBossTextBox->Set_Content(BossTalk.srtTextContent.c_str());
+							break;
+						}
+					}
+				}
+				else if (m_fBossTalkTime >= 6.0f)
+				{
+					m_pBossTextBox->Set_OnOff(false);
+					m_fBossTalkTime = 0.0f;
+				}
+				m_fBossTalkTime += fTimeDelta;
+
+			}
+			else if (m_pGameInstance->Get_Condition(m_pBossTalk, 0) == 2) // 보스 죽음
+			{
+				if (m_fBossTalkTime < 3.f)
+				{
+					for (auto& BossTalk : m_BossTextInfo)
+					{
+						if (m_pGameInstance->Get_Condition(m_pBossTalk, 1) == BossTalk.iTextID)
+						{
+							m_pBossTextBox->Set_Content(BossTalk.srtTextContent.c_str());
+							break;
+						}
+					}
+				}
+				else if (m_fBossTalkTime >= 3.0f)
+				{
+					m_pBossTextBox->Set_OnOff(false);
+					m_fBossTalkTime = 0.0f;
+				}
+				m_fBossTalkTime += fTimeDelta;
+
+			}
+			
+		}
+		else
+		{
+			m_fBossTalkTime = 0.0f;
+
+		}
+
+
+	}
 }
 
 void CUIGroup_Dialogue::Late_Update(_float fTimeDelta)
@@ -175,6 +250,44 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 		}
 	}
 }
+//
+//void CUIGroup_Dialogue::Boss_Talk_Pop(UIBOSSTALK eBoss)
+//{
+//
+//
+//	switch (eBoss)
+//	{
+//	case Client::TALK_VARG:
+//		break;
+//	case Client::TALK_MAGICIAN:
+//		break;
+//	case Client::TALK_MAGICIAN2:
+//		break;
+//	case Client::TALK_BAT:
+//		break;
+//	case Client::TALK_URD:
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//}
 
 HRESULT CUIGroup_Dialogue::Ready_UIObject()
 {
@@ -183,6 +296,11 @@ HRESULT CUIGroup_Dialogue::Ready_UIObject()
 	
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
 	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
+	
+	LoadData_UIObject(LEVEL_STATIC, UISCENE_DIALOGUE, L"UIScene_BossTalk");
+	LoadData_UIText_Info(L"UIScene_BossTalk");
+
+
 	return S_OK;
 }
 
@@ -345,7 +463,7 @@ HRESULT CUIGroup_Dialogue::LoadData_UIText_Info(const _tchar* szSceneName)
 		}
 
 
-		m_TextInfo.push_back(TextInfo);
+		m_BossTextInfo.push_back(TextInfo);
 
 	}
 

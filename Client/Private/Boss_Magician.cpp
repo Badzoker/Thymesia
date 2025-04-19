@@ -621,6 +621,11 @@ void CBoss_Magician::Intro_State::State_Exit(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_SEAOFTREES, TEXT("Layer_Dialogue"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 1, 11);
+
 	pObject->m_pGameInstance->PlayBGM(TEXT("charmer_music_A.ogg"), 0.3f);
 }
 #pragma endregion
@@ -2194,6 +2199,11 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 
 				pObject->m_pGameInstance->Set_FogFactors(FogDesc);
 				pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
+
+
+
+				pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+				pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 13);
 
 				pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);
 				pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_Quest_Poison"), true);

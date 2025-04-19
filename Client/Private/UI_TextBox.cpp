@@ -75,6 +75,42 @@ void CUI_TextBox::Update(_float fTimeDelta)
 			m_fAlpha = 1.f;
 		}
 	}
+
+	if (m_bOpen)
+	{
+		if (m_eRenderType == Engine::TEXT_ALPHA_ANIM)
+		{
+			m_fAnimAlpha += fTimeDelta;
+			if (1.f >= m_fAnimAlpha)
+			{
+				m_fAlpha = m_fAnimAlpha;
+				if (1.f < m_fAlpha)
+					m_fAlpha = 1.f;
+			
+			}
+			else if (2.f >= m_fAnimAlpha)
+			{
+				m_fAlpha = m_fAnimAlpha;
+				if (1.f < m_fAlpha)
+					m_fAlpha = 1.f;
+			}
+			else if (3.f >= m_fAnimAlpha)
+			{
+				m_fAlpha = (3.0f - m_fAnimAlpha);
+
+			}
+			else
+			{
+				m_fAlpha = 0.0f;
+				m_fAnimAlpha = 0.0f;
+			}
+		}
+	}
+	else
+	{
+		m_fAlpha = 0.0f;
+		m_fAnimAlpha = 0.0f;
+	}
 }
 
 void CUI_TextBox::Late_Update(_float fTimeDelta)
@@ -112,6 +148,10 @@ HRESULT CUI_TextBox::Render()
 				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
 			break;
 		case Engine::TEXT_ALPHA:
+			m_pGameInstance->Render_Alpha(m_strFontName, m_strContentText.c_str(), m_fTextPosition,
+				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
+			break;
+		case Engine::TEXT_ALPHA_ANIM:
 			m_pGameInstance->Render_Alpha(m_strFontName, m_strContentText.c_str(), m_fTextPosition,
 				{ m_fTextColor.x,m_fTextColor.y,m_fTextColor.z,abs(m_fAlpha) }, 0.0f, { 0.0f,0.0f }, 1.0f);
 			break;

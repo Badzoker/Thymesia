@@ -603,6 +603,11 @@ void CBoss_Urd::Intro_State::State_Exit(CBoss_Urd* pObject)
 	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_PlayerScreen"), true);
 	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_Dialogue"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 1, 41);
+
 	pObject->m_pGameInstance->PlayBGM(TEXT("urd_music_2_A.ogg"), 0.3f);
 }
 
@@ -1928,6 +1933,10 @@ void CBoss_Urd::Dead_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_OCEAN, TEXT("Layer_Landing"), true);
 		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+
+
+		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 43);
 
 		pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 #pragma endregion
