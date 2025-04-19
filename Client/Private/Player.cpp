@@ -57,7 +57,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		MSG_BOX("Failed to Created : PlayerSkillMgr");
 	}
 
-	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.15f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
+	m_pActor = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.2f,0.2f,0.2f }, _float3{ 0.f,0.f,1.f }, 90.f, this);
 	m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,0.f,0.f,1.f });
 	_uint settingColliderGroup = GROUP_TYPE::MONSTER | GROUP_TYPE::MONSTER_WEAPON | GROUP_TYPE::ITEM | GROUP_TYPE::OBJECT | GROUP_TYPE::DESTRUCT;
 	m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::PLAYER, settingColliderGroup);
@@ -724,6 +724,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			{
 				m_pStateMgr->Get_VecState().at(19)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_pModel->Get_VecAnimation().at(15)->Set_StartOffSetTrackPosition(10.f);
+				m_pGameInstance->Play_Sound(L"Player_Parry_L_Real.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 3.f);
 				m_iState = STATE_PARRY_L;
 			}
 			else if (m_iState != STATE_PARRY_R && m_iState != STATE_PARRY_DEFLECT_L && m_iState != STATE_PARRY_DEFLECT_L_UP)

@@ -95,48 +95,44 @@ void CBoss_Varg_Camera::Update(_float fTimeDelta)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE 부분           
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() > iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() < iter.fEndTime)
-
-                    {
-                        _vector pos = { m_CombinedWorldMatrix._41,m_CombinedWorldMatrix._42,m_CombinedWorldMatrix._43,1.f };
-                        _vector vRight = { m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13,0.f };
-                        _vector vUp = { m_CombinedWorldMatrix._21,m_CombinedWorldMatrix._22,m_CombinedWorldMatrix._23,0.f };
-                        _vector vLook = { m_CombinedWorldMatrix._31,m_CombinedWorldMatrix._32,m_CombinedWorldMatrix._33,0.f };
+                    _vector pos = { m_CombinedWorldMatrix._41,m_CombinedWorldMatrix._42,m_CombinedWorldMatrix._43,1.f };
+                    _vector vRight = { m_CombinedWorldMatrix._11,m_CombinedWorldMatrix._12,m_CombinedWorldMatrix._13,0.f };
+                    _vector vUp = { m_CombinedWorldMatrix._21,m_CombinedWorldMatrix._22,m_CombinedWorldMatrix._23,0.f };
+                    _vector vLook = { m_CombinedWorldMatrix._31,m_CombinedWorldMatrix._32,m_CombinedWorldMatrix._33,0.f };
 
 
-                        _matrix Rotation = XMMatrixRotationAxis(XMVectorSetW(XMVector3Normalize(vLook), 0.f), XMConvertToRadians(-90.f));
-                        vLook = XMVector3TransformNormal(vLook, Rotation);
-                        vLook = XMVectorSetW(XMVector3Normalize(vLook), 0.f);
+                    _matrix Rotation = XMMatrixRotationAxis(XMVectorSetW(XMVector3Normalize(vLook), 0.f), XMConvertToRadians(-90.f));
+                    vLook = XMVector3TransformNormal(vLook, Rotation);
+                    vLook = XMVectorSetW(XMVector3Normalize(vLook), 0.f);
 
 
 
-                        vRight = XMVector3TransformNormal(vRight, Rotation);
-                        vRight = XMVectorSetW(XMVector3Normalize(vRight), 0.f); // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f)     
+                    vRight = XMVector3TransformNormal(vRight, Rotation);
+                    vRight = XMVectorSetW(XMVector3Normalize(vRight), 0.f); // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f)     
 
 
 
-                        vUp = XMVector3TransformNormal(vUp, Rotation);
-                        vUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);    // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f)  
+                    vUp = XMVector3TransformNormal(vUp, Rotation);
+                    vUp = XMVectorSetW(XMVector3Normalize(vUp), 0.f);    // 여기서 LOOK 축으로 90도 회전  ( 0.f, 0.f,1.f,0.f)  
 
 
 
-                        m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, vLook);
-                        m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_RIGHT, vRight);
-                        m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_UP, vUp);
+                    m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, vLook);
+                    m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_RIGHT, vRight);
+                    m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_UP, vUp);
 
-                        m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, pos);
+                    m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, pos);
 
 
-                        m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
-                        m_pCamera->Set_Camera_GetBackCamPos(true);
+                    m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
+                    m_pCamera->Set_Camera_GetBackCamPos(true);
 
-                        //m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
+                    //m_pGameInstance->Sub_Actor_Scene(m_pParentActor);
 
-                        //여기다가 플레이어는 못움직이게 세팅해야함
-                        m_pPlayer->Set_ParentPhaseState(CPlayer::PHASE_BOSS_INTRO);
+                    //여기다가 플레이어는 못움직이게 세팅해야함
+                    m_pPlayer->Set_ParentPhaseState(CPlayer::PHASE_BOSS_INTRO);
+                    m_pPlayer->Set_PlayerState(CPlayer::STATE_IDLE);
 
-                    }
                 }
 
                 else
@@ -145,7 +141,7 @@ void CBoss_Varg_Camera::Update(_float fTimeDelta)
                     {
                         //if (m_pCamera->Get_Execute_CamereScene() == 0 
                         m_pCamera->Set_Camera_Cut_Scene_OnOff(false);    // 여기가 문제구나    
-                        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 1.5f); 
+                        m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 1.5f);
                         //여기다가 플레이어로 카메라 위치 변동시켜야할듯.
                         _vector PlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
                         _vector PlayerLook = XMVectorSetW(XMVector3Normalize(m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)), 0.f);
@@ -163,7 +159,7 @@ void CBoss_Varg_Camera::Update(_float fTimeDelta)
 
                         m_pPlayer->Sub_PhaseState(CPlayer::PHASE_BOSS_INTRO);
 
-                    
+
                     }
 
                 }

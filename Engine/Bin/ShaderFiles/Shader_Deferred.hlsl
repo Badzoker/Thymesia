@@ -473,7 +473,8 @@ PS_OUT PS_MAIN_MOTIONBLUR(PS_IN In)
     vector vFinal_Color_MotionBlur;
     
     if (vMotionBlur.r > 0.5f || vMotionBlur.g > 0.5f)
-    {
+    {  
+        [unroll]
         for (int i = -6; i < 7; i++)
         {
             vTexcoord = float2(In.vTexcoord.x + (Amount_X * 8.f) * i, In.vTexcoord.y + (Amount_Y * 8.f) * i);
@@ -794,7 +795,7 @@ PS_OUT PS_MAIN_ZOOM_BLUR(PS_IN In)
         
         float strength = saturate(g_fReverseEndStrength); // 0 → 정상 / 1 → 완전 반전 
         
-        float3 inverted = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord);
+        float3 inverted = g_Final_Last_Texture.Sample(LinearSampler, In.vTexcoord).rgb;
         
         Out.vColor.rgb = lerp(inverted, Out.vColor.rgb, strength);
 

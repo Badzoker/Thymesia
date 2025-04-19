@@ -352,7 +352,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float alpha = saturate((dist) / (2.5f));
 
     // 디더링 패턴 적용
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
 
@@ -730,7 +730,7 @@ PS_OUT_BRANCH_GLOW PS_DEAD_BRANCH(PS_IN In)
     if (vDiffuse.a < 0.1f)
         discard;
     
-    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord);
+    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
     
     if (fDissolveValue < g_DissolveValue)
     {
@@ -1026,7 +1026,7 @@ PS_OUT_GLASS PS_MAIN_GLASS(PS_IN In)
     float alpha = saturate((dist - 0.1f) / (3.f - 0.1f));
 
     // 디더링 패턴 적용
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
 
@@ -1105,7 +1105,7 @@ PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
     float alpha = saturate((dist - 0.1f) / (3.f - 0.1f));
 
     // 디더링 패턴 적용
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; // 0~15 범위 
 
@@ -1136,7 +1136,7 @@ PS_OUT PS_CHAIR_LAMP(PS_IN In)
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vNormal = normalize(mul(vNormal, WorldMatrix));
 	
-    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord);
+    float fDissolveValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
     
     if (fDissolveValue < g_DissolveValue - 0.01f)
     {
@@ -1157,7 +1157,7 @@ PS_OUT PS_CHAIR_LAMP(PS_IN In)
 
     float alpha = saturate((dist) / (2.5f));
 
-    int2 pixelPos = int2(ScreenPos.xy) % 4;
+    uint2 pixelPos = uint2(ScreenPos.xy) % 4;
     
     int index = pixelPos.y * 4 + pixelPos.x; 
 
