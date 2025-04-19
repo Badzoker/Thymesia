@@ -204,7 +204,7 @@ PS_OUT PS_Thymesia_UI_Image_PlunderSlot(PS_IN In)
     
     //saturate(g_fTimeDelta);
     float fEdgeWidth = 0.05; // 경계선 두께 0.03 ~ 0.1 값이 일반적 
-    float vEdgeColor = (1, 0, 0, 1);
+    float4 vEdgeColor = float4(1.f, 0.f, 0.f, 1.f); 
     float4 vBackColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     float4 vIconColor = g_TexIcon.Sample(LinearSampler, In.vTexcoord);
     float fNoise = g_TexNoise.Sample(LinearSampler, In.vTexcoord + g_fTimeDelta).r;
@@ -245,7 +245,7 @@ PS_OUT PS_Thymesia_UI_Image_HPBar(PS_IN In) // HP Bar 감소
     PS_OUT Out = (PS_OUT) 0;
     
     float4 vBarColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    float4 vGlowColor = (1.0f, 1.0f, 1.0f, 1.0f);
+    float4 vGlowColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     
     //if (In.vTexcoord.x >= 0.9 && In.vTexcoord.x <= 1.0)
     //{

@@ -105,7 +105,7 @@ HRESULT CLevel_RoyalGarden::Initialize()
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
 	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	m_pGameInstance->PlayBGM(L"Garden_Level_-_Exploration.ogg", 0.8f);
+	m_pGameInstance->PlayBGM(L"Garden_Level_-_Exploration.ogg", 0.15f);
 
 	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
 	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);

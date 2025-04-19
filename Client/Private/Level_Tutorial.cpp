@@ -111,7 +111,7 @@ HRESULT CLevel_Tutorial::Initialize()
     m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
     m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-    m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.8f);
+    m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.15f);
 
     return S_OK;
 }

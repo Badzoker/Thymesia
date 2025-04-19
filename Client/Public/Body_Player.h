@@ -328,6 +328,11 @@ private:
 
 	_bool  m_bFirstCameraPos = { true };
 
+	_bool  m_RightFootStepSound = { true };
+	_bool  m_LeftFootStepSound = { true };
+
+	_uint  m_iRightFootStepSound = { 0 };
+	_uint  m_iLeftFootStepSound = { 0 };
 
 	const _float4x4* m_mRightFootBoneMartix = { nullptr };
 	const _float4x4* m_mLeftFootBoneMartix = { nullptr };
