@@ -143,6 +143,7 @@ void CBat_Spike::Reset(_float fTimeDelta)
     m_fLifeTime = 0.f;
     m_fExplosionPower = 0.f;
     m_fFallingTime = 0.f;
+    m_bUpdating = false;
     m_bHitted = false;
     _float3 fNewScale = {};
     _vector vNewScale = XMVectorLerp(XMLoadFloat3(&m_fMyScale), XMLoadFloat3(&m_fMaxScale), m_fLinear);
@@ -210,10 +211,22 @@ HRESULT CBat_Spike::Bind_ShaderResources()
 
 void CBat_Spike::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
+    if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()) && !m_bHitted)
     {
-        //추가예정.
         m_bHitted = true;
+        _uint iRandom = rand() % 3;
+        switch (iRandom)
+        {
+        case 0:
+            m_pGameInstance->Play_Sound(TEXT("BatSpike_Destory_01"), CHANNELID::SOUND_STRUCT, 0.3f);
+            break;
+        case 1:
+            m_pGameInstance->Play_Sound(TEXT("BatSpike_Destory_02"), CHANNELID::SOUND_STRUCT, 0.3f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(TEXT("BatSpike_Destory_03"), CHANNELID::SOUND_STRUCT, 0.3f);
+            break;
+        }
     }
 }
 
