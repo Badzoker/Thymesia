@@ -263,11 +263,13 @@ void CElite_Punch_Man::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inf
         {
             m_fMonsterCurHP -= *m_Player_Attack / 5.f;
             m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_pGameInstance->Play_Sound(L"DamageFromPlayer_PunchMan.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.3f);
         }
         else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
+            m_pGameInstance->Play_Sound(L"DamageFromPlayer_PunchMan_2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.3f);
         }
     }
 }
@@ -477,6 +479,22 @@ void CElite_Punch_Man::Execution_State::State_Enter(CElite_Punch_Man* pObject)
 
 void CElite_Punch_Man::Execution_State::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Execution"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Execution.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_iMonster_State = STATE_DEAD;
@@ -543,6 +561,33 @@ void CElite_Punch_Man::Attack_ComboA::State_Enter(CElite_Punch_Man* pObject)
 
 void CElite_Punch_Man::Attack_ComboA::State_Update(_float fTimeDelta, CElite_Punch_Man* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Swing_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Swing_1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Swing_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Swing_2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Swing_ToIdle"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Swing_ToIdle.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_bBonus_Attack)
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 135.f)
@@ -622,6 +667,40 @@ void CElite_Punch_Man::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Pun
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_SMALL, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
                 pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PUNCH_DISTORTION, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
 
+                iter.isPlay = true;
+            }
+        }
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strncmp(iter.szName, "Sound_Run", strlen("Sound_Run")))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Run.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Small_Punch"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Small_Punch.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Big_Punch_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Big_Punch1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Big_Punch_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Big_Punch2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
                 iter.isPlay = true;
             }
         }
@@ -721,6 +800,40 @@ void CElite_Punch_Man::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Pun
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_PUNCH_DUST_PUNCH_SMALL, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
                 pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_PUNCH_DISTORTION, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
 
+                iter.isPlay = true;
+            }
+        }
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strncmp(iter.szName, "Sound_Run", strlen("Sound_Run")))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Run.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Small_Punch"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Small_Punch.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Big_Punch_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Big_Punch1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Big_Punch_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Punchman_Big_Punch2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.3f);
                 iter.isPlay = true;
             }
         }

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Elite_Punch_Man.h"
+#include "Player.h"
 
 CBody_Punch_Man::CBody_Punch_Man(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -196,6 +197,27 @@ void CBody_Punch_Man::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bColliderOff = true;
+
+        if (m_pModelCom->Get_Current_Animation_Index() == 0 || m_pModelCom->Get_Current_Animation_Index() == 1)
+        {
+            //PunchMan 은 휘두르기 공격일때만 플레이어가 맞는 소리가 나기에 이런 조건을 추가해둠
+
+            if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3 + 1;
+
+                switch (iRandSoundFileNum)
+                {
+                case 1:
+                    m_pGameInstance->Play_Sound(L"Punchman_ToPlayer_Damage.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                case 2:
+                    m_pGameInstance->Play_Sound(L"Punchman_ToPlayer_Damage_2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                }
+            }
+        }
     }
 }
 
