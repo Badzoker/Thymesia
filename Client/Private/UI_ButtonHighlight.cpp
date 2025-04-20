@@ -67,6 +67,8 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 				if (__super::On_Mouse_UI(g_hWnd, 3))
 				{
 					m_bImageOn = true;
+					m_fShaderTime += fTimeDelta * 1.5f;
+
 					if (m_bSoundOnOff && m_bOpen)
 					{
 						m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_Inventory_Material_Stone_UI_1.ogg"), CHANNELID::SOUND_UI, 0.2f);
@@ -82,6 +84,7 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 						m_bSoundOnOff = true;
 					}
 					m_bImageOn = false;
+					m_fShaderTime = 0.0f;
 					Set_Change_TextColor(FONT_GRAY);
 				}
 
@@ -108,6 +111,15 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 					m_fAlpha = 1.f;
 				}
 			}
+
+
+			if (3 == m_iShaderPassNum)
+			{
+				if (1.5f <= m_fShaderTime)
+				{
+					m_fShaderTime *= -1;
+				}
+			}
 		}
 	}
 }
@@ -131,8 +143,20 @@ HRESULT CUI_ButtonHighlight::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageOn", &m_bImageOn, sizeof(_bool))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bImageLoopOn", &m_bImageOn, sizeof(_bool))))
 		return E_FAIL;
+
+	if (3 == m_iShaderPassNum)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fShaderTime, sizeof(_float))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTImeAlpha", &m_fCurrentTime, sizeof(_float))))
+			return E_FAIL;
+	}
+	
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTexNumber)))
 		return E_FAIL;

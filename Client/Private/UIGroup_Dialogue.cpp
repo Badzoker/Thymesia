@@ -35,10 +35,20 @@ HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 	m_eMyLevel = static_cast<LEVELID>(pDesc->iCurLevel);
 
 	m_pTalkScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy");
+	for (auto& TextBox : m_pTalkScene->Find_UI_TextBox())
+	{
+		if (1 == TextBox->Get_UI_GroupID())
+			TextBox->Set_TextDrawType(TextDrawEffect::TEXT_ALPHA);
+	}
 	m_pPopScene = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop");
 
 	
 	m_pTalkScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemy_1");
+	for (auto& TextBox : m_pTalkScene_Boss->Find_UI_TextBox())
+	{
+		if (1 == TextBox->Get_UI_GroupID())
+			TextBox->Set_TextDrawType(TextDrawEffect::TEXT_ALPHA);
+	}
 	m_pPopScene_Boss = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyPop_1");
 
 	m_pBossTalk = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk");
@@ -49,8 +59,20 @@ HRESULT CUIGroup_Dialogue::Initialize(void* pArg)
 
 
 	m_pEndingTalk = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding");
+	for (auto& TextBox : m_pEndingTalk->Find_UI_TextBox())
+	{
+		if (1 == TextBox->Get_UI_GroupID())
+			TextBox->Set_TextDrawType(TextDrawEffect::TEXT_ALPHA);
+	}
 	m_pEndingImage = m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_AIsemyeEnding_Image");
-		
+	_int iNum = 0;
+	for (auto& TextBox : m_pEndingImage->Find_UI_TextBox())
+	{
+			TextBox->Set_TextDrawType(TextDrawEffect::TEXT_ALPHA);
+			TextBox->Set_OnOff(false);
+			m_pLastText[iNum] = TextBox;
+			iNum++;
+	}
 	return S_OK;
 }
 
@@ -121,7 +143,18 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 		{
 			if(bCheck)
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.9f);
+
+		
 		}
+
+		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_IN))
+		{
+			m_pLastText[0]->Set_OnOff(true);
+			m_pLastText[1]->Set_OnOff(true);
+			m_pLastText[2]->Set_OnOff(true);
+		
+		}
+		
 	}
 }
 

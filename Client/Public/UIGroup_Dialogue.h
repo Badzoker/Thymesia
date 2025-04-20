@@ -36,6 +36,8 @@ private:
 	CUI_Scene* m_pPopScene_Boss = {}; // 고스트 세미
 
 	_float m_fDelayTime = {};
+	_float m_fTextTime = {};
+	CUIObject* m_pLastText[3] = { nullptr };
 
 public:
 	//void Boss_Talk_Pop(UIBOSSTALK eBoss);
