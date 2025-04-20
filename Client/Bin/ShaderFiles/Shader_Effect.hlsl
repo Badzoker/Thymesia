@@ -1008,9 +1008,9 @@ PS_OUT PS_MAIN_BLOODSUCKER(PS_IN In)
 }
 
 
-PS_OUT PS_MAIN_GASBOOMBOOM(PS_IN In)
+PS_OUT_GLOW PS_MAIN_GASBOOMBOOM(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_GLOW Out = (PS_OUT_GLOW) 0;
     float2 vMaskTexcoord = float2(In.vTexcoord.x * g_MaskCountX, In.vTexcoord.y * g_MaskCountY);
     
     vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
@@ -1057,13 +1057,10 @@ PS_OUT PS_MAIN_GASBOOMBOOM(PS_IN In)
     
     vMtrlDiffuse.a *= (1.0f - saturate(g_TimeX / g_fMaxTimer));
     
-    Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f);
-    if (Out.vDiffuse.a < 0.01f || length(Out.vDiffuse.rgb) < 0.1f)
+    Out.vGlow = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f);
+    if (Out.vGlow.a < 0.01f || length(Out.vGlow.rgb) < 0.1f)
         discard;
     
-    Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
-    Out.vDiffuse.a = 0.0f;
 	
     return Out;
 }
