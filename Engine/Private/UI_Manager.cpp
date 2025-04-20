@@ -137,10 +137,9 @@ HRESULT CUI_Manager::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bO
 	return pScene->Set_All_UIObject_Condition_Open(bOpen);
 }
 
-void CUI_Manager::Find_TextBox_Monster_Memory(CUI_Scene* pScene,_uint iCount)
+void CUI_Manager::Find_TextBox_PlayerScreen(CUI_Scene* pScene, _uint iGroupID, _uint iCount)
 {
-	return pScene->Find_TextBox_Monster_Memory(iCount);
-
+	return pScene->Find_TextBox_PlayerScreen(iGroupID,iCount);
 }
 
 void CUI_Manager::Set_Condition(CUI_Scene* pScene, _int iCondition1, _int iCondition2)

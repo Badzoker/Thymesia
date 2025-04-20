@@ -957,9 +957,9 @@ HRESULT CGameInstance::Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool 
 	return m_pUI_Manager->Set_All_UIObject_Condition_Open(pScene, bOpen);
 }
 
-void CGameInstance::Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount)
+void CGameInstance::Find_TextBox_PlayerScreen(CUI_Scene* pScene, _uint iGroupID, _uint iCount)
 {
-	return m_pUI_Manager->Find_TextBox_Monster_Memory(pScene, iCount);
+	return m_pUI_Manager->Find_TextBox_PlayerScreen(pScene, iGroupID, iCount);
 }
 
 void CGameInstance::UIScene_Clear(_uint iScenelIndex)

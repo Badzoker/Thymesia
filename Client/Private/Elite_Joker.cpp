@@ -740,7 +740,7 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
 #pragma region UI상호작용
         // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
         dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(210);
-        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 210);
+        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"),101, 210);
         // 몬스터 사망 시 아이템 드랍 추가하기
 #pragma endregion
     }

@@ -289,7 +289,7 @@ public:
 	_bool Get_Scene_Render_State(CUI_Scene* pScene); // 씬이 켜져 있는지 체크
 	HRESULT Set_All_UIObject_Condition_Open(CUI_Scene* pScene, _bool bOpen);
 
-	void Find_TextBox_Monster_Memory(CUI_Scene* pScene, _uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
+	void Find_TextBox_PlayerScreen(CUI_Scene* pScene, _uint iGroupID, _uint iCount); // 몬스터 사망 시 수치 가져오는 부분을 위해...일단 추가 
 
 	void UIScene_Clear(_uint iScenelIndex); // UI 모든 씬 지우기
 

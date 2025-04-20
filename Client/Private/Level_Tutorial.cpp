@@ -1730,7 +1730,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 9;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
