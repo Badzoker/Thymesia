@@ -251,6 +251,8 @@ void CHArmorLV2::Stun()
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
 #pragma region Effect_Stun
+    m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트     
+    m_pGameInstance->Set_SlowWorld(true);   
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
 }
@@ -581,6 +583,8 @@ void CHArmorLV2::Stun_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
+
     const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
     if (m_iIndex == 23 && iCurrentAnimIndex == m_iIndex)
@@ -592,7 +596,7 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
             m_iIndex = 22;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION)
+        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION && bMonster_Event)    
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -600,7 +604,7 @@ void CHArmorLV2::Stun_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
     }
     else if (m_iIndex == 24 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_HARMOR_EXECUTION && bMonster_Event) 
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -978,6 +982,10 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
     pObject->m_pTransformCom->LookAt(vPlayerPos);
 
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(53)->SetLerpTime(0.f);
+    pObject->m_pModelCom->Set_LerpFinished(true);
+    /* =========  */
 
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 

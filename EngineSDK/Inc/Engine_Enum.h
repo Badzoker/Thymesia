@@ -57,6 +57,8 @@ namespace Engine
         SOUND_STONE,
         SOUND_PLAYER_ATTACK_1,  
         SOUND_PLAYER_ATTACK_2,  
+        SOUND_PLAYER_PARRY_1,   
+        SOUND_PLAYER_PARRY_2,   
         SOUND_PLAYER_ACTION_1,  
         SOUND_PLAYER_ACTION_2,  
         SOUND_MONSTER_STUN, 

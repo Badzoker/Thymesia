@@ -293,6 +293,8 @@ void CNormal_VillageM1::Stun()
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
 #pragma region Effect_Stun
+    m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트        
+    m_pGameInstance->Set_SlowWorld(true);
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
 }
@@ -535,8 +537,6 @@ void CNormal_VillageM1::Stun_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pStunActor);
 
-    pObject->m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트    
-    pObject->m_pGameInstance->Set_SlowWorld(true);  
 }
 
 void CNormal_VillageM1::Stun_State::State_Update(_float fTimeDelta, CNormal_VillageM1* pObject)
