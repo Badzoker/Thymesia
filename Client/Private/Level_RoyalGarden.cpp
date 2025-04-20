@@ -258,7 +258,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	if (FAILED(Load_Objects(4)))// Á¤¿ø º¸½º¸Ê
 		return E_FAIL;
 
-	if (FAILED(Load_TriggerObjects(3)))
+	if (FAILED(Load_TriggerObjects(5)))
 		return E_FAIL;
 
 	if (FAILED(Load_SpecificObjects(5)))
