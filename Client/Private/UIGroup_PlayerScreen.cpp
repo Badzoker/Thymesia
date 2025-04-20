@@ -68,13 +68,23 @@ HRESULT CUIGroup_PlayerScreen::Initialize(void* pArg)
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_Player"), "PLAYER");
 	m_pPlayerSkillMgr = dynamic_cast<CPlayer*>(m_pPlayer)->Get_PlayerSkillMgr();
-	m_oPotion_Count = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Potion_Count();
+	m_pPotion_Count = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Potion_Count();
 	m_pPlayerSkillCoolTime = dynamic_cast<CPlayer*>(m_pPlayer)->Get_Skill_CoolTime_Ptr();
 	m_pGroupInven = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerInventory"), "Inventory");	
 	m_pGroupSkill = m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevelID, TEXT("Layer_PlayerSkill"), "UI_Skill");
 	
 	for (auto& Textbox : m_pMyScene->Find_UI_TextBox())
 	{
+		if (12 == Textbox->Get_UI_GroupID()) // PlayerHP
+		{
+			Textbox->Set_OnOff(false);
+			m_pPlayerHPText = Textbox;
+		}
+		if (22 == Textbox->Get_UI_GroupID()) // PlayerMP
+		{
+			Textbox->Set_OnOff(false);
+			m_pPlayerMPText = Textbox;
+		}
 		if (101 == Textbox->Get_UI_GroupID())
 		{
 			Textbox->Set_OnOff(false);
@@ -132,7 +142,170 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 	}
 
 	//if (FAILED(m_pGameInstance->Add_Monster(m_eMyLevelID, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
+	UI_Player_Skill_ImageSet();
 
+	Button_Skill(); // 현재 임의로 키다운 시 스킬 실행
+	Player_Info_GageBar();// 플레이어 정보를 출력하기에 상시 업데이트
+
+	UI_Direction_HPBar(); // bar 연출
+	UI_Direction_MPBar();
+
+	if (m_pMonsterText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
+	{
+		m_fMonsterTextOnTime += fTimeDelta;
+		if (m_fMonsterTextOnTime > 3.f)
+		{
+			m_pMonsterText->Set_OnOff(false);
+			m_fMonsterTextOnTime = 0.0f;
+		}
+	}
+	if (m_pPlayerHPText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
+	{
+		m_fHPTextOnTime += fTimeDelta;
+		if (m_fHPTextOnTime > 3.f)
+		{
+			m_pPlayerHPText->Set_OnOff(false);
+			m_fHPTextOnTime = 0.0f;
+		}
+	}
+	if (m_pPlayerMPText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
+	{
+		m_fMPTextOnTime += fTimeDelta;
+		if (m_fMPTextOnTime > 3.f)
+		{
+			m_pPlayerMPText->Set_OnOff(false);
+			m_fMPTextOnTime = 0.0f;
+		}
+	}
+
+	Item_Nudge_Check(fTimeDelta); // 획득하거나 버린 아이템이 있는지 체크하는 함수
+
+
+
+}
+
+void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
+{
+	if (m_bRenderOpen)
+	{
+	}
+}
+
+HRESULT CUIGroup_PlayerScreen::Render()
+{
+	if (m_bRenderOpen)
+	{
+	}
+	return S_OK;
+}
+
+void CUIGroup_PlayerScreen::Player_Info_GageBar()
+{
+	_tchar ChangeText[MAX_PATH] = {};
+	const _tchar* CountText = L"%d";
+	const _tchar* CountTextDouble = L"%d / %d";
+
+	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
+	{
+		if (10 == TextBox->Get_UI_GroupID()) // 현재 HP
+		{
+			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp());
+			TextBox->Set_Content(ChangeText);
+		}
+		if (20 == TextBox->Get_UI_GroupID()) // 현재 MP
+		{
+			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp());
+			TextBox->Set_Content(ChangeText);
+		}
+		//if (12 == TextBox->Get_UI_GroupID()) // 물약 드링킹 시 플러스되는 수치
+		//{
+		//	TextBox->Set_OnOff(false);
+		//}
+		//if (30 == TextBox->Get_UI_GroupID()) // 현재 물약 개수
+		//{
+		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
+		//	TextBox->Set_Content(ChangeText);
+		//}
+		//if (22 == TextBox->Get_UI_GroupID()) // mp 플러스 되는 수치 인 것 같음
+		//{
+		//	TextBox->Set_OnOff(false);
+		//}
+		//if (40 == TextBox->Get_UI_GroupID()) // 현재 깃털 개수
+		//{
+		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
+		//	TextBox->Set_Content(ChangeText);
+		//}
+		//if (100 == TextBox->Get_UI_GroupID()) // 현재 기억의 파편 개수
+		//{
+		//	wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
+		//	TextBox->Set_Content(ChangeText);
+		//}
+
+	}
+
+	for (auto& Image : m_pMyScene->Find_UI_Image())
+	{
+		if (1 == Image->Get_UI_GroupID())
+		{
+			wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
+			Image->Set_Content(ChangeText);
+
+		}
+		if (20 == Image->Get_UI_GroupID()) // 물약 현재 개수 / 최대 개수
+		{
+			wsprintf(ChangeText, CountTextDouble, *m_pPotion_Count, 3); // 플레이어 멤버 변수로 만들어달라고 하자
+			Image->Set_Content(ChangeText);
+		}
+		if (21 == Image->Get_UI_GroupID()) // 깃털 현재 개수 / 최대 개수
+		{
+			wsprintf(ChangeText, CountTextDouble, 3, 3); // 깃털은 몰?루
+			Image->Set_Content(ChangeText);
+		}
+	}
+
+}
+
+void CUIGroup_PlayerScreen::UI_Direction_HPBar()
+{
+	_int iFullHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp();
+	_int iCurrentHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp();
+	_int iHpBarTransform = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION).x);
+	_int iHpBarSizeX = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Compute_Scaled().x);
+
+
+	dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Set_PlayerHP_Info((float)iFullHP, (float)iCurrentHP);
+
+	if (iCurrentHP >= iFullHP || iCurrentHP <= 0 )
+	{
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(false);
+	}
+	else
+	{
+		// HPBar 길이 258
+		// CurrentHP / FullHP => 나온 비율 ex. 1 /10 => Track의 X 좌표에서 258 * 1/10 = 25.8 이만큼을 뺀다 
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(true);
+
+		_int iHPTrackX = iHpBarTransform + 129;
+		_int fHPBarLastPointX = static_cast<int>((float)iHpBarSizeX * (1.0f -(((float)iCurrentHP / (float)iFullHP))));
+				
+		iHPTrackX -= fHPBarLastPointX;
+		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(iHPTrackX);
+	}
+
+
+}
+
+void CUIGroup_PlayerScreen::UI_Direction_MPBar()
+{
+	_int iFullMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp();
+	_int iCurrentMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp();
+
+	dynamic_cast<CUI_MPBar3_MainBar*>(m_pMPGageBar)->Set_PlayerMp_Info ((float)iFullMP, (float)iCurrentMP);
+
+}
+
+void CUIGroup_PlayerScreen::UI_Player_Skill_ImageSet()
+{
 
 	switch (dynamic_cast<CPlayer*>(m_pPlayer)->Get_Player_Take_Away_Skill())
 	{
@@ -249,148 +422,6 @@ void CUIGroup_PlayerScreen::Update(_float fTimeDelta)
 			}
 		}
 	}
-
-	Button_Skill(); // 현재 임의로 키다운 시 스킬 실행
-	Player_Info_GageBar();// 플레이어 정보를 출력하기에 상시 업데이트
-
-	UI_Direction_HPBar(); // bar 연출
-	UI_Direction_MPBar();
-
-	if (m_pMonsterText->Get_OnOff()) //몬스터 처치 시 획득하는 기억 파편량 표시 유지 시간
-	{
-		m_fMonsterTextOnTime += fTimeDelta;
-		if (m_fMonsterTextOnTime > 2)
-		{
-			m_pMonsterText->Set_OnOff(false);
-			m_fMonsterTextOnTime = 0;
-
-		}
-	}
-
-	Item_Nudge_Check(fTimeDelta); // 획득하거나 버린 아이템이 있는지 체크하는 함수
-
-
-
-}
-
-void CUIGroup_PlayerScreen::Late_Update(_float fTimeDelta)
-{
-	if (m_bRenderOpen)
-	{
-	}
-}
-
-HRESULT CUIGroup_PlayerScreen::Render()
-{
-	if (m_bRenderOpen)
-	{
-	}
-	return S_OK;
-}
-
-void CUIGroup_PlayerScreen::Player_Info_GageBar()
-{
-	_tchar ChangeText[MAX_PATH] = {};
-	const _tchar* CountText = L"%d";
-	const _tchar* CountTextDouble = L"%d / %d";
-
-	for (auto& TextBox : m_pMyScene->Find_UI_TextBox())
-	{
-		if (10 == TextBox->Get_UI_GroupID()) // 현재 HP
-		{
-			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp());
-			TextBox->Set_Content(ChangeText);
-		}
-		if (20 == TextBox->Get_UI_GroupID()) // 현재 MP
-		{
-			wsprintf(ChangeText, CountTextDouble, dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp(), dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp());
-			TextBox->Set_Content(ChangeText);
-		}
-		if (12 == TextBox->Get_UI_GroupID()) // 물약 드링킹 시 플러스되는 수치
-		{
-			TextBox->Set_OnOff(false);
-		}
-		//if (30 == TextBox->Get_UI_GroupID()) // 현재 물약 개수
-		//{
-		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
-		//	TextBox->Set_Content(ChangeText);
-		//}
-		if (22 == TextBox->Get_UI_GroupID()) // mp 플러스 되는 수치 인 것 같음
-		{
-			TextBox->Set_OnOff(false);
-		}
-		//if (40 == TextBox->Get_UI_GroupID()) // 현재 깃털 개수
-		//{
-		//	wsprintf(ChangeText, CountTextDouble, 3, 3);
-		//	TextBox->Set_Content(ChangeText);
-		//}
-		//if (100 == TextBox->Get_UI_GroupID()) // 현재 기억의 파편 개수
-		//{
-		//	wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
-		//	TextBox->Set_Content(ChangeText);
-		//}
-
-	}
-
-	for (auto& Image : m_pMyScene->Find_UI_Image())
-	{
-		if (1 == Image->Get_UI_GroupID())
-		{
-			wsprintf(ChangeText, CountText, dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment());
-			Image->Set_Content(ChangeText);
-
-		}
-		if (20 == Image->Get_UI_GroupID()) // 물약 현재 개수 / 최대 개수
-		{
-			wsprintf(ChangeText, CountTextDouble, *m_oPotion_Count, 3); // 플레이어 멤버 변수로 만들어달라고 하자
-			Image->Set_Content(ChangeText);
-		}
-		if (21 == Image->Get_UI_GroupID()) // 깃털 현재 개수 / 최대 개수
-		{
-			wsprintf(ChangeText, CountTextDouble, 3, 3); // 깃털은 몰?루
-			Image->Set_Content(ChangeText);
-		}
-	}
-
-}
-
-void CUIGroup_PlayerScreen::UI_Direction_HPBar()
-{
-	_int iFullHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullHp();
-	_int iCurrentHP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentHp();
-	_int iHpBarTransform = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Get_State_UIObj(CTransform::STATE_POSITION).x);
-	_int iHpBarSizeX = static_cast<int>(dynamic_cast<CTransform*>(dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Find_Component(TEXT("Com_Transform")))->Compute_Scaled().x);
-
-
-	dynamic_cast<CUI_HPBar3_MainBar*>(m_pHPGageBar)->Set_PlayerHP_Info((float)iFullHP, (float)iCurrentHP);
-
-	if (iCurrentHP >= iFullHP || iCurrentHP <= 0 )
-	{
-		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(false);
-	}
-	else
-	{
-		// HPBar 길이 258
-		// CurrentHP / FullHP => 나온 비율 ex. 1 /10 => Track의 X 좌표에서 258 * 1/10 = 25.8 이만큼을 뺀다 
-		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_Open_Image(true);
-
-		_int iHPTrackX = iHpBarTransform + 129;
-		_int fHPBarLastPointX = static_cast<int>((float)iHpBarSizeX * (1.0f -(((float)iCurrentHP / (float)iFullHP))));
-				
-		iHPTrackX -= fHPBarLastPointX;
-		dynamic_cast<CUI_HPBar5_Track*>(m_pHPGageTrack)->Set_ChangeX(iHPTrackX);
-	}
-
-
-}
-
-void CUIGroup_PlayerScreen::UI_Direction_MPBar()
-{
-	_int iFullMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_FullMp();
-	_int iCurrentMP = dynamic_cast<CPlayer*>(m_pPlayer)->Get_CurrentMp();
-
-	dynamic_cast<CUI_MPBar3_MainBar*>(m_pMPGageBar)->Set_PlayerMp_Info ((float)iFullMP, (float)iCurrentMP);
-
 }
 
 void CUIGroup_PlayerScreen::Item_Nudge_Check(_float fTimeDelta)

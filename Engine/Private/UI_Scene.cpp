@@ -161,18 +161,19 @@ void CUI_Scene::Clear_Choice(_uint iUIType, CUIObject* pUIObj)
 	}
 }
 
-void CUI_Scene::Find_TextBox_Monster_Memory(_uint iCount)
+void CUI_Scene::Find_TextBox_PlayerScreen(_uint iGroupID,_uint iCount)
 {
-
+	// 몬스터, 플레이어에게서 원하는 타이밍에 원하는 수치값을 가져오기 위해서...이런 함수를 만듬...
 	_tchar pDust[MAX_PATH] = {};
-	_tchar* pSor = { L"+%d" };
+	_tchar* pSor = { L"+ %d" };
 
 	wsprintf(pDust, pSor, iCount);
 	for (auto& TextBox : m_TextBox)
 	{
-		if (101 == TextBox->Get_UI_GroupID())
+		if (iGroupID == TextBox->Get_UI_GroupID())
 		{
 			TextBox->Set_OnOff(true);
+			TextBox->Set_TextDrawType(TEXT_ALPHA_ANIM);
 			TextBox->Set_Change_TextColor(FONT_GREEN);
 			TextBox->Set_Content(pDust);
 		}

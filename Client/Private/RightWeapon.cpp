@@ -452,6 +452,7 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
     _int IncreaseMp_Amount = *static_cast<CPlayer*>(m_pParent)->Get_Bonus_Sword_Attack_Mp() + 6;
     _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
 
+
     if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때        
     {
         if (m_iFullMp > *m_pParentMp)
@@ -460,8 +461,11 @@ void CRightWeapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
     else
     {
+        m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, IncreaseMp_Amount);
         *m_pParentMp += IncreaseMp_Amount;
     }
+
+
 
 #pragma endregion 
 }

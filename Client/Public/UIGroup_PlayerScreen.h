@@ -30,13 +30,14 @@ public:
 	void Player_Info_GageBar();
 	void UI_Direction_HPBar();
 	void UI_Direction_MPBar();
+	void UI_Player_Skill_ImageSet();
 
 private:
-	CUIObject* m_pHPGageBar = { nullptr };
-	CUIObject* m_pHPGageTrack = { nullptr };
+	CUIObject*				m_pHPGageBar = { nullptr };
+	CUIObject*				m_pHPGageTrack = { nullptr };
 
-	CUIObject* m_pMPGageBar = { nullptr };
-	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
+	CUIObject*				m_pMPGageBar = { nullptr };
+	CPlayerSkillMgr*		m_pPlayerSkillMgr = { nullptr };
 
 public:
 	void Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eState, _int iNum); // 아이템 획득 시 출력되는 알림
@@ -85,7 +86,15 @@ private:
 	_float					m_fMonsterTextOnTime = {};
 	vector<UI_TextInfo>		m_TextInfo = {};
 
-	_int*					m_oPotion_Count = {};
+
+
+	CUI_Text*				m_pPlayerHPText = {};
+	CUI_Text*				m_pPlayerMPText = {};
+	_float					m_fHPTextOnTime = {};
+	_float					m_fMPTextOnTime = {};
+
+	
+	_int*					m_pPotion_Count = {};
 public:
 	void Set_QuestCount_UP(_int iCount) { m_iQuestMonsterDeadCount += iCount; }
 	_int Get_QuestCount() { return m_iQuestMonsterDeadCount; }
