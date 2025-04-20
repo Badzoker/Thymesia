@@ -163,7 +163,7 @@ HRESULT CBody_GhostSemy::Render_Glow()
 
 void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate)
 {
-    m_fDissolveAmount = 1.0f;
+    //m_fDissolveAmount = 1.0f;
     m_bActivate = _bActivate;
     m_bReverse = true;
 }
