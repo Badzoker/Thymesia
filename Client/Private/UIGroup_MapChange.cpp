@@ -131,7 +131,8 @@ void CUIGroup_MapChange::Update(_float fTimeDelta)
 					if (1 == Button->Get_UI_GroupID())
 					{
 						m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
-						
+						m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
+
 					}
 					if (2 == Button->Get_UI_GroupID())
 					{

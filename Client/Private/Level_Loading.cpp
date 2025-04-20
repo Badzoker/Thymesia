@@ -69,20 +69,20 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 
 		break;
 	case Client::LEVEL_TUTORIAL:
-
+		m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.15f);
 		m_pLoader = CLoader_Tutorial::Create(m_pDevice, m_pContext, eNextLevelID);
 		if (nullptr == m_pLoader)
 			return E_FAIL;
 		break;
 	case Client::LEVEL_SEAOFTREES:
-
+		m_pGameInstance->PlayBGM(L"Sea_of_Trees_Level_-_Exploration.ogg", 0.15f);
 		m_pLoader = CLoader_SeaOfTrees::Create(m_pDevice, m_pContext, eNextLevelID);
 		if (nullptr == m_pLoader)
 			return E_FAIL;
 
 		break;
 	case Client::LEVEL_ROYALGARDEN:
-
+		m_pGameInstance->PlayBGM(L"Garden_Level_-_Exploration.ogg", 0.15f);
 		m_pLoader = CLoader_RoyalGarden::Create(m_pDevice, m_pContext, eNextLevelID);
 		if (nullptr == m_pLoader)
 			return E_FAIL;
@@ -96,7 +96,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 
 		break;
 	case Client::LEVEL_HILL:
-
+		m_pGameInstance->PlayBGM(L"Safe_House_-_Long.ogg", 0.8f);
 		m_pLoader = CLoader_Hill::Create(m_pDevice, m_pContext, eNextLevelID);
 		if (nullptr == m_pLoader)
 			return E_FAIL;

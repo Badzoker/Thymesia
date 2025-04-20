@@ -110,8 +110,8 @@ HRESULT CLevel_Tutorial::Initialize()
     m_pGameInstance->UIGroup_Render_OnOff(LEVEL_TUTORIAL, TEXT("Layer_PlayerScreen"), true);
     m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-    m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-    m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.15f);
+  /*  m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+    m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.15f);*/
 
     return S_OK;
 }
@@ -2777,6 +2777,5 @@ void CLevel_Tutorial::Free()
     m_pGameInstance->Delete_All_Monster();
     m_pGameInstance->Reset_Effect();
 
-    m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
     m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }

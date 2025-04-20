@@ -1170,6 +1170,5 @@ void CLevel_Ocean::Free()
 	m_pGameInstance->Delete_All_Monster();
 	m_pGameInstance->Reset_Effect();
 
-	m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 	m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }

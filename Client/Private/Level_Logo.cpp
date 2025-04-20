@@ -73,8 +73,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 		{
 			m_pGameInstance->UIGroup_Render_OnOff(LEVEL_LOGO, TEXT("Layer_GameIntro"), false); // 인트로 ui 종료
 			m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_INTRO, L"UIScene_Intro")), false);
-			m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-			m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.15f);
+
+            /*m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+			m_pGameInstance->PlayBGM(L"LogoSound1.ogg", 0.15f);*/
 			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 6, false)); // 다음 레벨로
 		}
 	}

@@ -102,8 +102,8 @@ HRESULT CLevel_Hill::Initialize()
 	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_PlayerScreen"), true);
 	m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), true);
 
-	m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
-	m_pGameInstance->PlayBGM(L"Safe_House_-_Long.ogg", 0.8f);
+	/*m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+	m_pGameInstance->PlayBGM(L"Safe_House_-_Long.ogg", 0.8f);*/
 
 	/* ¸Ê ÀÌ¸§ ¾Ë¸²*/
 	m_pGameInstance->UIGroup_Render_OnOff(LEVEL_HILL, TEXT("Layer_Landing"), true);
@@ -975,6 +975,5 @@ void CLevel_Hill::Free()
 
 	m_pGameInstance->Reset_Effect();
 
-	m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 	m_pGameInstance->Delete_Static_Light(m_iCurrentLevel);
 }
