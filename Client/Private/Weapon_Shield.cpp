@@ -217,6 +217,7 @@ void CWeapon_Shield::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
+		m_pGameInstance->Play_Sound(L"Villager_WoodShieldSound.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
 	}
 }
 
