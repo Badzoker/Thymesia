@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Boss_Magician.h"
 #include "Animation.h"
+#include "Player.h"
 
 CWeapon_Magician_Sword::CWeapon_Magician_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -330,6 +331,28 @@ void CWeapon_Magician_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPai
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bColliderOff = true;
+
+        if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+        {
+            _uint iRandSoundFileNum = {};
+            iRandSoundFileNum = rand() % 4;
+
+            switch (iRandSoundFileNum)
+            {
+            case 0:
+                m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            case 1:
+                m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            case 2:
+                m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            case 3:
+                m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            }
+        }
     }
     if (!strcmp("PLAYER", _pOther->Get_Name()) && *m_bSpecial_Skill_Progress)
     {

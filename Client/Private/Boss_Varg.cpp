@@ -367,6 +367,28 @@ void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 15.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 25.f;
         }
+
+#pragma region Sound
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 4;
+
+        switch (iRandSoundFileNum)
+        {
+        case 0:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 1:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        }
+#pragma endregion
+
     }
 }
 

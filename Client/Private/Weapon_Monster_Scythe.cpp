@@ -219,7 +219,7 @@ void CWeapon_Monster_Scythe::OnCollisionEnter(CGameObject* _pOther, PxContactPai
 		if (!m_pParryActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
 		{
 			_uint iRandSoundFileNum = {};
-			iRandSoundFileNum = rand() % 3 + 1;
+			iRandSoundFileNum = rand() % 4 + 1;
 
 			switch (iRandSoundFileNum)
 			{
@@ -230,6 +230,9 @@ void CWeapon_Monster_Scythe::OnCollisionEnter(CGameObject* _pOther, PxContactPai
 				m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
 				break;
 			case 3:
+				m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			case 4:
 				m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
 				break;
 			}

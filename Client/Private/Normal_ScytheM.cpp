@@ -330,9 +330,9 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
             m_pState_Manager->ChangeState(new CNormal_ScytheM::Hit_State(m_iHit_Motion_Index), this);
         }
 
-        // 플레이어가 빌리지 남자M1 을 때릴 때 나는 소리.
+        // 플레이어가 낫잡이 를 때릴 때 나는 소리.
         _uint iRandSoundFileNum = {};
-        iRandSoundFileNum = rand() % 3 + 1;
+        iRandSoundFileNum = rand() % 4 + 1;
 
         switch (iRandSoundFileNum)
         {
@@ -344,6 +344,9 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
             break;
         case 3:
             m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        case 4:
+            m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }

@@ -387,7 +387,7 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         }
 
         //Sound
-        _uint iHitRandom = rand() % 3;
+        _uint iHitRandom = rand() % 4;
 
         switch (iHitRandom)
         {
@@ -401,6 +401,10 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
         case 2:
             m_pGameInstance->Play_Sound(TEXT("Hit3.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+
+        case 3:
+            m_pGameInstance->Play_Sound(TEXT("Hit4.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }
@@ -643,10 +647,11 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
         {
             if (!strcmp(iter.szName, "Effect_Blood")) 
             {
-                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_003");
+                pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                
                 //Sound
-                pObject->m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+                pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
                 pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
                 iter.isPlay = true;
             }

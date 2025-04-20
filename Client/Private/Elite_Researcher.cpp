@@ -400,7 +400,7 @@ void CElite_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
         }
 
         //Sound
-        _uint iHitRandom = rand() % 3;
+        _uint iHitRandom = rand() % 4;
 
         switch (iHitRandom)
         {
@@ -414,6 +414,10 @@ void CElite_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
         case 2:
             m_pGameInstance->Play_Sound(TEXT("Hit3.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+
+        case 3:
+            m_pGameInstance->Play_Sound(TEXT("Hit4.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
 
@@ -979,8 +983,6 @@ void CElite_Researcher::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Re
                     _float4x4 matHeadWorld = {};
                     XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
                     pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
-
-                    pObject->m_pGameInstance->Play_Sound(L"Joker_ShockWave_Start.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
                     iter.isPlay = true;
                 }
             }
@@ -1295,23 +1297,23 @@ void CElite_Researcher::Attack_Special_Catch::State_Enter(CElite_Researcher* pOb
 
 void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CElite_Researcher* pObject)
 {
-#pragma region EFFECT_CATCH
-    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-    {
-        if (iter.isPlay == false)
-        {
-            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-            {
-                if (!strcmp(iter.szName, "Effect_Special"))
-                {
-                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
-                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
-                }
-            }
-        }
-    }
-#pragma endregion
+//#pragma region EFFECT_CATCH
+//    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+//    {
+//        if (iter.isPlay == false)
+//        {
+//            if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+//            {
+//                if (!strcmp(iter.szName, "Effect_Special"))
+//                {
+//                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+//                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+//                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+//                }
+//            }
+//        }
+//    }
+//#pragma endregion
 
 
 #pragma region SOUND_SPECIAL_CATCH
@@ -1324,21 +1326,29 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                 if (!strcmp(iter.szName, "Event_Damage_1"))
                 {
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_2"))
                 {
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_3"))
                 {
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_4"))
                 {
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
+                    pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     iter.isPlay = true;
                 }
             }

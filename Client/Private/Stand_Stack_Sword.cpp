@@ -2,6 +2,7 @@
 #include "Stand_Stack_Sword.h"
 #include "GameInstance.h"
 #include "Animation.h"
+#include "Player.h"
 
 CStand_Stack_Sword::CStand_Stack_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -303,6 +304,22 @@ void CStand_Stack_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPair _i
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bColliderOff = true;
+
+        if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+        {
+            _uint iRandSoundFileNum = {};
+            iRandSoundFileNum = rand() % 2;
+
+            switch (iRandSoundFileNum)
+            {
+            case 0:
+                m_pGameInstance->Play_Sound(L"Player_DamageByJoker1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            case 1:
+                m_pGameInstance->Play_Sound(L"Player_DamageByJoker2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                break;
+            }
+        }
     }
 }
 

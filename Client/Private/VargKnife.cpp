@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Camera_Free.h"
+#include "Player.h"
 
 CVargKnife::CVargKnife(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -311,6 +312,30 @@ void CVargKnife::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         if (*m_pParentState == STATE_SPECIAL_ATTACK2)
         {
             *m_Is_Catch = true;
+        }
+        else
+        {
+            if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 4;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                case 1:
+                    m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                case 2:
+                    m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                case 3:
+                    m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+                    break;
+                }
+            }
         }
     }
 }

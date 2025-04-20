@@ -838,6 +838,10 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 				else
 				{
 					pObject->m_pGameInstance->Play_Sound(TEXT("Magician2_AttackComboB_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+
+
+
+
 					iter.isPlay = true;
 				}
 			}

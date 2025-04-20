@@ -534,6 +534,28 @@ void CBoss_Magician::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 			}
 			m_pState_Manager->ChangeState(new CBoss_Magician::Hit_State(m_iHit_Motion_Index), this);
 		}
+
+		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			_uint iRandSoundFileNum = {};
+			iRandSoundFileNum = rand() % 4;
+
+			switch (iRandSoundFileNum)
+			{
+			case 0:
+				m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+				break;
+			case 1:
+				m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+				break;
+			case 2:
+				m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+				break;
+			case 3:
+				m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+				break;
+			}
+		}
 	}
 }
 
@@ -1669,6 +1691,10 @@ void CBoss_Magician::Hit_State::State_Update(_float fTimeDelta, CBoss_Magician* 
 			{
 				if (!strcmp(iter.szName, "Sound_Hurt"))
 				{
+					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_CANE);
+					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD);
+					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWORD_DUST);
+
 					_uint iRandom = rand() % 3;
 					switch (iRandom)
 					{

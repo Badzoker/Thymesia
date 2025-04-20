@@ -481,13 +481,13 @@ void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		switch (iRandom)
 		{
 		case 0:
-			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound01.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 2.f);
+			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound01.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 2.f);
 			break;
 		case 1:
-			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound02.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 2.f);
+			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound02.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 2.f);
 			break;
 		case 2:
-			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound03.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 2.f);
+			m_pGameInstance->Play_Sound(TEXT("Bat_HitSound03.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 2.f);
 			break;
 		}
 	}

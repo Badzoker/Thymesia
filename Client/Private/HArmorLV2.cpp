@@ -549,12 +549,34 @@ void CHArmorLV2::Move_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
         {
             if (!strcmp(iter.szName, "Sound_Walk1"))
             {
-                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 2;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
                 iter.isPlay = true;
             }
             else if (!strcmp(iter.szName, "Sound_Walk2"))
             {
-                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 2;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
                 iter.isPlay = true;
             }
         }
@@ -609,12 +631,34 @@ void CHArmorLV2::Run_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
         {
             if (!strcmp(iter.szName, "Sound_Run1"))
             {
-                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 2;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
                 iter.isPlay = true;
             }
             else if (!strcmp(iter.szName, "Sound_Run2"))
             {
-                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 2;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
                 iter.isPlay = true;
             }
         }

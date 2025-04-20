@@ -477,6 +477,21 @@ void CBoss_Urd::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 			}
 			m_pState_Manager->ChangeState(new CBoss_Urd::Hit_State(m_iHit_Motion_Index), this);
 		}
+
+#pragma region Sound
+		_uint iRandSoundFileNum = {};
+		iRandSoundFileNum = rand() % 2;
+
+		switch (iRandSoundFileNum)
+		{
+		case 0:
+			m_pGameInstance->Play_Sound(L"Urd_HurtM.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+			break;
+		case 1:
+			m_pGameInstance->Play_Sound(L"Urd_HurtS.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+			break;
+		}
+#pragma endregion
 	}
 }
 
@@ -1325,11 +1340,28 @@ void CBoss_Urd::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 				{
 					if (pObject->m_iPhase == PHASE_ONE)
 					{
+#pragma region Effect_Warning
+						pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+						const _float4x4* matNeck = pObject->m_pModelCom->Get_BoneMatrix("neck_01");
+						_float4x4 matNeckWorld = {};
+						XMStoreFloat4x4(&matNeckWorld, XMLoadFloat4x4(matNeck) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+						pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matNeckWorld);
+#pragma endregion
+
+
 						pObject->m_pGameInstance->Play_Sound(L"Urd_Attack2_01.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
 						iter.isPlay = true;
 					}
 					else if (pObject->m_iPhase == PHASE_TWO)
 					{
+#pragma region Effect_Warning
+						pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+						const _float4x4* matNeck = pObject->m_pModelCom->Get_BoneMatrix("neck_01");
+						_float4x4 matNeckWorld = {};
+						XMStoreFloat4x4(&matNeckWorld, XMLoadFloat4x4(matNeck) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+						pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matNeckWorld);
+#pragma endregion
+
 						pObject->m_pGameInstance->Play_Sound(L"Urd_Attack2_02.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
 						iter.isPlay = true;
 					}
