@@ -41,6 +41,9 @@ private:
 	
 	_bool m_bSoundOnOff = { true };
 
+
+	_float m_fShaderTime = {};
+
 public:
 	HRESULT Ready_Components();
 

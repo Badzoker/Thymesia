@@ -130,6 +130,10 @@ PS_OUT PS_Thymesia_UI_ImageOnOffLoop(PS_IN In)
         Out.vColor.a *= abs(g_fTImeAlpha);
 
     }
+    else
+    {
+        Out.vColor.a = 0.0f;
+    }
     return Out;
 }
 
