@@ -142,7 +142,7 @@ public:
 	/* ------------------------- */
 
 	/* 贸屈 葛记 */
-	void STATE_STUN_EXECUTE_START_HARMOR_Method();	
+	void STATE_STUN_EXECUTE_START_HARMOR_Method();
 	void STATE_HARMOR_EXECUTION_Method();
 	void STATE_STUN_EXECUTE_Method();
 	void STATE_LV1Villager_M_Execution_Method();
@@ -331,8 +331,8 @@ private:
 	_bool  m_bFirstCameraPos = { true };
 
 	/* 惯家府 包访 */
-	_bool  m_RightFootStepSound = { true };
-	_bool  m_LeftFootStepSound = { true };
+	//_bool  m_RightFootStepSound = { true };
+	//_bool  m_LeftFootStepSound = { true };
 
 	_uint  m_iRightFootStepSound = { 0 };
 	_uint  m_iLeftFootStepSound = { 0 };

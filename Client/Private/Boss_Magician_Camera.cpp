@@ -91,7 +91,7 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
     {
         for (auto& iter : *m_pParentModelCom->Get_VecAnimation().at(m_pParentModelCom->Get_Current_Animation_Index())->Get_vecEvent())
         {
-            if (iter.isPlay == false && iter.eType == EVENT_STATE)  
+            if (iter.isPlay == false && iter.eType == EVENT_STATE)
             {
                 if (iter.isEventActivate == true) // EVENT_STATE 부분           
                 {
@@ -139,7 +139,6 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
 
 
                         _vector PlayerPos = m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-
                         _vector MonsterPos = m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
 
 
@@ -162,7 +161,7 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                             {
                                 Radian = -Radian;
                             }
- 
+
                             XMStoreFloat4x4(&m_fPrePlayerWorldMatrix, XMLoadFloat4x4(m_pPlayer->Get_Transfrom()->Get_WorldMatrix_Ptr()));
 
                             m_pPlayer->Get_Transfrom()->Turn_Degree(XMVectorSet(0.f, 1.f, 0.f, 0.f), Radian);
@@ -170,7 +169,28 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
 
 
                             m_bFirst = false;
+
+
+                            /* 조명 관련 */
+                            _vector MonsterDir2 = XMVector3Normalize(m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_LOOK)) * 5.f;
+                            _vector FinalPos = { MonsterPos.m128_f32[0] + MonsterDir2.m128_f32[0], MonsterPos.m128_f32[1], MonsterPos.m128_f32[2] + MonsterDir2.m128_f32[2],1.f };
+
+                            LIGHT_DESC LightDesc{};
+                            ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+                            LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+                            LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+                            LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+                            LightDesc.vSpecular = _float4(1.f, 1.0f, 1.0f, 1.f);
+                            LightDesc.vPosition = { FinalPos.m128_f32[0],FinalPos.m128_f32[1],FinalPos.m128_f32[2],1.f };
+                            LightDesc.fRange = 5.f;
+                            LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+
+                            m_pGameInstance->Add_Light(LightDesc);
+
+
                         }
+
                     }
                 }
 
@@ -202,6 +222,8 @@ void CBoss_Magician_Camera::Update(_float fTimeDelta)
                         m_pPlayer->Sub_PhaseState(CPlayer::PHASE_BOSS_INTRO);
 
 
+                        /* 조명 관련 */
+                        m_pGameInstance->Delete_Static_Light(LEVELID::LEVEL_SEAOFTREES);
                     }
 
                 }
