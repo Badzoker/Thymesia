@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Animation.h"
 #include "Elite_Grace.h"
+#include "Player.h"
 
 CBody_Grace::CBody_Grace(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CPartObject(pDevice, pContext)
@@ -246,6 +247,26 @@ void CBody_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
     if (!strcmp("PLAYER", _pOther->Get_Name()))
     {
         m_bColliderOff = true;
+
+        if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+        {
+            _uint iHitRandom = rand() % 3;
+
+            switch (iHitRandom)
+            {
+            case 0:
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_01.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                break;
+
+            case 1:
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_02.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                break;
+
+            case 2:
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_03.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                break;
+            }
+        }
     }
 }
 

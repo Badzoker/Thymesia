@@ -381,6 +381,24 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
             }
             m_pState_Manager->ChangeState(new CElite_Grace::Hit_State(m_iHit_Motion_Index), this);
         }
+
+        //Sound
+        _uint iHitRandom = rand() % 3;
+
+        switch (iHitRandom)
+        {
+        case 0:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound0.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+
+        case 1:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound1.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+
+        case 2:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound2.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+        }
     }
 
 }
@@ -622,6 +640,10 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
             if (!strcmp(iter.szName, "Effect_Blood")) 
             {
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+               
+                //Sound
+                pObject->m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+                pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
                 iter.isPlay = true;
             }
         }
@@ -633,6 +655,26 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
     {
         pObject->m_iMonster_State = STATE_DEAD;
     }
+
+
+#pragma region SOUND_EXECUTION
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Fall_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_GotKicked.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    iter.isPlay = true;
+                }
+
+            }
+
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Grace::Execution_State::State_Exit(CElite_Grace* pObject)
@@ -770,6 +812,45 @@ void CElite_Grace::Attack_ComboA::State_Update(_float fTimeDelta, CElite_Grace* 
         }
 
     }
+
+#pragma region SOUND_ATTACK_COMBO_A_01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Voice_Ready_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Attack_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_1.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Attack_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_2.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Attack_Claw_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_3.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Kick_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.8f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
+
 }
 
 void CElite_Grace::Attack_ComboA::State_Exit(CElite_Grace* pObject)
@@ -821,6 +902,49 @@ void CElite_Grace::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Grace* 
 
     }
 
+
+#pragma region SOUND_ATTACK_COMBO_B_01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (m_iIndex == 11 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Attack_Kick_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Attack_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
+
+#pragma region SOUND_ATTACK_COMBO_B_02
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (m_iIndex == 2 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Attack_Claw_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_2.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Kick_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Kick_01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Grace::Attack_ComboB::State_Exit(CElite_Grace* pObject)
@@ -887,6 +1011,60 @@ void CElite_Grace::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Grace* 
         }
     }
 
+
+#pragma region SOUND_ATTACK_COMBO_C_01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (m_iIndex == 20 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Voice_Ready_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Attack_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_3.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Attack_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_1.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Kick_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Kick_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_2.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
+
+
+#pragma region SOUND_ATTACK_COMBO_C_01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (m_iIndex == 21 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Throw_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
+
 }
 
 void CElite_Grace::Attack_ComboC::State_Exit(CElite_Grace* pObject)
@@ -918,6 +1096,26 @@ void CElite_Grace::Parry_State::State_Update(_float fTimeDelta, CElite_Grace* pO
                 pObject->m_pState_Manager->ChangeState(new Parry_Attack_B(), pObject);
         }
     }
+
+
+#pragma region SOUND_PARRY
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Parry_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Attack_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
 
 }
 
@@ -957,6 +1155,32 @@ void CElite_Grace::Parry_Attack_A::State_Update(_float fTimeDelta, CElite_Grace*
             }
         }
     }
+
+
+#pragma region SOUND_ATTACK_PARRY_A_01
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Kick_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Kick_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Kick_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Kick_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Attack_Combo_A_1_4.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    iter.isPlay = true;
+                }
+            }
+
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Grace::Parry_Attack_A::State_Exit(CElite_Grace* pObject)
@@ -977,12 +1201,17 @@ void CElite_Grace::Parry_Attack_B::State_Update(_float fTimeDelta, CElite_Grace*
     if (m_iIndex == 21 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 16.f && !m_bIs_Fired)
-        {
+        {  //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             _vector vStartPos, vEndPos = {};
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
             pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
+
+          
         }
 
         if (pObject->m_pModelCom->GetAniFinish())
@@ -1034,6 +1263,33 @@ void CElite_Grace::Hit_State::State_Update(_float fTimeDelta, CElite_Grace* pObj
 {
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
+
+
+#pragma region SOUND_HIT
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (m_iIndex == 8 && iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Hurt_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Hurt_01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    iter.isPlay = true;
+                }
+            }
+
+            if (m_iIndex == 9 && iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Hurt_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Hurt_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Grace::Hit_State::State_Exit(CElite_Grace* pObject)
@@ -1059,9 +1315,14 @@ void CElite_Grace::Shoot_Attack_A::State_Update(_float fTimeDelta, CElite_Grace*
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 62.f && !m_bIs_Fired)
         {
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+
         }
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 80.f)
         {
@@ -1076,9 +1337,15 @@ void CElite_Grace::Shoot_Attack_A::State_Update(_float fTimeDelta, CElite_Grace*
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 76.f && !m_bIs_Fired)
         {
+
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+
         }
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 120.f)
         {
@@ -1094,9 +1361,14 @@ void CElite_Grace::Shoot_Attack_A::State_Update(_float fTimeDelta, CElite_Grace*
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 28.f && !m_bIs_Fired)
         {
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_pGameInstance->Fire_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos);
+
         }
         if (pObject->m_pModelCom->GetAniFinish())
         {
@@ -1136,9 +1408,14 @@ void CElite_Grace::Shoot_Attack_B::State_Update(_float fTimeDelta, CElite_Grace*
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 24.f && !m_bIs_Fired)
         {
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
+
         }
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 31.f)
         {
@@ -1152,9 +1429,14 @@ void CElite_Grace::Shoot_Attack_B::State_Update(_float fTimeDelta, CElite_Grace*
     {
         if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 24.f && !m_bIs_Fired)
         {
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
             pObject->Shoot_Calculate_Distance(vStartPos, vEndPos);
             m_bIs_Fired = true;
             pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
+
         }
 
         if (pObject->m_pModelCom->GetAniFinish())

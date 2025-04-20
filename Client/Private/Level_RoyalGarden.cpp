@@ -287,10 +287,10 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Player(const _tchar* pLayerTag)
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 	Desc.iCurLevel = m_iCurrentLevel;
 
-	//_float4 vTestPosition = { 73.27f , 13.75f, -66.235f, 1.f };		// 왕실정원 시작위치
+	_float4 vTestPosition = { 73.27f , 13.75f, -66.235f, 1.f };		// 왕실정원 시작위치
 	//_float4 vTestPosition = { 17.0f, 14.0f, -100.0f, 1.f };		// 해리포터책방두갈래길 시작위치
 	//_float4 vTestPosition = { 101.0f, 14.0f, -97.0f, 1.f };		// 엘베 밑에 있는 시작 위치(근처에 첫 번 째 의자도 있음. ) 
-	_float4 vTestPosition = { -3.1f, 13.2f, -32.4f, 1.f };		// 보스 박쥐방 시작위치 
+	//_float4 vTestPosition = { -3.1f, 13.2f, -32.4f, 1.f };		// 보스 박쥐방 시작위치 
 	//_float4 vTestPosition = { -10.0f, 15.0f, -61.9f, 1.f };		// 두 번째 의자 박쥐 보스 방 직전.
 
 	Desc._fPosition = vTestPosition;
