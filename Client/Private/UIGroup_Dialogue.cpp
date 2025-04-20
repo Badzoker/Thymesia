@@ -260,6 +260,7 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 			{
 				Button->Set_Mouse_Select_OnOff(false);
 
+				m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
 			}
 			if (2 == Button->Get_UI_GroupID()) // 할일이 남아 있어!

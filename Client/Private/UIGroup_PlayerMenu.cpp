@@ -212,6 +212,7 @@ void CUIGroup_PlayerMenu::ChangePopButton_Check()
 		{
 			if (1 == Button->Get_UI_GroupID()) // 철학자의 집으로 이동
 			{
+				m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
 				
 			}
