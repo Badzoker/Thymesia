@@ -677,6 +677,41 @@ void CNormal_VillageM0::Hit_State::State_Enter(CNormal_VillageM0* pObject)
 
 void CNormal_VillageM0::Hit_State::State_Update(_float fTimeDelta, CNormal_VillageM0* pObject)
 {
+#pragma region SOUND_HURT
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Villager_Hurt") || !strcmp(iter.szName, "Villager_Hurt2"))
+                {
+                    // 빌리지 남자M0 을 맞을 때 나는 소리.
+                    _uint iRandSoundFileNum = {};
+                    iRandSoundFileNum = rand() % 4 + 1;
+
+                    switch (iRandSoundFileNum)
+                    {
+                    case 1:
+                        pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Hurt_01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    case 2:
+                        pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Hurt_02.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    case 3:
+                        pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Hurt_03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    case 4:
+                        pObject->m_pGameInstance->Play_Sound(L"VillagerM_Voice_Hurt_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    }
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }

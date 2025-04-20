@@ -232,20 +232,11 @@ HRESULT CWeapon_Axe::Bind_ShaderResources()
 
 void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-	//if (!strcmp("PLAYER", _pOther->Get_Name()))
-	//{
-	//	m_bColliderOff = true;
-
-	//	m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
-	//}
-
-
-
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
 
-		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		if (!m_pKickActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
 		{
 			_uint iRandSoundFileNum = {};
 			iRandSoundFileNum = rand() % 3 + 1;
@@ -262,6 +253,11 @@ void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
 				m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
 				break;
 			}
+		}
+		//// 플레이어가 발길질 당할때 나는 소리 
+		else if (m_pKickActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			m_pGameInstance->Play_Sound(L"Villager_GotKicked.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
 		}
 	}
 }

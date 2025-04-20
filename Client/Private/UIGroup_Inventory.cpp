@@ -1575,7 +1575,8 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 	
 	SaveData.ItemType = ITEM_TYPE::ITEM_UIN;
 	SaveData.ItemIconNum = 11;
-	SaveData.ItemName = L"유인 형님";
+	//SaveData.ItemName = L"유인 형님";
+	SaveData.ItemName = L"난주먹으로말해";
 	SaveData.ItemDesc = L"아이세미는 제꺼예욧.";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
