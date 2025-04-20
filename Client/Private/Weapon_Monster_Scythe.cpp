@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Normal_ScytheM.h"
 #include "Animation.h"
+#include "Player.h"
 
 CWeapon_Monster_Scythe::CWeapon_Monster_Scythe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CPartObject(pDevice, pContext)
@@ -214,6 +215,30 @@ void CWeapon_Monster_Scythe::OnCollisionEnter(CGameObject* _pOther, PxContactPai
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
+
+		if (!m_pParryActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			_uint iRandSoundFileNum = {};
+			iRandSoundFileNum = rand() % 3 + 1;
+
+			switch (iRandSoundFileNum)
+			{
+			case 1:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			case 2:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			case 3:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			}
+		}
+		//// 플레이어가 패링 당할때 나는 소리 
+		else if (m_pParryActor/* && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED*/)
+		{
+			m_pGameInstance->Play_Sound(L"Villager_WoodShieldSound.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
+		}
 	}
 }
 

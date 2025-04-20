@@ -325,6 +325,23 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
             }
             m_pState_Manager->ChangeState(new CNormal_ScytheM::Hit_State(m_iHit_Motion_Index), this);
         }
+
+        // 플레이어가 빌리지 남자M1 을 때릴 때 나는 소리.
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 3 + 1;
+
+        switch (iRandSoundFileNum)
+        {
+        case 1:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        }
     }
 
 
@@ -619,6 +636,35 @@ void CNormal_ScytheM::Hit_State::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Hit_State::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
+#pragma region SOUND_HURT
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Sound_HurtRight") || !strcmp(iter.szName, "Sound_HurtLeft"))
+                {
+                    // 낫잽이 맞을 때 나는 소리.
+                    _uint iRandSoundFileNum = {};
+                    iRandSoundFileNum = rand() % 2 + 1;
+
+                    switch (iRandSoundFileNum)
+                    {
+                    case 1:
+                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtXL.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    case 2:
+                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtM.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        break;
+                    }
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
@@ -743,12 +789,14 @@ void CNormal_ScytheM::Execution_State::State_Update(_float fTimeDelta, CNormal_S
                 {
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_STAB, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.7f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
                 else if (!strcmp(iter.szName, "Effect_Execution_2"))
                 {
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+                    pObject->m_pGameInstance->Play_Sound(L"Villager_GotKicked.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.7f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
             }
@@ -810,6 +858,28 @@ void CNormal_ScytheM::Attack_ComboA::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Attack_ComboA::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
+#pragma region SOUND_ATTACKA
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Sound_Whoosh01"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_03.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Attack01"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboA03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
@@ -844,6 +914,28 @@ void CNormal_ScytheM::Attack_ComboB::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Attack_ComboB::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
+#pragma region SOUND_ATTACKB 달려와서 내려찍기 
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Sound_Whoosh02"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_04.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Attack02"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboB01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
@@ -879,6 +971,28 @@ void CNormal_ScytheM::Attack_ComboC::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Attack_ComboC::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
+#pragma region SOUND_ATTACKC 그르렁 하고 칼치기 
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Sound_Whoosh03"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Attack03"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_Parry_R.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
+
     if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;
