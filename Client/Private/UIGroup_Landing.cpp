@@ -5,6 +5,7 @@
 
 #include "UI_Scene.h"
 #include "UI_Image.h"
+#include "UI_LandingScreen.h"
 
 
 #include "UIGroup_Landing.h"
@@ -66,12 +67,13 @@ void CUIGroup_Landing::Update(_float fTimeDelta)
 	if (m_bRenderOpen)
 	{
 		Map_Name();
+
 		if (
-			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Dead) ||
-			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Beacon) ||
-			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Recall) ||
-			m_pGameInstance->Get_Scene_Render_State(m_pMessage_Memories) ||
-			m_pGameInstance->Get_Scene_Render_State(m_pMessage_MapName))
+			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Dead->Find_UI_Image().front())->Get_OnOff() ||
+			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Beacon->Find_UI_Image().front())->Get_OnOff() ||
+			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Recall->Find_UI_Image().front())->Get_OnOff() ||
+			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Memories->Find_UI_Image().front())->Get_OnOff() ||
+			dynamic_cast<CUI_LandingScreen*>(m_pMessage_MapName->Find_UI_Image().front())->Get_OnOff())
 		{
 			if (m_fRandingTime > 2.f)
 			{
