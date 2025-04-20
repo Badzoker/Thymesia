@@ -275,6 +275,10 @@ void CBoss_Varg::Stun()
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
+
+#pragma region Effect
+    m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
 }
 
 void CBoss_Varg::Near_Pattern_Create()

@@ -1103,6 +1103,10 @@ void CNormal_VillageF1::Parry_State::State_Enter(CNormal_VillageF1* pObject)
     pObject->RotateDegree_To_Player();
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+#pragma region Effect
+    pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+#pragma endregion
 }
 
 void CNormal_VillageF1::Parry_State::State_Update(_float fTimeDelta, CNormal_VillageF1* pObject)
