@@ -295,12 +295,6 @@
     <Filter Include="02.GameObject\Monster\00. Normal\Female">
       <UniqueIdentifier>{25b37e3d-96fa-4fb1-8ec5-130371cb3271}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF0">
-      <UniqueIdentifier>{28c270ee-82c4-43ca-81f3-053f5a49e241}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF0\Body">
-      <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF1">
       <UniqueIdentifier>{5002b426-9c9a-4053-95a0-7c7add3ee9d4}</UniqueIdentifier>
     </Filter>
@@ -1026,6 +1020,12 @@
     </Filter>
     <Filter Include="03.UIObject\1.UIObjClass\Image\UI_EndingScene">
       <UniqueIdentifier>{19c22788-4eb6-4ba9-bcf4-4cd412994a59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF0">
+      <UniqueIdentifier>{28c270ee-82c4-43ca-81f3-053f5a49e241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF0\Body">
+      <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

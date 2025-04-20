@@ -271,6 +271,22 @@ void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
             }
             m_pState_Manager->ChangeState(new CNormal_VillageF0::Hit_State(m_iHit_Motion_Index), this);
         }
+
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 3 + 1;
+
+        switch (iRandSoundFileNum)
+        {
+        case 1:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        }
     }
 
 

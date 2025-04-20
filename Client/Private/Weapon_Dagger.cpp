@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Normal_VillageF1.h"
 #include "Animation.h"
+#include "Player.h"
 
 CWeapon_Dagger::CWeapon_Dagger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CPartObject(pDevice, pContext)
@@ -233,7 +234,24 @@ void CWeapon_Dagger::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 	{
 		m_bColliderOff = true;
 
-		m_pGameInstance->Play_Sound(L"Knife_Attack_01.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			_uint iRandSoundFileNum = {};
+			iRandSoundFileNum = rand() % 3 + 1;
+
+			switch (iRandSoundFileNum)
+			{
+			case 1:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.08f);
+				break;
+			case 2:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.08f);
+				break;
+			case 3:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.08f);
+				break;
+			}
+		}
 	}
 }
 

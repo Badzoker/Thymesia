@@ -267,8 +267,6 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
     if (FAILED(Load_Objects(319, pLayerTag))) //Circus Map 엘레베이터 전까지 일반몹 구간
         return E_FAIL;
 
-    Load_TriggerObjects(2);
-
     if (FAILED(Load_DestructObjects(10)))
         return E_FAIL;
 
