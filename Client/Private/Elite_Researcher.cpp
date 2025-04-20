@@ -395,6 +395,24 @@ void CElite_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
         }
 
+        //Sound
+        _uint iHitRandom = rand() % 3;
+
+        switch (iHitRandom)
+        {
+        case 0:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound0.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+
+        case 1:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound1.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+
+        case 2:
+            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound2.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            break;
+        }
+
         if (m_bCanHit &&
             m_iMonster_State != STATE_ATTACK &&
             m_iMonster_State != STATE_SPECIAL_ATTACK &&
@@ -675,13 +693,19 @@ void CElite_Researcher::Execution_State::State_Update(_float fTimeDelta, CElite_
                 {
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_EXECUTION_1, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
-                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+
+                    //Sound
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Researcher_ExecutIon_1.wav"), CHANNELID::SOUND_MONSTER_STUN, 10.f);
+                    iter.isPlay = true;      // 한 번만 재생 되어야 하므로                
                 }
                 else if (!strcmp(iter.szName, "Effect_Execution_2"))
                 {
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_EXECUTION_2, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_EXECUTION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+                    //Sound
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Researcher_ExecutIon_2.wav"), CHANNELID::SOUND_MONSTER_STUN, 10.f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
             }
@@ -786,6 +810,43 @@ void CElite_Researcher::Attack_ComboA::State_Update(_float fTimeDelta, CElite_Re
         }
     }
 
+#pragma region SOUND_COMBO_A
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (m_iIndex == 0 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Voice_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Voice_01.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+                if (!strcmp(iter.szName, "Event_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Attack_Combo_A_01.wav", CHANNELID::SOUND_MONSTER_VOICE, 20.f);
+                    iter.isPlay = true;
+                }
+
+            }
+        }
+
+        if (m_iIndex == 1 && iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Attack_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Attack_Combo_A_02.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+            }
+
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Attack_ComboA::State_Exit(CElite_Researcher* pObject)
@@ -829,6 +890,25 @@ void CElite_Researcher::Attack_ComboB::State_Update(_float fTimeDelta, CElite_Re
             }
         }
     }
+
+
+#pragma region SOUND_COMBO_B
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Attack_Combo_B_01.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Attack_ComboB::State_Exit(CElite_Researcher* pObject)
@@ -873,6 +953,25 @@ void CElite_Researcher::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Re
             }
         }
     }
+
+
+#pragma region SOUND_COMBO_C
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Attack_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Attack_01.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Attack_ComboC::State_Exit(CElite_Researcher* pObject)
@@ -920,6 +1019,29 @@ void CElite_Researcher::Parry_Attack_A::State_Update(_float fTimeDelta, CElite_R
             }
         }
     }
+
+#pragma region SOUND_PARRY_ATTACK_A
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Parry_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+                if (!strcmp(iter.szName, "Event_Throw_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Throw_Attack_02.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Parry_Attack_A::State_Exit(CElite_Researcher* pObject)
@@ -967,6 +1089,29 @@ void CElite_Researcher::Parry_Attack_B::State_Update(_float fTimeDelta, CElite_R
             }
         }
     }
+
+#pragma region SOUND_PARRY_ATTACK_B
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Parry_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+                if (!strcmp(iter.szName, "Event_Throw_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Throw_Attack_02.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Parry_Attack_B::State_Exit(CElite_Researcher* pObject)
@@ -1010,6 +1155,31 @@ void CElite_Researcher::Shoot_Attack_A::State_Update(_float fTimeDelta, CElite_R
             }
         }
     }
+
+
+
+#pragma region SOUND_SHOOT_ATTACK_A
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Throw_Ready_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Throw_Attack_01.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+
+                if (!strcmp(iter.szName, "Event_Throw_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Throw_Attack_02.wav", CHANNELID::SOUND_MONSTER_ACTION, 20.f);
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Shoot_Attack_A::State_Exit(CElite_Researcher* pObject)
@@ -1052,6 +1222,25 @@ void CElite_Researcher::Attack_Special::State_Update(_float fTimeDelta, CElite_R
                 pObject->m_pState_Manager->ChangeState(new CElite_Researcher::Move_State(), pObject);
         }
     }
+
+
+#pragma region SOUND_SPECIAL_ATTACK
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Catch_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_GrabYou_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+
+                    iter.isPlay = true;
+                }
+            }
+        }
+    }
+#pragma endregion
 }
 
 void CElite_Researcher::Attack_Special::State_Exit(CElite_Researcher* pObject)
@@ -1103,6 +1292,39 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
+                }
+            }
+        }
+    }
+#pragma endregion
+
+
+#pragma region SOUND_SPECIAL_CATCH
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.isPlay == false)
+        {
+            if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)
+            {
+                if (!strcmp(iter.szName, "Event_Damage_1"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Damage_2"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Damage_3"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Event_Damage_4"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
+                    iter.isPlay = true;
                 }
             }
         }

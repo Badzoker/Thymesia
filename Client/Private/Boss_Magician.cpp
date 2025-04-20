@@ -2388,6 +2388,8 @@ void CBoss_Magician::Dissappear_Jump_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }
 
 void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBoss_Magician* pObject)
@@ -2426,6 +2428,10 @@ void CBoss_Magician::Dissappear_Jump_State::State_Update(_float fTimeDelta, CBos
 				//pDesc.fPosition = pObject->m_vSpawnPoint;
 				//if (FAILED(pObject->m_pGameInstance->Add_Monster(LEVEL_STATIC, TEXT("Prototype_GameObject_Boss_Magician2"), CATEGORY_BOSS, &pDesc)))
 				//	return;
+
+				pObject->m_pGameInstance->StopSound(CHANNELID::SOUND_BGM);
+
+				pObject->m_pGameInstance->PlayBGM(TEXT("Puppet_Combat_-_Loop.ogg"), 0.15f);
 			}
 			pObject->m_bDead = true;
 			pObject->m_bActive = false;
