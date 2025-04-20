@@ -217,13 +217,17 @@ void CNormal_VillageM0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
         m_fHP_Bar_Active_Timer = 0.f;
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_fMonsterCurHP -= *m_Player_Attack * 0.5f;
-            m_fShieldHP -= (*m_Player_Attack) * 0.5f * 1.5f;
+            m_fMonsterCurHP -= *m_Player_Attack / 4.f;
+            m_fShieldHP -= (*m_Player_Attack) / 2.f;
         }
         else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 4.f;
-            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 4.f;
+            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 8.f;
+            if (m_fMonsterCurHP <= m_fShieldHP)
+            {
+                m_fMonsterCurHP = m_fShieldHP;
+            }
         }
 
         if (m_bCanHit)

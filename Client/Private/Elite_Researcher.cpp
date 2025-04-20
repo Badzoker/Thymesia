@@ -386,13 +386,17 @@ void CElite_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_fMonsterCurHP -= *m_Player_Attack / 5.f;
-            m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+            m_fMonsterCurHP -= *m_Player_Attack / 20.f;
+            m_fShieldHP -= (*m_Player_Attack / 10.f);
         }
         else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
-            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
+            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 15.f;
+            if (m_fMonsterCurHP <= m_fShieldHP)
+            {
+                m_fMonsterCurHP = m_fShieldHP;
+            }
         }
 
         //Sound
@@ -1259,7 +1263,7 @@ void CElite_Researcher::Attack_Special_Catch::State_Enter(CElite_Researcher* pOb
     pObject->m_iMonster_Attack_Power = 190;
     pObject->m_bCan_Move_Anim = true;
 
-    _float teleportDistance = 1.f;
+    _float teleportDistance = 0.7f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
     _vector vPlayerRight = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_RIGHT);
     _vector vPlayerPos = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
