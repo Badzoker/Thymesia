@@ -177,8 +177,8 @@ HRESULT CLevel_Ocean::Ready_Lights()
 	/* 2¿ù 8ÀÏ ºû */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(0.f, 1.f, 0.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.8f, 0.8f, 0.8f, 1.f);
 	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.iCurrentLevel = m_iCurrentLevel;
 
@@ -200,9 +200,9 @@ HRESULT CLevel_Ocean::Ready_Lights()
 
 	FOGPARAMS FogDesc{};
 	FogDesc.fFogFactor = _float4(0.2f, 0.f, 5.f, 0.f);
-	FogDesc.fFogStartDistance = _float2(0.004f, 8.f);
+	FogDesc.fFogStartDistance = _float2(0.01f, 8.f);
 	FogDesc.fHeightNoiseFactor = _float2(0.f, 2.f);
-	FogDesc.g_FogColor = _float4(133.f / 255.f, 205.f / 255.f, 235.f / 255.f, 1.f);
+	FogDesc.g_FogColor = _float4(0.4f, 0.4f, 0.4f, 1.f);
 
 	m_pGameInstance->Set_FogFactors(FogDesc);
 	return S_OK;
