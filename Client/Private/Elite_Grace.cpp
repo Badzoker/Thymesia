@@ -392,15 +392,15 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         switch (iHitRandom)
         {
         case 0:
-            m_pGameInstance->Play_Sound(TEXT("Hit1.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit1.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
 
         case 1:
-            m_pGameInstance->Play_Sound(TEXT("Hit2.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit2.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
 
         case 2:
-            m_pGameInstance->Play_Sound(TEXT("Hit3.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit3.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }
@@ -1011,6 +1011,10 @@ void CElite_Grace::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Grace* 
             m_bIs_Fired = true;
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
             pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
+
+            //Sound
+            pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Slide_01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.1f);
+            pObject->m_pGameInstance->Play_Sound(L"Dagger_Small_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.1f);
         }
 
         if (pObject->m_pModelCom->GetAniFinish())

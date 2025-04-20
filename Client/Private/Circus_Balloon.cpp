@@ -410,13 +410,13 @@ void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
         switch (iRandSoundFileNum)
         {
         case 1:
-            m_pGameInstance->Play_Sound(L"Hit1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 2:
-            m_pGameInstance->Play_Sound(L"Hit2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 3:
-            m_pGameInstance->Play_Sound(L"Hit3.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }

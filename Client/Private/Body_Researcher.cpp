@@ -275,15 +275,15 @@ void CBody_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inf
             switch (iHitRandom)
             {
             case 0:
-                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_01.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_01.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.15f);
                 break;
 
             case 1:
-                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_02.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_02.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.15f);
                 break;
 
             case 2:
-                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_03.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.06f);
+                m_pGameInstance->Play_Sound(TEXT("Foot_Hit_03.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 0.15f);
                 break;
             }
         }
