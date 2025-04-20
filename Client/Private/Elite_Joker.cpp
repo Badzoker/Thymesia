@@ -220,6 +220,8 @@ void CElite_Joker::Stun()
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
 #pragma region Effect_Stun
+    m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트     
+    m_pGameInstance->Set_SlowWorld(true);
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
 }
@@ -288,11 +290,44 @@ void CElite_Joker::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         {
             m_fMonsterCurHP -= *m_Player_Attack / 5.f;
             m_fShieldHP -= (*m_Player_Attack / 5.f) * 1.5f;
+
+#pragma region Sound
+            _uint iRandSoundFileNum = {};
+            iRandSoundFileNum = rand() % 2;
+
+            switch (iRandSoundFileNum)
+            {
+            case 0:
+                m_pGameInstance->Play_Sound(L"Joker_HitByPlayer1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+                break;
+            case 1:
+                m_pGameInstance->Play_Sound(L"Joker_HitByPlayer2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+                break;
+            }
+#pragma endregion
         }
         else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 5.f;
+
+#pragma region Sound
+
+            _uint iRandSoundFileNum = {};
+            iRandSoundFileNum = rand() % 2;
+
+            switch (iRandSoundFileNum)
+            {
+            case 0:
+                m_pGameInstance->Play_Sound(L"Joker_HitByPlayer1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+                break;
+            case 1:
+                m_pGameInstance->Play_Sound(L"Joker_HitByPlayer2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+                break;
+            }
+
+#pragma endregion
+
         }
     }
 }
@@ -380,6 +415,22 @@ void CElite_Joker::Intro_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Intro_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Intro"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Open.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
@@ -421,6 +472,28 @@ void CElite_Joker::Walk_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Walk_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Foot3"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Foot3.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Foot1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Foot1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     pObject->RotateDegree_To_Player();
 
     if (m_iIndex == 30 && pObject->m_fDistance > pObject->m_fRootDistance)
@@ -461,6 +534,28 @@ void CElite_Joker::Attack_Combo_A::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Combo_A::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Grr1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Grr_Hit1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Grr2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Grr_Hit2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 0 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 85.f)
     {
         m_iIndex++;
@@ -497,6 +592,27 @@ void CElite_Joker::Attack_Combo_B::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Combo_B::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Stab_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Stab_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Grr2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Grr_Hit2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 2 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && m_bBonusAttack && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
     {
         m_iIndex++;
@@ -529,6 +645,54 @@ void CElite_Joker::Attack_Run::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Run::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Stab_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Stab_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Foot1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Foot1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Foot2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Foot2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Stab"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Stab.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Warning"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_ShockWave_Start.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("Bip001-Head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 12)
     {
         m_fTimer += 1.f * fTimeDelta;
@@ -579,6 +743,37 @@ void CElite_Joker::Attack_Wheel::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Wheel::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Wheel"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_WheelAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.4f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Wheel1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_WheelAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.4f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Wheel2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_WheelAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.4f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Stab_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Stab_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 35 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
         m_fTimer += 1.f * fTimeDelta;
 
@@ -723,10 +918,24 @@ void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker
         {
             if (!strcmp(iter.szName, "Effect_Execution")) 
             {
-                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_JOKER_EXECUTION, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
+                const _float4x4* matNeck = pObject->m_pModelCom->Get_BoneMatrix("Bip001-Neck");
+                pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_JOKER_EXECUTION, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matNeck);
                 iter.isPlay = true;
             }
         }
+#pragma region Sound
+
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Execution"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Execution.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+
+#pragma endregion
+
     }
 
 #pragma endregion
@@ -765,6 +974,38 @@ void CElite_Joker::Attack_Shock::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Shock::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_ShockWave_Start"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_ShockWave_Start.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("Bip001-Head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_ShockWave_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_ShockWave_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     //특정 키프레임까지만 쳐다보게하기
     if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 70.f)
         pObject->RotateDegree_To_Player();
@@ -791,6 +1032,27 @@ void CElite_Joker::Attack_Strong::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Strong::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Vocal"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Grr_Hit1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 16 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }
@@ -813,6 +1075,27 @@ void CElite_Joker::Attack_Jump::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Attack_Jump::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Vocal"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Grr_Hit1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Smash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Joker_Smash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 10 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
         pObject->m_pState_Manager->ChangeState(new CElite_Joker::Idle_State(), pObject);
 }

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Elite_Joker.h"
 #include "Animation.h"
+#include "Player.h"
 
 CJoker_Weapon::CJoker_Weapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CPartObject(pDevice, pContext)
@@ -287,6 +288,47 @@ void CJoker_Weapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
+
+		if (m_pParentModelCom->Get_Current_Animation_Index() != 35)
+		{
+			//Wheel 공격의 훙훙 돌릴때는 의도적으로 Sound 빼버림
+			if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+			{
+				_uint iRandSoundFileNum = {};
+				iRandSoundFileNum = rand() % 2;
+
+				switch (iRandSoundFileNum)
+				{
+				case 0:
+					m_pGameInstance->Play_Sound(L"Player_DamageByJoker1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				case 1:
+					m_pGameInstance->Play_Sound(L"Player_DamageByJoker2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				}
+			}
+		}
+		else
+		{
+			if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+			{
+				_uint iRandSoundFileNum = {};
+				iRandSoundFileNum = rand() % 3 + 1;
+
+				switch (iRandSoundFileNum)
+				{
+				case 1:
+					m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					break;
+				case 2:
+					m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					break;
+				case 3:
+					m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					break;
+				}
+			}
+		}
 	}
 }
 
