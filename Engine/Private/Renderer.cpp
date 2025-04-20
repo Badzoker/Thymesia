@@ -970,7 +970,7 @@ HRESULT CRenderer::Render_LightAcc()
 
 HRESULT CRenderer::Render_Deferred() //원래 Final에 있었음
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), false)))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
@@ -980,18 +980,6 @@ HRESULT CRenderer::Render_Deferred() //원래 Final에 있었음
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Emissive"), m_pShader, "g_EmissiveTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_LightShaftY"), m_pShader, "g_LightShaftYTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Water"), m_pShader, "g_WaterTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1019,7 +1007,7 @@ HRESULT CRenderer::Render_Deferred() //원래 Final에 있었음
 HRESULT CRenderer::Render_Shadow_Final()
 {
 	//Target_Shadow_Final
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Final"), false)))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Final"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShadowShader, "g_FinalTexture")))

@@ -943,7 +943,7 @@ void CBody_Player::STATE_RUN_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -995,7 +995,7 @@ void CBody_Player::STATE_RUN_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2251,7 +2251,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2280,7 +2280,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2385,7 +2385,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2414,7 +2414,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2520,7 +2520,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2549,7 +2549,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2654,7 +2654,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2683,7 +2683,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2787,7 +2787,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2816,7 +2816,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -2921,7 +2921,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -2950,7 +2950,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -3053,7 +3053,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Walk_Water_Effect_Right"))
                             {
@@ -3082,7 +3082,7 @@ void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
@@ -4540,7 +4540,7 @@ void CBody_Player::STATE_SPRINT_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "SPRINT_AFTER_EFFECT_RIGHT"))
                             {
@@ -4595,7 +4595,7 @@ void CBody_Player::STATE_SPRINT_Method()
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pGameInstance->IsInWater(_float2(XMVectorGetX(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]), XMVectorGetZ(XMLoadFloat4x4(m_pParentWorldMatrix).r[3]))))
+                        if (m_pGameInstance->IsInWater())
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {

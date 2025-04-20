@@ -2462,19 +2462,19 @@ void CBoss_Magician::Phase_Change_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_pGameInstance->Set_FogFactors(FogDesc);
 
 
-	LIGHT_DESC LightDesc{};
+	//LIGHT_DESC LightDesc{};
 
-	ZeroMemory(&LightDesc, sizeof(LightDesc));
+	//ZeroMemory(&LightDesc, sizeof(LightDesc));
 
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vPosition = _float4(-43.540661f, 95.240334f, -103.446053f, 1.f);
-	LightDesc.fRange = 200.f;
-	LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vPosition = _float4(-43.540661f, 95.240334f, -103.446053f, 1.f);
+	//LightDesc.fRange = 200.f;
+	//LightDesc.iCurrentLevel = LEVEL_SEAOFTREES;
 
-	pObject->m_pGameInstance->Add_Light_MINRange(LightDesc, 0.1f, 100.f);
+	//pObject->m_pGameInstance->Add_Light_MINRange(LightDesc, 0.1f, 100.f);
 
 	pObject->m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
 }

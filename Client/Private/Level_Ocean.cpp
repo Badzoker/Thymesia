@@ -242,7 +242,8 @@ HRESULT CLevel_Ocean::Ready_Layer_Structure(const _tchar* pLayerTag)
 	if (FAILED(Load_Objects(0)))
 		return E_FAIL;
 	
-	//Load_TriggerObjects(1);			
+	if (FAILED(Load_TriggerObjects(4)))
+		return E_FAIL;
 
 	if (FAILED(Load_SpecificObjects(0)))
 		return E_FAIL;

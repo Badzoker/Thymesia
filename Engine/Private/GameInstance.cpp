@@ -1183,9 +1183,19 @@ HRESULT CGameInstance::Bind_RippleSRV(CShader* pShader)
 	return m_pRipple_Manager->Bind_RippleSRV(pShader);
 }
 
-_bool CGameInstance::IsInWater(_float2 vPos)
+_bool CGameInstance::IsInWater()
 {
-	return m_pRipple_Manager->IsInWater(vPos);
+	return m_pRipple_Manager->IsInWater();
+}
+
+void CGameInstance::Initialize_IsInWater(_bool _bInWater)
+{
+	m_pRipple_Manager->Initialize_IsInWater(_bInWater);
+}
+
+void CGameInstance::Set_bInWater()
+{
+	m_pRipple_Manager->Set_bInWater();
 }
 
 #pragma endregion

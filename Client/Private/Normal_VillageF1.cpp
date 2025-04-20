@@ -1110,7 +1110,7 @@ void CNormal_VillageF1::Parry_State::State_Update(_float fTimeDelta, CNormal_Vil
 
                     if (!strcmp(iter.szName, "Event_VillagerF_Parry_1"))
                     {
-                        pObject->m_pGameInstance->Play_Sound(TEXT("Player_Parry_Deflect_L_Real.ogg"), CHANNELID::SOUND_MONSTER_WEAPON, 20.f);
+                        pObject->m_pGameInstance->Play_Sound(TEXT("Player_Parry_Deflect_L_Real.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 20.f);
                         iter.isPlay = true;
                     }
                 }
