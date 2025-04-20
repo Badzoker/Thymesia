@@ -320,9 +320,10 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
 
-
+#ifdef _DEBUG
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), m_iCurrentLevel, pLayerTag, &Desc)))
 		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }

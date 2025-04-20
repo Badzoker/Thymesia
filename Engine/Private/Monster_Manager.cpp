@@ -14,6 +14,7 @@ HRESULT CMonster_Manager::Initialize()
 
 void CMonster_Manager::Priority_Update(_float _fTimeDelta)
 {
+#ifdef _DEBUG
 	if (m_pGameInstance->isKeyEnter(DIK_L))
 	{
 		Respawn_Monster(CATEGORY_BOSS);
@@ -22,6 +23,7 @@ void CMonster_Manager::Priority_Update(_float _fTimeDelta)
 	{
 		Respawn_Monster(CATEGORY_ELITE);
 	}
+#endif // _DEBUG
 	Active_Monster();
 
 	for (auto& iter : m_pCheck_Monsters)

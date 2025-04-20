@@ -293,8 +293,11 @@ HRESULT CLevel_Ocean::Ready_Layer_Camera(const _tchar * pLayerTag)
 		return E_FAIL;
 
 
+
+#ifdef _DEBUG
 	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"), LEVEL_OCEAN, pLayerTag, &Desc)))
 		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }

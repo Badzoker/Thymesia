@@ -112,7 +112,9 @@
 #include "RightWeapon.h"
 #include "ClawWeapon.h"
 #include "PlayerCamera.h"	
+#ifdef _DEBUG
 #include "Camera_Debug.h"
+#endif // _DEBUG
 #include "Weapon_Halberd.h"	
 #include "Weapon_Scythe.h"	
 #include "Player_Weapon_Axe.h"
@@ -318,10 +320,11 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Free"),	
 		CCamera_Free::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;
-
+#ifdef _DEBUG
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_Camera_Debug"),	
 		CCamera_Debug::Create(m_pDevice, m_pContext))))	
 		return E_FAIL;
+#endif // _DEBUG
 #pragma endregion	
 
 

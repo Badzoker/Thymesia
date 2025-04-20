@@ -44,6 +44,9 @@ public:
 		m_ParamDesc = _ParamDesc;
 	};
 
+
+#ifdef _DEBUG
+#endif // _DEBUG
 	void Set_FogOnOff() {
 		m_bFogStop = !m_bFogStop;
 	};
@@ -96,6 +99,9 @@ private:
 	FOGPARAMS										m_ParamDesc = {};
 
 
+
+#ifdef _DEBUG
+#endif // _DEBUG
 	_bool											m_bFogStop = { false };
 	_bool											m_bGodRayStop = { false };
 	_bool											m_bShadowStop = { false };

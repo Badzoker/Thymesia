@@ -45,6 +45,7 @@ HRESULT CCamera_Debug::Initialize(void* pArg)
 
 void CCamera_Debug::Priority_Update(_float fTimeDelta)
 {
+
 	if (m_pGameInstance->isKeyEnter(DIK_F4))
 	{
 		m_bDebugCameraOnOff = !m_bDebugCameraOnOff;	 // 이러면 프리는 처음 false에서  애는 true로 시작하니 엇갈리게 설정 가능. 

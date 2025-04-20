@@ -365,6 +365,8 @@ void CGameInstance::Set_FogFactors(FOGPARAMS _ParamDesc)
 	return m_pRenderer->Set_FogFactors(_ParamDesc);
 }
 
+#ifdef _DEBUG
+#endif // _DEBUG
 void CGameInstance::Set_FogOnOff()
 {
 	m_pRenderer->Set_FogOnOff();

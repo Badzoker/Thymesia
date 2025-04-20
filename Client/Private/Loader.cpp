@@ -69,8 +69,10 @@
 #include "LeftWeapon.h"
 #include "RightWeapon.h"
 #include "ClawWeapon.h"
-#include "PlayerCamera.h"	
+#include "PlayerCamera.h"
+#ifdef _DEBUG
 #include "Camera_Debug.h"
+#endif // _DEBUG
 #pragma endregion 
 
 #pragma region 환경요소 
