@@ -17,13 +17,16 @@ public:
 
     void			                        Add_RippleInfo(_float2 vPos, _float fRippleRange);
     void				                    Set_WaterPos(_float2 vWaterPos) { m_vWaterPos = vWaterPos; }
+    void				                    Initialize_IsInWater(_bool _bInWater) { m_bIsInWater = _bInWater; }
+    void				                    Set_bInWater() { m_bIsInWater = !m_bIsInWater; }
 
     HRESULT                                 Bind_RippleSRV(class CShader* pShader);
 
-    _bool                                   IsInWater(_float2 vPos);
+    _bool                                   IsInWater() { return m_bIsInWater; }
 private:
     vector<RippleInfo>                      m_RippleInfos;
     _float2                                 m_vWaterPos = { -1000.f, -1000.f };
+    _bool                                   m_bIsInWater = { false };
 
 
     ID3D11Buffer*                           m_pRippleBuffer = { nullptr };

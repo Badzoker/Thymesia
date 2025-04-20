@@ -498,14 +498,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     float4 vLight = float4(vShade.xyz, 1.f); // 빛 연산한후 a값 유지
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
     
-    
-    vector vDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vWater = g_WaterTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vWaterDepth = g_WaterDepthTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    Out.vColor = vDiffuse * vLight + vSpecular + vEmissive;
+    Out.vColor = vDiffuse * vLight + vSpecular;
 	
     return Out;
 }

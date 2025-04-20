@@ -258,8 +258,8 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	if (FAILED(Load_Objects(4)))// 정원 보스맵
 		return E_FAIL;
 
-	//Load_TriggerObjects(0);			// 원래 의자 쪽에 있었던 트리거 오브젝트 파일
-	//Load_TriggerObjects(1);				// 이제 보스 입구 쪽에 심어져있는 파일임.
+	if (FAILED(Load_TriggerObjects(3)))
+		return E_FAIL;
 
 	if (FAILED(Load_SpecificObjects(5)))
 		return E_FAIL;

@@ -110,6 +110,7 @@ HRESULT CLevel_Hill::Initialize()
 	m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 	m_pGameInstance->Set_All_UIObject_Condition_Open(m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_5MapName")), true);
 
+	m_pGameInstance->Initialize_IsInWater(false);
 
 	return S_OK;
 }

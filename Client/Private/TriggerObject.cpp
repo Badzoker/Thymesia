@@ -81,6 +81,7 @@ void CTriggerObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
     //    m_bFade = true;
     //}
 
+    m_pGameInstance->Set_bInWater();
 
     //m_pGameInstance->Delete_GameObject_From_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Normal_Map"));
 }
