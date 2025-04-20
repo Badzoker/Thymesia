@@ -34,7 +34,7 @@ public:
 
 	_bool						Get_AnimationStop() { return m_bStopAnimation; }
 	void						Set_AnimationStop(_bool _bFinish) { m_bStopAnimation = _bFinish; }
-	void						Activate_SemyBody(_bool _bActivate);
+	void						Activate_SemyBody(_bool _bActivate, _uint _iType = 0);
 	_bool						IsActivate() { return m_bActivate; }
 
 	_bool						IsAnimationFinish();

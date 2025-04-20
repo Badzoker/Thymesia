@@ -414,7 +414,7 @@ HRESULT CLevel_Ocean::Ready_Layer_Button(const _tchar* pLayerTag)
 {
 	CLockLine::LOCKLINE_DESC LineDesc = {};
 	LineDesc.iCurLevel = m_iCurrentLevel;
-	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_LockLine"), LEVEL_SEAOFTREES, pLayerTag, &LineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_LockLine"), LEVEL_OCEAN, pLayerTag, &LineDesc)))
 		return E_FAIL;
 
 	CButton::BUTTON_DESC ButtonDesc = {};
