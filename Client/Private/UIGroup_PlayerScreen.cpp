@@ -625,20 +625,20 @@ void CUIGroup_PlayerScreen::Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eSta
 		switch (MakeInfo.ItemType) // 아이템 타입에 따른 정보 조합
 		{
 		case ITEM_TYPE::ITEM_KEY1:
-			MakeInfo.ItemDesc = L"- 일반 아이템 -";
-			iTexNum = 0;
+			MakeInfo.ItemDesc = L"- 일반 -";
+			iTexNum = 3;
 			break;
 		case ITEM_TYPE::ITEM_KEY2:
-			MakeInfo.ItemDesc = L"- 일반 아이템- ";
-			iTexNum = 0;
+			MakeInfo.ItemDesc = L"- 일반  ";
+			iTexNum = 3;
 			break;
 		case ITEM_TYPE::ITEM_MEMORY:
-			MakeInfo.ItemDesc = L"- 소비 아이템 -";
+			MakeInfo.ItemDesc = L"- 소비 -";
 			iTexNum = 0;
 			break;
 		case ITEM_TYPE::ITEM_FORGIVEN:
-			MakeInfo.ItemDesc = L"- 소비 아이템 -";
-			iTexNum = 3;
+			MakeInfo.ItemDesc = L"- 소비 -";
+			iTexNum = 0;
 			break;
 		case ITEM_TYPE::ITEM_SKILLPIECE:
 			MakeInfo.ItemDesc = L"- 기술의 파편 -";
@@ -648,10 +648,64 @@ void CUIGroup_PlayerScreen::Item_Nudge_Info(ITEM_TYPE eItemType, ITEM_STATE eSta
 			MakeInfo.ItemDesc = L"- 특별한 아이템 -";
 			iTexNum = 3;
 			break;
+		case ITEM_TYPE::ITEM_BADZOKER:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_BEOMSEUNG:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_FAKER:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_UIN:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_PLAYERMASTER:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+		case ITEM_TYPE::ITEM_YUBHIN:
+			MakeInfo.ItemDesc = L"- 비밀 이야기 -";
+			iTexNum = 3;
+			break;
+
+		case ITEM_TYPE::ITEM_HERB_1:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_2:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_3:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_4:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_5:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_6:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
+		case ITEM_TYPE::ITEM_HERB_7:
+			MakeInfo.ItemDesc = L"- 재료 -";
+			iTexNum = 2;
+			break;
 		default:
 			MakeInfo.ItemDesc = L"- 기술의 파편 -";
 			iTexNum = 2;
 			break;
+
 		}
 	}
 	else if (eState == ITEM_DROP)

@@ -57,20 +57,65 @@ HRESULT CGameItem::Initialize(void* _pArg)
     switch (m_eItemType)
     {
     case Engine::ITEM_TYPE::ITEM_KEY1:
-        m_iItemTypeNumber = 1;
-        break;
-    case Engine::ITEM_TYPE::ITEM_KEY2:
-        m_iItemTypeNumber = 2;
-        break;
-    case Engine::ITEM_TYPE::ITEM_MEMORY:
-        m_iItemTypeNumber = 3;
-        break;
-    case Engine::ITEM_TYPE::ITEM_FORGIVEN:
         m_iItemTypeNumber = 4;
         break;
-    case Engine::ITEM_TYPE::ITEM_FIELDITEM:
+    case Engine::ITEM_TYPE::ITEM_KEY2:
+        m_iItemTypeNumber = 4;
+        break;
+    case Engine::ITEM_TYPE::ITEM_MEMORY:
         m_iItemTypeNumber = 5;
         break;
+    case Engine::ITEM_TYPE::ITEM_FORGIVEN:
+        m_iItemTypeNumber = 5;
+        break;
+    case Engine::ITEM_TYPE::ITEM_FIELDITEM:
+        m_iItemTypeNumber = 4;
+        break;
+
+    case Engine::ITEM_TYPE::ITEM_BADZOKER:
+        m_iItemTypeNumber = 2;
+        break;
+    case Engine::ITEM_TYPE::ITEM_BEOMSEUNG:
+        m_iItemTypeNumber = 2;
+        break;
+    case Engine::ITEM_TYPE::ITEM_FAKER:
+        m_iItemTypeNumber = 2;
+        break;
+    case Engine::ITEM_TYPE::ITEM_UIN:
+        m_iItemTypeNumber = 2;
+        break;
+    case Engine::ITEM_TYPE::ITEM_PLAYERMASTER:
+        m_iItemTypeNumber = 2;
+        break;
+    case Engine::ITEM_TYPE::ITEM_YUBHIN:
+        m_iItemTypeNumber = 2;
+        break;
+        
+    case Engine::ITEM_TYPE::ITEM_HERB_1:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_2:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_3:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_4:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_5:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_6:
+        m_iItemTypeNumber = 1;
+        break;
+    case Engine::ITEM_TYPE::ITEM_HERB_7:
+        m_iItemTypeNumber = 1;
+        break;
+        // 1 : ÆÄ¶û
+        // 2 : ÃÊ·Ï
+        // 3 : »¡°­ 
+        // 4 : ³ë¶û 
     }
 
 
@@ -317,8 +362,42 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
 
                 m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 0.5f);
             }
+        default:
+            if (m_pGameInstance->isKeyEnter(DIK_E))
+            {
+                m_bStartAcquireEffect = true;
+                m_bEnLarging = true;
+                m_fEnLargingTime = 0.f;
+                m_pButton->Activate_Button(false);
+                // 1 : ÆÄ¶û
+                // 2 : ÃÊ·Ï
+                // 3 : »¡°­ 
+                // 4 : ³ë¶û 
+                switch (m_iItemTypeNumber)
+                {
+                case 1:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_BLUE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                case 2:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_GREEN, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                case 3:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_RED, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                case 4:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_YELLOW, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                case 5:
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_HURRICANE_ITEM_GET_WHITE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+                    break;
+                }
+
+                m_pGameInstance->Play_Sound(TEXT("Item_PickUp.ogg"), CHANNELID::SOUND_STRUCT, 0.5f);
+            }
             break;
         }
+        
+
     }
 }
 

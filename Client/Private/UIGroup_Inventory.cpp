@@ -1119,6 +1119,7 @@ void CUIGroup_Inventory::Update_Get_ItemMgr()
 	m_InvenItemCommon.clear();
 	m_InvenItemSkill.clear();
 	m_InvenItemStory.clear();
+	m_InvenItemHerb.clear();
 
 	m_ItemMgrContainerRef = m_pGameInstance->Get_Item_Info(); // 아이템 매니저에서 정보 가져오고
 
@@ -1129,7 +1130,6 @@ void CUIGroup_Inventory::Update_Get_ItemMgr()
 
 		if (0 != ItemBox.ItemCount)
 		{
-
 			switch (ItemBox.ItemType)
 			{
 			case ITEM_TYPE::ITEM_KEY1:
@@ -1144,73 +1144,208 @@ void CUIGroup_Inventory::Update_Get_ItemMgr()
 			case ITEM_TYPE::ITEM_SKILLPIECE:
 				m_InvenItemSkill.push_back(ItemBox);
 				break;
+
 			case ITEM_TYPE::ITEM_FIELDITEM:
 				m_InvenItemStory.push_back(ItemBox);
 				break;
-			}
+			case ITEM_TYPE::ITEM_BADZOKER:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_BEOMSEUNG:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_FAKER:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_UIN:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_PLAYERMASTER:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_YUBHIN:
+				m_InvenItemStory.push_back(ItemBox);
+				break;
 
+			case ITEM_TYPE::ITEM_HERB_1:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_2:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_3:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_4:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_5:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_6:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+			case ITEM_TYPE::ITEM_HERB_7:
+				m_InvenItemHerb.push_back(ItemBox);
+				break;
+
+			}
 		}
 	}
 }
 
 void CUIGroup_Inventory::Update_ItemInfo()
 {
+	UI_Item eItemInfo = {};
+	
+	
 	for (auto& InvenInfo : m_InvenItemCommon)
 	{
+		auto iter = find_if(m_vecItemDefaultInfo.begin(), m_vecItemDefaultInfo.end(), [&](UI_Item stItemInfo){
+			return stItemInfo.ItemType == InvenInfo.ItemType;
+			});
+		
 		switch (InvenInfo.ItemType)
 		{
 		case ITEM_TYPE::ITEM_KEY1:
-			InvenInfo.ItemIconNum = 1;
-			InvenInfo.ItemName = L"열쇠A";
-			InvenInfo.ItemDesc = L"열쇠 입니다.";
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
 			break;
 		case ITEM_TYPE::ITEM_KEY2:
-			InvenInfo.ItemIconNum = 3;
-			InvenInfo.ItemName = L"열쇠B";
-			InvenInfo.ItemDesc = L"열쇠 입니다.";
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
 			break;
 		case ITEM_TYPE::ITEM_MEMORY:
-			InvenInfo.ItemIconNum = 5;
-			InvenInfo.ItemName = L"기억의 모음집";
-			InvenInfo.ItemDesc = L"이 아이템을 사용하면 기억의 파편을 획득합니다.";
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
 			break;
 		case ITEM_TYPE::ITEM_FORGIVEN:
-			InvenInfo.ItemIconNum = 4;
-			InvenInfo.ItemName = L"잊혀진 깃털";
-			InvenInfo.ItemDesc = L"잊혀진 깃털을 사용하면, 아이세미와 대화하거나 신호기를 사용하여\n코르버스의 레벨과 상태를 초기화할 수 있습니다.";
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName =  (*iter).ItemName;
+			InvenInfo.ItemDesc =  (*iter).ItemDesc;
 			break;
 		default:
-			InvenInfo.ItemIconNum = 0;
-			InvenInfo.ItemName = L"정보 필요";
-			InvenInfo.ItemDesc = L"UIGroup_Inventory 에서 아이템 정보 기입";
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName =  (*iter).ItemName;
+			InvenInfo.ItemDesc =  (*iter).ItemDesc;
 			break;
 
 		}
 	}
 	for (auto& InvenInfo : m_InvenItemSkill)
 	{
+		auto iter = find_if(m_vecItemDefaultInfo.begin(), m_vecItemDefaultInfo.end(), [&](UI_Item stItemInfo) {
+			return stItemInfo.ItemType == InvenInfo.ItemType;
+			});
 		switch (InvenInfo.ItemType)
 		{
 		case ITEM_TYPE::ITEM_SKILLPIECE:
 			InvenInfo.ItemIconNum = 7;
-			InvenInfo.ItemName = L"정제된 기술";
-			InvenInfo.ItemDesc = L"기술의 파편을 충분히 수집하여 신호기에서 역병 무기를 해제하거나\n업그레이드 하세요";
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
 			break;
 		}
 	}
 	for (auto& InvenInfo : m_InvenItemStory)
 	{
+		auto iter = find_if(m_vecItemDefaultInfo.begin(), m_vecItemDefaultInfo.end(), [&](UI_Item stItemInfo) {
+			return stItemInfo.ItemType == InvenInfo.ItemType;
+			});
 		switch (InvenInfo.ItemType)
 		{
+		case ITEM_TYPE::ITEM_BADZOKER:
+			InvenInfo.ItemIconNum = 8;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
+		case ITEM_TYPE::ITEM_BEOMSEUNG:
+			InvenInfo.ItemIconNum = 9;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
+		case ITEM_TYPE::ITEM_FAKER:
+			InvenInfo.ItemIconNum = 10;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
+		case ITEM_TYPE::ITEM_UIN:
+			InvenInfo.ItemIconNum =11;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
+		case ITEM_TYPE::ITEM_PLAYERMASTER:
+			InvenInfo.ItemIconNum = 12;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
+		case ITEM_TYPE::ITEM_YUBHIN:
+			InvenInfo.ItemIconNum = 13;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;	
 		case ITEM_TYPE::ITEM_FIELDITEM:
 			InvenInfo.ItemIconNum = 8;
-			InvenInfo.ItemName = L"숨겨진 이야기";
-			InvenInfo.ItemDesc = L"아이세미가 찾고 있던 책의 일부이다.\n이야기를 모아 가져다주면 특별한 일이 생길 것 같다";
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
 			break;
 		}
 	}
 
-	
+	for (auto& InvenInfo : m_InvenItemHerb)
+	{
+		auto iter = find_if(m_vecItemDefaultInfo.begin(), m_vecItemDefaultInfo.end(), [&](UI_Item stItemInfo) {
+			return stItemInfo.ItemType == InvenInfo.ItemType;
+			});
+		switch (InvenInfo.ItemType)
+		{
+
+		case ITEM_TYPE::ITEM_HERB_1:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_2:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_3:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_4:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_5:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_6:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+			
+		case ITEM_TYPE::ITEM_HERB_7:
+			InvenInfo.ItemIconNum = (*iter).ItemIconNum;
+			InvenInfo.ItemName = (*iter).ItemName;
+			InvenInfo.ItemDesc = (*iter).ItemDesc;
+			break;
+		}
+	}
 
 }
 
@@ -1252,11 +1387,52 @@ void CUIGroup_Inventory::Connect_MiniView_ItemInfo(UI_Item ItemInfo)
 	case ITEM_TYPE::ITEM_FIELDITEM:
 		pTemp = L"특별한 아이템";
 		break;
+	case ITEM_TYPE::ITEM_BADZOKER:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_BEOMSEUNG:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_FAKER:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_UIN:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_PLAYERMASTER:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_YUBHIN:
+		pTemp = L"비밀 이야기";
+		break;
+	case ITEM_TYPE::ITEM_HERB_1:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_2:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_3:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_4:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_5:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_6:
+		pTemp = L"재료";
+		break;
+	case ITEM_TYPE::ITEM_HERB_7:
+		pTemp = L"재료";
+		break;
 	default:
 		pTemp = L"채워넣기";
 		break;
 
 	}
+	
+
 	dynamic_cast<CUIObject*>(m_pItemTextBoxType)->Set_Content(pTemp);
 
 	for (auto& image : m_pItemScene->Find_UI_Image())
@@ -1375,5 +1551,103 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 	SaveData.ItemDesc = L"아이세미가 찾고 있던 책의 일부이다.\n 이야기를 모아 가져다주면 놀라운 일이 생길 것 같다";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_BADZOKER;
+	SaveData.ItemIconNum = 8;
+	SaveData.ItemName = L"Bad Zoker";
+	SaveData.ItemDesc = L"종한 형님은 가끔씩 조커가 되실지도?";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_BEOMSEUNG;
+	SaveData.ItemIconNum = 9;
+	SaveData.ItemName = L"강범승";
+	SaveData.ItemDesc = L"What!무새\n어! 금지!";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_FAKER;
+	SaveData.ItemIconNum = 10;
+	SaveData.ItemName = L"FAKER";
+	SaveData.ItemDesc = L"대.상.혁.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_UIN;
+	SaveData.ItemIconNum = 11;
+	SaveData.ItemName = L"유인 형님";
+	SaveData.ItemDesc = L"아이세미는 제꺼예욧.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_PLAYERMASTER;
+	SaveData.ItemIconNum = 12;
+	SaveData.ItemName = L"김선환";
+	SaveData.ItemDesc = L"PlayerMaster\n옥상 출입 금지!";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_YUBHIN;
+	SaveData.ItemIconNum = 13;
+	SaveData.ItemName = L"김유빈";
+	SaveData.ItemDesc = L"UI담당 => 텍스트 적기가 참 힘들네요.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_1;
+	SaveData.ItemIconNum = 14;
+	SaveData.ItemName = L"마늘";
+	SaveData.ItemDesc = L"한국인은 마늘이죠.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_2;
+	SaveData.ItemIconNum = 15;
+	SaveData.ItemName = L"회향";
+	SaveData.ItemDesc = L"처음보는 풀이예요..";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_3;
+	SaveData.ItemIconNum = 16;
+	SaveData.ItemName = L"정향";
+	SaveData.ItemDesc = L"핑크색..벚꽃놀이 가고 싶어요....";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_4;
+	SaveData.ItemIconNum = 17;
+	SaveData.ItemName = L"계피";
+	SaveData.ItemDesc = L"저는 시나몬이 싫어요.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_5;
+	SaveData.ItemIconNum = 18;
+	SaveData.ItemName = L"흑후추";
+	SaveData.ItemDesc = L"향신료의 대.명.사.\n후추가 제일 맛나요.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_6;
+	SaveData.ItemIconNum = 19;
+	SaveData.ItemName = L"바질";
+	SaveData.ItemDesc = L"오로지 라멘에서 바질 라멘 꼭 먹어보세요.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+	
+	SaveData.ItemType = ITEM_TYPE::ITEM_HERB_7;
+	SaveData.ItemIconNum = 20;
+	SaveData.ItemName = L"타임";
+	SaveData.ItemDesc = L"집에서 스테이크 구울 때 넣으면 향긋해요.";
+	SaveData.ItemCount = 0;
+	m_vecItemDefaultInfo.push_back(SaveData);
+
+
+
+
+
 }
 
