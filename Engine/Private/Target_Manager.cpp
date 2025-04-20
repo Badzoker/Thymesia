@@ -222,7 +222,6 @@ HRESULT CTarget_Manager::Copy_RTV(const _wstring& strRenderTargetTag, const _wst
 }
 
 #ifdef _DEBUG
-#endif
 HRESULT CTarget_Manager::Ready_RT_Debug(const _wstring& strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
     CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);
@@ -248,6 +247,7 @@ HRESULT CTarget_Manager::Render_RT_Debug(const _wstring& strMRTTag, CShader* pSh
 
     return S_OK; 
 }
+#endif
 
 CRenderTarget* CTarget_Manager::Find_RenderTarget(const _wstring& strRenderTargetTag)
 {

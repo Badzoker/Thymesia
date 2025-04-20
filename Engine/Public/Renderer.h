@@ -147,10 +147,10 @@ private:
 	HRESULT Bind_NoiseTexture(class CShader* pShader, const _char* pConstantName);
 
 #ifdef _DEBUG
-#endif
 private:
 	HRESULT Render_Debug();
 	_bool m_bDebugRender = { false };
+#endif
 
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
