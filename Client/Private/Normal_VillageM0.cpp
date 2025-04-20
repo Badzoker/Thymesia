@@ -57,7 +57,7 @@ HRESULT CNormal_VillageM0::Initialize(void* pArg)
 
     _uint settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON | GROUP_TYPE::MONSTER;
     m_pGameInstance->Set_CollisionGroup(m_pActor, GROUP_TYPE::MONSTER, settingColliderGroup);
-    settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;  
+    settingColliderGroup = GROUP_TYPE::PLAYER | GROUP_TYPE::PLAYER_WEAPON;
     m_pGameInstance->Set_CollisionGroup(m_pStunActor, GROUP_TYPE::MONSTER, settingColliderGroup);
 
     m_pGameInstance->Set_GlobalPos(m_pActor, _fvector{ 0.f,20.f,0.f,1.f });
@@ -225,7 +225,7 @@ void CNormal_VillageM0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 4.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 4.f;
         }
-        
+
         if (m_bCanHit)
         {
             _uint iRandom = rand() % 2;
@@ -242,6 +242,23 @@ void CNormal_VillageM0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
                 }
             }
             m_pState_Manager->ChangeState(new CNormal_VillageM0::Hit_State(m_iHit_Motion_Index), this);
+        }
+
+        // 플레이어가 빌리지 남자M0 을 때릴 때 나는 소리.
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 3 + 1;
+
+        switch (iRandSoundFileNum)
+        {
+        case 1:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            break;
         }
     }
 }

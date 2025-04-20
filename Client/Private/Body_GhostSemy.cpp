@@ -161,11 +161,20 @@ HRESULT CBody_GhostSemy::Render_Glow()
     return S_OK;
 }
 
-void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate)
+void CBody_GhostSemy::Activate_SemyBody(_bool _bActivate, _uint _iType)
 {
-    //m_fDissolveAmount = 1.0f;
-    m_bActivate = _bActivate;
-    m_bReverse = true;
+    if (_iType == 0)
+    {
+        m_fDissolveAmount = 0.0f;
+        m_bActivate = _bActivate;
+        m_bReverse = true;
+    }
+    else
+    {
+        m_fDissolveAmount = 1.0f;
+        m_bActivate = _bActivate;
+        m_bReverse = true;
+    }
 }
 
 _bool CBody_GhostSemy::IsAnimationFinish()

@@ -41,6 +41,9 @@ HRESULT CLockLine::Initialize(void* pArg)
 
 void CLockLine::Priority_Update(_float fTimeDelta)
 {
+    if (nullptr == m_pTargetMonsterPtr)
+        return;
+
     _float4 vPos;
     XMStoreFloat4(&vPos, m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_POSITION));
 

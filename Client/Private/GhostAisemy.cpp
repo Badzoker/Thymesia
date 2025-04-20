@@ -147,7 +147,7 @@ void CGhostAisemy::Spawn_Conversation_Gosemy(_float4 _vPos, _bool _bColliderOn)
 {
     m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-    m_pBody_GhoSemy->Activate_SemyBody(true);
+    m_pBody_GhoSemy->Activate_SemyBody(true, 1);
 
     m_iState = STATE_GOSEMY_LIGHT_OFF;
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&_vPos));
