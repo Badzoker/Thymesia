@@ -281,7 +281,7 @@ void CAisemy::OnCollision(CGameObject* _pOther, PxContactPair _information)
             m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk01.ogg"), CHANNELID::SOUND_NPC, 0.3f);
             break;
         case 6:
-            m_pGameInstance->Play_Sound(TEXT("angimozzi.mp3"), CHANNELID::SOUND_NPC, 0.7f);
+            m_pGameInstance->Play_Sound(TEXT("Aisemy_Talk08.ogg"), CHANNELID::SOUND_NPC, 0.3f);
             break;
         }
 

@@ -85,6 +85,7 @@ public:
 
 		/* 처형 모션 */
 		STATE_STUN_EXECUTE,  // 처형 시작 모션	
+		STATE_STUN_EXECUTE_START_HARMOR, // 검병 처형 시작 모션				
 		STATE_HARMOR_EXECUTION,
 		STATE_LV1Villager_M_Execution,
 		STATE_Joker_Execution,
