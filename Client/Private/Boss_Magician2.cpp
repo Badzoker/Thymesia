@@ -835,6 +835,7 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 					pObject->m_pGameInstance->Play_Sound(TEXT("Magician2_AttackComboB_01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
 					iter.isPlay = true;
 				}
+
 				else
 				{
 					pObject->m_pGameInstance->Play_Sound(TEXT("Magician2_AttackComboB_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
@@ -844,6 +845,8 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 
 					iter.isPlay = true;
 				}
+
+
 			}
 		}
 
@@ -882,6 +885,15 @@ void CBoss_Magician2::Attack_ComboB::State_Update(_float fTimeDelta, CBoss_Magic
 			{
 				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
 				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Warning"))
+			{
+				pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+				const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+				_float4x4 matHeadWorld = {};
+				XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
 				iter.isPlay = true;
 			}
 		}
@@ -1107,6 +1119,15 @@ void CBoss_Magician2::Attack_ComboG::State_Update(_float fTimeDelta, CBoss_Magic
 			{
 				const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("weapon_r_Sword");
 				pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN2_WORLD_CHARGE_BLUE, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
+				iter.isPlay = true;
+			}
+			else if (!strcmp(iter.szName, "Effect_Warning"))
+			{
+				pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+				const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+				_float4x4 matHeadWorld = {};
+				XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+				pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
 				iter.isPlay = true;
 			}
 		}

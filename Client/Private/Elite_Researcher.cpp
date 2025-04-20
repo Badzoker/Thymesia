@@ -977,7 +977,7 @@ void CElite_Researcher::Attack_ComboC::State_Update(_float fTimeDelta, CElite_Re
                 }
                 else  if (!strcmp(iter.szName, "Event_Warning_1"))
                 {
-
+                    pObject->m_pGameInstance->Play_Sound(L"Boss_SP_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
                     pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
                     const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
                     _float4x4 matHeadWorld = {};
@@ -1250,8 +1250,13 @@ void CElite_Researcher::Attack_Special::State_Update(_float fTimeDelta, CElite_R
             {
                 if (!strcmp(iter.szName, "Event_Catch_1"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Researcher_GrabYou_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.08f);
+                    pObject->m_pGameInstance->Play_Sound(L"Researcher_GrabYou_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.6f);
 
+                    iter.isPlay = true;
+                }
+                else if (!strcmp(iter.szName, "Sound_Warning"))
+                {
+                    pObject->m_pGameInstance->Play_Sound(L"Boss_SP_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
                     iter.isPlay = true;
                 }
             }

@@ -647,8 +647,7 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
         {
             if (!strcmp(iter.szName, "Effect_Blood")) 
             {
-                const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_003");
-                pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
                
                 //Sound
                 pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);

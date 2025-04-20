@@ -2130,6 +2130,17 @@ void CBoss_Magician::Attack_Slash::State_Update(_float fTimeDelta, CBoss_Magicia
 				if (!strcmp(iter.szName, "Sound_Slash1"))
 				{
 					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Slash01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+					pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+					const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+					_float4x4 matHeadWorld = {};
+					XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
 					iter.isPlay = true;
 				}
 				else if (!strcmp(iter.szName, "Sound_Slash2"))
