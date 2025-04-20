@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Normal_VillageM1.h"
 #include "Animation.h"
+#include "Player.h"
 
 CWeapon_Axe::CWeapon_Axe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CPartObject(pDevice, pContext)
@@ -231,11 +232,37 @@ HRESULT CWeapon_Axe::Bind_ShaderResources()
 
 void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
+	//if (!strcmp("PLAYER", _pOther->Get_Name()))
+	//{
+	//	m_bColliderOff = true;
+
+	//	m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
+	//}
+
+
+
 	if (!strcmp("PLAYER", _pOther->Get_Name()))
 	{
 		m_bColliderOff = true;
 
-		m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
+		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			_uint iRandSoundFileNum = {};
+			iRandSoundFileNum = rand() % 3 + 1;
+
+			switch (iRandSoundFileNum)
+			{
+			case 1:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			case 2:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			case 3:
+				m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+				break;
+			}
+		}
 	}
 }
 
