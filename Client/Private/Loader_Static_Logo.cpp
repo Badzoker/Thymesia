@@ -1648,7 +1648,7 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 
 	/* For.Prototype_Component_Texture_UI_Item_Icon*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Item_Icon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_Item_Icon_%d.dds"), 9	))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/Inventory/UI_Item_Icon_%d.dds"), 25	))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_Item_Icon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_Item_Icon"),

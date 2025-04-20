@@ -230,6 +230,22 @@ namespace Engine
 
         ITEM_FIELDITEM,
 
+
+        ITEM_BADZOKER,
+        ITEM_BEOMSEUNG,
+        ITEM_FAKER,
+        ITEM_UIN,
+        ITEM_PLAYERMASTER,
+        ITEM_YUBHIN,
+
+        ITEM_HERB_1,
+        ITEM_HERB_2,
+        ITEM_HERB_3,
+        ITEM_HERB_4,
+        ITEM_HERB_5,
+        ITEM_HERB_6,
+        ITEM_HERB_7,
+
         ITEM_DEADBRANCH,
         ITEM_END
     };

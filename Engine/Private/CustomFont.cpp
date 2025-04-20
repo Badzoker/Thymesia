@@ -135,10 +135,10 @@ HRESULT CCustomFont::Render_Alpha(const _tchar* pText, const _float2& vPosition,
     m_pBatch->Begin(SpriteSortMode_Deferred, m_pBlendState);
 
 
-    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 0.5f,vPosition.y + 0.5f }, {60.f,60.f,60.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
-    m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 0.5f,vPosition.y + 0.5f }, { 60.f,60.f,60.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
-    m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 0.5f,vPosition.y - 0.5f }, { 60.f,60.f,60.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
-    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 0.5f,vPosition.y - 0.5f }, { 60.f,60.f,60.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 0.5f,vPosition.y + 0.5f }, { 256.f,256.f,256.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
+    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 0.5f,vPosition.y + 0.5f }, { 256.f,256.f,256.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
+    //m_pFont->DrawString(m_pBatch, pText, { vPosition.x - 0.5f,vPosition.y - 0.5f }, { 256.f,256.f,256.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
+    m_pFont->DrawString(m_pBatch, pText, { vPosition.x + 0.5f,vPosition.y - 0.5f }, { 256.f,256.f,256.f,vColor.w}, fRotation, vOrigin, fScale, effects, layerDepth);
 
     m_pFont->DrawString(m_pBatch, pText, vPosition, XMLoadFloat4(&vColor), fRotation, vOrigin, fScale, effects, 0.0f);
 

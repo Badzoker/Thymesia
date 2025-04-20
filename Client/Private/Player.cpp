@@ -192,8 +192,26 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 {
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY1, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this, 100);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_BADZOKER, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_BEOMSEUNG, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_FAKER, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_UIN, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_PLAYERMASTER, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_YUBHIN, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_1, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_2, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_3, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_4, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_5, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_6, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_7, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
+
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this,100);
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)

@@ -96,15 +96,16 @@ void CUIGroup_Dialogue::Priority_Update(_float fTimeDelta)
 			if (m_pGameInstance->isAnyEnter() && m_fDelayTime > 1)
 			{
 				m_fDelayTime = 0;
-				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingTalk, false);
 				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 1.5f);;
 				m_pGameInstance->Play_Sound(TEXT("Fantasy_Game_UI_Arcane_Select.ogg"), CHANNELID::SOUND_UI, 0.2f);
 
 			}
 		}
 		_bool bCheck = false;
-		if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+		if (m_pGameInstance->Get_Scene_Render_State(m_pEndingTalk) &&
+			m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
 		{
+			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingTalk, false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pEndingImage, true);
 			bCheck = true;
 		}
@@ -258,15 +259,9 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 			if (1 == Button->Get_UI_GroupID())
 			{
 				Button->Set_Mouse_Select_OnOff(false);
-				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
-				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
 
-				m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), false);
-				m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
-				m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL);
-
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.9f);
 			}
-		
 			if (2 == Button->Get_UI_GroupID()) // 할일이 남아 있어!
 			{
 				m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), false);
@@ -274,50 +269,19 @@ void CUIGroup_Dialogue::AIsemy_Pop_Boss_Button()
 				Button->Set_Mouse_Select_OnOff(false);
 				m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
 				dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject_To_Layer(m_eMyLevel, TEXT("Layer_Player"), "PLAYER"))->Set_UI_End(false);
-
 			}
 		}
 	}
-}
+	if (m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
+	{
+		m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_Dialogue"), false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pPopScene_Boss, false);
 
-//
-//void CUIGroup_Dialogue::Boss_Talk_Pop(UIBOSSTALK eBoss)
-//{
-//
-//
-//	switch (eBoss)
-//	{
-//	case Client::TALK_VARG:
-//		break;
-//	case Client::TALK_MAGICIAN:
-//		break;
-//	case Client::TALK_MAGICIAN2:
-//		break;
-//	case Client::TALK_BAT:
-//		break;
-//	case Client::TALK_URD:
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//}
+		m_pGameInstance->UIGroup_Render_OnOff(m_eMyLevel, TEXT("Layer_PlayerScreen"), false);
+		m_pGameInstance->UIScene_UIObject_Render_OnOff((m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen")), false);
+		m_pGameInstance->Set_NextLevel_Open(true, LEVEL_HILL);
+	}
+}
 
 HRESULT CUIGroup_Dialogue::Ready_UIObject()
 {
