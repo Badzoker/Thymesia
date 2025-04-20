@@ -617,6 +617,11 @@ void CBoss_Magician::Intro_State::State_Update(_float fTimeDelta, CBoss_Magician
 	{
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 180.f && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() <= 210.f)
 		{
+			if (!pObject->m_bIntro_Card_Change)
+			{
+				pObject->m_pGameInstance->Play_Sound(TEXT("Magician_TrapCard.wav"), CHANNELID::SOUND_EFFECT, 0.5f);
+			}
+
 			pObject->m_bIntro_Card_Change = true;
 		}
 		else
