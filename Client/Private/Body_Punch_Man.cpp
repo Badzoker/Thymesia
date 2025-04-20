@@ -218,6 +218,27 @@ void CBody_Punch_Man::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
                 }
             }
         }
+        else
+        {
+            if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3 + 1;
+
+                switch (iRandSoundFileNum)
+                {
+                case 1:
+                    m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.5f);
+                    break;
+                case 2:
+                    m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.5f);
+                    break;
+                case 3:
+                    m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.5f);
+                    break;
+                }
+            }
+        }
     }
 }
 

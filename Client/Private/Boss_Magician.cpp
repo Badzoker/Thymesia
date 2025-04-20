@@ -1539,7 +1539,7 @@ void CBoss_Magician::ExeCution_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_pModelCom->Get_VecAnimation().at(63)->SetLerpTime(0.f);	
 	pObject->m_pModelCom->Set_LerpFinished(true);
 	/* ============ */
-
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1609,7 +1609,6 @@ void CBoss_Magician::ExeCution_State::State_Exit(CBoss_Magician* pObject)
 {
 	pObject->m_bCan_Move_Anim = false;
 	pObject->m_bExecution_Progress = false;
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 	if (pObject->m_iPhase == PHASE_ONE)
 	{
 		pObject->m_iPhase = PHASE_TWO;

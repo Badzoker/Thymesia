@@ -362,6 +362,27 @@ void CHArmorLV2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
             }
             m_pState_Manager->ChangeState(new CHArmorLV2::Hit_State(m_iHit_Motion_Index), this);
         }
+
+#pragma region Sound
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 4;
+
+        switch (iRandSoundFileNum)
+        {
+        case 0:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 1:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Armor_HitByPlayer4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.5f);
+            break;
+        }
+#pragma endregion
     }
 }
 
@@ -425,6 +446,22 @@ void CHArmorLV2::Intro_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Intro_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Intro"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Intro.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _vector vLook = pObject->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -499,6 +536,28 @@ void CHArmorLV2::Move_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Move_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Walk1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Walk2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_fDistance >= 3.f)
         pObject->m_pState_Manager->ChangeState(new Run_State(), pObject);
     else if (pObject->m_fDistance < 3.f)
@@ -537,6 +596,28 @@ void CHArmorLV2::Run_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Run_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Run1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Run2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Ready.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_fDistance >= 5.f || pObject->m_pNavigationCom->Get_BestListSize() >= 1)
     {
         pObject->m_pNavigationCom->Start_Astar(m_pPlayerNavi->Get_CurCellIndex());
@@ -648,6 +729,47 @@ void CHArmorLV2::Attack_Pattern_01::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_01::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_HorizonAttack1"))
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 2:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack3.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Dash"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Dash.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_VerticalAttack"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_VerticalAttack.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 4 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 61.f)
     {
         m_iIndex = 8;
@@ -705,6 +827,52 @@ void CHArmorLV2::Attack_Pattern_02::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_02::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_HorizonAttack2"))
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 2:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack3.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_WarningAttack1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Warning_VerticalAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 5 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 57.f)
     {
         m_iIndex = 0;
@@ -753,6 +921,27 @@ void CHArmorLV2::Attack_Pattern_03::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_03::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Stab"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Stab.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Step"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Step.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 3 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 36;
@@ -804,6 +993,22 @@ void CHArmorLV2::Attack_Pattern_04::State_Enter(CHArmorLV2* pObject)
 void CHArmorLV2::Attack_Pattern_04::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
 
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Intro"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Intro.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         pObject->m_pTransformCom->Look(XMLoadFloat4(&m_vChangeLook));
@@ -830,6 +1035,39 @@ void CHArmorLV2::Attack_Pattern_05::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_05::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_WarningAttack1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Warning_VerticalAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_JumpAttack"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_JumpAttack.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 32 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 70.f)
     {
         m_iIndex = 0;
@@ -878,6 +1116,42 @@ void CHArmorLV2::Attack_Pattern_06::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_06::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_HorizonAttack1"))
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 2:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack3.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_SmallAttack"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_SmallAttack.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 49.f)
     {
         m_iIndex = 4;
@@ -926,6 +1200,39 @@ void CHArmorLV2::Attack_Pattern_07::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Attack_Pattern_07::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_WarningAttack1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Warning_VerticalAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+
+#pragma region Effect_Warning
+
+                pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                _float4x4 matHeadWorld = {};
+                XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
+
+#pragma endregion
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_SmallAttack"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_SmallAttack.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 1 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f)
     {
         m_iIndex = 0;
@@ -993,19 +1300,44 @@ void CHArmorLV2::Execution_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Execution_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Execution_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Execution_1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Execution_2"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Execution_2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
-    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish() && pObject->m_iMonster_State != STATE_DEAD)
     {
         pObject->m_iMonster_State = STATE_DEAD;
 
-        //#pragma region UI상호작용
-        //        // 몬스터 사망 시 아이템 드랍 추가하기
-        //        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-        //        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(100);
-        //        pObject->m_pGameInstance->Find_TextBox_Monster_Memory(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 100);
-        //#pragma endregion
+#pragma region UI상호작용
+        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(544);
+        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 544);
+        // 몬스터 사망 시 아이템 드랍 추가하기
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_6, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+#pragma endregion
     }
     //죽음 처리
 }
@@ -1140,6 +1472,23 @@ void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Parry_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_Parry"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"HArmor_Parry.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
     {
         pObject->m_pState_Manager->ChangeState(new Parry_Attack_State(), pObject);
@@ -1162,6 +1511,37 @@ void CHArmorLV2::Parry_Attack_State::State_Enter(CHArmorLV2* pObject)
 
 void CHArmorLV2::Parry_Attack_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject)
 {
+
+#pragma region Sound
+
+    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+    {
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
+        {
+            if (!strcmp(iter.szName, "Sound_HorizonAttack3"))
+            {
+                _uint iRandSoundFileNum = {};
+                iRandSoundFileNum = rand() % 3;
+
+                switch (iRandSoundFileNum)
+                {
+                case 0:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack1.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 1:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack2.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                case 2:
+                    pObject->m_pGameInstance->Play_Sound(L"HArmor_HorizonAttack3.wav", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    break;
+                }
+                iter.isPlay = true;
+            }
+        }
+    }
+
+#pragma endregion
+
     if (m_iIndex == 6 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
     {
         _uint iRandom = rand() % 2;

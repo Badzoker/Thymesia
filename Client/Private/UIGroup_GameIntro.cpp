@@ -181,6 +181,7 @@ void CUIGroup_GameIntro::Button_Check()
 {
 	for (auto& Button : m_pMyScene->Find_UI_Button())
 	{
+		Button->Set_UI_ShaderPassNum(3);
 		if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 		{
 			if (1 == Button->Get_UI_GroupID()) // 게임 계속하기 

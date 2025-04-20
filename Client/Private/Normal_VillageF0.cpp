@@ -280,13 +280,13 @@ void CNormal_VillageF0::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
         switch (iRandSoundFileNum)
         {
         case 1:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
             break;
         case 2:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
             break;
         case 3:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
             break;
         }
     }
@@ -901,10 +901,11 @@ void CNormal_VillageF0::Dead_State::State_Enter(CNormal_VillageF0* pObject)
 
 #pragma region UI상호작용
     // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-    dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(64);
-    pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 64);
+    dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(148);
+    pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 148);
     // 몬스터 사망 시 아이템 드랍 추가하기
     pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+    pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
 #pragma endregion
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);

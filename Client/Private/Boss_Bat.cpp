@@ -546,6 +546,15 @@ void CBoss_Bat::Intro_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Intro"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Intro.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Scream"))
@@ -625,6 +634,21 @@ void CBoss_Bat::Move_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Move_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	pObject->RotateDegree_To_Player();
 	if (m_iIndex == 33 && pObject->m_fDistance > pObject->m_fRootDistance)
 		pObject->m_pTransformCom->Go_Straight(fTimeDelta, pObject->m_pNavigationCom);
@@ -655,6 +679,21 @@ void CBoss_Bat::Stun_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Stun_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Stun_Start"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 1.f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 26;
@@ -716,6 +755,26 @@ void CBoss_Bat::Execution_State::State_Update(_float fTimeDelta, CBoss_Bat* pObj
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Execution1"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Execution01.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Execution2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Execution02.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Blood_1"))
@@ -784,9 +843,23 @@ void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
 
-
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
 		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 33);
+
+
+
+		// 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+		dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(999);
+		pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 999);
+		// 몬스터 사망 시 아이템 드랍 추가하기
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+#pragma endregion
+
+
 #pragma endregion
 	}
 }
@@ -816,6 +889,25 @@ void CBoss_Bat::Attack_Combo_A::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboAB_01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Attack2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboAB_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -891,6 +983,25 @@ void CBoss_Bat::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboAB_01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Attack2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboAB_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -966,6 +1077,26 @@ void CBoss_Bat::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboC_02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strcmp(iter.szName, "Sound_Attack2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboC_03.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start_1"))
@@ -1026,6 +1157,20 @@ void CBoss_Bat::Attack_Combo_D::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboC_01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1080,6 +1225,20 @@ void CBoss_Bat::Attack_Combo_E::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboE.wav"), CHANNELID::SOUND_BOSS_ACTION, 1.f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Rush_Right_1"))
@@ -1173,6 +1332,20 @@ void CBoss_Bat::Attack_Combo_F::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Spawn_Spike"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboF.wav"), CHANNELID::SOUND_BOSS_ACTION, 1.f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Blood"))
@@ -1249,6 +1422,30 @@ void CBoss_Bat::Attack_Combo_G::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					switch (m_iIndex)
+					{
+					case 17:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboG_Chest.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						iter.isPlay = true;
+						break;
+					case 18:
+					case 19:
+						pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboG.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+						iter.isPlay = true;
+						break;
+					}
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1308,8 +1505,31 @@ void CBoss_Bat::Attack_Combo_H::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Attack_Combo_H::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
+	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
+	{
+		if (iter.isPlay == false)
+		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboH.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+		}
+	}
+
 	if (m_iIndex == 22 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
+		if (!m_IsFired)
+			pObject->RotateDegree_To_Player();
+
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 230.f && !m_IsFired)
 		{
 			m_IsFired = true;
@@ -1367,6 +1587,20 @@ void CBoss_Bat::Attack_Combo_I::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Attack"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_AttackComboI.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1424,6 +1658,33 @@ void CBoss_Bat::Attack_Special::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Special_Attack1"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Special_Attack01.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+				else if (!strcmp(iter.szName, "Sound_Special_Attack2"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Special_Attack02.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+				else if (!strcmp(iter.szName, "Sound_Special_Attack3"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Special_Attack03.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Start"))
@@ -1530,6 +1791,22 @@ void CBoss_Bat::Recovery_State::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 	{
 		if (iter.isPlay == false)
 		{
+			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
+			{
+				if (!strcmp(iter.szName, "Sound_Charge"))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Charge.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
+					iter.isPlay = true;
+				}
+
+				else if (!strncmp(iter.szName, "Sound_Wet", strlen("Sound_Wet")))
+				{
+					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_WetSound2.wav"), CHANNELID::SOUND_BOSS_ACTION, 2.f);
+					iter.isPlay = true;
+				}
+
+			}
+
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Blood_Suck_1"))

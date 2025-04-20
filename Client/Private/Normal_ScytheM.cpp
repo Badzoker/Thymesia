@@ -333,13 +333,13 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
         switch (iRandSoundFileNum)
         {
         case 1:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 2:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 3:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }
@@ -804,9 +804,21 @@ void CNormal_ScytheM::Execution_State::State_Update(_float fTimeDelta, CNormal_S
     }
 #pragma endregion
 
-    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish() && pObject->m_iMonster_State != STATE_DEAD)
     {
         pObject->m_iMonster_State = STATE_DEAD;
+
+
+#pragma region UI상호작용
+        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(296);
+        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 296);
+        // 몬스터 사망 시 아이템 드랍 추가하기
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+
+#pragma endregion
+
     }
 }
 
