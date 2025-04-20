@@ -1182,7 +1182,7 @@ void CBoss_Varg::ExeCution_State::State_Enter(CBoss_Varg* pObject)
     m_iIndex = 41;
     pObject->m_iMonster_State = STATE_EXECUTION;
     pObject->m_bCan_Move_Anim = true;
-
+    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     /* 선환 추가 */
     pObject->m_pModelCom->Get_VecAnimation().at(41)->SetLerpTime(0.1f);
     pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(15.f);
@@ -1332,7 +1332,6 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
 
 void CBoss_Varg::ExeCution_State::State_Exit(CBoss_Varg* pObject)
 {
-    pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
     if (pObject->m_iPhase == PHASE_ONE)
     {
         pObject->m_iPhase = PHASE_TWO;

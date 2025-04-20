@@ -145,7 +145,7 @@ public:
 		void State_Update(_float fTimeDelta, CBoss_Magician2* pObject) override;
 		void State_Exit(CBoss_Magician2* pObject) override;
 	private:
-		_bool m_Is_Random_Active = {};
+		_bool m_bAttack_V2 = {};
 	};
 
 	class Attack_ComboC : public CStates<CBoss_Magician2>

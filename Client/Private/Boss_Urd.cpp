@@ -691,6 +691,7 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 
 	_float teleportDistance = 1.f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
@@ -772,7 +773,6 @@ void CBoss_Urd::ExeCution_State::State_Exit(CBoss_Urd* pObject)
 {
 	pObject->m_bCan_Move_Anim = false;
 	pObject->m_bExecution_Progress = false;
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 	if (pObject->m_iPhase == PHASE_ONE)
 	{
 		pObject->m_iPhase = PHASE_TWO;
