@@ -872,11 +872,22 @@ void CNormal_VillageM1::Execution_State::State_Update(_float fTimeDelta, CNormal
     }
 #pragma endregion
 
-    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+    if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish() && pObject->m_iMonster_State != STATE_DEAD)
     {
         m_iIndex = 40;
         pObject->m_iMonster_State = STATE_DEAD;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, true);
+
+
+#pragma region UI상호작용
+        // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(296);
+        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 296);
+        // 몬스터 사망 시 아이템 드랍 추가하기
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+        pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+#pragma endregion
+
     }
 }
 

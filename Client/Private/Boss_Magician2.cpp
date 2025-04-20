@@ -585,6 +585,16 @@ void CBoss_Magician2::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Mag
 
 		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
 		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 23);
+
+		// 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+		dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(999);
+		pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 999);
+		// 몬스터 사망 시 아이템 드랍 추가하기
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_6, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_7, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_1, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
 #pragma endregion
 
 #pragma region Effect

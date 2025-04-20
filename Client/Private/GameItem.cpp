@@ -68,6 +68,9 @@ HRESULT CGameItem::Initialize(void* _pArg)
     case Engine::ITEM_TYPE::ITEM_FORGIVEN:
         m_iItemTypeNumber = 5;
         break;
+    case Engine::ITEM_TYPE::ITEM_SKILLPIECE:
+        m_iItemTypeNumber = 1;
+        break;
     case Engine::ITEM_TYPE::ITEM_FIELDITEM:
         m_iItemTypeNumber = 4;
         break;
