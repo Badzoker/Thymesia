@@ -988,17 +988,17 @@ void CBody_Player::STATE_RUN_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.1f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.1f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -1006,17 +1006,17 @@ void CBody_Player::STATE_RUN_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.1f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.1f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2272,17 +2272,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2290,17 +2290,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_B_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2406,17 +2406,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2424,17 +2424,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_BL_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
                                 case true:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
                                 default:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2541,17 +2541,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2559,17 +2559,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_BR_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2675,17 +2675,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2693,17 +2693,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_FL_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
                                 case true:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
                                 default:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2808,17 +2808,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2826,17 +2826,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_FR_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -2942,17 +2942,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -2960,17 +2960,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_L_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -3074,17 +3074,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.05f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -3092,17 +3092,17 @@ void CBody_Player::STATE_LOCK_ON_RUN_R_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.05f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -4704,17 +4704,17 @@ void CBody_Player::STATE_SPRINT_Method()
                         {
                             if (!strcmp(iter.szName, "Right_Foot_Sound"))
                             {
-                                switch (m_RightFootStepSound)
+                                switch (m_iRightFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_1.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.1f);
-                                    m_RightFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_3.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 0.1f);
-                                    m_RightFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iRightFootStepSound = 0;
                                     break;
                                 }
 
@@ -4722,17 +4722,17 @@ void CBody_Player::STATE_SPRINT_Method()
 
                             if (!strcmp(iter.szName, "Left_Foot_Sound"))
                             {
-                                switch (m_LeftFootStepSound)
+                                switch (m_iLeftFootStepSound)
                                 {
-                                case true:
+                                case 0:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_2.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.1f);
-                                    m_LeftFootStepSound = false;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound++;
                                     break;
-                                default:
+                                case 1:
                                     m_pGameInstance->Play_Sound(L"Player_Fantasy_Game_Footsteps_Water_4.ogg", CHANNELID::SOUND_PLAYER_ACTION_2, 0.1f);
-                                    m_LeftFootStepSound = true;
                                     iter.isPlay = true;
+                                    m_iLeftFootStepSound = 0;
                                     break;
                                 }
                                 //iter.isPlay = true; 
@@ -5813,6 +5813,34 @@ void CBody_Player::STATE_START_WALK_Method()
 
     m_pModelCom->SetUp_Animation(14, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 14)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(14)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    if (!strcmp(iter.szName, "Right_Foot_Sound"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_01.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                        iter.isPlay = true;
+                    }
+
+                    else if (!strcmp(iter.szName, "Left_Foot_Sound"))
+                    {
+                        m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+                        iter.isPlay = true;
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_VecAnimation().at(14)->isAniMationFinish())
     {
