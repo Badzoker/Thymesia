@@ -60,6 +60,12 @@ HRESULT CUIGroup_PlayerLevelUP::Initialize(void* pArg)
 
 void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 {
+	if (m_iMemoryCurrentCount != dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment())
+	{
+		// 유저 보유 수 가져와서 개수가 다르면 정보 갱신
+		m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
+		m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
+	}
 	if (m_bRenderOpen)
 	{
 		if (m_pMyScene->Get_Scene_Render_State())
@@ -72,12 +78,7 @@ void CUIGroup_PlayerLevelUP::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pApplyPopUp, false);
 			m_pGameInstance->UIScene_UIObject_Render_OnOff(m_pResetPopUp, false);
 		}
-		if (m_iMemoryCurrentCount != dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment())
-		{
-			// 유저 보유 수 가져와서 개수가 다르면 정보 갱신
-			m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
-			m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
-		}
+	
 		
 	}
 }
@@ -1010,43 +1011,30 @@ void CUIGroup_PlayerLevelUP::Free()
 	// 레벨
 	SetData.iLevel = m_iCurrentLevel;
 	SetData.iLevel = m_iNextLevel;
-
-
 	// 캐릭터 능력치 변수
 	SetData.iPower = m_iCurrentPower; // 힘 수치
-	SetData.iPower = m_iNextPower; // 힘 수치
 
 	SetData.iVitality = m_iCurrentVitality; // 활력 수치
-	SetData.iVitality = m_iNextVitality; // 활력 수치
 
 	SetData.iPlague = m_iCurrentPlague; // 역병 수치
-	SetData.iPlague = m_iNextPlague ; // 역병 수치
 
 	// 캐릭터 상태 변수
 	SetData.iAttackPower = m_iCurrentAttackPower; // 공격 대미지 
-	SetData.iAttackPower = m_iNextAttackPower; // 공격 대미지
 
 	SetData.iAmountOfWounds = m_iCurrentAmountOfWounds; // 상처 수
-	SetData.iAmountOfWounds = m_iNextAmountOfWounds; // 상처 수
 
 	SetData.iClawAttackPower = m_iCurrentClawAttackPower; // 발톱대미지
-	SetData.iClawAttackPower = m_iNextClawAttackPower; // 발톱대미지
 
 	SetData.iFullHP = m_iCurrentFullHp; // 체력
-	SetData.iFullHP = m_iNextFullHp; // 체력
 
 	SetData.iFullMP = m_iCurrentFullMp; // 에너지
-	SetData.iFullMP = m_iNextFullMp; // 에너지
 
 
 	SetData.iTalentPoint = m_iCurrentTalentPoint;
-	SetData.iTalentPoint = m_iNextTalentPoint;
 
 	SetData.iUnspent = m_iCurrentUnspent;
-	SetData.iUnspent = m_iNextUnspent;
 
 	SetData.iMemoryFragment = m_iMemoryCurrentCount;
-	SetData.iMemoryFragment = m_iMemoryNextCount; // 유저꺼 만큼 복사
 
 	m_pGameInstance->Set_Player_State_SaveData(SetData);
 	__super::Free();

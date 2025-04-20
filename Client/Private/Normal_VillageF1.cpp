@@ -1149,6 +1149,17 @@ void CNormal_VillageF1::Dead_State::State_Enter(CNormal_VillageF1* pObject)
 {
     m_iIndex = 19;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
+#pragma region UI상호작용
+    // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+    dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(296);
+    pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 296);
+    // 몬스터 사망 시 아이템 드랍 추가하기
+    pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+    pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+
+#pragma endregion
 }
 
 void CNormal_VillageF1::Dead_State::State_Update(_float fTimeDelta, CNormal_VillageF1* pObject)
