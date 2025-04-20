@@ -402,10 +402,29 @@ void CCircus_Balloon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
         m_fHP_Bar_Active_Timer = 0.f;
         m_fMonsterCurHP -= *m_Player_Attack;
         m_fShieldHP -= (*m_Player_Attack);
+
+
+        _uint iRandSoundFileNum = {};
+        iRandSoundFileNum = rand() % 3 + 1;
+
+        switch (iRandSoundFileNum)
+        {
+        case 1:
+            m_pGameInstance->Play_Sound(L"Hit1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        case 2:
+            m_pGameInstance->Play_Sound(L"Hit2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        case 3:
+            m_pGameInstance->Play_Sound(L"Hit3.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.08f);
+            break;
+        }
     }
 
     if (m_fMonsterCurHP <= 0.0f)
     {
+        m_pGameInstance->Play_Sound(TEXT("Blood01_VS_TakeExcution-003.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+
         m_bHitted = true;
         m_bHP_Bar_Active = false;
         m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));

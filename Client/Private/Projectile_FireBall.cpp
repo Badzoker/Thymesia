@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Projectile_FireBall.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CProjectile_FireBall::CProjectile_FireBall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CProjectile(pDevice, pContext)
@@ -98,6 +99,11 @@ void CProjectile_FireBall::OnCollisionEnter(CGameObject* _pOther, PxContactPair 
 	{
 		Set_IsFire(false);
 		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
+		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		{
+			m_pGameInstance->Play_Sound(TEXT("Researcher_Player_Hit.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 20.f);
+		}
 	}
 }
 

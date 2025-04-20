@@ -75,6 +75,8 @@ HRESULT CBoss_Magician2::Initialize(void* pArg)
 
 	m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_CANESWORD;
 
+	m_pGameInstance->StopSlowly(CHANNELID::SOUND_BGM);
+
 	return S_OK;
 }
 
