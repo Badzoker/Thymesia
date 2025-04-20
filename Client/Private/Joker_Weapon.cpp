@@ -318,13 +318,13 @@ void CJoker_Weapon::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inform
 				switch (iRandSoundFileNum)
 				{
 				case 1:
-					m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
 					break;
 				case 2:
-					m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
 					break;
 				case 3:
-					m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
+					m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.3f);
 					break;
 				}
 			}

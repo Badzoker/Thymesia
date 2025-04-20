@@ -388,15 +388,15 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
         switch (iHitRandom)
         {
         case 0:
-            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound0.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit1.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
             break;
 
         case 1:
-            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound1.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit2.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
             break;
 
         case 2:
-            m_pGameInstance->Play_Sound(TEXT("Villager_HitSound2.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+            m_pGameInstance->Play_Sound(TEXT("Hit3.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
             break;
         }
     }

@@ -349,13 +349,13 @@ void CNormal_VillageM1::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
         switch (iRandSoundFileNum)
         {
         case 1:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound0.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 2:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound1.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         case 3:
-            m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
             break;
         }
     }
