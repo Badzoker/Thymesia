@@ -508,8 +508,8 @@ void CElite_Punch_Man::Execution_State::State_Update(_float fTimeDelta, CElite_P
 
 #pragma region UI상호작용
         // 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(544);
-        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 544);
+        dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(1544);
+        pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 1544);
         // 몬스터 사망 시 아이템 드랍 추가하기
         pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
         pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
