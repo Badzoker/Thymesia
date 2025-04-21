@@ -171,7 +171,7 @@ void CBoss_Urd::PatternCreate()
 				m_iSword_Stack_Count = STACK_ONE;
 				m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Special_Skill(), this);
 			}
-			else if (m_fSpecial_Skill_CoolTime >= 60.f)
+			else if (m_fSpecial_Skill_CoolTime >= 20.f)
 			{
 				m_fSpecial_Skill_CoolTime = 0.f;
 				Stack_Skill_Create();
@@ -691,7 +691,7 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(45.f);
 	/* ============ */
-
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 	pObject->m_bExecution_Progress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -741,14 +741,12 @@ void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->GetAniFinish())
 		{
-			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 			pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 			pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 		}
 		else if (pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 210.f)
 		{
-			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Dead_State(), pObject);
 		}
 	}

@@ -248,7 +248,7 @@ void CBoss_Varg::PatternCreate()
         m_fDelayTime += 1 * m_fTimeDelta;
         if (m_fDelayTime >= m_fCoolTime)
         {
-            if (m_fSpecial_Skill_CoolTime >= 30.f)
+            if (m_fSpecial_Skill_CoolTime >= 45.f)
             {
                 m_pState_Manager->ChangeState(new CBoss_Varg::Roar_State(false), this);
             }
