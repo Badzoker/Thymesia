@@ -102,6 +102,11 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 
 					}
 				}
+				else
+				{
+					m_bMouseSelectOn = false; // 
+
+				}
 			}
 			if (m_eRenderType == Engine::TEXT_ALPHA)
 			{
@@ -120,6 +125,10 @@ void CUI_ButtonHighlight::Update(_float fTimeDelta)
 					m_fShaderTime *= -1;
 				}
 			}
+		}
+		else
+		{
+			m_bMouseSelectOn = false; // 
 		}
 	}
 }
