@@ -1098,7 +1098,7 @@ void CUIGroup_Inventory::Item_Use_Set(ITEM_TYPE etype, _uint iCount)
 	case Engine::ITEM_TYPE::ITEM_KEY2:
 		break;
 	case Engine::ITEM_TYPE::ITEM_MEMORY:
-		dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(iCount * 100);
+		dynamic_cast<CPlayer*>(m_pPlayer)->Increase_MemoryFragment(iCount * 1000);
 		break;
 	case Engine::ITEM_TYPE::ITEM_FORGIVEN:
 		break;

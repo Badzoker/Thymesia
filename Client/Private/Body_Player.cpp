@@ -3533,6 +3533,8 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(59)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);  
+
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
@@ -3563,6 +3565,8 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(58)->isAniMationFinish())
     {
+        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.1f);  
+
         *m_pParentState = STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PHASE_PARRY;
     }
