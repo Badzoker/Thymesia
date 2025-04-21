@@ -326,7 +326,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			else if (m_iState == STATE_ATTACK_L3
 				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 17.f
 					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f)
-					&& m_iTalentState & TALENT_HIT_COMBO)
+				&& m_iTalentState & TALENT_HIT_COMBO)
 			{
 				m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_ATTACK_L4;
@@ -547,7 +547,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)
 		&& m_iState != STATE_DEAD)
 	{
-		printf("Player 고정 스킬 : m_pPlayerSkillCoolTime => TRUE\n");
+
 
 		switch (m_iSkill_Eqip_1st)
 		{
@@ -558,7 +558,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_AXE :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -569,7 +569,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_CANESWORD :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -580,7 +580,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_GREADSWORD :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -591,7 +591,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_HALBERD :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -602,7 +602,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_JAVELINSWORD :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -613,7 +613,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-				printf("Player PLAYER_SKILL_SCYTHE :스킬 해제하러 간다\n");
+
 
 			}
 			break;
@@ -631,7 +631,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		&& !(m_iPhaseState & CPlayer::PHASE_LADDER)
 		&& m_iState != STATE_DEAD)
 	{
-		printf("Player 약탈 스킬 : m_pPlayerSkillCoolTime => TRUE\n");
+
 
 		switch (m_iTake_Away_Skill)
 		{
@@ -639,35 +639,35 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iState = STATE_AXE;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
-			printf("Player 약탈 PLAYER_SKILL_AXE :스킬 해제하러 간다\n");
+
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
 			m_iState = STATE_CANE_SWORD_SP02;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			printf("Player 약탈  PLAYER_SKILL_CANESWORD :스킬 해제하러 간다\n");
+
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
 			m_iState = STATE_GREATSWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			printf("Player 약탈  PLAYER_SKILL_GREADSWORD :스킬 해제하러 간다\n");
+
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
 			m_iState = STATE_HALBERDS_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			printf("Player 약탈  PLAYER_SKILL_HALBERD :스킬 해제하러 간다\n");
+
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
 			m_iState = STATE_JAVELIN_SWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			printf("Player 약탈  PLAYER_SKILL_JAVELINSWORD :스킬 해제하러 간다\n");
+
 
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
@@ -675,7 +675,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-			printf("Player 약탈  PLAYER_SKILL_SCYTHE :스킬 해제하러 간다\n");
+
 
 			break;
 		}
@@ -1271,6 +1271,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	BodyDesc.pParentHp = &m_iCurrentHp;
 	BodyDesc.pParentMp = &m_iCurrentMp;
 
+	BodyDesc.pParentTalent = &m_iTalentState;
 
 	BodyDesc.iCurLevel = pDesc->iCurLevel;
 
@@ -1515,7 +1516,7 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 	if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
 	{
 		/* 임시 버그 수정 도끼 때릴 때 눈 안광  */
-		m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);	
+		m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
 
 
 		/* 충돌 지점 이 오른쪽 왼쪽 인지 판별 해야함 */
@@ -1633,9 +1634,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 				m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_BLOOD_PLAYER_HIT_HOLDING, vHitPosition, vHitDir);
 
 				/* 데미지 안받기 위해 */
-				//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();	
-				//if (m_iCurrentHp <= 0)	
-				//	m_iCurrentHp = 0;		
+				m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
+				if (m_iCurrentHp <= 0)
+					m_iCurrentHp = 0;
 			}
 
 			else
@@ -1668,9 +1669,9 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 
 
 					/* 데미지 안받기 위해 */
-					//m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
-					//if (m_iCurrentHp <= 0)
-					//	m_iCurrentHp = 0;
+					m_iCurrentHp -= *dynamic_cast<CPartObject*>(_pOther)->Get_Monster_Attack_Ptr();
+					if (m_iCurrentHp <= 0)
+						m_iCurrentHp = 0;
 
 
 					switch (dynamic_cast<CPartObject*>(_pOther)->Get_Parent_Ptr()->Get_Player_Hitted_State())

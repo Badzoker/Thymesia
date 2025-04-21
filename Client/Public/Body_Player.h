@@ -45,6 +45,8 @@ public:
 
 		_int* pParentHp = { nullptr };
 		_int* pParentMp = { nullptr };
+
+		_uint* pParentTalent = { nullptr };
 	};
 
 private:
@@ -293,6 +295,7 @@ private:
 	_bool* m_pParentNextStateCan = { nullptr };
 	_bool* m_pParentSkillCoolTime = { nullptr };
 	_uint  m_iRenderState = {};
+	_uint* m_pParentTalent = { nullptr };
 
 	_int* m_pParentHp = { nullptr };
 	_int* m_pParentMp = { nullptr };

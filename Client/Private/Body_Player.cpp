@@ -38,6 +38,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
     m_pParentMonsterExecute = pDesc->pParentExectueMonsterState;
     m_pParentHp = pDesc->pParentHp;
     m_pParentMp = pDesc->pParentMp;
+    m_pParentTalent = pDesc->pParentTalent;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -3435,7 +3436,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 40.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 50.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3471,7 +3472,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Real.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 40.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Real.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 50.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3504,7 +3505,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R_UP.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 40.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R_UP.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 50.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3535,7 +3536,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 40.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 50.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -4101,6 +4102,45 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseMp_Amount = 100;
+            _int IncreaseHp_Amount = 100;
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 100); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 100); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4193,6 +4233,48 @@ void CBody_Player::STATE_LV1Villager_M_Execution_Method()
         m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_START);
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 200;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                    
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 200); // HP        
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 200); // HP     
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때                  
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4265,6 +4347,48 @@ void CBody_Player::STATE_Varg_Execution_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterFinalEvent(false);
         *m_pParentNextStateCan = true;
+
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 500;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4341,6 +4465,47 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 1000;
+            _int IncreaseMp_Amount = 150;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 1000); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 1000); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 150); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 150); // MP    
+            }
+
+
+        }
     }
 
 }
@@ -4418,6 +4583,47 @@ void CBody_Player::STATE_BAT_EXECUTION_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 1000;
+            _int IncreaseMp_Amount = 150;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                   
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 1000); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 1000); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 150); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 150); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4475,6 +4681,47 @@ void CBody_Player::STATE_RESEARCHER_EXECUTION_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 300;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 300); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 300); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4494,6 +4741,46 @@ void CBody_Player::STATE_MAGICIAN_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 500;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseMp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 100); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 100); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4504,6 +4791,27 @@ void CBody_Player::STATE_STUN_EXECUTE_START_MAGICIAN_Method()
 
     m_pModelCom->SetUp_Animation(291, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 291)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(291)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Stun_Start.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 40.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
     {
@@ -4534,6 +4842,25 @@ void CBody_Player::STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN_Method()
 
     m_pModelCom->SetUp_Animation(291, false);
     m_iRenderState = STATE_NORMAL_RENDER;
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 291)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(291)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Stun_Start.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 40.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
     {
@@ -4572,6 +4899,46 @@ void CBody_Player::STATE_MAGICIAN_MUTATION_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 500;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                  
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 }
 
@@ -4652,6 +5019,47 @@ void CBody_Player::STATE_GRACE_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 500;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                  
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 500); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+
+
+        }
     }
 
 }
@@ -4728,6 +5136,46 @@ void CBody_Player::STATE_PUNCH_MAN_Execution_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 200;
+            _int IncreaseMp_Amount = 100;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                 
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 200); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 200); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때                  
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 100); // MP    
+            }
+        }
     }
 }
 
@@ -5127,7 +5575,7 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Javelin_Throw.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Javelin_Throw.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -5388,6 +5836,50 @@ void CBody_Player::STATE_LIGHT_EXECUTION_L_Method()
         *m_pParentPhsaeState &= ~CPlayer::PHASE_FIGHT;
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
+
+
+
+        if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
+        {
+            _int IncreaseHp_Amount = 50;
+            _int IncreaseMp_Amount = 50;
+
+            _int m_iFullMp = static_cast<CPlayer*>(m_pParent)->Get_FullMp();
+            _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
+
+
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                  
+            {
+                if (m_iFullHp > *m_pParentHp)
+                    *m_pParentHp += m_iFullHp - *m_pParentHp;
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 50); // HP    
+            }
+            else
+            {
+                *m_pParentHp += IncreaseHp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, 50); // HP    
+            }
+
+            if ((*m_pParentMp + IncreaseMp_Amount) > m_iFullMp) // Mp가 이미 더 클 때               
+            {
+                if (m_iFullMp > *m_pParentMp)
+                    *m_pParentMp += m_iFullMp - *m_pParentMp;
+
+
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 50); // MP        
+
+            }
+            else
+            {
+                *m_pParentMp += IncreaseMp_Amount;
+                m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 22, 50); // MP    
+            }
+
+
+        }
+
+
 
     }
 }
@@ -6125,19 +6617,19 @@ void CBody_Player::STATE_HALBERDS_B_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Halberd_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Halberd_Sound_2"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Halberd_Sound_3"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_3.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Halberd_Attack_Sound_3.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
@@ -6281,13 +6773,13 @@ void CBody_Player::STATE_SCYTHE_B_Method()
                 case EVENT_SOUND:
                     if (!strcmp(iter.szName, "Attack_Sound_1"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_1.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
                     else if (!strcmp(iter.szName, "Attack_Sound_2"))
                     {
-                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                        m_pGameInstance->Play_Sound(L"Player_Scythe_Attack_2.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                         iter.isPlay = true;
                     }
 
@@ -6429,7 +6921,7 @@ void CBody_Player::STATE_AXE_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Axe.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 3.f);
+                    m_pGameInstance->Play_Sound(L"Player_Axe.wav", CHANNELID::SOUND_PLAYER_ATTACK_1, 4.f);
                     iter.isPlay = true;
                     break;
                 }
