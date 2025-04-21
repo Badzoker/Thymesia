@@ -74,7 +74,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
     m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
 
-    m_fSkillBaseDamage = 30.f;
+    m_fSkillBaseDamage = 100.f;
 
     return S_OK;
 }

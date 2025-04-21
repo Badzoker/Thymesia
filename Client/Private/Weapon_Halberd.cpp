@@ -71,7 +71,7 @@ HRESULT CWeapon_Halberd::Initialize(void* pArg)
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
-    m_fSkillBaseDamage = 40.f;
+    m_fSkillBaseDamage = 150.f;
 
     return S_OK;
 

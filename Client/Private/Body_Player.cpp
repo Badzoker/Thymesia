@@ -4742,6 +4742,8 @@ void CBody_Player::STATE_MAGICIAN_Execution_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
 
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+
         if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
         {
             _int IncreaseHp_Amount = 500;
@@ -7054,8 +7056,6 @@ void CBody_Player::STATE_CATCHED_Method()
 
     if (m_pModelCom->Get_VecAnimation().at(233)->isAniMationFinish())
     {
-        m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.2f);
-
         *m_pParentState = CPlayer::STATE::STATE_GET_UP;
         m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
     }

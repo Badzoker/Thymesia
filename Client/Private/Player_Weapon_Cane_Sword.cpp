@@ -69,7 +69,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Initialize(void* pArg)
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
-    m_fSkillBaseDamage = 200.f;
+    m_fSkillBaseDamage = 600.f;
 
 
     return S_OK;
