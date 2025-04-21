@@ -659,22 +659,6 @@ void CBoss_Urd::Stun_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::ExeCution_State(), pObject);
 	}
-
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Sound_Stun"))
-				{
-					pObject->m_pGameInstance->Play_Sound(L"Urd_Stun_Start.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
-
 }
 
 void CBoss_Urd::Stun_State::State_Exit(CBoss_Urd* pObject)

@@ -700,20 +700,6 @@ void CBoss_Bat::Stun_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Stun_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Sound_Stun_Start"))
-				{
-					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 1.f);
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
 
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
