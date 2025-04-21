@@ -175,6 +175,23 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
             m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, OffSetRespawnPos);
 
+            m_pGameInstance->Respawn_Monster(MONSTER_CATEGORY::CATEGORY_BOSS);
+            m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.6f);
+
+            switch (m_iCurrentLevel)
+            {
+            case LEVEL_TUTORIAL:
+                m_pGameInstance->PlayBGM(L"TutoMapBGM.ogg", 0.15f);
+                break;
+            case LEVEL_SEAOFTREES:
+                m_pGameInstance->PlayBGM(L"Sea_of_Trees_Level_-_Exploration.ogg", 0.15f);
+                break;
+            case LEVEL_ROYALGARDEN:
+                m_pGameInstance->PlayBGM(L"Garden_Level_-_Exploration.ogg", 0.15f);
+                break;
+            case LEVEL_OCEAN:
+                break;
+            }
 
             /* 락온 풀기 */
             //static_cast<CPlayer*>(m_pParent)->Set_Lockon(false);     
@@ -4466,6 +4483,7 @@ void CBody_Player::STATE_URD_EXECUTION_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
 
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));    
 
         if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
         {
