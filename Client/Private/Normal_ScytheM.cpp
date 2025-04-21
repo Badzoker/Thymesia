@@ -280,7 +280,10 @@ void CNormal_ScytheM::Stun()
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
+    m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트        
+    m_pGameInstance->Set_SlowWorld(true);
 #pragma region Effect_Stun
+
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
 }
@@ -564,6 +567,8 @@ void CNormal_ScytheM::Stun_State::State_Enter(CNormal_ScytheM* pObject)
 
 void CNormal_ScytheM::Stun_State::State_Update(_float fTimeDelta, CNormal_ScytheM* pObject)
 {
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
+
     const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
     if (m_iIndex == 12 && iCurrentAnimIndex == m_iIndex)
@@ -575,7 +580,7 @@ void CNormal_ScytheM::Stun_State::State_Update(_float fTimeDelta, CNormal_Scythe
             m_iIndex = 11;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LV1Villager_M_Execution && bMonster_Event)
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -583,7 +588,7 @@ void CNormal_ScytheM::Stun_State::State_Update(_float fTimeDelta, CNormal_Scythe
     }
     else if (m_iIndex == 13 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LV1Villager_M_Execution && bMonster_Event)
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -778,6 +783,12 @@ void CNormal_ScytheM::Execution_State::State_Enter(CNormal_ScytheM* pObject)
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+
+
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(27)->SetLerpTime(0.f);
+    pObject->m_pModelCom->Set_LerpFinished(true);
+    /* =========  */
 
     pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
