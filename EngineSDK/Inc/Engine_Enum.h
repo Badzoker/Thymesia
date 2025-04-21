@@ -297,8 +297,8 @@ namespace Engine
         EFFECT_BAT_BLOOD_SUCK,
         EFFECT_BAT_CLAW_R,
         EFFECT_BAT_CLAW_L,
-
         EFFECT_WARNING,
+        EFFECT_STACKSWORD_EXPLOSION_2,
 
         //Particle
         EFFECT_PARTICLE_DROP,

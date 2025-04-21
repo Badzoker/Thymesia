@@ -104,6 +104,38 @@ VS_OUT VS_MAIN(VS_IN In)
     return Out;
 }
 
+VS_OUT VS_EXPLOSION(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    
+    float3 vPos = In.vPosition;
+    
+    float2 noiseUV = float2(vPos.x * 0.5f + g_TimeX * 0.2, vPos.y * 0.5f);
+    
+    float wave = sin(vPos.y * 10 + g_TimeX * 5) * 0.1;
+    float offset = (wave) * 0.2;
+    
+    float angle = vPos.y * 4.0f + g_TimeX * 2.f;
+    float2 dir = float2(cos(angle), sin(angle));
+    vPos.xz += dir * offset;
+    
+    Out.vPosition = mul(vector(vPos, 1.f), matWVP);
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y + g_TimeX * 0.5f);
+    Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = float4(vPos, 1.f);
+	
+    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f);
+	
+    return Out;
+}
+
 VS_OUT_MotionBlur VS_MAIN_MOTIONBLUR(VS_IN In)
 {
     VS_OUT_MotionBlur Out = (VS_OUT_MotionBlur) 0;
@@ -1074,49 +1106,24 @@ PS_OUT_WEIGHTBLEND PS_MAIN_WEIGHTBLEND(PS_IN In) // 여기 값 조정 하고 Deferred �
     vector vMask = g_MaskTexture.Sample(LinearSampler, vMaskTexcoord);
     float fMask = vMask.r;
     
-    float2 vMtrlTexcoord = float2(In.vTexcoord.x, In.vTexcoord.y);
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMtrlTexcoord) * fMask;
-    
     float2 noiseUV = In.vTexcoord + float2(g_TimeX * 0.1f, g_TimeY * 0.1f);
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMaskTexcoord) * fMask;
     
-    float noiseValue = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+    float fNoise = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
     
-    float g_EdgeWidth = 0.3f;
-    float edgeFactor = smoothstep(g_DissolveAmount - g_EdgeWidth, g_DissolveAmount, noiseValue);
-    
-    float4 g_EdgeColor = { 1.f, 1.f, 0.f, 1.f };
-    float edgeStrength = 1.0 - edgeFactor;
-    float4 edgeBlend = lerp(vMtrlDiffuse, g_EdgeColor, edgeStrength);
-    float4 finalColor = lerp(vMtrlDiffuse, edgeBlend, edgeStrength);
-    
-    if (noiseValue < g_DissolveAmount)
-    {
-        float alphaFactor = saturate((noiseValue - (g_DissolveAmount - g_EdgeWidth)) / g_EdgeWidth);
-        finalColor.a *= alphaFactor;
-
-        if (finalColor.a < 0.01f) 
-            clip(-1);
-    }
-    
-    float4 vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-	
-    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
-
-    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-    vNormal = normalize(mul(vNormal, WorldMatrix));
-    
-    float blendFactor = 0.f;
     
     float3 vRGB = float3(g_vRGB);
 
     vMtrlDiffuse.a *= (1.0f - saturate(g_TimeX / g_fMaxTimer));
     
-    float fWeight = saturate(max(1e-2, In.vProjPos.w / g_fWeightX));
-    Out.vDiffuse = lerp(vMtrlDiffuse, finalColor, blendFactor) * vector(vRGB, 1.f) * fWeight;
+    float fade_x = saturate(1.f - abs(In.vProjPos.x) / g_fWeightX) * fNoise;
+    float fade_y = saturate(1.f - In.vProjPos.y / g_fWeightY);
+    
+    float fWeight = saturate(max(1e-2, In.vProjPos.w / g_DissolveAmount));
+    Out.vDiffuse = vMtrlDiffuse * vector(vRGB, 1.f) * fWeight * fNoise * fade_y * fade_x;
     if (Out.vDiffuse.a < 0.01f || length(Out.vDiffuse.rgb) < 0.1f)
         discard;
-    Out.vDiffuse.a = g_fWeightY; //Weight Blend 는 a값이 필요가 없음 형식상 넣어둠
+    //Out.vDiffuse.a *= fade; //Weight Blend 는 a값이 필요가 없음 형식상 넣어둠
     
     return Out;
 }
@@ -1349,7 +1356,7 @@ technique11 DefaultTechnique
         SetDepthStencilState(DSS_WeightBlend, 0);
         SetBlendState(BS_WeightBlend_Client, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_MAIN();
+        VertexShader = compile vs_5_0 VS_EXPLOSION();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_WEIGHTBLEND();
     }

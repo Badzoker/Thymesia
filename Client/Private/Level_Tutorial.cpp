@@ -613,6 +613,10 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_WARNING)))
         return E_FAIL;
 
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_StackSword_Explosion_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, 4)))
+        return E_FAIL;
+
     //Particle Effect
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Spark.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
         EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_SPARK, 3)))
@@ -2443,6 +2447,9 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
             break;
         case 27:
             pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Urd_Cone");
+            break;
+        case 28:
+            pDesc.szModelName = TEXT("Prototype_Component_Model_Effect_Urd_Cylinder");
             break;
         }
 #pragma endregion

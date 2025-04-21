@@ -130,6 +130,7 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
                     _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, vPos);
                     iter.isPlay = true;
                 }
                 break;
@@ -142,6 +143,7 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
                     _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, vPos);
                     iter.isPlay = true;
                 }
                 break;
@@ -154,6 +156,7 @@ void CStand_Stack_Sword::Update(_float fTimeDelta)
                     _vector vPos = { m_Store_CombinedMatrix._41, m_Store_CombinedMatrix._42, m_Store_CombinedMatrix._43, 1.f };
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_EXPLOSION, vPos);
                     m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, vPos);
+                    m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, vPos);
                     iter.isPlay = true;
                 }
                 break;
