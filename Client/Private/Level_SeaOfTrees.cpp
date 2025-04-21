@@ -54,9 +54,9 @@ HRESULT CLevel_SeaOfTrees::Initialize()
 
     if (FAILED(Ready_Layer_Structure_Corridor(TEXT("Layer_Corrider_Map"))))
         return E_FAIL;
-        
-    if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map")))) // 테스트 안할시 주석처리
-        return E_FAIL;
+    //    
+    //if (FAILED(Ready_Layer_Structure_Boss(TEXT("Layer_Boss_Map")))) // 테스트 안할시 주석처리
+    //    return E_FAIL;
 
     if (FAILED(Ready_Layer_Monster()))
         return E_FAIL;
