@@ -235,6 +235,7 @@
 #include "UI_QuestBackground.h"
 
 #include "UI_EndingScene.h"
+#include "UI_YellowScreen.h"
 #pragma endregion
 
 #pragma region 오브젝트
@@ -1289,6 +1290,16 @@ HRESULT CLoader_Static_Logo::Loading_For_Level_Static()
 	/* For.Prototype_GameObject_UI_KeyBox_Long */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_DecorationLine"),
 		CUI_DecorationLine::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	/* For.Prototype_Component_Texture_UI_YellowScreen*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_YellowScreen"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ThymesiaUI/General/UI_YellowScreen.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_KeyBox_Long */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_GameObject_UI_YellowScreen"),
+		CUI_YellowScreen::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	//====================================================================================================================================== 넛지 텍스처
 	/* For.Prototype_Component_Texture_UI_DiamondIcon_01*/

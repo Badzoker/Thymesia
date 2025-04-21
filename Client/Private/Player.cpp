@@ -121,6 +121,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		m_iFullMp = stGetData.iFullMP;
 		m_iCurrentMp = stGetData.iFullMP;
 
+		m_fBonusSkillDamage = stGetData.fBonus_SkillDamage;
 		m_iAttackPower = stGetData.iAttackPower;
 		m_iClawAttackPower = stGetData.iClawAttackPower;
 

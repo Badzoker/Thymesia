@@ -154,6 +154,10 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iNextPlague = { 1 }; // 역병 수치
 
 		// 캐릭터 상태 변수
+		m_fCurrentBonus_SkillDamage = *dynamic_cast<CPlayer*>(m_pPlayer)->Get_Bonus_SkillDamagePtr();
+		m_fNextBonus_SkillDamage = m_fCurrentBonus_SkillDamage;
+
+
 		m_iCurrentAttackPower = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower(); // 공격 대미지 
 		m_iNextAttackPower = m_iCurrentAttackPower; // 공격 대미지
 
@@ -200,6 +204,10 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iNextPlague = GetData.iPlague; // 역병 수치
 
 		// 캐릭터 상태 변수
+
+		m_fCurrentBonus_SkillDamage = GetData.fBonus_SkillDamage; // 추가 스킬 대미지
+		m_fNextBonus_SkillDamage = GetData.fBonus_SkillDamage;
+
 		m_iCurrentAttackPower = GetData.iAttackPower; // 공격 대미지 
 		m_iNextAttackPower = GetData.iAttackPower; // 공격 대미지
 
@@ -305,6 +313,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextPlague -= 1;
 				m_iNextClawAttackPower -= 100;
 				m_iNextFullMp -= 30;
+				m_fNextBonus_SkillDamage -= 5.f;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
 				m_iMemoryNextCount += m_iCurrentMemoryNeed;
@@ -315,6 +324,7 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 				m_iNextPlague += 1;
 				m_iNextClawAttackPower += 100;
 				m_iNextFullMp += 30;
+				m_fNextBonus_SkillDamage += 5.f;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
 				m_iMemoryNextCount -= m_iNextMemoryNeed;
@@ -797,6 +807,9 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Apply()
 	m_iCurrentPlague = m_iNextPlague; // 역병 수치
 
 	// 캐릭터 상태 변수
+	dynamic_cast<CPlayer*>(m_pPlayer)->Set_Bonus_SkillDamage(m_fCurrentBonus_SkillDamage);
+	m_fCurrentBonus_SkillDamage = m_fNextBonus_SkillDamage;
+
 	dynamic_cast<CPlayer*>(m_pPlayer)->Increase_AttackPower(m_iNextAttackPower);
 	m_iCurrentAttackPower = m_iNextAttackPower; // 공격 대미지 
 
@@ -838,6 +851,8 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset()
 	m_iNextPlague = m_iCurrentPlague; // 역병 수치
 
 	// 캐릭터 상태 변수
+	m_fNextBonus_SkillDamage = m_fCurrentBonus_SkillDamage;
+	
 	m_iNextAttackPower = m_iCurrentAttackPower; // 공격 대미지
 
 	m_iNextAmountOfWounds = m_iCurrentAmountOfWounds; // 상처 수
@@ -1019,6 +1034,10 @@ void CUIGroup_PlayerLevelUP::Free()
 	SetData.iPlague = m_iCurrentPlague; // 역병 수치
 
 	// 캐릭터 상태 변수
+
+	SetData.fBonus_SkillDamage = m_fCurrentBonus_SkillDamage; // 추가 스킬 대미지
+
+
 	SetData.iAttackPower = m_iCurrentAttackPower; // 공격 대미지 
 
 	SetData.iAmountOfWounds = m_iCurrentAmountOfWounds; // 상처 수

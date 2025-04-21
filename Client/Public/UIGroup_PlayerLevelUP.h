@@ -87,6 +87,10 @@ private:
 	_uint		m_iCurrentFullMp = {}; // 에너지
 	_uint		m_iNextFullMp = {}; // 에너지
 
+	// 플레이어 스킬들 공격력 상승 설정을 위한 값
+	_float     m_fCurrentBonus_SkillDamage = {};
+	_float     m_fNextBonus_SkillDamage = {};
+
 	// 특성 변수
 	_uint       m_iCurrentTalentPoint = {};
 	_uint       m_iNextTalentPoint = {};

@@ -1027,6 +1027,9 @@
     <Filter Include="02.GameObject\Monster\00. Normal\Female\VillageF0\Body">
       <UniqueIdentifier>{63114fdc-9e0c-4e82-9a9d-08fb0eeec41a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.UIObject\1.UIObjClass\UI_YellowScreen">
+      <UniqueIdentifier>{4689745e-d0f0-4e30-babc-a4e8cd98c693}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1935,6 +1938,9 @@
     <ClInclude Include="..\Public\UI_EndingScene.h">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_EndingScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_YellowScreen.h">
+      <Filter>03.UIObject\1.UIObjClass\UI_YellowScreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2833,6 +2839,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_EndingScene.cpp">
       <Filter>03.UIObject\1.UIObjClass\Image\UI_EndingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_YellowScreen.cpp">
+      <Filter>03.UIObject\1.UIObjClass\UI_YellowScreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
