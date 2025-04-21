@@ -199,45 +199,7 @@ void CNormal_ScytheM::PatternCreate()
     if (!m_bPatternProgress && m_bActive)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_iHitCount >= m_iParryReadyHits)
-        {
-            random_device rd;
-            mt19937 gen(rd());
-            uniform_int_distribution<> ParryCount_Random(3, 5);
-            uniform_int_distribution<> Random_Pattern(0, 1);
-
-            m_iParryReadyHits = ParryCount_Random(gen);
-
-            m_iHitCount = 0;
-            m_bCanHit = false;
-            m_bPatternProgress = true;
-            m_fDelayTime = 0.f;
-
-            _uint iRandom = Random_Pattern(gen);
-
-            if (iRandom == 0)
-            {
-                m_pState_Manager->ChangeState(new CNormal_ScytheM::Parry_State(), this);
-            }
-            else
-            {
-                _uint iRandom = rand() % 3;
-                switch (iRandom)
-                {
-                case 0:
-                    m_pState_Manager->ChangeState(new Attack_ComboA(), this);
-                    break;
-                case 1:
-                    m_pState_Manager->ChangeState(new Attack_ComboB(), this);
-                    break;
-                case 2:
-                    m_pState_Manager->ChangeState(new Attack_ComboC(), this);
-                    break;
-                }
-            }
-        }
-
-        else if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
+        if (m_fDelayTime >= 1.f && m_fDistance <= 1.5f)
         {
             _uint iRandom = rand() % 2;
             switch (iRandom)
@@ -292,13 +254,48 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        if (m_iHitCount >= m_iParryReadyHits)
-            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fDelayTime -= m_fTimeDelta;
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
+
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+            m_iParryReadyHits = ParryCount_Random(gen);
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CNormal_ScytheM::Parry_State(), this);
+            }
+            else
+            {
+                _uint iRandom = rand() % 3;
+                switch (iRandom)
+                {
+                case 0:
+                    m_pState_Manager->ChangeState(new Attack_ComboA(), this);
+                    break;
+                case 1:
+                    m_pState_Manager->ChangeState(new Attack_ComboB(), this);
+                    break;
+                case 2:
+                    m_pState_Manager->ChangeState(new Attack_ComboC(), this);
+                    break;
+                }
+            }
+
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+            return;
+        }
 
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {

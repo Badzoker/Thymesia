@@ -234,32 +234,7 @@ void CElite_Grace::PatternCreate()
     if (!m_bPatternProgress && m_bActive && !m_IsStun)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_iHitCount >= m_iParryReadyHits)
-        {
-            random_device rd;
-            mt19937 gen(rd());
-            uniform_int_distribution<> ParryCount_Random(3, 5);
-            uniform_int_distribution<> Random_Pattern(0, 1);
-
-            m_iParryReadyHits = ParryCount_Random(gen);
-
-            m_iHitCount = 0;
-            m_bCanHit = false;
-            m_bPatternProgress = true;
-            m_fDelayTime = 0.f;
-
-            _uint iRandom = Random_Pattern(gen);
-
-            if (iRandom == 0)
-            {
-                m_pState_Manager->ChangeState(new CElite_Grace::Parry_State(), this);
-            }
-            else
-            {
-                Near_Pattern_Create();
-            }
-        }
-        else if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
+        if (m_fDelayTime >= 1.f && m_fDistance <= 5.f)
         {
             if (m_fDistance >= 3.f)
                 Far_Pattern_Create();
@@ -343,13 +318,36 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        if (m_iHitCount >= m_iParryReadyHits)
-            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fDelayTime -= m_fTimeDelta;
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
+
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                m_pState_Manager->ChangeState(new CElite_Grace::Parry_State(), this);
+            }
+            else
+            {
+                Near_Pattern_Create();
+            }
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+            return;
+        }
 
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
