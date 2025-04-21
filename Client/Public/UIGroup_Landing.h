@@ -40,6 +40,7 @@ private:
 	CUI_Scene* m_pMessage_MapName = {};
 
 	_float m_fRandingTime = {};
+	_float m_fDeadTime = {};
 	LEVELID m_eMyLevel = {};
 
 public:

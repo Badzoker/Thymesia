@@ -69,7 +69,6 @@ void CUIGroup_Landing::Update(_float fTimeDelta)
 		Map_Name();
 
 		if (
-			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Dead->Find_UI_Image().front())->Get_OnOff() ||
 			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Beacon->Find_UI_Image().front())->Get_OnOff() ||
 			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Recall->Find_UI_Image().front())->Get_OnOff() ||
 			dynamic_cast<CUI_LandingScreen*>(m_pMessage_Memories->Find_UI_Image().front())->Get_OnOff() ||
@@ -90,6 +89,23 @@ void CUIGroup_Landing::Update(_float fTimeDelta)
 			}
 
 		}
+
+		if (dynamic_cast<CUI_LandingScreen*>(m_pMessage_Dead->Find_UI_Image().front())->Get_OnOff())
+
+		{
+			if (m_fDeadTime > 1.f)
+			{
+				m_fDeadTime = 0.0f;
+				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pMessage_Dead, false);
+				m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_OUT, 0.6f);
+				m_pGameInstance->StopAll();
+			}
+			else
+			{
+				m_fDeadTime += fTimeDelta / 3;
+			}
+		}
+
 	}
 }
 
