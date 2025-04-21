@@ -197,8 +197,8 @@ HRESULT CLevel_Hill::Ready_Lights()
 	/* 2¿ù 8ÀÏ ºû */
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, 1.f, 0.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.9f, 0.9f, 0.9f, 1.f);
 	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.iCurrentLevel = m_iCurrentLevel;
 
