@@ -407,7 +407,7 @@ void CGameItem::OnCollision(CGameObject* _pOther, PxContactPair _information)
 // 떨어질 때 ( 나가기 직전. )
 void CGameItem::OnCollisionExit(CGameObject* _pOther, PxContactPair _information)
 {
-    if (!m_bAcquired)
+    //if (!m_bAcquired)
     {
         m_pButton->Activate_Button(false);
     }

@@ -73,6 +73,8 @@ void CDeadBranch::Update(_float _fTimeDelta)
 
     if (m_bDissolving)
     {
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
+
         m_fDissolveTime += _fTimeDelta * 0.4f;
 
         if (m_fDissolveTime >= 1.0f)
@@ -80,9 +82,9 @@ void CDeadBranch::Update(_float _fTimeDelta)
             m_fDissolveTime = 1.0f;
 
             m_pGameInstance->Acquire_Item(ITEM_TYPE::ITEM_DEADBRANCH);
+            m_pGameInstance->Add_Actor_Scene(m_pActor);
         }
     }
-
 }
 
 void CDeadBranch::Late_Update(_float fTimeDelta)
@@ -256,6 +258,7 @@ CGameObject* CDeadBranch::Clone(void* _pArg)
 void CDeadBranch::Free()
 {
     __super::Free();
+    m_pGameInstance->Sub_Actor_Scene(m_pActor);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pTextureCom);
