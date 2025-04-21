@@ -258,13 +258,25 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 		{
 			if (200 == Button->Get_UI_GroupID() || 310 == Button->Get_UI_GroupID()) // 적용 버튼 
 			{
-				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, true);
-				m_bApplyOn = true;
+				if (m_iCurrentPower != m_iNextPower ||
+					m_iCurrentVitality != m_iNextVitality ||
+					m_iCurrentPlague != m_iNextPlague)
+				{
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, true);
+					m_bApplyOn = true;
+				}
+				
 			}
 			if (300 == Button->Get_UI_GroupID()) // 초기화 버튼 
 			{
-				m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, true);
-				m_bResetOn = true;
+				if (m_iCurrentPower != m_iNextPower ||
+					m_iCurrentVitality != m_iNextVitality ||
+					m_iCurrentPlague != m_iNextPlague)
+				{
+					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, true);
+					m_bResetOn = true;
+
+				}
 			}
 
 			if (211 == Button->Get_UI_GroupID()) // 힘 감소 
@@ -718,18 +730,15 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Apply_Button()
 	{
 		for (auto& Button : m_pApplyPopUp->Find_UI_Button())
 		{
-			if (1 == Button->Get_UI_GroupID()) // 네
+			if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 			{
-				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				if (1 == Button->Get_UI_GroupID()) // 네
 				{
 					LevelUP_Apply();
 					m_bApplyOn = false;
 					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, false);
 				}
-			}
-			if (2 == Button->Get_UI_GroupID()) // 아니요
-			{
-				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+				if (2 == Button->Get_UI_GroupID()) // 아니요
 				{
 					m_bApplyOn = false;
 					m_pGameInstance->Set_All_UIObject_Condition_Open(m_pApplyPopUp, false);
@@ -756,24 +765,23 @@ HRESULT CUIGroup_PlayerLevelUP::LevelUP_Reset_Button()
 		}
 		else
 		{
-			for (auto& Button : m_pApplyPopUp->Find_UI_Button())
+			for (auto& Button : m_pResetPopUp->Find_UI_Button())
 			{
-				if (1 == Button->Get_UI_GroupID()) // 네
+				if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
 				{
-					if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+					if (1 == Button->Get_UI_GroupID()) // 네
 					{
 						LevelUP_Reset();
 						m_bResetOn = false;
 						m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
 					}
-				}
-				if (2 == Button->Get_UI_GroupID()) // 아니요
-				{
-					if (dynamic_cast<CUI_ButtonHighlight*>(Button)->Get_Mouse_Select_OnOff())
+					if (2 == Button->Get_UI_GroupID()) // 아니요
 					{
+
 						m_bResetOn = false;
 						m_pGameInstance->Set_All_UIObject_Condition_Open(m_pResetPopUp, false);
 					}
+
 				}
 			}
 		}

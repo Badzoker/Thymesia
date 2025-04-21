@@ -58,7 +58,7 @@ void CItem::Set_BezierPosition(const _float4& _vStartPos, CGameObject* _pGameObj
     m_fElapsedTime = 0.0f;
 
     _vector vTargetPos = _pGameObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION);
-    const _float fRadius = 1.0f;
+    const _float fRadius = 0.5f;
     _float fRandomX = (rand() % 100 / 100.f - 0.5f) * 2.0f * fRadius;
     _float fRandomZ = (rand() % 100 / 100.f - 0.5f) * 2.0f * fRadius;
     vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vTargetPos) + fRandomX);
