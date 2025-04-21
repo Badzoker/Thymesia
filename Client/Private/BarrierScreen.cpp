@@ -69,11 +69,10 @@ void CBarrierScreen::Priority_Update(_float fTimeDelta)
      {
          m_bActivateBarrier = true;
      }
-
-    //if (m_pGameInstance->isKeyEnter(DIK_N))
-    //{
-    //    m_bActivateBarrier = true;
-    //}
+     else
+     {
+         m_bActivateBarrier = false;
+     }
 }
 
 void CBarrierScreen::Update(_float fTimeDelta)
@@ -90,7 +89,6 @@ void CBarrierScreen::Update(_float fTimeDelta)
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
-
 }
 
 void CBarrierScreen::Late_Update(_float fTimeDelta)
