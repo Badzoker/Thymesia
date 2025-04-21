@@ -356,7 +356,7 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
             m_fMonsterCurHP -= *m_Player_Attack / 20.f;
             m_fShieldHP -= (*m_Player_Attack / 10.f);
         }
-        else if(!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
+        else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 15.f;
@@ -554,6 +554,8 @@ void CElite_Grace::Stun_State::State_Enter(CElite_Grace* pObject)
 
 void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pObject)
 {
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
+
     const _uint CurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
     if (m_iIndex == 26 && CurrentAnimIndex == m_iIndex)
@@ -565,8 +567,8 @@ void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
             m_iIndex = 25;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        //플레이어 엑스큐전 상태가져오기
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)    
+        //플레이어 엑스큐전 상태가져오기  
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution && bMonster_Event)
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Grace::Execution_State(), pObject);
             return;
@@ -574,7 +576,7 @@ void CElite_Grace::Stun_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
     }
     else if (m_iIndex == 27 && CurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_GRACE_Execution && bMonster_Event)
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Grace::Execution_State(), pObject);
             return;
@@ -634,6 +636,11 @@ void CElite_Grace::Execution_State::State_Enter(CElite_Grace* pObject)
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(29)->SetLerpTime(0.f);
+    pObject->m_pModelCom->Set_LerpFinished(true);
+    /* =========  */
+
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -645,10 +652,10 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
     {
         if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT
         {
-            if (!strcmp(iter.szName, "Effect_Blood")) 
+            if (!strcmp(iter.szName, "Effect_Blood"))
             {
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
-               
+
                 //Sound
                 pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
                 pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
@@ -1240,7 +1247,7 @@ void CElite_Grace::Parry_Attack_B::State_Update(_float fTimeDelta, CElite_Grace*
             pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
             pObject->m_pGameInstance->Fire_Multi_Projectile(PROJECTILE_DAGGER, vStartPos, vEndPos, 3);
 
-          
+
         }
 
         if (pObject->m_pModelCom->GetAniFinish())

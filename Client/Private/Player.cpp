@@ -211,7 +211,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_6, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_7, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
 
-		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this,100);
+		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this, 100);
 	}
 
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
@@ -259,7 +259,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 				m_iState = STATE_MAGICIAN_MUTATION_Execution;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_GRACE:
-				m_iState = STATE_GRACE_Execution;
+				m_iState = STATE_STUN_EXECUTE_START_GRACE;
+				//m_iState = STATE_GRACE_Execution;
 				break;
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_PUNCH_MAN:
 				m_iState = STATE_STUN_EXECUTE_START_PUNCHMAN;
@@ -273,12 +274,12 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_RESEARCHER:
 				m_iState = STATE_STUN_EXECUTE_START_RESEARCHER;
 				break;
-			case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:	
-				m_iState = STATE_STUN_EXECUTE_START_HARMOR;	
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:
+				m_iState = STATE_STUN_EXECUTE_START_HARMOR;
 				break;
-			case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:	
-				m_iState = STATE_STUN_EXECUTE_START_JOKER;	
-				break;	
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:
+				m_iState = STATE_STUN_EXECUTE_START_JOKER;
+				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
@@ -1295,6 +1296,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 
 	RightWeaponDesc.iCurLevel = pDesc->iCurLevel;
 
+
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Weapon"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Weapon"), &RightWeaponDesc)))
 		return E_FAIL;
 
@@ -1313,6 +1315,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_Axe_Desc.fRotationPerSec = 10.f;
 
 	Weapon_Axe_Desc.iCurLevel = pDesc->iCurLevel;
+	Weapon_Axe_Desc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Axe"), LEVEL_STATIC, TEXT("Prototype_GameObject_Axe"), &Weapon_Axe_Desc)))
 		return E_FAIL;
@@ -1333,6 +1336,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_HalberdDesc.fRotationPerSec = 10.f;
 
 	Weapon_HalberdDesc.iCurLevel = pDesc->iCurLevel;
+	Weapon_HalberdDesc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Halberd"), LEVEL_STATIC, TEXT("Prototype_GameObject_Halberd"), &Weapon_HalberdDesc)))
 		return E_FAIL;
@@ -1352,6 +1356,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_JavelinSwordDesc.fRotationPerSec = 10.f;
 
 	Weapon_JavelinSwordDesc.iCurLevel = pDesc->iCurLevel;
+	Weapon_JavelinSwordDesc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Javelin_Sword"), LEVEL_STATIC, TEXT("Prototype_GameObject_Javelin_Sword"), &Weapon_JavelinSwordDesc)))
 		return E_FAIL;
@@ -1371,6 +1376,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_GreadSwordDesc.fRotationPerSec = 10.f;
 
 	Weapon_GreadSwordDesc.iCurLevel = pDesc->iCurLevel;
+	Weapon_GreadSwordDesc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_GreadSword"), LEVEL_STATIC, TEXT("Prototype_GameObject_GreadSword"), &Weapon_GreadSwordDesc)))
 		return E_FAIL;
@@ -1389,6 +1395,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_Cane_Desc.fRotationPerSec = 10.f;
 
 	Weapon_Cane_Desc.iCurLevel = pDesc->iCurLevel;
+
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Cane"), LEVEL_STATIC, TEXT("Prototype_GameObject_Cane"), &Weapon_Cane_Desc)))
 		return E_FAIL;
@@ -1409,6 +1416,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_Cane_Sword_Desc.fRotationPerSec = 10.f;
 
 	Weapon_Cane_Sword_Desc.iCurLevel = pDesc->iCurLevel;
+	Weapon_Cane_Sword_Desc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Player_Cane_Sword"), LEVEL_STATIC, TEXT("Prototype_GameObject_Cane_Sword"), &Weapon_Cane_Sword_Desc)))
 		return E_FAIL;
@@ -1428,6 +1436,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 	Weapon_ScytheDesc.fRotationPerSec = 10.f;
 
 	Weapon_ScytheDesc.iCurLevel = pDesc->iCurLevel;
+	Weapon_ScytheDesc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Scythe"), LEVEL_STATIC, TEXT("Prototype_GameObject_Scythe"), &Weapon_ScytheDesc)))
 		return E_FAIL;
@@ -1467,6 +1476,7 @@ HRESULT CPlayer::Ready_PartObjects(void* _pArg)
 
 	RightClawWeaponDesc.pParentHp = &m_iCurrentHp;
 	RightClawWeaponDesc.pParentMp = &m_iCurrentMp;
+	RightClawWeaponDesc.pParentSkillBonusDamage = &m_fBonusSkillDamage;
 
 	if (FAILED(__super::Add_PartObject(TEXT("Part_Right_Claw"), LEVEL_STATIC, TEXT("Prototype_GameObject_Right_Claw"), &RightClawWeaponDesc)))
 		return E_FAIL;
@@ -2250,8 +2260,9 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_STUN_EXECUTE_START_MAGICIAN,
 		STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN,
 		STATE_STUN_EXECUTE_START_RESEARCHER,
-		STATE_STUN_EXECUTE_START_HARMOR,		
-		STATE_STUN_EXECUTE_START_JOKER,	
+		STATE_STUN_EXECUTE_START_HARMOR,
+		STATE_STUN_EXECUTE_START_JOKER,
+		STATE_STUN_EXECUTE_START_GRACE,
 	};
 #pragma endregion 
 #pragma region Player Camera State

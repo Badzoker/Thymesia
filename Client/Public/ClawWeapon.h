@@ -25,6 +25,7 @@ public:
 		_uint* pParentPhaseState = { nullptr };
 		_int* pParentHp = { nullptr };
 		_int* pParentMp = { nullptr };
+		_float* pParentSkillBonusDamage = { nullptr };
 	};
 private:
 	CClawWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -79,6 +80,9 @@ private:
 private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pParentPhsaeState = { nullptr };
+
+	_float			   m_fSkillBaseDamage = {};
+	_float* m_pParentSkillBonusDamage = { nullptr };
 
 	unordered_set<CPlayer::STATE>* m_pSet_Body_States = { nullptr };
 	unordered_set<CPlayer::STATE>* m_pSet_Claw_Weapon_States = { nullptr };

@@ -37,6 +37,7 @@ HRESULT CPlayer_Weapon_GreadSword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentPhaseState = pDesc->pParentPhaseState;
     m_pPreParentState = pDesc->pPreParentState;
+    m_pParentSkillBonusDamage = pDesc->pParentSkillBonusDamage;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -69,7 +70,7 @@ HRESULT CPlayer_Weapon_GreadSword::Initialize(void* pArg)
     m_pSet_Cane_Weapon_States = dynamic_cast<CPlayer*>(m_pParent)->Get_Cane_State();
 
 
-    m_fSkill_AttackPower = 75.f;
+    m_fSkillBaseDamage = 75.f;
 
     return S_OK;
 }
@@ -78,6 +79,8 @@ void CPlayer_Weapon_GreadSword::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
     m_fTime += fTimeDelta;
+    m_fSkill_AttackPower = m_fSkillBaseDamage + *m_pParentSkillBonusDamage;
+
 
     if (m_pCamera == nullptr)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));

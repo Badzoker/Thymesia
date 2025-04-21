@@ -95,6 +95,7 @@ public:
 		STATE_MAGICIAN_Execution,
 		STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN,
 		STATE_MAGICIAN_MUTATION_Execution,
+		STATE_STUN_EXECUTE_START_GRACE,	//  그레이스 처형 시작 모션 ( ) 
 		STATE_GRACE_Execution,
 		STATE_PUNCH_MAN_Execution,
 		STATE_LIGHT_EXECUTION_L,
@@ -414,6 +415,9 @@ private:
 	/* 스킬 쿨타임 */
 	_bool								m_bPlayerSkill_CoolTime = { true };
 
+	/* 스킬 보너스 데미지 추가 ( 4/21) */
+	_float								m_fBonusSkillDamage = {};
+
 
 public:
 	void	 Set_Level(_uint _iLevel) { m_iLevel = _iLevel; }
@@ -495,6 +499,11 @@ public:
 
 	CPlayerSkillMgr* Get_PlayerSkillMgr() { return m_pPlayerSkillMgr; }
 	/* ============================== */
+
+	/* 스킬 데미지 보너스 새로 추가 (4/21)*/
+	void Set_Bonus_SkillDamage(_float _fBonusSkillDamage) { m_fBonusSkillDamage = _fBonusSkillDamage; }
+	float* Get_Bonus_SkillDamagePtr() { return &m_fBonusSkillDamage; }
+
 #pragma endregion 
 
 

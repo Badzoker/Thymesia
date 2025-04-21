@@ -27,6 +27,7 @@ public:
 		const _uint* pParentPhaseState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_uint* pPreParentState = { nullptr };
+		_float* pParentSkillBonusDamage = { nullptr };
 
 	};
 private:
@@ -89,6 +90,9 @@ private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pPreParentState = {};
 	const _uint* m_pParentPhaseState = { nullptr };
+
+	_float			   m_fSkillBaseDamage = {};
+	_float* m_pParentSkillBonusDamage = { nullptr };
 
 public:
 	HRESULT Ready_Components();
