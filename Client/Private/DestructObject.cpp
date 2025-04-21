@@ -86,33 +86,27 @@ void CDestructObject::Update(_float fTimeDelta)
                 {
                 case 0:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_BADZOKER, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 case 1:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_BEOMSEUNG, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 case 2:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_FAKER, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 case 3:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_UIN, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 case 4:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_PLAYERMASTER, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 case 5:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_YUBHIN, XMLoadFloat4(&vItemPos), this, 1);
-                    g_iCount_WhiteItem++;
                     break;
                 default:
                     m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_FIELDITEM, XMLoadFloat4(&vItemPos), this, 1);
                     break;
                 }
-                
+                g_iCount_WhiteItem++;
             }
 
             m_fLifeTime += fTimeDelta;
