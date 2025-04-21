@@ -1129,7 +1129,7 @@ void CBoss_Urd::Attack_Combo_B::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
-	pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(0.f);
+	pObject->m_pModelCom->Get_CurAnimation()->Set_StartOffSetTrackPosition(0.f);
 }
 
 void CBoss_Urd::Attack_Combo_B::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
