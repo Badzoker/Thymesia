@@ -834,6 +834,8 @@ void CElite_Joker::Stun_State::State_Enter(CElite_Joker* pObject)
 
 void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
 {
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();   
+
     const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
     if (m_iIndex == 18 && iCurrentAnimIndex == m_iIndex)
@@ -845,7 +847,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
             m_iIndex = 17;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE::STATE_Joker_Execution && bMonster_Event)
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -853,7 +855,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
     }
     else if (m_iIndex == 19 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE::STATE_Joker_Execution && bMonster_Event)   
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -906,7 +908,15 @@ void CElite_Joker::Execution_State::State_Enter(CElite_Joker* pObject)
     pObject->m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewPos);
     pObject->m_pTransformCom->LookAt(vPlayerPos);
 
+
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(22)->SetLerpTime(0.f);  
+    pObject->m_pModelCom->Set_LerpFinished(true);   
+    /* =========  */
+
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+
 }
 
 void CElite_Joker::Execution_State::State_Update(_float fTimeDelta, CElite_Joker* pObject)
