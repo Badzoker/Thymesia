@@ -807,15 +807,7 @@ void CBoss_Magician::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician*
 	{
 		if (iter.isPlay == false)
 		{
-			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Sound_Stun_Start"))
-				{
-					pObject->m_pGameInstance->Play_Sound(TEXT("Magician_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
-					iter.isPlay = true;
-				}
-			}
-
+		
 			if (iter.eType == EVENT_EFFECT && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
 			{
 				if (!strcmp(iter.szName, "Effect_Stun"))

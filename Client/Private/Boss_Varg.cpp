@@ -461,19 +461,6 @@ void CBoss_Varg::Stun_State::State_Enter(CBoss_Varg* pObject)
 
 void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject)
 {
-    for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-    {
-        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)
-        {
-            if (!strcmp(iter.szName, "Sound_StunStart"))
-            {
-                pObject->m_pGameInstance->Play_Sound(L"Varg_Stun_Start.wav", CHANNELID::SOUND_BOSS_ACTION, 0.5f);
-                iter.isPlay = true;
-            }
-
-        }
-    }
-
     if (m_iIndex == 36 && pObject->m_pModelCom->GetAniFinish())
     {
         m_iIndex = 35;

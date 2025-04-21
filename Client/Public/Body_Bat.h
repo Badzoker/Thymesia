@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -30,6 +31,7 @@ public:
 	{
 		const _uint* pParentState = { nullptr };
 		_uint* iAttack = { nullptr };
+		_bool* bDead = { nullptr };
 	};
 
 private:
@@ -49,6 +51,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 	PxRigidDynamic* m_pActor[COLLIDER_END] = { nullptr };
 	const _float4x4* m_pSocketMatrix[3] = { nullptr };
 private:
@@ -59,6 +62,8 @@ private:
 
 	CCamera_Free* m_pCamera = { nullptr };	
 
+	_float m_fFinishTime = {};
+	_float m_fDeadTimer = {};
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

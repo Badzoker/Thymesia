@@ -150,6 +150,7 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	BodyDesc.pParent = this;
 	BodyDesc.iAttack = &m_iMonster_Attack_Power;
 	BodyDesc.pParentState = &m_iMonster_State;
+	BodyDesc.bDead = &m_bDead;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
@@ -699,20 +700,6 @@ void CBoss_Bat::Stun_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Stun_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.isPlay == false)
-		{
-			if (iter.eType == EVENT_SOUND && iter.isEventActivate == true)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-			{
-				if (!strcmp(iter.szName, "Sound_Stun_Start"))
-				{
-					pObject->m_pGameInstance->Play_Sound(TEXT("Bat_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 1.f);
-					iter.isPlay = true;
-				}
-			}
-		}
-	}
 
 	if (m_iIndex == 27 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
@@ -845,6 +832,8 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 	m_iIndex = 29;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_iMonster_State = STATE_DEAD;
+	pObject->m_bPatternProgress = true;
+	pObject->m_fDelayTime = 0.f;
 	pObject->m_bHP_Bar_Active = false;
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -852,10 +841,8 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && !pObject->m_bDead)
+	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
-		pObject->m_bDead = true;
-		pObject->m_bActive = false;
 #pragma region Boss죽을시효과+UI
 		pObject->m_pGameInstance->Set_Boss_Dead(true);
 		pObject->m_pGameInstance->Set_Boss_Active(false);
@@ -886,6 +873,7 @@ void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 
 void CBoss_Bat::Dead_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_bActive = false;
 }
 
 #pragma endregion

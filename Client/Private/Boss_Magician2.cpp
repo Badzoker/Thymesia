@@ -548,19 +548,6 @@ void CBoss_Magician2::Stun_State::State_Enter(CBoss_Magician2* pObject)
 
 void CBoss_Magician2::Stun_State::State_Update(_float fTimeDelta, CBoss_Magician2* pObject)
 {
-	for (auto& iter : *pObject->m_pModelCom->Get_VecAnimation().at(pObject->m_pModelCom->Get_Current_Animation_Index())->Get_vecEvent())
-	{
-		if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)  // 여기가 EVENT_EFFECT, EVENT_SOUND, EVENT_STATE 부분    
-		{
-			if (!strcmp(iter.szName, "Sound_Stun_Start"))
-			{
-				pObject->m_pGameInstance->Play_Sound(TEXT("Magician2_Stun_Start.wav"), CHANNELID::SOUND_BOSS_ACTION, 0.5f);
-				iter.isPlay = true;
-			}
-
-		}
-	}
-
 	if (m_iIndex == 24 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		m_iIndex = 23;
