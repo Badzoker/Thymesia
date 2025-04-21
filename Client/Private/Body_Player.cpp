@@ -170,7 +170,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
             m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&m_pCamera->Get_FirstCamDir()));
 
             _vector respawnPos = XMLoadFloat4(static_cast<CPlayer*>(m_pParent)->Get_RespawnPosPtr());
-            _vector OffSetRespawnPos = XMVectorSetY(respawnPos, respawnPos.m128_f32[1] + 3.f);
+            _vector OffSetRespawnPos = XMVectorSetY(respawnPos, respawnPos.m128_f32[1] + 1.f);
 
 
             m_pCamera->Get_Transfrom()->Set_State(CTransform::STATE_POSITION, OffSetRespawnPos);
