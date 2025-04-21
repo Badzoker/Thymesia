@@ -529,6 +529,9 @@ void CBody_Player::Update(_float fTimeDelta)
     case CPlayer::STATE_STUN_EXECUTE_START_GRACE:
         STATE_STUN_EXECUTE_START_GRACE_Method();
         break;
+    case CPlayer::STATE_STUN_EXECUTE_START_VILLAGEM1:
+        STATE_STUN_EXECUTE_START_VILLAGEM1_Method();
+        break;
     default:
         break;
     }
@@ -4134,10 +4137,51 @@ void CBody_Player::STATE_STUN_EXECUTE_Method()
     }*/
 }
 
+void CBody_Player::STATE_STUN_EXECUTE_START_VILLAGEM1_Method()
+{
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
+    m_pModelCom->SetUp_Animation(291, false);
+    m_iRenderState = STATE_NORMAL_RENDER;
+
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 291)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(291)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Stun_Start.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 40.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
+    {
+        dynamic_cast<CPlayer*>(m_pParent)->Set_MonsterEvent(true);
+
+        *m_pParentState = CPlayer::STATE_LV1Villager_M_Execution;
+        m_pCamera->Set_Execute_CamereScene(MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1);
+        m_pCamera->Set_Camera_Cut_Scene_OnOff(true);
+    }
+}
+
 
 
 void CBody_Player::STATE_LV1Villager_M_Execution_Method()
 {
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
     m_pModelCom->SetUp_Animation(52, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 

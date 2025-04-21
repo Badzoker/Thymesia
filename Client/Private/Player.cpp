@@ -281,6 +281,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:
 				m_iState = STATE_STUN_EXECUTE_START_JOKER;
 				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_VILLAGEM1:
+				m_iState = STATE_STUN_EXECUTE_START_VILLAGEM1;
+				break;
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
