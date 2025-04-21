@@ -31,6 +31,7 @@ HRESULT CBody_Bat::Initialize(void* pArg)
 
 	m_pParentState = pDesc->pParentState;
 	m_iMonster_Attack = pDesc->iAttack;
+	m_bDead = pDesc->bDead;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -75,7 +76,16 @@ void CBody_Bat::Priority_Update(_float fTimeDelta)
 	//테스트 용 현재 튜토리얼 맵에서만 소환되므로 LEVEL_TUTORIAL -> 왕실정원이면 저거 LEVEL_RoyalGarden 으로 바꿔야함 ! 
 	if (m_pCamera == nullptr)
 		m_pCamera = static_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(LEVEL_ROYALGARDEN, TEXT("Layer_Camera"), "Camera_Free"));
-
+	
+	if (*m_pParentState == STATE_DEAD)
+	{
+		m_fDeadTimer += fTimeDelta * 1.5f;
+		m_fFinishTime += fTimeDelta * 1.5f;
+		if (m_fDeadTimer >= 1.5)
+		{
+			*m_bDead = true;
+		}
+	}
 }
 
 void CBody_Bat::Update(_float fTimeDelta)
@@ -192,7 +202,21 @@ HRESULT CBody_Bat::Render()
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		m_iPassNum = 0;
+		if (*m_pParentState == STATE_DEAD)
+		{
+			m_iPassNum = 5;
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 6)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_Time", &m_fDeadTimer, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fFinishTime, sizeof(_float))))
+				return E_FAIL;
+		}
+		else
+			m_iPassNum = 0;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, "g_NormalTexture", 0);
@@ -224,6 +248,10 @@ HRESULT CBody_Bat::Ready_Components()
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Boss_Bat_Body"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Monster_Noise"),
+		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -310,4 +338,5 @@ void CBody_Bat::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureCom);
 }

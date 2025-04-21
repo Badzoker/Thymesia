@@ -150,6 +150,7 @@ HRESULT CBoss_Bat::Ready_PartObjects(void* pArg)
 	BodyDesc.pParent = this;
 	BodyDesc.iAttack = &m_iMonster_Attack_Power;
 	BodyDesc.pParentState = &m_iMonster_State;
+	BodyDesc.bDead = &m_bDead;
 	BodyDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
@@ -845,6 +846,8 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 	m_iIndex = 29;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_iMonster_State = STATE_DEAD;
+	pObject->m_bPatternProgress = true;
+	pObject->m_fDelayTime = 0.f;
 	pObject->m_bHP_Bar_Active = false;
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -852,10 +855,8 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 
 void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 {
-	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && !pObject->m_bDead)
+	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
-		pObject->m_bDead = true;
-		pObject->m_bActive = false;
 #pragma region BossÁ×À»½ÃÈ¿°ú+UI
 		pObject->m_pGameInstance->Set_Boss_Dead(true);
 		pObject->m_pGameInstance->Set_Boss_Active(false);
@@ -886,6 +887,7 @@ void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 
 void CBoss_Bat::Dead_State::State_Exit(CBoss_Bat* pObject)
 {
+	pObject->m_bActive = false;
 }
 
 #pragma endregion
