@@ -261,20 +261,20 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 
 			if (211 == Button->Get_UI_GroupID()) // 힘 감소 
 			{
-				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextLevel -= 1; // 힘 감소
 				m_iNextPower -= 1;
-				m_iNextAttackPower -= 1;
-				m_iNextAmountOfWounds -= 2;
+				m_iNextAttackPower -= 10;
+				m_iNextAmountOfWounds -= 20;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
 				m_iMemoryNextCount += m_iCurrentMemoryNeed;
 			}
 			if (212 == Button->Get_UI_GroupID())
 			{
-				m_iNextLevel += 1; // 레벨 증가
+				m_iNextLevel += 1; // 힘 증가
 				m_iNextPower += 1;
-				m_iNextAttackPower += 1;
-				m_iNextAmountOfWounds += 2;
+				m_iNextAttackPower += 10;
+				m_iNextAmountOfWounds += 20;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
 				m_iMemoryNextCount -= m_iNextMemoryNeed;
@@ -282,9 +282,9 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 
 			if (221 == Button->Get_UI_GroupID()) // 활력 감소 
 			{
-				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextLevel -= 1; // 활력 감소
 				m_iNextVitality -= 1;
-				m_iNextFullHp -= 14;
+				m_iNextFullHp -= 140;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
 				m_iMemoryNextCount += m_iCurrentMemoryNeed;
@@ -292,29 +292,29 @@ HRESULT CUIGroup_PlayerLevelUP::Button_Input_Check()
 			}
 			if (222 == Button->Get_UI_GroupID())
 			{
-				m_iNextLevel += 1; // 레벨 증가
+				m_iNextLevel += 1; // 활력 증가
 				m_iNextVitality += 1;
-				m_iNextFullHp += 14;
+				m_iNextFullHp += 140;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
 				m_iMemoryNextCount -= m_iNextMemoryNeed;
 			}
 			if (231 == Button->Get_UI_GroupID()) // 역병 감소 
 			{
-				m_iNextLevel -= 1; // 레벨 감소
+				m_iNextLevel -= 1; // 역병 감소
 				m_iNextPlague -= 1;
-				m_iNextClawAttackPower -= 10;
-				m_iNextFullMp -= 10;
+				m_iNextClawAttackPower -= 100;
+				m_iNextFullMp -= 30;
 				m_iNextTalentPoint -= 1;
 				m_iNextUnspent -= 1;
 				m_iMemoryNextCount += m_iCurrentMemoryNeed;
 			}
 			if (232 == Button->Get_UI_GroupID())
 			{
-				m_iNextLevel += 1; // 레벨 증가
+				m_iNextLevel += 1; // 역병 증가
 				m_iNextPlague += 1;
-				m_iNextClawAttackPower += 10;
-				m_iNextFullMp += 10;
+				m_iNextClawAttackPower += 100;
+				m_iNextFullMp += 30;
 				m_iNextTalentPoint += 1;
 				m_iNextUnspent += 1;
 				m_iMemoryNextCount -= m_iNextMemoryNeed;
