@@ -36,6 +36,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pParentPhsaeState = pDesc->pParentPhaseState;
     m_pParentHp = pDesc->pParentHp;
     m_pParentMp = pDesc->pParentMp;
+    m_pParentSkillBonusDamage = pDesc->pParentSkillBonusDamage;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -73,7 +74,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
     m_pbClawDeadOn = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawDeadOnPtr();
     m_pbClawAppear = dynamic_cast<CPlayer*>(m_pParent)->Get_ClawAppearPtr();
 
-    m_fSkill_AttackPower = 30.f;    
+    m_fSkillBaseDamage = 30.f;
 
     return S_OK;
 }
@@ -81,6 +82,7 @@ HRESULT CClawWeapon::Initialize(void* pArg)
 void CClawWeapon::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
+    m_fSkill_AttackPower = m_fSkillBaseDamage + *m_pParentSkillBonusDamage;
 
     if (m_pCamera == nullptr)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));
@@ -319,7 +321,7 @@ void CClawWeapon::Update(_float fTimeDelta)
             *m_pfClawAppearTimer = 0.f;
         }
 
-        m_pGameInstance->Sub_Actor_Scene(m_pActor); 
+        m_pGameInstance->Sub_Actor_Scene(m_pActor);
     }
 
     if (m_bHitStopOnOff)

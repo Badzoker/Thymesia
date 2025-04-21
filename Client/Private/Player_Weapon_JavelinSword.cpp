@@ -37,6 +37,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_pParentPhaseState = pDesc->pParentPhaseState;
     m_pPreParentState = pDesc->pPreParentState;
+    m_pParentSkillBonusDamage = pDesc->pParentSkillBonusDamage;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -72,7 +73,7 @@ HRESULT CPlayer_Weapon_JavelinSword::Initialize(void* pArg)
 
     XMStoreFloat4x4(&m_PreTransformMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
-    m_fSkill_AttackPower = 50.f;
+    m_fSkillBaseDamage = 100.f;
 
     return S_OK;
 
@@ -82,6 +83,7 @@ void CPlayer_Weapon_JavelinSword::Priority_Update(_float fTimeDelta)
 {
     m_fTimeDelta = fTimeDelta;
     m_fTime += fTimeDelta;
+    m_fSkill_AttackPower = m_fSkillBaseDamage + *m_pParentSkillBonusDamage;
 
     if (m_pCamera == nullptr)
         m_pCamera = dynamic_cast<CCamera_Free*>(m_pGameInstance->Get_GameObject_To_Layer(m_iCurrentLevel, TEXT("Layer_Camera"), "Camera_Free"));

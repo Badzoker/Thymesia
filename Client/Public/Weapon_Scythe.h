@@ -26,7 +26,7 @@ public:
 		const _uint* pParentPhaseState = { nullptr };
 		CModel* pParentModel = { nullptr };
 		_uint* pPreParentState = { nullptr };
-
+		_float* pParentSkillBonusDamage = { nullptr };
 	};
 private:
 	CWeapon_Scythe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -90,6 +90,10 @@ private:
 	_uint* m_pParentState = { nullptr };
 	_uint* m_pPreParentState = {};
 	const _uint* m_pParentPhaseState = { nullptr };
+
+	_float			   m_fSkillBaseDamage = {};
+	_float* m_pParentSkillBonusDamage = { nullptr };
+
 
 public:
 	HRESULT Ready_Components();
