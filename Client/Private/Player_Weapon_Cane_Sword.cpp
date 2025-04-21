@@ -109,9 +109,11 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
             {
                 if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == true) // EVENT_COLLIDER, STATE 부분        
                 {
-                    if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                        && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
-                        m_pGameInstance->Add_Actor_Scene(m_pActor);
+                    if(m_bCollisionOn)
+                        m_pGameInstance->Add_Actor_Scene(m_pActor); 
+
+                    else
+                        m_pGameInstance->Sub_Actor_Scene(m_pActor);
                 }
 
                 else if (iter.eType == EVENT_COLLIDER && iter.isEventActivate == false)
@@ -166,6 +168,7 @@ void CPlayer_Weapon_Cane_Sword::Update(_float fTimeDelta)
         m_fAppearTimer = 0.f;
         m_fDeadTimer = 0.f;
         m_fFinishTime = 0.f;
+        m_bCollisionOn = true; 
     } // 이전하고 현재 비교 해야함 
 
 
@@ -307,7 +310,7 @@ HRESULT CPlayer_Weapon_Cane_Sword::Hit_Slow()
 
 void CPlayer_Weapon_Cane_Sword::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 {
-
+    m_bCollisionOn = false; 
 }
 
 void CPlayer_Weapon_Cane_Sword::OnCollision(CGameObject* _pOther, PxContactPair _information)
