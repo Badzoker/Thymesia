@@ -610,6 +610,8 @@ void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Resea
 {
     const _uint CurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
+  
+
     if (m_iIndex == 16 && CurrentAnimIndex == m_iIndex)
     {
         m_fTime += fTimeDelta;
@@ -620,7 +622,7 @@ void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Resea
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
         //플레이어 엑스큐전 상태가져오기
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION)   
+        if (pObject->m_bIsClosest  && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION )
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Researcher::Execution_State(), pObject);
             return;
@@ -628,7 +630,7 @@ void CElite_Researcher::Stun_State::State_Update(_float fTimeDelta, CElite_Resea
     }
     else if (m_iIndex == 17 && CurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION)   
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_RESEARCHER_EXECUTION )
         {
             pObject->m_pState_Manager->ChangeState(new CElite_Researcher::Execution_State(), pObject);
             return;
@@ -1265,6 +1267,11 @@ void CElite_Researcher::Attack_Special::State_Update(_float fTimeDelta, CElite_R
                 else if (!strcmp(iter.szName, "Sound_Warning"))
                 {
                     pObject->m_pGameInstance->Play_Sound(L"Boss_SP_01.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.5f);
+                    pObject->m_pGameInstance->Play_Effect_Matrix(EFFECT_NAME::EFFECT_WARNING, pObject->m_pTransformCom->Get_WorldMatrix_Ptr());
+                    const _float4x4* matHead = pObject->m_pModelCom->Get_BoneMatrix("head");
+                    _float4x4 matHeadWorld = {};
+                    XMStoreFloat4x4(&matHeadWorld, XMLoadFloat4x4(matHead) * XMLoadFloat4x4(pObject->Get_Transfrom()->Get_WorldMatrix_Ptr()));
+                    pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_PARTICLE_WARNING, matHeadWorld);
                     iter.isPlay = true;
                 }
             }
