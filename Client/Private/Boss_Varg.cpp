@@ -711,7 +711,7 @@ void CBoss_Varg::Walk_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
     }
 
     pObject->RotateDegree_To_Player();
-    if (m_iIndex == 47)
+    if (m_iIndex == 47 && pObject->m_fDistance > pObject->m_fRootDistance)
     {
         pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
     }
@@ -1526,6 +1526,12 @@ void CBoss_Varg::Catch_State::State_Update(_float fTimeDelta, CBoss_Varg* pObjec
         m_iIndex = 30;
         pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         pObject->m_pModelCom->Get_NextAnimation()->Set_StartOffSetTrackPosition(20.f);
+    }
+
+    if (m_iIndex == 28 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 230.f && !m_bAttack)
+    {
+        m_bAttack = true;
+        static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
     }
     //항상 거리가 짧으면 바로 잡히는 애니메이션 실행 -> 콜라이더로 검사해야할듯
     if (pObject->m_Is_Catch)

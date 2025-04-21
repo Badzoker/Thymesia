@@ -459,6 +459,7 @@ void CElite_Grace::Idle_State::State_Enter(CElite_Grace* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bCanHit = true;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -471,7 +472,7 @@ void CElite_Grace::Idle_State::State_Update(_float fTimeDelta, CElite_Grace* pOb
 
 void CElite_Grace::Idle_State::State_Exit(CElite_Grace* pObject)
 {
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion
@@ -1119,7 +1120,7 @@ void CElite_Grace::Parry_State::State_Enter(CElite_Grace* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
 #pragma region Effect

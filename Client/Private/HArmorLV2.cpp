@@ -488,7 +488,7 @@ void CHArmorLV2::Idle_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bCanHit = true;
     pObject->m_bPatternProgress = false;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -501,7 +501,7 @@ void CHArmorLV2::Idle_State::State_Update(_float fTimeDelta, CHArmorLV2* pObject
 
 void CHArmorLV2::Idle_State::State_Exit(CHArmorLV2* pObject)
 {
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion
@@ -1513,6 +1513,7 @@ void CHArmorLV2::Parry_State::State_Enter(CHArmorLV2* pObject)
     pObject->m_bCanHit = false;
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }

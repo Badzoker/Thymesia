@@ -1451,6 +1451,12 @@ void CBoss_Magician2::Catch_State::State_Update(_float fTimeDelta, CBoss_Magicia
 
 	if (m_iIndex == 20 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 20.f && !m_bAttack)
+		{
+			m_bAttack = true;
+			static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
+		}
+
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
 			pObject->m_pState_Manager->ChangeState(new CBoss_Magician2::Idle_State(), pObject);

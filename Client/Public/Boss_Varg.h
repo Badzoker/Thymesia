@@ -279,6 +279,7 @@ public:
 		_float m_fTimer = {};
 		_bool  m_bFirst = true;
 		_bool  m_bCanCatch = {};
+		_bool  m_bAttack = {};
 	};
 
 	class Dead_State : public CStates<CBoss_Varg>

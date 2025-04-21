@@ -417,6 +417,7 @@ void CNormal_VillageM1::Idle_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_bPatternProgress = false;
     pObject->m_bCanHit = true;
     pObject->m_iMonster_State = STATE_IDLE;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -435,7 +436,7 @@ void CNormal_VillageM1::Idle_State::State_Update(_float fTimeDelta, CNormal_Vill
 
 void CNormal_VillageM1::Idle_State::State_Exit(CNormal_VillageM1* pObject)
 {
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 #pragma endregion
@@ -939,6 +940,7 @@ void CNormal_VillageM1::Parry_State::State_Enter(CNormal_VillageM1* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = STATE_PARRY;
     pObject->RotateDegree_To_Player();
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 

@@ -27,6 +27,7 @@ public:
 		_bool* bCollider_Change = { nullptr };
 		_uint* iCurrent_StackCount = { nullptr };
 		_uint iStack_Number = {};
+		_uint* iAttack = { nullptr };
 	};
 private:
 	CStand_Stack_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

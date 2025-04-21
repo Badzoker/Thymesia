@@ -282,6 +282,8 @@ public:
 		void State_Enter(CBoss_Magician* pObject) override;
 		void State_Update(_float fTimeDelta, CBoss_Magician* pObject) override;
 		void State_Exit(CBoss_Magician* pObject) override;
+	private:
+		_bool m_bAttack = {};
 	};
 
 	class Hit_State : public CStates<CBoss_Magician>
