@@ -113,7 +113,15 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
         {
             pItems->Set_DropItemCount(_iPopItemCount);
 
-            if (_eItemType == ITEM_TYPE::ITEM_FIELDITEM)
+            //if (_eItemType == ITEM_TYPE::ITEM_FIELDITEM)
+            if (
+                _eItemType == ITEM_TYPE::ITEM_BADZOKER ||
+                _eItemType == ITEM_TYPE::ITEM_BEOMSEUNG ||
+                _eItemType == ITEM_TYPE::ITEM_FAKER ||
+                _eItemType == ITEM_TYPE::ITEM_UIN ||
+                _eItemType == ITEM_TYPE::ITEM_PLAYERMASTER ||
+                _eItemType == ITEM_TYPE::ITEM_YUBHIN
+                )
             {
                 pItems->Set_BeActivated(true);
                 pItems->Set_BeAcquired(false);
@@ -130,7 +138,6 @@ HRESULT CItemMgr::Pop_Item(ITEM_TYPE _eItemType, _fvector _vPopPosition, CGameOb
 
     return S_OK;
 }
-
 
 void CItemMgr::Clear_ItemInfo()
 {
