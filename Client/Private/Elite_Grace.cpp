@@ -657,8 +657,17 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
                 pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_GRACE_EXECUTION_BLOOD, pObject->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), pObject->Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 
                 //Sound
-                pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+
                 pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.08f);
+                iter.isPlay = true;
+            }
+        }
+        if (iter.eType == EVENT_SOUND && iter.isEventActivate == true && iter.isPlay == false)  // ¿©±â°¡ EVENT_EFFECT
+        {
+            if (!strcmp(iter.szName, "Event_Fall_1"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.8f);
+
                 iter.isPlay = true;
             }
         }

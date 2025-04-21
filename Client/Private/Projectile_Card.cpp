@@ -149,6 +149,7 @@ void CProjectile_Card::OnCollisionEnter(CGameObject* _pOther, PxContactPair _inf
     {
         Set_IsFire(false);
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
+        m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_CARD_DAMAGE, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
     }
 }
 
