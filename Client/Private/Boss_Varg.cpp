@@ -471,7 +471,7 @@ void CBoss_Varg::Stun_State::State_Update(_float fTimeDelta, CBoss_Varg* pObject
 
     _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
 
-    if ((m_iIndex == 35 || m_iIndex == 36) /*&& (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION*/ && bMonster_Event)
+    if ((m_iIndex == 35 || m_iIndex == 36) && (*pObject->m_Player_State) == CPlayer::STATE_VARG_RUN_EXECUTION && bMonster_Event)
     {
         pObject->m_pState_Manager->ChangeState(new CBoss_Varg::ExeCution_Start_State(), pObject);
     }
