@@ -276,6 +276,9 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 			case MONSTER_EXECUTION_CATEGORY::MONSTER_HARMOR:	
 				m_iState = STATE_STUN_EXECUTE_START_HARMOR;	
 				break;
+			case MONSTER_EXECUTION_CATEGORY::MONSTER_JOKER:	
+				m_iState = STATE_STUN_EXECUTE_START_JOKER;	
+				break;	
 			default:
 				m_iState = STATE_STUN_EXECUTE;
 				break;
@@ -2248,6 +2251,7 @@ void CPlayer::Player_Setting_PartAni()
 		STATE_STUN_EXECUTE_START_MUTATION_MAGICIAN,
 		STATE_STUN_EXECUTE_START_RESEARCHER,
 		STATE_STUN_EXECUTE_START_HARMOR,		
+		STATE_STUN_EXECUTE_START_JOKER,	
 	};
 #pragma endregion 
 #pragma region Player Camera State
