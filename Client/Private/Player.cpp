@@ -161,7 +161,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		//m_pTransformCom->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(-90.f));		
 		//_vector vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일		
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_fRespawnArea)); //NPC 옆 위치				
-		m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_fRespawnArea));
+		//m_pNavigationCom->Set_CurrentNaviIndex(XMLoadFloat4(&m_fRespawnArea));
+		m_pNavigationCom->Set_CurCellIndex(m_pNavigationCom->Find_Closest_Cell(XMLoadFloat4(&m_fRespawnArea)));	
 
 	}
 
@@ -2048,7 +2049,7 @@ void CPlayer::Player_Interaction(CGameObject* _pOther)
 
 				XMStoreFloat4(&fChairLookDir, XMVector3Normalize(XMLoadFloat4(&fChairLookDir)));
 
-				_vector vRespawn = XMLoadFloat4(&fChairPos) + XMLoadFloat4(&fChairLookDir) * 2.5f;
+				_vector vRespawn = XMLoadFloat4(&fChairPos) + XMLoadFloat4(&fChairLookDir) * 1.f;
 
 				XMStoreFloat4(&m_fRespawnArea, vRespawn);	// 다시 살아나는 곳 설정하기.		
 

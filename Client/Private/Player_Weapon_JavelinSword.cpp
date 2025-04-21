@@ -180,20 +180,23 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
                 {
                     if (iter.isEventActivate == true)
                     {
-                        if (m_pParentModelCom->Get_CurrentAnmationTrackPosition() >= iter.fStartTime
-                            && m_pParentModelCom->Get_CurrentAnmationTrackPosition() <= iter.fEndTime)
-                        {
-
+                       
+                         if(m_bCollisionOn)
                             m_pGameInstance->Add_Actor_Scene(m_pActor);
 
-                            if (!m_bThrow)
-                            {
-                                XMStoreFloat4x4(&m_PreParentMatrix, XMLoadFloat4x4(m_pParentWorldMatrix));
-                                XMStoreFloat4x4(&m_PreSocketMatrix, SocketMatrix);
+                         else
+                         {
+                             m_pGameInstance->Sub_Actor_Scene(m_pActor);    
+                         }
 
-                            }
-                            m_bThrow = true;
-                        }
+                         if (!m_bThrow)
+                         {
+                             XMStoreFloat4x4(&m_PreParentMatrix, XMLoadFloat4x4(m_pParentWorldMatrix));
+                             XMStoreFloat4x4(&m_PreSocketMatrix, SocketMatrix);
+
+                         }
+                         m_bThrow = true;
+                        
                     }
 
                     else
@@ -338,6 +341,7 @@ void CPlayer_Weapon_JavelinSword::Update(_float fTimeDelta)
         m_fFinishTime = 0.f;
         m_fHitStopTime = 0.f;
         m_bThrow = false;
+        m_bCollisionOn = true;  
     } // 이전하고 현재 비교 해야함 
 
 
@@ -488,6 +492,7 @@ void CPlayer_Weapon_JavelinSword::OnCollisionEnter(CGameObject* _pOther, PxConta
 {
     m_fHitStopTime = 0.f;
     m_bHitStopOnOff = true;
+    m_bCollisionOn = false; 
 
     /* 자벨린 히트 사운드 */
     m_pGameInstance->Play_Sound(L"Player_Javalien_Boom.wav", CHANNELID::SOUND_PLAYER_ATTACK_2, 3.f);

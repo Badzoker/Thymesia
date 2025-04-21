@@ -24,6 +24,7 @@ public:
 
 	_float Get_Distance() const { return m_fDistance; }
 
+	void Set_HP_Bar_ActiveOff() { m_bHP_Bar_Active = false; }
 	void Set_IsRender(_bool bRender) { m_bRender = bRender; }
 	void Set_IsDelete(_bool bDelete) { m_IsDelete = bDelete; }
 	void Set_IsClosest(_bool bClosest) { m_bIsClosest = bClosest; }
