@@ -280,7 +280,7 @@ void CNormal_VillageF1::Stun()
     m_fDelayTime = 0.f;
 #pragma region Effect_Stun
     m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트         
-    m_pGameInstance->Set_SlowWorld(true);   
+    m_pGameInstance->Set_SlowWorld(true);
     m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 #pragma endregion
 }
@@ -912,6 +912,8 @@ void CNormal_VillageF1::Stun_State::State_Enter(CNormal_VillageF1* pObject)
 
 void CNormal_VillageF1::Stun_State::State_Update(_float fTimeDelta, CNormal_VillageF1* pObject)
 {
+    _bool bMonster_Event = static_cast<CPlayer*>(pObject->m_pPlayer)->Get_MonsterEvent();
+
     const _uint iCurrentAnimIndex = pObject->m_pModelCom->Get_Current_Animation_Index();
 
     if (m_iIndex == 30 && iCurrentAnimIndex == m_iIndex)
@@ -923,7 +925,7 @@ void CNormal_VillageF1::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
             m_iIndex = 28;
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
         }
-        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        else if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LV1Villager_M_Execution && bMonster_Event) 
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -931,7 +933,7 @@ void CNormal_VillageF1::Stun_State::State_Update(_float fTimeDelta, CNormal_Vill
     }
     else if (m_iIndex == 31 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_STUN_EXECUTE)
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE_LV1Villager_M_Execution && bMonster_Event)  
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
@@ -1010,6 +1012,13 @@ void CNormal_VillageF1::Execution_State::State_Enter(CNormal_VillageF1* pObject)
 
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
     pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+
+
+
+    /* 선환 추가 */
+    pObject->m_pModelCom->Get_VecAnimation().at(0)->SetLerpTime(0.f);
+    pObject->m_pModelCom->Set_LerpFinished(true);
+    /* =========  */
 
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
