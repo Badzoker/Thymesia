@@ -71,6 +71,8 @@ HRESULT CHArmorLV2::Initialize(void* pArg)
 
     m_iMonsterSkill = PLAYER_SKILL::PLAYER_SKILL_GREADSWORD;
 
+    m_iMonster_Attack_Power = 148;
+
     return S_OK;
 }
 

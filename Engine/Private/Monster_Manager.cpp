@@ -264,6 +264,13 @@ HRESULT CMonster_Manager::Delete_All_Monster()
 		Pair.second.clear();
 	}
 
+	for (auto& Pair : m_MonsterInfos)
+	{
+		Pair.second.clear();
+	}
+
+	m_MonsterInfos.clear();
+
 	m_pMonsters.clear();
 
 	return S_OK;
