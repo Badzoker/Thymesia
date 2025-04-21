@@ -26,8 +26,10 @@ public:
 		_int iUnspent; // 미사용 특성 포인트
 		
 		_int iMemoryFragment; // 캐릭터 보유 기억의 파편 개수         
-		_int iMemoryTotalUse; //지금까지 사용한 개수 저장인데...모르겠당         
-	
+		_int iMemoryTotalUse; //지금까지 사용한 개수 저장인데...모르겠당     
+
+		_float fBonus_SkillDamage; // 추가 스킬 대미지
+
 	};
 
 	struct PLAYER_SAVE_TALENT // 특성 창에 따라 변화될 값들 = 캐릭터 버프입니다!

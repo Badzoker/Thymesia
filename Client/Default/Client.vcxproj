@@ -453,6 +453,7 @@
     <ClInclude Include="..\Public\UI_TextBox.h" />
     <ClInclude Include="..\Public\UI_TitleBackgroundBar.h" />
     <ClInclude Include="..\Public\UI_UnderLine.h" />
+    <ClInclude Include="..\Public\UI_YellowScreen.h" />
     <ClInclude Include="..\Public\VargKnife.h" />
     <ClInclude Include="..\public\LeftWeapon.h" />
     <ClInclude Include="..\public\Varg_Catched.h" />
@@ -758,6 +759,7 @@
     <ClCompile Include="..\Private\UI_TextBox.cpp" />
     <ClCompile Include="..\Private\UI_TitleBackgroundBar.cpp" />
     <ClCompile Include="..\Private\UI_UnderLine.cpp" />
+    <ClCompile Include="..\Private\UI_YellowScreen.cpp" />
     <ClCompile Include="..\Private\VargKnife.cpp" />
     <ClCompile Include="..\private\LeftWeapon.cpp" />
     <ClCompile Include="..\private\Varg_Catched.cpp" />
