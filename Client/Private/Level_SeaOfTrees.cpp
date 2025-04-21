@@ -310,12 +310,12 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 
-    //_float4 vTestPosition = { -35.49f, 49.99f, -132.9f, 1.f };            //시작 포인트 위치 첫 번째 의자 있음.
+    _float4 vTestPosition = { -35.49f, 49.99f, -132.9f, 1.f };            //시작 포인트 위치 첫 번째 의자 있음.
     //_float4 vTestPosition = { -43.3f, 72.7f, -123.35f, 1.f };             // 보스방 가기전 통로쪽의 의자2 위치
     //_float4 vTestPosition = { -40.0f, 46.0f, -124.0f, 1.0f };             // 통로로 가는 엘베 앞 위치 
     //_float4 vTestPosition = { -83.0f, 52.0f, -138.0f, 1.f };              // 그레이스 방 위치,
     //_float4 vTestPosition = { -46.64f, 34.02f, -125.5272f, 1.0f };        // 그 젤 밑바닥 층 건초더미 많은데, 
-    _float4 vTestPosition = { -43.f, 110.01f, -146.f, 1.f };                // 매지션 옆 위치     
+    //_float4 vTestPosition = { -43.f, 110.01f, -146.f, 1.f };                // 매지션 옆 위치     
 
     Desc._fPosition = vTestPosition;
 

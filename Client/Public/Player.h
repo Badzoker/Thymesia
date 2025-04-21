@@ -411,7 +411,7 @@ private:
 	_int								m_iBonus_Execution_Mp = { };
 
 	/* 포션 회복량 */
-	_int								m_iPotion_Heal_Amount = { 100 };
+	_int								m_iPotion_Heal_Amount = { 1000 };
 
 	/* 스킬 쿨타임 */
 	_bool								m_bPlayerSkill_CoolTime = { true };

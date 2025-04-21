@@ -1445,8 +1445,8 @@ void CBoss_Urd::Attack_Stack_Skill_01::State_Update(_float fTimeDelta, CBoss_Urd
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_SMALL, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD);
-
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_URD_NORMAL_DAGGER_SKILL, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
@@ -1541,6 +1541,7 @@ void CBoss_Urd::Attack_Stack_Skill_02::State_Update(_float fTimeDelta, CBoss_Urd
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
 					pObject->m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_URD_SKILL_EXPLOSION_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), vLook);
+					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_SMALL, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 					pObject->m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_URD_STACK_SWORD);
 
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_URD_NORMAL_DAGGER_SKILL, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
@@ -1646,7 +1647,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd*
 					}
 
 					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_PARTICLE_STACKSWORD_WORLD_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+					pObject->m_pGameInstance->Play_Effect(EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_MAIN, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 					pObject->m_pGameInstance->Play_Effect_Matrix_OneMoment(EFFECT_NAME::EFFECT_MESH_INSTANCING_URD_SPECIAL_SKILL, *pObject->Get_Transfrom()->Get_WorldMatrix_Ptr());
 					iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
 				}

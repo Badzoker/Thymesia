@@ -1109,7 +1109,7 @@ PS_OUT_WEIGHTBLEND PS_MAIN_WEIGHTBLEND(PS_IN In) // 여기 값 조정 하고 Deferred �
     float2 noiseUV = In.vTexcoord + float2(g_TimeX * 0.1f, g_TimeY * 0.1f);
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, vMaskTexcoord) * fMask;
     
-    float fNoise = g_NoiseTexture.Sample(LinearSampler, noiseUV).r;
+    float fNoise = sin(g_NoiseTexture.Sample(LinearSampler, noiseUV * g_MaskCountX).r);
     
     
     float3 vRGB = float3(g_vRGB);

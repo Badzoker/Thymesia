@@ -708,20 +708,9 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 		m_iPhaseState |= CPlayer::PHASE_HEAL;
 		m_iPotionCount--;	 // 포션 수 감소 
 		m_pGameInstance->Find_TextBox_PlayerScreen(m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 12, m_iPotion_Heal_Amount);
-		if (m_iCurrentHp + m_iPotion_Heal_Amount > m_iFullHp  // 회복량이 100인데 100을 증가시킬 수 없을때
-			&& m_iFullHp > m_iCurrentHp)
-		{
-			m_iCurrentHp += (m_iCurrentHp + m_iPotion_Heal_Amount) - m_iFullHp;
-		}
-
-		else if (m_iCurrentHp <= m_iFullHp)	 // 이미 체력 300인데 회복할려고 할 때 
-		{
+		m_iCurrentHp += m_iPotion_Heal_Amount;
+		if (m_iCurrentHp > m_iFullHp)
 			m_iCurrentHp = m_iFullHp;
-		}
-
-		else
-			m_iCurrentHp += m_iPotion_Heal_Amount;	 // 현재 체력량이 회복시켜도 풀 hp보다  넘지 않을 때 
-
 		m_iState = STATE_HEAL;
 	}
 #pragma endregion 

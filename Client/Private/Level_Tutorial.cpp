@@ -281,8 +281,8 @@ HRESULT CLevel_Tutorial::Ready_Layer_Player(const _tchar* pLayerTag)
     Desc.fRotationPerSec = XMConvertToRadians(90.f);
     Desc.iCurLevel = m_iCurrentLevel;
 
-    _float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
-    //_float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
+    //_float4 vTestPosition = { 111.80f, 15.51f, -68.2f, 1.f }; // 보스 정문	
+    _float4 vTestPosition = { 83.19f, 5.3f, -117.27f, 1.f }; //의자 옆 위치  // 3월 19일	
     //_float4 vTestPosition = { 70.7f, 1.3f, -110.5f, 1.0f }; //NPC 옆 위치
     //_float4 vTestPosition = { 111.64f, 15.88f, -41.30f, 1.f }; //범승이 보스옆 위치	
 
@@ -615,6 +615,14 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_StackSword_Explosion_2.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
         EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_2, 4)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_StackSword_Explosion_Main.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_MAIN)))
+        return E_FAIL;
+
+    if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Mesh/MeshEffect_Urd_StackSword_Explosion_Small.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Mesh"),
+        EFFECT_TYPE::EFFECT_TYPE_MESH, EFFECT_NAME::EFFECT_STACKSWORD_EXPLOSION_SMALL, 4)))
         return E_FAIL;
 
     //Particle Effect
