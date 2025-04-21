@@ -274,7 +274,7 @@ HRESULT CBoss_Magician::Ready_PartObjects(void* pArg)
 	ProjectileDesc.iCurLevel = iLevel;
 	ProjectileDesc.fDelete_Time = &m_fCard_Delete_Time;
 	ProjectileDesc.iDamage = &m_iMonster_Attack_Power;
-	ProjectileDesc.fSpeedPerSec = 40.f;
+	ProjectileDesc.fSpeedPerSec = 30.f;
 	ProjectileDesc.fRotationPerSec = 0.f;
 	ProjectileDesc.fPosition = m_vSpawnPoint;
 
@@ -316,45 +316,7 @@ void CBoss_Magician::PatternCreate()
 	if (!m_bPatternProgress && m_bActive)
 	{
 		m_fDelayTime += 1 * m_fTimeDelta;
-		if (m_iHitCount >= m_iParryReadyHits)
-		{
-			random_device rd;
-			mt19937 gen(rd());
-			uniform_int_distribution<> ParryCount_Random(3, 5);
-			uniform_int_distribution<> Random_Pattern(0, 1);
-
-			m_iParryReadyHits = ParryCount_Random(gen);
-
-			m_iHitCount = 0;
-			m_bCan_Hit_Motion = false;
-			m_bPatternProgress = true;
-			m_fDelayTime = 0.f;
-
-			_uint iRandom = Random_Pattern(gen);
-
-			if (iRandom == 0)
-			{
-				uniform_int_distribution<> Random_Parry_Attack(0, 2);
-				_uint iRandom_Parry_Attack = Random_Pattern(gen);
-				switch (iRandom_Parry_Attack)
-				{
-				case 0:
-					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_A(), this);
-					break;
-				case 1:
-					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_B(), this);
-					break;
-				case 2:
-					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_C(), this);
-					break;
-				}
-			}
-			else
-			{
-				Near_Pattern_Create();
-			}
-		}
-		else if (m_fDelayTime >= m_fCoolTime)
+		if (m_fDelayTime >= m_fCoolTime)
 		{
 			m_bCan_Hit_Motion = false;
 
@@ -501,12 +463,45 @@ void CBoss_Magician::OnCollisionEnter(CGameObject* _pOther, PxContactPair _infor
 {
 	if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
 	{
-		if (m_iHitCount >= m_iParryReadyHits)
-			return;
-
-		m_fDelayTime -= m_fTimeDelta * 1.2f;
+		m_fDelayTime -= m_fTimeDelta;
 		m_fRecoveryTime = 0.f;
 		m_bCanRecovery = false;
+		if (m_iHitCount >= m_iParryReadyHits)
+		{
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_int_distribution<> ParryCount_Random(3, 5);
+			uniform_int_distribution<> Random_Pattern(0, 1);
+			m_iParryReadyHits = ParryCount_Random(gen);
+			_uint iRandom = Random_Pattern(gen);
+			if (iRandom == 0)
+			{
+				uniform_int_distribution<> Random_Parry_Attack(0, 2);
+				_uint iRandom_Parry_Attack = Random_Pattern(gen);
+				switch (iRandom_Parry_Attack)
+				{
+				case 0:
+					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_A(), this);
+					break;
+				case 1:
+					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_B(), this);
+					break;
+				case 2:
+					m_pState_Manager->ChangeState(new CBoss_Magician::Parry_Attack_C(), this);
+					break;
+				}
+			}
+			else
+			{
+				Near_Pattern_Create();
+			}
+			m_iHitCount = 0;
+			m_bCan_Hit_Motion = false;
+			m_bPatternProgress = true;
+			m_fDelayTime = 0.f;
+			return;
+		}
+
 		if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
 		{
 			m_fMonsterCurHP -= *m_Player_Attack / 50.f;
@@ -2237,6 +2232,7 @@ void CBoss_Magician::Parry_Attack_A::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
+	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
@@ -2320,6 +2316,7 @@ void CBoss_Magician::Parry_Attack_B::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
+	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
@@ -2385,6 +2382,7 @@ void CBoss_Magician::Parry_Attack_C::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
+	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 

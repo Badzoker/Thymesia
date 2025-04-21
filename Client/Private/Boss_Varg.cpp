@@ -372,6 +372,10 @@ void CBoss_Varg::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informati
         {
             m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 15.f;
             m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 25.f;
+            if (m_fMonsterCurHP <= m_fShieldHP)
+            {
+                m_fMonsterCurHP = m_fShieldHP;
+            }
         }
 
 #pragma region Sound
@@ -1258,6 +1262,7 @@ void CBoss_Varg::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Varg* pO
         if (pObject->m_iPhase == PHASE_ONE && fCurrenTrackPos >= 150.f)
         {
             m_iIndex = 40;
+            pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
             pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
             pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
@@ -1689,7 +1694,7 @@ void CBoss_Varg::ExeCution_Start_State::State_Enter(CBoss_Varg* pObject)
 
     m_iIndex = 40;
     pObject->m_bCan_Move_Anim = true;
-    pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
+    //pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 
     _float teleportDistance = 1.f;
     _vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);

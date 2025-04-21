@@ -126,10 +126,10 @@ void CElite_Researcher::Return_To_Spawn()
 
 void CElite_Researcher::Stun()
 {
+    m_pState_Manager->ChangeState(new CElite_Researcher::Stun_State(), this);
     m_IsStun = true;
     m_bPatternProgress = true;
     m_fDelayTime = 0.f;
-    m_pState_Manager->ChangeState(new CElite_Researcher::Stun_State(), this);
 #pragma region Effect_Stun
     m_pGameInstance->Play_Sound(L"Alert_KillChance.ogg", CHANNELID::SOUND_MONSTER_STUN, 0.3f); // 여기서 느려지면서 터지는 이펙트     
     m_pGameInstance->Set_SlowWorld(true);
@@ -283,41 +283,7 @@ void CElite_Researcher::PatternCreate()
     if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_IsStun)
     {
         m_fDelayTime += m_fTimeDelta;
-        if (m_iHitCount >= m_iParryReadyHits)
-        {
-            random_device rd;
-            mt19937 gen(rd());
-            uniform_int_distribution<> ParryCount_Random(3, 5);
-            uniform_int_distribution<> Random_Pattern(0, 1);
-            uniform_int_distribution<> Random_Parry(0, 1);
-
-            m_iParryReadyHits = ParryCount_Random(gen);
-
-            m_iHitCount = 0;
-            m_bCanHit = false;
-            m_bPatternProgress = true;
-            m_fDelayTime = 0.f;
-
-            _uint iRandom = Random_Pattern(gen);
-
-            if (iRandom == 0)
-            {
-                switch (Random_Parry(gen))
-                {
-                case 0:
-                    m_pState_Manager->ChangeState(new CElite_Researcher::Parry_Attack_A(), this);
-                    break;
-                case 1:
-                    m_pState_Manager->ChangeState(new CElite_Researcher::Parry_Attack_B(), this);
-                    break;
-                }
-            }
-            else
-            {
-                Near_Pattern_Create();
-            }
-        }
-        else if (m_fDelayTime >= m_fCoolTime && m_fDistance <= 5.f)
+        if (m_fDelayTime >= m_fCoolTime && m_fDistance <= 5.f)
         {
             if (m_fSpecial_Skill_CoolTime >= 10.f)
             {
@@ -376,13 +342,45 @@ void CElite_Researcher::OnCollisionEnter(CGameObject* _pOther, PxContactPair _in
 {
     if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
     {
-        if (m_iHitCount >= m_iParryReadyHits)
-            return;
         m_bHP_Bar_Active = true;
         m_fHP_Bar_Active_Timer = 0.f;
-        m_fDelayTime -= m_fTimeDelta * 1.2f;
+        m_fDelayTime -= m_fTimeDelta;
         m_fRecoveryTime = 0.f;
         m_bCanRecovery = false;
+
+        if (m_iHitCount >= m_iParryReadyHits)
+        {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_int_distribution<> ParryCount_Random(3, 5);
+            uniform_int_distribution<> Random_Pattern(0, 1);
+            uniform_int_distribution<> Random_Parry(0, 1);
+
+            m_iParryReadyHits = ParryCount_Random(gen);
+            _uint iRandom = Random_Pattern(gen);
+
+            if (iRandom == 0)
+            {
+                switch (Random_Parry(gen))
+                {
+                case 0:
+                    m_pState_Manager->ChangeState(new CElite_Researcher::Parry_Attack_A(), this);
+                    break;
+                case 1:
+                    m_pState_Manager->ChangeState(new CElite_Researcher::Parry_Attack_B(), this);
+                    break;
+                }
+            }
+            else
+            {
+                Near_Pattern_Create();
+            }
+            m_iHitCount = 0;
+            m_bCanHit = false;
+            m_bPatternProgress = true;
+            m_fDelayTime = 0.f;
+            return;
+        }
 
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {

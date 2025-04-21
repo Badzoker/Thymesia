@@ -124,30 +124,7 @@ void CBoss_Urd::PatternCreate()
 
 	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
 	{
-
-		if (m_iHitCount >= m_iParryReadyHits)
-		{
-			random_device rd;
-			mt19937 gen(rd());
-			uniform_int_distribution<> ParryCount_Random(3, 5);
-			uniform_int_distribution<> Random_Pattern(0, 1);
-
-			m_iParryReadyHits = ParryCount_Random(gen);
-
-			m_iStep_Count = 0;
-			m_iHitCount = 0;
-			m_bCan_Hit_Motion = false;
-			m_bPatternProgress = true;
-			m_fDelayTime = 0.f;
-
-			_uint iRandom = Random_Pattern(gen);
-			if (iRandom == 0)
-				m_pState_Manager->ChangeState(new CBoss_Urd::Parry_State(), this);
-			else
-				Near_Pattern_Create();
-		}
-
-		else if (m_iStep_Count < m_iCheck_Step_Num)
+		if (m_iStep_Count < m_iCheck_Step_Num)
 		{
 			if (m_fDistance > 3.f)
 			{
@@ -203,38 +180,6 @@ void CBoss_Urd::PatternCreate()
 				Near_Pattern_Create();
 		}
 	}
-
-	/*
-
-	if (!m_bPatternProgress && !m_bSpecial_Skill_Progress && m_bActive && !m_bNeed_Decide_Step_Num && !m_IsStun)
-	{
-		if (m_iStep_Count < m_iCheck_Step_Num)
-		{
-			if (m_fDistance > 3.f)
-			{
-				m_pState_Manager->ChangeState(new CBoss_Urd::Step_Front_State(), this);
-			}
-			else
-			{
-				_uint iRandom = rand() % 2;
-				switch (iRandom)
-				{
-				case 0:
-					m_pState_Manager->ChangeState(new CBoss_Urd::Step_Right_State(), this);
-					break;
-				case 1:
-					m_pState_Manager->ChangeState(new CBoss_Urd::Step_Left_State(), this);
-					break;
-				}
-			}
-		}
-		else
-		{
-			m_iStep_Count = 0;
-			m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Special_Skill(), this);
-		}
-	}
-	*/
 }
 
 void CBoss_Urd::Active()
@@ -444,11 +389,33 @@ void CBoss_Urd::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 	/* 플레이어 무기와의 충돌 */
 	if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()) || !strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
 	{
-		if (m_iHitCount >= m_iParryReadyHits)
-			return;
-
 		m_fRecoveryTime = 0.f;
 		m_bCanRecovery = false;
+
+		if (m_iHitCount >= m_iParryReadyHits)
+		{
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_int_distribution<> ParryCount_Random(3, 5);
+			uniform_int_distribution<> Random_Pattern(0, 1);
+			m_iParryReadyHits = ParryCount_Random(gen);
+			_uint iRandom = Random_Pattern(gen);
+			if (iRandom == 0)
+			{
+				m_pState_Manager->ChangeState(new CBoss_Urd::Parry_State(), this);
+			}
+			else
+			{
+				Near_Pattern_Create();
+			}
+			m_iStep_Count = 0;
+			m_iHitCount = 0;
+			m_bCan_Hit_Motion = false;
+			m_bPatternProgress = true;
+			m_fDelayTime = 0.f;
+			return;
+		}
+
 		if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
 		{
 			m_fMonsterCurHP -= *m_Player_Attack / 50.f;
@@ -722,7 +689,6 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bCan_Move_Anim = true;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
-	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 
 	_float teleportDistance = 1.f;
 	_vector vPlayerLook = pObject->m_pPlayer->Get_Transfrom()->Get_State(CTransform::STATE_LOOK);
@@ -790,12 +756,16 @@ void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->GetAniFinish())
 		{
+			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 			pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 			pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 		}
 		else if (pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 210.f)
+		{
+			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Dead_State(), pObject);
+		}
 	}
 
 }
@@ -880,7 +850,7 @@ void CBoss_Urd::Step_Front_State::State_Update(_float fTimeDelta, CBoss_Urd* pOb
 	}
 #pragma endregion
 	pObject->RotateDegree_To_Player();
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+	if ((m_iIndex == 32 || m_iIndex == 33 || m_iIndex == 34 || m_iIndex == 35) && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
 	}
@@ -935,7 +905,7 @@ void CBoss_Urd::Step_Back_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 #pragma endregion
 
 	pObject->RotateDegree_To_Player();
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+	if (m_iIndex == 31 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
 	}
@@ -993,7 +963,7 @@ void CBoss_Urd::Step_Right_State::State_Update(_float fTimeDelta, CBoss_Urd* pOb
 #pragma endregion
 
 	pObject->RotateDegree_To_Player();
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+	if (m_iIndex == 37 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
 	}
@@ -1051,7 +1021,7 @@ void CBoss_Urd::Step_Left_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 #pragma endregion
 
 	pObject->RotateDegree_To_Player();
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
+	if (m_iIndex == 36 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 30.f)
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
 	}
@@ -1313,7 +1283,7 @@ void CBoss_Urd::Attack_Combo_C::State_Update(_float fTimeDelta, CBoss_Urd* pObje
 	}
 #pragma endregion
 
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if ((m_iIndex == 5 || m_iIndex == 6) && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 		pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Idle_State(), pObject);
 	}
@@ -1911,7 +1881,7 @@ void CBoss_Urd::Hit_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		}
 	}
 
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if ((m_iIndex == 15 || m_iIndex == 16) && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 		pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 }
 
@@ -1926,6 +1896,11 @@ void CBoss_Urd::Parry_State::State_Enter(CBoss_Urd* pObject)
 {
 	m_iIndex = 21;
 	pObject->RotateDegree_To_Player();
+	pObject->m_bCan_Hit_Motion = false;
+	pObject->m_iMonster_Attack_Power = 0;
+	pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -1955,7 +1930,7 @@ void CBoss_Urd::Parry_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 		}
 	}
 
-	if (pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
+	if (m_iIndex == 21 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 		pObject->Near_Pattern_Create();
 }
 
