@@ -119,6 +119,9 @@ void CClawWeapon::Update(_float fTimeDelta)
                     {
                         if (m_bCollisionOn)
                             m_pGameInstance->Add_Actor_Scene(m_pActor);
+
+                        else
+                            m_pGameInstance->Sub_Actor_Scene(m_pActor);
                     }
 
                     else
@@ -300,7 +303,7 @@ void CClawWeapon::Update(_float fTimeDelta)
         && !(m_pSet_Right_Weapon_States->count(curState)))
     {
         m_pGameInstance->Sub_Actor_Scene(m_pActor);
-        m_pCamera->ResetZoomOutCameraPos(1.f);
+        m_pCamera->ResetZoomOutCameraPos(3.f);
         m_pGameInstance->Set_ZoomBlur_Option(false, 0.f);
     }
 #pragma endregion  

@@ -325,7 +325,8 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 
 			else if (m_iState == STATE_ATTACK_L3
 				&& (m_pModel->Get_CurrentAnmationTrackPosition() > 17.f
-					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f))
+					&& m_pModel->Get_CurrentAnmationTrackPosition() < 50.f)
+					&& m_iTalentState & TALENT_HIT_COMBO)
 			{
 				m_pStateMgr->Get_VecState().at(43)->Priority_Update(this, m_pNavigationCom, fTimeDelta);
 				m_iState = STATE_ATTACK_L4;
@@ -1513,6 +1514,10 @@ void CPlayer::OnCollisionEnter(CGameObject* _pOther, PxContactPair _information)
 	/* 몬스터 무기와의 충돌 */
 	if (!strcmp("MONSTER_WEAPON", _pOther->Get_Name()))
 	{
+		/* 임시 버그 수정 도끼 때릴 때 눈 안광  */
+		m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);	
+
+
 		/* 충돌 지점 이 오른쪽 왼쪽 인지 판별 해야함 */
 		PxContactPairPoint contactPoints[1]; // 최대 10개까지 저장		
 		_information.extractContacts(contactPoints, 1);
@@ -2206,8 +2211,8 @@ void CPlayer::Player_Setting_PartAni()
 	m_set_Body_States =
 	{
 		STATE_PARRY_DEFLECT_L,
-		STATE_PARRY_L,
-		STATE_PARRY_R,
+		//STATE_PARRY_L,
+		//STATE_PARRY_R,
 		STATE_PARRY_DEFLECT_L_UP,
 		STATE_PARRY_DEFLECT_R,
 		STATE_PARRY_DEFLECT_R_UP,

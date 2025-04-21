@@ -855,7 +855,7 @@ void CElite_Joker::Stun_State::State_Update(_float fTimeDelta, CElite_Joker* pOb
     }
     else if (m_iIndex == 19 && iCurrentAnimIndex == m_iIndex)
     {
-        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE::STATE_Joker_Execution && bMonster_Event)   
+        if (pObject->m_bIsClosest && *pObject->m_Player_State == CPlayer::STATE::STATE_Joker_Execution && bMonster_Event)       
         {
             pObject->m_pState_Manager->ChangeState(new Execution_State(), pObject);
             return;
