@@ -102,6 +102,12 @@ HRESULT CMonster_Manager::Respawn_Monster(MONSTER_CATEGORY _eCategory)
 	m_pCheck_Monsters.clear();
 	for (auto& iter : m_pMonsters[_eCategory])
 	{
+		if (_eCategory == CATEGORY_BOSS)
+		{
+			m_bBoss_Active = false;
+		}
+		iter->Set_HP_Bar_ActiveOff();
+
 		Safe_Release(iter);
 	}
 	m_pMonsters[_eCategory].clear();
