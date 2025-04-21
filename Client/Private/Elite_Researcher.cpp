@@ -489,6 +489,7 @@ void CElite_Researcher::Idle_State::State_Enter(CElite_Researcher* pObject)
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_bCanHit = true;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -501,7 +502,7 @@ void CElite_Researcher::Idle_State::State_Update(_float fTimeDelta, CElite_Resea
 
 void CElite_Researcher::Idle_State::State_Exit(CElite_Researcher* pObject)
 {
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CElite_Researcher::Move_State::State_Enter(CElite_Researcher* pObject)
@@ -1003,7 +1004,7 @@ void CElite_Researcher::Parry_Attack_A::State_Enter(CElite_Researcher* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
 #pragma region Effect
@@ -1077,7 +1078,7 @@ void CElite_Researcher::Parry_Attack_B::State_Enter(CElite_Researcher* pObject)
     pObject->m_iMonster_Attack_Power = 0;
     pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
 #pragma region Effect
@@ -1291,7 +1292,7 @@ void CElite_Researcher::Attack_Special::State_Exit(CElite_Researcher* pObject)
 void CElite_Researcher::Attack_Special_Catch::State_Enter(CElite_Researcher* pObject)
 {
     m_iIndex = 14;
-    pObject->m_iMonster_Attack_Power = 190;
+    pObject->m_iMonster_Attack_Power = 48;
     pObject->m_bCan_Move_Anim = true;
 
     _float teleportDistance = 0.7f;
@@ -1346,6 +1347,7 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_2"))
@@ -1353,6 +1355,7 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_3"))
@@ -1360,6 +1363,7 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Event_Damage_4"))
@@ -1367,6 +1371,7 @@ void CElite_Researcher::Attack_Special_Catch::State_Update(_float fTimeDelta, CE
                     pObject->m_pGameInstance->Play_Sound(L"Researcher_Player_Hit.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 20.f);
                     const _float4x4* matSpine = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_RESEARCHER_WORLD_SPECIAL, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matSpine);
+                    static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
                     iter.isPlay = true;
                 }
             }

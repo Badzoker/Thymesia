@@ -171,7 +171,7 @@ void CBoss_Urd::PatternCreate()
 				m_iSword_Stack_Count = STACK_ONE;
 				m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Special_Skill(), this);
 			}
-			else if (m_fSpecial_Skill_CoolTime >= 60.f)
+			else if (m_fSpecial_Skill_CoolTime >= 20.f)
 			{
 				m_fSpecial_Skill_CoolTime = 0.f;
 				Stack_Skill_Create();
@@ -270,7 +270,7 @@ HRESULT CBoss_Urd::Ready_PartObjects(void* pArg)
 		Stack_Sword_Desc.iStack_Number = iStackNum;
 		Stack_Sword_Desc.iCurrent_StackCount = &m_iSword_Stack_Count;
 		Stack_Sword_Desc.bCollider_Change = &m_bStand_Stack_Sword_ColliderOn;
-		//Projectile_Desc. = &m_iMonster_Attack_Power;
+		Stack_Sword_Desc.iAttack = &m_iMonster_Attack_Power;
 		Stack_Sword_Desc.pParentState = &m_iMonster_State;
 		Stack_Sword_Desc.fSpeedPerSec = 10.f;
 		Stack_Sword_Desc.fRotationPerSec = 0.f;
@@ -616,6 +616,7 @@ void CBoss_Urd::Idle_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_bPatternProgress = false;
 	pObject->m_bNeed_Decide_Step_Num = true;
 	pObject->m_bCan_Hit_Motion = true;
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_fDelayTime = 0.f;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -690,7 +691,7 @@ void CBoss_Urd::ExeCution_State::State_Enter(CBoss_Urd* pObject)
 	pObject->m_pModelCom->Set_LerpFinished(true);
 	pObject->m_pModelCom->Get_VecAnimation().at(41)->Set_StartOffSetTrackPosition(45.f);
 	/* ============ */
-
+	pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 	pObject->m_bExecution_Progress = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
@@ -740,14 +741,12 @@ void CBoss_Urd::ExeCution_State::State_Update(_float fTimeDelta, CBoss_Urd* pObj
 	{
 		if (pObject->m_iPhase == PHASE_ONE && pObject->m_pModelCom->GetAniFinish())
 		{
-			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pStunActor);
 			pObject->m_pGameInstance->Add_Actor_Scene(pObject->m_pActor);
 			pObject->m_pState_Manager->ChangeState(new Idle_State(), pObject);
 		}
 		else if (pObject->m_iPhase == PHASE_TWO && pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 210.f)
 		{
-			pObject->m_iMonster_Execution_Category = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
 			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Dead_State(), pObject);
 		}
 	}
@@ -1593,7 +1592,9 @@ void CBoss_Urd::Attack_Special_Skill::State_Enter(CBoss_Urd* pObject)
 {
 	m_iIndex = 30;
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
 	pObject->RotateDegree_To_Player();
+	pObject->m_iMonster_Attack_Power = 150.f;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_bStand_Stack_Sword_ColliderOn = true;
 	pObject->m_bSpecial_Skill_Progress = true;
@@ -1677,6 +1678,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Update(_float fTimeDelta, CBoss_Urd*
 
 void CBoss_Urd::Attack_Special_Skill::State_Exit(CBoss_Urd* pObject)
 {
+	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
 	pObject->m_bStand_Stack_Sword_ColliderOn = false;
 	pObject->m_bSpecial_Skill_Progress = false;
 	pObject->m_fSpecial_Skill_CoolTime = 0.f;
@@ -1883,6 +1885,7 @@ void CBoss_Urd::Parry_State::State_Enter(CBoss_Urd* pObject)
 	pObject->RotateDegree_To_Player();
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_iMonster_Attack_Power = 0;
+	pObject->m_bPatternProgress = true;
 	pObject->m_iMonster_State = MONSTER_STATE::STATE_PARRY;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
@@ -1916,7 +1919,24 @@ void CBoss_Urd::Parry_State::State_Update(_float fTimeDelta, CBoss_Urd* pObject)
 	}
 
 	if (m_iIndex == 21 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
-		pObject->Near_Pattern_Create();
+	{
+		_uint iRandom = rand() % 4;
+		switch (iRandom)
+		{
+		case 0:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Combo_A(), pObject);
+			break;
+		case 1:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Combo_B(), pObject);
+			break;
+		case 2:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Combo_C(), pObject);
+			break;
+		case 3:
+			pObject->m_pState_Manager->ChangeState(new CBoss_Urd::Attack_Combo_D(), pObject);
+			break;
+		}
+	}
 }
 
 void CBoss_Urd::Parry_State::State_Exit(CBoss_Urd* pObject)

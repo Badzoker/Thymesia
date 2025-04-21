@@ -686,7 +686,7 @@ void CBoss_Magician::Idle_State::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_IDLE;
 	pObject->m_bPatternProgress = false;
 	pObject->m_fDelayTime = 0.f;
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -701,7 +701,7 @@ void CBoss_Magician::Idle_State::State_Update(_float fTimeDelta, CBoss_Magician*
 
 void CBoss_Magician::Idle_State::State_Exit(CBoss_Magician* pObject)
 {
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
 
@@ -752,7 +752,7 @@ void CBoss_Magician::Move_State::State_Update(_float fTimeDelta, CBoss_Magician*
 	}
 
 	pObject->RotateDegree_To_Player();
-	if (m_iIndex == 69)
+	if (m_iIndex == 69 && pObject->m_fDistance > pObject->m_fRootDistance)
 	{
 		pObject->m_pTransformCom->Go_Straight(pObject->m_fTimeDelta, pObject->m_pNavigationCom);
 	}
@@ -2073,6 +2073,12 @@ void CBoss_Magician::Attack_Special_Catch::State_Update(_float fTimeDelta, CBoss
 
 	if (m_iIndex == 41 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex)
 	{
+		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 255.f && !m_bAttack)
+		{
+			m_bAttack = true;
+			static_cast<CPlayer*>(pObject->m_pPlayer)->Increase_PlayerHp(pObject->m_iMonster_Attack_Power * -1);
+		}
+
 		if (pObject->m_pModelCom->Get_CurrentAnmationTrackPosition() >= 290.f)
 		{
 			pObject->Is_Change_Sword_Bone = false;
@@ -2224,7 +2230,7 @@ void CBoss_Magician::Parry_Attack_A::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
@@ -2308,7 +2314,7 @@ void CBoss_Magician::Parry_Attack_B::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 
@@ -2374,7 +2380,7 @@ void CBoss_Magician::Parry_Attack_C::State_Enter(CBoss_Magician* pObject)
 	pObject->m_iMonster_State = STATE_PARRY;
 	pObject->m_iMonster_Attack_Power = 0;
 	pObject->RotateDegree_To_Player();
-	pObject->m_pModelCom->Set_LerpFinished(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_REBOUND;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 

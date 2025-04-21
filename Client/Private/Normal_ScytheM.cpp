@@ -435,7 +435,7 @@ void CNormal_ScytheM::Idle_State::State_Enter(CNormal_ScytheM* pObject)
     pObject->m_bPatternProgress = false;
     pObject->m_iMonster_State = STATE_IDLE;
     pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_END;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
     pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
 }
 
@@ -449,7 +449,7 @@ void CNormal_ScytheM::Idle_State::State_Update(_float fTimeDelta, CNormal_Scythe
 
 void CNormal_ScytheM::Idle_State::State_Exit(CNormal_ScytheM* pObject)
 {
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 #pragma endregion
 

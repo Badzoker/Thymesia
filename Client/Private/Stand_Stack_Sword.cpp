@@ -37,6 +37,7 @@ HRESULT CStand_Stack_Sword::Initialize(void* pArg)
     m_pParentModelCom = pDesc->pParentModel;
     m_iCurrent_StackCount = pDesc->iCurrent_StackCount;
     m_iStack_Number = pDesc->iStack_Number;
+    m_iMonster_Attack = pDesc->iAttack;
 
     m_pLeft_SocketMatrix = m_pParentModelCom->Get_BoneMatrix("weapon_l");
 

@@ -258,6 +258,7 @@ public:
 		void State_Exit(CBoss_Magician2* pObject) override;
 	private:
 		_bool m_bNeed_Move = {};
+		_bool m_bAttack = {};
 	};
 
 };
