@@ -192,6 +192,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Mouse_section(_float fTimeDelta)
 {
+
+#ifdef _DEBUG
+
+
 	if (m_pGameInstance->isKeyEnter(DIK_V))
 	{
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_KEY1, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this);
@@ -216,6 +220,7 @@ void CPlayer::Mouse_section(_float fTimeDelta)
 		m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, m_pTransformCom->Get_State(CTransform::STATE_POSITION), this, 100);
 	}
 
+#endif // _DEBUG
 	if (m_pGameInstance->isMouseEnter(DIM_MB) && m_bLockOn)
 	{
 		m_iPhaseState ^= PHASE_LOCKON;
@@ -685,7 +690,11 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 
 
 #pragma region Á×À½ 
-	if ((m_pGameInstance->isKeyEnter(DIK_T) || m_iCurrentHp <= 0)
+#ifdef _DEBUG
+#endif // _DEBUG
+
+
+	if (/*(m_pGameInstance->isKeyEnter(DIK_T) ||*/ m_iCurrentHp <= 0
 		&& m_iState != STATE_DEAD)
 	{
 		m_iPhaseState = 0;

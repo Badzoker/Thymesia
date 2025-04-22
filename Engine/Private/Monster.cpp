@@ -56,12 +56,15 @@ void CMonster::Priority_Update(_float fTimeDelta)
         m_pGameInstance->Add_Delete_Monster(this);
         return;
     }
+#ifdef _DEBUG
+
 
     if (m_pGameInstance->isKeyEnter(DIK_K))
     {
         Cheat();
     }
 
+#endif // _DEBUG
 
     m_fTimeDelta = fTimeDelta;
     CalCulate_Distance();
