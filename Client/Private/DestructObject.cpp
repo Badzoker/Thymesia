@@ -240,14 +240,14 @@ void CDestructObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
     {
         if (!strcmp(m_szIndivisualName, "barrel"))
         {
-            m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
         }
         else if (!strcmp(m_szIndivisualName, "Fence2"))
         {
-            m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+            m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
         }
         else if (!strcmp(m_szIndivisualName, "Rock"))
-            m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+            m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
 
         m_bHitted = true;
     }
@@ -257,14 +257,14 @@ void CDestructObject::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
         {
             if (!strcmp(m_szIndivisualName, "barrel"))
             {
-                m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+                m_pGameInstance->Play_Sound(TEXT("WoodBreak_01.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
             }
             else if (!strcmp(m_szIndivisualName, "Fence2"))
             {
-                m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+                m_pGameInstance->Play_Sound(TEXT("WoodBreak_02.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
             }
             else if (!strcmp(m_szIndivisualName, "Rock"))
-                m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_STRUCT, 0.1f);
+                m_pGameInstance->Play_Sound(TEXT("Rock_Hit_01.ogg"), CHANNELID::SOUND_STRUCT, 0.4f);
 
             m_bHitted = true;
         }
