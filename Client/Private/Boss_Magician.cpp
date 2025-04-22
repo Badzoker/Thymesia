@@ -355,6 +355,7 @@ void CBoss_Magician::Stun()
 	m_pGameInstance->Play_Effect_Dir(EFFECT_NAME::EFFECT_PARTICLE_SPARK, Get_Transfrom()->Get_State(CTransform::STATE_POSITION), Get_Transfrom()->Get_State(CTransform::STATE_LOOK));
 	m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_SWORD);
 	m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_MAGICIAN_CANE);
+	m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_MAGICIAN_SWORD_DUST);
 #pragma endregion
 }
 
@@ -797,6 +798,7 @@ void CBoss_Magician::Stun_State::State_Enter(CBoss_Magician* pObject)
 
 	pObject->m_IsDissolveOff = false;
 	pObject->m_IsDissolveOn = false;
+	pObject->Is_Change_Sword_Bone = false;
 
 	pObject->m_pModelCom->Set_Continuous_Ani(true);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
