@@ -4124,6 +4124,8 @@ void CBody_Player::STATE_HARMOR_EXECUTION_Method()
         *m_pParentMonsterExecute = MONSTER_EXECUTION_CATEGORY::MONSTER_START;
         *m_pParentNextStateCan = true;
 
+        m_pParent->Get_Transfrom()->Turn_Degree(_fvector{ 0.f,1.f,0.f,0.f }, XMConvertToRadians(180.f));
+
         if (*m_pParentTalent & CPlayer::TALENT_EXECUTION_HP_MP)
         {
             _int IncreaseMp_Amount = 100;
@@ -4775,7 +4777,7 @@ void CBody_Player::STATE_MAGICIAN_Execution_Method()
             _int m_iFullHp = static_cast<CPlayer*>(m_pParent)->Get_FullHp();
 
 
-            if ((*m_pParentHp + IncreaseMp_Amount) > m_iFullHp) // Mp가 이미 더 클 때                
+            if ((*m_pParentHp + IncreaseHp_Amount) > m_iFullHp) // Hp가 이미 더 클 때                
             {
                 if (m_iFullHp > *m_pParentHp)
                     *m_pParentHp += m_iFullHp - *m_pParentHp;
@@ -5737,6 +5739,24 @@ void CBody_Player::STATE_STUN_EXECUTE_START_VARG_Method()
     m_pModelCom->SetUp_Animation(291, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
+
+    /* 플레이어 사운드 관련 */
+    if (m_pModelCom->Get_Current_Animation_Index() == 291)
+    {
+        for (auto& iter : *m_pModelCom->Get_VecAnimation().at(291)->Get_vecEvent())
+        {
+            if (iter.isPlay == false && iter.isEventActivate == true)
+            {
+                switch (iter.eType)
+                {
+                case EVENT_SOUND:
+                    m_pGameInstance->Play_Sound(L"Player_Stun_Start.wav", CHANNELID::SOUND_PLAYER_ACTION_1, 40.f);
+                    iter.isPlay = true;
+                    break;
+                }
+            }
+        }
+    }
 
 
     if (m_pModelCom->Get_CurrentAnmationTrackPosition() >= 25.f)
