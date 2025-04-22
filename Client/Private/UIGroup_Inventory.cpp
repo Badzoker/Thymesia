@@ -1554,44 +1554,44 @@ void CUIGroup_Inventory::Set_Item_Default_Info()
 	
 	SaveData.ItemType = ITEM_TYPE::ITEM_BADZOKER;
 	SaveData.ItemIconNum = 8;
-	SaveData.ItemName = L"Bad Zoker";
-	SaveData.ItemDesc = L"종한 형님은 가끔씩 조커가 되실지도?";
+	SaveData.ItemName = L"BadZoker";
+	SaveData.ItemDesc = L"우리는 모두 활짝 웃게 될 것이야 HAHAHA";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
-	
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_BEOMSEUNG;
 	SaveData.ItemIconNum = 9;
-	SaveData.ItemName = L"강범승";
-	SaveData.ItemDesc = L"What!무새\n어! 금지!";
+	SaveData.ItemName = L"Monster의 어머니";
+	SaveData.ItemDesc = L"Monster의 탄생배경을 듣고싶으면 나에게로";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
-	
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_FAKER;
 	SaveData.ItemIconNum = 10;
 	SaveData.ItemName = L"FAKER";
-	SaveData.ItemDesc = L"대.상.혁.";
+	SaveData.ItemDesc = L"대.상.혁.\n??? : 불좀 꺼줄래?";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
-	
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_UIN;
 	SaveData.ItemIconNum = 11;
 	//SaveData.ItemName = L"유인 형님";
 	SaveData.ItemName = L"난주먹으로말해";
-	SaveData.ItemDesc = L"아이세미는 제꺼예욧.";
+	SaveData.ItemDesc = L"모두 고생했습니다.\n가고싶으면 집에가!";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
-	
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_PLAYERMASTER;
 	SaveData.ItemIconNum = 12;
-	SaveData.ItemName = L"김선환";
-	SaveData.ItemDesc = L"PlayerMaster\n옥상 출입 금지!";
+	SaveData.ItemName = L"옥상사랑무새";
+	SaveData.ItemDesc = L"뛰어내림 금지!\n옥상 출입 금지!\n하늘(취업)을 날고 싶어요";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
-	
+
 	SaveData.ItemType = ITEM_TYPE::ITEM_YUBHIN;
 	SaveData.ItemIconNum = 13;
-	SaveData.ItemName = L"김유빈";
-	SaveData.ItemDesc = L"UI담당 => 텍스트 적기가 참 힘들네요.";
+	SaveData.ItemName = L"그놈의 UI";
+	SaveData.ItemDesc = L"Code\n잘 치고 싶었어요! 이정도면 나쁘지 않죠?";
 	SaveData.ItemCount = 0;
 	m_vecItemDefaultInfo.push_back(SaveData);
 	
