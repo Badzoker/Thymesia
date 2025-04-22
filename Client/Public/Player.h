@@ -391,7 +391,7 @@ private:
 	_int								m_iPotionCount = { 3 };
 	_int								m_iFeathers = { 3 };
 
-	_int								m_iMemoryFragment = { 20854 };
+	_int								m_iMemoryFragment = { 22853 };
 
 	/* 플레이어 장착할 스킬 2칸 */
 	_uint								m_iSkill_Eqip_1st = {}; // 리볼버 스킬 

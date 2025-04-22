@@ -432,8 +432,8 @@ void CBoss_Urd::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		}
 
 		if (m_bCan_Hit_Motion &&
-			m_iMonster_State != STATE_ATTACK &&
-			m_iMonster_State != STATE_SPECIAL_ATTACK &&
+			!m_bPatternProgress &&
+			!m_bSpecial_Skill_Progress &&
 			m_fMonsterCurHP > 0.f &&
 			m_iHitCount < m_iParryReadyHits)
 		{
@@ -1876,7 +1876,7 @@ void CBoss_Urd::Hit_State::State_Exit(CBoss_Urd* pObject)
 {
 	pObject->m_bCan_Move_Anim = false;
 	pObject->m_bPatternProgress = false;
-	//pObject->m_pModelCom->Set_Continuous_Ani(true);
+	pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CBoss_Urd::Parry_State::State_Enter(CBoss_Urd* pObject)
