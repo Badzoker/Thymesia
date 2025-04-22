@@ -67,6 +67,11 @@ void CJoker_Weapon::Priority_Update(_float fTimeDelta)
 		m_bColliderOff = false;
 		m_iPreAnimIndex = m_pParentModelCom->Get_Current_Animation_Index();
 	}
+	if (m_bColliderOff)
+	{
+		m_pGameInstance->Sub_Actor_Scene(m_pActor);
+	}
+
 }
 
 void CJoker_Weapon::Update(_float fTimeDelta)

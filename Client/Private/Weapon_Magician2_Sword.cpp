@@ -61,7 +61,7 @@ HRESULT CWeapon_Magician2_Sword::Initialize(void* pArg)
     m_pActor[COLLIDER_SWORD] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 1.f,0.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_HAND] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,0.4f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_MUTATION] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,2.f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
-    m_pActor[COLLIDER_SLASH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.4f,0.8f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
+    m_pActor[COLLIDER_SLASH] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_BOX, _float3{ 0.8f,0.8f,10.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_BURST] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_SPHERE, _float3{ 3.f,3.f,3.f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
     m_pActor[COLLIDER_SPECIAL] = m_pGameInstance->Create_Actor(COLLIDER_TYPE::COLLIDER_CAPSULE, _float3{ 0.4f,2.f,0.15f }, _float3{ 0.f,1.f,0.f }, 0.f, this);
 
@@ -232,7 +232,7 @@ void CWeapon_Magician2_Sword::Update(_float fTimeDelta)
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SPECIAL], XMLoadFloat4x4(m_pSocket_Mutation_Matrix) * XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 0.f, 0.f,1.f });
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_SLASH])))
-        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SLASH], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 4000.f,1.f });
+        m_pGameInstance->Update_Collider(m_pActor[COLLIDER_SLASH], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0.f, 500.f, 3900.f,1.f });
 
     if (SUCCEEDED(m_pGameInstance->IsActorInScene(m_pActor[COLLIDER_BURST])))
         m_pGameInstance->Update_Collider(m_pActor[COLLIDER_BURST], XMLoadFloat4x4(m_pParentWorldMatrix), _vector{ 0, 300.f, 0.f,1.f });
