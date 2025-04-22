@@ -109,7 +109,7 @@ void CDestructObject::Update(_float fTimeDelta)
                     g_iCount_WhiteItem++;
                     break;
                 default:
-                    m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_FIELDITEM, XMLoadFloat4(&vItemPos), this, 1);
+                    m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, XMLoadFloat4(&vItemPos), this, 1);
                     break;
                 }
 
