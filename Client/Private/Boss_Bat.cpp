@@ -482,6 +482,10 @@ void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		{
 			m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
 			m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 70.f;
+			if (m_fMonsterCurHP <= m_fShieldHP)
+			{
+				m_fMonsterCurHP = m_fShieldHP;
+			}
 		}
 
 		_uint iRandom = rand() % 3;
