@@ -5510,6 +5510,7 @@ void CBody_Player::STATE_GREATSWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
 
             }
 
@@ -5517,18 +5518,21 @@ void CBody_Player::STATE_GREATSWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             *m_pParentNextStateCan = false;
@@ -5550,24 +5554,28 @@ void CBody_Player::STATE_GREATSWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
 
@@ -5575,24 +5583,28 @@ void CBody_Player::STATE_GREATSWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
         }
     }
@@ -5651,6 +5663,7 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
 
             }
 
@@ -5658,18 +5671,21 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             *m_pParentNextStateCan = false;
@@ -5691,24 +5707,28 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
 
@@ -5716,24 +5736,28 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
         }
     }
@@ -6726,6 +6750,7 @@ void CBody_Player::STATE_HALBERDS_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
 
             }
 
@@ -6733,18 +6758,21 @@ void CBody_Player::STATE_HALBERDS_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             *m_pParentNextStateCan = false;
@@ -6766,24 +6794,28 @@ void CBody_Player::STATE_HALBERDS_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
 
@@ -6791,24 +6823,28 @@ void CBody_Player::STATE_HALBERDS_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
         }
     }
@@ -6876,6 +6912,7 @@ void CBody_Player::STATE_SCYTHE_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
 
             }
 
@@ -6883,18 +6920,21 @@ void CBody_Player::STATE_SCYTHE_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             *m_pParentNextStateCan = false;
@@ -6916,24 +6956,28 @@ void CBody_Player::STATE_SCYTHE_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
 
@@ -6941,12 +6985,14 @@ void CBody_Player::STATE_SCYTHE_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
@@ -6959,6 +7005,7 @@ void CBody_Player::STATE_SCYTHE_B_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
         }
     }
@@ -7020,7 +7067,7 @@ void CBody_Player::STATE_AXE_Method()
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(18)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
                 m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
-
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
@@ -7028,6 +7075,7 @@ void CBody_Player::STATE_AXE_Method()
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(19)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
                 m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
@@ -7035,6 +7083,7 @@ void CBody_Player::STATE_AXE_Method()
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(20)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
                 m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
@@ -7042,6 +7091,7 @@ void CBody_Player::STATE_AXE_Method()
                 *m_pParentState = CPlayer::STATE_LOCK_ON_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(17)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
                 m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_SWORD_PLAYER_EYE);
+                *m_pParentSkillCoolTime = false;
             }
 
             *m_pParentNextStateCan = false;
@@ -7063,24 +7113,28 @@ void CBody_Player::STATE_AXE_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FL;
                 m_pParentStateMgr->Get_VecState().at(31)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_W) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_FR;
                 m_pParentStateMgr->Get_VecState().at(30)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BL;
                 m_pParentStateMgr->Get_VecState().at(34)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_S) && m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_BR;
                 m_pParentStateMgr->Get_VecState().at(33)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
 
@@ -7088,24 +7142,28 @@ void CBody_Player::STATE_AXE_Method()
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_B;
                 m_pParentStateMgr->Get_VecState().at(35)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_A))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_L;
                 m_pParentStateMgr->Get_VecState().at(29)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else if (m_pGameInstance->isKeyPressed(DIK_D))
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_R;
                 m_pParentStateMgr->Get_VecState().at(28)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
 
             else
             {
                 *m_pParentState = CPlayer::STATE_NORMAL_EVADE_F;
                 m_pParentStateMgr->Get_VecState().at(32)->Priority_Update(m_pParent, m_pParentNavigationCom, m_fTimeDelta);
+                *m_pParentSkillCoolTime = false;
             }
         }
     }

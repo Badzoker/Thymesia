@@ -361,6 +361,8 @@ private:
 	_bool  m_bClawDeadOn = {};
 	_bool  m_bClawAppear = {};
 
+	
+
 private:
 	_float								m_fTimeDelta = { 0.f };
 
@@ -368,6 +370,8 @@ private:
 	CPlayerSkillMgr* m_pPlayerSkillMgr = { nullptr };
 
 	_uint							    m_iParryMotion = {};
+
+	_int   m_iSkill_input_Key = {};
 
 #pragma region UI 관련 함수 
 private:
@@ -504,6 +508,9 @@ public:
 	/* 스킬 데미지 보너스 새로 추가 (4/21)*/
 	void Set_Bonus_SkillDamage(_float _fBonusSkillDamage) { m_fBonusSkillDamage = _fBonusSkillDamage; }
 	float* Get_Bonus_SkillDamagePtr() { return &m_fBonusSkillDamage; }
+
+
+	_int   Get_Skill_Number() { return m_iSkill_input_Key; }
 
 #pragma endregion 
 
