@@ -1036,7 +1036,7 @@ void CNormal_VillageF1::Execution_State::State_Update(_float fTimeDelta, CNormal
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_STAB, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
 
-                    pObject->m_pGameInstance->Play_Sound(TEXT("Villager_HitSound0.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Normal_Execution_1.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
                 else if (!strcmp(iter.szName, "Effect_Execution_2"))
@@ -1044,7 +1044,7 @@ void CNormal_VillageF1::Execution_State::State_Update(_float fTimeDelta, CNormal
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
 
-                    pObject->m_pGameInstance->Play_Sound(TEXT("Villager_GotKicked.ogg"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.06f);
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Normal_Execution_2.wav"), CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
             }
