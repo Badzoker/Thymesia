@@ -236,31 +236,33 @@ void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
 	{
 		m_bColliderOff = true;
 
-		if (!m_pKickActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
+		if (static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
 		{
-			_uint iRandSoundFileNum = {};
-			iRandSoundFileNum = rand() % 4 + 1;
-
-			switch (iRandSoundFileNum)
+			if (*m_pParentState == STATE_PARRY_ATTACK)
 			{
-			case 1:
-				m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
-				break;
-			case 2:
-				m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
-				break;
-			case 3:
-				m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
-				break;
-			case 4:
-				m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
-				break;
+				m_pGameInstance->Play_Sound(TEXT("Normal_Execution_2.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
 			}
-		}
-		//// 플레이어가 발길질 당할때 나는 소리 
-		else if (m_pKickActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
-		{
-			m_pGameInstance->Play_Sound(TEXT("Normal_Execution_2.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 1.f);
+			else
+			{
+				_uint iRandSoundFileNum = {};
+				iRandSoundFileNum = rand() % 4 + 1;
+
+				switch (iRandSoundFileNum)
+				{
+				case 1:
+					m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				case 2:
+					m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				case 3:
+					m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				case 4:
+					m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_WEAPON, 0.6f);
+					break;
+				}
+			}
 		}
 	}
 }
