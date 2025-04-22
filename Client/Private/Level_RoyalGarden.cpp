@@ -255,7 +255,7 @@ HRESULT CLevel_RoyalGarden::Ready_Layer_Structure(const _tchar* pLayerTag)
 	if (FAILED(Load_Objects(2)))// 도서관
 		return E_FAIL;
 
-	if (FAILED(Load_Objects(4)))// 정원 보스맵
+	if (FAILED(Load_Objects(5)))// 정원 보스맵
 		return E_FAIL;
 
 	if (FAILED(Load_TriggerObjects(5)))

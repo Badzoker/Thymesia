@@ -368,6 +368,16 @@ public:
 	void	Set_bInWater();
 #pragma endregion
 
+	void	Set_LoadObjects() { m_bLoadObjects = !m_bLoadObjects; }
+	_bool	LoadObjects() {
+		if (m_bLoadObjects)
+		{
+			m_bLoadObjects = false;
+			return true;
+		}
+
+		return false;
+	}
 private:
 	_uint								m_iViewportWidth{}, m_iViewportHeight{};
 
@@ -404,6 +414,7 @@ public:
 private:
 	_bool		m_bSlowWorldOnOFF = { false };	
 
+	_bool		m_bLoadObjects = { false };
 
 public:
 	void Release_Engine();

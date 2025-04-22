@@ -20,6 +20,7 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Structure(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Structure_NoDestruct(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Structure_Corridor(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Structure_Boss(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);	
