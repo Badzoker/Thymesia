@@ -1735,7 +1735,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 39;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_MEMORY;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
@@ -1747,7 +1747,7 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 9;
+    ItemDesc.iItemCount = 35;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_SKILLPIECE;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
@@ -1759,79 +1759,79 @@ HRESULT CLevel_Tutorial::Ready_Layer_Item(const _tchar* pLayerTag)
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_BADZOKER;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_BEOMSEUNG;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_FAKER;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_UIN;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_PLAYERMASTER;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_YUBHIN;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 3;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_1;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 4;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_2;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 2;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_3;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 1;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_4;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 5;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_5;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 6;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_6;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))
         return E_FAIL;
 
-    ItemDesc.iItemCount = 0;
+    ItemDesc.iItemCount = 2;
     ItemDesc.eItemType = ITEM_TYPE::ITEM_HERB_7;
 
     if (FAILED(m_pGameInstance->Add_GameObject_To_Layer(LEVEL_STATIC, TEXT("Prototype_GameObject_GameItem"), LEVEL_TUTORIAL, pLayerTag, &ItemDesc)))

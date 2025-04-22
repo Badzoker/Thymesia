@@ -376,22 +376,22 @@ private:
 #pragma region UI 관련 함수 
 private:
 	/* UI 관련 맴버 변수들 선언 */
-	_int								m_iLevel = { 1 };
+	_int								m_iLevel = { 32 };
 
-	_int								m_iFullHp = { 1000 };
-	_int								m_iCurrentHp = { 1000 };
+	_int								m_iFullHp = { 2820 };
+	_int								m_iCurrentHp = { 2820 };
 
-	_int								m_iFullMp = { 150 };
-	_int								m_iCurrentMp = { 150 }; //150
+	_int								m_iFullMp = { 420 };
+	_int								m_iCurrentMp = { 420 }; //150
 
 
-	_uint								m_iAttackPower = { 25 };
-	_int								m_iClawAttackPower = { 200 };
+	_uint								m_iAttackPower = { 115 };
+	_int								m_iClawAttackPower = { 1100 };
 
 	_int								m_iPotionCount = { 3 };
 	_int								m_iFeathers = { 3 };
 
-	_int								m_iMemoryFragment = { 3000 };
+	_int								m_iMemoryFragment = { 20854 };
 
 	/* 플레이어 장착할 스킬 2칸 */
 	_uint								m_iSkill_Eqip_1st = {}; // 리볼버 스킬 
@@ -421,7 +421,7 @@ private:
 	_bool								m_bPlayerSkill_CoolTime = { true };
 
 	/* 스킬 보너스 데미지 추가 ( 4/21) */
-	_float								m_fBonusSkillDamage = {};
+	_float								m_fBonusSkillDamage = {45};
 
 
 public:
