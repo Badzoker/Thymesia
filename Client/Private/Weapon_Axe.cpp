@@ -260,7 +260,7 @@ void CWeapon_Axe::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informat
 		//// 플레이어가 발길질 당할때 나는 소리 
 		else if (m_pKickActor && static_cast<CPlayer*>(_pOther)->Get_PhaseState() & CPlayer::PHASE_HITTED)
 		{
-			m_pGameInstance->Play_Sound(L"Villager_GotKicked.ogg", CHANNELID::SOUND_MONSTER_WEAPON, 0.7f);
+			m_pGameInstance->Play_Sound(TEXT("Normal_Execution_2.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 1.f);
 		}
 	}
 }

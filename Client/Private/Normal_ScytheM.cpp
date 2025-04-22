@@ -337,16 +337,16 @@ void CNormal_ScytheM::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
         switch (iRandSoundFileNum)
         {
         case 1:
-            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.45f);
             break;
         case 2:
-            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit2.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.45f);
             break;
         case 3:
-            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit3.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.45f);
             break;
         case 4:
-            m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.6f);
+            m_pGameInstance->Play_Sound(L"Hit4.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.45f);
             break;
         }
     }
@@ -661,10 +661,10 @@ void CNormal_ScytheM::Hit_State::State_Update(_float fTimeDelta, CNormal_ScytheM
                     switch (iRandSoundFileNum)
                     {
                     case 1:
-                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtXL.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtXL.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.6f);
                         break;
                     case 2:
-                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtM.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                        pObject->m_pGameInstance->Play_Sound(L"Sythe_HurtM.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.6f);
                         break;
                     }
                     iter.isPlay = true;
@@ -804,14 +804,14 @@ void CNormal_ScytheM::Execution_State::State_Update(_float fTimeDelta, CNormal_S
                 {
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_STAB, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
-                    pObject->m_pGameInstance->Play_Sound(L"Villager_HitSound2.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.7f);
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Normal_Execution_1.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 1.f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
                 else if (!strcmp(iter.szName, "Effect_Execution_2"))
                 {
                     const _float4x4* matWeapon_r = pObject->m_pModelCom->Get_BoneMatrix("spine_01");
                     pObject->m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_NORMAL_EXECUTION_KICK, pObject->m_pTransformCom->Get_WorldMatrix_Ptr(), matWeapon_r);
-                    pObject->m_pGameInstance->Play_Sound(L"Villager_GotKicked.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.7f);
+                    pObject->m_pGameInstance->Play_Sound(TEXT("Normal_Execution_2.wav"), CHANNELID::SOUND_MONSTER_WEAPON, 1.f);
                     iter.isPlay = true;      // 한 번만 재생 되어야 하므로         
                 }
             }
@@ -898,12 +898,12 @@ void CNormal_ScytheM::Attack_ComboA::State_Update(_float fTimeDelta, CNormal_Scy
             {
                 if (!strcmp(iter.szName, "Sound_Whoosh01"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_03.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_03.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.6f);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Sound_Attack01"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboA03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboA03.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.6f);
                     iter.isPlay = true;
                 }
             }
@@ -954,12 +954,12 @@ void CNormal_ScytheM::Attack_ComboB::State_Update(_float fTimeDelta, CNormal_Scy
             {
                 if (!strcmp(iter.szName, "Sound_Whoosh02"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_04.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_04.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.6f);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Sound_Attack02"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboB01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_ComboB01.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.6f);
                     iter.isPlay = true;
                 }
             }
@@ -1011,12 +1011,12 @@ void CNormal_ScytheM::Attack_ComboC::State_Update(_float fTimeDelta, CNormal_Scy
             {
                 if (!strcmp(iter.szName, "Sound_Whoosh03"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Whoosh_Scyrhe_02.ogg", CHANNELID::SOUND_MONSTER_ACTION, 0.6f);
                     iter.isPlay = true;
                 }
                 else if (!strcmp(iter.szName, "Sound_Attack03"))
                 {
-                    pObject->m_pGameInstance->Play_Sound(L"Sythe_Parry_R.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.8f);
+                    pObject->m_pGameInstance->Play_Sound(L"Sythe_Parry_R.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.6f);
                     iter.isPlay = true;
                 }
             }

@@ -657,7 +657,7 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
 
                 //Sound
 
-                pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_VOICE, 0.1f);
+                pObject->m_pGameInstance->Play_Sound(L"Grace_Execution_1.wav", CHANNELID::SOUND_MONSTER_VOICE, 0.5f);
                 iter.isPlay = true;
             }
         }
@@ -666,6 +666,12 @@ void CElite_Grace::Execution_State::State_Update(_float fTimeDelta, CElite_Grace
             if (!strcmp(iter.szName, "Event_Fall_1"))
             {
                 pObject->m_pGameInstance->Play_Sound(L"Hit1.wav", CHANNELID::SOUND_MONSTER_DAMAGE, 0.8f);
+
+                iter.isPlay = true;
+            }
+            else if (!strcmp(iter.szName, "Sound_Vocal"))
+            {
+                pObject->m_pGameInstance->Play_Sound(L"Grace_Vocal_Death_04.ogg", CHANNELID::SOUND_MONSTER_DAMAGE, 0.3f);
 
                 iter.isPlay = true;
             }
