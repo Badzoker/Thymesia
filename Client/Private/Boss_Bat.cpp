@@ -920,7 +920,7 @@ void CBoss_Bat::Attack_Combo_A::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 4;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_Attack_Power = 334;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1014,7 +1014,7 @@ void CBoss_Bat::Attack_Combo_B::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 0;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_Attack_Power = 334;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1107,7 +1107,7 @@ void CBoss_Bat::Attack_Combo_C::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 7;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_Attack_Power = 354;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1188,7 +1188,7 @@ void CBoss_Bat::Attack_Combo_D::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 8;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 114;
+	pObject->m_iMonster_Attack_Power = 354;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1256,7 +1256,7 @@ void CBoss_Bat::Attack_Combo_E::State_Enter(CBoss_Bat* pObject)
 	m_iIndex = 9;
 	pObject->m_bCan_Move_Anim = true;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 171;
+	pObject->m_iMonster_Attack_Power = 421;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1438,20 +1438,20 @@ void CBoss_Bat::Attack_Combo_G::State_Enter(CBoss_Bat* pObject)
 	if (pObject->m_bCristal_Create)
 	{
 		m_iIndex = 17;
-		pObject->m_iMonster_Attack_Power = 221;
+		pObject->m_iMonster_Attack_Power = 621;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 		pObject->m_bCristal_Create = false;
 	}
 	else if (pObject->m_fDistance >= 10.f)
 	{
 		m_iIndex = 18;
-		pObject->m_iMonster_Attack_Power = 114;
+		pObject->m_iMonster_Attack_Power = 341;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	}
 	else
 	{
 		m_iIndex = 19;
-		pObject->m_iMonster_Attack_Power = 114;
+		pObject->m_iMonster_Attack_Power = 341;
 		pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTMFL;
 	}
 	pObject->RotateDegree_To_Player();
@@ -1541,7 +1541,7 @@ void CBoss_Bat::Attack_Combo_H::State_Enter(CBoss_Bat* pObject)
 {
 	m_iIndex = 22;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 256;
+	pObject->m_iMonster_Attack_Power = 568;
 	pObject->m_iMonster_State = STATE_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_KnockBackF;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -1751,7 +1751,7 @@ void CBoss_Bat::Attack_Special::State_Update(_float fTimeDelta, CBoss_Bat* pObje
 		{
 			m_bChange_Attack_Power = true;
 			pObject->m_bCristal_Create = false;
-			pObject->m_iMonster_Attack_Power = 228;
+			pObject->m_iMonster_Attack_Power = 918;
 		}
 		if (pObject->m_pModelCom->GetAniFinish())
 		{
