@@ -475,12 +475,12 @@ void CBoss_Bat::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informatio
 		m_bCanRecovery = false;
 		if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
 		{
-			m_fMonsterCurHP -= *m_Player_Attack / 70.f;
-			m_fShieldHP -= (*m_Player_Attack / 15.f);
+			m_fMonsterCurHP -= *m_Player_Attack / 85.f;
+			m_fShieldHP -= (*m_Player_Attack / 20.f);
 		}
 		else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
 		{
-			m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
+			m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 8.f;
 			m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 70.f;
 			if (m_fMonsterCurHP <= m_fShieldHP)
 			{
@@ -841,6 +841,38 @@ void CBoss_Bat::Dead_State::State_Enter(CBoss_Bat* pObject)
 	pObject->m_bHP_Bar_Active = false;
 	pObject->m_pGameInstance->Sub_Actor_Scene(pObject->m_pActor);
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
+
+#pragma region Boss죽을시효과+UI
+	pObject->m_pGameInstance->Set_Boss_Dead(true);
+	pObject->m_pGameInstance->Set_Boss_Active(false);
+	pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);
+	pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+	pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+
+	pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+	pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 33);
+
+
+
+	// 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+	dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(1999);
+	pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 1999);
+	// 몬스터 사망 시 아이템 드랍 추가하기
+	pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+	pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+	pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+	pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+	pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+#pragma endregion
+
+
+
+
+
+
+
+
+
 }
 
 void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
@@ -848,26 +880,26 @@ void CBoss_Bat::Dead_State::State_Update(_float fTimeDelta, CBoss_Bat* pObject)
 	if (m_iIndex == 29 && pObject->m_pModelCom->Get_Current_Animation_Index() == m_iIndex && pObject->m_pModelCom->GetAniFinish())
 	{
 #pragma region Boss죽을시효과+UI
-		pObject->m_pGameInstance->Set_Boss_Dead(true);
-		pObject->m_pGameInstance->Set_Boss_Active(false);
-		pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);
-		pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
-		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
-
-		pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
-		pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 33);
-
-
-
-		// 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
-		dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(1999);
-		pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 1999);
-		// 몬스터 사망 시 아이템 드랍 추가하기
-		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
-		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
-		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
-		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
-		pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		//pObject->m_pGameInstance->Set_Boss_Dead(true);
+		//pObject->m_pGameInstance->Set_Boss_Active(false);
+		//pObject->m_pGameInstance->UIGroup_Render_OnOff(LEVEL_ROYALGARDEN, TEXT("Layer_Landing"), true);
+		//pObject->m_pGameInstance->UIScene_UIObject_Render_OnOff(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+		//pObject->m_pGameInstance->Set_All_UIObject_Condition_Open(pObject->m_pGameInstance->Find_UIScene(UISCNEN_MESSAGE, TEXT("UIScene_Landing_3Recall")), true);
+		//
+		//pObject->m_pGameInstance->Set_All_UIObject_Condition_Open((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), true);
+		//pObject->m_pGameInstance->Set_Condition((pObject->m_pGameInstance->Find_UIScene(UISCENE_DIALOGUE, L"UIScene_BossTalk")), 2, 33);
+		//
+		//
+		//
+		//// 드랍하지 않고 플레이어에게 적재되는 기억의 파편 추가
+		//dynamic_cast<CPlayer*>(pObject->m_pPlayer)->Increase_MemoryFragment(1999);
+		//pObject->m_pGameInstance->Find_TextBox_PlayerScreen(pObject->m_pGameInstance->Find_UIScene(UISCENE_PLAYERSCREEN, L"UIScene_PlayerScreen"), 101, 1999);
+		//// 몬스터 사망 시 아이템 드랍 추가하기
+		//pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_MEMORY, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		//pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_SKILLPIECE, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		//pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_2, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		//pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_3, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
+		//pObject->m_pGameInstance->Drop_Item(ITEM_TYPE::ITEM_HERB_4, pObject->m_pTransformCom->Get_State(CTransform::STATE_POSITION), pObject);
 #pragma endregion
 
 
