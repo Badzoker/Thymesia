@@ -139,19 +139,19 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 	if (0 == m_pGameInstance->Get_Player_State_SaveData().iLevel)
 	{
 		// 레벨
-		m_iCurrentLevel = { 1 };
-		m_iNextLevel = { 1 };
+		m_iCurrentLevel = { 32 };
+		m_iNextLevel = { 32 };
 
 
 		// 캐릭터 능력치 변수
-		m_iCurrentPower = { 1 }; // 힘 수치
-		m_iNextPower = { 1 }; // 힘 수치
+		m_iCurrentPower = { 10 }; // 힘 수치
+		m_iNextPower = { 10 }; // 힘 수치
 
-		m_iCurrentVitality = { 1 }; // 활력 수치
-		m_iNextVitality = { 1 }; // 활력 수치
+		m_iCurrentVitality = { 14 }; // 활력 수치
+		m_iNextVitality = { 14 }; // 활력 수치
 
-		m_iCurrentPlague = { 1 }; // 역병 수치
-		m_iNextPlague = { 1 }; // 역병 수치
+		m_iCurrentPlague = { 10 }; // 역병 수치
+		m_iNextPlague = { 10 }; // 역병 수치
 
 		// 캐릭터 상태 변수
 		m_fCurrentBonus_SkillDamage = *dynamic_cast<CPlayer*>(m_pPlayer)->Get_Bonus_SkillDamagePtr();
@@ -161,8 +161,8 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iCurrentAttackPower = dynamic_cast<CPlayer*>(m_pPlayer)->Get_AttackPower(); // 공격 대미지 
 		m_iNextAttackPower = m_iCurrentAttackPower; // 공격 대미지
 
-		m_iCurrentAmountOfWounds = { 75 }; // 상처 수
-		m_iNextAmountOfWounds = { 75 }; // 상처 수
+		m_iCurrentAmountOfWounds = { 255 }; // 상처 수
+		m_iNextAmountOfWounds = { 255 }; // 상처 수
 
 		m_iCurrentClawAttackPower = dynamic_cast<CPlayer*>(m_pPlayer)->Get_ClawAttacPower(); // 발톱대미지
 		m_iNextClawAttackPower = m_iCurrentClawAttackPower; // 발톱대미지
@@ -174,11 +174,11 @@ void CUIGroup_PlayerLevelUP::Setting_Default_Status_Value()
 		m_iNextFullMp = m_iCurrentFullMp; // 에너지
 
 
-		m_iCurrentTalentPoint = { 0 };
-		m_iNextTalentPoint = { 0 };
+		m_iCurrentTalentPoint = { 31 };
+		m_iNextTalentPoint = { 31 };
 
-		m_iCurrentUnspent = { 0 };
-		m_iNextUnspent = { 0 };
+		m_iCurrentUnspent = { 31 };
+		m_iNextUnspent = { 31 };
 
 		m_iMemoryCurrentCount = dynamic_cast<CPlayer*>(m_pPlayer)->Get_MemoryFragment();
 		m_iMemoryNextCount = m_iMemoryCurrentCount; // 유저꺼 만큼 복사
