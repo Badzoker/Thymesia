@@ -559,7 +559,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1; 
 
 			}
 			break;
@@ -570,7 +570,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1;
 
 			}
 			break;
@@ -581,7 +581,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1;
 
 			}
 			break;
@@ -592,7 +592,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1;
 
 			}
 			break;
@@ -603,7 +603,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1;
 
 			}
 			break;
@@ -614,7 +614,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 				m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 				m_iPhaseState |= CPlayer::PHASE_FIGHT;
 				m_iCurrentMp -= 20;
-
+				m_iSkill_input_Key = 1;
 
 			}
 			break;
@@ -640,35 +640,35 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iState = STATE_AXE;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
-
+			m_iSkill_input_Key = 2;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_CANESWORD:
 			m_iState = STATE_CANE_SWORD_SP02;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-
+			m_iSkill_input_Key = 2;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_GREADSWORD:
 			m_iState = STATE_GREATSWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.				
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-
+			m_iSkill_input_Key = 2;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_HALBERD:
 			m_iState = STATE_HALBERDS_B;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-
+			m_iSkill_input_Key = 2;
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_JAVELINSWORD:
 			m_iState = STATE_JAVELIN_SWORD;
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-
+			m_iSkill_input_Key = 2;
 
 			break;
 		case PLAYER_SKILL::PLAYER_SKILL_SCYTHE:
@@ -676,7 +676,7 @@ void CPlayer::Keyboard_section(_float fTimeDelta)
 			m_iPhaseState &= ~PHASE_SPRINT;	 //스프린트 해제 시킴.			
 			m_iPhaseState |= CPlayer::PHASE_FIGHT;
 			m_iCurrentMp -= 20;
-
+			m_iSkill_input_Key = 2;
 
 			break;
 		}
@@ -1204,7 +1204,10 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		|| m_iState == STATE_CATCHED
 		|| m_iState == STATE_MAGICIAN_CATCH
 		|| m_iState == STATE_LOBBY_IDLE_01
-		|| m_iState == STATE_LOBBY_IDLE_01_END)
+		|| m_iState == STATE_LOBBY_IDLE_01_END
+		|| m_iState == STATE_RESEARCHER_EXECUTION	
+		|| m_iState == STATE_HURT_RESEARCHER_CATCHED	
+		|| m_iState == STATE_HURT_MUTATION_MAGICIAN_CATCH)	
 	{
 		m_pGameInstance->Set_Dithering(false);
 	}

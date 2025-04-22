@@ -815,8 +815,8 @@ void CUIGroup_PlayerScreen::Item_In_Out_Pop()
 void CUIGroup_PlayerScreen::Button_Skill()
 {
 
-	if (/*m_pGameInstance->isKeyEnter(DIK_1)*/
-		!m_bSkillUse_Fix
+	if (static_cast<CPlayer*>(m_pPlayer)->Get_Skill_Number() == 1	
+		&& !m_bSkillUse_Fix
 		&& !m_bSkillUSe_Plunder
 		&& 0 != dynamic_cast<CUI_FixSlotFrame*>(m_pRevolvingSkill_2)->Get_TexIcon()
 		&& false == *m_pPlayerSkillCoolTime)
@@ -847,8 +847,8 @@ void CUIGroup_PlayerScreen::Button_Skill()
 		}
 	}
 
-	if (/*m_pGameInstance->isKeyEnter(DIK_2)*/
-		!m_bSkillUse_Fix
+	if (static_cast<CPlayer*>(m_pPlayer)->Get_Skill_Number() == 2
+		&& !m_bSkillUse_Fix
 		&& !m_bSkillUSe_Plunder
 		&& 0 != dynamic_cast<CUI_PlunderSlotFrame*>(m_pPlunderSkill)->Get_TexIcon()
 		&& false == *m_pPlayerSkillCoolTime)
