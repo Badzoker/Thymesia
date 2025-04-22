@@ -3442,6 +3442,10 @@ void CBody_Player::STATE_PARRY_DEFLECT_LARGE_Method()
 }
 void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
 {
+
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
     m_pModelCom->SetUp_Animation(56, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -3477,6 +3481,10 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
 }
 void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 {
+
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);    
+
     m_pModelCom->SetUp_Animation(54, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -3511,6 +3519,10 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
 }
 void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
 {
+
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);
+    m_pModelCom->Set_LerpFinished(true);
+
     m_pModelCom->SetUp_Animation(59, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -3543,6 +3555,10 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
 }
 void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
 {
+
+    m_pModelCom->Get_VecAnimation().at(m_pModelCom->Get_Current_Animation_Index())->SetLerpTime(0.f);   
+    m_pModelCom->Set_LerpFinished(true);    
+
     m_pModelCom->SetUp_Animation(58, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
@@ -6400,7 +6416,7 @@ void CBody_Player::STATE_ARCHIVE_SIT_LIGHT_UP_Method()
     m_pModelCom->SetUp_Animation(64, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_VecAnimation().at(64)->isAniMationFinish())
+    if (m_pModelCom->Get_VecAnimation().at(64)->isAniMationFinish() && m_pModelCom->Get_LerpFinished()) 
     {
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_INTERACTION;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
