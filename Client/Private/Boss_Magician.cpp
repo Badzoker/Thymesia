@@ -847,6 +847,7 @@ void CBoss_Magician::Shoot_ComboA::State_Enter(CBoss_Magician* pObject)
 	m_iIndex = 34;
 	pObject->RotateDegree_To_Player();
 	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iMonster_Attack_Power = 50;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
 	pObject->m_bCan_Hit_Motion = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
@@ -971,6 +972,7 @@ void CBoss_Magician::Shoot_ComboB::State_Enter(CBoss_Magician* pObject)
 {
 	m_iIndex = 33;
 	pObject->m_iMonster_State = STATE_ATTACK;
+	pObject->m_iMonster_Attack_Power = 40;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_HURTSF;
 	pObject->m_bCan_Hit_Motion = true;
 	pObject->m_pModelCom->SetUp_Animation(m_iIndex, false);
