@@ -1594,7 +1594,7 @@ void CBoss_Urd::Attack_Special_Skill::State_Enter(CBoss_Urd* pObject)
 	pObject->m_iMonster_State = STATE_SPECIAL_ATTACK;
 	pObject->m_iPlayer_Hitted_State = Player_Hitted_State::PLAYER_HURT_FallDown;
 	pObject->RotateDegree_To_Player();
-	pObject->m_iMonster_Attack_Power = 150.f;
+	pObject->m_iMonster_Attack_Power = 150;
 	pObject->m_bCan_Hit_Motion = false;
 	pObject->m_bStand_Stack_Sword_ColliderOn = true;
 	pObject->m_bSpecial_Skill_Progress = true;
