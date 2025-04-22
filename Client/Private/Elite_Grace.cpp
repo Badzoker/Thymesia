@@ -351,13 +351,13 @@ void CElite_Grace::OnCollisionEnter(CGameObject* _pOther, PxContactPair _informa
 
         if (!strcmp("PLAYER_WEAPON", _pOther->Get_Name()))
         {
-            m_fMonsterCurHP -= *m_Player_Attack / 20.f;
+            m_fMonsterCurHP -= *m_Player_Attack / 50.f;
             m_fShieldHP -= (*m_Player_Attack / 10.f);
         }
         else if (!strcmp("PLAYER_PLAGUE_WEAPON", _pOther->Get_Name()))
         {
-            m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
-            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 15.f;
+            m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 4.f;
+            m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 50.f;
             if (m_fMonsterCurHP <= m_fShieldHP)
             {
                 m_fMonsterCurHP = m_fShieldHP;
@@ -805,7 +805,7 @@ void CElite_Grace::Run_State::State_Update(_float fTimeDelta, CElite_Grace* pObj
 void CElite_Grace::Run_State::State_Exit(CElite_Grace* pObject)
 {
     pObject->m_bNot_Need_Root = false;
-    pObject->m_pModelCom->Set_LerpFinished(true);
+    pObject->m_pModelCom->Set_Continuous_Ani(true);
 }
 
 void CElite_Grace::Attack_ComboA::State_Enter(CElite_Grace* pObject)

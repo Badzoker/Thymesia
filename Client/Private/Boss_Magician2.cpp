@@ -347,7 +347,7 @@ void CBoss_Magician2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 		_uint iNoDamage = 1;
 		m_fRecoveryTime = 0.f;
 		m_bCanRecovery = false;
-		m_fMonsterCurHP -= *m_Player_Attack / 50.f;
+		m_fMonsterCurHP -= *m_Player_Attack / 70.f;
 		m_fShieldHP -= (*m_Player_Attack / 15.f);
 
 		_uint iRandom = rand() % 2;
@@ -366,8 +366,8 @@ void CBoss_Magician2::OnCollisionEnter(CGameObject* _pOther, PxContactPair _info
 		_uint iNoDamage = 1;
 		m_fRecoveryTime = 0.f;
 		m_bCanRecovery = false;
-		m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 15.f;
-		m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 25.f;
+		m_fMonsterCurHP -= (*_pOther->Get_Skill_AttackPower()) / 5.f;
+		m_fShieldHP -= *_pOther->Get_Skill_AttackPower() / 70.f;
 		if (m_fMonsterCurHP <= m_fShieldHP)
 		{
 			m_fMonsterCurHP = m_fShieldHP;
