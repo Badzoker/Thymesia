@@ -5414,11 +5414,11 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
     m_pModelCom->SetUp_Animation(88, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 88)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 88)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
 
     /* 플레이어 사운드 관련 */
@@ -5444,6 +5444,7 @@ void CBody_Player::STATE_CANE_SWORD_SP02_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;
     }
 }
 
@@ -5452,11 +5453,11 @@ void CBody_Player::STATE_GREATSWORD_Method()
     m_pModelCom->SetUp_Animation(103, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 103)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 103)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
     /* 플레이어 사운드 관련 */
     if (m_pModelCom->Get_Current_Animation_Index() == 103)
@@ -5492,6 +5493,7 @@ void CBody_Player::STATE_GREATSWORD_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
@@ -5603,11 +5605,11 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
     m_pModelCom->SetUp_Animation(135, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 135)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 135)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
     /* 플레이어 사운드 관련 */
     if (m_pModelCom->Get_Current_Animation_Index() == 135)
@@ -5632,6 +5634,7 @@ void CBody_Player::STATE_JAVELIN_SWORD_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;    
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
@@ -6662,11 +6665,11 @@ void CBody_Player::STATE_HALBERDS_B_Method()
     m_pModelCom->SetUp_Animation(107, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 107)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 107)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
     if (m_pModelCom->Get_Current_Animation_Index() == 107)
     {
@@ -6706,6 +6709,7 @@ void CBody_Player::STATE_HALBERDS_B_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;
     }
 
 #pragma region 락온 상태  O 타격 중  회피 
@@ -6817,11 +6821,11 @@ void CBody_Player::STATE_SCYTHE_B_Method()
     m_iRenderState = STATE_NORMAL_RENDER;
 
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 122)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 122)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
     /* 플레이어 사운드 관련 */
     if (m_pModelCom->Get_Current_Animation_Index() == 122)
@@ -6856,6 +6860,7 @@ void CBody_Player::STATE_SCYTHE_B_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;
     }
 #pragma region 락온 상태  O 타격 중  회피 
     if (*m_pParentState == CPlayer::STATE_SCYTHE_B
@@ -6966,11 +6971,11 @@ void CBody_Player::STATE_AXE_Method()
     m_pModelCom->SetUp_Animation(69, false);
     m_iRenderState = STATE_NORMAL_RENDER;
 
-    if (m_pModelCom->Get_Current_Animation_Index() == 69)
-    {
-        /* 스킬을 사용 했음을 UI에게 알리는 코드 */
-        *m_pParentSkillCoolTime = false;
-    }
+    //if (m_pModelCom->Get_Current_Animation_Index() == 69)
+    //{
+    //    /* 스킬을 사용 했음을 UI에게 알리는 코드 */
+    //    *m_pParentSkillCoolTime = false;
+    //}
 
 
     /* 플레이어 사운드 관련 */
@@ -6997,6 +7002,7 @@ void CBody_Player::STATE_AXE_Method()
         *m_pParentNextStateCan = true;
         *m_pParentState = CPlayer::STATE::STATE_IDLE;
         *m_pParentPhsaeState &= ~CPlayer::PLAYER_PHASE::PHASE_FIGHT;
+        *m_pParentSkillCoolTime = false;
 
     }
 #pragma region 락온 상태  O 타격 중  회피 
