@@ -3453,7 +3453,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_UP_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 50.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Up_Real2.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 75.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3489,7 +3489,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_L_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Real.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 50.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_L_Real.wav", CHANNELID::SOUND_PLAYER_PARRY_1, 75.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3522,7 +3522,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_UP_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R_UP.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 50.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R_UP.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 75.f);
                     iter.isPlay = true;
                     break;
                 }
@@ -3555,7 +3555,7 @@ void CBody_Player::STATE_PARRY_DEFLECT_R_Method()
                 switch (iter.eType)
                 {
                 case EVENT_SOUND:
-                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 50.f);
+                    m_pGameInstance->Play_Sound(L"Player_Parry_Deflect_R.wav", CHANNELID::SOUND_PLAYER_PARRY_2, 75.f);
                     iter.isPlay = true;
                     break;
                 }
