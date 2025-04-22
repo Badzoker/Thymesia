@@ -598,6 +598,8 @@ CGameObject* CBoss_Magician::Clone(void* pArg)
 
 void CBoss_Magician::Free()
 {
+	m_pGameInstance->Delete_Dynamic_Light(m_pTransformCom);
+
 	__super::Free();
 
 	Safe_Release(m_pState_Manager);

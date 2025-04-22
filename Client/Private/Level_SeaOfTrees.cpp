@@ -176,6 +176,10 @@ void CLevel_SeaOfTrees::Update(_float fTimeDelta)
         m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, static_cast<LEVELID>(m_iNextLevel), 2, false));
     }
 
+    if (m_pGameInstance->LoadObjects())
+    {
+        Ready_Layer_Structure_NoDestruct(TEXT("Layer_Normal_Map"));
+    }
 }
 
 HRESULT CLevel_SeaOfTrees::Render()
@@ -270,6 +274,17 @@ HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure(const _tchar* pLayerTag)
     if (FAILED(Load_DestructObjects(10)))
         return E_FAIL;
 
+
+    return S_OK;
+}
+
+HRESULT CLevel_SeaOfTrees::Ready_Layer_Structure_NoDestruct(const _tchar* pLayerTag)
+{
+    if (FAILED(Load_Objects(313, pLayerTag))) //Circus Map 조커 방
+        return E_FAIL;
+
+    if (FAILED(Load_Objects(319, pLayerTag))) //Circus Map 엘레베이터 전까지 일반몹 구간
+        return E_FAIL;
 
     return S_OK;
 }

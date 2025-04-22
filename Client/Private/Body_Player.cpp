@@ -147,7 +147,7 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 
         m_pCamera->Target_Reset();
 
-        if (m_fDeadTimer >= 2.5f)
+        if (m_fDeadTimer >= 2.5f && m_pGameInstance->Is_Fade_Complete(TRIGGER_TYPE::TT_FADE_OUT))
         {
             m_pGameInstance->Pop_Item(ITEM_TYPE::ITEM_DEADBRANCH, m_pParent->Get_Transfrom()->Get_State(CTransform::STATE_POSITION), this, dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment());
             dynamic_cast<CPlayer*>(m_pParent)->Increase_MemoryFragment(-(dynamic_cast<CPlayer*>(m_pParent)->Get_MemoryFragment()));
@@ -185,6 +185,8 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
                 break;
             case LEVEL_SEAOFTREES:
                 m_pGameInstance->PlayBGM(L"Sea_of_Trees_Level_-_Exploration.ogg", 0.15f);
+                m_pGameInstance->Delete_GameObject_From_Layer(LEVEL_SEAOFTREES, TEXT("Layer_Boss_Map"));
+                m_pGameInstance->Set_LoadObjects();
                 break;
             case LEVEL_ROYALGARDEN:
                 m_pGameInstance->PlayBGM(L"Garden_Level_-_Exploration.ogg", 0.15f);
