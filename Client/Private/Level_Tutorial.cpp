@@ -2494,7 +2494,7 @@ HRESULT CLevel_Tutorial::Load_Effect(const _tchar* _pEffectFilePath, _uint _iPro
         ReadFile(hFile, &pDesc.vRot, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.vTranslation, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &pDesc.fAlpha_Amount, sizeof(_float), &dwByte, nullptr);
-        //ReadFile(hFile, &pDesc.bSocket, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &pDesc.bSocket, sizeof(_bool), &dwByte, nullptr);
 
         ReadFile(hFile, &pDesc.iNumInstance, sizeof(_uint), &dwByte, nullptr);
 

@@ -82,9 +82,9 @@ void CEffect_Particle::Priority_Update(_float _fTimeDelta)
 
 void CEffect_Particle::Update(_float _fTimeDelta)
 {
-    if (6 == m_iShaderPass || 7 == m_iShaderPass) //소켓에 붙을 파티클
+    if (true == m_bSocket) //소켓에 붙을 파티클
     {
-        if (nullptr == m_pSocketMatrix)
+        if (nullptr == m_pSocketMatrix) //안전 코드
         {
             Set_IsPlaying(false);
             return;
@@ -235,12 +235,12 @@ HRESULT CEffect_Particle::Ready_Components()
 
 HRESULT CEffect_Particle::Bind_ShaderResources()
 {
-    if (6 == m_iShaderPass || 7 == m_iShaderPass)
+    if (true == m_bSocket) //소켓이 필요하되 그자리에 머무르는 즉 Transform이 가지고 있는 World Matrix를 이용하는 Particle
     {
         if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
             return E_FAIL;
     }
-    else //보통 요놈임
+    else //소켓이 필요없는 Particle들은 계산이 끝난 Combine Matrix를 이용
     {
         if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
             return E_FAIL;
