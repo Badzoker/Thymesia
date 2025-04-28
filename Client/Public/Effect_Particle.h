@@ -15,6 +15,7 @@ class CEffect_Particle final : public CEffect
 public:
 	struct EFFECT_PARTICLE_DESC : public CEffect::EFFECT_DESC
 	{
+		//Client Effect Particle Information
 		wstring szShaderName;
 		_uint iParticle_Count = {};
 		_uint iShaderPass = {};
@@ -23,7 +24,9 @@ public:
 		_float3 vRot = {};
 		_float3 vTranslation = {};
 		_float fAlpha_Amount = { 0.1f };
+		_bool bSocket = { false };
 
+		//Engine(VIBuffer_Compute) Effect Particle Information
 		_uint		iNumInstance = {};
 		_float3     vRange = {};
 		_float3     vCenter = {};
@@ -70,6 +73,8 @@ private:
 	_float3 m_vRGB = {};
 
 	_float m_fAlpha_Amount = { 0.1f };
+
+	_bool m_bSocket = { false };
 
 public:
 	HRESULT Ready_Components();

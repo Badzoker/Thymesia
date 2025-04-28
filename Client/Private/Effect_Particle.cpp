@@ -30,6 +30,7 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_vRGB = pDesc->vRGB;
     m_iShaderPass = pDesc->iShaderPass;
     m_fAlpha_Amount = pDesc->fAlpha_Amount;
+    m_bSocket = pDesc->bSocket;
 
     if (FAILED(__super::Initialize(_pArg)))
         return E_FAIL;
