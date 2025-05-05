@@ -6541,6 +6541,10 @@ void CBody_Player::STATE_START_WALK_Method()
                     else if (!strcmp(iter.szName, "Left_Foot_Sound"))
                     {
                         m_pGameInstance->Play_Sound(L"Player_FootStep_Leather_02.ogg", CHANNELID::SOUND_PLAYER_ACTION_1, 1.f);
+
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST, m_pParentWorldMatrix, m_pParentWorldMatrix);
+                        m_pGameInstance->Play_Effect_Matrix_With_Socket(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF, m_pParentWorldMatrix, m_pParentWorldMatrix);
+
                         iter.isPlay = true;
                     }
 

@@ -2354,7 +2354,8 @@ void CPlayer::Player_Setting_PartAni()
 
 void CPlayer::Free()
 {
-
+	m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_LEAF);
+	m_pGameInstance->Stop_Effect(EFFECT_NAME::EFFECT_PARTICLE_ENVIRONMENT_DUST);
 	m_pGameInstance->Delete_Dynamic_Light(m_pTransformCom);
 
 	__super::Free();
