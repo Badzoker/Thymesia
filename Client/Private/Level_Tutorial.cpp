@@ -955,11 +955,11 @@ HRESULT CLevel_Tutorial::Ready_Layer_Effect(const _tchar* pLayerTag)
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Dust_Spore.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, 2)))
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_DUST_SPORE, 16)))
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_WorldGas_Spore.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
-        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, 1)))
+        EFFECT_TYPE::EFFECT_TYPE_PARTICLE, EFFECT_NAME::EFFECT_PARTICLE_WORLDGAS_SPORE, 16)))
         return E_FAIL;
 
     if (FAILED(Load_Effect(TEXT("../Bin/DataFiles/Effect/Particle/ParticleEffect_Blood_Joker_Execution.dat"), LEVEL_STATIC, TEXT("Prototype_GameObject_Effect_Particle"),
