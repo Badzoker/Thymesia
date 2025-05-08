@@ -328,24 +328,39 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MtrlSpecular"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Specular"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Roughness"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shadow"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Emissive"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
 		return E_FAIL;
 
 	iCountX = 0;
 
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Final"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightX"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightX"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_HighLightY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur_By_Velocity"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;	
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_MotionBlur"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY++), fSizeX, fSizeY)))
+		return E_FAIL;
+
+	iCountX = 0;
+	
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftX"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Specular"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shadow"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shadow_Final"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
 		return E_FAIL;
 
 	iCountX = 0;
@@ -356,18 +371,17 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_GlowY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftX"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_LightShaftY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
-		return E_FAIL;
-
-	iCountX = 0;
-
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomBegin"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomX"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_BloomY"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Distortion"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_WeightBlend"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulsion"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
 		return E_FAIL;
 
 	iCountX = 0;
@@ -381,9 +395,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_RangeFog_Final"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
 
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Water"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Reflection"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Water"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY++), fSizeX, fSizeY)))
-		return E_FAIL;
 #endif // _DEBUG
 
 	Add_NoiseTexture();
@@ -1572,6 +1588,16 @@ HRESULT CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Fog_Final"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Water"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Occulsion"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_WeightBlend"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Shadow_Final"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Render_RT_Debug(TEXT("MRT_Distortion"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
 	return S_OK;
