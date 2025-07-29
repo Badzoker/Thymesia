@@ -45,16 +45,15 @@ void CEffect::Priority_Update(_float _fTimeDelta)
 
 void CEffect::Update(_float _fTimeDelta)
 {
-	if (nullptr != m_pSettingMatrix)
+	if (nullptr != m_pSettingMatrix) // Socket Matrix를 이용한 Effect로 모델의 특정위치에 나와야하는 경우
 	{
-		//m_pTransformCom->Set_MulWorldMatrix(m_pSettingMatrix);
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSettingMatrix));
 	}
-	else// socket이 아니다
+	else // Effect가 불리는 시점의 월드행렬을 이용하는 경우
 	{
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&m_matParentWorld));
 	}
-	if (true == m_bIsPlaying)
+	if (true == m_bIsPlaying) // Effect가 재생 중이라면 Timer 체크용도
 	{
 		Timer_Check(_fTimeDelta);
 	}
