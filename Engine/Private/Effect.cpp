@@ -132,7 +132,7 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 		{
 			m_fTimerX += _fTimeDelta * m_fTimer_SpeedX;
 			m_fTimerY += _fTimeDelta * m_fTimer_SpeedY;
-			m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //이놈은 TimerX 한테 영향받음 나중에 따로 뺼지 아니면 X와 Y를 같이 넣어줘야할지 고민됨
+			m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //TimerX 한테 영향받음
 		}
 		
 	}
