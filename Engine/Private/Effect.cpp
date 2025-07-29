@@ -30,7 +30,9 @@ HRESULT CEffect::Initialize(void* _pArg)
 	//m_eEffectType = pDesc->eType;
 
 	if (FAILED(__super::Initialize(_pArg)))
+	{
 		return E_FAIL;
+	}
 
 	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 
@@ -53,7 +55,9 @@ void CEffect::Update(_float _fTimeDelta)
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&m_matParentWorld));
 	}
 	if (true == m_bIsPlaying)
+	{
 		Timer_Check(_fTimeDelta);
+	}
 }
 
 void CEffect::Late_Update(_float _fTimeDelta)
@@ -81,11 +85,17 @@ void CEffect::Set_IsPlaying(_bool _bIsPlaying)
 void CEffect::Clear_Setting()
 {
 	if (nullptr != m_pSettingMatrix)
+	{
 		m_pSettingMatrix = nullptr;
+	}
 	if (nullptr != m_pAnimation_Speed)
+	{
 		m_pAnimation_Speed = nullptr;
+	}
 	if (nullptr != m_pSocketMatrix)
+	{
 		m_pSocketMatrix = nullptr;
+	}
 
 	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 }
@@ -125,7 +135,9 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 			{
 				m_fTimer_Timelag += _fTimeDelta;
 				if (0.02f < m_fTimer_Timelag)
+				{
 					m_pAnimation_Speed = nullptr;
+				}
 			}
 		}
 		else
@@ -141,5 +153,4 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 void CEffect::Free()
 {
 	__super::Free();
-
 }

@@ -30,10 +30,14 @@ HRESULT CEffect_Sword::Initialize(void* _Arg)
     m_iSword_XYZ = pDesc->iSword_XYZ;
 
     if (FAILED(__super::Initialize(_Arg)))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(Ready_Component()))
+    {
         return E_FAIL;
+    }
 
     
 
@@ -60,6 +64,7 @@ void CEffect_Sword::Update(_float _fTimeDelta)
 
         XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));
     }
+
     if (true == m_bIsPlaying)
     {
         Calculate_Trail(_fTimeDelta);
@@ -94,7 +99,9 @@ void CEffect_Sword::Late_Update(_float _fTimeDelta)
 HRESULT CEffect_Sword::Render()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
 
     m_pShaderCom->Begin(m_iShaderPass);
 
@@ -108,7 +115,9 @@ HRESULT CEffect_Sword::Render()
 HRESULT CEffect_Sword::Render_Distortion()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
 
     m_pShaderCom->Begin(m_iShaderPass);
 
@@ -122,7 +131,9 @@ HRESULT CEffect_Sword::Render_Distortion()
 HRESULT CEffect_Sword::Render_WeightBlend()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
 
     m_pShaderCom->Begin(m_iShaderPass);
 
@@ -144,9 +155,14 @@ void CEffect_Sword::Set_IsPlaying(_bool _bIsPlaying)
         m_pBufferCom->Set_Trail_Reset();
 
         if (nullptr != m_pSettingMatrix)
+        {
             m_pSettingMatrix = nullptr;
+        }
+
         if (nullptr != m_pSocketMatrix)
+        {
             m_pSocketMatrix = nullptr;
+        }
     }
     m_bisCalculate = _bIsPlaying;
 }
@@ -183,7 +199,6 @@ void CEffect_Sword::Calculate_Trail(_float _fTimeDelta)
     else if (m_fTimerX < 1.25f && m_dequeCenterPos.size() < 64)
     {
         m_dequeCenterPos.push_front(vLook_Sword);
-        
     }
     else // Å©±â°¡ ²ËÃ¡´Ù ¸Ç¾Õ²¨¸¦ ¹Ð¾î¹ö·Á¶ó || ½Ã°£ÀÌ Áö³µ´Ù
     {
@@ -196,7 +211,9 @@ void CEffect_Sword::Calculate_Trail(_float _fTimeDelta)
 void CEffect_Sword::Delete_Trail()
 {
     if (0 < m_dequeCenterPos.size())
+    {
         m_dequeCenterPos.pop_back();
+    }
     else// if (1 > m_dequeCenterPos.size())
     {
         m_bIsPlaying = false;
@@ -210,17 +227,23 @@ HRESULT CEffect_Sword::Ready_Component()
     /* Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Sword"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    {
         return E_FAIL;
+    }
 
     /* Com_Texture */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sword_Image"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+    {
         return E_FAIL;
+    }
 
     /* Com_VIBuffer */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Sword"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom))))
+    {
         return E_FAIL;
+    }
 
     return S_OK;
 }
@@ -228,22 +251,34 @@ HRESULT CEffect_Sword::Ready_Component()
 HRESULT CEffect_Sword::Bind_ShaderResources()
 {
     if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+    {
         return E_FAIL;
-    //if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
-    //    return E_FAIL;
+    }
+    
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+    {
         return E_FAIL;
+    }
+
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iDiffuse)))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vRGB", &m_vRGB, sizeof(_float3))))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimer", &m_fTimerX, sizeof(_float))))
+    {
         return E_FAIL;
+    }
 
     return S_OK;
 }

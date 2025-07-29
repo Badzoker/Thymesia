@@ -17,14 +17,18 @@ HRESULT CEffectMgr::Initialize()
 void CEffectMgr::Priority_Update(_float _fTimeDelta)
 {
     for (auto& iter : m_dequePlayingEffect)
+    {
         iter->Priority_Update(_fTimeDelta);
+    }
 
 }
 
 void CEffectMgr::Update(_float _fTimeDelta)
 {
     for (auto& iter : m_dequePlayingEffect)
+    {
         iter->Update(_fTimeDelta);
+    }
 }
 
 void CEffectMgr::Late_Update(_float _fTimeDelta)
@@ -53,7 +57,9 @@ HRESULT CEffectMgr::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _str
 {
     CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, _iPrototypeLevelIndex, _strPrototypeTag, _pArg));
     if (nullptr == pGameObject)
+    {
         return E_FAIL;
+    }
 
 
 
@@ -240,7 +246,9 @@ HRESULT CEffectMgr::Reset_Effect()
         for (auto& iter : m_vecEffect[i])
         {
             if (true == iter->Get_IsPlaying())
+            {
                 iter->Set_IsPlaying(false);
+            }
         }
     }
     
@@ -272,7 +280,9 @@ void CEffectMgr::Free()
     for (_uint i = 0; i < (_uint)EFFECT_NAME::EFFECT_NAME_END; i++)
     {
         for (auto& iter : m_vecEffect[i])
+        {
             Safe_Release(iter);
+        }
 
         m_vecEffect[i].clear();
     }

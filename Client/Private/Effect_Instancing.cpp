@@ -14,8 +14,10 @@ CEffect_Instancing::CEffect_Instancing(const CEffect_Instancing& _Prototype)
 
 HRESULT CEffect_Instancing::Initialize_Prototype()
 {
-    if (FAILED(__super::Initialize_Prototype()))
+	if (FAILED(__super::Initialize_Prototype()))
+	{
         return E_FAIL;
+	}
 
     return S_OK;
 }
@@ -33,16 +35,22 @@ HRESULT CEffect_Instancing::Initialize(void* _pArg)
 	m_fHeightY = pDesc->fHeightY;
 	m_bLoop = pDesc->bLoop;
 
-    if (FAILED(__super::Initialize(_pArg)))
+	if (FAILED(__super::Initialize(_pArg)))
+	{
         return E_FAIL;
+	}
 
 	if (FAILED(Ready_Components()))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	{
 		return E_FAIL;
+	}
 
 
 	m_pTransformCom->Scaling(pDesc->vScale);
@@ -74,7 +82,9 @@ void CEffect_Instancing::Late_Update(_float _fTimeDelta)
 HRESULT CEffect_Instancing::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
+	{
 		return E_FAIL;
+	}
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -106,78 +116,120 @@ HRESULT CEffect_Instancing::Ready_Components()
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect_Instancing"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_DiffuseTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Instancing_Image"),
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+	{
 		return E_FAIL;
+	}
 
     return S_OK;
 }
 
 HRESULT CEffect_Instancing::Bind_ShaderResources()
 {
-	//if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeX", &m_fTimerX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeY", &m_fTimerY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuse)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHorizonSpeed", &m_fDissolve, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHeight", &m_fHeightX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fRotation_Weight", &m_fHeightY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	_float4 vPos = {};
 	XMStoreFloat4(&vPos, _vector{ m_matCombined._41, m_matCombined._42, m_matCombined._43, m_matCombined._44 });
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vModelPosition", &vPos, sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Horizon1", &m_vExplosionPower[0], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Vertical1", &m_vExplosionPower[1], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Rotation1", &m_vExplosionPower[2], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Horizon2", &m_vExplosionPower[3], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Vertical2", &m_vExplosionPower[4], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Rotation2", &m_vExplosionPower[5], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Horizon3", &m_vExplosionPower[6], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Vertical3", &m_vExplosionPower[7], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Explosion_Rotation3", &m_vExplosionPower[8], sizeof(_float4))))
+	{
 		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
