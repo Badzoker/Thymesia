@@ -318,8 +318,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 #ifdef _DEBUG
-#endif // _DEBUG
-
+	
 	_float fSizeX{ 150.f }, fSizeY{ 150.f }, fStartPositionX{ 80.f }, fStartPositionY{ 80.f }, fIntervalX{ 155.f }, fIntervalY{ 155.f };
 	_uint iCountX{}, iCountY{};
 
@@ -380,14 +379,13 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Distortion"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_WeightBlend"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_WeightBlend"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
 		return E_FAIL;
-	
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulsion"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY++)), fSizeX, fSizeY)))
+		return E_FAIL;
 
 	iCountX = 0;
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Occulsion"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Final_Last"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_RangeFog_Front"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * iCountY), fSizeX, fSizeY)))
@@ -402,6 +400,7 @@ HRESULT CRenderer::Initialize()
 	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Reflection"), fStartPositionX + (fIntervalX * (iCountX++)), fStartPositionY + (fIntervalY * (iCountY)), fSizeX, fSizeY)))
 	//	return E_FAIL;
 
+#endif // _DEBUG
 
 	Add_NoiseTexture();
 
@@ -508,7 +507,6 @@ HRESULT CRenderer::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-#endif
 	if (m_pGameInstance->isKeyEnter(DIK_F11))
 		m_bDebugRender = !m_bDebugRender;
 
@@ -517,6 +515,7 @@ HRESULT CRenderer::Render()
 		if (FAILED(Render_Debug()))
 			return E_FAIL;
 	}
+#endif
 	
 
 	return S_OK;
@@ -1539,8 +1538,6 @@ HRESULT CRenderer::Bind_NoiseTexture(CShader* pShader, const _char* pConstantNam
 	return pShader->Bind_SRV(pConstantName, m_pNoiseSRV);
 }
 #ifdef _DEBUG
-#endif
-
 HRESULT CRenderer::Render_Debug()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1605,6 +1602,7 @@ HRESULT CRenderer::Render_Debug()
 
 	return S_OK;
 }
+#endif
 
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

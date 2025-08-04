@@ -49,11 +49,9 @@ void CEffectMgr::Late_Update(_float _fTimeDelta)
     }
 }
 
-HRESULT CEffectMgr::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, 
-        EFFECT_NAME _eEffectName, void* _pArg)
+HRESULT CEffectMgr::Add_Effect(_uint _iPrototypeLevelIndex, const _wstring& _strPrototypeTag, EFFECT_NAME _eEffectName, void* _pArg)
 {
-    CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
-                                                          _iPrototypeLevelIndex, _strPrototypeTag, _pArg));
+    CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, _iPrototypeLevelIndex, _strPrototypeTag, _pArg));
     if (nullptr == pGameObject)
         return E_FAIL;
 

@@ -105,9 +105,6 @@ void CEffect_Particle::Update(_float _fTimeDelta)
 
         __super::Update(_fTimeDelta);
     }
-
-    
-
 }
 
 void CEffect_Particle::Late_Update(_float _fTimeDelta)

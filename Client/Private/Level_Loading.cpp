@@ -38,6 +38,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 {
 	m_eNextLevelID = eNextLevelID;
 	m_iLoadingeNum = iLoadingNum;
+		//종한 0404 추가
 	m_pGameInstance->Set_Boss_Dead(false);
 	if (bCheck)
 	{
@@ -45,6 +46,8 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID, _uint iLoadingNum, _boo
 			return E_FAIL;	
 		if (FAILED(Ready_Layer_Mouse(TEXT("Layer_Mouse"))))
 			return E_FAIL;	
+
+		//m_pGameInstance->UIGroup_Render_OnOff(LEVEL_STATIC, TEXT("Layer_Mouse"), true);
 
 		if (FAILED(Ready_Layer_Fade(TEXT("Layer_Fade"))))
 			return E_FAIL;

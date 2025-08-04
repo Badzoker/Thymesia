@@ -44,9 +44,14 @@ void CEffect::Priority_Update(_float _fTimeDelta)
 void CEffect::Update(_float _fTimeDelta)
 {
 	if (nullptr != m_pSettingMatrix)
+	{
+		//m_pTransformCom->Set_MulWorldMatrix(m_pSettingMatrix);
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSettingMatrix));
+	}
 	else// socket이 아니다
+	{
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&m_matParentWorld));
+	}
 	if (true == m_bIsPlaying)
 		Timer_Check(_fTimeDelta);
 }

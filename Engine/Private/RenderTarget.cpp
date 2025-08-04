@@ -148,7 +148,6 @@ HRESULT CRenderTarget::Copy_Resource(ID3D11Texture2D* pTexture2D)
 
 
 #ifdef _DEBUG
-#endif
 HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
     _uint           iNumViewports = { 1 };
@@ -179,6 +178,7 @@ HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
     return S_OK;
 }
+#endif
 
 CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
 {
