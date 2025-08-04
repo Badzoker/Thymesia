@@ -15,7 +15,9 @@ CEffect_Particle::CEffect_Particle(const CEffect_Particle& _Prototype)
 HRESULT CEffect_Particle::Initialize_Prototype()
 {
     if (FAILED(__super::Initialize_Prototype()))
+    {
         return E_FAIL;
+    }
 
     return S_OK;
 }
@@ -33,16 +35,22 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     m_bSocket = pDesc->bSocket;
 
     if (FAILED(__super::Initialize(_pArg)))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(Ready_Components()))
+    {
         return E_FAIL;
+    }
 
 
     /* Com_Shader*/
     if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szShaderName,
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+    {
         return E_FAIL;
+    }
 
     CVIBuffer_Point_Compute::PARTICLE_COMPUTE_DESC Desc = {};
 
@@ -65,7 +73,9 @@ HRESULT CEffect_Particle::Initialize(void* _pArg)
     /* Com_VIBuffer */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Point_Compute"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pBufferCom), &Desc)))
+    {
         return E_FAIL;
+    }
 
     m_pTransformCom->Scaling(pDesc->vScale);
     m_pTransformCom->Rotation(XMConvertToRadians(pDesc->vRot.x), XMConvertToRadians(pDesc->vRot.y), XMConvertToRadians(pDesc->vRot.z)); //이부분은 Tool이랑 뭔가 이상함
@@ -96,8 +106,11 @@ void CEffect_Particle::Update(_float _fTimeDelta)
         _float4 vPos = { m_matCombined._41, m_matCombined._42, m_matCombined._43, 1.f };
 
         m_pBufferCom->Compute_Shader(m_pShaderCom, 1, 1, 1, vPos);
+        
         if (true == m_bIsPlaying)
+        {
             Timer_Check(_fTimeDelta);
+        }
     }
     else
     {
@@ -148,12 +161,16 @@ void CEffect_Particle::Late_Update(_float _fTimeDelta)
 HRESULT CEffect_Particle::Render()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
 
     if (3 == m_iShaderPass || 7 == m_iShaderPass) //BLOOD
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+        {
             return E_FAIL;
+        }
     }
 
 
@@ -169,15 +186,21 @@ HRESULT CEffect_Particle::Render()
 HRESULT CEffect_Particle::Render_WeightBlend()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
     
     if (5 == m_iShaderPass || 6 == m_iShaderPass) //DUST || WORLD
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+        {
             return E_FAIL;
+        }
 
         if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlpha_Amount", &m_fAlpha_Amount, sizeof(_float))))
+        {
             return E_FAIL;
+        }
     }
 
     m_pShaderCom->Begin(m_iShaderPass); //WeightBlend
@@ -192,7 +215,9 @@ HRESULT CEffect_Particle::Render_WeightBlend()
 HRESULT CEffect_Particle::Render_Bloom()
 {
     if (FAILED(Bind_ShaderResources()))
+    {
         return E_FAIL;
+    }
 
     m_pShaderCom->Begin(m_iShaderPass); //Bloom
 
@@ -209,12 +234,22 @@ void CEffect_Particle::Set_IsPlaying(_bool _bIsPlaying)
     if (true == _bIsPlaying) //시작해라 느낌
     {
         XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
+
         if (nullptr != m_pSettingMatrix)
+        {
             m_pSettingMatrix = nullptr;
+        }
+
         if (nullptr != m_pAnimation_Speed)
+        {
             m_pAnimation_Speed = nullptr;
+        }
+
         if (nullptr != m_pSocketMatrix)
+        {
             m_pSocketMatrix = nullptr;
+        }
+
         m_fTimerX = 0.f;
         m_fTimerY = 0.f;
         m_fDissolve = 0.f;
@@ -228,7 +263,9 @@ HRESULT CEffect_Particle::Ready_Components()
     /* Com_Texture */
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Particle_Image"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+    {
         return E_FAIL;
+    }
 
     return S_OK;
 }
@@ -238,22 +275,36 @@ HRESULT CEffect_Particle::Bind_ShaderResources()
     if (true == m_bSocket) //소켓이 필요하되 그자리에 머무르는 즉 Transform이 가지고 있는 World Matrix를 이용하는 Particle
     {
         if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+        {
             return E_FAIL;
+        }
     }
     else //소켓이 필요없는 Particle들은 계산이 끝난 Combine Matrix를 이용
     {
         if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+        {
             return E_FAIL;
+        }
     }
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+    {
         return E_FAIL;
+    }
+
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+    {
         return E_FAIL;
+    }
 
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iDiffuse)))
+    {
         return E_FAIL;
+    }
+
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vRGB", &m_vRGB, sizeof(_float3))))
+    {
         return E_FAIL;
+    }
 
     return S_OK;
 }

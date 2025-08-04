@@ -30,7 +30,9 @@ HRESULT CEffect::Initialize(void* _pArg)
 	//m_eEffectType = pDesc->eType;
 
 	if (FAILED(__super::Initialize(_pArg)))
+	{
 		return E_FAIL;
+	}
 
 	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 
@@ -43,17 +45,18 @@ void CEffect::Priority_Update(_float _fTimeDelta)
 
 void CEffect::Update(_float _fTimeDelta)
 {
-	if (nullptr != m_pSettingMatrix)
+	if (nullptr != m_pSettingMatrix) // Socket Matrix를 이용한 Effect로 모델의 특정위치에 나와야하는 경우
 	{
-		//m_pTransformCom->Set_MulWorldMatrix(m_pSettingMatrix);
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSettingMatrix));
 	}
-	else// socket이 아니다
+	else // Effect가 불리는 시점의 월드행렬을 이용하는 경우
 	{
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&m_matParentWorld));
 	}
-	if (true == m_bIsPlaying)
+	if (true == m_bIsPlaying) // Effect가 재생 중이라면 Timer 체크용도
+	{
 		Timer_Check(_fTimeDelta);
+	}
 }
 
 void CEffect::Late_Update(_float _fTimeDelta)
@@ -81,11 +84,17 @@ void CEffect::Set_IsPlaying(_bool _bIsPlaying)
 void CEffect::Clear_Setting()
 {
 	if (nullptr != m_pSettingMatrix)
+	{
 		m_pSettingMatrix = nullptr;
+	}
 	if (nullptr != m_pAnimation_Speed)
+	{
 		m_pAnimation_Speed = nullptr;
+	}
 	if (nullptr != m_pSocketMatrix)
+	{
 		m_pSocketMatrix = nullptr;
+	}
 
 	XMStoreFloat4x4(&m_matParentWorld, XMMatrixIdentity());
 }
@@ -125,14 +134,16 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 			{
 				m_fTimer_Timelag += _fTimeDelta;
 				if (0.02f < m_fTimer_Timelag)
+				{
 					m_pAnimation_Speed = nullptr;
+				}
 			}
 		}
 		else
 		{
 			m_fTimerX += _fTimeDelta * m_fTimer_SpeedX;
 			m_fTimerY += _fTimeDelta * m_fTimer_SpeedY;
-			m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //이놈은 TimerX 한테 영향받음 나중에 따로 뺼지 아니면 X와 Y를 같이 넣어줘야할지 고민됨
+			m_fDissolve += _fTimeDelta * m_fDissolve_Speed; //TimerX 한테 영향받음
 		}
 		
 	}
@@ -141,5 +152,4 @@ void CEffect::Timer_Check(_float _fTimeDelta)
 void CEffect::Free()
 {
 	__super::Free();
-
 }

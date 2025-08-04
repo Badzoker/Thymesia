@@ -53,15 +53,21 @@ HRESULT CEffect_Mesh::Initialize(void* _pArg)
 	m_bGray = pDesc->bGray;
 
     if (FAILED(__super::Initialize(_pArg)))
-        return E_FAIL;
+	{
+		return E_FAIL;
+	}
 
 	if (FAILED(Ready_Components()))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, pDesc->szModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	{
 		return E_FAIL;
+	}
 
 
 	m_pTransformCom->Scaling(pDesc->vScale);
@@ -86,7 +92,9 @@ void CEffect_Mesh::Update(_float _fTimeDelta)
 		XMStoreFloat4x4(&m_matCombined, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * SocketMatrix * XMLoadFloat4x4(m_pSettingMatrix));
 
 		if (true == m_bIsPlaying)
+		{
 			Timer_Check(_fTimeDelta);
+		}
 	}
 	else
 	{
@@ -139,7 +147,6 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 	case 12: //BLOOD_SUCKER
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_NONBLEND, this);
 		break;
-
 	case 13: //GAS_BOOMBOOM
 		m_pGameInstance->Add_RenderGroup(CRenderer::RG_GLOW, this);
 		break;
@@ -152,15 +159,21 @@ void CEffect_Mesh::Late_Update(_float _fTimeDelta)
 HRESULT CEffect_Mesh::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
+	{
 		return E_FAIL;
+	}
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", m_iNormal)))
+	{
 		return E_FAIL;
+	}
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
@@ -174,7 +187,9 @@ HRESULT CEffect_Mesh::Render()
 HRESULT CEffect_Mesh::Render_Distortion()
 {
 	if (FAILED(Bind_ShaderResources()))
+	{
 		return E_FAIL;
+	}
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -190,10 +205,14 @@ HRESULT CEffect_Mesh::Render_Distortion()
 HRESULT CEffect_Mesh::Render_Glow()
 {
 	if (FAILED(Bind_ShaderResources()))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -209,10 +228,14 @@ HRESULT CEffect_Mesh::Render_Glow()
 HRESULT CEffect_Mesh::Render_WeightBlend()
 {
 	if (FAILED(Bind_ShaderResources()))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxTimer", &m_fMaxTimer, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	_uint			iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -230,27 +253,37 @@ HRESULT CEffect_Mesh::Ready_Components()
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_DiffuseTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Diffuse"),
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_DIFFUSE]))))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_NoiseTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
 		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_NOISE]))))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_MaskTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Mask"),
 		TEXT("Com_Mask"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_MASK]))))
+	{
 		return E_FAIL;
+	}
 
 	/* Com_NormalTexture */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect_Mesh_Noise"),
 		TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEXTURE_NORMAL]))))
+	{
 		return E_FAIL;
+	}
 
     return S_OK;
 }
@@ -260,75 +293,128 @@ HRESULT CEffect_Mesh::Bind_ShaderResources()
 	//if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_matCombined)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+	{
 		return E_FAIL;
+	}
 
 	//Particle Àü¿ë
 	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 	//	return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeX", &m_fTimerX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_TimeY", &m_fTimerY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartTexcoordX", &m_fStartTexcoordX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartTexcoordY", &m_fStartTexcoordY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_MaskCountX", &m_fMaskCountX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_MaskCountY", &m_fMaskCountY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vRGB", &m_vRGB, sizeof(_float3))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexcoordX", &m_bTexcoordX, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTexcoordY", &m_bTexcoordY, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordLerpX", &m_fTexcoord_LerpX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordLerpY", &m_fTexcoord_LerpY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bMinus_X", &m_bMinus_X, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bMinus_Y", &m_bMinus_Y, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bGray", &m_bGray, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom[TEXTURE_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuse)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom[TEXTURE_NOISE]->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", m_iNoise)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom[TEXTURE_MASK]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", m_iMask)))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DissolveAmount", &m_fDissolve, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bUsing_Noise", &m_bUsing_Noise, sizeof(_bool))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWeightX", &m_fWeightX, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWeightY", &m_fWeightY, sizeof(_float))))
+	{
 		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -365,7 +451,11 @@ void CEffect_Mesh::Free()
 	__super::Free();
 
 	Safe_Release(m_pShaderCom);
+
 	for (auto& pTexture : m_pTextureCom)
+	{
 		Safe_Release(pTexture);
+	}
+
 	Safe_Release(m_pModelCom);
 }
