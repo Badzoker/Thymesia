@@ -96,7 +96,7 @@ float g_fGravity = -9.8f;
 
 
 
-#define PARTS_COUNT 12 // 13 부터 안되던데요..?ㄹㅇㅋ;;
+#define PARTS_COUNT 12
 [maxvertexcount(3 * PARTS_COUNT)]
 void GS_MAIN(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 {
@@ -124,18 +124,18 @@ void GS_MAIN(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
         
         float3 vMoveDir = normalize(float3(cos(fAngle), 1.0f, sin(fAngle)));
         
-        float3 vMoveValue = vMoveDir * (g_fHorizonSpeed * g_fHorizon[iPartIndex]); //이거 랜덤값으로 던져줘야함 얼마나 멀어지냐, 기준1.5f
+        float3 vMoveValue = vMoveDir * (g_fHorizonSpeed * g_fHorizon[iPartIndex]); // 랜덤값으로 얼마나 퍼져나가는지, 기준1.5f
 
         float fFallingTime = g_TimeX;
         
-        float fInitialPopVelocity = g_fHeight * g_fVertical[iPartIndex]; //이거도 랜덤값으로 던져줘야함 얼마나 올라갔다가 내려오냐, 기준1.0f
+        float fInitialPopVelocity = g_fHeight * g_fVertical[iPartIndex]; // 랜덤값으로 얼마나 올라갔다가 내려오는지, 기준1.0f
         
         float fFallingValue = (fInitialPopVelocity * fFallingTime) + (0.4f * g_fGravity * fFallingTime * fFallingTime);
         vMoveValue.y += fFallingValue;
 
         float3 vRotationAxis = normalize(float3(cos(fAngle), 0.5f, sin(fAngle)));
 
-        float fRotationSpeed = g_fRotation[iPartIndex] * g_fRotation_Weight; // 이것도 랜덤값으로 던져준다 얼마나 뱅글뱅글 혼자 회전하는가, 기준10.0f
+        float fRotationSpeed = g_fRotation[iPartIndex] * g_fRotation_Weight; // 랜덤값으로 얼마나 뱅글뱅글 파티클 한개가 회전하는지, 기준10.0f
         
         float fRotationAngle = g_TimeX * fRotationSpeed;
         float fCosAngle = cos(fRotationAngle);
