@@ -2,6 +2,7 @@
 
 #include <process.h>
 #include <random>
+#include <thread>
 
 namespace Client
 {

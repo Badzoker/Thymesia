@@ -213,20 +213,6 @@ HRESULT CLoader::Start_Loading()
 
 	HRESULT			hr = {};
 
-	/*switch (m_eNextLevelID)
-	{
-	case LEVEL_STATIC:
-		hr = Loading_For_Level_Static();
-		break;
-	case LEVEL_LOGO:
-		hr = Loading_For_Level_Logo();
-		break;
-	case LEVEL_TUTORIAL:
-		m_pGameInstance->Activate_Fade(TRIGGER_TYPE::TT_FADE_IN, 0.3f);
-		hr = Loading_For_Level_Tutorial();
-		break;
-	}*/
-
 	if (FAILED(hr))
 		return E_FAIL;
 
@@ -234,6 +220,7 @@ HRESULT CLoader::Start_Loading()
 
 	return S_OK;
 }
+
 #ifdef _DEBUG	
 void CLoader::SetUp_WindowText()	
 {

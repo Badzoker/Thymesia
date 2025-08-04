@@ -420,7 +420,6 @@ PS_OUT PS_MAIN_DUST(PS_IN_WEIGHT In)
     vResult.xyz *= vRGB;
     float fWeight = saturate(max(1e-2, In.vProjPos.w / (70.f * g_fAlpha_Amount)));
     
-    //vResult.xyz /= clamp(vResult.a, 0.1f, 800.f);
     float fLifeTime = 1.f - pow(In.vLifeTime.y / In.vLifeTime.x, 2.f);
     vResult.xyz *= fWeight * fLifeTime;
     Out.vColor = vResult;
